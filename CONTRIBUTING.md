@@ -21,8 +21,8 @@ This document is intended to be a living summary of conventions and best practic
 | Conventions and best practices for creating packages and plug-ins for Zowe CLI | [Package and Plug-in Guidelines](./docs/PackagesAndPluginGuidelines.md)|
 | Guidelines for running tests on Zowe CLI | [Testing Guidelines](./docs/TESTING.md) |
 | Guidelines for running tests on the plug-ins that you build| [Plug-in Testing Guidelines](./docs/PluginTESTINGGuidelines.md) |
-| Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/gizafoundation/imperative/wiki) |
-Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](https://github.com/gizafoundation/brightside/master/MaintainerVersioning.md) |
+| Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
+Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs/MaintainerVersioning.md) |
 
 ## Project Layout
 The project root contains the following items:
@@ -57,7 +57,7 @@ Code is indented using 4 spaces. This is also documented via .editorconfig which
 The following list summarizes conventions and best practices for contributing core functionality to Zowe CLI. For example, general infrastructure such as utilities, command processing and definition enhancements. 
 
 - Determine if the infrastructure enhancement applies to Zowe CLI or Imperative CLI Framework. 
-- Zowe CLI is built on [Imperative CLI Framework](https://github.com/gizafoundation/imperative/wiki). Most Zowe CLI core functionality is contained within the framework. Therefore, send us your recommendations on the Imperative CLI Framework repo when you want to enhance the following core functionalities:  
+- Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/imperative/wiki). Most Zowe CLI core functionality is contained within the framework. Therefore, send us your recommendations on the Imperative CLI Framework repo when you want to enhance the following core functionalities:  
 
   - REST client
   - Logging
