@@ -11,7 +11,7 @@ This document describes responsibilities and process for maintainers of this rep
 ## Publishing
 
 ### Manual Publishing
-Publishing should be [automated](./#automated).  This information is recorded for historical reasons to describe our publishing process.
+Publishing should be [automated](#automated-publishing).  This information is recorded for historical reasons to describe our publishing process.
 
 ### Automated Publishing
 TBD
