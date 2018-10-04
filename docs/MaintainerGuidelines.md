@@ -7,7 +7,6 @@ This document describes responsibilities and process for maintainers of this rep
 ## Contents
 - [Publishing](#publishing)
 - [Reviewing Pull Requests](#reviewing-pull-requests)
-- [Versioning](#versioning)
 
 ## Publishing
 
