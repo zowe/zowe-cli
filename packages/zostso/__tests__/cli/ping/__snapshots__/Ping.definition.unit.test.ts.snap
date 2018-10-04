@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso ping group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [],
+  "description": "Ping a TSO address space, from which you previously started and received a token (a.k.a 'servelet-key').",
+  "name": "ping",
+  "summary": "Ping a TSO address space",
+  "type": "group",
+}
+`;

@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 1`] = `"&"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 2`] = `1000`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 3`] = `"*"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 4`] = `"?"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 5`] = `"jobid="`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 6`] = `"max-jobs="`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 7`] = `"owner="`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 8`] = `"prefix="`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 9`] = `"/zosmf/restjobs/jobs"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 10`] = `"/JCL"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 11`] = `"/records"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 12`] = `"/files"`;
+
+exports[`JobsConstants tests should get an error for unexpected constant changes 13`] = `"step-data=Y"`;

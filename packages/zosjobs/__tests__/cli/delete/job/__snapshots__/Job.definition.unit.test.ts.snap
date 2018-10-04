@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs delete job definition should not have changed 1`] = `
+Object {
+  "description": "Delete a single job by job ID",
+  "examples": Array [
+    Object {
+      "description": "Delete job with job ID JOB03456.",
+      "options": "JOB03456",
+    },
+  ],
+  "name": "job",
+  "positionals": Array [
+    Object {
+      "description": "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate the job ID if desired. You can use, for example \\"J123\\".",
+      "name": "jobid",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Delete a single job by job ID",
+  "type": "command",
+}
+`;

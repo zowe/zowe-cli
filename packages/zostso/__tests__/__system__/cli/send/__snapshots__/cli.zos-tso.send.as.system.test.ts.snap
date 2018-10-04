@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso send as should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   address-space | as
+
+ DESCRIPTION
+ -----------
+
+   Send data to the TSO address space, from which you previously started and
+   received a token (a.k.a 'servlet-key').
+
+ USAGE
+ -----
+
+   zowe zos-tso send address-space <servletKey> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   servletKey		 (string)
+
+      The servlet key from a previously started TSO address space.
+
+ REQUIRED OPTIONS
+ ----------------
+
+   --data  (string)
+
+      The data to which we want to send to the TSO address space represented by the
+      servlet key.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - \\"Send the TIME TSO command to the TSO address space
+   identified by IBMUSER-329-aafkaaoc\\":
+
+      $ zowe zos-tso send address-space IBMUSER-329-aafkaaoc --data \\"TIME\\"
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: address-space.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   address-space | as\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Send data to the TSO address space, from which you previously started and\\\\n   received a token (a.k.a 'servlet-key').\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso send address-space <servletKey> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   servletKey\\\\t\\\\t (string)\\\\n\\\\n      The servlet key from a previously started TSO address space.\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --data  (string)\\\\n\\\\n      The data to which we want to send to the TSO address space represented by the\\\\n      servlet key.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - \\\\\\"Send the TIME TSO command to the TSO address space\\\\n   identified by IBMUSER-329-aafkaaoc\\\\\\":\\\\n\\\\n      $ zowe zos-tso send address-space IBMUSER-329-aafkaaoc --data \\\\\\"TIME\\\\\\"\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   address-space | as\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Send data to the TSO address space, from which you previously started and\\\\n   received a token (a.k.a 'servlet-key').\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso send address-space <servletKey> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   servletKey\\\\t\\\\t (string)\\\\n\\\\n      The servlet key from a previously started TSO address space.\\\\n\\\\n REQUIRED OPTIONS\\\\n ----------------\\\\n\\\\n   --data  (string)\\\\n\\\\n      The data to which we want to send to the TSO address space represented by the\\\\n      servlet key.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - \\\\\\"Send the TIME TSO command to the TSO address space\\\\n   identified by IBMUSER-329-aafkaaoc\\\\\\":\\\\n\\\\n      $ zowe zos-tso send address-space IBMUSER-329-aafkaaoc --data \\\\\\"TIME\\\\\\"\\\\n\\\\n\\"
+}"
+`;

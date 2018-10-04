@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso ping address-space definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "as",
+  ],
+  "description": "Ping a TSO address space, from which you previously started and received a token (a.k.a 'servlet-key').",
+  "examples": Array [
+    Object {
+      "description": "Ping the TSO address space identified by IBMUSER-329-aafkaaoc",
+      "options": "IBMUSER-329-aafkaaoc",
+    },
+  ],
+  "name": "address-space",
+  "positionals": Array [
+    Object {
+      "description": "The servlet key from a previously started TSO address space.",
+      "name": "servletKey",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+      "tso",
+    ],
+  },
+  "summary": "Ping TSO address space",
+  "type": "command",
+}
+`;

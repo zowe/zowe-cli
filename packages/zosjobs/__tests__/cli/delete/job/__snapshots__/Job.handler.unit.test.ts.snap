@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`delete job handler tests should be able to delete a job by job id 1`] = `"Successfully deleted job IBMUSER$ (TSUxxx)"`;
+
+exports[`delete job handler tests should be able to delete a job by job id 2`] = `"Successfully deleted job IBMUSER$ (TSUxxx)"`;
+
+exports[`delete job handler tests should be able to delete a job by job id 3`] = `
+Object {
+  "class": "A",
+  "files-url": "www.nowhere.com/restjobs/jobs/files",
+  "job-correlator": "123545asdfadf",
+  "jobid": "TSUxxx",
+  "jobname": "IBMUSER$",
+  "owner": "IBMUSER",
+  "phase": 88,
+  "phase-name": "testagain",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+  "subsystem": "JES2",
+  "type": "job",
+  "url": "www.nowhere.com/restjobs/jobs",
+}
+`;
+
+exports[`delete job handler tests should not transform an error from the DeleteJobs API class 1`] = `"You fail in DeleteJobs"`;
+
+exports[`delete job handler tests should not transform an error from the zosmf rest client 1`] = `"You fail in z/OSMF"`;

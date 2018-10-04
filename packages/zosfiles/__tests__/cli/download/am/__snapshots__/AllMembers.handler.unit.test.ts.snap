@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download AllMembers handler process method should download all members from a PDS if requested 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS if requested 2`] = `""`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS if requested 3`] = `
+"
+downloaded"
+`;

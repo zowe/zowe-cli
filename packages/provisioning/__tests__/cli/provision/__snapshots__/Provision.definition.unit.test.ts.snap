@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning provision command group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "prov",
+  ],
+  "description": "Using z/OSMF cloud provisioning services provision available templates.",
+  "name": "provision",
+  "summary": "Provision published software service templates.",
+  "type": "group",
+}
+`;

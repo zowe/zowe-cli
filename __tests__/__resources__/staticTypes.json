@@ -1,0 +1,314 @@
+[
+  {
+    "name": "ASMCHDR",
+    "description": "ASM DSECT to convert to Metal C HDR",
+    "lrecl": 80,
+    "language": "TEXT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "CNVDSCH1"
+  },
+  {
+    "name": "ASMCOPY",
+    "description": "ASM copybooks",
+    "lrecl": 251,
+    "language": "C",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ASMMAC",
+    "description": "Assembler macros",
+    "lrecl": 80,
+    "language": "ASM",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ASMPGM",
+    "description": "Assembler programs",
+    "lrecl": 80,
+    "language": "ASM",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "ASMZ"
+  },
+  {
+    "name": "CHDR",
+    "description": "C headers",
+    "lrecl": 251,
+    "language": "C",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "COBCOPY",
+    "description": "COBOL copybooks",
+    "lrecl": 80,
+    "language": "COBOL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "COBPGM",
+    "description": "COBOL programs",
+    "lrecl": 80,
+    "language": "COBOL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "LEMBX"
+  },
+  {
+    "name": "CPGM",
+    "description": "C programs",
+    "lrecl": 251,
+    "language": "C",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "METALC64"
+  },
+  {
+    "name": "FMID",
+    "description": "FMID TYPE",
+    "lrecl": 80,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "HFS",
+    "description": "HFS Type",
+    "lrecl": 6140,
+    "language": "DATA",
+    "quickEditRecfm": "V",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "HFSCNTL",
+    "description": "HFS Control member",
+    "lrecl": 1019,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "HLTHCHK",
+    "description": "CA Health Checker Msg Tables",
+    "lrecl": 80,
+    "language": "ASM",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "ASMHCCST"
+  },
+  {
+    "name": "HOLDCNTL",
+    "description": "HOLDCNTL TYPE",
+    "lrecl": 80,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ISPM",
+    "description": "ISPF messages",
+    "lrecl": 80,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ISPP",
+    "description": "ISPF panels",
+    "lrecl": 80,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ISPS",
+    "description": "ISPF skeletons",
+    "lrecl": 80,
+    "language": "TEXT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ISPT",
+    "description": "ISPF TABLES",
+    "lrecl": 80,
+    "language": "TEXT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "ISRC",
+    "description": "CLIST & REXX procedures",
+    "lrecl": 80,
+    "language": "CLIST",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "LNK",
+    "description": "Link Edit decks",
+    "lrecl": 80,
+    "language": "DATA",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "L"
+  },
+  {
+    "name": "LNKINC",
+    "description": "Link Edit deck for 1 module",
+    "lrecl": 80,
+    "language": "DATA",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "LOADONLY",
+    "description": "load only",
+    "lrecl": 80,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "LEMBX"
+  },
+  {
+    "name": "MSMXML",
+    "description": "MSMXML METADATA",
+    "lrecl": 508,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "OBJNOS",
+    "description": "Object no source",
+    "lrecl": 80,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "PANEL",
+    "description": "Utility Screens",
+    "lrecl": 4096,
+    "language": "SCREEN",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "PARMS",
+    "description": "Program parameters",
+    "lrecl": 80,
+    "language": "DATA",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "PKGSCL",
+    "description": "MSPS XFER SCL",
+    "lrecl": 80,
+    "language": "JCL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "PRODXML",
+    "description": "XML for SDS and SCS",
+    "lrecl": 508,
+    "language": "DAT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "SAMPINT",
+    "description": "FB 80 samples for prod dev groups(CAI.S910.SAMPLIB",
+    "lrecl": 80,
+    "language": "JCL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "SAMPJ",
+    "description": "SAMPLE JCL",
+    "lrecl": 80,
+    "language": "JCL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "SAMPLE",
+    "description": "Endevor samples",
+    "lrecl": 80,
+    "language": "TEXT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "SAMPO",
+    "description": "Other FB 80 samples",
+    "lrecl": 80,
+    "language": "TEXT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "SAMPOS"
+  },
+  {
+    "name": "SAMPP",
+    "description": "JCL procedures for proclib",
+    "lrecl": 80,
+    "language": "JCL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "SAMPPS"
+  },
+  {
+    "name": "SAMPS",
+    "description": "SAMPLE Source",
+    "lrecl": 80,
+    "language": "ASM",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "SAMPSS"
+  },
+  {
+    "name": "SAMPV",
+    "description": "Other VB 256 samples",
+    "lrecl": 251,
+    "language": "TEXT",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "SAMPVS"
+  },
+  {
+    "name": "SANDBOX",
+    "description": "Sandbox (de)allocations",
+    "lrecl": 80,
+    "language": "DATA",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "SANDBOX"
+  },
+  {
+    "name": "SCSTMPLT",
+    "description": "MSM SCS Templates and Card Decks",
+    "lrecl": 80,
+    "language": "JCL",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "SHELLSCR",
+    "description": "SMP USS Shell Script",
+    "lrecl": 251,
+    "language": "C",
+    "quickEditRecfm": "V",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "SIDEDECK",
+    "description": "C program Side Deck Files",
+    "lrecl": 80,
+    "language": "C",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  },
+  {
+    "name": "USSCNFG",
+    "description": "Sample USSCNFG",
+    "lrecl": 80,
+    "language": "DATA",
+    "quickEditRecfm": "N",
+    "defaultProcGroup": "*NOPROC*"
+  }
+]

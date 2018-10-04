@@ -1,0 +1,3 @@
+//{{jobname}} JOB ({{account}}),'{{programmer_name}}',
+//   CLASS={{jobclass}},MSGCLASS={{msg__class}}
+//* These are bad variables!

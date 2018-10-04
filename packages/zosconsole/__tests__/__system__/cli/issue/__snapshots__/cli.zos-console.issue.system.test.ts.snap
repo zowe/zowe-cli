@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-console issue should display the help 1`] = `
+"================Z/OS CONSOLE ISSUE HELP===============
+
+ DESCRIPTION
+ -----------
+
+   Issue z/OS console commands and optionally collect responses.
+
+ USAGE
+ -----
+
+   zowe zos-console issue [command]
+
+ COMMANDS
+ --------
+
+   command | cmd Issue a z/OS console command and print the response
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+================Z/OS CONSOLE ISSUE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: issue.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue z/OS console commands and optionally collect responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console issue [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   command | cmd Issue a z/OS console command and print the response\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue z/OS console commands and optionally collect responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console issue [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   command | cmd Issue a z/OS console command and print the response\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;

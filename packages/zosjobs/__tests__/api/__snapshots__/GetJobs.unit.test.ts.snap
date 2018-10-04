@@ -1,0 +1,490 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GetJobs tests getJcl APIs should be able to get JCL 1`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=KELDA16//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
+
+exports[`GetJobs tests getJcl APIs should be able to get JCL 2`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=KELDA16//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
+
+exports[`GetJobs tests getJcl APIs should be able to get JCL 3`] = `"//RUNMAIN  JOB 105300000,                                               JOB07172// USER=KELDA16//* test//EXEC     EXEC PGM=IEFBR14,REGION=200M,MEMLIMIT=3G"`;
+
+exports[`GetJobs tests getJcl APIs should error for missing jobname in callback scheme for jcl 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
+
+exports[`GetJobs tests getJcl APIs should have proper URI when getting JCL 1`] = `"/zosmf/restjobs/jobs/fakeJob/fakeId/files/JCL/records"`;
+
+exports[`GetJobs tests getJobs APIs should allow getting jobs by common method with max jobs 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and getJobsCommon 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and getJobsCommon 2`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get jobs by owner 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get jobs by owner and prefix 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get jobs by prefix 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using all parms 1`] = `"/zosmf/restjobs/jobs?owner=fakeOwner&prefix=fakePrefix&max-jobs=2&jobid=fakeID"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using jobid 1`] = `"/zosmf/restjobs/jobs?jobid=fakeJobid"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using jobname and jobid 1`] = `"/zosmf/restjobs/jobs?owner=someOwner&prefix=somePrefix"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using jobname, prefix, and jobid 1`] = `"/zosmf/restjobs/jobs?owner=someOwner&prefix=somePrefix&jobid=fakeJobid"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using maxjobs 1`] = `"/zosmf/restjobs/jobs?max-jobs=10"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using no parms 1`] = `"/zosmf/restjobs/jobs"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using owner 1`] = `"/zosmf/restjobs/jobs?owner=fakeOwner"`;
+
+exports[`GetJobs tests getJobs APIs should have proper URI when using prefix 1`] = `"/zosmf/restjobs/jobs?prefix=fakePrefix"`;
+
+exports[`GetJobs tests getJobs APIs should locate a job by jobid 1`] = `
+Object {
+  "class": "A",
+  "files-url": "www.nowhere.com/restjobs/jobs/files",
+  "job-correlator": "123545asdfadf",
+  "jobid": "TSUxxx",
+  "jobname": "IBMUSER$",
+  "owner": "IBMUSER",
+  "phase": 88,
+  "phase-name": "testagain",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+  "subsystem": "JES2",
+  "type": "job",
+  "url": "www.nowhere.com/restjobs/jobs",
+}
+`;
+
+exports[`GetJobs tests getJobs APIs should reject promise if a session isn't provided 1`] = `"Expect Error: Required session must be defined"`;
+
+exports[`GetJobs tests getJobs APIs should require owner for getJobsByOwner 1`] = `"Expect Error: Required parameter 'owner' must not be blank"`;
+
+exports[`GetJobs tests getJobs APIs should require owner for getJobsByOwnerAndPrefix 1`] = `"Expect Error: Required parameter 'owner' must not be blank"`;
+
+exports[`GetJobs tests getJobs APIs should require prefix for getJobsByOwnerAndPrefix 1`] = `"Expect Error: Required object must be defined"`;
+
+exports[`GetJobs tests getJobs APIs should require prefix for getJobsByPrefix 1`] = `"Expect Error: Required parameter 'prefix' must not be blank"`;
+
+exports[`GetJobs tests getJobs APIs should throw an error if more than one job is returned for a job id 1`] = `"Obtaining job info for a single job id TSUxxx on Test:443 failed: Expected 1 job returned but received 2"`;
+
+exports[`GetJobs tests getJobs APIs should throw an error if zero jobs are returned when getting jobs by ID 1`] = `"Obtaining job info for a single job id TSUxxx on Test:443 failed: Job not found"`;
+
+exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 1`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I KELDA16 Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=KELOSKY, DANIEL L 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
+
+exports[`GetJobs tests getSpoolContent APIs should be able to get spool content 2`] = `"    1                   J E S 2  J O B  L O G  --  S Y S T E M  X A D 1  --  N O D E  U S I L D A M D    0 08.26.22 JOB01544 ---- MONDAY,    02 APR 2018 ---- 08.26.22 JOB01544  TSS7000I KELDA16 Last-Used 02 Apr 18 08:25 System=XAD1 Facility=TSO 08.26.22 JOB01544  TSS7001I Count=00411 Mode=Fail Locktime=None Name=KELOSKY, DANIEL L 08.26.22 JOB01544  $HASP373 RUNMAIN  STARTED - WLM INIT  - SRVCLASS BATSTWLM - SYS XAD1 08.26.22 JOB01544  IEF403I RUNMAIN - STARTED - TIME=08.26.22 08.26.22 JOB01544  CAJR250I STEPNAME STEP   PGM=   CCODE  EST-COST   EXCPS     ELAPSED     TOT-CPU PAGE-IN PAGE-OT SWAP-IN SWAP-OT 08.26.22 JOB01544  CAJR251I EXEC        1 IEFBR14  0000      $ .00       0 00:00:00.00 00:00:00.00       0       0       0       0 08.26.22 JOB01544  IEF404I RUNMAIN - ENDED - TIME=08.26.22 08.26.22 JOB01544  CAJR252I JOB ENDED. TOTAL EST-COST        $ .00      TOTAL CPU TIME 00:00:00.00 08.26.22 JOB01544  $HASP395 RUNMAIN  ENDED - RC=00000------ JES2 JOB STATISTICS -------  02 APR 2018 JOB EXECUTION DATE-            6 CARDS READ-           73 SYSOUT PRINT RECORDS-            0 SYSOUT PUNCH RECORDS-            8 SYSOUT SPOOL KBYTES-         0.00 MINUTES EXECUTION TIME"`;
+
+exports[`GetJobs tests getSpoolContent APIs should error for missing jobname in callback scheme for spool content 1`] = `"Expect Error: Required job file object must be defined"`;
+
+exports[`GetJobs tests getSpoolContent APIs should have proper URI when getting spool content 1`] = `"/zosmf/restjobs/jobs/RUNMAIN/JOB07172/files/2/records"`;
+
+exports[`GetJobs tests getSpoolFiles APIs should be able to get spool files 1`] = `
+Array [
+  Object {
+    "byte-count": 1297,
+    "class": "Z",
+    "ddname": "JESMSGLG",
+    "id": 2,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 133,
+    "procstep": null,
+    "recfm": "UA",
+    "record-count": 19,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 223,
+    "class": "Z",
+    "ddname": "JESJCL",
+    "id": 3,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 136,
+    "procstep": null,
+    "recfm": "V",
+    "record-count": 4,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/3/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 3195,
+    "class": "Z",
+    "ddname": "JESYSMSG",
+    "id": 4,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 137,
+    "procstep": null,
+    "recfm": "VA",
+    "record-count": 42,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/4/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+]
+`;
+
+exports[`GetJobs tests getSpoolFiles APIs should be able to get spool files 2`] = `
+Array [
+  Object {
+    "byte-count": 1297,
+    "class": "Z",
+    "ddname": "JESMSGLG",
+    "id": 2,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 133,
+    "procstep": null,
+    "recfm": "UA",
+    "record-count": 19,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 223,
+    "class": "Z",
+    "ddname": "JESJCL",
+    "id": 3,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 136,
+    "procstep": null,
+    "recfm": "V",
+    "record-count": 4,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/3/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 3195,
+    "class": "Z",
+    "ddname": "JESYSMSG",
+    "id": 4,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 137,
+    "procstep": null,
+    "recfm": "VA",
+    "record-count": 42,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/4/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+]
+`;
+
+exports[`GetJobs tests getSpoolFiles APIs should be able to get spool files 3`] = `
+Array [
+  Object {
+    "byte-count": 1297,
+    "class": "Z",
+    "ddname": "JESMSGLG",
+    "id": 2,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 133,
+    "procstep": null,
+    "recfm": "UA",
+    "record-count": 19,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 223,
+    "class": "Z",
+    "ddname": "JESJCL",
+    "id": 3,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 136,
+    "procstep": null,
+    "recfm": "V",
+    "record-count": 4,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/3/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 3195,
+    "class": "Z",
+    "ddname": "JESYSMSG",
+    "id": 4,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 137,
+    "procstep": null,
+    "recfm": "VA",
+    "record-count": 42,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/4/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+]
+`;
+
+exports[`GetJobs tests getSpoolFiles APIs should error for missing jobname in callback scheme for spool files 1`] = `"Expect Error: Required parameter 'jobname' must not be blank"`;
+
+exports[`GetJobs tests getSpoolFiles APIs should have proper URI when getting spool files 1`] = `"/zosmf/restjobs/jobs/fakeJob/fakeId/files"`;
+
+exports[`GetJobs tests getStatus APIs should get a job via getStatus and getStatusCommon 1`] = `
+Object {
+  "class": "A",
+  "files-url": "www.nowhere.com/restjobs/jobs/files",
+  "job-correlator": "123545asdfadf",
+  "jobid": "TSUxxx",
+  "jobname": "IBMUSER$",
+  "owner": "IBMUSER",
+  "phase": 88,
+  "phase-name": "testagain",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+  "subsystem": "JES2",
+  "type": "job",
+  "url": "www.nowhere.com/restjobs/jobs",
+}
+`;
+
+exports[`GetJobs tests getStatus APIs should get a job via getStatus and getStatusCommon 2`] = `
+Object {
+  "class": "A",
+  "files-url": "www.nowhere.com/restjobs/jobs/files",
+  "job-correlator": "123545asdfadf",
+  "jobid": "TSUxxx",
+  "jobname": "IBMUSER$",
+  "owner": "IBMUSER",
+  "phase": 88,
+  "phase-name": "testagain",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+  "subsystem": "JES2",
+  "type": "job",
+  "url": "www.nowhere.com/restjobs/jobs",
+}
+`;
+
+exports[`GetJobs tests getStatus APIs should get an error for missing jobid on getStatus 1`] = `"Expect Error: Required parameter 'jobid' must not be blank"`;
+
+exports[`GetJobs tests getStatus APIs should get an error for missing jobid on getStatusCommon 1`] = `"Expect Error: Required parameter 'jobid' must not be blank"`;
+
+exports[`GetJobs tests getStatus APIs should get an error for missing jobname on getStatus 1`] = `"Expect Error: Required parameter 'jobname' must be defined"`;
+
+exports[`GetJobs tests getStatus APIs should get an error for missing jobname on getStatus when using callbacks 1`] = `"Expect Error: Required parameter 'jobname' must be defined"`;
+
+exports[`GetJobs tests getStatus APIs should get an error for missing jobname on getStatusCommon 1`] = `"Expect Error: Required parameter 'jobname' must be defined"`;
+
+exports[`GetJobs tests getStatus APIs should reject the promise when the server gets an error http code 1`] = `"Rest API failure with HTTP(S) status 500"`;
+
+exports[`GetJobs tests getStatus APIs should reject the promise when the server gets an error http code 2`] = `"{\\"rc\\":4,\\"reason\\":7,\\"stack\\":\\"JesException: CATEGORY_SERVICE rc=4 reason=7 message=No match for method GET and pathInfo='/owner=TCPIP*'\\\\n\\\\tat com.ibm.zoszmf.restjobs.util.JesException.serviceException(JesException.java:183)\\\\n\\\\tat com.ibm.zoszmf.restjobs.servlet.JesServlet.doGet(JesServlet.java:270)\\\\n\\\\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:575)\\\\n\\\\tat com.ibm.zoszmf.restjobs.servlet.JesServlet.service(JesServlet.java:168)\\\\n\\\\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:668)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.service(ServletWrapper.java:1255)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:743)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.ServletWrapper.handleRequest(ServletWrapper.java:440)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.invokeTarget(WebAppFilterChain.java:147)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:89)\\\\n\\\\tat com.ibm.zoszmf.util.data.ActivityFilter.doFilter(ActivityFilter.java:100)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.FilterInstanceWrapper.doFilter(FilterInstanceWrapper.java:201)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:86)\\\\n\\\\tat com.ibm.zoszmf.util.auth.CSRFwithWLFilter.doFilter(CSRFwithWLFilter.java:192)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.FilterInstanceWrapper.doFilter(FilterInstanceWrapper.java:201)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterChain.doFilter(WebAppFilterChain.java:86)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.doFilter(WebAppFilterManager.java:995)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1124)\\\\n\\\\tat com.ibm.ws.webcontainer.filter.WebAppFilterManager.invokeFilters(WebAppFilterManager.java:1004)\\\\n\\\\tat com.ibm.ws.webcontainer.servlet.CacheServletWrapper.handleRequest(CacheServletWrapper.java:76)\\\\n\\\\tat com.ibm.ws.webcontainer.WebContainer.handleRequest(WebContainer.java:921)\\\\n\\\\tat com.ibm.ws.webcontainer.osgi.DynamicVirtualHost$2.run(DynamicVirtualHost.java:281)\\\\n\\\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink$TaskWrapper.run(HttpDispatcherLink.java:960)\\\\n\\\\tat com.ibm.ws.zos.wlm.internal.WlmHttpWorkClassifier$WlmExecutor.wlmRunWork(WlmHttpWorkClassifier.java:309)\\\\n\\\\tat com.ibm.ws.zos.wlm.internal.WlmHttpWorkClassifier$WlmExecutor.execute(WlmHttpWorkClassifier.java:299)\\\\n\\\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.wrapHandlerAndExecute(HttpDispatcherLink.java:357)\\\\n\\\\tat com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink.ready(HttpDispatcherLink.java:321)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.handleDiscrimination(HttpInboundLink.java:499)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.handleNewRequest(HttpInboundLink.java:433)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.processRequest(HttpInboundLink.java:313)\\\\n\\\\tat com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.ready(HttpInboundLink.java:284)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink.determineNextChannel(SSLConnectionLink.java:1029)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink.readyInboundPostHandshake(SSLConnectionLink.java:695)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLConnectionLink$MyHandshakeCompletedCallback.complete(SSLConnectionLink.java:383)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLUtils.handleHandshake(SSLUtils.java:947)\\\\n\\\\tat com.ibm.ws.channel.ssl.internal.SSLHandshakeIOCallback.complete(SSLHandshakeIOCallback.java:85)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.requestComplete(WorkQueueManager.java:503)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.attemptIO(WorkQueueManager.java:573)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager.workerRun(WorkQueueManager.java:928)\\\\n\\\\tat com.ibm.ws.tcpchannel.internal.WorkQueueManager$Worker.run(WorkQueueManager.java:1017)\\\\n\\\\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1160)\\\\n\\\\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)\\\\n\\\\tat java.lang.Thread.run(Thread.java:811)\\\\n\\",\\"category\\":6,\\"message\\":\\"No match for method GET and pathInfo='/owner=TCPIP*'\\"}"`;

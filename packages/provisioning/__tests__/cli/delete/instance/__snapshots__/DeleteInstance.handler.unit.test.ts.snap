@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`delete deprovisioned instance handler tests should be able to delete deprovisioned instance 1`] = `"The instance was successfully deleted"`;
+
+exports[`delete deprovisioned instance handler tests should be able to delete deprovisioned instance 2`] = `""`;

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list instance info handler tests should be able to list instance info 1`] = `
+"
+
+"
+`;
+
+exports[`list instance info handler tests should be able to list instance info 2`] = `Object {}`;

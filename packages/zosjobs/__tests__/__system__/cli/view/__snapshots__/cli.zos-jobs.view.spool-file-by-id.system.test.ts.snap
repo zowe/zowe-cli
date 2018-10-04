@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs view spool-file-by-id command help should not have changed 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   spool-file-by-id | sfbi
+
+ DESCRIPTION
+ -----------
+
+   View the contents of a spool file from a z/OS job on spool/JES queues. The
+   command does not pre-validate the JOBID or spool ID. The command presents errors
+   verbatim from the z/OSMF Jobs REST endpoints.
+
+ USAGE
+ -----
+
+   zowe zos-jobs view spool-file-by-id <jobid> <spoolfileid> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   jobid		 (string)
+
+      The z/OS JOBID of the job containing the spool file you want to view. No
+      pre-validation of the JOBID is performed.
+
+   spoolfileid		 (number)
+
+      The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
+      spool-files-by-jobid\\" command to obtain spool ID numbers.No pre-validation of
+      the ID is performed.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - View the spool file with ID 4 for the job with job ID
+   JOB00123:
+
+      $ zowe zos-jobs view spool-file-by-id JOB00123 4
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: spool-file-by-id.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   spool-file-by-id | sfbi\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View the contents of a spool file from a z/OS job on spool/JES queues. The\\\\n   command does not pre-validate the JOBID or spool ID. The command presents errors\\\\n   verbatim from the z/OSMF Jobs REST endpoints.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view spool-file-by-id <jobid> <spoolfileid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job containing the spool file you want to view. No\\\\n      pre-validation of the JOBID is performed.\\\\n\\\\n   spoolfileid\\\\t\\\\t (number)\\\\n\\\\n      The spool file ID number for the spool file to view. Use the \\\\\\"zowe zos-jobs list\\\\n      spool-files-by-jobid\\\\\\" command to obtain spool ID numbers.No pre-validation of\\\\n      the ID is performed.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - View the spool file with ID 4 for the job with job ID\\\\n   JOB00123:\\\\n\\\\n      $ zowe zos-jobs view spool-file-by-id JOB00123 4\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   spool-file-by-id | sfbi\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View the contents of a spool file from a z/OS job on spool/JES queues. The\\\\n   command does not pre-validate the JOBID or spool ID. The command presents errors\\\\n   verbatim from the z/OSMF Jobs REST endpoints.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view spool-file-by-id <jobid> <spoolfileid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job containing the spool file you want to view. No\\\\n      pre-validation of the JOBID is performed.\\\\n\\\\n   spoolfileid\\\\t\\\\t (number)\\\\n\\\\n      The spool file ID number for the spool file to view. Use the \\\\\\"zowe zos-jobs list\\\\n      spool-files-by-jobid\\\\\\" command to obtain spool ID numbers.No pre-validation of\\\\n      the ID is performed.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - View the spool file with ID 4 for the job with job ID\\\\n   JOB00123:\\\\n\\\\n      $ zowe zos-jobs view spool-file-by-id JOB00123 4\\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-jobs view spool-file-by-id command syntax errors should occur if the jobid and spool file id are missing 1`] = `
+"
+Syntax Error:
+Missing Positional Option:
+jobid
+
+Option Description:
+The z/OS JOBID of the job containing the spool file you want to view. No
+pre-validation of the JOBID is performed.
+
+Syntax Error:
+Missing Positional Option:
+spoolfileid
+
+Option Description:
+The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
+spool-files-by-jobid\\" command to obtain spool ID numbers.No pre-validation of
+the ID is performed.
+
+Use \\"zowe zos-jobs view sfbi --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs view spool-file-by-id command syntax errors should occur if the spool file id is missing 1`] = `
+"
+Syntax Error:
+Missing Positional Option:
+spoolfileid
+
+Option Description:
+The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
+spool-files-by-jobid\\" command to obtain spool ID numbers.No pre-validation of
+the ID is performed.
+
+Use \\"zowe zos-jobs view sfbi --help\\" to view command description, usage, and options.
+"
+`;

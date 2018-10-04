@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs download output command error handling should display an error when jobid is missing 1`] = `
+"
+Syntax Error:
+Missing Positional Option:
+jobid
+
+Option Description:
+The z/OS JOBID of the job containing the spool files you want to view. No
+pre-validation of the JOBID is performed.
+
+Use \\"zowe zos-jobs download output --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs download output command help should not have changed 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   output | o
+
+ DESCRIPTION
+ -----------
+
+   Download all job output to a local directory. Each spool DD will be downloaded
+   to its own file in the directory.
+
+ USAGE
+ -----
+
+   zowe zos-jobs download output <jobid> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   jobid		 (string)
+
+      The z/OS JOBID of the job containing the spool files you want to view. No
+      pre-validation of the JOBID is performed.
+
+ OPTIONS
+ -------
+
+   --directory  | -d | --dir (string)
+
+      The local directory you would like to download the output for the job to.
+
+   --extension  | -e (string)
+
+      A file extension to save the job output with. Defaults to '.txt'.
+
+   --omit-jobid-directory  | --ojd (boolean)
+
+      If specified, job output will be saved directly to the specified directory
+      rather than creating a subdirectory named after the ID of the job.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Download all the output of the job with job ID JOB00234 to
+   an automatically generated directory.:
+
+      $ zowe zos-jobs download output JOB00234
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: output.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   output | o\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Download all job output to a local directory. Each spool DD will be downloaded\\\\n   to its own file in the directory.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs download output <jobid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job containing the spool files you want to view. No\\\\n      pre-validation of the JOBID is performed.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --directory  | -d | --dir (string)\\\\n\\\\n      The local directory you would like to download the output for the job to.\\\\n\\\\n   --extension  | -e (string)\\\\n\\\\n      A file extension to save the job output with. Defaults to '.txt'.\\\\n\\\\n   --omit-jobid-directory  | --ojd (boolean)\\\\n\\\\n      If specified, job output will be saved directly to the specified directory\\\\n      rather than creating a subdirectory named after the ID of the job.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Download all the output of the job with job ID JOB00234 to\\\\n   an automatically generated directory.:\\\\n\\\\n      $ zowe zos-jobs download output JOB00234\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   output | o\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Download all job output to a local directory. Each spool DD will be downloaded\\\\n   to its own file in the directory.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs download output <jobid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job containing the spool files you want to view. No\\\\n      pre-validation of the JOBID is performed.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --directory  | -d | --dir (string)\\\\n\\\\n      The local directory you would like to download the output for the job to.\\\\n\\\\n   --extension  | -e (string)\\\\n\\\\n      A file extension to save the job output with. Defaults to '.txt'.\\\\n\\\\n   --omit-jobid-directory  | --ojd (boolean)\\\\n\\\\n      If specified, job output will be saved directly to the specified directory\\\\n      rather than creating a subdirectory named after the ID of the job.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Download all the output of the job with job ID JOB00234 to\\\\n   an automatically generated directory.:\\\\n\\\\n      $ zowe zos-jobs download output JOB00234\\\\n\\\\n\\"
+}"
+`;

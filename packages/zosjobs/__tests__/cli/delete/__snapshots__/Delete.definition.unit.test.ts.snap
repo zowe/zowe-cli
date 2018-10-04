@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs delete definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "del",
+  ],
+  "description": "Delete a single job by job ID or delete multiple jobs in OUTPUT status. This cancels the job if it is running and purges its output from the system",
+  "name": "delete",
+  "summary": "Delete a job or jobs",
+  "type": "group",
+}
+`;

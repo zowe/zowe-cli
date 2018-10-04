@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs submit local file definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "lf",
+  ],
+  "description": "Submit a job (JCL) contained in a local file. The command presents errors verbatim from the z/OSMF Jobs REST endpoints. For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+  "examples": Array [
+    Object {
+      "description": "Submit the JCL in the file \\"iefbr14.txt\\"",
+      "options": "\\"iefbr14.txt\\"",
+    },
+  ],
+  "name": "local-file",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "vasc",
+      ],
+      "description": "View all spool content for specified job ID",
+      "name": "view-all-spool-content",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "d",
+      ],
+      "description": "The local directory you would like to download the output for the job to. Creates a subdirectory using the jobID as the name and files are titled based on DD names.",
+      "name": "directory",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "e",
+      ],
+      "description": "A file extension to save the job output with",
+      "name": "extension",
+      "type": "string",
+    },
+  ],
+  "outputFormatOptions": true,
+  "positionals": Array [
+    Object {
+      "description": "The local file containing the JCL to submit. ",
+      "name": "localFile",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Submit a job contained in a local file",
+  "type": "command",
+}
+`;

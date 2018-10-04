@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list catalog templates handler tests should be able to list catalog 1`] = `
+"z/OSMF Service Catalog templates
+[33mPublished Templates: [39m
+  [32m- [39m
+    [33mName: [39m          cics_empty_wait
+    [33mVersion: [39m       3
+    [33mOwner: [39m         nurra01
+    [33mState: [39m         published
+    [33mDescription: [39m   Provision a CICS TS V5.3 MOCKUP
+    [33mGenerated Name: [39mcics_empty_wait.3.TeaCoffeeDomain
+    [33mObject Id: [39m     cd4ad08e-3d40-4ed8-87f1-f77aae2dfef7
+
+"
+`;
+
+exports[`list catalog templates handler tests should be able to list catalog 2`] = `
+Object {
+  "psc-list": Array [
+    Object {
+      "description": "Provision a CICS TS V5.3 MOCKUP",
+      "domain-name": "TeaCoffeeDomain",
+      "generated-name": "cics_empty_wait.3.TeaCoffeeDomain",
+      "name": "cics_empty_wait",
+      "object-id": "cd4ad08e-3d40-4ed8-87f1-f77aae2dfef7",
+      "owner": "nurra01",
+      "software-name": "CICS Transaction Server for z/OS",
+      "state": "published",
+      "version": "3",
+    },
+  ],
+}
+`;

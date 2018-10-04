@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files download am command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process returns each line as-is, without translation. No delimiters are added between records.",
+    "name": "binary",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "d",
+    ],
+    "description": "The directory to where you want to save the members. The command creates the directory for you when it does not already exist. By default, the command creates a folder structure based on the data set qualifiers. For example, the data set ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).",
+    "name": "directory",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "e",
+    ],
+    "description": "Save the local files with a specified file extension. For example, .txt.",
+    "name": "extension",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "mcr",
+    ],
+    "defaultValue": 1,
+    "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to download members. Increasing the value results in faster downloads. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests. If the download process encounters an error, the following message displays:
+The maximum number of TSO address spaces were created. When you specify 0, Zowe CLI attempts to download all members at once without a maximum number of concurrent requests. ",
+    "name": "max-concurrent-requests",
+    "numericValueRange": Array [
+      0,
+      99999,
+    ],
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "vs",
+    ],
+    "description": "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
+    "name": "volume-serial",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files download am command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Download the members of the data set \\"ibmuser.loadlib\\" in binary mode to the directory \\"loadlib/\\"",
+    "options": "\\"ibmuser.loadlib\\" -b -d loadlib",
+  },
+  Object {
+    "description": "Download the members of the data set \\"ibmuser.cntl\\" in text mode to the directory \\"jcl/\\"",
+    "options": "\\"ibmuser.cntl\\" -d jcl",
+  },
+]
+`;

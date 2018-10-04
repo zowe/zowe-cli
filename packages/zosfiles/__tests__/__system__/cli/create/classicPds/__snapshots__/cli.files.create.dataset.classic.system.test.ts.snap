@@ -1,0 +1,158 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set and print attributes 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC ===============
+{
+  \\"success\\": true,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"Data set created successfully.\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set created successfully.\\"
+  }
+}"
+`;
+
+exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with specified size 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Classic Data Set Success scenarios should display create classic help 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-set-classic | classic
+
+ DESCRIPTION
+ -----------
+
+   Create classic data sets (JCL, HLASM, CBL, etc...)
+
+ USAGE
+ -----
+
+   zowe zos-files create data-set-classic <dataSetName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   dataSetName		 (string)
+
+      The name of the data set that you want to create
+
+ OPTIONS
+ -------
+
+   --block-size  | --bs (number)
+
+      The block size for the data set (for example, 6160)
+
+      Default value: 6160
+
+   --data-class  | --dc (string)
+
+      The SMS data class to use for the allocation
+
+   --data-set-type  | --dst (string)
+
+      The data set type
+
+   --device-type  | --dt (string)
+
+      The device type, also known as 'unit'
+
+   --directory-blocks  | --db (number)
+
+      The number of directory blocks (for example, 25)
+
+      Default value: 25
+
+   --management-class  | --mc (string)
+
+      The SMS management class to use for the allocation
+
+   --record-format  | --rf (string)
+
+      The record format for the data set (for example, FB for \\"Fixed Block\\")
+
+      Default value: FB
+
+   --record-length  | --rl (number)
+
+      The logical record length. Analogous to the length of a line (for example, 80)
+
+      Default value: 80
+
+   --secondary-space  | --ss (number)
+
+      The secondary space allocation (for example, 1)
+
+      Default value: 1
+
+   --show-attributes  | --pa (boolean)
+
+      Show the full allocation attributes
+
+   --size  | --sz (string)
+
+      The size of the data set (specified as nCYL or nTRK - where n is the number of
+      cylinders or tracks). Sets the primary allocation (the secondary allocation
+      becomes ~10% of the primary).
+
+      Default value: 1CYL
+
+   --storage-class  | --sc (string)
+
+      The SMS storage class to use for the allocation
+
+   --volume-serial  | --vs (string)
+
+      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
+      is analogous to a drive name on a PC.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Create an empty z/OS 'classic' PDS with default parameters:
+
+      $ zowe zos-files create data-set-classic NEW.CLASSIC.DATASET
+
+================Z/OS FILES CREATE DATA-SET-CLASSIC HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: data-set-classic.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set-classic | classic\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create classic data sets (JCL, HLASM, CBL, etc...)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create data-set-classic <dataSetName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to create\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --block-size  | --bs (number)\\\\n\\\\n      The block size for the data set (for example, 6160)\\\\n\\\\n      Default value: 6160\\\\n\\\\n   --data-class  | --dc (string)\\\\n\\\\n      The SMS data class to use for the allocation\\\\n\\\\n   --data-set-type  | --dst (string)\\\\n\\\\n      The data set type\\\\n\\\\n   --device-type  | --dt (string)\\\\n\\\\n      The device type, also known as 'unit'\\\\n\\\\n   --directory-blocks  | --db (number)\\\\n\\\\n      The number of directory blocks (for example, 25)\\\\n\\\\n      Default value: 25\\\\n\\\\n   --management-class  | --mc (string)\\\\n\\\\n      The SMS management class to use for the allocation\\\\n\\\\n   --record-format  | --rf (string)\\\\n\\\\n      The record format for the data set (for example, FB for \\\\\\"Fixed Block\\\\\\")\\\\n\\\\n      Default value: FB\\\\n\\\\n   --record-length  | --rl (number)\\\\n\\\\n      The logical record length. Analogous to the length of a line (for example, 80)\\\\n\\\\n      Default value: 80\\\\n\\\\n   --secondary-space  | --ss (number)\\\\n\\\\n      The secondary space allocation (for example, 1)\\\\n\\\\n      Default value: 1\\\\n\\\\n   --show-attributes  | --pa (boolean)\\\\n\\\\n      Show the full allocation attributes\\\\n\\\\n   --size  | --sz (string)\\\\n\\\\n      The size of the data set (specified as nCYL or nTRK - where n is the number of\\\\n      cylinders or tracks). Sets the primary allocation (the secondary allocation\\\\n      becomes ~10% of the primary).\\\\n\\\\n      Default value: 1CYL\\\\n\\\\n   --storage-class  | --sc (string)\\\\n\\\\n      The SMS storage class to use for the allocation\\\\n\\\\n   --volume-serial  | --vs (string)\\\\n\\\\n      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER\\\\n      is analogous to a drive name on a PC.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create an empty z/OS 'classic' PDS with default parameters:\\\\n\\\\n      $ zowe zos-files create data-set-classic NEW.CLASSIC.DATASET\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set-classic | classic\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create classic data sets (JCL, HLASM, CBL, etc...)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create data-set-classic <dataSetName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to create\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --block-size  | --bs (number)\\\\n\\\\n      The block size for the data set (for example, 6160)\\\\n\\\\n      Default value: 6160\\\\n\\\\n   --data-class  | --dc (string)\\\\n\\\\n      The SMS data class to use for the allocation\\\\n\\\\n   --data-set-type  | --dst (string)\\\\n\\\\n      The data set type\\\\n\\\\n   --device-type  | --dt (string)\\\\n\\\\n      The device type, also known as 'unit'\\\\n\\\\n   --directory-blocks  | --db (number)\\\\n\\\\n      The number of directory blocks (for example, 25)\\\\n\\\\n      Default value: 25\\\\n\\\\n   --management-class  | --mc (string)\\\\n\\\\n      The SMS management class to use for the allocation\\\\n\\\\n   --record-format  | --rf (string)\\\\n\\\\n      The record format for the data set (for example, FB for \\\\\\"Fixed Block\\\\\\")\\\\n\\\\n      Default value: FB\\\\n\\\\n   --record-length  | --rl (number)\\\\n\\\\n      The logical record length. Analogous to the length of a line (for example, 80)\\\\n\\\\n      Default value: 80\\\\n\\\\n   --secondary-space  | --ss (number)\\\\n\\\\n      The secondary space allocation (for example, 1)\\\\n\\\\n      Default value: 1\\\\n\\\\n   --show-attributes  | --pa (boolean)\\\\n\\\\n      Show the full allocation attributes\\\\n\\\\n   --size  | --sz (string)\\\\n\\\\n      The size of the data set (specified as nCYL or nTRK - where n is the number of\\\\n      cylinders or tracks). Sets the primary allocation (the secondary allocation\\\\n      becomes ~10% of the primary).\\\\n\\\\n      Default value: 1CYL\\\\n\\\\n   --storage-class  | --sc (string)\\\\n\\\\n      The SMS storage class to use for the allocation\\\\n\\\\n   --volume-serial  | --vs (string)\\\\n\\\\n      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER\\\\n      is analogous to a drive name on a PC.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create an empty z/OS 'classic' PDS with default parameters:\\\\n\\\\n      $ zowe zos-files create data-set-classic NEW.CLASSIC.DATASET\\\\n\\\\n\\"
+}"
+`;

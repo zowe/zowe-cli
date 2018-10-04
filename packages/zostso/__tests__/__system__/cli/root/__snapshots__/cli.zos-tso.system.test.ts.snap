@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   Issue TSO commands and interact with TSO address spaces
+
+ USAGE
+ -----
+
+   zowe zos-tso [group]
+
+ GROUPS
+ ------
+
+   issue      Issue TSO commands       
+   ping       Ping a TSO address space 
+   send       Send data to TSO         
+   start | st Start TSO/E address space
+   stop | sp  Stop TSO/E address space 
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: zos-tso.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue TSO commands and interact with TSO address spaces\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   issue      Issue TSO commands       \\\\n   ping       Ping a TSO address space \\\\n   send       Send data to TSO         \\\\n   start | st Start TSO/E address space\\\\n   stop | sp  Stop TSO/E address space \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue TSO commands and interact with TSO address spaces\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   issue      Issue TSO commands       \\\\n   ping       Ping a TSO address space \\\\n   send       Send data to TSO         \\\\n   start | st Start TSO/E address space\\\\n   stop | sp  Stop TSO/E address space \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-tso should fail with invalid option 1`] = `
+"Command Error:
+Unknown argument: not-valid-option
+Command failed due to improper syntax
+Error Details:
+Unknown argument: not-valid-option
+"
+`;
+
+exports[`zos-tso should fail with invalid parameter 1`] = `
+"Command Error:
+Unknown argument: examine
+Command failed due to improper syntax
+Error Details:
+Unknown argument: examine
+"
+`;

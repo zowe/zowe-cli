@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Invoke AMS CLI Success scenarios should display invoke and invoke ams help 1`] = `
+"================Z/OS FILES INVOKE HELP===============
+
+ DESCRIPTION
+ -----------
+
+   Invoke z/OS utilities such as Access Method Services (AMS)
+
+ USAGE
+ -----
+
+   zowe zos-files invoke [command]
+
+ COMMANDS
+ --------
+
+   ams-file | af       Invoke AMS to submit a file    
+   ams-statements | as Invoke AMS to submit statements
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+================Z/OS FILES INVOKE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: invoke.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}================Z/OS FILES INVOKE AMS-STATEMENTS HELP===========
+
+ COMMAND NAME
+ ------------
+
+   ams-statements | as
+
+ DESCRIPTION
+ -----------
+
+   Submit control statements for execution by Access Method Services (IDCAMS). You
+   can use IDCAMS to create VSAM data sets (CSI, ZFS, etc...), delete data sets,
+   and more. You must format the control statements exactly as the IDCAMS utility
+   expects. For more information about control statements, see the IBM publication
+   'z/OS DFSMS Access Method Services Commands'.
+
+ USAGE
+ -----
+
+   zowe zos-files invoke ams-statements <controlStatements> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   controlStatements		 (string)
+
+      The IDCAMS control statement that you want to submit. Zowe CLI attempts to split
+      the inline control statement at 255 characters.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Defines a cluster named 'DUMMY.VSAM.CLUSTER':
+
+      $ zowe zos-files invoke ams-statements \\"DEFINE CLUSTER ( NAME (DUMMY.VSAM.CLUSTER) CYL(1 1))\\"
+
+   - Deletes a cluster named 'DUMMY.VSAM.CLUSTER':
+
+      $ zowe zos-files invoke ams-statements \\"DELETE DUMMY.VSAM.CLUSTER CLUSTER\\"
+
+================Z/OS FILES INVOKE AMS-STATEMENTS HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: ams-statements.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   ams-statements | as\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Submit control statements for execution by Access Method Services (IDCAMS). You\\\\n   can use IDCAMS to create VSAM data sets (CSI, ZFS, etc...), delete data sets,\\\\n   and more. You must format the control statements exactly as the IDCAMS utility\\\\n   expects. For more information about control statements, see the IBM publication\\\\n   'z/OS DFSMS Access Method Services Commands'.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke ams-statements <controlStatements> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   controlStatements\\\\t\\\\t (string)\\\\n\\\\n      The IDCAMS control statement that you want to submit. Zowe CLI attempts to split\\\\n      the inline control statement at 255 characters.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Defines a cluster named 'DUMMY.VSAM.CLUSTER':\\\\n\\\\n      $ zowe zos-files invoke ams-statements \\\\\\"DEFINE CLUSTER ( NAME (DUMMY.VSAM.CLUSTER) CYL(1 1))\\\\\\"\\\\n\\\\n   - Deletes a cluster named 'DUMMY.VSAM.CLUSTER':\\\\n\\\\n      $ zowe zos-files invoke ams-statements \\\\\\"DELETE DUMMY.VSAM.CLUSTER CLUSTER\\\\\\"\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   ams-statements | as\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Submit control statements for execution by Access Method Services (IDCAMS). You\\\\n   can use IDCAMS to create VSAM data sets (CSI, ZFS, etc...), delete data sets,\\\\n   and more. You must format the control statements exactly as the IDCAMS utility\\\\n   expects. For more information about control statements, see the IBM publication\\\\n   'z/OS DFSMS Access Method Services Commands'.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke ams-statements <controlStatements> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   controlStatements\\\\t\\\\t (string)\\\\n\\\\n      The IDCAMS control statement that you want to submit. Zowe CLI attempts to split\\\\n      the inline control statement at 255 characters.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Defines a cluster named 'DUMMY.VSAM.CLUSTER':\\\\n\\\\n      $ zowe zos-files invoke ams-statements \\\\\\"DEFINE CLUSTER ( NAME (DUMMY.VSAM.CLUSTER) CYL(1 1))\\\\\\"\\\\n\\\\n   - Deletes a cluster named 'DUMMY.VSAM.CLUSTER':\\\\n\\\\n      $ zowe zos-files invoke ams-statements \\\\\\"DELETE DUMMY.VSAM.CLUSTER CLUSTER\\\\\\"\\\\n\\\\n\\"
+}"
+`;

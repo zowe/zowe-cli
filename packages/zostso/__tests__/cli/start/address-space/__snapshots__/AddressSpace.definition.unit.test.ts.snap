@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso start address-space definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "as",
+  ],
+  "description": "Start a TSO address space, from which you will receive a token (a.k.a 'servelet-key') for further address space interaction (e.g. termination).",
+  "examples": Array [
+    Object {
+      "description": "Start TSO/E address space",
+      "options": "",
+    },
+    Object {
+      "description": "Start TSO/E address space, and receive response in JSON format",
+      "options": "--rfj",
+    },
+  ],
+  "name": "address-space",
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+      "tso",
+    ],
+  },
+  "type": "command",
+}
+`;

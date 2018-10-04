@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning delete instance should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   instance | i
+
+ DESCRIPTION
+ -----------
+
+   Deletes selected deprovisioned instance.
+
+ USAGE
+ -----
+
+   zowe provisioning delete instance <name> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   name		 (string)
+
+      Deprovisioned Instance name.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Delete deprovisioned instance \\"instance1\\":
+
+      $ zowe provisioning delete instance instance1
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: instance.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   instance | i\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Deletes selected deprovisioned instance.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning delete instance <name> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Deprovisioned Instance name.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Delete deprovisioned instance \\\\\\"instance1\\\\\\":\\\\n\\\\n      $ zowe provisioning delete instance instance1\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   instance | i\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Deletes selected deprovisioned instance.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning delete instance <name> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Deprovisioned Instance name.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Delete deprovisioned instance \\\\\\"instance1\\\\\\":\\\\n\\\\n      $ zowe provisioning delete instance instance1\\\\n\\\\n\\"
+}"
+`;
+
+exports[`provisioning delete instance should successfully issue the command 1`] = `
+Object {
+  "data": Array [
+    10,
+    10,
+    10,
+  ],
+  "type": "Buffer",
+}
+`;

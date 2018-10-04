@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list instance info definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ii",
+  ],
+  "description": "List details about an instance provisioned with z/OSMF.",
+  "examples": Array [
+    Object {
+      "description": "List summary information with a list of actions for an instance with the name \\"instance1\\"",
+      "options": "instance1",
+    },
+    Object {
+      "description": "Show extended general information with actions for a provisioned instance with the name \\"instance1\\"",
+      "options": "instance1 --display extended",
+    },
+  ],
+  "name": "instance-info",
+  "options": Array [
+    Object {
+      "allowableValues": Object {
+        "caseSensitive": false,
+        "values": Array [
+          "extended",
+          "summary",
+          "vars",
+          "actions",
+          "full",
+        ],
+      },
+      "description": "Level of information to display for the provisioned instance. Possible values:
+
+summary 	- summary information, no actions or variables
+actions 	- (default) summary with actions, no variables
+vars 	- summary information with variables, no actions
+extended 	- extended information with actions
+full 	- all available information
+",
+      "name": "display",
+      "type": "string",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "Provisioned Instance Name",
+      "name": "name",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "List Provisioned Instance Details.",
+  "type": "command",
+}
+`;

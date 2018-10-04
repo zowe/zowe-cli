@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-console collect response should display error if no response-key provided 1`] = `
+"
+Syntax Error:
+Missing Positional Option:
+responsekey
+
+Option Description:
+The \\"solicited response key\\" provided in response to a previously issued console
+command. Used by the z/OSMF console API to collect any additional outstanding
+solicited responses from a previously issued console command.
+
+Use \\"zowe zos-console collect sync-responses --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-console collect response should display the help 1`] = `
+"================Z/OS COLLECT RESPONSE HELP===============
+
+ COMMAND NAME
+ ------------
+
+   sync-responses | sr
+
+ DESCRIPTION
+ -----------
+
+   The z/OSMF console REST APIs return a \\"solicited response key\\" after
+   successfully issuing a synchronous console command that produces solicited
+   responses. You can use the \\"solicited response key\\"on the \\"sync-responses\\"
+   command to collect any additional outstanding solicited responses from the
+   console the command was issued.
+
+   In general, when issuing a z/OS console command, z/OS applications route
+   responses to the originating console. The command response messages are referred
+   to as \\"solicited command responses\\" (i.e. direct responses to the command
+   issued). When issuing a z/OS console command using Zowe CLI, collection of all
+   solicited command responses is attempted by default. However, there is no z/OS
+   mechanism that indicates the total number of response messages that may be
+   produced from a given command. Therefore, the Zowe CLI console APIs return a
+   \\"solicited response key\\" that can be used to \\"follow-up\\" and collect any
+   additional solicited command responses.
+
+ USAGE
+ -----
+
+   zowe zos-console collect sync-responses <responsekey> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   responsekey		 (string)
+
+      The \\"solicited response key\\" provided in response to a previously issued console
+      command. Used by the z/OSMF console API to collect any additional outstanding
+      solicited responses from a previously issued console command. Must match regular
+      expression: ^[a-zA-Z0-9]+$
+
+ OPTIONS
+ -------
+
+   --console-name  | --cn | -c (string)
+
+      The name of the z/OS extended MCS console to direct the command. You must have
+      the required authority to access the console specified. You may also specify an
+      arbitrary name, if your installation allows dynamic creation of consoles with
+      arbitrary names.
+
+      Allowed values: ^[a-zA-Z0-9]+$
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Collect any outstanding additional solicited response
+   messages:
+
+      $ zowe zos-console collect sync-responses C4866969
+
+================Z/OS COLLECT HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: sync-responses.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   sync-responses | sr\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   The z/OSMF console REST APIs return a \\\\\\"solicited response key\\\\\\" after\\\\n   successfully issuing a synchronous console command that produces solicited\\\\n   responses. You can use the \\\\\\"solicited response key\\\\\\"on the \\\\\\"sync-responses\\\\\\"\\\\n   command to collect any additional outstanding solicited responses from the\\\\n   console the command was issued.\\\\n\\\\n   In general, when issuing a z/OS console command, z/OS applications route\\\\n   responses to the originating console. The command response messages are referred\\\\n   to as \\\\\\"solicited command responses\\\\\\" (i.e. direct responses to the command\\\\n   issued). When issuing a z/OS console command using Zowe CLI, collection of all\\\\n   solicited command responses is attempted by default. However, there is no z/OS\\\\n   mechanism that indicates the total number of response messages that may be\\\\n   produced from a given command. Therefore, the Zowe CLI console APIs return a\\\\n   \\\\\\"solicited response key\\\\\\" that can be used to \\\\\\"follow-up\\\\\\" and collect any\\\\n   additional solicited command responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console collect sync-responses <responsekey> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   responsekey\\\\t\\\\t (string)\\\\n\\\\n      The \\\\\\"solicited response key\\\\\\" provided in response to a previously issued console\\\\n      command. Used by the z/OSMF console API to collect any additional outstanding\\\\n      solicited responses from a previously issued console command. Must match regular\\\\n      expression: ^[a-zA-Z0-9]+$\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --console-name  | --cn | -c (string)\\\\n\\\\n      The name of the z/OS extended MCS console to direct the command. You must have\\\\n      the required authority to access the console specified. You may also specify an\\\\n      arbitrary name, if your installation allows dynamic creation of consoles with\\\\n      arbitrary names.\\\\n\\\\n      Allowed values: ^[a-zA-Z0-9]+$\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Collect any outstanding additional solicited response\\\\n   messages:\\\\n\\\\n      $ zowe zos-console collect sync-responses C4866969\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   sync-responses | sr\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   The z/OSMF console REST APIs return a \\\\\\"solicited response key\\\\\\" after\\\\n   successfully issuing a synchronous console command that produces solicited\\\\n   responses. You can use the \\\\\\"solicited response key\\\\\\"on the \\\\\\"sync-responses\\\\\\"\\\\n   command to collect any additional outstanding solicited responses from the\\\\n   console the command was issued.\\\\n\\\\n   In general, when issuing a z/OS console command, z/OS applications route\\\\n   responses to the originating console. The command response messages are referred\\\\n   to as \\\\\\"solicited command responses\\\\\\" (i.e. direct responses to the command\\\\n   issued). When issuing a z/OS console command using Zowe CLI, collection of all\\\\n   solicited command responses is attempted by default. However, there is no z/OS\\\\n   mechanism that indicates the total number of response messages that may be\\\\n   produced from a given command. Therefore, the Zowe CLI console APIs return a\\\\n   \\\\\\"solicited response key\\\\\\" that can be used to \\\\\\"follow-up\\\\\\" and collect any\\\\n   additional solicited command responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console collect sync-responses <responsekey> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   responsekey\\\\t\\\\t (string)\\\\n\\\\n      The \\\\\\"solicited response key\\\\\\" provided in response to a previously issued console\\\\n      command. Used by the z/OSMF console API to collect any additional outstanding\\\\n      solicited responses from a previously issued console command. Must match regular\\\\n      expression: ^[a-zA-Z0-9]+$\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --console-name  | --cn | -c (string)\\\\n\\\\n      The name of the z/OS extended MCS console to direct the command. You must have\\\\n      the required authority to access the console specified. You may also specify an\\\\n      arbitrary name, if your installation allows dynamic creation of consoles with\\\\n      arbitrary names.\\\\n\\\\n      Allowed values: ^[a-zA-Z0-9]+$\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Collect any outstanding additional solicited response\\\\n   messages:\\\\n\\\\n      $ zowe zos-console collect sync-responses C4866969\\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-console collect response should not accept wrong characters in the console name 1`] = `
+"
+Syntax Error:
+Invalid value specified for option:
+--console-name (--cn,-c)
+
+You specified:
+123@CA.COM
+
+The value must match one of the following regular expressions:
+[ '^[a-zA-Z0-9]+$' ].
+
+Use \\"zowe zos-console collect sync-responses --help\\" to view command description, usage, and options.
+"
+`;

@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning perform action should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   action | act
+
+ DESCRIPTION
+ -----------
+
+   Perform actions on instances previously provisioned with z/OSMF cloud
+   provisioning services. To view the list of provisioned instances, use the
+   \\"zowe provisioning list registry-instances\\" command. Once you have
+   obtained an instance name you can use the \\"zowe provisioning list
+   instance-info <name>\\" command to view the available instance actions.
+
+ USAGE
+ -----
+
+   zowe provisioning perform action <name> <actionname> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   name		 (string)
+
+      Provisioned Instance name.
+
+   actionname		 (string)
+
+      The action name. Use the \\"zowe provisioning list instance-info <name>\\"
+      command to view available instance actions.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Perform the \\"start\\" action on the provisioned instance
+   \\"instance1\\":
+
+      $ zowe provisioning perform action instance1 start
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: action.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   action | act\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions on instances previously provisioned with z/OSMF cloud\\\\n   provisioning services. To view the list of provisioned instances, use the\\\\n   \\\\\\"zowe provisioning list registry-instances\\\\\\" command. Once you have\\\\n   obtained an instance name you can use the \\\\\\"zowe provisioning list\\\\n   instance-info <name>\\\\\\" command to view the available instance actions.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform action <name> <actionname> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Provisioned Instance name.\\\\n\\\\n   actionname\\\\t\\\\t (string)\\\\n\\\\n      The action name. Use the \\\\\\"zowe provisioning list instance-info <name>\\\\\\"\\\\n      command to view available instance actions.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Perform the \\\\\\"start\\\\\\" action on the provisioned instance\\\\n   \\\\\\"instance1\\\\\\":\\\\n\\\\n      $ zowe provisioning perform action instance1 start\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   action | act\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions on instances previously provisioned with z/OSMF cloud\\\\n   provisioning services. To view the list of provisioned instances, use the\\\\n   \\\\\\"zowe provisioning list registry-instances\\\\\\" command. Once you have\\\\n   obtained an instance name you can use the \\\\\\"zowe provisioning list\\\\n   instance-info <name>\\\\\\" command to view the available instance actions.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform action <name> <actionname> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Provisioned Instance name.\\\\n\\\\n   actionname\\\\t\\\\t (string)\\\\n\\\\n      The action name. Use the \\\\\\"zowe provisioning list instance-info <name>\\\\\\"\\\\n      command to view available instance actions.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Perform the \\\\\\"start\\\\\\" action on the provisioned instance\\\\n   \\\\\\"instance1\\\\\\":\\\\n\\\\n      $ zowe provisioning perform action instance1 start\\\\n\\\\n\\"
+}"
+`;

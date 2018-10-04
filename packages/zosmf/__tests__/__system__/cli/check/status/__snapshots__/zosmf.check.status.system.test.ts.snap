@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zosmf check status Success scenarios should display zosmf help 1`] = `
+"================ZOSMF HELP===============
+
+ COMMAND NAME
+ ------------
+
+   status
+
+ DESCRIPTION
+ -----------
+
+   Confirm that z/OSMF is running on a system specified in your profile and gather
+   information about the z/OSMF server for diagnostic purposes. The command outputs
+   properties of the z/OSMF server such as version, hostname, and installed
+   plug-ins.
+
+ USAGE
+ -----
+
+   zowe zosmf check status [options]
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Report the status of the z/OSMF server that you specified
+   in your default z/OSMF profile:
+
+      $ zowe zosmf check status 
+
+   - Report the status of the z/OSMF server that you specified
+   in a supplied z/OSMF profile:
+
+      $ zowe zosmf check status --zosmf-profile SomeZosmfProfileName
+
+================ZOSMF VIEW INFO HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: status.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   status\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Confirm that z/OSMF is running on a system specified in your profile and gather\\\\n   information about the z/OSMF server for diagnostic purposes. The command outputs\\\\n   properties of the z/OSMF server such as version, hostname, and installed\\\\n   plug-ins.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zosmf check status [options]\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Report the status of the z/OSMF server that you specified\\\\n   in your default z/OSMF profile:\\\\n\\\\n      $ zowe zosmf check status \\\\n\\\\n   - Report the status of the z/OSMF server that you specified\\\\n   in a supplied z/OSMF profile:\\\\n\\\\n      $ zowe zosmf check status --zosmf-profile SomeZosmfProfileName\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   status\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Confirm that z/OSMF is running on a system specified in your profile and gather\\\\n   information about the z/OSMF server for diagnostic purposes. The command outputs\\\\n   properties of the z/OSMF server such as version, hostname, and installed\\\\n   plug-ins.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zosmf check status [options]\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Report the status of the z/OSMF server that you specified\\\\n   in your default z/OSMF profile:\\\\n\\\\n      $ zowe zosmf check status \\\\n\\\\n   - Report the status of the z/OSMF server that you specified\\\\n   in a supplied z/OSMF profile:\\\\n\\\\n      $ zowe zosmf check status --zosmf-profile SomeZosmfProfileName\\\\n\\\\n\\"
+}"
+`;

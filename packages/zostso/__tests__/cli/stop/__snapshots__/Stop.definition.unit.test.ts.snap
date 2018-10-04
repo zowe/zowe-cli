@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso stop group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "sp",
+  ],
+  "description": "Stop TSO/E address space",
+  "name": "stop",
+  "summary": "Stop TSO/E address space",
+  "type": "group",
+}
+`;

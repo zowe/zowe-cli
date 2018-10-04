@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs list command should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   View details of z/OS jobs on spool/JES queues.
+
+ USAGE
+ -----
+
+   zowe zos-jobs view [command]
+
+ COMMANDS
+ --------
+
+   job-status-by-jobid | jsbj View status details of a z/OS job
+   spool-file-by-id | sfbi    View a spool file from a z/OS job
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: view.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View details of z/OS jobs on spool/JES queues.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   job-status-by-jobid | jsbj View status details of a z/OS job\\\\n   spool-file-by-id | sfbi    View a spool file from a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View details of z/OS jobs on spool/JES queues.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   job-status-by-jobid | jsbj View status details of a z/OS job\\\\n   spool-file-by-id | sfbi    View a spool file from a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;

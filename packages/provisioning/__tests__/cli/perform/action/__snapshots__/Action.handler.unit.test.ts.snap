@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provision template handler tests should be able to provision template 1`] = `
+"
+
+"
+`;
+
+exports[`provision template handler tests should be able to provision template 2`] = `Object {}`;

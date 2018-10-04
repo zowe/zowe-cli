@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning provision template command definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "tem",
+  ],
+  "description": "Using z/OSMF cloud provisioning services, provision available templates.
+You can view available templates using the zowe provisioning list catalog-templates command.",
+  "examples": Array [
+    Object {
+      "description": "Provision a published software service template.",
+      "options": "template1",
+    },
+  ],
+  "name": "template",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "p",
+      ],
+      "description": "A sequence of string enclosed \\"name=value\\" pairs of prompt variables.
+e.g: \\"CSQ_MQ_SSID=ZCT1,CSQ_CMD_PFX=!ZCT1\\".",
+      "name": "properties",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "pf",
+      ],
+      "description": "Path to .yml file containing properties.",
+      "name": "properties-file",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "dn",
+      ],
+      "description": "Required if the user has consumer authorization to more than one domain with this template name.",
+      "name": "domain-name",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "tn",
+      ],
+      "description": "Required if the user has consumer authorization to more than one tenant in the same domain that contains this template name.",
+      "name": "tenant-name",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "udi",
+      ],
+      "description": "ID for the user data specified with user-data. Passed into the software services registry.",
+      "name": "user-data-id",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ud",
+      ],
+      "description": "User data that is passed into the software services registry. Can be specified only if user-data-id is provided.",
+      "name": "user-data",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ai",
+      ],
+      "description": "Account information to use in the JCL JOB statement. The default is the account information that is associated with the resource pool for the tenant.",
+      "name": "account-info",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "snn",
+      ],
+      "description": "Each string is the nickname of the system upon which to provision the software service defined by the template. The field is required if the resource pool associated with the tenant used for this operation is not set up to automatically select a system. Only one nickname is allowed.If the field is provided it is validated.
+e.g: \\"SYSNAME1,SYSNAME2\\".",
+      "name": "system-nick-names",
+      "type": "string",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "The name of a z/OSMF cloud provisioning template.",
+      "name": "name",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Provision a published software service template.",
+  "type": "command",
+}
+`;

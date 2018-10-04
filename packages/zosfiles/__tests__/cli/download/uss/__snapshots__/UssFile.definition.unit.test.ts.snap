@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files download uss-file command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process returns each line as-is, without translation. No delimiters are added between records.",
+    "name": "binary",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "f",
+    ],
+    "description": "The path to the local file where you want to download the content. When you omit the option, the command generates a file name automatically for you.",
+    "name": "file",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files download uss-file command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Download the file \\"/a/ibmuser/my_text.txt\\" to ./my_text.txt",
+    "options": "\\"/a/ibmuser/my_text.txt\\" -f ./my_text.txt",
+  },
+  Object {
+    "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" in binary mode",
+    "options": "\\"/a/ibmuser/MyJava.class\\" -b -f \\"java/MyJava.class\\"",
+  },
+]
+`;

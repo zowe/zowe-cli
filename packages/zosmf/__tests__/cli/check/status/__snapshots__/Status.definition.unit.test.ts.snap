@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zossmf check status definition should not have changed 1`] = `
+Object {
+  "description": "Confirm that z/OSMF is running on a system specified in your profile and gather information about the z/OSMF server for diagnostic purposes. The command outputs properties of the z/OSMF server such as version, hostname, and installed plug-ins.",
+  "examples": Array [
+    Object {
+      "description": "Report the status of the z/OSMF server that you specified in your default z/OSMF profile",
+      "options": "",
+    },
+    Object {
+      "description": "Report the status of the z/OSMF server that you specified in a supplied z/OSMF profile",
+      "options": "--zosmf-profile SomeZosmfProfileName",
+    },
+  ],
+  "name": "status",
+  "options": Array [],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;

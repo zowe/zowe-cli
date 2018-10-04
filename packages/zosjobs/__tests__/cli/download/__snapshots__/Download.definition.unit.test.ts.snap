@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs download definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "dl",
+  ],
+  "description": "Download the output of a job as separate files.",
+  "name": "download",
+  "summary": "Download job output",
+  "type": "group",
+}
+`;

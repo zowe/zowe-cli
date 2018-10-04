@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download USS File Success scenarios should display download uss file help 1`] = `
+"================Z/OS FILES DOWNLOAD USS FILE HELP===============
+
+ COMMAND NAME
+ ------------
+
+   uss-file | uf
+
+ DESCRIPTION
+ -----------
+
+   Download content from a USS file to a local file on your PC
+
+ USAGE
+ -----
+
+   zowe zos-files download uss-file <ussFileName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   ussFileName		 (string)
+
+      The name of the USS file you want to download
+
+ OPTIONS
+ -------
+
+   --binary  | -b (boolean)
+
+      Download the file content in binary mode, which means that no data conversion is
+      performed. The data transfer process returns each line as-is, without
+      translation. No delimiters are added between records.
+
+   --file  | -f (string)
+
+      The path to the local file where you want to download the content. When you omit
+      the option, the command generates a file name automatically for you.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Download the file \\"/a/ibmuser/my_text.txt\\" to
+   ./my_text.txt:
+
+      $ zowe zos-files download uss-file \\"/a/ibmuser/my_text.txt\\" -f ./my_text.txt
+
+   - Download the file \\"/a/ibmuser/MyJava.class\\" to
+   \\"java/MyJava.class\\" in binary mode:
+
+      $ zowe zos-files download uss-file \\"/a/ibmuser/MyJava.class\\" -b -f \\"java/MyJava.class\\"
+
+================Z/OS FILES DOWNLOAD USS FILE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: uss-file.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   uss-file | uf\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Download content from a USS file to a local file on your PC\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files download uss-file <ussFileName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   ussFileName\\\\t\\\\t (string)\\\\n\\\\n      The name of the USS file you want to download\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --binary  | -b (boolean)\\\\n\\\\n      Download the file content in binary mode, which means that no data conversion is\\\\n      performed. The data transfer process returns each line as-is, without\\\\n      translation. No delimiters are added between records.\\\\n\\\\n   --file  | -f (string)\\\\n\\\\n      The path to the local file where you want to download the content. When you omit\\\\n      the option, the command generates a file name automatically for you.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Download the file \\\\\\"/a/ibmuser/my_text.txt\\\\\\" to\\\\n   ./my_text.txt:\\\\n\\\\n      $ zowe zos-files download uss-file \\\\\\"/a/ibmuser/my_text.txt\\\\\\" -f ./my_text.txt\\\\n\\\\n   - Download the file \\\\\\"/a/ibmuser/MyJava.class\\\\\\" to\\\\n   \\\\\\"java/MyJava.class\\\\\\" in binary mode:\\\\n\\\\n      $ zowe zos-files download uss-file \\\\\\"/a/ibmuser/MyJava.class\\\\\\" -b -f \\\\\\"java/MyJava.class\\\\\\"\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   uss-file | uf\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Download content from a USS file to a local file on your PC\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files download uss-file <ussFileName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   ussFileName\\\\t\\\\t (string)\\\\n\\\\n      The name of the USS file you want to download\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --binary  | -b (boolean)\\\\n\\\\n      Download the file content in binary mode, which means that no data conversion is\\\\n      performed. The data transfer process returns each line as-is, without\\\\n      translation. No delimiters are added between records.\\\\n\\\\n   --file  | -f (string)\\\\n\\\\n      The path to the local file where you want to download the content. When you omit\\\\n      the option, the command generates a file name automatically for you.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Download the file \\\\\\"/a/ibmuser/my_text.txt\\\\\\" to\\\\n   ./my_text.txt:\\\\n\\\\n      $ zowe zos-files download uss-file \\\\\\"/a/ibmuser/my_text.txt\\\\\\" -f ./my_text.txt\\\\n\\\\n   - Download the file \\\\\\"/a/ibmuser/MyJava.class\\\\\\" to\\\\n   \\\\\\"java/MyJava.class\\\\\\" in binary mode:\\\\n\\\\n      $ zowe zos-files download uss-file \\\\\\"/a/ibmuser/MyJava.class\\\\\\" -b -f \\\\\\"java/MyJava.class\\\\\\"\\\\n\\\\n\\"
+}"
+`;

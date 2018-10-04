@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "tso",
+  ],
+  "description": "Issue TSO commands and interact with TSO address spaces",
+  "name": "zos-tso",
+  "type": "group",
+}
+`;

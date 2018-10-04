@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list catalog-templates should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   catalog-templates | ct
+
+ DESCRIPTION
+ -----------
+
+   Lists the z/OSMF service catalog published templates.
+
+ USAGE
+ -----
+
+   zowe provisioning list catalog-templates [options]
+
+ OPTIONS
+ -------
+
+   --all-info  | --ai (boolean)
+
+      Display information about published z/OSMF service catalog templates (summary
+      information is printed by default).
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - List all published templates in the z/OSMF service catalog
+   (with full detail):
+
+      $ zowe provisioning list catalog-templates --all-info
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: catalog-templates.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   catalog-templates | ct\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Lists the z/OSMF service catalog published templates.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning list catalog-templates [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --all-info  | --ai (boolean)\\\\n\\\\n      Display information about published z/OSMF service catalog templates (summary\\\\n      information is printed by default).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - List all published templates in the z/OSMF service catalog\\\\n   (with full detail):\\\\n\\\\n      $ zowe provisioning list catalog-templates --all-info\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   catalog-templates | ct\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Lists the z/OSMF service catalog published templates.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning list catalog-templates [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --all-info  | --ai (boolean)\\\\n\\\\n      Display information about published z/OSMF service catalog templates (summary\\\\n      information is printed by default).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - List all published templates in the z/OSMF service catalog\\\\n   (with full detail):\\\\n\\\\n      $ zowe provisioning list catalog-templates --all-info\\\\n\\\\n\\"
+}"
+`;

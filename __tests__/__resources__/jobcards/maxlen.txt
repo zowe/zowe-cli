@@ -1,0 +1,3 @@
+//EHAUTOJ JOB (***REMOVED***),'EHAUTO filler space to hit max line length ',
+//             CLASS=A,MSGCLASS=X,
+//             NOTIFY=&SYSUID

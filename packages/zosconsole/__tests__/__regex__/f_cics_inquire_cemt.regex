@@ -1,0 +1,1 @@
+.*\+(.|\n)*Transaction\(CEMT\)(.|\n)*\+ Taskdatakey\(.*\)(.|\n)*\+ Indoubtmins\(.*\)(.|\n)*\+ Changeagrel\(.*\)(.|\n)*RESPONSE: NORMAL TIME:(.|\n)*SYSID=.*APPLID=[.\n]*

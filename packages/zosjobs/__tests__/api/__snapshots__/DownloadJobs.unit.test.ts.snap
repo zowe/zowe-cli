@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DownloadJobs Download destination tests should generate a file path for a job file including procstep and jobname. Job ID included. Custom output dir 1`] = `"customDir/JOB0001/PROC1/STEP1/JESJCL.txt"`;
+
+exports[`DownloadJobs Download destination tests should generate a file path for a job file with no procstep, but including a stepname. Job ID omitted. Custom output dir 1`] = `"customDir/STEP1/JESJCL.txt"`;
+
+exports[`DownloadJobs Download destination tests should generate a file path for a job file with no procstep, no stepname. Job ID included. Default output dir 1`] = `"./output/JOB0001/JESJCL.txt"`;
+
+exports[`DownloadJobs Download destination tests should generate a file path for a job file with no procstep, no stepname. Job ID omitted. Default output dir 1`] = `"./output/JESJCL.txt"`;

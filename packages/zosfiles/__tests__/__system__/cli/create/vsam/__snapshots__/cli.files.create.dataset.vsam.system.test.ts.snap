@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create VSAM Data Set Help scenarios should display create data-set-vsam help 1`] = `
+"================Z/OS FILES CREATE DATA-SET-VSAM HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-set-vsam | vsam
+
+ DESCRIPTION
+ -----------
+
+   Create a VSAM cluster
+
+ USAGE
+ -----
+
+   zowe zos-files create data-set-vsam <dataSetName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   dataSetName		 (string)
+
+      The name of the dataset in which to create a VSAM cluster
+
+ OPTIONS
+ -------
+
+   --data-class  | --dc (string)
+
+      The SMS data class to use for the allocation
+
+   --data-set-organization  | --dso (string)
+
+      The data set organization.
+
+      Default value: INDEXED
+      Allowed values: INDEXED, IXD, LINEAR, LIN, NONINDEXED, NIXD, NUMBERED, NUMD, ZFS
+
+   --management-class  | --mc (string)
+
+      The SMS management class to use for the allocation
+
+   --retain-for  | --rf (number)
+
+      The number of days that the VSAM cluster will be retained on the system. You can
+      delete the cluster at any time when neither retain-for nor retain-to is
+      specified.
+
+   --retain-to  | --rt (string)
+
+      The earliest date that a command without the PURGE parameter can delete an
+      entry. Specify the expiration date in the form yyyyddd, where yyyy is a
+      four-digit year (maximum value: 2155) and ddd is the three-digit day of the year
+      from 001 through 365 (for non-leap years) or 366 (for leap years). You can
+      delete the cluster at any time when neither retain-for nor retain-to is used.
+      You cannot specify both the 'retain-to' and 'retain-for' options.
+
+   --secondary-space  | --ss (number)
+
+      The number of items for the secondary space allocation (for example, 840). The
+      type of item allocated is the same as the type used for the '--size' option. If
+      you do not specify a secondary allocation, a value of ~10% of the primary
+      allocation is used.
+
+   --show-attributes  | --pa (boolean)
+
+      Show the full allocation attributes
+
+   --size  | --sz (string)
+
+      The primary size to allocate for the VSAM cluster. Specify size as the number of
+      items to allocate (nItems). You specify the type of item by keyword.
+
+      Default value: 840KB
+
+   --storage-class  | --sc (string)
+
+      The SMS storage class to use for the allocation
+
+   --volumes  | -v (string)
+
+      The storage volumes on which to allocate a VSAM cluster. Specify a single volume
+      by its volume serial (VOLSER). To specify more than one volume, enclose the
+      option in double-quotes and separate each VOLSER with a space. You must specify
+      the volumes option when your cluster is not SMS-managed.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Create a VSAM data set named \\"SOME.DATA.SET.NAME\\" using
+   default values of INDEXED, 840 KB primary storage and 84 KB secondary storage:
+
+      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME
+
+   - Create a 5 MB LINEAR VSAM data set named
+   \\"SOME.DATA.SET.NAME\\" with 1 MB of secondary space. Show the properties of the
+   data set when it is created:
+
+      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes
+
+   - Create a VSAM data set named \\"SOME.DATA.SET.NAME\\", which is
+   retained for 100 days:
+
+      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --retain-for 100 
+
+================Z/OS FILES CREATE DATA-SET-VSAM HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: data-set-vsam.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set-vsam | vsam\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create a VSAM cluster\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create data-set-vsam <dataSetName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the dataset in which to create a VSAM cluster\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --data-class  | --dc (string)\\\\n\\\\n      The SMS data class to use for the allocation\\\\n\\\\n   --data-set-organization  | --dso (string)\\\\n\\\\n      The data set organization.\\\\n\\\\n      Default value: INDEXED\\\\n      Allowed values: INDEXED, IXD, LINEAR, LIN, NONINDEXED, NIXD, NUMBERED, NUMD, ZFS\\\\n\\\\n   --management-class  | --mc (string)\\\\n\\\\n      The SMS management class to use for the allocation\\\\n\\\\n   --retain-for  | --rf (number)\\\\n\\\\n      The number of days that the VSAM cluster will be retained on the system. You can\\\\n      delete the cluster at any time when neither retain-for nor retain-to is\\\\n      specified.\\\\n\\\\n   --retain-to  | --rt (string)\\\\n\\\\n      The earliest date that a command without the PURGE parameter can delete an\\\\n      entry. Specify the expiration date in the form yyyyddd, where yyyy is a\\\\n      four-digit year (maximum value: 2155) and ddd is the three-digit day of the year\\\\n      from 001 through 365 (for non-leap years) or 366 (for leap years). You can\\\\n      delete the cluster at any time when neither retain-for nor retain-to is used.\\\\n      You cannot specify both the 'retain-to' and 'retain-for' options.\\\\n\\\\n   --secondary-space  | --ss (number)\\\\n\\\\n      The number of items for the secondary space allocation (for example, 840). The\\\\n      type of item allocated is the same as the type used for the '--size' option. If\\\\n      you do not specify a secondary allocation, a value of ~10% of the primary\\\\n      allocation is used.\\\\n\\\\n   --show-attributes  | --pa (boolean)\\\\n\\\\n      Show the full allocation attributes\\\\n\\\\n   --size  | --sz (string)\\\\n\\\\n      The primary size to allocate for the VSAM cluster. Specify size as the number of\\\\n      items to allocate (nItems). You specify the type of item by keyword.\\\\n\\\\n      Default value: 840KB\\\\n\\\\n   --storage-class  | --sc (string)\\\\n\\\\n      The SMS storage class to use for the allocation\\\\n\\\\n   --volumes  | -v (string)\\\\n\\\\n      The storage volumes on which to allocate a VSAM cluster. Specify a single volume\\\\n      by its volume serial (VOLSER). To specify more than one volume, enclose the\\\\n      option in double-quotes and separate each VOLSER with a space. You must specify\\\\n      the volumes option when your cluster is not SMS-managed.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create a VSAM data set named \\\\\\"SOME.DATA.SET.NAME\\\\\\" using\\\\n   default values of INDEXED, 840 KB primary storage and 84 KB secondary storage:\\\\n\\\\n      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME\\\\n\\\\n   - Create a 5 MB LINEAR VSAM data set named\\\\n   \\\\\\"SOME.DATA.SET.NAME\\\\\\" with 1 MB of secondary space. Show the properties of the\\\\n   data set when it is created:\\\\n\\\\n      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes\\\\n\\\\n   - Create a VSAM data set named \\\\\\"SOME.DATA.SET.NAME\\\\\\", which is\\\\n   retained for 100 days:\\\\n\\\\n      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --retain-for 100 \\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set-vsam | vsam\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create a VSAM cluster\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create data-set-vsam <dataSetName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the dataset in which to create a VSAM cluster\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --data-class  | --dc (string)\\\\n\\\\n      The SMS data class to use for the allocation\\\\n\\\\n   --data-set-organization  | --dso (string)\\\\n\\\\n      The data set organization.\\\\n\\\\n      Default value: INDEXED\\\\n      Allowed values: INDEXED, IXD, LINEAR, LIN, NONINDEXED, NIXD, NUMBERED, NUMD, ZFS\\\\n\\\\n   --management-class  | --mc (string)\\\\n\\\\n      The SMS management class to use for the allocation\\\\n\\\\n   --retain-for  | --rf (number)\\\\n\\\\n      The number of days that the VSAM cluster will be retained on the system. You can\\\\n      delete the cluster at any time when neither retain-for nor retain-to is\\\\n      specified.\\\\n\\\\n   --retain-to  | --rt (string)\\\\n\\\\n      The earliest date that a command without the PURGE parameter can delete an\\\\n      entry. Specify the expiration date in the form yyyyddd, where yyyy is a\\\\n      four-digit year (maximum value: 2155) and ddd is the three-digit day of the year\\\\n      from 001 through 365 (for non-leap years) or 366 (for leap years). You can\\\\n      delete the cluster at any time when neither retain-for nor retain-to is used.\\\\n      You cannot specify both the 'retain-to' and 'retain-for' options.\\\\n\\\\n   --secondary-space  | --ss (number)\\\\n\\\\n      The number of items for the secondary space allocation (for example, 840). The\\\\n      type of item allocated is the same as the type used for the '--size' option. If\\\\n      you do not specify a secondary allocation, a value of ~10% of the primary\\\\n      allocation is used.\\\\n\\\\n   --show-attributes  | --pa (boolean)\\\\n\\\\n      Show the full allocation attributes\\\\n\\\\n   --size  | --sz (string)\\\\n\\\\n      The primary size to allocate for the VSAM cluster. Specify size as the number of\\\\n      items to allocate (nItems). You specify the type of item by keyword.\\\\n\\\\n      Default value: 840KB\\\\n\\\\n   --storage-class  | --sc (string)\\\\n\\\\n      The SMS storage class to use for the allocation\\\\n\\\\n   --volumes  | -v (string)\\\\n\\\\n      The storage volumes on which to allocate a VSAM cluster. Specify a single volume\\\\n      by its volume serial (VOLSER). To specify more than one volume, enclose the\\\\n      option in double-quotes and separate each VOLSER with a space. You must specify\\\\n      the volumes option when your cluster is not SMS-managed.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create a VSAM data set named \\\\\\"SOME.DATA.SET.NAME\\\\\\" using\\\\n   default values of INDEXED, 840 KB primary storage and 84 KB secondary storage:\\\\n\\\\n      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME\\\\n\\\\n   - Create a 5 MB LINEAR VSAM data set named\\\\n   \\\\\\"SOME.DATA.SET.NAME\\\\\\" with 1 MB of secondary space. Show the properties of the\\\\n   data set when it is created:\\\\n\\\\n      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes\\\\n\\\\n   - Create a VSAM data set named \\\\\\"SOME.DATA.SET.NAME\\\\\\", which is\\\\n   retained for 100 days:\\\\n\\\\n      $ zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --retain-for 100 \\\\n\\\\n\\"
+}"
+`;
