@@ -29,7 +29,7 @@ Segment | Definition Type | Description
 `zowe zos-files download data-set "HLQ.LLQ"`
 
 ### Command Definition Document
-Zowe CLI is built using the Imperative CLI Framework. For details on defining & creating commands see the [Imperative CLI Framework wiki](**REMOVED**). For details on the definition document see the [`ICommandDefinition` interface within the Imperative CLI Framework] (**REMOVED**).
+Zowe CLI is built using the Imperative CLI Framework. For details on defining & creating commands see the [Imperative CLI Framework wiki](https://github.com/zowe/imperative/wiki). For details on the definition document see the [`ICommandDefinition` interface within the Imperative CLI Framework](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/ICommandDefinition.ts).
 
 ### General Command Guidelines
 - Keep `[options]` (flags, switches, positional parms) to a minimum. Split into multiple commands (`[object]`) if the options become cumbersome. 
