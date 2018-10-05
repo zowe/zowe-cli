@@ -2,17 +2,23 @@
 This document is intended to be a living summary of conventions and best practices for development within Zowe CLI or development of Zowe CLI plug-ins. 
 
 ## Contents
-- [More Resources](#more-resources)
-- [Project Layout](#project-layout)
-- [Packages](#packages)
-- [Plug-ins](#plug-ins)
-- [Code Standards](#code-standards)
-- [Pull Requests](#pull-requests)
-- [Contributing to Zowe CLI Core Functionality](#contributing-to-zowe-cli-core-functionality)
-- [General Conventions](#general-conventions)
-- [Programmatic APIs](#programmatic-apis)
-- [Zowe CLI Conventions](#zowe-cli-conventions)
-- [Build Process](#build-process)
+- [Contribution Guidelines](#contribution-guidelines)
+  - [Contents](#contents)
+  - [More Resources](#more-resources)
+  - [Project Layout](#project-layout)
+  - [Packages](#packages)
+  - [Plug-ins](#plug-ins)
+  - [Code Standards](#code-standards)
+  - [Pull Requests](#pull-requests)
+  - [Contributing to Zowe CLI Core Functionality](#contributing-to-zowe-cli-core-functionality)
+  - [General Conventions](#general-conventions)
+  - [Programmatic APIs](#programmatic-apis)
+    - [Source File Naming Standards](#source-file-naming-standards)
+    - [Testing Guidelines](#testing-guidelines)
+    - [Profile Guidelines](#profile-guidelines)
+    - [JS Documentation](#js-documentation)
+  - [Zowe CLI Conventions](#zowe-cli-conventions)
+  - [Build Process](#build-process)
 
 ## More Resources
 | For more information about ... | See: |

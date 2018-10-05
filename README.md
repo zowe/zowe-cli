@@ -13,7 +13,10 @@ Zowe CLI is a command-line interface that lets application developers interact w
  - [Run System Tests](#run-system-tests)
 
 ## Documentation
-For more information about how to install, configure, and use CA Brightside, see Zowe CLI 
+
+
+For more information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://zowe.github.io/docs-site/). The documentation also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins. 
+
 After you install the Zowe CLI package, navigate to the local `node_modules` directory that contains the installed package and access the `docs` directory. The `docs` directory contains the markdown files from this repo as well as an auto-generated typescript documentation page under the `docs/typedoc` directory.
 
 **Note:** Some links in the auto-generated typescript documentation are not functional at this time.
@@ -28,11 +31,11 @@ The following information is critical to working with the code, running/writing/
 | Conventions and best practices for creating packages and plug-ins for Zowe CLI | [Package and Plug-in Guidelines](./docs/PackagesAndPluginGuidelines.md)|
 | Guidelines for running tests on Zowe CLI | [Testing Guidelines](./docs/TESTING.md) |
 | Guidelines for running tests on the plug-ins that you build| [Plug-in Testing Guidelines](./docs/PluginTESTINGGuidelines.md) |
-| Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/gizafoundation/imperative/wiki) |
-Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](https://github.com/gizafoundation/brightside/master/MaintainerVersioning.md) |
+| Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
+Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](.docs/MaintainerVersioning.md) |
 
 
-**Tip:** Visit our [Sample Plug-in repository](https://github.com/gizafoundation/brightside-sample-plugin) and follow the tutorials to develop your first plug-in! 
+**Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/guides/intro.html). 
 
 ## Build Zowe CLI from Source
 The first time that you download Zowe CLI from the GitHub repository, issue the following command:
