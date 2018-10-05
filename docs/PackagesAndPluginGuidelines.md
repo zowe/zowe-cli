@@ -5,7 +5,7 @@ Packages are contributions bundled directly with the base Zowe CLI. It is the co
 
 Plug-ins are essentially identical to packages. However, you create and maintain plug-ins outside of the Zowe CLI code base and install them using the plug-in manager.
 
-Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/gizafoundation/brightside-sample-plugin) as a code base.
+Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zowe/zowe-cli-sample-plugin) as a code base.
 
 ## Contents
 - [Plug-in Repositories](#plug-in-repositories)
