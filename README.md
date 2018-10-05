@@ -35,7 +35,7 @@ The following information is critical to working with the code, running/writing/
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](.docs/MaintainerVersioning.md) |
 
 
-**Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/guides/intro.html). 
+**Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/guides/cli-devTutorials). 
 
 ## Build Zowe CLI from Source
 The first time that you download Zowe CLI from the GitHub repository, issue the following command:
