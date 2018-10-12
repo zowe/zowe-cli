@@ -1,10 +1,33 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] - 2018-09-24
+
+## [2.0.0] prerelease -2018-10-12
+
+## BREAKING CHANGES 
+
+### Changed 
+
+Zowe CLI no longer uses keytar to securely store credentials in your operating system's credential vault by default. 
+User names and passwords stored in `zosmf` profiles and other profile types are now stored in plain text by default.
+If you update from a previous version of the CLI where credentials are stored securely, you will need to update or re-create your profiles.
+If your previous version is below 2.0.0, you will first need to follow the steps in the previous changelog entry below to migrate your profiles from 
+`~/.brightside` to `~/.zowe`.  
+
+After your profiles are in `~/.zowe`, you can issue `zowe profiles list zosmf` to list your existing profiles. You can then update each one for compatibility with 
+the credential storage changes by issuing a command with the following syntax: 
+
+`zowe profiles update zosmf <profilename> -u <username> -p <password>`
+
+If you would prefer not to move your profiles from `~/.brightside` to `~/.zowe`, you can recreate your profiles from scratch instead using the `zowe profiles create zosmf` command.
+
+In the future, plugins will be available that allow you to opt in to secure storage of credentials similar to the previous default behavior. 
+
+## [2.0.0] prerelease - 2018-09-24
 
 ## BREAKING CHANGES
 ### Changed
+
 Two breaking changes were made in order to accommodate the donation of this repository to the Zowe Organization:
 
  - 	The home directory for Zowe CLI, which contains the Zowe CLI logs, profiles, and plug-ins, was changed from `~/.brightside` to `~/.zowe`. The character “~” denotes your home directory on your computer, which is typically `C:/Users/<yourUserId>` on Windows operating systems. When you update CA Brightside and issue `zowe` commands, the profiles that you created previously will not be available.  
@@ -30,7 +53,7 @@ Two breaking changes were made in order to accommodate the donation of this repo
 - `zowe zos-jobs submit local-file` command: submit a job contained in a local file on your PC rather than a data set
 - `zowe zos-jobs download output`  command: download the complete spool output for a job to a local directory on your PC.
 - `--view-all-spool-content` option was added to the `zos-jobs submit data-set` and `zos-jobs submit local-file` commands. This allows you to submit a job and view its complete spool output in one command. 
-
+  
 ## [1.0.5] 
 
 ### Fixed 
