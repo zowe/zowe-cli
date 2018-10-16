@@ -1,13 +1,43 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] - 2018-09-24
+
+## [2.0.0] prerelease -2018-10-8
+
+## BREAKING CHANGES 
+
+### Changed 
+
+You will be impacted by the following change when you update your version of Zowe CLI on or after October 8, 2018:
+
+Zowe CLI no longer uses keytar to store credentials securely in your operating system's credential vault. The user names and passwords that are stored in zosmf profiles and other profile types are now stored in plain text. 
+When you update from a previous version of Zowe CLI, where credentials are stored securely, you must update, or optionally, re-create your profiles.
+
+**Important**! Use the following steps only if you were using an older version of Zowe CLI and updated to version 2.0.0 on or after October 8, 2018.
+
+Follow these steps:
+
+1. Follow the steps that are described in the 2018-09-24 section to migrate your profiles from ~/.brightside to ~/.zowe.
+
+2. After you migrate your profiles, issue the following command to list your existing profiles.
+
+`zowe profiles list zosmf`
+
+3. Update each profile for compatibility with the credential storage changes by issuing the following command:
+
+`zowe profiles update zosmf <profilename> -u <username> -p <password>`
+
+4. (Optional) If you do not want to migrate your profiles from ~/.brightside to ~/.zowe, you can recreate your profiles using the following command:
+
+`zowe profiles create zosmf` (Use `--help` to see examples and options)
+## [2.0.0] prerelease - 2018-09-24
 
 ## BREAKING CHANGES
 ### Changed
+
 Two breaking changes were made in order to accommodate the donation of this repository to the Zowe Organization:
 
- - 	The home directory for Zowe CLI, which contains the Zowe CLI logs, profiles, and plug-ins, was changed from `~/.brightside` to `~/.zowe`. The character “~” denotes your home directory on your computer, which is typically `C:/Users/<yourUserId>` on Windows operating systems. When you update CA Brightside and issue `zowe` commands, the profiles that you created previously will not be available.  
+ - 	The home directory for Zowe CLI, which contains the Zowe CLI logs, profiles, and plug-ins, was changed from `~/.brightside` to `~/.zowe`. The character “~” denotes your home directory on your computer, which is typically `C:/Users/<yourUserId>` on Windows operating systems. When you update Zowe CLI and issue `zowe` commands, the profiles that you created previously will not be available.  
    
    To correct this behavior and migrate from an older version of Zowe CLI 2.0.0 or greater, complete the following steps: 
    
@@ -30,7 +60,7 @@ Two breaking changes were made in order to accommodate the donation of this repo
 - `zowe zos-jobs submit local-file` command: submit a job contained in a local file on your PC rather than a data set
 - `zowe zos-jobs download output`  command: download the complete spool output for a job to a local directory on your PC.
 - `--view-all-spool-content` option was added to the `zos-jobs submit data-set` and `zos-jobs submit local-file` commands. This allows you to submit a job and view its complete spool output in one command. 
-
+  
 ## [1.0.5] 
 
 ### Fixed 
