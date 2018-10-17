@@ -9,8 +9,9 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
 import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../../../zosconsole";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handle to collect a MVS console command response
@@ -18,26 +19,16 @@ import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../../../
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    public async processWithSession(commandParameters: IHandlerParameters) {
 
-        const profile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
         const collectParms: ICollectParms = {
             commandResponseKey: commandParameters.arguments.responsekey,
             consoleName: commandParameters.arguments["console-name"],
         };
 
-        const response: IConsoleResponse = await CollectCommand.collect(session, collectParms);
+        const response: IConsoleResponse = await CollectCommand.collect(this.mSession, collectParms);
 
         // Print out the response
         commandParameters.response.console.log(response.commandResponse);

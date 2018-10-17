@@ -9,9 +9,10 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { ICollectParms, IConsoleResponse, IIssueParms, IssueCommand } from "../../../../../zosconsole";
 import { isNullOrUndefined } from "util";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handle to issue a MVS console command
@@ -19,21 +20,12 @@ import { isNullOrUndefined } from "util";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    public async processWithSession(commandParameters: IHandlerParameters) {
 
         let response: IConsoleResponse;
-        const profile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
+
         const issueParms: IIssueParms = {
             command: commandParameters.arguments.commandtext,
             consoleName: commandParameters.arguments["console-name"],
@@ -43,7 +35,7 @@ export default class Handler implements ICommandHandler {
         };
 
         if (isNullOrUndefined(commandParameters.arguments["wait-to-collect"])) {
-            response = await IssueCommand.issue(session, issueParms);
+            response = await IssueCommand.issue(this.mSession, issueParms);
         } else {
             const collectParms: ICollectParms = {
                 commandResponseKey: "",
@@ -51,7 +43,7 @@ export default class Handler implements ICommandHandler {
                 waitToCollect: commandParameters.arguments["wait-to-collect"],
                 followUpAttempts: commandParameters.arguments["follow-up-attempts"],
             };
-            response = await IssueCommand.issueAndCollect(session, issueParms, collectParms);
+            response = await IssueCommand.issueAndCollect(this.mSession, issueParms, collectParms);
         }
 
         // Print out the response
@@ -66,7 +58,7 @@ export default class Handler implements ICommandHandler {
                     responseKey: response.lastResponseKey,
                     cmdResponseUrl: response.cmdResponseUrl || undefined,
                     keywordDetected: response.keywordDetected ||
-                    ((!isNullOrUndefined(commandParameters.arguments["solicited-keyword"])) ? false : undefined),
+                        ((!isNullOrUndefined(commandParameters.arguments["solicited-keyword"])) ? false : undefined),
                 };
                 commandParameters.response.console.log("Additional details:");
                 commandParameters.response.console.log("-------------------");

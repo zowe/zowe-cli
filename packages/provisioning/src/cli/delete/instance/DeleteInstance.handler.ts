@@ -12,32 +12,21 @@
 import { isNullOrUndefined } from "util";
 import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
 import { IProvisionedInstance, ListRegistryInstances, DeleteInstance, ProvisioningConstants } from "../../../../../provisioning";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    public async processWithSession(commandParameters: IHandlerParameters) {
 
-
-        const zosmfProfile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: zosmfProfile.host,
-            port: zosmfProfile.port,
-            user: zosmfProfile.user,
-            password: zosmfProfile.pass,
-            base64EncodedAuth: zosmfProfile.auth,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized
-        });
-
-        const registry = await ListRegistryInstances.listFilteredRegistry(session, ProvisioningConstants.ZOSMF_VERSION, null,
+        const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);
         const instances: IProvisionedInstance[] = registry["scr-list"];
         if (isNullOrUndefined(instances)) {
             commandParameters.response.console.error("No instance with name " + commandParameters.arguments.name + " was found");
         } else if (instances.length === 1) {
             const id = instances.pop()["object-id"];
-            const response = await DeleteInstance.deleteDeprovisionedInstance( session, ProvisioningConstants.ZOSMF_VERSION, id);
+            const response = await DeleteInstance.deleteDeprovisionedInstance( this.mSession, ProvisioningConstants.ZOSMF_VERSION, id);
             commandParameters.response.console.log(`The instance was successfully deleted`);
             commandParameters.response.data.setObj(response);
         } else if (instances.length > 1) {

@@ -11,8 +11,9 @@
 
 import { isNullOrUndefined } from "util";
 import { ListInstanceVariables } from "../../../api/ListInstanceVariables";
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
 import { IProvisionedInstance, IProvisionedInstanceVariable, ListRegistryInstances, ProvisioningConstants } from "../../../../../provisioning";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 
 /**
@@ -21,22 +22,11 @@ import { IProvisionedInstance, IProvisionedInstanceVariable, ListRegistryInstanc
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class InstanceVariablesHandler implements ICommandHandler {
+export default class InstanceVariablesHandler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
+    public async processWithSession(commandParameters: IHandlerParameters) {
 
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
-
-        const registry = await ListRegistryInstances.listFilteredRegistry(session, ProvisioningConstants.ZOSMF_VERSION, null,
+        const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);
         const instances: IProvisionedInstance[] = registry["scr-list"];
         if (isNullOrUndefined(instances)) {
@@ -44,7 +34,7 @@ export default class InstanceVariablesHandler implements ICommandHandler {
         } else if (instances.length === 1) {
             const id = instances.pop()["object-id"];
             const variables: IProvisionedInstanceVariable[] = (await ListInstanceVariables.listVariablesCommon(
-                session, ProvisioningConstants.ZOSMF_VERSION, id)).variables;
+                this.mSession, ProvisioningConstants.ZOSMF_VERSION, id)).variables;
             commandParameters.response.format.output({
                 fields: ["name", "value", "visibility", "update-registry"],
                 output: variables,

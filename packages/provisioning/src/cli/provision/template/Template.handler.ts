@@ -10,28 +10,25 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
-import { explainProvisionTemplateResponse, IProvisionOptionals, IProvisionTemplateResponse,
-        ProvisioningConstants, ProvisionPublishedTemplate, ProvisioningService } from "../../../../../provisioning";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import {
+    explainProvisionTemplateResponse,
+    IProvisionOptionals,
+    IProvisionTemplateResponse,
+    ProvisioningConstants,
+    ProvisioningService,
+    ProvisionPublishedTemplate
+} from "../../../../../provisioning";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    public async processWithSession(commandParameters: IHandlerParameters) {
 
         let response: IProvisionTemplateResponse;
         let usedOptionalParms: boolean = false;
         let arrayOfSystemNickNames: string[];
 
-        const zosmfProfile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: zosmfProfile.host,
-            port: zosmfProfile.port,
-            user: zosmfProfile.user,
-            password: zosmfProfile.pass,
-            base64EncodedAuth: zosmfProfile.auth,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized
-        });
         if (!isNullOrUndefined(commandParameters.arguments.systemNickNames)) {
             arrayOfSystemNickNames = commandParameters.arguments.systemNickNames.split(",").map((systemName: string) => {
                 return systemName.trim();
@@ -56,10 +53,10 @@ export default class Handler implements ICommandHandler {
         }
 
         if (usedOptionalParms) {
-            response = await ProvisionPublishedTemplate.provisionTemplate(session, ProvisioningConstants.ZOSMF_VERSION,
+            response = await ProvisionPublishedTemplate.provisionTemplate(this.mSession, ProvisioningConstants.ZOSMF_VERSION,
                 commandParameters.arguments.name, provisionOptionalParams);
         } else {
-            response = await ProvisionPublishedTemplate.provisionTemplate(session, ProvisioningConstants.ZOSMF_VERSION,
+            response = await ProvisionPublishedTemplate.provisionTemplate(this.mSession, ProvisioningConstants.ZOSMF_VERSION,
                 commandParameters.arguments.name);
         }
 
