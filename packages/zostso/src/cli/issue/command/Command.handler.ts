@@ -9,9 +9,11 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters, Session, IProfile } from "@brightside/imperative";
 import { IIssueResponse, ISendResponse, IssueTso, SendTso } from "../../../../../zostso";
 import { IStartTsoParms } from "../../../../index";
+import { ZosmfSession } from "../../../../../zosmf";
+import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
 /**
  * Handler to issue command to TSO address space
@@ -19,29 +21,24 @@ import { IStartTsoParms } from "../../../../index";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosTsoBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
-        const tsoProfile: IStartTsoParms = commandParameters.profiles.get("tso") as IStartTsoParms;
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
-        const response: IIssueResponse = await IssueTso.issueTsoCommand(session, tsoProfile.account,
-            commandParameters.arguments.commandText,
-            tsoProfile);
+    // Process the command and produce the TSO response
+    public async processWithSession(params: IHandlerParameters) {
 
-        if (!commandParameters.arguments.suppressStartupMessages) {
-            commandParameters.response.console.log(response.startResponse.messages);
+        // Issue the TSO command
+        const response: IIssueResponse = await IssueTso.issueTsoCommand(
+            this.mSession,
+            params.arguments.account,
+            params.arguments.commandText,
+            this.mTsoStart);
+
+        // If requested, suppress the startup
+        if (!params.arguments.suppressStartupMessages) {
+            this.console.log(response.startResponse.messages);
         }
-        commandParameters.response.console.log(response.commandResponse);
+        this.console.log(response.commandResponse);
         // Return as an object when using --response-format-json
-        commandParameters.response.data.setObj(response);
+        this.data.setObj(response);
     }
 }

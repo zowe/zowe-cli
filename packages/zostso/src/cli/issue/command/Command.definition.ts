@@ -21,7 +21,7 @@ export const CommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Command.handler",
     profile: {
-        required: ["zosmf", "tso"],
+        optional: ["zosmf", "tso"],
     },
     positionals: [
         {
