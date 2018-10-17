@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../ZosmfSession";
+import { ZosmfSession } from "../../../ZosmfSession";
 
 export const StatusDefinition: ICommandDefinition = {
     name: "status",
@@ -22,32 +22,7 @@ export const StatusDefinition: ICommandDefinition = {
     profile: {
         required: ["zosmf"],
     },
-    options: [
-        {
-            name: "host",
-            aliases: ["H"],
-            description: "The z/OSMF server host name.",
-            type: "string",
-            required: true,
-            group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-        },
-        {
-            name: "port",
-            aliases: ["P"],
-            description: "The z/OSMF server port.",
-            type: "number",
-            defaultValue: 443,
-            group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-        },
-        {
-            name: "reject-unauthorized",
-            aliases: ["ru"],
-            description: "Reject self-signed certificates.",
-            type: "boolean",
-            defaultValue: true,
-            group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-        },
-    ],
+    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: "Report the status of the z/OSMF server that you specified " +
@@ -61,7 +36,7 @@ export const StatusDefinition: ICommandDefinition = {
         },
         {
             description: "Report the status of the z/OSMF server that you specified manually via command line",
-            options: "--host myhost --port 443"
+            options: "--host myhost --port 443 --user myuser --pass mypass"
         },
     ]
 };

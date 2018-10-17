@@ -17,7 +17,7 @@ import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-file
 import * as SpoolFileByIdHandler from "../../../../src/cli/view/spool-file-by-id/SpoolFileById.handler";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
-import { ZosmfSession } from "../../../../../zosmf/ZosmfSession";
+import { ZosmfSession } from "../../../../../zosmf/src/ZosmfSession";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
