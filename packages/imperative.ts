@@ -12,6 +12,7 @@
 // WIP Imperative version of Brightside
 import { IImperativeConfig } from "@brightside/imperative";
 import { Constants } from "./Constants";
+import { ZosmfSession } from "./zosmf";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -34,55 +35,25 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: {
-                            name: "host",
-                            aliases: ["H"],
-                            description: "The z/OSMF server host name.",
-                            type: "string",
-                            required: true,
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST,
                     },
                     port: {
                         type: "number",
-                        optionDefinition: {
-                            name: "port",
-                            aliases: ["P"],
-                            description: "The z/OSMF server port.",
-                            type: "number",
-                            defaultValue: 443,
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT,
                     },
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: {
-                            name: "user",
-                            aliases: ["u"],
-                            description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
-                            type: "string",
-                            implies: ["password"],
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER,
                     },
                     pass: {
                         type: "string",
                         secure: true,
-                        optionDefinition: {
-                            name: "pass",
-                            aliases: ["p"],
-                            description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
-                            type: "string",
-                            implies: ["user"],
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASS,
                     },
                     rejectUnauthorized: {
                         type: "boolean",
-                        optionDefinition: {
-                            name: "reject-unauthorized",
-                            aliases: ["ru"],
-                            description: "Reject self-signed certificates.",
-                            type: "boolean",
-                            defaultValue: true,
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
                     },
                 },
                 required: ["host"],
@@ -95,7 +66,7 @@ const config: IImperativeConfig = {
                 {
                     options: "zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
-                    "and allow self-signed certificates"
+                        "and allow self-signed certificates"
                 }
             ]
         },
@@ -185,7 +156,7 @@ const config: IImperativeConfig = {
                 },
                 {
                     description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
-                    "JES accounting information of '1234'",
+                        "JES accounting information of '1234'",
                     options: "largeregion -a 1234 --rs 8192"
                 }
             ]
