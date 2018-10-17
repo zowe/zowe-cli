@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const JobDefinition: ICommandDefinition = {
     name: "job",
@@ -30,6 +31,7 @@ export const JobDefinition: ICommandDefinition = {
             required: true
         },
     ],
+    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: "Delete job with job ID JOB03456.",

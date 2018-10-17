@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@brightside/imperative";
 import { join } from "path";
 
 import i18nTypings from "../../-strings-/en";
+import { ZosmfSession } from "../../../../../zosmf";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).INVOKE.ACTIONS.AMS;
@@ -39,7 +40,7 @@ export const AmsFileDefinition: ICommandDefinition = {
             required: true
         },
     ],
-    options: [],
+    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: strings.FILE_CMD.EXAMPLES.EX1,

@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 import { Constants } from "../../../../../Constants";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const SpoolFileByIdDefinition: ICommandDefinition = {
     name: "spool-file-by-id",
@@ -41,6 +42,7 @@ export const SpoolFileByIdDefinition: ICommandDefinition = {
             required: true
         }
     ],
+    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: "View the spool file with ID 4 for the job with job ID JOB00123",

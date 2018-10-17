@@ -14,6 +14,7 @@ import { CreateDefaults } from "../../../api/methods/create";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 
 import i18nTypings from "../../-strings-/en";
+import { ZosmfSession } from "../../../../../zosmf";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).CREATE;
@@ -56,7 +57,7 @@ export const BinaryPDSDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
         ZosFilesCreateExtraOptions.showAttributes,
-    ].sort((a, b) => a.name.localeCompare(b.name)),
+    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_BINARY.EXAMPLES.EX1,

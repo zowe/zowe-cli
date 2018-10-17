@@ -67,7 +67,7 @@ const config: IImperativeConfig = {
                         type: "string",
                         secure: true,
                         optionDefinition: {
-                            name: "password",
+                            name: "pass",
                             aliases: ["p"],
                             description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
                             type: "string",
@@ -81,7 +81,7 @@ const config: IImperativeConfig = {
                             aliases: ["ru"],
                             description: "Reject self-signed certificates.",
                             type: "boolean",
-                            defaultValue: "true",
+                            defaultValue: true,
                         },
                     },
                 },

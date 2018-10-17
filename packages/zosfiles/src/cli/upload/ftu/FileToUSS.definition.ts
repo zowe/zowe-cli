@@ -14,6 +14,7 @@ import { ICommandDefinition } from "@brightside/imperative";
 import { UploadOptions } from "../Upload.options";
 
 import i18nTypings from "../../-strings-/en";
+import { ZosmfSession } from "../../../../../zosmf";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).UPLOAD.ACTIONS.FILE_TO_USS;
@@ -47,7 +48,7 @@ export const FileToUSSDefinition: ICommandDefinition = {
     ],
     options: [
         UploadOptions.binary,
-    ],
+    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
     examples: [
         {
             description: strings.EXAMPLES.EX1,
