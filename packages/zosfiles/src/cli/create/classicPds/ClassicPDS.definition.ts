@@ -57,7 +57,7 @@ export const ClassicPDSDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
         ZosFilesCreateExtraOptions.showAttributes,
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
+    ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_CLASSIC.EXAMPLES.EX1,

@@ -62,7 +62,7 @@ export const VsamDefinition: ICommandDefinition = {
             type: "boolean",
             defaultValue: false
         }
-    ] as ICommandOptionDefinition[]).concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
+    ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.EXAMPLES.EX1,

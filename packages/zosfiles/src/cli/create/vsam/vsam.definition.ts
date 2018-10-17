@@ -74,7 +74,7 @@ export const VsamDefinition: ICommandDefinition = {
         vsamRetainFor,
         VsamCreateOptions.retainTo,
         ZosFilesCreateExtraOptions.showAttributes,
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
+    ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: vsamStrings.EXAMPLES.DEFAULT_VALUES,

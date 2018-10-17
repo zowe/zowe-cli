@@ -33,7 +33,6 @@ export const JobStatusByJobidDefinition: ICommandDefinition = {
             required: true
         }
     ],
-    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples:
         [
             {

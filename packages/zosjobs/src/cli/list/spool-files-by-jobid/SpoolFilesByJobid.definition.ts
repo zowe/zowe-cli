@@ -33,7 +33,6 @@ export const SpoolFilesByJobidDefinition: ICommandDefinition = {
             required: true
         }
     ],
-    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     outputFormatOptions: true,
     examples: [
         {

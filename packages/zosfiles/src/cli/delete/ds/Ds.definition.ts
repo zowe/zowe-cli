@@ -55,7 +55,7 @@ export const DsDefinition: ICommandDefinition = {
             description: strings.OPTIONS.VOLUME,
             type: "string"
         },
-    ] as ICommandOptionDefinition[]).concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
+    ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.EXAMPLES.EX1,

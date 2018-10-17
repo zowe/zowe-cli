@@ -45,7 +45,7 @@ export const DatasetDefinition: ICommandDefinition = {
         DownloadOptions.file,
         DownloadOptions.extension,
         DownloadOptions.binary
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
+    ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.EXAMPLES.EX1,

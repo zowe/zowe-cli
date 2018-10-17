@@ -40,7 +40,6 @@ export const AmsStatementsDefinition: ICommandDefinition = {
             required: true
         },
     ],
-    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: strings.STATEMENTS_CMD.EXAMPLES.EX1,

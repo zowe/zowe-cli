@@ -9,8 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandOptionDefinition, IProfile, Logger, Session } from "@brightside/imperative";
-import { ICommandArguments } from "@brightside/imperative";
+import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session } from "@brightside/imperative";
 
 /**
  * Utility Methods for Brightside
@@ -67,6 +66,9 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
+    /**
+     * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF
+     */
     public static ZOSMF_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
         name: "reject-unauthorized",
         aliases: ["ru"],

@@ -58,7 +58,7 @@ export const DataSetDefinition: ICommandDefinition = {
             implies: ["directory"],
             type: "string"
         }
-    ] as ICommandOptionDefinition[]).concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ] as ICommandOptionDefinition[]),
     profile: {
         required: ["zosmf"]
     },
