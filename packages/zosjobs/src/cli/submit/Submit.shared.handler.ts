@@ -27,14 +27,6 @@ import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
  * @implements {ICommandHandler}
  */
 export default class SharedSubmitHandler extends ZosmfBaseHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
 
     /**
      * Command handler process - invoked by the command processor to handle the "zos-jobs submit data-set"
@@ -44,9 +36,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
         // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-        const parms: ISubmitParms = {
+         const parms: ISubmitParms = {
             jclSource: undefined,
             viewAllSpoolContent: this.mArguments.viewAllSpoolContent,
             directory: this.mArguments.directory,

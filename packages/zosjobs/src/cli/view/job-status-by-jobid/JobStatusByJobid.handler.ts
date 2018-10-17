@@ -22,14 +22,6 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  * @implements {ICommandHandler}
  */
 export default class JobStatusByJobidHandler extends ZosmfBaseHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
 
     /**
      * Command handler process - invoked by the command processor to handle the "zos-jobs view job-status-by-jobid"
@@ -38,10 +30,6 @@ export default class JobStatusByJobidHandler extends ZosmfBaseHandler {
      * @memberof SubmitDataSetHandler
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, this.mArguments.jobid);

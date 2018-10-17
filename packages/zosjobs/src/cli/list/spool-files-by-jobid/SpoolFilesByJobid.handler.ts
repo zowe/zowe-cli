@@ -9,8 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
+import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { IJobFile } from "../../../..";
@@ -23,15 +22,6 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  * @implements {ICommandHandler}
  */
 export default class SpoolFilesHandler extends ZosmfBaseHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
-
     /**
      * The z/OSMF profile for this command
      * @private
@@ -55,9 +45,7 @@ export default class SpoolFilesHandler extends ZosmfBaseHandler {
      * @memberof SubmitDataSetHandler
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
+
         this.arguments = params.arguments;
 
         // First obtain the details for the job (to acquire JOBNAME), then get the list of output spool files
