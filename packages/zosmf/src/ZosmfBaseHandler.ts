@@ -42,7 +42,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * @returns {Promise<void>}
      */
     public async process(commandParameters: IHandlerParameters) {
-        this.mZosmfProfile = commandParameters.profiles.get("zosmf");
+        this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
         this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
         this.mArguments = commandParameters.arguments;
         await this.processWithSession(commandParameters);
