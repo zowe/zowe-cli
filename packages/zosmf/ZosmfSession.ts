@@ -10,7 +10,7 @@
 */
 
 import { ICommandOptionDefinition, IProfile, Logger, Session } from "@brightside/imperative";
-import { ICommandArguments } from "@brightside/imperative/lib/cmd/src/doc/args/ICommandArguments";
+import { ICommandArguments } from "@brightside/imperative";
 
 /**
  * Utility Methods for Brightside
@@ -43,6 +43,39 @@ export class ZosmfSession {
         defaultValue: 443,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
+
+    /**
+     * Option used in profile creation and commands for username / ID  for z/OSMF
+     */
+    public static ZOSMF_OPTION_USER: ICommandOptionDefinition = {
+        name: "user",
+        aliases: ["u"],
+        description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
+        type: "string",
+        required: true,
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for password/passphrase for z/OSMF
+     */
+    public static ZOSMF_OPTION_PASS: ICommandOptionDefinition = {
+        name: "pass",
+        aliases: ["p"],
+        description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
+        type: "string",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
+        name: "reject-unauthorized",
+        aliases: ["ru"],
+        description: "Reject self-signed certificates.",
+        type: "boolean",
+        defaultValue: true,
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
     /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
@@ -50,29 +83,9 @@ export class ZosmfSession {
     public static ZOSMF_CONNECTION_OPTIONS: ICommandOptionDefinition[] = [
         ZosmfSession.ZOSMF_OPTION_HOST,
         ZosmfSession.ZOSMF_OPTION_PORT,
-        {
-            name: "user",
-            aliases: ["u"],
-            description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
-            type: "string",
-            implies: ["pass"],
-            group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-        },
-        {
-            name: "pass",
-            aliases: ["p"],
-            description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
-            type: "string",
-            group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-        },
-        {
-            name: "reject-unauthorized",
-            aliases: ["ru"],
-            description: "Reject self-signed certificates.",
-            type: "boolean",
-            defaultValue: true,
-            group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-        },
+        ZosmfSession.ZOSMF_OPTION_USER,
+        ZosmfSession.ZOSMF_OPTION_PASS,
+        ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED
     ];
 
 
