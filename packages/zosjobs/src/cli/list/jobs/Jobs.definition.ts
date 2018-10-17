@@ -41,7 +41,7 @@ export const JobsDefinition: ICommandDefinition = {
                 "which is usually in the form \"JOB*\".",
             type: "string"
         }
-    ] as ICommandOptionDefinition[]).concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ] as ICommandOptionDefinition[]),
     profile: {
         required: ["zosmf"]
     },

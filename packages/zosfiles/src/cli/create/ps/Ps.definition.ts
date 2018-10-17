@@ -56,7 +56,7 @@ export const PsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateExtraOptions.showAttributes,
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS).sort((a, b) => a.name.localeCompare(b.name)),
+    ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_SEQUENTIAL.EXAMPLES.EX1,

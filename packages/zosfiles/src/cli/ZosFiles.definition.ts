@@ -16,6 +16,7 @@ import { InvokeDefinition } from "./invoke/Invoke.definition";
 import { DownloadDefinition } from "./download/Download.definition";
 import { ListDefinition } from "./list/List.definition";
 import { UploadDefinition } from "./upload/Upload.definition";
+import { ZosmfSession } from "../../../zosmf";
 
 /**
  * This object defines the top level command group for zosfiles. This is not
@@ -36,6 +37,16 @@ const definition: ICommandDefinition = {
         DownloadDefinition,
         ListDefinition,
         UploadDefinition
+    ],
+    passOn: [
+        {
+            property: "options",
+            value: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+            merge: true,
+            ignoreNodes: [
+                {type: "group"}
+            ]
+        }
     ]
 };
 

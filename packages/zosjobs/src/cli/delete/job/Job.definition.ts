@@ -31,7 +31,6 @@ export const JobDefinition: ICommandDefinition = {
             required: true
         },
     ],
-    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: "Delete job with job ID JOB03456.",

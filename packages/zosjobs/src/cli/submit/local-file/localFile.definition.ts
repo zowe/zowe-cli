@@ -46,7 +46,7 @@ export const LocalFileDefinition: ICommandDefinition = {
             description: "A file extension to save the job output with",
             type: "string"
         },
-    ]as ICommandOptionDefinition[]).concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ]as ICommandOptionDefinition[]),
     profile: {
         required: ["zosmf"]
     },

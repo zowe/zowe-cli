@@ -52,7 +52,7 @@ export const OutputDefinition: ICommandDefinition = {
                 "directory rather than creating a subdirectory named after the ID of the job.",
             type: "boolean",
         },
-    ] as ICommandOptionDefinition[]).concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ] as ICommandOptionDefinition[]),
     examples: [
         {
             description: "Download all the output of the job with job ID JOB00234 to an automatically generated directory.",

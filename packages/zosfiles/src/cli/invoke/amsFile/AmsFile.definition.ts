@@ -40,7 +40,6 @@ export const AmsFileDefinition: ICommandDefinition = {
             required: true
         },
     ],
-    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: strings.FILE_CMD.EXAMPLES.EX1,

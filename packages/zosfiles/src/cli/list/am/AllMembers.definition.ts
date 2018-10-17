@@ -43,7 +43,7 @@ export const AllMembersDefinition: ICommandDefinition = {
     options: [
         ListOptions.attributes,
         ListOptions.maxLength
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ],
     examples: [
         {
             description: strings.EXAMPLES.EX1,

@@ -48,7 +48,7 @@ export const FileToUSSDefinition: ICommandDefinition = {
     ],
     options: [
         UploadOptions.binary,
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ],
     examples: [
         {
             description: strings.EXAMPLES.EX1,

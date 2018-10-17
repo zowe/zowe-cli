@@ -15,6 +15,7 @@ import { ViewDefinition } from "./view/View.definition";
 import { ListDefinition } from "./list/List.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { DownloadDefinition } from "./download/Download.definition";
+import { ZosmfSession } from "../../../zosmf";
 
 export const definition: ICommandDefinition = {
     name: "zos-jobs",
@@ -28,6 +29,16 @@ export const definition: ICommandDefinition = {
         ViewDefinition,
         ListDefinition,
         DeleteDefinition,
+    ],
+    passOn: [
+        {
+            property: "options",
+            value: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+            merge: true,
+            ignoreNodes: [
+                {type: "group"}
+            ]
+        }
     ]
 };
 

@@ -44,7 +44,7 @@ export const DataSetDefinition: ICommandDefinition = {
     options: [
         ListOptions.attributes,
         ListOptions.maxLength
-    ].concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+    ],
     examples: [
         {
             description: strings.EXAMPLES.EX1,
