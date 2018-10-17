@@ -15,6 +15,8 @@ import { SendCommand } from "./send/Send.definition";
 import { StopCommand } from "./stop/Stop.definition";
 import { PingCommand } from "./ping/Ping.definition";
 import { IssueCommand } from "./issue/Issue.definition";
+import { TSO_PROFILE_OPTIONS } from "./constants/ZosTso.constants";
+import { ZosmfSession } from "../../../zosmf";
 
 export const definition: ICommandDefinition = {
     name: "zos-tso",
@@ -24,6 +26,16 @@ export const definition: ICommandDefinition = {
     children: [
         SendCommand, StartCommand, PingCommand, StopCommand, IssueCommand
     ],
+    passOn: [{
+        property: "options",
+        value: TSO_PROFILE_OPTIONS.concat(ZosmfSession.ZOSMF_CONNECTION_OPTIONS),
+        merge: true,
+        ignoreNodes: [
+            {
+                type: "group"
+            }
+        ]
+    }]
 };
 
 module.exports = definition;
