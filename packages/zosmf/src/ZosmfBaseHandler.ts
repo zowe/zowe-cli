@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
-import { ZosmfSession } from "./index";
+import { ZosmfSession } from "../index";
 
 
 

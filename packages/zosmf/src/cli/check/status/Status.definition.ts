@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../ZosmfSession";
+import { ZosmfSession } from "../../../ZosmfSession";
 
 export const StatusDefinition: ICommandDefinition = {
     name: "status",
