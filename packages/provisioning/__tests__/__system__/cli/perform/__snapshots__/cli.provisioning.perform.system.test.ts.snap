@@ -22,7 +22,7 @@ exports[`provisioning perform should display the help 1`] = `
 
    --response-format-json  | --rfj (boolean)
 
-      Produce the command response as a JSON document
+      Produce JSON formatted data from a command
 
    --help  | -h (boolean)
 
@@ -31,8 +31,8 @@ exports[`provisioning perform should display the help 1`] = `
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: perform.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions against instances provisioned with z/OSMF.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   action | act Perform instance actions.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions against instances provisioned with z/OSMF.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   action | act Perform instance actions.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions against instances provisioned with z/OSMF.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   action | act Perform instance actions.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions against instances provisioned with z/OSMF.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   action | act Perform instance actions.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
 }"
 `;

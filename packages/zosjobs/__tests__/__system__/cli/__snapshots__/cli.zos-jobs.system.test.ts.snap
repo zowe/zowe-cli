@@ -26,7 +26,7 @@ exports[`zos-jobs command should display the help 1`] = `
 
    --response-format-json  | --rfj (boolean)
 
-      Produce the command response as a JSON document
+      Produce JSON formatted data from a command
 
    --help  | -h (boolean)
 
@@ -35,8 +35,8 @@ exports[`zos-jobs command should display the help 1`] = `
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: zos-jobs.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   delete | del  Delete a job or jobs      \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   delete | del  Delete a job or jobs      \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   delete | del  Delete a job or jobs      \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   delete | del  Delete a job or jobs      \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
 }"
 `;
