@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters, Session, IProfile } from "@brightside/imperative";
 import { IIssueResponse, ISendResponse, IssueTso, SendTso } from "../../../../../zostso";
 import { IStartTsoParms } from "../../../../index";
 
@@ -24,15 +24,16 @@ export default class Handler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         const profile = commandParameters.profiles.get("zosmf");
         const tsoProfile: IStartTsoParms = commandParameters.profiles.get("tso") as IStartTsoParms;
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
+        // const session = new Session({
+        //     type: "basic",
+        //     hostname: profile.host,
+        //     port: profile.port,
+        //     user: profile.user,
+        //     password: profile.pass,
+        //     base64EncodedAuth: profile.auth,
+        //     rejectUnauthorized: profile.rejectUnauthorized,
+        // });
+        const session = new Session(commandParameters.arguments as any);
         const response: IIssueResponse = await IssueTso.issueTsoCommand(session, tsoProfile.account,
             commandParameters.arguments.commandText,
             tsoProfile);
