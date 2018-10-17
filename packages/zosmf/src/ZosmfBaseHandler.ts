@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { AbstractSession, ICommandArguments, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
 import { ZosmfSession } from "../index";
 
 /**
@@ -29,6 +29,11 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     protected mZosmfProfile: IProfile;
 
     /**
+     * Command line arguments passed
+     */
+    protected mArguments: ICommandArguments;
+
+    /**
      * This will grab the arguments and create a session before calling the subclass
      * {@link ZosmfBaseHandler#processWithSession} method.
      *
@@ -39,6 +44,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         this.mZosmfProfile = commandParameters.profiles.get("zosmf");
         this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+        this.mArguments = commandParameters.arguments;
         await this.processWithSession(commandParameters);
     }
 
