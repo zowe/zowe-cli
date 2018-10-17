@@ -33,7 +33,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         const profile = commandParameters.profiles.get("zosmf");
-        const session = ZosmfSession.createBasicZosmfSession(profile);
+        const session = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
 
         const response = await this.processWithSession(commandParameters, session, profile);
 
