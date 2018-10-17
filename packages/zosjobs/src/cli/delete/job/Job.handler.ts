@@ -21,15 +21,6 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class JobHandler extends ZosmfBaseHandler {
     /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
      * Command line arguments passed
      * @private
      * @type {*}
@@ -44,9 +35,6 @@ export default class JobHandler extends ZosmfBaseHandler {
      * @memberof JobHandler
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
         this.arguments = params.arguments;
 
         // Force yargs `jobid` parameter to be a string

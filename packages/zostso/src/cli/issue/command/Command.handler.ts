@@ -13,6 +13,7 @@ import { ICommandHandler, IHandlerParameters, Session, IProfile } from "@brights
 import { IIssueResponse, ISendResponse, IssueTso, SendTso } from "../../../../../zostso";
 import { IStartTsoParms } from "../../../../index";
 import { ZosmfSession } from "../../../../../zosmf";
+import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
 /**
  * Handler to issue command to TSO address space
@@ -20,20 +21,24 @@ import { ZosmfSession } from "../../../../../zosmf";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosTsoBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const session = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
-        // TODO: need to replace the arguments with the correct mapping object
-        const response: IIssueResponse = await IssueTso.issueTsoCommand(session, commandParameters.arguments.account,
-            commandParameters.arguments.commandText,
-            commandParameters.arguments as any);
+    // Process the command and produce the TSO response
+    public async processWithSession(params: IHandlerParameters) {
 
-        if (!commandParameters.arguments.suppressStartupMessages) {
-            commandParameters.response.console.log(response.startResponse.messages);
+        // Issue the TSO command
+        const response: IIssueResponse = await IssueTso.issueTsoCommand(
+            this.mSession,
+            params.arguments.account,
+            params.arguments.commandText,
+            this.mTsoStart);
+
+        // If requested, suppress the startup
+        if (!params.arguments.suppressStartupMessages) {
+            this.console.log(response.startResponse.messages);
         }
-        commandParameters.response.console.log(response.commandResponse);
+        this.console.log(response.commandResponse);
         // Return as an object when using --response-format-json
-        commandParameters.response.data.setObj(response);
+        this.data.setObj(response);
     }
 }

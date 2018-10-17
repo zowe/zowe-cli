@@ -9,7 +9,19 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ICommandArguments, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
+import {
+    AbstractSession,
+    ICommandArguments,
+    ICommandHandler,
+    IHandlerParameters,
+    IProfile,
+    IHandlerResponseConsoleApi,
+    IHandlerFormatOutputApi,
+    IHandlerResponseDataApi,
+    IHandlerProgressApi,
+    IImperativeError,
+    ImperativeError
+} from "@brightside/imperative";
 import { ZosmfSession } from "../index";
 
 /**
@@ -34,6 +46,11 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     protected mArguments: ICommandArguments;
 
     /**
+     * Full set of command handler parameters from imperative
+     */
+    protected mHandlerParams: IHandlerParameters;
+
+    /**
      * This will grab the arguments and create a session before calling the subclass
      * {@link ZosmfBaseHandler#processWithSession} method.
      *
@@ -42,10 +59,51 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * @returns {Promise<void>}
      */
     public async process(commandParameters: IHandlerParameters) {
-        this.mZosmfProfile = commandParameters.profiles.get("zosmf");
+        this.mHandlerParams = commandParameters;
+        this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
         this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
         this.mArguments = commandParameters.arguments;
         await this.processWithSession(commandParameters);
+    }
+
+    /**
+     * Fail the command with an imperative error
+     * @param {IImperativeError} err - the imperative error parameters
+     */
+    public fail(err: IImperativeError) {
+        throw new ImperativeError(err);
+    }
+
+    /**
+     * Returns the console interface for the command handler
+     * @returns {IHandlerResponseConsoleApi}
+     */
+    public get console(): IHandlerResponseConsoleApi {
+        return this.mHandlerParams.response.console;
+    }
+
+    /**
+     * Returns the format interface for the command handler
+     * @returns {IHandlerFormatOutputApi}
+     */
+    public get format(): IHandlerFormatOutputApi {
+        return this.mHandlerParams.response.format;
+    }
+
+    /**
+     * Returns the format interface for the command handler
+     * @returns {IHandlerResponseDataApi}
+     */
+    public get data(): IHandlerResponseDataApi {
+        return this.mHandlerParams.response.data;
+    }
+
+    /**
+     * Returns the format interface for the command handler
+     * @returns {IHandlerProgressApi}
+     */
+    public get progress(): IHandlerProgressApi {
+        return this.mHandlerParams.response.progress;
     }
 
     /**

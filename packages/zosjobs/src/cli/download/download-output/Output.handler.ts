@@ -21,25 +21,12 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class OutputHandler extends ZosmfBaseHandler {
     /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof OutputHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
      * Command handler process - invoked by the command processor to handle the "zos-jobs download output"
      * @param {IHandlerParameters} params - Command handler parameters
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof OutputHandler
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-
         const response: any = {};
         const jobid: string = this.mArguments.jobid + "";
         const outDir: string = this.mArguments.directory;

@@ -23,15 +23,6 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class JobsHandler extends ZosmfBaseHandler {
     /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
      * Handler for the "zos-jobs list jobs" command. Produces a tabular list of jobs on spool based on
      * the input parameters.
      * @param {IHandlerParameters} params - see interface for details
@@ -39,9 +30,6 @@ export default class JobsHandler extends ZosmfBaseHandler {
      * @memberof JobsHandler
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
 
         // Obtain the list of jobs - by default uses the session user and * for owner and prefix.
         const prefix: string = (params.arguments.owner != null) ? params.arguments.owner : this.mSession.ISession.user;
