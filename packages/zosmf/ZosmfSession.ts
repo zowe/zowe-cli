@@ -9,8 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandOptionDefinition, IProfile, Logger, Session } from "@brightside/imperative";
-import { ICommandArguments } from "@brightside/imperative";
+import { ICommandOptionDefinition, IProfile, Logger, Session, ICommandArguments } from "@brightside/imperative";
 
 /**
  * Utility Methods for Brightside

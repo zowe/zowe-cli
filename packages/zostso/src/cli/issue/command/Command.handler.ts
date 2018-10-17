@@ -12,6 +12,7 @@
 import { ICommandHandler, IHandlerParameters, Session, IProfile } from "@brightside/imperative";
 import { IIssueResponse, ISendResponse, IssueTso, SendTso } from "../../../../../zostso";
 import { IStartTsoParms } from "../../../../index";
+import { ZosmfSession } from "../../../../../zosmf";
 
 /**
  * Handler to issue command to TSO address space
@@ -22,21 +23,11 @@ import { IStartTsoParms } from "../../../../index";
 export default class Handler implements ICommandHandler {
 
     public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
-        const tsoProfile: IStartTsoParms = commandParameters.profiles.get("tso") as IStartTsoParms;
-        // const session = new Session({
-        //     type: "basic",
-        //     hostname: profile.host,
-        //     port: profile.port,
-        //     user: profile.user,
-        //     password: profile.pass,
-        //     base64EncodedAuth: profile.auth,
-        //     rejectUnauthorized: profile.rejectUnauthorized,
-        // });
-        const session = new Session(commandParameters.arguments as any);
-        const response: IIssueResponse = await IssueTso.issueTsoCommand(session, tsoProfile.account,
+        const session = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+        // TODO: need to replace the arguments with the correct mapping object
+        const response: IIssueResponse = await IssueTso.issueTsoCommand(session, commandParameters.arguments.account,
             commandParameters.arguments.commandText,
-            tsoProfile);
+            commandParameters.arguments as any);
 
         if (!commandParameters.arguments.suppressStartupMessages) {
             commandParameters.response.console.log(response.startResponse.messages);
