@@ -14,6 +14,13 @@ import { ImperativeError } from "@brightside/imperative";
 
 const message: string = "Dummy error message";
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 describe("Create VSAM data set handler", () => {
     describe("process method", () => {
         it("should create a VSAM data set if requested", async () => {
@@ -56,7 +63,8 @@ describe("Create VSAM data set handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        dataSetName
+                        dataSetName,
+                        ...ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -132,7 +140,8 @@ describe("Create VSAM data set handler", () => {
                 arguments: {
                     $0: "fake",
                     _: ["fake"],
-                    dataSetName
+                    dataSetName,
+                    ...ZOSMF_PROF_OPTS
                 },
                 response: {
                     data: {
