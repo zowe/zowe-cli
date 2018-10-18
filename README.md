@@ -38,14 +38,16 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 **Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/guides/cli-devTutorials). 
 
 ## Build Zowe CLI from Source
-The first time that you download Zowe CLI from the GitHub repository, issue the following command:
+The first time that you download Zowe CLI from the GitHub repository, issue the following commands:
 
 ```
-npm install
+npm config set @brightside:registry https://api.bintray.com/npm/ca/brightside
+npm install --registry https://registry.npmjs.org
 ```
-This command globally installs the required Zowe CLI dependencies and several development tools. For example, gulp. When necessary, you can run the task at any time to update the tools.
+This command  installs the required Zowe CLI dependencies and several development tools. When necessary, you can run the `npm install --registry https://registry.npmjs.org` command again to update dependencies that were changed in package.json.
 
-**Note:** If you see `npm ERR! code E401` during execution of `npm install` you need to issue `npm login` and provide username, password and email address.
+If you have credentials to connect to gizaartifactory.jfrog.io, you can issue `npm install` without the `--registry` option. 
+**Note:** If you see `npm ERR! code E401` during execution of `npm install` you need to issue `npm login` and provide username, password and email address to connect to gizaartifactory.jfrog.io.
   
   <details><summary>Example of E401 message</summary>
   <p>
