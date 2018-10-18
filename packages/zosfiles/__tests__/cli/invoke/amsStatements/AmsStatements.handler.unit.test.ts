@@ -85,7 +85,7 @@ describe("Invoke AMS statements handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Invoke.ams).toHaveBeenCalledTimes(1);
             expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, [controlStatements]);
             expect(jsonObj).toMatchSnapshot();

@@ -81,7 +81,7 @@ describe("Download AllMembers handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.allMembers).toHaveBeenCalledTimes(1);
             expect(Download.allMembers).toHaveBeenCalledWith(fakeSession, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

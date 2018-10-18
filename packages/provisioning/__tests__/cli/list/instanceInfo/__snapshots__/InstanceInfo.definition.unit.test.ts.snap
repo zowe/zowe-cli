@@ -50,7 +50,7 @@ full 	- all available information
     },
   ],
   "profile": Object {
-    "required": Array [
+    "optional": Array [
       "zosmf",
     ],
   },

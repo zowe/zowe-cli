@@ -86,7 +86,7 @@ describe("Upload file-to-data-set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
             expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();
@@ -165,7 +165,7 @@ describe("Upload file-to-data-set handler", () => {
             }
 
             expect(error).toBeDefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
             expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

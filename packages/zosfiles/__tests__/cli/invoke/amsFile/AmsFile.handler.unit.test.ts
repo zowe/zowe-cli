@@ -85,7 +85,7 @@ describe("Invoke AMS files handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Invoke.ams).toHaveBeenCalledTimes(1);
             expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, controlStatementsFile);
             expect(jsonObj).toMatchSnapshot();
