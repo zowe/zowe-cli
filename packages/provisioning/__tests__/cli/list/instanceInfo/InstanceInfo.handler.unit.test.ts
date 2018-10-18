@@ -17,56 +17,18 @@ import { CommandProfiles, IHandlerParameters, IProfile } from "@brightside/imper
 import * as Handler from "../../../../src/cli/list/instanceInfo/InstanceInfo.handler";
 import { instanceInfo } from "../../../../src/cli/list/instanceInfo/InstanceInfo.definition";
 import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
+import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["provisioning", "list", "instance-info"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            })
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+    response: getMockedResponse(),
     definition: instanceInfo,
     fullDefinition: instanceInfo,
-    profiles: PROFILES
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("list instance info handler tests", () => {
