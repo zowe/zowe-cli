@@ -10,6 +10,7 @@
 */
 
 import { Upload } from "../../../../src/api/methods/upload";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Upload stdin-to-data-set handler", () => {
     describe("process method", () => {
@@ -60,7 +61,8 @@ describe("Upload stdin-to-data-set handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         inputBuffer,
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
