@@ -9,8 +9,9 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { SendTso, ISendResponse } from "../../../../";
+import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
 /**
  * Handler to Send data to TSO address space
@@ -18,20 +19,11 @@ import { SendTso, ISendResponse } from "../../../../";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosTsoBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
-        const response: ISendResponse = await SendTso.sendDataToTSOCollect(session,
+    // Process the command - send data to the address space and produce the response
+    public async processWithSession(commandParameters: IHandlerParameters) {
+        const response: ISendResponse = await SendTso.sendDataToTSOCollect(this.mSession,
             commandParameters.arguments.servletKey,
             commandParameters.arguments.data);
 

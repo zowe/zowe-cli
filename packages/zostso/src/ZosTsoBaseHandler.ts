@@ -43,6 +43,6 @@ export abstract class ZosTsoBaseHandler extends ZosmfBaseHandler {
         };
 
         // Call the super to invoke the handler and setup a zosmf session
-        super.process(params);
+        await super.process(params);
     }
 }

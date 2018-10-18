@@ -36,7 +36,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
      */
     public async processWithSession(params: IHandlerParameters): Promise<void> {
         // Save the needed parameters for convenience
-         const parms: ISubmitParms = {
+        const parms: ISubmitParms = {
             jclSource: undefined,
             viewAllSpoolContent: this.mArguments.viewAllSpoolContent,
             directory: this.mArguments.directory,

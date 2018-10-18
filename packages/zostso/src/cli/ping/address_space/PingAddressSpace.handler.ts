@@ -9,8 +9,9 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IPingResponse, PingTso } from "../../../../../zostso";
+import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
 /**
  * Handler to Send data to TSO address space
@@ -18,25 +19,15 @@ import { IPingResponse, PingTso } from "../../../../../zostso";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosTsoBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
-
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
-        const response: IPingResponse = await PingTso.ping(session, commandParameters.arguments.servletKey);
+    // Process the command and produce the ping response
+    public async processWithSession(commandParameters: IHandlerParameters) {
+        // Ping the address space
+        const response: IPingResponse = await PingTso.ping(this.mSession, commandParameters.arguments.servletKey);
 
         // Print out the response
         commandParameters.response.console.log("TSO address space pinged successfully, key was: " + response.servletKey);
-
 
         // Return as an object when using --response-format-json
         commandParameters.response.data.setObj(response);

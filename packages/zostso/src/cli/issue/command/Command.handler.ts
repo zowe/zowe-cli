@@ -9,10 +9,8 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, IProfile } from "@brightside/imperative";
-import { IIssueResponse, ISendResponse, IssueTso, SendTso } from "../../../../../zostso";
-import { IStartTsoParms } from "../../../../index";
-import { ZosmfSession } from "../../../../../zosmf";
+import { IHandlerParameters } from "@brightside/imperative";
+import { IIssueResponse, IssueTso } from "../../../../../zostso";
 import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
 /**

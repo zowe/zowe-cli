@@ -9,30 +9,21 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
-import { IStartStopResponse, StopTso } from "../../../../../zostso";
+import { IHandlerParameters } from "@brightside/imperative";
+import { StopTso } from "../../../../../zostso";
+import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosTsoBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    // Stop the tso address space associated with the servlet key
+    public async processWithSession(commandParameters: IHandlerParameters) {
 
-        let response: IStartStopResponse;
-        const zosmfProfile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: zosmfProfile.host,
-            port: zosmfProfile.port,
-            user: zosmfProfile.user,
-            password: zosmfProfile.pass,
-            base64EncodedAuth: zosmfProfile.auth,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized
-        });
+        // Stop the address space
         const servletKey = commandParameters.arguments.servletkey;
-        response = await StopTso.stop(session, servletKey);
+        const response = await StopTso.stop(this.mSession, servletKey);
 
+        // Print response and return as an object when using --response-format-json
         commandParameters.response.console.log(`TSO address space ended successfully, key was: ${response.servletKey}`);
-
-        // Return as an object when using --response-format-json
         commandParameters.response.data.setObj(response);
     }
 }

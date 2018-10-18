@@ -9,8 +9,9 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils, ImperativeError } from "@brightside/imperative";
-import { IStartStopResponses, IStartTsoParms, IZosmfTsoResponse, StartTso } from "../../../../../zostso";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { StartTso } from "../../../../../zostso";
+import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
 
 /**
@@ -19,24 +20,11 @@ import { IStartStopResponses, IStartTsoParms, IZosmfTsoResponse, StartTso } from
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosTsoBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-
-        let response: IStartStopResponses;
-        const zosmfProfile = commandParameters.profiles.get("zosmf");
-        const tsoProfile: IStartTsoParms = commandParameters.profiles.get("tso") as IStartTsoParms;
-        const session = new Session({
-            type: "basic",
-            hostname: zosmfProfile.host,
-            port: zosmfProfile.port,
-            user: zosmfProfile.user,
-            password: zosmfProfile.pass,
-            base64EncodedAuth: zosmfProfile.auth,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized
-        });
-
-        response = await StartTso.start(session, tsoProfile.account, tsoProfile);
+    // Process the command and produce the start response (returns servlet)
+    public async processWithSession(commandParameters: IHandlerParameters) {
+        const response = await StartTso.start(this.mSession, this.mArguments.account, this.mTsoStart);
         commandParameters.response.data.setObj(response);
 
         if (response.success) {
