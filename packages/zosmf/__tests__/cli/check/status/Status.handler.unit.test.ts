@@ -16,15 +16,19 @@ import * as cmdDef from "../../../../src/cli/check/status/Status.definition";
 
 jest.mock("../../../../src/api/methods/CheckStatus");
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 const goodProfileMap = new Map<string, IProfile[]>();
 goodProfileMap.set(
     "zosmf", [{
         name: "zosmf",
         type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
+        ...ZOSMF_PROF_OPTS
     }]
 );
 const goodProfiles: CommandProfiles = new CommandProfiles(goodProfileMap);
@@ -33,6 +37,7 @@ const goodCmdParms: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["zosmf", "check", "status"],
+        ...ZOSMF_PROF_OPTS
     },
     response: {
         data: {
@@ -125,29 +130,5 @@ describe("check status behavior", () => {
 
         await checkStatHandler.process(parmsToUse);
         expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(1);
-    });
-
-    it("should throw an error when no profile", async () => {
-        const noProfileMap = new Map<string, IProfile[]>();
-        noProfileMap.set(
-            "NotZosmf", [{
-                name: "A profile that is not zosmf",
-                type: "NotZosmf",
-            }]
-        );
-        const noProfiles: CommandProfiles = new CommandProfiles(noProfileMap);
-        const parmsToUse = Object.assign({}, ...[goodCmdParms]);
-        parmsToUse.profiles = noProfiles;
-
-        let errMsg: string;
-        try {
-            await checkStatHandler.process(parmsToUse);
-        }
-        catch (impErr) {
-            errMsg = impErr.message;
-        }
-
-        expect(errMsg).toBe("Internal Error: No profiles of type \"zosmf\" were loaded for this command.");
-        expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(0);
     });
 });
