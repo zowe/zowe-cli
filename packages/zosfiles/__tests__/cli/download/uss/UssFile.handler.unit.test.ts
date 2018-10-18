@@ -10,6 +10,7 @@
 */
 
 import { Download } from "../../../../src/api/methods/download";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Download uss file handler", () => {
     describe("process method", () => {
@@ -53,7 +54,8 @@ describe("Download uss file handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        ussFileName
+                        ussFileName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
