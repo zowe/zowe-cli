@@ -30,7 +30,7 @@ export const AmsFileDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "AmsFile.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

@@ -36,7 +36,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Command.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

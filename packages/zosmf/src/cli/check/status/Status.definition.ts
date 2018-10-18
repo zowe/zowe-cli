@@ -20,7 +20,7 @@ export const StatusDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Status.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [

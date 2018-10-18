@@ -20,7 +20,7 @@ export const catalogTemplates: ICommandDefinition = {
     description: "Lists the z/OSMF service catalog published templates.",
     handler: path.join(__dirname, "/CatalogTemplates.handler"),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     options: [
         {

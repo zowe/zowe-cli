@@ -48,7 +48,7 @@ export const LocalFileDefinition: ICommandDefinition = {
         },
     ]as ICommandOptionDefinition[]),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     outputFormatOptions: true,
     examples:

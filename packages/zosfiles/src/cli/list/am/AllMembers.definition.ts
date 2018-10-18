@@ -30,7 +30,7 @@ export const AllMembersDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AllMembers.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

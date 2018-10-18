@@ -21,7 +21,7 @@ export const OutputDefinition: ICommandDefinition = {
         "Each spool DD will be downloaded to its own file in the directory.",
     handler: __dirname + "/Output.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

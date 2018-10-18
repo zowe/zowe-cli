@@ -30,7 +30,7 @@ export const StdinToDataSetDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/StdinToDataSet.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

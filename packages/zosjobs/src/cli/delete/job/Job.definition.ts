@@ -19,7 +19,7 @@ export const JobDefinition: ICommandDefinition = {
     description: "Delete a single job by job ID",
     handler: __dirname + "/Job.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

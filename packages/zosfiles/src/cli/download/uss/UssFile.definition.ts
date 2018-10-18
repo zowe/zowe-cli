@@ -30,7 +30,7 @@ export const UssFileDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/UssFile.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

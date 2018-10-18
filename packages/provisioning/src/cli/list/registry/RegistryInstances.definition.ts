@@ -20,7 +20,7 @@ export const registryInstances: ICommandDefinition = {
     description: "List the provisioned instances from the z/OSMF software registry.",
     handler:  path.join(__dirname, "/RegistryInstances.handler"),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     options: [
         {

@@ -20,7 +20,7 @@ export const instanceInfo: ICommandDefinition = {
     description: "List details about an instance provisioned with z/OSMF.",
     handler:  path.join(__dirname, "/InstanceInfo.handler"),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

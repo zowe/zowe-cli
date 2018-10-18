@@ -30,7 +30,7 @@ export const DirToPdsDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/DirToPds.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

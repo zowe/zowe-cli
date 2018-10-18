@@ -30,7 +30,7 @@ export const CPDSDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/CPDS.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

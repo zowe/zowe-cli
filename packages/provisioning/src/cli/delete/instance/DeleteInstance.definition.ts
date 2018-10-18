@@ -19,7 +19,7 @@ export const DeleteInstanceDefinition: ICommandDefinition = {
     description: "Deletes selected deprovisioned instance.",
     handler: __dirname + "/DeleteInstance.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

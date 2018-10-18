@@ -60,7 +60,7 @@ export const DataSetDefinition: ICommandDefinition = {
         }
     ] as ICommandOptionDefinition[]),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     outputFormatOptions: true,
     examples:

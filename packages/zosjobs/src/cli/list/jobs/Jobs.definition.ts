@@ -43,7 +43,7 @@ export const JobsDefinition: ICommandDefinition = {
         }
     ] as ICommandOptionDefinition[]),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     examples:
         [
