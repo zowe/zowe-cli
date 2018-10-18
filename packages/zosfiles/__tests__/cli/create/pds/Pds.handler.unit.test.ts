@@ -11,6 +11,7 @@
 
 import { Create } from "../../../../src/api/methods/create/Create";
 import { CreateDataSetTypeEnum } from "../../../../src/api/methods/create/CreateDataSetType.enum";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Create PDS data set handler", () => {
     describe("process method", () => {
@@ -54,7 +55,8 @@ describe("Create PDS data set handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
