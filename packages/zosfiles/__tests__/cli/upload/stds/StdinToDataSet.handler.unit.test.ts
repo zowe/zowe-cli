@@ -88,7 +88,7 @@ describe("Upload stdin-to-data-set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.bufferToDataSet).toHaveBeenCalledTimes(1);
         });
     });

@@ -86,7 +86,7 @@ describe("Upload file-to-uss handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToUSSFile).toHaveBeenCalledTimes(1);
             expect(Upload.fileToUSSFile).toHaveBeenCalledWith(fakeSession, inputfile, USSFileName, undefined);
             expect(jsonObj).toMatchSnapshot();

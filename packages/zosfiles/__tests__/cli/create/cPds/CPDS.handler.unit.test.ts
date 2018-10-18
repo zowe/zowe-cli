@@ -80,7 +80,7 @@ describe("Create C-code PDS data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.dataSet).toHaveBeenCalledTimes(1);
             expect(Create.dataSet).toHaveBeenCalledWith(fakeSession, CreateDataSetTypeEnum.DATA_SET_C, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();
