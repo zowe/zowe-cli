@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../src/api/ProvisionPublishedTemplate");
-import { CommandProfiles, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import * as DeleteInstanceHandler from "../../../../src/cli/delete/instance/DeleteInstance.handler";
 import * as DeleteInstanceDefinition from "../../../../src/cli/delete/instance/DeleteInstance.definition";
 import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
