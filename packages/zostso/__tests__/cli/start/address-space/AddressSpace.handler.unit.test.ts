@@ -16,29 +16,37 @@ import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "
 import * as AddressSpaceHandler from "../../../../src/cli/start/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../src/cli/start/address-space/AddressSpace.definition";
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
     "zosmf", [{
         name: "zosmf",
         type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
+        ...ZOSMF_PROF_OPTS
     }]
 );
+
+const TSO_PROF_OPTS = {
+    logonProcedure: "IZUFPROC",
+    characterSet: "697",
+    codePage: "1047",
+    rows: "24",
+    columns: "80",
+    regionSize: "4096",
+    account: "DEFAULT"
+};
 
 PROFILE_MAP.set(
     "tso", [{
         name: "tso",
         type: "tso",
-        logonProcedure: "IZUFPROC",
-        characterSet: "697",
-        codePage: "1047",
-        rows: "24",
-        columns: "80",
-        regionSize: "4096",
-        account: "DEFAULT"
+        ...TSO_PROF_OPTS
     }]
 );
 
@@ -96,28 +104,23 @@ describe("start address-space handler tests", () => {
             return StartTsoData.SAMPLE_START_RESPONSE;
         });
         const handler = new AddressSpaceHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        params.arguments.commandParms = PROFILES.get("tso") as IStartTsoParms;
+        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const args = {...ZOSMF_PROF_OPTS, ...TSO_PROF_OPTS};
+        params = { ...params, arguments: args};
 
         await handler.process(params);
         expect(StartTso.start).toHaveBeenCalledTimes(1);
     });
 
-    it("should be able respond with error message, if z/OSMF parameters were not passed", async () => {
-        const parameterNotPassedError = "No tso start address space parameters were supplied.";
-        let error;
-        StartTso.start = jest.fn((session, commandParms) => {
-            throw new ImperativeError({ msg: parameterNotPassedError });
-        });
+    it("should be able respond with error message, if required z/OSMF parameters were not passed", async () => {
         const handler = new AddressSpaceHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        params.arguments.commandParms = null;
+        let error;
         try {
             await handler.process(params);
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(StartTso.start).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
@@ -135,8 +138,9 @@ describe("start address-space handler tests", () => {
             };
         });
         const handler = new AddressSpaceHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        params.arguments.commandParms = null;
+        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const args = {...ZOSMF_PROF_OPTS, ...TSO_PROF_OPTS};
+        params = { ...params, arguments: args};
         try {
             await handler.process(params);
         } catch (thrownError) {
