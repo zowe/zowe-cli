@@ -49,6 +49,7 @@ describe("ZosFilesBaseHandler", () => {
             rejectUnauthorized: zosmfProfile.rejectUnauthorized,
         };
         const expectedSession = new Session(sessionArgs);
+        const args = {...sessionArgs, host: zosmfProfile.host, pass: zosmfProfile.pass};
 
         /**
          * This object is used as a dummy command parameters object
@@ -71,7 +72,7 @@ describe("ZosFilesBaseHandler", () => {
                     setObj: jest.fn()
                 }
             },
-            arguments: sessionArgs
+            arguments: args
         };
 
         const apiResponse: IZosFilesResponse = {
