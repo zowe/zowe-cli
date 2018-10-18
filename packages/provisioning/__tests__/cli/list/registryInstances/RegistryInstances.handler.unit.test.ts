@@ -16,23 +16,29 @@ import { registryInstances } from "../../../../src/cli/list/registry/RegistryIns
 
 jest.mock("../../../../src/api/ListCatalogTemplates");
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
     "zosmf", [{
         name: "zosmf",
         type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
+        ...ZOSMF_PROF_OPTS
     }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
+
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["provisioning", "list", "catalog-templates"],
+        ...ZOSMF_PROF_OPTS
     },
     response: {
         data: {
@@ -82,5 +88,4 @@ describe("list catalog templates handler tests", () => {
         await handler.process(params);
         expect(ListRegistryInstances.listFilteredRegistry).toHaveBeenCalledTimes(1);
     });
-
 });
