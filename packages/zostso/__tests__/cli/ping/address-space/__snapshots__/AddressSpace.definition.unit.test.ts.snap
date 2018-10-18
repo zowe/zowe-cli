@@ -22,9 +22,8 @@ Object {
     },
   ],
   "profile": Object {
-    "required": Array [
+    "optional": Array [
       "zosmf",
-      "tso",
     ],
   },
   "summary": "Ping TSO address space",

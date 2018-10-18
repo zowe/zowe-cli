@@ -12,9 +12,64 @@ Object {
       "description": "Report the status of the z/OSMF server that you specified in a supplied z/OSMF profile",
       "options": "--zosmf-profile SomeZosmfProfileName",
     },
+    Object {
+      "description": "Report the status of the z/OSMF server that you specified manually via command line",
+      "options": "--host myhost --port 443 --user myuser --pass mypass",
+    },
   ],
   "name": "status",
-  "options": Array [],
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "H",
+      ],
+      "description": "The z/OSMF server host name.",
+      "group": "Zosmf Connection Options",
+      "name": "host",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "P",
+      ],
+      "defaultValue": 443,
+      "description": "The z/OSMF server port.",
+      "group": "Zosmf Connection Options",
+      "name": "port",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "u",
+      ],
+      "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
+      "group": "Zosmf Connection Options",
+      "name": "user",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "p",
+      ],
+      "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
+      "group": "Zosmf Connection Options",
+      "name": "pass",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ru",
+      ],
+      "defaultValue": true,
+      "description": "Reject self-signed certificates.",
+      "group": "Zosmf Connection Options",
+      "name": "reject-unauthorized",
+      "type": "boolean",
+    },
+  ],
   "profile": Object {
     "required": Array [
       "zosmf",
