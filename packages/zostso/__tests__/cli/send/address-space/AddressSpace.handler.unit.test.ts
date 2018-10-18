@@ -17,15 +17,19 @@ import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "
 import * as SendToAddressSpace from "../../../../src/cli/send/address_space/SendToAddressSpace.handler";
 import { SendToAddressSpaceCommandDefinition } from "../../../../src/cli/send/address_space/SendToAddressSpace.definition";
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
     "zosmf", [{
         name: "zosmf",
         type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
+        ...ZOSMF_PROF_OPTS
     }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
@@ -79,7 +83,9 @@ describe("ping address-space handler tests", () => {
             return PingTsoData.SAMPLE_PING_RESPONSE;
         });
         const handler = new SendToAddressSpace.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const args = {arguments: ZOSMF_PROF_OPTS};
+        params = {...params,...args};
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.data = "data";
         await handler.process(params);
@@ -94,7 +100,9 @@ describe("ping address-space handler tests", () => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new SendToAddressSpace.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const args = {arguments: ZOSMF_PROF_OPTS};
+        params = {...params,...args};
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.servletKey = "data";
         try {
