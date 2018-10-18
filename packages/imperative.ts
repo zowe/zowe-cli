@@ -13,6 +13,15 @@
 import { IImperativeConfig } from "@brightside/imperative";
 import { Constants } from "./Constants";
 import { ZosmfSession } from "./zosmf";
+import {
+    TSO_OPTION_ACCOUNT,
+    TSO_OPTION_CHAR_SET,
+    TSO_OPTION_CODE_PAGE,
+    TSO_OPTION_COLUMNS,
+    TSO_OPTION_LOGON_PROCEDURE,
+    TSO_OPTION_REGION_SIZE,
+    TSO_OPTION_ROWS
+} from "./zostso/src/cli/constants/ZosTso.constants";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -79,72 +88,31 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: {
-                            name: "account",
-                            aliases: ["a"],
-                            description: "Your z/OS TSO/E accounting information.",
-                            type: "string",
-                            required: true,
-                        },
+                        optionDefinition: TSO_OPTION_ACCOUNT,
                     },
                     characterSet: {
                         type: "string",
-                        optionDefinition: {
-                            name: "character-set",
-                            aliases: ["cs"],
-                            description: "Character set for address space to convert messages and responses from UTF-8 to EBCDIC.",
-                            type: "string",
-                            defaultValue: "697",
-                        },
+                        optionDefinition: TSO_OPTION_CHAR_SET,
                     },
                     codePage: {
                         type: "string",
-                        optionDefinition: {
-                            name: "code-page",
-                            aliases: ["cp"],
-                            description: "Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.",
-                            type: "string",
-                            defaultValue: "1047",
-                        },
+                        optionDefinition: TSO_OPTION_CODE_PAGE,
                     },
                     columns: {
                         type: "number",
-                        optionDefinition: {
-                            name: "columns",
-                            aliases: ["cols"],
-                            description: "The number of columns on a screen.",
-                            type: "number",
-                            defaultValue: 80,
-                        },
+                        optionDefinition: TSO_OPTION_COLUMNS,
                     },
                     logonProcedure: {
                         type: "string",
-                        optionDefinition: {
-                            name: "logon-procedure",
-                            aliases: ["l"],
-                            description: "The logon procedure to use when creating TSO procedures on your behalf.",
-                            type: "string",
-                            defaultValue: "IZUFPROC",
-                        },
+                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
                     },
                     regionSize: {
                         type: "number",
-                        optionDefinition: {
-                            name: "region-size",
-                            aliases: ["rs"],
-                            description: "Region size for the TSO/E address space.",
-                            type: "number",
-                            defaultValue: 4096,
-                        },
+                        optionDefinition: TSO_OPTION_REGION_SIZE,
                     },
                     rows: {
                         type: "number",
-                        optionDefinition: {
-                            name: "rows",
-                            description: "The number of rows on a screen.",
-                            type: "number",
-                            defaultValue: 24,
-                        },
+                        optionDefinition: TSO_OPTION_ROWS,
                     },
                 },
                 required: ["account"],
