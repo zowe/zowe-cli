@@ -30,7 +30,7 @@ export const PdsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Pds.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

@@ -30,7 +30,7 @@ export const BinaryPDSDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/BinaryPDS.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

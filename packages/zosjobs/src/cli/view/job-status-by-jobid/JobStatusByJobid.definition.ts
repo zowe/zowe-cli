@@ -22,7 +22,7 @@ export const JobStatusByJobidDefinition: ICommandDefinition = {
         "The command presents errors verbatim from the z/OSMF Jobs REST endpoints (expect for \"no jobs found\").",
     handler: __dirname + "/JobStatusByJobid.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

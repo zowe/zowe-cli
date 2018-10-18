@@ -20,7 +20,7 @@ export const templateInfo: ICommandDefinition = {
     description: "List details about a template published with z/OSMF Cloud Provisioning.",
     handler:  path.join(__dirname, "/TemplateInfo.handler"),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

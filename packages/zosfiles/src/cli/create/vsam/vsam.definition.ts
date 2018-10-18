@@ -53,7 +53,7 @@ export const VsamDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/vsam.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

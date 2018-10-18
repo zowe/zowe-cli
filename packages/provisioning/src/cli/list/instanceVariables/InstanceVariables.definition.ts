@@ -20,7 +20,7 @@ export const instanceVariables: ICommandDefinition = {
     description: "List a set of variables and their values for a given name.",
     handler: path.join(__dirname, "/InstanceVariables.handler"),
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

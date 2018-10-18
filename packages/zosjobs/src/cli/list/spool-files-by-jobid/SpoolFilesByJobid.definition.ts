@@ -22,7 +22,7 @@ export const SpoolFilesByJobidDefinition: ICommandDefinition = {
         "The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
     handler: __dirname + "/SpoolFilesByJobid.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

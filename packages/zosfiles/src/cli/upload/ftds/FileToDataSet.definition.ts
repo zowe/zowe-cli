@@ -30,7 +30,7 @@ export const FileToDataSetDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/FileToDataSet.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

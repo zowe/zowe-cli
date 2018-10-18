@@ -22,7 +22,7 @@ export const TemplateDefinition: ICommandDefinition = {
         "catalog-templates command.",
     handler: __dirname + "/Template.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

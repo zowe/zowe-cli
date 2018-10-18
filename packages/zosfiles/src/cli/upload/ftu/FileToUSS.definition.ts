@@ -30,7 +30,7 @@ export const FileToUSSDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/FileToUSS.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

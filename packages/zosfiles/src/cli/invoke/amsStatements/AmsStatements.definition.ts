@@ -30,7 +30,7 @@ export const AmsStatementsDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "AmsStatements.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

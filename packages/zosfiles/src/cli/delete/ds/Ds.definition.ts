@@ -31,7 +31,7 @@ export const DsDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "Ds.handler"),
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {
