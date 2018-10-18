@@ -21,7 +21,7 @@ export const AddressSpaceDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AddressSpace.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf", "tso"],
     },
     options: TSO_PROFILE_OPTIONS,
     examples: [
