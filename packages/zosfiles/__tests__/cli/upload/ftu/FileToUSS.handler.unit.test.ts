@@ -10,6 +10,7 @@
 */
 
 import { Upload } from "../../../../src/api/methods/upload";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Upload file-to-uss handler", () => {
     describe("process method", () => {
@@ -58,7 +59,8 @@ describe("Upload file-to-uss handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         inputfile,
-                        USSFileName
+                        USSFileName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
