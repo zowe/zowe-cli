@@ -14,11 +14,14 @@ import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environm
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
+import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
 const MAX_CN_LENGTH: number = 10;
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 
 // Expected length constants
 const STDOUT_EXPECTED_LEN: number = 10;
@@ -26,16 +29,52 @@ const FOLLOW_UP_ATTEMPTS: number = 3;
 
 describe("zos-console issue command", () => {
 
-    // Create the unique test environment
+    describe("without profiles", () => {
+        let systemProps;
+        let defaultSystem: ITestSystemSchema;
+
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_console_issue_command_without_profiles"
+            });
+
+            systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSystem = systemProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        it("should issue a command and collect the response", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("IPLINFO DISPLAY");
+        });
+    });
+
+
+    // Create the unique test environment with zosmf profiles
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_console_issue_command",
             tempProfileTypes: ["zosmf"]
         });
     });
+
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
+
 
     it("should display the help", async () => {
         const response = runCliScript(__dirname + "/__scripts__/command/command_help.sh", TEST_ENVIRONMENT);
