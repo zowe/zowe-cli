@@ -62,7 +62,6 @@ describe("zos-console issue command", () => {
         });
     });
 
-
     // Create the unique test environment with zosmf profiles
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
