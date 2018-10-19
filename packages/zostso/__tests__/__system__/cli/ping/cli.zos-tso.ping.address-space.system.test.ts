@@ -84,7 +84,7 @@ describe("zos-tso ping address-space", () => {
         let TEST_ENVIONMENT_NO_PROF;
         beforeAll(async () => {
             TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_tso_start_as_without_profiles"
+                testName: "zos_tso_ping_as_without_profiles"
             });
 
             systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
