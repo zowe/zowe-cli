@@ -78,4 +78,40 @@ describe("zos-tso issue command", () => {
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain(fakeProc);
     });
+
+    describe("without profiles", () => {
+
+        // Create a seperate test environment for no profiles
+        let TEST_ENVIONMENT_NO_PROF;
+        beforeAll(async () => {
+            TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_tso_start_as_without_profiles"
+            });
+
+            systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+            defaultSystem = systemProps.getDefaultSystem();
+            acc = defaultSystem.tso.account;
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+        });
+
+        it("should successfully issue command = \"time\" without a profile", async () => {
+            const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
+            const response = runCliScript(__dirname + "/__scripts__/as/address_space_fully_qualified.sh",
+            TEST_ENVIRONMENT,
+            [
+                defaultSystem.zosmf.host,
+                defaultSystem.zosmf.port,
+                defaultSystem.zosmf.user,
+                defaultSystem.zosmf.pass,
+                defaultSystem.tso.account
+            ]
+            );
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+        });
+    });
 });
