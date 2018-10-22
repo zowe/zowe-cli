@@ -71,7 +71,7 @@ describe("provisioning list instance-variables", () => {
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_catalog_templates_without_profiles"
+                testName: "provisioning_list_instance_variables_without_profiles"
             });
 
             const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
