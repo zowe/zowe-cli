@@ -26,7 +26,6 @@ import { ZosmfSession } from "../index";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
- *
  */
 export abstract class ZosmfBaseHandler implements ICommandHandler {
 
@@ -63,7 +62,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
         this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
         this.mArguments = commandParameters.arguments;
-        await this.processWithSession(commandParameters);
+        await this.processCmd(commandParameters);
     }
 
     /**
@@ -112,7 +111,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      *
      */
-    public abstract async processWithSession(
+    public abstract async processCmd(
         commandParameters: IHandlerParameters,
     ): Promise<void>;
 }

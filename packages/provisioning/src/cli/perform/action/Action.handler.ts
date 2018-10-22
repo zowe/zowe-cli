@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { explainActionResponse, PerformAction, ProvisioningConstants } from "../../../../";
 import { IProvisionedInstance, ListRegistryInstances } from "../../../../index";
 import { isNullOrUndefined } from "util";
@@ -23,7 +23,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class ActionHandler extends ZosmfBaseHandler {
 
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
         const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);

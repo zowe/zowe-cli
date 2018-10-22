@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { DeleteJobs, GetJobs, IJob } from "../../../../";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
@@ -34,7 +34,7 @@ export default class JobHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof JobHandler
      */
-    public async processWithSession(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
 
         // Force yargs `jobid` parameter to be a string

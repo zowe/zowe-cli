@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../../../zosconsole";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
@@ -21,7 +21,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class Handler extends ZosmfBaseHandler {
 
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
         const collectParms: ICollectParms = {
             commandResponseKey: commandParameters.arguments.responsekey,

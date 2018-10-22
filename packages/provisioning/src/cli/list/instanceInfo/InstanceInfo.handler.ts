@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import {
     explainProvisionedInstanceExtended,
     explainProvisionedInstanceFull,
@@ -32,7 +32,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class InstanceInfoHandler extends ZosmfBaseHandler {
 
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
         const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);
         const instances: IProvisionedInstance[] = registry["scr-list"];

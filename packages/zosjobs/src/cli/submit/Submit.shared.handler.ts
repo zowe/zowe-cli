@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { SubmitJobs } from "../../../src/api/SubmitJobs";
 import { IJob } from "../../api/doc/response/IJob";
 import { isNullOrUndefined } from "util";
@@ -34,7 +34,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async processWithSession(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
         // Save the needed parameters for convenience
         const parms: ISubmitParms = {
             jclSource: undefined,

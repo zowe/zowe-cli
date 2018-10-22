@@ -9,8 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
@@ -29,7 +28,7 @@ export default class JobStatusByJobidHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async processWithSession(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, this.mArguments.jobid);

@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { explainPublishedTemplateInfoFull, explainPublishedTemplateInfoSummary, ListTemplateInfo } from "../../../../";
 import { IPublishedTemplateInfo, ProvisioningConstants } from "../../../../index";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
@@ -22,7 +22,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  */
 export default class TemplateInfoHandler extends ZosmfBaseHandler {
 
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
         const response: IPublishedTemplateInfo = await ListTemplateInfo.listTemplateCommon(
             this.mSession, ProvisioningConstants.ZOSMF_VERSION, commandParameters.arguments.name);

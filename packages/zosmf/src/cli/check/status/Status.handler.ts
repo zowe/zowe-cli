@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { CheckStatus, IZosmfInfoResponse } from "../../../..";
 import { CheckStatusMessages } from "../../constants/CheckStatus.messages";
 import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
@@ -22,7 +22,7 @@ import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
  */
 export default class Handler extends ZosmfBaseHandler {
 
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
 
         // our getZosmfInfo API does all of the work
