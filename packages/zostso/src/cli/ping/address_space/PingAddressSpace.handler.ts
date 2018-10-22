@@ -22,7 +22,7 @@ import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 export default class Handler extends ZosTsoBaseHandler {
 
     // Process the command and produce the ping response
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
         // Ping the address space
         const response: IPingResponse = await PingTso.ping(this.mSession, commandParameters.arguments.servletKey);
 

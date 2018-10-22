@@ -16,7 +16,7 @@ import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 export default class Handler extends ZosTsoBaseHandler {
 
     // Stop the tso address space associated with the servlet key
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
         // Stop the address space
         const servletKey = commandParameters.arguments.servletkey;

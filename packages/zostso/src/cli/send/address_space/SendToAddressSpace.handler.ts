@@ -22,7 +22,7 @@ import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 export default class Handler extends ZosTsoBaseHandler {
 
     // Process the command - send data to the address space and produce the response
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
         const response: ISendResponse = await SendTso.sendDataToTSOCollect(this.mSession,
             commandParameters.arguments.servletKey,
             commandParameters.arguments.data);

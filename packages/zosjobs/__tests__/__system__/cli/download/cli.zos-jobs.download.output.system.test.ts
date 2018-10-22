@@ -13,6 +13,8 @@ import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environm
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
+import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -66,6 +68,45 @@ describe("zos-jobs download output command", () => {
             expect(fs.existsSync(`${outdir}/JESJCL.txt`)).toBeTruthy();
             expect(fs.existsSync(`${outdir}/JESYSMSG.txt`)).toBeTruthy();
             expect(response.stdout.toString()).toContain("Successfully downloaded");
+        });
+
+        describe("without profiles", () => {
+
+            // Create a separate test environment for no profiles
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+            beforeAll(async () => {
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_download_output_without_profiles"
+                });
+
+                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+            });
+
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            });
+
+            it("should download all spool files of a job", async () => {
+                const outdir: string = TEST_ENVIRONMENT.workingDir + "/output/JES2";
+                const response = runCliScript(__dirname + "/__scripts__/download-output/download_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                    [
+                        IEFBR14_JCL,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(fs.existsSync(`${outdir}/JESMSGLG.txt`)).toBeTruthy();
+                expect(fs.existsSync(`${outdir}/JESJCL.txt`)).toBeTruthy();
+                expect(fs.existsSync(`${outdir}/JESYSMSG.txt`)).toBeTruthy();
+                expect(response.stdout.toString()).toContain("Successfully downloaded");
+            });
         });
     });
 });

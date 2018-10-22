@@ -22,7 +22,7 @@ import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 export default class Handler extends ZosTsoBaseHandler {
 
     // Process the command and produce the TSO response
-    public async processWithSession(params: IHandlerParameters) {
+    public async processCmd(params: IHandlerParameters) {
 
         // Issue the TSO command
         const response: IIssueResponse = await IssueTso.issueTsoCommand(

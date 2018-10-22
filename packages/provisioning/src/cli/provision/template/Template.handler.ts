@@ -23,7 +23,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 export default class Handler extends ZosmfBaseHandler {
 
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
         let response: IProvisionTemplateResponse;
         let usedOptionalParms: boolean = false;
