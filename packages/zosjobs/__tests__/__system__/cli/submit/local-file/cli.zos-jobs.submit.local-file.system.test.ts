@@ -116,6 +116,42 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stderr.toString().toLowerCase()).toContain("error");
             expect(response.stderr.toString().toLowerCase()).toContain("no such file");
         });
+
+        describe("without profiles", () => {
+
+            // Create a separate test environment for no profiles
+            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+            beforeAll(async () => {
+                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_submit_data_set_without_profiles"
+                });
+
+                const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            });
+
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+            });
+
+            it("should submit a job in an existing valid local file", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_fully_qualified.sh",
+                    TEST_ENVIONMENT_NO_PROF,
+                    [
+                        __dirname + "/testFileOfLocalJCL.txt",
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("jobname");
+                expect(response.stdout.toString()).toContain("jobid");
+            });
+        });
     });
 
     describe("syntax errors", () => {
