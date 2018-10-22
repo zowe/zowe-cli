@@ -87,7 +87,7 @@ describe("zos-tso issue command", () => {
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_tso_start_as_without_profiles"
+                testName: "zos_tso_issue_cmd_without_profiles"
             });
 
             const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);

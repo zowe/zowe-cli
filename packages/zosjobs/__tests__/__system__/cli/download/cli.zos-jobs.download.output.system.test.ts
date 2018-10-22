@@ -78,7 +78,7 @@ describe("zos-jobs download output command", () => {
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                    testName: "zos_jobs_delete_job_without_profiles"
+                    testName: "zos_jobs_download_output_without_profiles"
                 });
 
                 const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
