@@ -125,7 +125,7 @@ describe("zos-jobs submit local-file command", () => {
 
             beforeAll(async () => {
                 TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
-                    testName: "zos_jobs_submit_data_set_without_profiles"
+                    testName: "zos_jobs_submit_local_file_without_profiles"
                 });
 
                 const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
