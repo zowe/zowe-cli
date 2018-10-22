@@ -7,7 +7,7 @@ PORT=$3
 USER=$4
 PASSWORD=$5
 
-SERVLET_KEY=`zowe tso start as --account $ACCOUNT --host $HOST --port $PORT --user $USER --pass $PASSWORD | grep -oP "(?<=: ).*"`
+SERVLET_KEY=`zowe tso start as --host $HOST --account $ACCOUNT --port $PORT --user $USER --pass $PASSWORD --ru=false | grep -oP "(?<=: ).*"`
 
-zowe zos-tso stop address-space ${SERVLET_KEY} --account $ACCOUNT --host $HOST --port $PORT --user $USER --pass $PASSWORD
+zowe zos-tso stop address-space ${SERVLET_KEY} --host $HOST --port $PORT --user $USER --pass $PASSWORD --ru=false
 exit $?
