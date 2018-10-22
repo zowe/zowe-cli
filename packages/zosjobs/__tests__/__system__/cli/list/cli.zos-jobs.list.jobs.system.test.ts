@@ -104,7 +104,7 @@ describe("zos-jobs list jobs command", () => {
 
             beforeAll(async () => {
                 TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
-                    testName: "zos_jobs_delete_job_without_profiles"
+                    testName: "zos_jobs_list_job_without_profiles"
                 });
 
                 const systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
