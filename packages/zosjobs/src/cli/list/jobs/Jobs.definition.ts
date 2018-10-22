@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
 
 export const JobsDefinition: ICommandDefinition = {
     name: "jobs",

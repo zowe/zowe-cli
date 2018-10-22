@@ -72,7 +72,7 @@ describe("zos-tso send as", () => {
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIONMENT_NO_PROF;
+        let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
         let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
         beforeAll(async () => {

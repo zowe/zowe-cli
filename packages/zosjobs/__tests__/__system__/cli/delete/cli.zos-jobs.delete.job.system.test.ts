@@ -64,40 +64,40 @@ describe("zos-jobs delete job command", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully deleted job");
         });
-    });
 
-    describe("without profiles", () => {
+        describe("without profiles", () => {
 
-        // Create a separate test environment for no profiles
-        let TEST_ENVIONMENT_NO_PROF;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            // Create a separate test environment for no profiles
+            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
-        beforeAll(async () => {
-            TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_jobs_delete_job_without_profiles"
+            beforeAll(async () => {
+                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_delete_job_without_profiles"
+                });
+
+                const systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
             });
 
-            const systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
-        });
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+            });
 
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
-        });
-
-        it("delete a job without a profile", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
-                TEST_ENVIONMENT_NO_PROF,
-                [
-                    IEFBR14_JCL,
-                    DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
-                ]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully deleted job");
+            it("delete a job without a profile", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
+                    TEST_ENVIONMENT_NO_PROF,
+                    [
+                        IEFBR14_JCL,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully deleted job");
+            });
         });
     });
 });
