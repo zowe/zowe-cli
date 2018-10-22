@@ -119,25 +119,25 @@ describe("zos-jobs view spool-file-by-id command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
             let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
             beforeAll(async () => {
-                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
-                    testName: "zos_jobs_view_job_status_by_jobid_command_without_profiles"
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_view_spool_file_by_id_without_profiles"
                 });
 
-                const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
                 DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
             });
 
             afterAll(async () => {
-                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
             it("should be able to get the content of every spool file for a job", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/get_all_spool_content_fully_qualified.sh",
-                    TEST_ENVIONMENT_NO_PROF,
+                    TEST_ENVIRONMENT_NO_PROF,
                     [
                         IEFBR14_JOB,
                         DEFAULT_SYSTEM_PROPS.zosmf.host,

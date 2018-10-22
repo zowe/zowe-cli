@@ -100,25 +100,25 @@ describe("zos-jobs view job-status-by-jobid command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
             let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
             beforeAll(async () => {
-                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_view_job_status_by_jobid_command_without_profiles"
                 });
 
-                const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
                 DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
             });
 
             afterAll(async () => {
-                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
             it("should contain the jobid, jobname, cc, and status", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/job-status-by-jobid/submit_and_view_fully_qualified.sh",
-                    TEST_ENVIONMENT_NO_PROF,
+                    TEST_ENVIRONMENT_NO_PROF,
                     [
                         jclMember,
                         DEFAULT_SYSTEM_PROPS.zosmf.host,

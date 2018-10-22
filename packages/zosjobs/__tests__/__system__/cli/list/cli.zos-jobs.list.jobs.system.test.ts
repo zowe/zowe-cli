@@ -99,27 +99,27 @@ describe("zos-jobs list jobs command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
             let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
             beforeAll(async () => {
-                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_job_without_profiles"
                 });
 
-                const systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
                 DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
             });
 
             afterAll(async () => {
-                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
             it("should be able to submit two jobs and then find both in the output", async () => {
                 const response = runCliScript(scriptDir + "/submit_and_list_jobs_fully_qualified.sh",
-                    TEST_ENVIONMENT_NO_PROF,
+                    TEST_ENVIRONMENT_NO_PROF,
                     [
-                        TEST_ENVIONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
+                        TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
                         DEFAULT_SYSTEM_PROPS.zosmf.host,
                         DEFAULT_SYSTEM_PROPS.zosmf.port,
                         DEFAULT_SYSTEM_PROPS.zosmf.user,

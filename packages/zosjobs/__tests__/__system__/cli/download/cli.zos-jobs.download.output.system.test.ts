@@ -73,26 +73,26 @@ describe("zos-jobs download output command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
             let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
             beforeAll(async () => {
-                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_delete_job_without_profiles"
                 });
 
-                const systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
                 DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
             });
 
             afterAll(async () => {
-                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
             it("should download all spool files of a job", async () => {
                 const outdir: string = TEST_ENVIRONMENT.workingDir + "/output/JES2";
                 const response = runCliScript(__dirname + "/__scripts__/download-output/download_fully_qualified.sh",
-                    TEST_ENVIONMENT_NO_PROF,
+                TEST_ENVIRONMENT_NO_PROF,
                     [
                         IEFBR14_JCL,
                         DEFAULT_SYSTEM_PROPS.zosmf.host,

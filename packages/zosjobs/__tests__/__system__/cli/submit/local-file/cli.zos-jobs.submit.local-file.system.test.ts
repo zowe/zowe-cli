@@ -120,25 +120,25 @@ describe("zos-jobs submit local-file command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
             let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
             beforeAll(async () => {
-                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_local_file_without_profiles"
                 });
 
-                const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
                 DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
             });
 
             afterAll(async () => {
-                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
             it("should submit a job in an existing valid local file", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_fully_qualified.sh",
-                    TEST_ENVIONMENT_NO_PROF,
+                    TEST_ENVIRONMENT_NO_PROF,
                     [
                         __dirname + "/testFileOfLocalJCL.txt",
                         DEFAULT_SYSTEM_PROPS.zosmf.host,
