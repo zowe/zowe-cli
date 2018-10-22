@@ -106,7 +106,7 @@ describe("zos-jobs submit data-set command", () => {
         });
 
         it("should submit a job in an existing valid data set with 'volume' option", async () => {
-            const dataSets = await List.dataSet(REAL_SESSION, psJclDataSet, {attributes: true});
+            const dataSets = await List.dataSet(REAL_SESSION, psJclDataSet, { attributes: true });
             expect(dataSets.apiResponse.items).toBeDefined();
             const volume = dataSets.apiResponse.items[0].vol; // use the volume of the existing data set
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_with_volume.sh",
@@ -136,6 +136,42 @@ describe("zos-jobs submit data-set command", () => {
             expect(response.stderr.toString().toLowerCase()).toContain("set");
             expect(response.stderr.toString().toLowerCase()).toContain("found");
             expect(response.stderr.toString().toLowerCase()).toContain("does.not.exist");
+        });
+
+        describe("without profiles", () => {
+
+            // Create a separate test environment for no profiles
+            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+            beforeAll(async () => {
+                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_submit_data_set_without_profiles"
+                });
+
+                const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            });
+
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+            });
+
+            it("should submit a job in an existing valid data set from a PDS member", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_fully_qualified.sh",
+                    TEST_ENVIONMENT_NO_PROF,
+                    [
+                        TEST_ENVIONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("jobname");
+                expect(response.stdout.toString()).toContain("jobid");
+            });
         });
     });
 
