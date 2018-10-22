@@ -18,6 +18,7 @@ import { Session, TextUtils } from "@brightside/imperative";
 import { IJob, SubmitJobs } from "../../../..";
 import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
 import { join } from "path";
+import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -129,7 +130,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             // Construct the JCL
             const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/multiple_procs.jcl")).toString();
             const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                {JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS});
+                { JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS });
 
             // Submit the job
             const job: IJob = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
@@ -145,5 +146,42 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             expect(response.stdout.toString()).toContain("TSOSTEP1");
             expect(response.stdout.toString()).toContain("TSOSTEP2");
         }, LONG_TIMEOUT);
+
+        describe("without profiles", () => {
+
+            // Create a separate test environment for no profiles
+            let TEST_ENVIONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+            beforeAll(async () => {
+                TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_list_spool_files_by_jobid_without_profiles"
+                });
+
+                const systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+            });
+
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIONMENT_NO_PROF);
+            });
+
+            it("should display the ddnames for a job", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/submit_and_list_dds_fully_qualified.sh",
+                    TEST_ENVIONMENT_NO_PROF,
+                    [
+                        TEST_ENVIONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("JESMSGLG");
+                expect(response.stdout.toString()).toContain("JESJCL");
+                expect(response.stdout.toString()).toContain("JESYSMSG");
+            }, LONG_TIMEOUT);
+        });
     });
 });
