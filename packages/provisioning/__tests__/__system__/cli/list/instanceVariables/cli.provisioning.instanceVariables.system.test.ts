@@ -52,6 +52,7 @@ describe("provisioning list instance-variables", () => {
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
+
     it("should display instance info(expects first instance in registry to have variables)", async () => {
         const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
             .pop()["external-name"];
@@ -61,4 +62,42 @@ describe("provisioning list instance-variables", () => {
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
     }, TIMEOUT);
+
+    describe("without profiles", () => {
+
+        // Create a separate test environment for no profiles
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "provisioning_catalog_templates_without_profiles"
+            });
+
+            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        it("should display instance info (expects first instance in registry to have variables)", async () => {
+            const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
+                .pop()["external-name"];
+            const regex = fs.readFileSync(__dirname + "/__regex__/instance_variables_response.regex").toString();
+            const response = runCliScript(__dirname + "/__scripts__/instanceVariables_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    instance,
+                    DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+        }, TIMEOUT);
+    });
 });
