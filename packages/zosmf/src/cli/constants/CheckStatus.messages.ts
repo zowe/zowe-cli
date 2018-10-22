@@ -25,7 +25,7 @@ export const CheckStatusMessages: { [key: string]: IMessageDefinition } = {
             "User '{{userName}}' failed to get information from " +
             "'{{hostName}}:{{portNum}}'\ndue to the following error:\n" +
             "{{reasonMsg}}\n\n" +
-            "Your zowe z/OSMF profile may not be configured properly,\n" +
+            "Your command-line options or your z/OSMF profile may not be correct,\n" +
             "or the z/OSMF subsystem on '{{hostName}}' may not be available."
     },
     /**
