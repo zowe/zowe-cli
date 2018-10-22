@@ -16,6 +16,7 @@ import { ZosmfMessages } from "../constants/Zosmf.messages";
 import { ZosmfRestClient } from "../../../../rest/src/ZosmfRestClient";
 import { IZosmfInfoResponse } from "../doc/IZosmfInfoResponse";
 import { CheckStatusMessages } from "../../cli/constants/CheckStatus.messages";
+import { isNullOrUndefined } from "util";
 
 /**
  * This class holds the helper functions that are used to gather zosmf information throgh the
@@ -70,8 +71,14 @@ export class CheckStatus {
                         });
                         break;
                     case ZosmfConstants.ERROR_CODES.SELF_SIGNED_CERT_IN_CHAIN:
+                    case ZosmfConstants.ERROR_CODES.UNABLE_TO_VERIFY_LEAF_SIGNATURE:
+                        let causeMsg = "No cause reported";
+                        if ("message" in error.causeErrors) {
+                            causeMsg = error.causeErrors.message;
+                        }
                         error = new ImperativeError({
                             msg: TextUtils.formatMessage(ZosmfMessages.improperRejectUnauthorized.message, {
+                                causeMsg,
                                 rejectUnauthorized: session.ISession.rejectUnauthorized
                             }),
                             causeErrors: error.causeErrors

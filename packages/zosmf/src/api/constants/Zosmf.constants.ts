@@ -46,6 +46,12 @@ export const ZosmfConstants: { [key: string]: any } = {
          * Error code when self signed certificate in chain
          * @type {string}
          */
-        SELF_SIGNED_CERT_IN_CHAIN: "SELF_SIGNED_CERT_IN_CHAIN"
+        SELF_SIGNED_CERT_IN_CHAIN: "SELF_SIGNED_CERT_IN_CHAIN",
+
+        /**
+         * Error code when unable to verify the first certificate
+         * @type {string}
+         */
+        UNABLE_TO_VERIFY_LEAF_SIGNATURE: "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
     }
 };

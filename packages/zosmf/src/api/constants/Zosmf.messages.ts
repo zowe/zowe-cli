@@ -42,6 +42,6 @@ export const ZosmfMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     improperRejectUnauthorized: {
-        message: "A self-signed certificate was used, and your reject-unauthorized option is '{{rejectUnauthorized}}'."
+        message: "A self-signed certificate was used ({{causeMsg}}),\nand your reject-unauthorized option is '{{rejectUnauthorized}}'."
     }
 };
