@@ -80,16 +80,17 @@ describe("zos-tso ping address-space", () => {
 
     describe("without profiles", () => {
 
-        // Create a seperate test environment for no profiles
+        // Create a separate test environment for no profiles
         let TEST_ENVIONMENT_NO_PROF;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
         beforeAll(async () => {
             TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "zos_tso_ping_as_without_profiles"
             });
 
-            systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-            acc = defaultSystem.tso.account;
+            const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
         });
 
         afterAll(async () => {
@@ -100,14 +101,14 @@ describe("zos-tso ping address-space", () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/as_ping_response.regex").toString();
             const key = (await StartTso.start(REAL_SESSION, acc)).servletKey;
             const response = runCliScript(__dirname + "/__scripts__/address-space/as_ping_fully_qualified.sh",
-            TEST_ENVIRONMENT,
-            [
-                key,
-                defaultSystem.zosmf.host,
-                defaultSystem.zosmf.port,
-                defaultSystem.zosmf.user,
-                defaultSystem.zosmf.pass
-            ]);
+                TEST_ENVIONMENT_NO_PROF,
+                [
+                    key,
+                    DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                ]);
             StopTso.stop(REAL_SESSION, key);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

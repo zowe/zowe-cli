@@ -71,16 +71,17 @@ describe("zos-tso send as", () => {
 
     describe("without profiles", () => {
 
-        // Create a seperate test environment for no profiles
+        // Create a separate test environment for no profiles
         let TEST_ENVIONMENT_NO_PROF;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
         beforeAll(async () => {
             TEST_ENVIONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "zos_tso_send_as_without_profiles"
             });
 
-            systemProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-            acc = defaultSystem.tso.account;
+            const sysProps = new TestProperties(TEST_ENVIONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
         });
 
         afterAll(async () => {
@@ -91,13 +92,13 @@ describe("zos-tso send as", () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
             const key = (await StartTso.start(REAL_SESSION, acc)).servletKey;
             const response = runCliScript(__dirname + "/__scripts__/as/address_space_fully_qualified.sh",
-                TEST_ENVIRONMENT,
+                TEST_ENVIONMENT_NO_PROF,
                 [
                     key,
-                    defaultSystem.zosmf.host,
-                    defaultSystem.zosmf.port,
-                    defaultSystem.zosmf.user,
-                    defaultSystem.zosmf.pass
+                    DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    DEFAULT_SYSTEM_PROPS.zosmf.pass
                 ]);
             StopTso.stop(REAL_SESSION, key);
             expect(response.stderr.toString()).toBe("");
