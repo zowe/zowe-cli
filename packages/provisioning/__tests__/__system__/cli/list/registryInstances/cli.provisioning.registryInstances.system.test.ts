@@ -63,7 +63,7 @@ describe("provisioning list registry_instances", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should display instance info (expects first instance in registry to have variables)", async () => {
+        it("should display registry instances", async () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/registry_instances_response.regex").toString();
             const response = runCliScript(__dirname + "/__scripts__/registryInstances_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
