@@ -19,6 +19,7 @@ import { IJob } from "../../../../src/api/doc/response/IJob";
 import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
 import { join } from "path";
 import { SubmitJobs } from "../../../../src/api/SubmitJobs";
+import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
 // TODO - Add cleanup logic when the properties are available
 
@@ -100,7 +101,7 @@ describe("zos-jobs view spool-file-by-id command", () => {
             // Construct the JCL
             const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/multiple_procs.jcl")).toString();
             const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                {JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS});
+                { JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS });
 
             // Submit the job
             const job: IJob = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
@@ -113,6 +114,42 @@ describe("zos-jobs view spool-file-by-id command", () => {
             expect(response.stdout.toString()).toContain("OUTPUT FROM PROC1");
             expect(response.stdout.toString()).toContain("OUTPUT FROM PROC2");
             expect(response.status).toBe(0);
+        });
+
+        describe("without profiles", () => {
+
+            // Create a separate test environment for no profiles
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+            beforeAll(async () => {
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_view_spool_file_by_id_without_profiles"
+                });
+
+                const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            });
+
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            });
+
+            it("should be able to get the content of every spool file for a job", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/get_all_spool_content_fully_qualified.sh",
+                    TEST_ENVIRONMENT_NO_PROF,
+                    [
+                        IEFBR14_JOB,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("!!!SPOOL FILE");
+                expect(response.stdout.toString()).toContain("PGM=IEFBR14");
+            });
         });
     });
 

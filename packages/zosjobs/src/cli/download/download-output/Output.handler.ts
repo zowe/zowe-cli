@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IJob } from "../../../../";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
@@ -26,7 +26,7 @@ export default class OutputHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof OutputHandler
      */
-    public async processWithSession(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
         const response: any = {};
         const jobid: string = this.mArguments.jobid + "";
         const outDir: string = this.mArguments.directory;

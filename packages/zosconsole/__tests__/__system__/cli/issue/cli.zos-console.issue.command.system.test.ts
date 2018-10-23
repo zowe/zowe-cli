@@ -21,46 +21,12 @@ const MAX_CN_LENGTH: number = 10;
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 
 // Expected length constants
 const STDOUT_EXPECTED_LEN: number = 10;
 const FOLLOW_UP_ATTEMPTS: number = 3;
 
 describe("zos-console issue command", () => {
-
-    describe("without profiles", () => {
-        let systemProps;
-        let defaultSystem: ITestSystemSchema;
-
-        // Create the unique test environment
-        beforeAll(async () => {
-            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_console_issue_command_without_profiles"
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
-        });
-
-        it("should issue a command and collect the response", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_fully_qualified.sh",
-                TEST_ENVIRONMENT_NO_PROF,
-                [
-                    defaultSystem.zosmf.host,
-                    defaultSystem.zosmf.port,
-                    defaultSystem.zosmf.user,
-                    defaultSystem.zosmf.pass
-                ]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("IPLINFO DISPLAY");
-        });
-    });
 
     // Create the unique test environment with zosmf profiles
     beforeAll(async () => {
@@ -218,5 +184,38 @@ describe("zos-console issue command", () => {
         expect(respObj.data.zosmfResponse).toBeDefined();
         expect(respObj.data.zosmfResponse).toBeInstanceOf(Array);
         expect(respObj.data.zosmfResponse.length).toEqual(FOLLOW_UP_ATTEMPTS); // tslint:disable-line:no-magic-numbers
+    });
+
+    describe("without profiles", () => {
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_console_issue_command_without_profiles"
+            });
+
+            const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        it("should issue a command and collect the response", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("IPLINFO DISPLAY");
+        });
     });
 });

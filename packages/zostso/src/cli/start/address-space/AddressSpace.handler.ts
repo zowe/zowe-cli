@@ -13,7 +13,6 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { StartTso } from "../../../../../zostso";
 import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 
-
 /**
  * Handler to start an address space
  * @export
@@ -23,7 +22,7 @@ import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 export default class Handler extends ZosTsoBaseHandler {
 
     // Process the command and produce the start response (returns servlet)
-    public async processWithSession(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
         const response = await StartTso.start(this.mSession, this.mArguments.account, this.mTsoStart);
         commandParameters.response.data.setObj(response);
 

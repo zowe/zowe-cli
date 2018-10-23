@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { IJobFile } from "../../../..";
@@ -44,7 +44,7 @@ export default class SpoolFilesHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async processWithSession(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
 
         this.arguments = params.arguments;
 

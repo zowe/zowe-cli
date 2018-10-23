@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { JobsConstants } from "../../../..";
@@ -29,7 +29,7 @@ export default class JobsHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      * @memberof JobsHandler
      */
-    public async processWithSession(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
 
         // Obtain the list of jobs - by default uses the session user and * for owner and prefix.
         const prefix: string = (params.arguments.owner != null) ? params.arguments.owner : this.mSession.ISession.user;

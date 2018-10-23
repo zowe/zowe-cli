@@ -14,6 +14,7 @@ import { TestEnvironment } from "./../../../../../../__tests__/__src__/environme
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { Session } from "@brightside/imperative";
+import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
 // TODO: Add cleanup once commands become available
 
@@ -94,6 +95,41 @@ describe("zos-jobs list jobs command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("test passed");
             });
+
+        describe("without profiles", () => {
+
+            // Create a separate test environment for no profiles
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+            beforeAll(async () => {
+                TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                    testName: "zos_jobs_list_job_without_profiles"
+                });
+
+                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+            });
+
+            afterAll(async () => {
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            });
+
+            it("should be able to submit two jobs and then find both in the output", async () => {
+                const response = runCliScript(scriptDir + "/submit_and_list_jobs_fully_qualified.sh",
+                    TEST_ENVIRONMENT_NO_PROF,
+                    [
+                        TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("found");
+            });
+        });
     });
 
     describe("error handling", () => {

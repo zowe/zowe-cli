@@ -51,7 +51,7 @@ Object {
     },
     Object {
       "aliases": Array [
-        "p",
+        "pw",
       ],
       "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
       "group": "Zosmf Connection Options",
