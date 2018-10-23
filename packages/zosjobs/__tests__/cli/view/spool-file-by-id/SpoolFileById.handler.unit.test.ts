@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { IProfile, CommandProfiles, IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
 import { GetJobs } from "../../../../src/api/GetJobs";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
