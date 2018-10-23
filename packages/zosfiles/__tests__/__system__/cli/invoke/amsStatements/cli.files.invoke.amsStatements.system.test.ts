@@ -36,7 +36,7 @@ describe("Invoke AMS CLI", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_invoke_ams_without_profiles"
+                testName: "zos_files_invoke_ams_statement_without_profiles"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
