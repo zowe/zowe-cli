@@ -44,6 +44,45 @@ describe("zosmf check status", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
+    describe("without profiles", () => {
+
+        // Create a separate test environment for no profiles
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_check_status_command_without_profiles"
+            });
+
+            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        it("should successfully check status with options only on the command line", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status_use_cli_opts.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    "--pass", DEFAULT_SYSTEM_PROPS.zosmf.pass,
+                    "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
+                ]
+            );
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(
+                "The user '" + DEFAULT_SYSTEM_PROPS.zosmf.user +
+                "' successfully connected to z/OSMF on '" + DEFAULT_SYSTEM_PROPS.zosmf.host + "'."
+            );
+        });
+    });
+
     describe("Success scenarios", () => {
 
         it("should display zosmf help", async () => {
