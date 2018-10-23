@@ -14,11 +14,14 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
+import * as fs from "fs";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+// Test Environment populated in the beforeAll();
+let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let user: string;
@@ -26,38 +29,86 @@ let volume: string;
 
 describe("Invoke AMS CLI", () => {
 
-    // Create the unique test environment
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
-            testName: "zos_invoke_ams"
+    describe("without profiles", () => {
+        let sysProps;
+        let defaultSys: ITestSystemSchema;
+
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_files_invoke_ams_without_profiles"
+            });
+
+            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSys = sysProps.getDefaultSystem();
+
+            user = defaultSys.zosmf.user.trim().toUpperCase();
+            volume = defaultSys.datasets.list[0].vol;
         });
 
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        user = defaultSystem.zosmf.user.trim().toUpperCase();
-        volume = defaultSystem.datasets.list[0].vol;
+        it("should invoke ams to create and then delete a VSAM cluster using control statements", async () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [user,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            let testOutput = stripNewLines(response.stdout.toString());
+            expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+            response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_delete_statement_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [user,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            testOutput = stripNewLines(response.stdout.toString());
+            expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+        });
     });
 
     describe("Success scenarios", () => {
 
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                tempProfileTypes: ["zosmf"],
+                testName: "zos_invoke_ams"
+            });
+
+            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+            defaultSystem = systemProps.getDefaultSystem();
+
+            REAL_SESSION = new Session({
+                user: defaultSystem.zosmf.user,
+                password: defaultSystem.zosmf.pass,
+                hostname: defaultSystem.zosmf.host,
+                port: defaultSystem.zosmf.port,
+                type: "basic",
+                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+            });
+
+            user = defaultSystem.zosmf.user.trim().toUpperCase();
+            volume = defaultSystem.datasets.list[0].vol;
+
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        });
+
         it("should display invoke and invoke ams help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/invoke_ams_help.sh", testEnvironment);
+            const response = runCliScript(__dirname + "/__scripts__/invoke_ams_help.sh", TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -65,14 +116,14 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using control statements", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_delete_statement.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             testOutput = stripNewLines(response.stdout.toString());
@@ -81,28 +132,28 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using a control statement and print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_rfj.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_delete_statement_rfj.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
         });
-    });
 
-    describe("Expected failures", () => {
+        describe("Expected failures", () => {
 
-        it("should fail due to controlStatements not specified", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_missing_statement.sh", testEnvironment);
-            expect(stripNewLines(response.stderr.toString())).toContain("Syntax Error");
-            expect(stripNewLines(response.stderr.toString())).toContain("Missing Positional");
-            expect(stripNewLines(response.stderr.toString())).toContain("controlStatements");
+            it("should fail due to controlStatements not specified", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_missing_statement.sh", TEST_ENVIRONMENT);
+                expect(stripNewLines(response.stderr.toString())).toContain("Syntax Error");
+                expect(stripNewLines(response.stderr.toString())).toContain("Missing Positional");
+                expect(stripNewLines(response.stderr.toString())).toContain("controlStatements");
+            });
         });
     });
 });
