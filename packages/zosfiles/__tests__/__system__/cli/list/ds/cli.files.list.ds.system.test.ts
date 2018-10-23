@@ -30,8 +30,8 @@ let dsname: string;
 describe("List data set", () => {
 
     describe("without profiles", () => {
-        let systemProps;
-        let defaultSystem: ITestSystemSchema;
+        let sysProps;
+        let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -39,19 +39,19 @@ describe("List data set", () => {
                 testName: "zos_files_list_data_set_without_profiles"
             });
 
-            systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
+            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSys = sysProps.getDefaultSystem();
 
             REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
+                user: defaultSys.zosmf.user,
+                password: defaultSys.zosmf.pass,
+                hostname: defaultSys.zosmf.host,
+                port: defaultSys.zosmf.port,
                 type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+                rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
             });
 
-            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            dsname = getUniqueDatasetName(defaultSys.zosmf.user);
         });
 
         afterAll(async () => {
@@ -75,14 +75,14 @@ describe("List data set", () => {
         });
 
         it("should list data set", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_fully_qualified.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_list_data_set_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     dsname,
-                    defaultSystem.zosmf.host,
-                    defaultSystem.zosmf.port,
-                    defaultSystem.zosmf.user,
-                    defaultSystem.zosmf.pass
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
