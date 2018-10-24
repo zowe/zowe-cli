@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError, Session } from "@brightside/imperative";
 import { CheckStatus, ZosmfConstants, ZosmfMessages, IZosmfInfoResponse } from "../../../../zosmf";
 import { ZosmfRestClient } from "../../../../rest";
 
@@ -86,25 +86,64 @@ describe("Check Status api", () => {
             expect(error.message).toContain(ZosmfMessages.invalidPort.message);
         });
 
-        it("should throw appropriate error when improper reject unauthorized flag", async () => {
+        it("should throw appropriate error when unsigned cert is in chain", async () => {
             let response;
             let error;
             mySpy.mockRejectedValue(new ImperativeError({
                 msg: "dummy msg",
                 causeErrors: {
-                    code: ZosmfConstants.ERROR_CODES.SELF_SIGNED_CERT_IN_CHAIN
+                    code: ZosmfConstants.ERROR_CODES.SELF_SIGNED_CERT_IN_CHAIN,
+                    message: "Some cert in the chain is unsigned"
                 }
             }));
 
+            const testSession = new Session({
+                hostname: "testHostName",
+                rejectUnauthorized: true
+            });
+
             try {
-                response = await CheckStatus.getZosmfInfo(dummySession);
+                response = await CheckStatus.getZosmfInfo(testSession);
             } catch (err) {
                 error = err;
             }
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(ZosmfMessages.improperRejectUnauthorized.message);
+            expect(error.message).toContain(
+                "A self-signed certificate was used (Some cert in the chain is unsigned),\n" +
+                "and your reject-unauthorized option is 'true'."
+            );
+        });
+
+        it("should throw appropriate error when the first (leaf) cert is unsigned", async () => {
+            let response;
+            let error;
+            mySpy.mockRejectedValue(new ImperativeError({
+                msg: "dummy msg",
+                causeErrors: {
+                    code: ZosmfConstants.ERROR_CODES.UNABLE_TO_VERIFY_LEAF_SIGNATURE,
+                    message: "The first, aka leaf, cert is unsigned"
+                }
+            }));
+
+            const testSession = new Session({
+                hostname: "testHostName",
+                rejectUnauthorized: true
+            });
+
+            try {
+                response = await CheckStatus.getZosmfInfo(testSession);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeTruthy();
+            expect(response).toBeFalsy();
+            expect(error.message).toContain(
+                "A self-signed certificate was used (The first, aka leaf, cert is unsigned),\n" +
+                "and your reject-unauthorized option is 'true'."
+            );
         });
     });
 });
