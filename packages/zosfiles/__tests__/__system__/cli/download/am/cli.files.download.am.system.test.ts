@@ -18,7 +18,6 @@ import { TestProperties } from "../../../../../../../__tests__/__src__/propertie
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { Create, CreateDataSetTypeEnum, Delete } from "../../../../../../zosfiles";
 import { Upload } from "../../../../../src/api/methods/upload";
-import * as fs from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -31,29 +30,42 @@ const testString = "test";
 
 describe("Download All Member", () => {
 
-    describe("without profiles", () => {
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "download_all_data_set_member"
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+
+        REAL_SESSION = new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+        });
+
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+    describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_download_all_members_without_profiles"
+                testName: "zos_files_download_all_members_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSys.zosmf.user,
-                password: defaultSys.zosmf.pass,
-                hostname: defaultSys.zosmf.host,
-                port: defaultSys.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSys.zosmf.user);
         });
 
         afterAll(async () => {
@@ -93,31 +105,6 @@ describe("Download All Member", () => {
     });
 
     describe("Success scenarios", () => {
-
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
-                testName: "download_all_data_set_member"
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        });
 
         beforeEach(async () => {
             try {
@@ -194,15 +181,15 @@ describe("Download All Member", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
             expect(response.stdout.toString()).toContain(testDir);
         });
+    });
 
-        describe("Expected failures", () => {
-            it("should fail due to missing data set name", async () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("dataSetName");
-                expect(response.stderr.toString()).toContain("Missing Positional");
-            });
+    describe("Expected failures", () => {
+        it("should fail due to missing data set name", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("dataSetName");
+            expect(response.stderr.toString()).toContain("Missing Positional");
         });
     });
 });

@@ -56,14 +56,14 @@ describe("Create VSAM Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("without profiles", () => {
+    describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_create_vsam_data_set_without_profiles"
+                testName: "zos_files_create_vsam_data_set_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);

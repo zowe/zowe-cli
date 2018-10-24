@@ -28,29 +28,43 @@ let dsname: string;
 
 describe("Download Data Set", () => {
 
-    describe("without profiles", () => {
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "download_data_set"
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+
+        REAL_SESSION = new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+        });
+
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_download_data_set_without_profiles"
+                testName: "zos_files_download_data_set_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSys.zosmf.user,
-                password: defaultSys.zosmf.pass,
-                hostname: defaultSys.zosmf.host,
-                port: defaultSys.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSys.zosmf.user);
         });
 
         afterAll(async () => {
@@ -89,31 +103,6 @@ describe("Download Data Set", () => {
     });
 
     describe ("Success scenarios", () => {
-
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
-                testName: "download_data_set"
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        });
 
         beforeEach(async () => {
             try {
@@ -164,22 +153,22 @@ describe("Download Data Set", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
             expect(response.stdout.toString()).toContain(fileName);
         });
+    });
 
-        describe("Expected failures", () => {
-            it("should fail due to missing data set name", async () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("Missing Positional Option");
-                expect(response.stderr.toString()).toContain("dataSetName");
-            });
+    describe("Expected failures", () => {
+        it("should fail due to missing data set name", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("dataSetName");
+        });
 
-            it("should fail due to specified data set name does not existed", async () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("Data set not found.");
-            });
+        it("should fail due to specified data set name does not existed", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("Data set not found.");
         });
     });
 });

@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { Imperative, IO, Session } from "@brightside/imperative";
+import { IO, Session } from "@brightside/imperative";
 import * as path from "path";
 import { getRandomBytes, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -25,32 +25,56 @@ let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let dsname: string;
 
-
 describe("Upload Data Set", () => {
 
-    describe("without profiles", () => {
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "upload_data_set"
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+
+        REAL_SESSION = new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+        });
+
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_upload_file_to_uss_without_profiles"
+                testName: "zos_files_upload_stdin_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSys.zosmf.user,
-                password: defaultSys.zosmf.pass,
-                hostname: defaultSys.zosmf.host,
-                port: defaultSys.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSys.zosmf.user);
+            //
+            // REAL_SESSION = new Session({
+            //     user: defaultSys.zosmf.user,
+            //     password: defaultSys.zosmf.pass,
+            //     hostname: defaultSys.zosmf.host,
+            //     port: defaultSys.zosmf.port,
+            //     type: "basic",
+            //     rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
+            // });
+            //
+            // dsname = getUniqueDatasetName(defaultSys.zosmf.user);
         });
 
         beforeEach(async () => {
@@ -88,27 +112,6 @@ describe("Upload Data Set", () => {
     });
 
     describe("Success scenarios", () => {
-
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
-                testName: "upload_data_set"
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        });
 
         beforeEach(async () => {
             try {

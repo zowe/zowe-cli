@@ -64,7 +64,7 @@ describe("Create Partitioned Data Set", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_create_pds_without_profiles"
+                testName: "zos_files_create_pds_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);

@@ -29,29 +29,44 @@ let dsname: string;
 
 describe("List data set", () => {
 
-    describe("without profiles", () => {
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "list_data_set"
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+
+        REAL_SESSION = new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+        });
+
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_list_data_set_without_profiles"
+                testName: "zos_files_list_data_set_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSys.zosmf.user,
-                password: defaultSys.zosmf.pass,
-                hostname: defaultSys.zosmf.host,
-                port: defaultSys.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSys.zosmf.user);
         });
 
         afterAll(async () => {
@@ -90,120 +105,92 @@ describe("List data set", () => {
         });
     });
 
-    describe("with profiles", () => {
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
-                testName: "list_data_set"
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-            });
-
-            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-
+    describe("Success scenarios", () => {
+        beforeEach(async () => {
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, `${dsname}.TEST1`);
+            } catch (err) {
+                throw err;
+            }
         });
 
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        afterEach(async () => {
+            try {
+                await Delete.dataSet(REAL_SESSION, dsname);
+                await Delete.dataSet(REAL_SESSION, `${dsname}.TEST1`);
+            } catch (err) {
+                throw err;
+            }
         });
 
-        describe("Success scenarios", () => {
-            beforeEach(async () => {
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, `${dsname}.TEST1`);
-                } catch (err) {
-                    throw err;
-                }
-            });
-
-            afterEach(async () => {
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
-                    await Delete.dataSet(REAL_SESSION, `${dsname}.TEST1`);
-                } catch (err) {
-                    throw err;
-                }
-            });
-
-            it("should display list data set help", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command_list_data_set_help.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT);
-                expect(response.status).toBe(0);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.stdout.toString()).toMatchSnapshot();
-            });
-
-            it("should list data set", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(dsname);
-            });
-
-            it("should list data set with response-format-json flag", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(dsname);
-            });
-
-            it("should list data set while showing attributes", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "-a", "--rfj"]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(dsname);
-            });
-
-            it("should return data sets list with only 1 data set", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--max 1", "--rfj"]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(dsname);
-                expect(response.stdout.toString()).toContain("\"returnedRows\": 1");
-            });
-
-            it("should return data sets list with all data sets", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(dsname);
-                expect(response.stdout.toString()).toContain(`${dsname}.TEST1`);
-                expect(response.stdout.toString()).toContain("\"returnedRows\": 2");
-            });
-
-            it("should indicate that the data set does not exist", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
-                expect(response.status).toBe(0);
-                expect(response.stderr.toString()).toEqual("");
-                expect(response.stdout.toString()).toEqual("");
-            });
+        it("should display list data set help", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command_list_data_set_help.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toMatchSnapshot();
         });
 
-        describe("Expected failures", () => {
-            it("should fail due to missing data set name", () => {
-                const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-                const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("Missing Positional Option");
-                expect(response.stderr.toString()).toContain("dataSetName");
-            });
+        it("should list data set", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(dsname);
+        });
+
+        it("should list data set with response-format-json flag", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(dsname);
+        });
+
+        it("should list data set while showing attributes", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "-a", "--rfj"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(dsname);
+        });
+
+        it("should return data sets list with only 1 data set", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--max 1", "--rfj"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(dsname);
+            expect(response.stdout.toString()).toContain("\"returnedRows\": 1");
+        });
+
+        it("should return data sets list with all data sets", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(dsname);
+            expect(response.stdout.toString()).toContain(`${dsname}.TEST1`);
+            expect(response.stdout.toString()).toContain("\"returnedRows\": 2");
+        });
+
+        it("should indicate that the data set does not exist", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toEqual("");
+        });
+    });
+
+    describe("Expected failures", () => {
+        it("should fail due to missing data set name", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("dataSetName");
         });
     });
 });

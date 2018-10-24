@@ -64,7 +64,7 @@ describe("Create C Data Set", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_create_c_pds_without_profiles"
+                testName: "zos_files_create_c_pds_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);

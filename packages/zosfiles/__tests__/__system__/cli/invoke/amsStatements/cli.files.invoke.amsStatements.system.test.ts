@@ -29,14 +29,42 @@ let volume: string;
 
 describe("Invoke AMS CLI", () => {
 
-    describe("without profiles", () => {
+    // Create the unique test environment
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "zos_invoke_ams"
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+
+        REAL_SESSION = new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+        });
+
+        user = defaultSystem.zosmf.user.trim().toUpperCase();
+        volume = defaultSystem.datasets.list[0].vol;
+
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_invoke_ams_statement_without_profiles"
+                testName: "zos_files_invoke_ams_statement_without_profile"
             });
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
@@ -79,34 +107,6 @@ describe("Invoke AMS CLI", () => {
 
     describe("Success scenarios", () => {
 
-        // Create the unique test environment
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
-                testName: "zos_invoke_ams"
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-            });
-
-            user = defaultSystem.zosmf.user.trim().toUpperCase();
-            volume = defaultSystem.datasets.list[0].vol;
-
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        });
-
         it("should display invoke and invoke ams help", async () => {
             const response = runCliScript(__dirname + "/__scripts__/invoke_ams_help.sh", TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
@@ -145,15 +145,15 @@ describe("Invoke AMS CLI", () => {
             testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
         });
+    });
 
-        describe("Expected failures", () => {
+    describe("Expected failures", () => {
 
-            it("should fail due to controlStatements not specified", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_missing_statement.sh", TEST_ENVIRONMENT);
-                expect(stripNewLines(response.stderr.toString())).toContain("Syntax Error");
-                expect(stripNewLines(response.stderr.toString())).toContain("Missing Positional");
-                expect(stripNewLines(response.stderr.toString())).toContain("controlStatements");
-            });
+        it("should fail due to controlStatements not specified", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_missing_statement.sh", TEST_ENVIRONMENT);
+            expect(stripNewLines(response.stderr.toString())).toContain("Syntax Error");
+            expect(stripNewLines(response.stderr.toString())).toContain("Missing Positional");
+            expect(stripNewLines(response.stderr.toString())).toContain("controlStatements");
         });
     });
 });
