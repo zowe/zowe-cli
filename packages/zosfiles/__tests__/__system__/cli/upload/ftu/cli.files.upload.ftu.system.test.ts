@@ -11,7 +11,7 @@
 
 import { Imperative, IO, Session } from "@brightside/imperative";
 import * as path from "path";
-import { runCliScript, getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
@@ -71,20 +71,7 @@ describe("Upload uss file", () => {
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
-            //
-            // REAL_SESSION = new Session({
-            //     user: defaultSys.zosmf.user,
-            //     password: defaultSys.zosmf.pass,
-            //     hostname: defaultSys.zosmf.host,
-            //     port: defaultSys.zosmf.port,
-            //     type: "basic",
-            //     rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
-            // });
-            //
-            // dsname = getUniqueDatasetName(defaultSys.zosmf.user);
-            // ussname = dsname.replace(/\./g, "");
-            // ussname = `${defaultSys.unix.testdir}/${ussname}`;
-            // Imperative.console.info("Using ussfile:" + ussname);
+
         });
 
         beforeEach(async () => {
@@ -117,13 +104,13 @@ describe("Upload uss file", () => {
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Data set uploaded successfully.");
-            const content = await Get.dataSet(REAL_SESSION, dsname + "(member)");
+            expect(response.stdout.toString()).toContain("USS file uploaded successfully.");
+            const content = await Get.USSFile(REAL_SESSION, ussname);
             expect(content.toString().trim()).toEqual(IO.readFileSync(localFileName).toString().trim());
         });
     });
 
-    describe ("Success scenarios", () => {
+    describe("Success scenarios", () => {
 
         afterEach(async () => {
             let error;
