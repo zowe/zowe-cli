@@ -18,7 +18,9 @@ import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/proper
 import { Delete } from "../../../../../src/api/methods/delete";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+// Test Environment populated in the beforeAll();
+let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let dsname: string;
@@ -26,14 +28,15 @@ let dsnameSuffix: string;
 let user: string;
 
 describe("Create Physical Sequential Data Set", () => {
+
     // Create the unique test environment
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_binary_dataset"
         });
 
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
         REAL_SESSION = new Session({
@@ -51,7 +54,47 @@ describe("Create Physical Sequential Data Set", () => {
     });
 
     afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("without profiles", () => {
+        let sysProps;
+        let defaultSys: ITestSystemSchema;
+
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_files_create_ps_without_profiles"
+            });
+
+            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSys = sysProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        afterEach(async () => {
+            // use DELETE APIs
+            if (dsnameSuffix !== "") {
+                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+            }
+        });
+
+        it("should create a physical sequential data set", () => {
+            dsnameSuffix = "ps";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [user,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Success scenarios", () => {
@@ -68,7 +111,7 @@ describe("Create Physical Sequential Data Set", () => {
         });
 
         it("should display create physical sequential help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_ps_help.sh", testEnvironment);
+            const response = runCliScript(__dirname + "/__scripts__/create_ps_help.sh", TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -77,7 +120,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps.sh",
-              testEnvironment, [user]);
+              TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -86,7 +129,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set and print attributes", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_rfj.sh",
-              testEnvironment, [user]);
+              TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -95,7 +138,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set with specified size", () => {
             dsnameSuffix = "ps.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_with_size.sh",
-              testEnvironment, [user]);
+              TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -106,13 +149,13 @@ describe("Create Physical Sequential Data Set", () => {
 
         it("should fail creating a physical sequential data set due to directory-blocks specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fail_dirblk.sh",
-              testEnvironment, [user]);
+              TEST_ENVIRONMENT, [user]);
             expect(stripNewLines(response.stderr.toString())).toContain("'PS' data set organization (dsorg) specified and the directory " +
                 "blocks (dirblk) is not zero.");
         });
 
         it("should fail creating a physical sequential data set due to missing data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fail_missing_dataset_name.sh", testEnvironment);
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Missing Positional Option");
             expect(response.stderr.toString()).toContain("dataSetName");
