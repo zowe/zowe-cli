@@ -16,8 +16,6 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { Create, CreateDataSetTypeEnum } from "../../../../../src/api/methods/create";
-import { Delete } from "../../../../../src/api/methods/delete";
 import { Get, ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 
@@ -26,7 +24,6 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
-let dsname: string;
 let ussname: string;
 
 describe("Upload uss file", () => {
@@ -49,8 +46,6 @@ describe("Upload uss file", () => {
             rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
         });
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        ussname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
         Imperative.console.info("Using ussfile:" + ussname);
     });
@@ -72,22 +67,6 @@ describe("Upload uss file", () => {
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
 
-        });
-
-        beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            } catch (err) {
-                throw err;
-            }
-        });
-
-        afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
         });
 
         it("should upload USS file from local file", async () => {
