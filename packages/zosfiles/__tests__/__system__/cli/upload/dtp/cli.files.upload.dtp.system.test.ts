@@ -53,7 +53,7 @@ describe("Upload directory to PDS", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
-    
+
     describe("Without profile", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
