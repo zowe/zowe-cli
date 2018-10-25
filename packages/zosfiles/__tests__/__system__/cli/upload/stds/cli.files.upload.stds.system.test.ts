@@ -64,17 +64,6 @@ describe("Upload Data Set", () => {
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
-            //
-            // REAL_SESSION = new Session({
-            //     user: defaultSys.zosmf.user,
-            //     password: defaultSys.zosmf.pass,
-            //     hostname: defaultSys.zosmf.host,
-            //     port: defaultSys.zosmf.port,
-            //     type: "basic",
-            //     rejectUnauthorized: defaultSys.zosmf.rejectUnauthorized
-            // });
-            //
-            // dsname = getUniqueDatasetName(defaultSys.zosmf.user);
         });
 
         beforeEach(async () => {
