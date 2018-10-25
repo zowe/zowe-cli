@@ -93,7 +93,7 @@ describe("zos-tso issue command", () => {
 
         it("should successfully issue command = \"time\" without a profile", async () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
-            const response = runCliScript(__dirname + "/__scripts__/as/address_space_fully_qualified.sh",
+            const response = runCliScript(__dirname + "/__scripts__/as/issue_command_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     DEFAULT_SYSTEM_PROPS.zosmf.host,
