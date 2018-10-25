@@ -58,18 +58,9 @@ describe("provisioning delete instance", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        SYSTEM_PROPS = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = SYSTEM_PROPS.getDefaultSystem();
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         accountNumber = defaultSystem.tso.account;
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         await prepareEnvironment();
     }, MAX_TIMEOUT_NUMBER);

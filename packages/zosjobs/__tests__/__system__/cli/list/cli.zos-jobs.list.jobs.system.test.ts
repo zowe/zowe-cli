@@ -47,14 +47,7 @@ describe("zos-jobs list jobs command", () => {
         const systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         const defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;

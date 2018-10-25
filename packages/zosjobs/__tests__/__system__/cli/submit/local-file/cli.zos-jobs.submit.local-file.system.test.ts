@@ -37,15 +37,7 @@ describe("zos-jobs submit local-file command", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
-
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = defaultSystem.tso.account;
         const maxJobNamePrefixLength = 5;
         // JCL to submit

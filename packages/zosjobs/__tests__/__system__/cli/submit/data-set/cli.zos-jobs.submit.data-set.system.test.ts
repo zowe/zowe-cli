@@ -39,14 +39,7 @@ describe("zos-jobs submit data-set command", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = defaultSystem.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
@@ -106,7 +99,7 @@ describe("zos-jobs submit data-set command", () => {
         });
 
         it("should submit a job in an existing valid data set with 'volume' option", async () => {
-            const dataSets = await List.dataSet(REAL_SESSION, psJclDataSet, { attributes: true });
+            const dataSets = await List.dataSet(REAL_SESSION, psJclDataSet, {attributes: true});
             expect(dataSets.apiResponse.items).toBeDefined();
             const volume = dataSets.apiResponse.items[0].vol; // use the volume of the existing data set
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_with_volume.sh",
