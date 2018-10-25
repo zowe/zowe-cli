@@ -80,6 +80,17 @@ export class ZosmfSession {
     };
 
     /**
+     * Option used in profile creation and commands for base path setting for connecting to z/OSMF
+     */
+    public static ZOSMF_OPTION_BASE_PATH: ICommandOptionDefinition = {
+        name: "base-path",
+        aliases: ["bp"],
+        description: "Base path for API Mediation Layer.",
+        type: "string",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -88,7 +99,8 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_PORT,
         ZosmfSession.ZOSMF_OPTION_USER,
         ZosmfSession.ZOSMF_OPTION_PASS,
-        ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED
+        ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
+        ZosmfSession.ZOSMF_OPTION_BASE_PATH
     ];
 
 
@@ -107,7 +119,8 @@ export class ZosmfSession {
             user: profile.user,
             password: profile.pass,
             base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized
+            rejectUnauthorized: profile.rejectUnauthorized,
+            basePath: profile.basePath,
         });
     }
 
@@ -126,7 +139,8 @@ export class ZosmfSession {
             user: args.user,
             password: args.pass,
             base64EncodedAuth: args.auth,
-            rejectUnauthorized: args.rejectUnauthorized
+            rejectUnauthorized: args.rejectUnauthorized,
+            basePath: args.basePath,
         });
     }
 
