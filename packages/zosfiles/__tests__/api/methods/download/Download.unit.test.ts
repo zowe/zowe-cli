@@ -125,6 +125,39 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(newDsContent));
         });
 
+        it("should download a data set specifying \"\" as extension", async () => {
+            let response;
+            let caughtError;
+            const volume = "testVs";
+            const extension = "";
+            const destination = dsFolder + extension;
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {volume, extension});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const newDsContent = IO.processNewlines(dsContent);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                apiResponse: newDsContent
+            });
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(newDsContent));
+        });
+
         it("should download a data set in binary mode and default extension", async () => {
             let response;
             let caughtError;
@@ -336,6 +369,41 @@ describe("z/OS Files - Download", () => {
             const volume = "testVs";
             const directory = "my/test/path/";
             const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
+        it("should download all members with specified \"\" extension", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path/";
+            const extension = "";
             const binary = true;
 
             try {

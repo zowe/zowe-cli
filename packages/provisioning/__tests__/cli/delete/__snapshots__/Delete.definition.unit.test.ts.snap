@@ -11,15 +11,3 @@ Object {
   "type": "group",
 }
 `;
-
-exports[`zos-jobs delete command group definition should not have changed 1`] = `
-Object {
-  "aliases": Array [
-    "del",
-  ],
-  "description": "Deletes instance previously provisioned with z/OSMF cloud provisioning services.",
-  "name": "delete",
-  "summary": "Delete instance.",
-  "type": "group",
-}
-`;
