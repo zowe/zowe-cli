@@ -109,7 +109,7 @@ describe("Create Binary Data Set", () => {
         });
 
         it("should create a binary partitioned data set", () => {
-            dsnameSuffix = "classic";
+            dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds.sh",
               TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
