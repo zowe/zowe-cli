@@ -75,7 +75,7 @@ describe("Create C Data Set", () => {
             }
         });
 
-        it("should create a classic partitioned data set", () => {
+        it("should create a c partitioned data set", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,

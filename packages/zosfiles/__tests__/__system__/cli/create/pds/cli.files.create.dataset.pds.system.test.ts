@@ -75,7 +75,7 @@ describe("Create Partitioned Data Set", () => {
             }
         });
 
-        it("should create a classic partitioned data set", () => {
+        it("should create a partitioned data set", () => {
             dsnameSuffix = "pds";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
