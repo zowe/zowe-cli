@@ -35,6 +35,8 @@ describe("Download USS File", () => {
             testName: "download_uss_file"
         });
 
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         // using unique DS function to generate unique USS file name

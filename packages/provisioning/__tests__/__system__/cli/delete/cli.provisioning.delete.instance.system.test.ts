@@ -15,7 +15,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ListInstanceInfo, PerformAction, ProvisioningConstants, ProvisionPublishedTemplate } from "../../../../../provisioning";
+import { ListInstanceInfo, ProvisioningConstants, ProvisionPublishedTemplate } from "../../../../../provisioning";
 import * as fs from "fs";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
@@ -31,8 +31,8 @@ let instanceName: string;
 let instanceId: string;
 let accountNumber: string;
 
-function sleep(time: number) {
-    return new Promise((resolve) => setTimeout( resolve, time));
+function sleep(time: number) {
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 async function prepareEnvironment() {
@@ -58,6 +58,8 @@ describe("provisioning delete instance", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
+        SYSTEM_PROPS = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = SYSTEM_PROPS.getDefaultSystem();
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         accountNumber = defaultSystem.tso.account;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);

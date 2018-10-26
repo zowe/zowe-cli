@@ -21,8 +21,6 @@ import { ListCatalogTemplates } from "../../../../../";
 import { ProvisioningConstants } from "../../../../../index";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
 let REAL_SESSION: Session;
 const TIMEOUT = 30000;
 

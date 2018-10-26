@@ -36,8 +36,6 @@ import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/d
  */
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
 let REAL_SESSION: Session;
 const PRETEND_SESSION = new Session({
     user: "user",

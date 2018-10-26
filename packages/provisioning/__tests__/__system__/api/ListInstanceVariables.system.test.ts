@@ -28,9 +28,6 @@ import {
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 
 let REAL_SESSION: Session;
 

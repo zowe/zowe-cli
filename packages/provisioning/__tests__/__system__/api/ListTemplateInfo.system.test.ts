@@ -50,7 +50,8 @@ describe("ListTemplateInfo (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_template-info"
         });
-
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 

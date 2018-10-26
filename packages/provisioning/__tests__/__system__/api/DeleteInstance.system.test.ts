@@ -77,6 +77,8 @@ describe("DeleteInstance (system)", () => {
             testName: "provisioning_perform_action"
         });
 
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;

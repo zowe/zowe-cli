@@ -15,18 +15,19 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
+    DeleteInstance,
     IProvisionedInstances,
+    IProvisionOptionals,
     IProvisionTemplateResponse,
-    ListRegistryInstances,
     ListInstanceInfo,
+    ListRegistryInstances,
+    noAccountInfo,
     noSessionProvisioning,
     noTemplateName,
     nozOSMFVersion,
     PerformAction,
     ProvisioningConstants,
     ProvisionPublishedTemplate,
-    IProvisionOptionals,
-    noAccountInfo, DeleteInstance,
 } from "../../../../provisioning";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
@@ -120,6 +121,8 @@ describe("ProvisionPublishedTemplate (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_provision_template"
         });
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
@@ -141,7 +144,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 response = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
                     templateName, accountNumber);
                 Imperative.console.info(`Response ${response}`);
-                OBJECT_URI_RESPONSE =  OBJECT_URI + response["registry-info"]["object-id"];
+                OBJECT_URI_RESPONSE = OBJECT_URI + response["registry-info"]["object-id"];
             } catch (thrownError) {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
