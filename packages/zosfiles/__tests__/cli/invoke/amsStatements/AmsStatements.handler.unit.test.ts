@@ -10,6 +10,7 @@
 */
 
 import { Invoke } from "../../../../src/api/methods/invoke";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Invoke AMS statements handler", () => {
     describe("process method", () => {
@@ -57,7 +58,8 @@ describe("Invoke AMS statements handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        controlStatements
+                        controlStatements,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -83,7 +85,7 @@ describe("Invoke AMS statements handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Invoke.ams).toHaveBeenCalledTimes(1);
             expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, [controlStatements]);
             expect(jsonObj).toMatchSnapshot();

@@ -10,6 +10,7 @@
 */
 
 import { List } from "../../../../src/api/methods/list";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("List AllMembers handler", () => {
     describe("process method", () => {
@@ -56,7 +57,8 @@ describe("List AllMembers handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -82,7 +84,7 @@ describe("List AllMembers handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.allMembers).toHaveBeenCalledTimes(1);
             expect(List.allMembers).toHaveBeenCalledWith(fakeSession, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

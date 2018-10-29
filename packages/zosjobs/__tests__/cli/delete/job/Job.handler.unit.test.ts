@@ -10,63 +10,25 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
 import { GetJobs, DeleteJobs } from "../../../../";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import * as JobHandler from "../../../../src/cli/delete/job/Job.handler";
 import * as JobDefinition from "../../../../src/cli/delete/job/Job.definition";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 process.env.FORCE_COLOR = "0";
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["zos-jobs", "delete", "job"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            })
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+    response: getMockedResponse(),
     definition: JobDefinition.JobDefinition,
     fullDefinition: JobDefinition.JobDefinition,
-    profiles: PROFILES
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("delete job handler tests", () => {

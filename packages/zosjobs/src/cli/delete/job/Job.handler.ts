@@ -9,9 +9,9 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
-import { IJob, GetJobs, DeleteJobs } from "../../../../";
+import { IHandlerParameters } from "@brightside/imperative";
+import { DeleteJobs, GetJobs, IJob } from "../../../../";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * "zos-jobs delete job" command handler. Delete (purge) a job by ID.
@@ -19,24 +19,7 @@ import { IJob, GetJobs, DeleteJobs } from "../../../../";
  * @class JobHandler
  * @implements {ICommandHandler}
  */
-export default class JobHandler implements ICommandHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
-     * The z/OSMF profile for this command
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private profile: any;
-
+export default class JobHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
      * @private
@@ -51,21 +34,16 @@ export default class JobHandler implements ICommandHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof JobHandler
      */
-    public async process(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-        this.profile = params.profiles.get("zosmf");
+    public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
 
         // Force yargs `jobid` parameter to be a string
         const jobid: string = this.arguments.jobid + "";
-        // Create a z/OSMF session
-        const session: Session = ZosmfSession.createBasicZosmfSession(this.profile);
+
         // Get the job details
-        const job: IJob = await GetJobs.getJob(session, jobid);
+        const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         // Delete the job
-        await DeleteJobs.deleteJobForJob(session, job);
+        await DeleteJobs.deleteJobForJob(this.mSession, job);
 
         const message: string = `Successfully deleted job ${job.jobname} (${jobid})`;
         // Print message to console

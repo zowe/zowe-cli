@@ -17,15 +17,19 @@ import { ISubmitParms } from "../../../src/api/doc/input/ISubmitParms";
 
 process.env.FORCE_COLOR = "0";
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
     "zosmf", [{
         name: "zosmf",
         type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
+        ...ZOSMF_PROF_OPTS
     }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
@@ -34,6 +38,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["zos-jobs", "submit", "data-set"],
+        ...ZOSMF_PROF_OPTS
     },
     response: {
         data: {
@@ -73,6 +78,7 @@ const LOCALFILE_PARAMETERS: IHandlerParameters = {
     ...{ arguments: {
         $0: "bright",
         _: ["zos-jobs", "submit", "local-file"],
+        ...ZOSMF_PROF_OPTS
     }},
 };
 

@@ -19,20 +19,23 @@ import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/proper
 import { Create, CreateDataSetTypeEnum, Delete, ZosFilesMessages } from "../../../../../../zosfiles";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+// Test Environment populated in the beforeAll();
+let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let dsname: string;
 
-
 describe("Upload directory to PDS", () => {
+
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
+
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "upload_data_set"
         });
 
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
         REAL_SESSION = new Session({
@@ -47,7 +50,65 @@ describe("Upload directory to PDS", () => {
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
 
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
+        let sysProps;
+        let defaultSys: ITestSystemSchema;
+
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_files_upload_directory_without_profile"
+            });
+
+            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSys = sysProps.getDefaultSystem();
+        });
+
+        beforeEach(async () => {
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            } catch (err) {
+                throw err;
+            }
+        });
+
+        afterEach(async () => {
+            try {
+                await Delete.dataSet(REAL_SESSION, dsname);
+            } catch (err) {
+                throw err;
+            }
+        });
+
+        it("should upload data set from local directory", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
+            const response = runCliScript(__dirname + "/__scripts__/command/command_upload_dtp_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    localDirName,
+                    dsname,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("file_to_upload: 5");
+            expect(stdoutText).toContain("success:        5");
+            expect(stdoutText).toContain("error:          0");
+            expect(stdoutText).toContain("skipped:        0");
+            expect(stdoutText).toContain("Data set uploaded successfully.");
+        });
+    });
+
     describe("Success scenarios", () => {
+
         beforeEach(async () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
@@ -66,7 +127,7 @@ describe("Upload directory to PDS", () => {
 
         it("should display upload directory help", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_upload_dtp_help.sh");
-            const response = runCliScript(shellScript, testEnvironment);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const helpText = response.stdout.toString();
@@ -85,7 +146,7 @@ describe("Upload directory to PDS", () => {
         it("should upload data set from local directory", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
-            const response = runCliScript(shellScript, testEnvironment, [localDirName, dsname]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, dsname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const stdoutText = response.stdout.toString();
@@ -99,7 +160,7 @@ describe("Upload directory to PDS", () => {
         it("should upload local directory with response-format-json flag", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
-            const response = runCliScript(shellScript, testEnvironment, [localDirName, dsname, "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, dsname, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const stdoutText = response.stdout.toString();
@@ -116,7 +177,7 @@ describe("Upload directory to PDS", () => {
     describe("Expected failures", () => {
         it("should fail due to missing local directory name", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
-            const response = runCliScript(shellScript, testEnvironment, [""]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Missing Positional Option");
             expect(response.stderr.toString()).toContain("inputdir");
@@ -126,7 +187,7 @@ describe("Upload directory to PDS", () => {
         it("should fail due to missing mf data set name", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
-            const response = runCliScript(shellScript, testEnvironment, [localDirName]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Missing Positional Option");
             expect(response.stderr.toString()).toContain("dataSetName");
@@ -134,7 +195,7 @@ describe("Upload directory to PDS", () => {
 
         it("should fail when local directory does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
-            const response = runCliScript(shellScript, testEnvironment, ["localDirThatDoesNotExist", dsname]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localDirThatDoesNotExist", dsname]);
             expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory, lstat");
             expect(stripNewLines(response.stderr.toString())).toContain("localDirThatDoesNotExist");
         });
@@ -142,7 +203,7 @@ describe("Upload directory to PDS", () => {
         it("should fail when mf data set does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
-            const response = runCliScript(shellScript, testEnvironment, [localDirName, "MF.DOES.NOT.EXIST"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, "MF.DOES.NOT.EXIST"]);
             expect(response.stderr.toString()).toContain("Data set not found");
         });
 
@@ -156,7 +217,7 @@ describe("Upload directory to PDS", () => {
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
-            const response = runCliScript(shellScript, testEnvironment, [localDirName, zosSeqFile]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, zosSeqFile]);
             expect(response.stderr.toString()).toContain(
                 ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message);
 

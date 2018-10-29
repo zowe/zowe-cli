@@ -9,7 +9,8 @@
 *                                                                                 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { TSO_PROFILE_OPTIONS } from "../../constants/ZosTso.constants";
 
 export const CommandDefinition: ICommandDefinition = {
     name: "command",
@@ -21,7 +22,7 @@ export const CommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Command.handler",
     profile: {
-        required: ["zosmf", "tso"],
+        optional: ["zosmf", "tso"],
     },
     positionals: [
         {
@@ -31,14 +32,14 @@ export const CommandDefinition: ICommandDefinition = {
             required: true,
         },
     ],
-    options: [
+    options: ([
         {
             name: "suppress-startup-messages",
             aliases: ["ssm"],
             type: "boolean",
             description: "Suppress console messages from start of address space."
         }
-    ],
+    ] as ICommandOptionDefinition[]).concat(TSO_PROFILE_OPTIONS),
     examples: [
         {
             description: 'Issue the TSO command "status" to display information about jobs for your user ID.',

@@ -16,15 +16,19 @@ import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "
 import * as AddressSpaceHandler from "../../../../src/cli/stop/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../src/cli/stop/address-space/AddressSpace.definition";
 
+const ZOSMF_PROF_OPTS = {
+    host: "somewhere.com",
+    port: "43443",
+    user: "someone",
+    pass: "somesecret"
+};
+
 const PROFILE_MAP = new Map<string, IProfile[]>();
 PROFILE_MAP.set(
     "zosmf", [{
         name: "zosmf",
         type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
+        ...ZOSMF_PROF_OPTS
     }]
 );
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
@@ -78,7 +82,9 @@ describe("stop address-space handler tests", () => {
             return StopTsoData.SAMPLE_STOP_RESPONSE;
         });
         const handler = new AddressSpaceHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        let  params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const args = {arguments: ZOSMF_PROF_OPTS};
+        params = {...params,...args};
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         await handler.process(params);
         expect(StopTso.stop).toHaveBeenCalledTimes(1);
@@ -92,7 +98,9 @@ describe("stop address-space handler tests", () => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new AddressSpaceHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const args = {arguments: ZOSMF_PROF_OPTS};
+        params = {...params,...args};
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         try {
             await handler.process(params);

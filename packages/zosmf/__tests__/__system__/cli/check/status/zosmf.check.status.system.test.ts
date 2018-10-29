@@ -25,6 +25,7 @@ let pass: string;
 
 
 describe("zosmf check status", () => {
+
     // Create the unique test environment
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
@@ -41,6 +42,45 @@ describe("zosmf check status", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    describe("without profiles", () => {
+
+        // Create a separate test environment for no profiles
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_check_status_command_without_profiles"
+            });
+
+            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        it("should successfully check status with options only on the command line", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status_use_cli_opts.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    "--pass", DEFAULT_SYSTEM_PROPS.zosmf.pass,
+                    "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
+                ]
+            );
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(
+                "The user '" + DEFAULT_SYSTEM_PROPS.zosmf.user +
+                "' successfully connected to z/OSMF on '" + DEFAULT_SYSTEM_PROPS.zosmf.host + "'."
+            );
+        });
     });
 
     describe("Success scenarios", () => {
@@ -76,7 +116,7 @@ describe("zosmf check status", () => {
             // create a temporary zowe profile with an invalid port
             const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
             const command = "zowe profiles create zosmf " + host + "temp --host " + host + " --port " + port + 1
-                + " --user " + user + " --password " + pass + " --ru false";
+                + " --user " + user + " --pass " + pass + " --ru false";
             await IO.writeFileAsync(scriptPath, command);
             let response = runCliScript(scriptPath, testEnvironment);
             expect(response.status).toBe(0);

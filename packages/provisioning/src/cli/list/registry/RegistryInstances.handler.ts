@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { ListRegistryInstances } from "../../../../";
 import {
     explainProvisionedInstanceFull,
@@ -19,6 +19,7 @@ import {
     ProvisioningConstants
 } from "../../../../index";
 import { isNullOrUndefined } from "util";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler to list registry instances
@@ -26,22 +27,11 @@ import { isNullOrUndefined } from "util";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class RegistryInstancesHandler implements ICommandHandler {
+export default class RegistryInstancesHandler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
+    public async processCmd(commandParameters: IHandlerParameters) {
 
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
-
-        const response: IProvisionedInstances = await ListRegistryInstances.listFilteredRegistry(session, ProvisioningConstants.ZOSMF_VERSION,
+        const response: IProvisionedInstances = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION,
             commandParameters.arguments.filterByType, commandParameters.arguments.filterByExternalName);
         const instances: IProvisionedInstance[] = response["scr-list"];
         const pretty = TextUtils.prettyJson(this.formatProvisionedInstancesSummaryOutput(instances, commandParameters.arguments.allInfo));

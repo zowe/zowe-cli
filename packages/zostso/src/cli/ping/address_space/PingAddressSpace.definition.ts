@@ -20,7 +20,7 @@ export const PingAddressSpaceCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/PingAddressSpace.handler",
     profile: {
-        required: ["zosmf", "tso"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

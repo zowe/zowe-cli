@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { ZosmfSession } from "../../../ZosmfSession";
 
 export const StatusDefinition: ICommandDefinition = {
     name: "status",
@@ -19,9 +20,9 @@ export const StatusDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Status.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
-    options: [],
+    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
             description: "Report the status of the z/OSMF server that you specified " +
@@ -32,6 +33,10 @@ export const StatusDefinition: ICommandDefinition = {
             description: "Report the status of the z/OSMF server that you specified " +
                 "in a supplied z/OSMF profile",
             options: "--zosmf-profile SomeZosmfProfileName"
+        },
+        {
+            description: "Report the status of the z/OSMF server that you specified manually via command line",
+            options: "--host myhost --port 443 --user myuser --pass mypass"
         },
     ]
 };

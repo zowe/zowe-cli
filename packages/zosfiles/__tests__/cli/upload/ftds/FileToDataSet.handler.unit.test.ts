@@ -10,6 +10,7 @@
 */
 
 import { Upload } from "../../../../src/api/methods/upload";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Upload file-to-data-set handler", () => {
     describe("process method", () => {
@@ -58,7 +59,8 @@ describe("Upload file-to-data-set handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         inputfile,
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -84,7 +86,7 @@ describe("Upload file-to-data-set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
             expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();
@@ -136,7 +138,8 @@ describe("Upload file-to-data-set handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         inputfile,
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -162,7 +165,7 @@ describe("Upload file-to-data-set handler", () => {
             }
 
             expect(error).toBeDefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
             expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

@@ -21,16 +21,13 @@ describe("zos-files invoke ams-statements command definition", () => {
         expect(definition.children).toBeUndefined();
 
         // Should require a zosmf profile
-        expect(definition.profile.required).toEqual(["zosmf"]);
+        expect(definition.profile.optional).toEqual(["zosmf"]);
 
         // Should only contain one positional
         expect(definition.positionals.length).toEqual(1);
 
         // The positional should be required
         expect(definition.positionals[0].required).toBeTruthy();
-
-        // No options for this command
-        expect(definition.options.length).toEqual(0);
 
         // Should not change
         expect(definition.examples).toMatchSnapshot();

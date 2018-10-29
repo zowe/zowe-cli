@@ -18,7 +18,9 @@ import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/proper
 import { Delete } from "../../../../../src/api/methods/delete";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+// Test Environment populated in the beforeAll();
+let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let dsname: string;
@@ -27,35 +29,75 @@ let user: string;
 
 describe("Create C Data Set", () => {
 
-    describe("Success scenarios", () => {
+    // Create the unique test environment
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "zos_create_C_dataset"
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+
+        REAL_SESSION = new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+        });
+
+        user = defaultSystem.zosmf.user.trim().toUpperCase();
+        dsname = `${user}.TEST.DATA.SET`;
+
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
+        let sysProps;
+        let defaultSys: ITestSystemSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
-            testEnvironment = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
-                testName: "zos_create_C_dataset"
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_files_create_c_pds_without_profile"
             });
 
-            systemProps = new TestProperties(testEnvironment.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-
-            REAL_SESSION = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-            });
-
-            user = defaultSystem.zosmf.user.trim().toUpperCase();
-            dsname = `${user}.TEST.DATA.SET`;
-
+            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSys = sysProps.getDefaultSystem();
         });
 
         afterAll(async () => {
-            await TestEnvironment.cleanUp(testEnvironment);
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
+
+        afterEach(async () => {
+            // use DELETE APIs
+            if (dsnameSuffix !== "") {
+                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+            }
+        });
+
+        it("should create a classic partitioned data set", () => {
+            dsnameSuffix = "c";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [user,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe("Success scenarios", () => {
 
         beforeEach(() => {
             dsnameSuffix = "";  // reset
@@ -69,7 +111,7 @@ describe("Create C Data Set", () => {
         });
 
         it("should display create help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_c_pds_help.sh", testEnvironment);
+            const response = runCliScript(__dirname + "/__scripts__/create_c_pds_help.sh", TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -78,7 +120,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -87,7 +129,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set and print attributes", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_rfj.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -96,7 +138,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set with specified size", () => {
             dsnameSuffix = "c.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_with_size.sh",
-                testEnvironment, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -105,7 +147,7 @@ describe("Create C Data Set", () => {
 
     describe("Expected failures", () => {
         it("should fail creating a C partitioned data set due to missing data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_fail_missing_dataset_name.sh", testEnvironment);
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
 
             expect(response.stderr.toString()).toContain("Missing Positional Option");
             expect(response.stderr.toString()).toContain("dataSetName");

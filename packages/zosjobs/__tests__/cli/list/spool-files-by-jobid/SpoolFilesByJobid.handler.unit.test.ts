@@ -10,65 +10,26 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { IProfile, CommandProfiles, IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { GetJobs } from "../../../../src/api/GetJobs";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
 import * as SpoolFilesHandler from "../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.handler";
+import { UNIT_TEST_PROFILES_ZOSMF, getMockedResponse, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
-
-// Dummy profile map (for profiles.get("zosmf"))
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["zos-jobs", "list", "spool-files"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            })
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+    response: getMockedResponse(),
     definition: SpoolFilesByJobidDefinition,
     fullDefinition: SpoolFilesByJobidDefinition,
-    profiles: PROFILES
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("zos-jobs list spool-files-by-jobid handler", () => {

@@ -12,59 +12,21 @@
 jest.mock("../../../../src/api/ProvisionPublishedTemplate");
 import { ProvisioningConstants, ProvisionPublishedTemplate } from "../../../../../provisioning";
 import { ProvisionTemplateData } from "../../../__resources__/api/ProvisionTemplateData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import * as TemplateHandler from "../../../../src/cli/provision/template/Template.handler";
 import * as TemplateDefinition from "../../../../src/cli/provision/template/Template.definition";
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["provisioning", "provision", "template"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            })
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+    response: getMockedResponse(),
     definition: TemplateDefinition.TemplateDefinition,
     fullDefinition: TemplateDefinition.TemplateDefinition,
-    profiles: PROFILES
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("provision template handler tests", () => {

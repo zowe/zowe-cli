@@ -13,60 +13,22 @@ import { ListRegistryInstances } from "../../../../index";
 
 jest.mock("../../../../src/api/ListInstanceVariables");
 import { ListInstanceVariables } from "../../../../../provisioning";
-import { CommandProfiles, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import * as Handler from "../../../../src/cli/list/instanceVariables/InstanceVariables.handler";
 import { instanceVariables } from "../../../../src/cli/list/instanceVariables/InstanceVariables.definition";
 import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
+import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["provisioning", "list", "instance-variables"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            })
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+    response: getMockedResponse(),
     definition: instanceVariables,
     fullDefinition: instanceVariables,
-    profiles: PROFILES
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("list instance info handler tests", () => {

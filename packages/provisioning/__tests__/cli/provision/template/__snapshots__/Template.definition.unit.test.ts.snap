@@ -91,7 +91,7 @@ e.g: \\"SYSNAME1,SYSNAME2\\".",
     },
   ],
   "profile": Object {
-    "required": Array [
+    "optional": Array [
       "zosmf",
     ],
   },

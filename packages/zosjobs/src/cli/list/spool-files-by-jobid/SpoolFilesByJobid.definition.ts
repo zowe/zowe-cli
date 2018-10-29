@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const SpoolFilesByJobidDefinition: ICommandDefinition = {
     name: "spool-files-by-jobid",
@@ -17,17 +18,17 @@ export const SpoolFilesByJobidDefinition: ICommandDefinition = {
     type: "command",
     summary: "List spool files of a z/OS job",
     description: "Given a z/OS job JOBID, list the spool files (DDs) for a z/OS job on the JES/spool queues. " +
-    "The command does not pre-validate the JOBID. " +
-    "The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
+        "The command does not pre-validate the JOBID. " +
+        "The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
     handler: __dirname + "/SpoolFilesByJobid.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "jobid",
             description: "The z/OS JOBID of the job with the spool files you want to list. " +
-            "No pre-validation of the JOBID is performed.",
+                "No pre-validation of the JOBID is performed.",
             type: "string",
             required: true
         }

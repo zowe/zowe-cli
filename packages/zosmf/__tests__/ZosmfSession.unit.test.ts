@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ZosmfSession } from "../ZosmfSession";
+import { ZosmfSession } from "../src/ZosmfSession";
 import { Session } from "@brightside/imperative";
 
 describe("zosmf utils", () => {

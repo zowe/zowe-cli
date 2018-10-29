@@ -9,33 +9,23 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { explainActionResponse, PerformAction, ProvisioningConstants } from "../../../../";
 import { IProvisionedInstance, ListRegistryInstances } from "../../../../index";
 import { isNullOrUndefined } from "util";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+
 /**
  * Handler to perform action against instance
  * @export
  * @class ActionHandler
  * @implements {ICommandHandler}
  */
-export default class ActionHandler implements ICommandHandler {
+export default class ActionHandler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
-
-        const zosmfProfile = commandParameters.profiles.get("zosmf");
-        const session = new Session({
-            type: "basic",
-            hostname: zosmfProfile.host,
-            port: zosmfProfile.port,
-            user: zosmfProfile.user,
-            password: zosmfProfile.pass,
-            base64EncodedAuth: zosmfProfile.auth,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized
-        });
-
-        const registry = await ListRegistryInstances.listFilteredRegistry(session, ProvisioningConstants.ZOSMF_VERSION, null,
+        const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);
         const instances: IProvisionedInstance[] = registry["scr-list"];
         if (isNullOrUndefined(instances)) {
@@ -43,7 +33,7 @@ export default class ActionHandler implements ICommandHandler {
         } else if (instances.length === 1) {
             const id = instances.pop()["object-id"];
             const response = await PerformAction.doProvisioningActionCommon(
-                session, ProvisioningConstants.ZOSMF_VERSION, id, commandParameters.arguments.actionname);
+                this.mSession, ProvisioningConstants.ZOSMF_VERSION, id, commandParameters.arguments.actionname);
             const pretty = TextUtils.explainObject(response, explainActionResponse, false);
             commandParameters.response.console.log(TextUtils.prettyJson(pretty));
             commandParameters.response.data.setObj(response);
