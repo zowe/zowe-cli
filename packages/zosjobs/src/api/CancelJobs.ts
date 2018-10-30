@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, Headers } from "@brightside/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { IJob } from "./doc/response/IJob";
@@ -71,7 +71,7 @@ export class CancelJobs {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
         }
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
-        const headers: any = [];
+        const headers: any = [Headers.APPLICATION_JSON];
 
         // build request
         const request: ICancelJob = {
@@ -79,7 +79,7 @@ export class CancelJobs {
             version: parms.version,
         };
 
-        const parameters: string = IO.FILE_DELIM + parms.jobname + IO.FILE_DELIM + parms.jobid;
+        const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
         await ZosmfRestClient.putExpectString(session, JobsConstants.RESOURCE + parameters, headers, request);
     }
 

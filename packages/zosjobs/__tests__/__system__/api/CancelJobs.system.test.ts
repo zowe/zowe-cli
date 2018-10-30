@@ -30,7 +30,7 @@ describe("CancelJobs System tests", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_get_jobs"
+            testName: "zos_cancel_jobs"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
