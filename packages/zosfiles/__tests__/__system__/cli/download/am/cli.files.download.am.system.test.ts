@@ -181,6 +181,19 @@ describe("Download All Member", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
             expect(response.stdout.toString()).toContain(testDir);
         });
+
+        it("should download all data set member with extension = \"\"", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member_no_extension.sh");
+            const testDir = "test/folder";
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, `-d ${testDir} --rfj`]);
+            const result = JSON.parse(response.stdout.toString());
+            const expectedResult = {member: "TEST"};
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(result.stdout).toContain("Data set downloaded successfully.");
+            expect(result.stdout).toContain(testDir);
+            expect(result.data.apiResponse.items[0]).toEqual(expectedResult);
+        });
     });
 
     describe("Expected failures", () => {
