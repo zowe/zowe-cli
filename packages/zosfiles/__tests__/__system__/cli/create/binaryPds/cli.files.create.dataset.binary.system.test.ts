@@ -77,7 +77,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_fully_qualified.sh",
-                TEST_ENVIRONMENT,
+                TEST_ENVIRONMENT_NO_PROF,
                 [user,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
