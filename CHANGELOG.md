@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] prerelease -2018-10-29
+
+
+## BREAKING CHANGES 
+
+* When creating a zosmf profile with  `zowe profiles create zosmf`, or updating a profile with `zowe profiles update zosmf`,  you must now specify --pass rather than --password.  
+
+### Changed
+* It is now possible to use Zowe CLI without the creation of profiles. 
+Options have been added to all commands that connect to z/OSMF that allow you to fully qualify your connection details 
+without creating a profile first. For example, you can issue the following command without a profile:
+
+`bright zos-files download data-set "my.data.set" --user myuser --pass mypass --host mymainframe.com --port 1443`
+
+* You can also now specify any option on any command via environmental variables using the prefix `ZOWE_OPT_`. 
+For example, you can specify the option --host via setting an environmental variable called `ZOWE_OPT_HOST` to the desired value. 
 
 ## [2.0.0] prerelease -2018-10-8
 

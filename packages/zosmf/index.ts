@@ -9,6 +9,6 @@
 *                                                                                 *
 */
 
-export * from "./ZosmfSession";
+export * from "./src/ZosmfSession";
 export * from "./src/api";
 

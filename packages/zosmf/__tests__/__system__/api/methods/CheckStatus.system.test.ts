@@ -153,7 +153,8 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(ZosmfMessages.improperRejectUnauthorized.message);
+            expect(error.message).toContain("A self-signed certificate was used");
+            expect(error.message).toContain("your reject-unauthorized option is 'true'.");
         });
     });
 });

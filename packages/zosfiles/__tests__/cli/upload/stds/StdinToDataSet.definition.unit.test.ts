@@ -19,7 +19,7 @@ describe("zos-files upload stds command definition", () => {
 
         expect(definition.children).toBeUndefined();
 
-        expect(definition.profile.required).toEqual(["zosmf"]);
+        expect(definition.profile.optional).toEqual(["zosmf"]);
 
         expect(definition.positionals.length).toEqual(1);
 

@@ -19,7 +19,7 @@ export const AddressSpaceDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AddressSpace.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

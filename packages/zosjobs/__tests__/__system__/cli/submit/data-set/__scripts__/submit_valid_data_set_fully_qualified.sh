@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+JCL=$1
+HOST=$2
+PORT=$3
+USER=$4
+PASS=$5
+
+# pass the data set name as an argument to the script
+zowe zos-jobs submit data-set $JCL --host $HOST --port $PORT --user $USER --pass $PASS --ru=false
+exit $?

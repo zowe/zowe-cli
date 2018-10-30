@@ -20,7 +20,7 @@ export const SendToAddressSpaceCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/SendToAddressSpace.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

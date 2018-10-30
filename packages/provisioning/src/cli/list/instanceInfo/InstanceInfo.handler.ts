@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import {
     explainProvisionedInstanceExtended,
     explainProvisionedInstanceFull,
@@ -22,6 +22,7 @@ import {
 } from "../../../../index";
 import { ListInstanceInfo } from "../../../api/ListInstanceInfo";
 import { isNullOrUndefined } from "util";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler to list instance info
@@ -29,29 +30,17 @@ import { isNullOrUndefined } from "util";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class InstanceInfoHandler implements ICommandHandler {
+export default class InstanceInfoHandler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
-
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
-
-        const registry = await ListRegistryInstances.listFilteredRegistry(session, ProvisioningConstants.ZOSMF_VERSION, null,
+    public async processCmd(commandParameters: IHandlerParameters) {
+        const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);
         const instances: IProvisionedInstance[] = registry["scr-list"];
         if (isNullOrUndefined(instances)) {
             commandParameters.response.console.error("No instance with name " + commandParameters.arguments.name + " was found");
         } else if (instances.length === 1) {
             const id = instances.pop()["object-id"];
-            const response: IProvisionedInstance = await ListInstanceInfo.listInstanceCommon(session, ProvisioningConstants.ZOSMF_VERSION, id);
+            const response: IProvisionedInstance = await ListInstanceInfo.listInstanceCommon(this.mSession, ProvisioningConstants.ZOSMF_VERSION, id);
             const pretty = this.formatProvisionedInstanceSummaryOutput(response, commandParameters.arguments.display);
             commandParameters.response.console.log(TextUtils.prettyJson(pretty));
             commandParameters.response.data.setObj(response);

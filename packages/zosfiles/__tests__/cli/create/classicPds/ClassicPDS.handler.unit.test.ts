@@ -11,6 +11,7 @@
 
 import { Create } from "../../../../src/api/methods/create/Create";
 import { CreateDataSetTypeEnum } from "../../../../src/api/methods/create/CreateDataSetType.enum";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Create classic PDS data set handler", () => {
     describe("process method", () => {
@@ -54,7 +55,8 @@ describe("Create classic PDS data set handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -80,7 +82,7 @@ describe("Create classic PDS data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.dataSet).toHaveBeenCalledTimes(1);
             expect(Create.dataSet).toHaveBeenCalledWith(fakeSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

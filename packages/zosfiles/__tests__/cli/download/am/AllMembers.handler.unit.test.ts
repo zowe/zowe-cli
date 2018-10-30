@@ -10,6 +10,7 @@
 */
 
 import { Download } from "../../../../src/api/methods/download";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Download AllMembers handler", () => {
     describe("process method", () => {
@@ -53,7 +54,8 @@ describe("Download AllMembers handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -79,7 +81,7 @@ describe("Download AllMembers handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.allMembers).toHaveBeenCalledTimes(1);
             expect(Download.allMembers).toHaveBeenCalledWith(fakeSession, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

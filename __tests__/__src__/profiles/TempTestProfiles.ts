@@ -107,7 +107,7 @@ export class TempTestProfiles {
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_zosmf";
         const zosmfProperties = testEnvironment.systemTestProperties.systems.common.zosmf;
         const createProfileScript = this.SHEBANG +
-            `${Constants.BINARY_NAME} profiles create zosmf ${profileName} --user ${zosmfProperties.user} -p ` +
+            `${Constants.BINARY_NAME} profiles create zosmf ${profileName} --user ${zosmfProperties.user} --pw ` +
             `${zosmfProperties.pass} --ru ${zosmfProperties.rejectUnauthorized}` +
             ` --host ${zosmfProperties.host} --port ${zosmfProperties.port}`;
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;

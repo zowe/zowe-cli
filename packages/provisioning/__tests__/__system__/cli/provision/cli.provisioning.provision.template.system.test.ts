@@ -30,8 +30,8 @@ let templateName: string;
 let instanceName: string;
 let accountNumber: string;
 
-function sleep(time: number) {
-    return new Promise((resolve) => setTimeout( resolve, time));
+function sleep(time: number) {
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 async function cleanUp() {
@@ -115,4 +115,41 @@ describe("provisioning provision template", () => {
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
     }, MAX_TIMEOUT_NUMBER);
+
+    describe("without profiles", () => {
+
+        // Create a separate test environment for no profiles
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "provisioning_list_template_info_without_profiles"
+            });
+
+            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        });
+
+        it("should successfully issue the command", async () => {
+            const regex = fs.readFileSync(__dirname + "/../provision/__regex__/provision_template_response.regex").toString();
+            const response = runCliScript(__dirname + "/__scripts__/template/provision_template_success_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    templateName,
+                    accountNumber,
+                    DEFAULT_SYSTEM_PROPS.zosmf.host,
+                    DEFAULT_SYSTEM_PROPS.zosmf.port,
+                    DEFAULT_SYSTEM_PROPS.zosmf.user,
+                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+        }, MAX_TIMEOUT_NUMBER);
+    });
 });

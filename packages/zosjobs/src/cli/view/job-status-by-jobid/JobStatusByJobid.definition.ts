@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const JobStatusByJobidDefinition: ICommandDefinition = {
     name: "job-status-by-jobid",
@@ -17,17 +18,17 @@ export const JobStatusByJobidDefinition: ICommandDefinition = {
     type: "command",
     summary: "View status details of a z/OS job",
     description: "View status details of a single z/OS job on spool/JES queues. " +
-    "The command does not prevalidate the JOBID. " +
-    "The command presents errors verbatim from the z/OSMF Jobs REST endpoints (expect for \"no jobs found\").",
+        "The command does not prevalidate the JOBID. " +
+        "The command presents errors verbatim from the z/OSMF Jobs REST endpoints (expect for \"no jobs found\").",
     handler: __dirname + "/JobStatusByJobid.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "jobid",
             description: "The z/OS JOBID of the job you want to view." +
-            " No prevalidation of the JOBID is performed.",
+                " No prevalidation of the JOBID is performed.",
             type: "string",
             required: true
         }

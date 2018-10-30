@@ -10,6 +10,7 @@
 */
 
 import { Upload } from "../../../../src/api/methods/upload";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Upload dir-to-pds handler", () => {
     describe("process method", () => {
@@ -60,7 +61,8 @@ describe("Upload dir-to-pds handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         inputdir,
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -86,7 +88,7 @@ describe("Upload dir-to-pds handler", () => {
             }
 
             expect(error).toBeDefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.dirToPds).toHaveBeenCalledTimes(1);
             expect(Upload.dirToPds).toHaveBeenCalledWith(fakeSession, inputdir, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();

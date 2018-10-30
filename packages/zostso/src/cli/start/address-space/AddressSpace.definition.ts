@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { TSO_PROFILE_OPTIONS } from "../../constants/ZosTso.constants";
 
 export const AddressSpaceDefinition: ICommandDefinition = {
     name: "address-space",
@@ -20,8 +21,9 @@ export const AddressSpaceDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AddressSpace.handler",
     profile: {
-        required: ["zosmf", "tso"],
+        optional: ["zosmf", "tso"],
     },
+    options: TSO_PROFILE_OPTIONS,
     examples: [
         {
             description: "Start TSO/E address space",

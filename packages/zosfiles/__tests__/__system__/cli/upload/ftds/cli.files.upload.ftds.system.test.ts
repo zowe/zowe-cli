@@ -22,20 +22,20 @@ import { ICreateDataSetOptions } from "../../../../../src/api/methods/create/doc
 import { Get } from "../../../../../index";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let dsname: string;
 
-
-describe("Upload Data Set", () => {
+describe("Upload file to data set", () => {
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "upload_data_set"
         });
 
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
         REAL_SESSION = new Session({
@@ -50,7 +50,62 @@ describe("Upload Data Set", () => {
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
 
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    describe("Without profile", () => {
+        let sysProps;
+        let defaultSys: ITestSystemSchema;
+
+        // Create the unique test environment
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "zos_files_upload_ftds_without_profile"
+            });
+
+            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            defaultSys = sysProps.getDefaultSystem();
+        });
+
+        beforeEach(async () => {
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            } catch (err) {
+                throw err;
+            }
+        });
+
+        afterEach(async () => {
+            try {
+                await Delete.dataSet(REAL_SESSION, dsname);
+            } catch (err) {
+                throw err;
+            }
+        });
+
+        it("should upload to data set from local file", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds_fully_qualified.sh");
+            const localFileName = path.join(__dirname, "__data__", "command_upload_ftds.txt");
+            const response = runCliScript(shellScript,
+                TEST_ENVIRONMENT_NO_PROF,
+                [localFileName,
+                    dsname + "(member)",
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set uploaded successfully.");
+            const content = await Get.dataSet(REAL_SESSION, dsname + "(member)");
+            expect(content.toString().trim()).toEqual(IO.readFileSync(localFileName).toString().trim());
+        });
+    });
+
     describe("Success scenarios", () => {
+
         beforeEach(async () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
@@ -69,7 +124,7 @@ describe("Upload Data Set", () => {
 
         it("should display upload data set help", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command_upload_ftds_help.sh");
-            const response = runCliScript(shellScript, testEnvironment);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const helpText = response.stdout.toString();
@@ -85,10 +140,10 @@ describe("Upload Data Set", () => {
             expect(helpText).toContain("\"data\":");
         });
 
-        it("should upload data set from local file", async () => {
+        it("should upload to data set from local file", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftds.txt");
-            const response = runCliScript(shellScript, testEnvironment, [localFileName, dsname + "(member)"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, dsname + "(member)"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Data set uploaded successfully.");
@@ -112,7 +167,7 @@ describe("Upload Data Set", () => {
             }
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftds.txt");
-            const response = runCliScript(shellScript, testEnvironment, [localFileName, dsnLibrary + "(member)"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, dsnLibrary + "(member)"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Data set uploaded successfully.");
@@ -125,11 +180,11 @@ describe("Upload Data Set", () => {
         it("should upload data set from a local file in binary mode", async () => {
             const randomDataLength = 70;
             const randomData = await getRandomBytes(randomDataLength);
-            const randomDataFile = path.join(testEnvironment.workingDir, "random_data.bin");
+            const randomDataFile = path.join(TEST_ENVIRONMENT.workingDir, "random_data.bin");
             IO.writeFile(randomDataFile, randomData);
             expect(IO.readFileSync(randomDataFile, undefined, true)).toEqual(randomData);
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds_binary.sh");
-            const response = runCliScript(shellScript, testEnvironment, [randomDataFile, dsname + "(member)"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [randomDataFile, dsname + "(member)"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const stdoutText = response.stdout.toString();
@@ -145,7 +200,7 @@ describe("Upload Data Set", () => {
         it("should upload data set with response-format-json flag", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftds.txt");
-            const response = runCliScript(shellScript, testEnvironment, [localFileName, dsname + "(member)", "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, dsname + "(member)", "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const stdoutText = response.stdout.toString();
@@ -163,7 +218,7 @@ describe("Upload Data Set", () => {
     describe("Expected failures", () => {
         it("should fail due to missing data set name", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
-            const response = runCliScript(shellScript, testEnvironment, [""]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Missing Positional Option");
             expect(response.stderr.toString()).toContain("dataSetName");
@@ -171,7 +226,7 @@ describe("Upload Data Set", () => {
 
         it("should fail when local file does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
-            const response = runCliScript(shellScript, testEnvironment, ["localFileThatDoesNotExist", dsname]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localFileThatDoesNotExist", dsname]);
             expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory, lstat");
             expect(stripNewLines(response.stderr.toString())).toContain("localFileThatDoesNotExist");
         });
@@ -179,7 +234,7 @@ describe("Upload Data Set", () => {
         it("should fail when mf dataset does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftds.txt");
-            const response = runCliScript(shellScript, testEnvironment, [localFileName, "MF.DOES.NOT.EXIST"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, "MF.DOES.NOT.EXIST"]);
             expect(response.stderr.toString()).toContain("Data set not found");
         });
     });

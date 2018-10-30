@@ -9,10 +9,10 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IExplanationMap, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { CheckStatus, IZosmfInfoResponse } from "../../../..";
 import { CheckStatusMessages } from "../../constants/CheckStatus.messages";
-import { ZosmfSession } from "../../../../../zosmf";
+import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
 
 /**
  * Handler to show zosmf information
@@ -20,25 +20,22 @@ import { ZosmfSession } from "../../../../../zosmf";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class Handler implements ICommandHandler {
+export default class Handler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
+    public async processCmd(commandParameters: IHandlerParameters) {
 
-        // use the user's zosmf profile to create a session to the desired zosmf subsystem
-        const profile = commandParameters.profiles.get("zosmf");
-        const session = ZosmfSession.createBasicZosmfSession(profile);
 
         // our getZosmfInfo API does all of the work
         let zosResponse: IZosmfInfoResponse = null;
         try {
-            zosResponse = await CheckStatus.getZosmfInfo(session);
+            zosResponse = await CheckStatus.getZosmfInfo(this.mSession);
         }
         catch (impErr) {
             commandParameters.response.console.error(TextUtils.chalk.red(
                 TextUtils.formatMessage(CheckStatusMessages.cmdFailed.message, {
-                    userName: profile.user,
-                    hostName: profile.host,
-                    portNum: profile.port,
+                    userName: commandParameters.arguments.user,
+                    hostName: commandParameters.arguments.host,
+                    portNum: commandParameters.arguments.port,
                     reasonMsg: impErr.message
                 })
             ));
@@ -59,7 +56,7 @@ export default class Handler implements ICommandHandler {
         // display the information that we got
         commandParameters.response.console.log(
             TextUtils.formatMessage(CheckStatusMessages.cmdSucceeded.message, {
-                userName: profile.user,
+                userName: commandParameters.arguments.user,
                 hostName: zosResponse.zosmf_hostname,
                 mainZosmfProps: TextUtils.prettyJson(mainZosmfProps),
                 pluginStatus: TextUtils.prettyJson(zosResponse.plugins)

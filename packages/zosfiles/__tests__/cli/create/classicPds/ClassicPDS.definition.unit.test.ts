@@ -21,7 +21,7 @@ describe("zos-files create classic command definition", () => {
         expect(definition.children).toBeUndefined();
 
         // Should require a zosmf profile
-        expect(definition.profile.required).toEqual(["zosmf"]);
+        expect(definition.profile.optional).toEqual(["zosmf"]);
 
         // Should only contain one positional
         expect(definition.positionals.length).toEqual(1);

@@ -9,10 +9,10 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * "zos-jobs view job-status-by-jobid" command handler. Outputs details regarding a z/OS job.
@@ -20,31 +20,7 @@ import { GetJobs } from "../../../api/GetJobs";
  * @class SubmitJobHandler
  * @implements {ICommandHandler}
  */
-export default class JobStatusByJobidHandler implements ICommandHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
-     * The z/OSMF profile for this command
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private profile: any;
-
-    /**
-     * Command line arguments passed
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private arguments: any;
+export default class JobStatusByJobidHandler extends ZosmfBaseHandler {
 
     /**
      * Command handler process - invoked by the command processor to handle the "zos-jobs view job-status-by-jobid"
@@ -52,22 +28,14 @@ export default class JobStatusByJobidHandler implements ICommandHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async process(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-        this.profile = params.profiles.get("zosmf");
-        this.arguments = params.arguments;
-
-        // Create a z/OSMF session
-        const session: Session = ZosmfSession.createBasicZosmfSession(this.profile);
+    public async processCmd(params: IHandlerParameters): Promise<void> {
 
         // Get the job details
-        const job: IJob = await GetJobs.getJob(session, this.arguments.jobid);
+        const job: IJob = await GetJobs.getJob(this.mSession, this.mArguments.jobid);
 
         // Set the object, message, and log the prettified object
         this.data.setObj(job);
-        this.data.setMessage(`Details obtained for job ${this.arguments.jobid}`);
+        this.data.setMessage(`Details obtained for job ${this.mArguments.jobid}`);
 
         // // Format the output with the default fields
         params.response.format.output({

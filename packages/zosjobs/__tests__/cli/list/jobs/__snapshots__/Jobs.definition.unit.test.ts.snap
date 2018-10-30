@@ -41,7 +41,7 @@ Object {
   ],
   "outputFormatOptions": true,
   "profile": Object {
-    "required": Array [
+    "optional": Array [
       "zosmf",
     ],
   },

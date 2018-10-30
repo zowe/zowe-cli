@@ -12,6 +12,16 @@
 // WIP Imperative version of Brightside
 import { IImperativeConfig } from "@brightside/imperative";
 import { Constants } from "./Constants";
+import { ZosmfSession } from "./zosmf";
+import {
+    TSO_OPTION_ACCOUNT,
+    TSO_OPTION_CHAR_SET,
+    TSO_OPTION_CODE_PAGE,
+    TSO_OPTION_COLUMNS,
+    TSO_OPTION_LOGON_PROCEDURE,
+    TSO_OPTION_REGION_SIZE,
+    TSO_OPTION_ROWS
+} from "./zostso/src/cli/constants/ZosTso.constants";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -34,68 +44,38 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: {
-                            name: "host",
-                            aliases: ["H"],
-                            description: "The z/OSMF server host name.",
-                            type: "string",
-                            required: true,
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST,
                     },
                     port: {
                         type: "number",
-                        optionDefinition: {
-                            name: "port",
-                            aliases: ["P"],
-                            description: "The z/OSMF server port.",
-                            type: "number",
-                            defaultValue: 443,
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT,
                     },
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: {
-                            name: "user",
-                            aliases: ["u"],
-                            description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
-                            type: "string",
-                            implies: ["password"],
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER,
                     },
                     pass: {
                         type: "string",
                         secure: true,
-                        optionDefinition: {
-                            name: "password",
-                            aliases: ["p"],
-                            description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
-                            type: "string",
-                            implies: ["user"],
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASS,
                     },
                     rejectUnauthorized: {
                         type: "boolean",
-                        optionDefinition: {
-                            name: "reject-unauthorized",
-                            aliases: ["ru"],
-                            description: "Reject self-signed certificates.",
-                            type: "boolean",
-                            defaultValue: "true",
-                        },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
                     },
                 },
                 required: ["host"],
             },
             createProfileExamples: [
                 {
-                    options: "zos123 --host zos123 --port 1443 --user ibmuser --password myp4ss",
+                    options: "zos123 --host zos123 --port 1443 --user ibmuser --pass myp4ss",
                     description: "Create a zosmf profile called 'zos123' to connect to z/OSMF at host zos123 and port 1443"
                 },
                 {
-                    options: "zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false",
+                    options: "zos124 --host zos124 --user ibmuser --pass myp4ss --reject-unauthorized false",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
-                    "and allow self-signed certificates"
+                        "and allow self-signed certificates"
                 }
             ]
         },
@@ -108,72 +88,31 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: {
-                            name: "account",
-                            aliases: ["a"],
-                            description: "Your z/OS TSO/E accounting information.",
-                            type: "string",
-                            required: true,
-                        },
+                        optionDefinition: TSO_OPTION_ACCOUNT,
                     },
                     characterSet: {
                         type: "string",
-                        optionDefinition: {
-                            name: "character-set",
-                            aliases: ["cs"],
-                            description: "Character set for address space to convert messages and responses from UTF-8 to EBCDIC.",
-                            type: "string",
-                            defaultValue: "697",
-                        },
+                        optionDefinition: TSO_OPTION_CHAR_SET,
                     },
                     codePage: {
                         type: "string",
-                        optionDefinition: {
-                            name: "code-page",
-                            aliases: ["cp"],
-                            description: "Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.",
-                            type: "string",
-                            defaultValue: "1047",
-                        },
+                        optionDefinition: TSO_OPTION_CODE_PAGE,
                     },
                     columns: {
                         type: "number",
-                        optionDefinition: {
-                            name: "columns",
-                            aliases: ["cols"],
-                            description: "The number of columns on a screen.",
-                            type: "number",
-                            defaultValue: 80,
-                        },
+                        optionDefinition: TSO_OPTION_COLUMNS,
                     },
                     logonProcedure: {
                         type: "string",
-                        optionDefinition: {
-                            name: "logon-procedure",
-                            aliases: ["l"],
-                            description: "The logon procedure to use when creating TSO procedures on your behalf.",
-                            type: "string",
-                            defaultValue: "IZUFPROC",
-                        },
+                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
                     },
                     regionSize: {
                         type: "number",
-                        optionDefinition: {
-                            name: "region-size",
-                            aliases: ["rs"],
-                            description: "Region size for the TSO/E address space.",
-                            type: "number",
-                            defaultValue: 4096,
-                        },
+                        optionDefinition: TSO_OPTION_REGION_SIZE,
                     },
                     rows: {
                         type: "number",
-                        optionDefinition: {
-                            name: "rows",
-                            description: "The number of rows on a screen.",
-                            type: "number",
-                            defaultValue: 24,
-                        },
+                        optionDefinition: TSO_OPTION_ROWS,
                     },
                 },
                 required: ["account"],
@@ -185,7 +124,7 @@ const config: IImperativeConfig = {
                 },
                 {
                     description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
-                    "JES accounting information of '1234'",
+                        "JES accounting information of '1234'",
                     options: "largeregion -a 1234 --rs 8192"
                 }
             ]

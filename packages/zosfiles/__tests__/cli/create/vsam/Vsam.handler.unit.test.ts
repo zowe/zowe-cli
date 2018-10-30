@@ -11,6 +11,7 @@
 
 import { Create } from "../../../../src/api/methods/create/Create";
 import { ImperativeError } from "@brightside/imperative";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const message: string = "Dummy error message";
 
@@ -56,7 +57,8 @@ describe("Create VSAM data set handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        dataSetName
+                        dataSetName,
+                        ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
                         data: {
@@ -82,7 +84,7 @@ describe("Create VSAM data set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(profFunc).toHaveBeenCalledWith("zosmf");
+            expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.vsam).toHaveBeenCalledTimes(1);
             expect(Create.vsam).toHaveBeenCalledWith(fakeSession, dataSetName, {});
             expect(jsonObj).toMatchSnapshot();
@@ -132,7 +134,8 @@ describe("Create VSAM data set handler", () => {
                 arguments: {
                     $0: "fake",
                     _: ["fake"],
-                    dataSetName
+                    dataSetName,
+                    ...UNIT_TEST_ZOSMF_PROF_OPTS
                 },
                 response: {
                     data: {
@@ -158,7 +161,7 @@ describe("Create VSAM data set handler", () => {
         }
 
         expect(error).toBeDefined();
-        expect(profFunc).toHaveBeenCalledWith("zosmf");
+        expect(profFunc).toHaveBeenCalledWith("zosmf", false);
         expect(Create.vsam).toHaveBeenCalledTimes(1);
         expect(Create.vsam).toHaveBeenCalledWith(fakeSession, dataSetName, {});
     });

@@ -8,9 +8,12 @@ with an active z/OS application session."
 exports[`issue command handler tests should issue command 1`] = `
 Object {
   "account": "fake",
-  "name": "tso",
-  "password": "fake",
-  "type": "tso",
+  "characterSet": undefined,
+  "codePage": undefined,
+  "columns": undefined,
+  "logonProcedure": undefined,
+  "regionSize": undefined,
+  "rows": undefined,
 }
 `;
 

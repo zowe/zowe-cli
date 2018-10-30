@@ -22,7 +22,7 @@ Object {
     },
   ],
   "profile": Object {
-    "required": Array [
+    "optional": Array [
       "zosmf",
     ],
   },

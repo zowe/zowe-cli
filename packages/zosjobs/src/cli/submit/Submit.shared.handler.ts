@@ -9,16 +9,16 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { SubmitJobs } from "../../../src/api/SubmitJobs";
 import { IJob } from "../../api/doc/response/IJob";
-import { ZosmfSession } from "../../../../zosmf";
 import { isNullOrUndefined } from "util";
 import * as  fs from "fs";
 import { ISubmitParms } from "../../api/doc/input/ISubmitParms";
 import { ISpoolFile } from "../../api/doc/response/ISpoolFile";
 import { IDownloadOptions } from "../../../../zosfiles/src/api/methods/download/doc/IDownloadOptions";
 import { Get } from "../../../../zosfiles/src/api/methods/get/Get";
+import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * "zos-jobs submit data-set" command handler. Submits a job (JCL) contained within a z/OS data set (PS or PDS member).
@@ -26,31 +26,7 @@ import { Get } from "../../../../zosfiles/src/api/methods/get/Get";
  * @class SubmitJobHandler
  * @implements {ICommandHandler}
  */
-export default class SharedSubmitHandler implements ICommandHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
-     * The z/OSMF profile for this command
-     * @private
-     * @type {*}
-     * @memberof SharedSubmitHandler
-     */
-    private profile: any;
-
-    /**
-     * Command line arguments passed
-     * @private
-     * @type {*}
-     * @memberof SharedSubmitHandler
-     */
-    private arguments: any;
+export default class SharedSubmitHandler extends ZosmfBaseHandler {
 
     /**
      * Command handler process - invoked by the command processor to handle the "zos-jobs submit data-set"
@@ -58,37 +34,30 @@ export default class SharedSubmitHandler implements ICommandHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async process(params: IHandlerParameters): Promise<void> {
+    public async processCmd(params: IHandlerParameters): Promise<void> {
         // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-        this.profile = params.profiles.get("zosmf");
-        this.arguments = params.arguments;
         const parms: ISubmitParms = {
             jclSource: undefined,
-            viewAllSpoolContent: this.arguments.viewAllSpoolContent,
-            directory: this.arguments.directory,
-            extension: this.arguments.extension,
-            volume: this.arguments.volume,
+            viewAllSpoolContent: this.mArguments.viewAllSpoolContent,
+            directory: this.mArguments.directory,
+            extension: this.mArguments.extension,
+            volume: this.mArguments.volume,
         };
         const options: IDownloadOptions = {};
-
-        // Create a z/OSMF session & submit the JCL
-        const session: Session = ZosmfSession.createBasicZosmfSession(this.profile);
 
         // Determine the positional parameter specified and invoke the correct API
         // TODO: More will be added with additional commands
         let sourceType: string;
-        if(this.arguments.dataset) {
+        if (this.mArguments.dataset) {
             sourceType = "dataset";
-        } else if(this.arguments.localFile) {
+        } else if (this.mArguments.localFile) {
             sourceType = "local-file";
         }
         let response: IJob; // Response from Submit Job
         let apiObj: any;    // API Object to set in the command JSON response
         let spoolFilesResponse: ISpoolFile[]; // Response from view all spool content option
         let source: any;    // The actual JCL source (i.e. data-set name, file name, etc.)
-        let directory: string = this.arguments.directory;// Path where to download spool content
+        let directory: string = this.mArguments.directory;// Path where to download spool content
 
         // Process depending on the source type
         switch (sourceType) {
@@ -97,25 +66,25 @@ export default class SharedSubmitHandler implements ICommandHandler {
             case "dataset":
 
                 // If the data set is not in catalog and volume option is provided
-                if(parms.volume) {
+                if (parms.volume) {
                     options.volume = parms.volume;
 
                     // Get JCL from data set or member
-                    const getJcl = await Get.dataSet(session, this.arguments.dataset, options);
-                    source = this.arguments.dataset;
+                    const getJcl = await Get.dataSet(this.mSession, this.mArguments.dataset, options);
+                    source = this.mArguments.dataset;
 
-                    apiObj = await SubmitJobs.submitJclString(session, getJcl.toString(), parms);
-                    if(parms.viewAllSpoolContent) {
+                    apiObj = await SubmitJobs.submitJclString(this.mSession, getJcl.toString(), parms);
+                    if (parms.viewAllSpoolContent) {
                         spoolFilesResponse = apiObj;
                     }
 
                     break;
                 } else {
-                    response = await SubmitJobs.submitJob(session, this.arguments.dataset);
-                    apiObj = await SubmitJobs.checkSubmitOptions(session, parms, response);
-                    source = this.arguments.dataset;
+                    response = await SubmitJobs.submitJob(this.mSession, this.mArguments.dataset);
+                    apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
+                    source = this.mArguments.dataset;
 
-                    if(parms.viewAllSpoolContent) {
+                    if (parms.viewAllSpoolContent) {
                         spoolFilesResponse = apiObj;
                     }
                 }
@@ -123,24 +92,24 @@ export default class SharedSubmitHandler implements ICommandHandler {
                 break;
             // Submit the JCL from a local file
             case "local-file":
-                parms.jclSource = this.arguments.localFile;
-                const JclString = fs.readFileSync(this.arguments.localFile).toString();
-                apiObj = await SubmitJobs.submitJclString(session, JclString, parms);
-                source = this.arguments.localFile;
-                if(parms.viewAllSpoolContent) {
+                parms.jclSource = this.mArguments.localFile;
+                const JclString = fs.readFileSync(this.mArguments.localFile).toString();
+                apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
+                source = this.mArguments.localFile;
+                if (parms.viewAllSpoolContent) {
                     spoolFilesResponse = apiObj;
                 }
                 break;
             default:
                 throw new ImperativeError({
                     msg: `Internal submit error: Unable to determine the JCL source. ` +
-                    `Please contact support.`,
+                        `Please contact support.`,
                     additionalDetails: JSON.stringify(params)
                 });
         }
 
         // Print the response to the command
-        if(isNullOrUndefined(spoolFilesResponse)) {
+        if (isNullOrUndefined(spoolFilesResponse)) {
             params.response.format.output({
                 fields: ["jobid", "retcode", "jobname", "status"],
                 output: apiObj,
@@ -167,8 +136,8 @@ export default class SharedSubmitHandler implements ICommandHandler {
         }
 
         // Print path where spool content was downloaded
-        if(!isNullOrUndefined(directory) && isNullOrUndefined(spoolFilesResponse)) {
-            directory = directory.includes("./")? directory : `./${directory}`;
+        if (!isNullOrUndefined(directory) && isNullOrUndefined(spoolFilesResponse)) {
+            directory = directory.includes("./") ? directory : `./${directory}`;
             params.response.console.log(`Successfully downloaded output to ${directory}/${apiObj.jobid}`);
         }
 

@@ -30,7 +30,7 @@ export const SyncResponseCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Response.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

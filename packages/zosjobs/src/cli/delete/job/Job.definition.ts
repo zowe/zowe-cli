@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const JobDefinition: ICommandDefinition = {
     name: "job",
@@ -18,7 +19,7 @@ export const JobDefinition: ICommandDefinition = {
     description: "Delete a single job by job ID",
     handler: __dirname + "/Job.handler",
     profile: {
-        required: ["zosmf"],
+        optional: ["zosmf"],
     },
     positionals: [
         {

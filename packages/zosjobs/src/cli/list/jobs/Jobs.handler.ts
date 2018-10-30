@@ -9,11 +9,11 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { JobsConstants } from "../../../..";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler for the "zos-jobs list jobs" command.
@@ -21,32 +21,7 @@ import { JobsConstants } from "../../../..";
  * @class JobsHandler
  * @implements {ICommandHandler}
  */
-export default class JobsHandler implements ICommandHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
-
-    /**
-     * The z/OSMF profile for this command
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private profile: any;
-
-    /**
-     * Command line arguments passed
-     * @private
-     * @type {*}
-     * @memberof JobHandler
-     */
-    private arguments: any;
-
+export default class JobsHandler extends ZosmfBaseHandler {
     /**
      * Handler for the "zos-jobs list jobs" command. Produces a tabular list of jobs on spool based on
      * the input parameters.
@@ -54,20 +29,12 @@ export default class JobsHandler implements ICommandHandler {
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      * @memberof JobsHandler
      */
-    public async process(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-        this.profile = params.profiles.get("zosmf");
-        this.arguments = params.arguments;
-
-        // Create a z/OSMF session
-        const session: Session = ZosmfSession.createBasicZosmfSession(this.profile);
+    public async processCmd(params: IHandlerParameters): Promise<void> {
 
         // Obtain the list of jobs - by default uses the session user and * for owner and prefix.
-        const prefix: string = (params.arguments.owner != null) ? params.arguments.owner : session.ISession.user;
+        const prefix: string = (params.arguments.owner != null) ? params.arguments.owner : this.mSession.ISession.user;
         const owner: string = (params.arguments.prefix != null) ? params.arguments.prefix : JobsConstants.DEFAULT_PREFIX;
-        const jobs: IJob[] = await GetJobs.getJobsByOwnerAndPrefix(session, prefix, owner);
+        const jobs: IJob[] = await GetJobs.getJobsByOwnerAndPrefix(this.mSession, prefix, owner);
 
         // Populate the response object
         params.response.data.setObj(jobs);

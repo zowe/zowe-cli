@@ -9,9 +9,10 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { explainPublishedTemplateInfoFull, explainPublishedTemplateInfoSummary, ListTemplateInfo } from "../../../../";
 import { IPublishedTemplateInfo, ProvisioningConstants } from "../../../../index";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler to list template info
@@ -19,23 +20,12 @@ import { IPublishedTemplateInfo, ProvisioningConstants } from "../../../../index
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class TemplateInfoHandler implements ICommandHandler {
+export default class TemplateInfoHandler extends ZosmfBaseHandler {
 
-    public async process(commandParameters: IHandlerParameters) {
-        const profile = commandParameters.profiles.get("zosmf");
-
-        const session = new Session({
-            type: "basic",
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.pass,
-            base64EncodedAuth: profile.auth,
-            rejectUnauthorized: profile.rejectUnauthorized,
-        });
+    public async processCmd(commandParameters: IHandlerParameters) {
 
         const response: IPublishedTemplateInfo = await ListTemplateInfo.listTemplateCommon(
-            session, ProvisioningConstants.ZOSMF_VERSION, commandParameters.arguments.name);
+            this.mSession, ProvisioningConstants.ZOSMF_VERSION, commandParameters.arguments.name);
 
         let prettifiedTemplateInfo: any = {};
         if (commandParameters.arguments.allInfo) {

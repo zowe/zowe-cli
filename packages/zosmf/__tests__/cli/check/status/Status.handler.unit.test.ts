@@ -10,59 +10,23 @@
 */
 
 import { CheckStatus } from "../../../../../zosmf";
-import { CommandProfiles, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
 import CmdHandler from "../../../../src/cli/check/status/Status.handler";
 import * as cmdDef from "../../../../src/cli/check/status/Status.definition";
+import { getMockedResponse, UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 jest.mock("../../../../src/api/methods/CheckStatus");
-
-const goodProfileMap = new Map<string, IProfile[]>();
-goodProfileMap.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const goodProfiles: CommandProfiles = new CommandProfiles(goodProfileMap);
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["zosmf", "check", "status"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            })
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => undefined)
-        }
-    },
+    response: getMockedResponse(),
     definition: cmdDef.StatusDefinition,
     fullDefinition: cmdDef.StatusDefinition,
-    profiles: goodProfiles
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 let checkStatHandler: ICommandHandler = null;
@@ -125,29 +89,5 @@ describe("check status behavior", () => {
 
         await checkStatHandler.process(parmsToUse);
         expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(1);
-    });
-
-    it("should throw an error when no profile", async () => {
-        const noProfileMap = new Map<string, IProfile[]>();
-        noProfileMap.set(
-            "NotZosmf", [{
-                name: "A profile that is not zosmf",
-                type: "NotZosmf",
-            }]
-        );
-        const noProfiles: CommandProfiles = new CommandProfiles(noProfileMap);
-        const parmsToUse = Object.assign({}, ...[goodCmdParms]);
-        parmsToUse.profiles = noProfiles;
-
-        let errMsg: string;
-        try {
-            await checkStatHandler.process(parmsToUse);
-        }
-        catch (impErr) {
-            errMsg = impErr.message;
-        }
-
-        expect(errMsg).toBe("Internal Error: No profiles of type \"zosmf\" were loaded for this command.");
-        expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(0);
     });
 });

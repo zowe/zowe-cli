@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`start address-space handler tests should be able respond with error message, if z/OSMF parameters were not passed 1`] = `"No tso start address space parameters were supplied."`;
+exports[`start address-space handler tests should be able respond with error message, if required z/OSMF parameters were not passed 1`] = `"Expect Error: Required parameter 'hostname' must be defined"`;
 
 exports[`start address-space handler tests should be able to start address-space 1`] = `
 Object {
@@ -9,10 +9,8 @@ Object {
   "codePage": "1047",
   "columns": "80",
   "logonProcedure": "IZUFPROC",
-  "name": "tso",
   "regionSize": "4096",
   "rows": "24",
-  "type": "tso",
 }
 `;
 

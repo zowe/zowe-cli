@@ -5,7 +5,7 @@ exports[`check status behavior should display an error when getZosmfInfo throws 
 [31mdue to the following error:[39m
 [31mMock GetInfo Error[39m
 [31m[39m
-[31mYour zowe z/OSMF profile may not be configured properly,[39m
+[31mYour command-line options or your z/OSMF profile may not be correct,[39m
 [31mor the z/OSMF subsystem on 'somewhere.com' may not be available.[39m"
 `;
 

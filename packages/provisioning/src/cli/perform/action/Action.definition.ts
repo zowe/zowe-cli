@@ -23,7 +23,7 @@ export const ActionDefinition: ICommandDefinition = {
     "   instance-info <name>\" command to view the available instance actions.",
     handler: __dirname + "/Action.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

@@ -39,6 +39,18 @@ describe("ZosFilesBaseHandler", () => {
             rejectUnauthorized: true
         };
 
+        const sessionArgs: any = {
+            type              : "basic",
+            hostname          : zosmfProfile.host,
+            port              : zosmfProfile.port,
+            user              : zosmfProfile.user,
+            password          : zosmfProfile.pass,
+            base64EncodedAuth : zosmfProfile.auth,
+            rejectUnauthorized: zosmfProfile.rejectUnauthorized,
+        };
+        const expectedSession = new Session(sessionArgs);
+        const args = {...sessionArgs, host: zosmfProfile.host, pass: zosmfProfile.pass};
+
         /**
          * This object is used as a dummy command parameters object
          */
@@ -59,23 +71,14 @@ describe("ZosFilesBaseHandler", () => {
                 data   : {
                     setObj: jest.fn()
                 }
-            }
+            },
+            arguments: args
         };
 
         const apiResponse: IZosFilesResponse = {
             success        : true,
             commandResponse: "Success"
         };
-
-        const expectedSession = new Session({
-            type              : "basic",
-            hostname          : zosmfProfile.host,
-            port              : zosmfProfile.port,
-            user              : zosmfProfile.user,
-            password          : zosmfProfile.pass,
-            base64EncodedAuth : zosmfProfile.auth,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized,
-        });
 
         const testClass = new TestClass(apiResponse);
 

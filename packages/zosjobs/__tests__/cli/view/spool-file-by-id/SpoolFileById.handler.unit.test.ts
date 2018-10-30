@@ -10,36 +10,24 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { IProfile, CommandProfiles, IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
 import { GetJobs } from "../../../../src/api/GetJobs";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
 import * as SpoolFileByIdHandler from "../../../../src/cli/view/spool-file-by-id/SpoolFileById.handler";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
-import { ZosmfSession } from "../../../../../zosmf/ZosmfSession";
+import { ZosmfSession } from "../../../../../zosmf/src/ZosmfSession";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
-
-// Dummy profile map (for profiles.get("zosmf"))
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        host: "somewhere.com",
-        port: "43443",
-        user: "someone",
-        pass: "somesecret"
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["zos-jobs", "view", "spool-file-by-id"],
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
     response: {
         data: {
@@ -71,7 +59,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
     },
     definition: SpoolFilesByJobidDefinition,
     fullDefinition: SpoolFilesByJobidDefinition,
-    profiles: PROFILES
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("zos-jobs view spool-file-by-id handler", () => {
@@ -94,7 +82,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(PROFILES.get("zosmf"));
+        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(UNIT_TEST_PROFILES_ZOSMF.get("zosmf"));
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
     });
@@ -138,7 +126,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         }
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(PROFILES.get("zosmf"));
+        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(UNIT_TEST_PROFILES_ZOSMF.get("zosmf"));
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
         expect(error).toBeDefined();

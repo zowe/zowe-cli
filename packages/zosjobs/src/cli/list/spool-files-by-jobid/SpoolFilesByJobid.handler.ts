@@ -9,11 +9,11 @@
 *                                                                                 *
 */
 
-import { ICommandHandler, IHandlerParameters, Session, TextUtils } from "@brightside/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
+import { IHandlerParameters } from "@brightside/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { IJobFile } from "../../../..";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * "zos-jobs list spool-files" command handler. Outputs a table of spool files.
@@ -21,16 +21,7 @@ import { IJobFile } from "../../../..";
  * @class SubmitJobHandler
  * @implements {ICommandHandler}
  */
-export default class SpoolFilesHandler implements ICommandHandler {
-    /**
-     * Convenience accessor for the response APIs
-     * @private
-     * @type {*}
-     * @memberof SubmitDataSetHandler
-     */
-    private console: any;
-    private data: any;
-
+export default class SpoolFilesHandler extends ZosmfBaseHandler {
     /**
      * The z/OSMF profile for this command
      * @private
@@ -53,19 +44,13 @@ export default class SpoolFilesHandler implements ICommandHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async process(params: IHandlerParameters): Promise<void> {
-        // Save the needed parameters for convenience
-        this.console = params.response.console;
-        this.data = params.response.data;
-        this.profile = params.profiles.get("zosmf");
+    public async processCmd(params: IHandlerParameters): Promise<void> {
+
         this.arguments = params.arguments;
 
-        // Create a z/OSMF session
-        const session: Session = ZosmfSession.createBasicZosmfSession(this.profile);
-
         // First obtain the details for the job (to acquire JOBNAME), then get the list of output spool files
-        const job: IJob = await GetJobs.getJob(session, this.arguments.jobid);
-        const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
+        const job: IJob = await GetJobs.getJob(this.mSession, this.arguments.jobid);
+        const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(this.mSession, job);
 
         // Set the object, message, and log the prettified object
         this.data.setObj(files);

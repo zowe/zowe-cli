@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 import { Constants } from "../../../../../Constants";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const SpoolFileByIdDefinition: ICommandDefinition = {
     name: "spool-file-by-id",
@@ -22,7 +23,7 @@ export const SpoolFileByIdDefinition: ICommandDefinition = {
         "The command presents errors verbatim from the z/OSMF Jobs REST endpoints.",
     handler: __dirname + "/SpoolFileById.handler",
     profile: {
-        required: ["zosmf"]
+        optional: ["zosmf"]
     },
     positionals: [
         {

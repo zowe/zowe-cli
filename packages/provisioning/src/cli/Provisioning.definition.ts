@@ -14,6 +14,7 @@ import { ListCommand } from "./list/List.definition";
 import { ProvisionCommand } from "./provision/Provision.definition";
 import { PerformCommand } from "./perform/Perform.definition";
 import { DeleteCommand } from "./delete/Delete.definition";
+import { ZosmfSession } from "../../../zosmf";
 
 const definition: ICommandDefinition = {
     name: "provisioning",
@@ -24,5 +25,15 @@ const definition: ICommandDefinition = {
     children: [
         ListCommand, ProvisionCommand, PerformCommand, DeleteCommand
     ],
+    passOn: [
+        {
+            property: "options",
+            value: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+            merge: true,
+            ignoreNodes: [
+                {type: "group"}
+            ]
+        }
+    ]
 };
 export = definition;
