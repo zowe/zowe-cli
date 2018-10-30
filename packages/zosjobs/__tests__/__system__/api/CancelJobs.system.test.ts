@@ -51,25 +51,25 @@ describe("CancelJobs System tests", () => {
 
     describe("Positive tests", () => {
         it("should be able to cancel a job using cancelJob", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL });
-            expect(job.retcode).toEqual("CC 0000");
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
+            expect(job.retcode).toBeNull(); // job is not complete, no CC
             await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL });
-            expect(job.retcode).toEqual("CC 0000");
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
+            expect(job.retcode).toBeNull(); // job is not complete, no CC
             await CancelJobs.cancelJobForJob(REAL_SESSION, job);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL });
-            expect(job.retcode).toEqual("CC 0000");
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
+            expect(job.retcode).toBeNull(); // job is not complete, no CC
             await CancelJobs.cancelJobCommon(REAL_SESSION, { jobname: job.jobname, jobid: job.jobid });
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL });
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
             await CancelJobs.cancelJobCommon(REAL_SESSION, { jobname: job.jobname, jobid: job.jobid, version: "2.0" });
         }, LONG_TIMEOUT);
     });
