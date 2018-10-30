@@ -1,10 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] prerelease -2018-10-26
+## [2.0.0] prerelease -2018-10-29
+
+
+## BREAKING CHANGES 
+
+* When creating a zosmf profile with  `zowe profiles create zosmf`, or updating a profile with `zowe profiles update zosmf`,  you must now specify --pass rather than --password.  
 
 ### Changed
-
 * It is now possible to use Zowe CLI without the creation of profiles. 
 Options have been added to all commands that connect to z/OSMF that allow you to fully qualify your connection details 
 without creating a profile first. For example, you can issue the following command without a profile:
