@@ -61,9 +61,25 @@ describe("Download USS File", () => {
 
             sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
             defaultSys = sysProps.getDefaultSystem();
+
+            const data: string = "abcdefghijklmnopqrstuvwxyz";
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            try {
+                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+            } catch (err) {
+                throw err;
+            }
         });
 
         afterAll(async () => {
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+
+            try {
+                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+            } catch (err) {
+                Imperative.console.error(err);
+            }
+
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
