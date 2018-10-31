@@ -5,7 +5,7 @@ Object {
   "description": "Cancel a single job by job ID",
   "examples": Array [
     Object {
-      "description": "Cancel job with job ID JOB03456.",
+      "description": "Cancel job with job ID JOB03456",
       "options": "JOB03456",
     },
   ],
