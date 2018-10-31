@@ -77,6 +77,15 @@ describe("Upload Data Set", () => {
 
         it("should upload data set from standard input", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds_fully_qualified.sh");
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(shellScript, TEST_ENVIRONMENT_NO_PROF,
                 [dsname,
                     defaultSys.zosmf.host,
