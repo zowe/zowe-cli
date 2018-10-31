@@ -14,10 +14,13 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { JobTestsUtils } from "../../api/JobTestsUtils";
+import { IO } from "@brightside/imperative";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let IEFBR14_JCL: string;
+const LOCAL_JCL_FILE: string = __dirname + "/" + "testFileOfLocalJCL.txt";
+let systemProps: TestProperties;
 
 describe("zos-jobs cancel job command", () => {
     // Create the unique test environment
@@ -26,7 +29,17 @@ describe("zos-jobs cancel job command", () => {
             testName: "zos_jobs_cancel_job_command",
             tempProfileTypes: ["zosmf"]
         });
-        IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        const defaultSystem = systemProps.getDefaultSystem();
+
+        const jcl = JobTestsUtils.getIefbr14JCL(defaultSystem.zosmf.user, defaultSystem.tso.account);
+        const bufferJCL: Buffer = Buffer.from(jcl);
+        IO.createFileSync(LOCAL_JCL_FILE);
+        IO.writeFile(LOCAL_JCL_FILE, bufferJCL);
+    });
+
+    afterAll(async () => {
+        IO.deleteFile(LOCAL_JCL_FILE);
     });
 
     describe("help", () => {
@@ -57,12 +70,12 @@ describe("zos-jobs cancel job command", () => {
     });
 
     describe("successful scenario", () => {
-        it("should delete a job", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/delete_job.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL]);
+        it("should cancel a job", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job.sh",
+                TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully deleted job");
+            expect(response.stdout.toString()).toContain("Successfully canceled job");
         });
 
         describe("without profiles", () => {
@@ -73,22 +86,22 @@ describe("zos-jobs cancel job command", () => {
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                    testName: "zos_jobs_delete_job_without_profiles"
+                    testName: "zos_jobs_cancel_job_without_profiles"
                 });
 
-                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
                 DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+
             });
 
             afterAll(async () => {
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
-            it("delete a job without a profile", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
+            it("cancel a job without a profile", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
-                        IEFBR14_JCL,
+                        LOCAL_JCL_FILE,
                         DEFAULT_SYSTEM_PROPS.zosmf.host,
                         DEFAULT_SYSTEM_PROPS.zosmf.port,
                         DEFAULT_SYSTEM_PROPS.zosmf.user,
@@ -96,7 +109,7 @@ describe("zos-jobs cancel job command", () => {
                     ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Successfully deleted job");
+                expect(response.stdout.toString()).toContain("Successfully canceled job");
             });
         });
     });
