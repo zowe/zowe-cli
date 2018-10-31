@@ -9,6 +9,8 @@
 *                                                                                 *
 */
 
+export * from "./src/api/doc/input/ICancelJob";
+export * from "./src/api/doc/input/ICancelJobParms";
 export * from "./src/api/doc/input/IDownloadSpoolContentParms";
 export * from "./src/api/doc/input/IDownloadAllSpoolContentParms";
 export * from "./src/api/doc/input/ICommonJobParms";
@@ -33,6 +35,7 @@ export * from "./src/api/types/JobDataResolve";
 export * from "./src/api/types/JobResolve";
 export * from "./src/api/types/JobStatus";
 
+export * from "./src/api/CancelJobs";
 export * from "./src/api/DeleteJobs";
 export * from "./src/api/DownloadJobs";
 export * from "./src/api/GetJobs";
