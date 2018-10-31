@@ -33,7 +33,7 @@ export const JobDefinition: ICommandDefinition = {
     ],
     examples: [
         {
-            description: "Cancel job with job ID JOB03456.",
+            description: "Cancel job with job ID JOB03456",
             options: "JOB03456",
         },
     ],
