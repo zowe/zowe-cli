@@ -77,6 +77,13 @@ describe("Create Physical Sequential Data Set", () => {
 
         it("should create a physical sequential data set", () => {
             dsnameSuffix = "ps";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env["ZOWE_OPT_BASE_PATH"] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [user,
