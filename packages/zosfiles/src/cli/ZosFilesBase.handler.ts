@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile, Session } from "@brightside/imperative";
+import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
 import { IZosFilesResponse } from "../api/doc/IZosFilesResponse";
 import { ZosmfSession } from "../../../zosmf";
 
@@ -37,6 +37,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
 
         const response = await this.processWithSession(commandParameters, session, profile);
 
+        commandParameters.response.progress.endBar(); // end any progress bars
         // Print out the response
         if (response.commandResponse) {
             commandParameters.response.console.log(response.commandResponse);

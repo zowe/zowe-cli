@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -153,12 +153,19 @@ export class Download {
             }
 
             const baseDir = options.directory || ZosFilesUtils.getDirsFromDataSet(dataSetName);
-
+            let downloadsInitiated = 0;
             /**
              * Function that takes a member and turns it into a promise to download said member
              * @param mem - an object with a "member" field containing the name of the data set member
              */
             const createDownloadPromise = (mem: { member: string }) => {
+                // update the progress bar if any
+                if (options.task != null) {
+                    downloadsInitiated++;
+                    options.task.statusMessage = "Downloading " + mem.member;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (downloadsInitiated / memberList.length));
+                }
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + mem.member.toLowerCase() +
