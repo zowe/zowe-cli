@@ -1,7 +1,10 @@
 {
   "extends": "./tslint.json",
   "rules": {
-    "no-implicit-dependencies": false
+    "no-implicit-dependencies": [true, "dev", "optional"]
+  },
+  "linterOptions": {
+    "exclude": ["**/node_modules/**/*", "__tests__/__results__/**", "**/*.d.ts"]
   },
   "type-check": true
 }
