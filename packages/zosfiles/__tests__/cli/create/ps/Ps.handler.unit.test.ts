@@ -71,6 +71,14 @@ describe("Create PS data set handler", () => {
                             log: jest.fn((logArgs) => {
                                 logMessage += "\n" + logArgs;
                             })
+                        },
+                        progress: {
+                            startBar: jest.fn((parms) => {
+                                // do nothing
+                            }),
+                            endBar: jest.fn(() => {
+                                // do nothing
+                            })
                         }
                     },
                     profiles: {
