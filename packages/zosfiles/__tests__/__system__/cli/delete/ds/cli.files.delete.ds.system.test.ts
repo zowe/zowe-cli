@@ -50,7 +50,7 @@ describe("Delete Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -71,6 +71,15 @@ describe("Delete Data Set", () => {
         it("should delete a data set", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             response = runCliScript(__dirname + "/__scripts__/command/command_delete_ds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [dsname, "--for-sure",
                     defaultSys.zosmf.host,

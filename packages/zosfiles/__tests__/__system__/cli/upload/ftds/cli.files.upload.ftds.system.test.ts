@@ -47,7 +47,7 @@ describe("Upload file to data set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -80,6 +80,15 @@ describe("Upload file to data set", () => {
         it("should upload to data set from local file", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds_fully_qualified.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftds.txt");
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
                 [localFileName,

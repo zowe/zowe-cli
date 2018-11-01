@@ -17,6 +17,8 @@ import { TestProperties } from "../../../../../../../__tests__/__src__/propertie
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { Delete } from "../../../../../src/api/methods/delete";
 
+const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -49,7 +51,7 @@ describe("Create Classic Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -76,6 +78,13 @@ describe("Create Classic Data Set", () => {
 
         it("should create a classic partitioned data set", () => {
             dsnameSuffix = "classic";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [user,

@@ -85,7 +85,9 @@ export class ZosmfSession {
     public static ZOSMF_OPTION_BASE_PATH: ICommandOptionDefinition = {
         name: "base-path",
         aliases: ["bp"],
-        description: "Base path for API Mediation Layer.",
+        description: "The base path for your API mediation layer instance." +
+            " Specify this option to prepend the base path to all z/OSMF resources when making REST requests." +
+            " Do not specify this option if you are not using an API mediation layer.",
         type: "string",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
