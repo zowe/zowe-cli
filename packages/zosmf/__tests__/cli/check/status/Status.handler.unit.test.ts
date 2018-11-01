@@ -77,7 +77,7 @@ describe("check status behavior", () => {
         expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(1);
     });
 
-    it("should display an error when getZosmfInfo throws an exception", async () => {
+    it("should pass the rest client error to the command processor (no transformation)", async () => {
         const parmsToUse = Object.assign({}, ...[goodCmdParms]);
         CheckStatus.getZosmfInfo = jest.fn((session, servletKey) => {
             throw new Error("Mock GetInfo Error");
@@ -87,7 +87,14 @@ describe("check status behavior", () => {
             expect(errors).toContain("Mock GetInfo Error");
         });
 
-        await checkStatHandler.process(parmsToUse);
+        let error;
+        try {
+            await checkStatHandler.process(parmsToUse);
+        } catch (err) {
+            error = err;
+        }
+        expect(error).toBeDefined();
+        expect(error.message).toMatchSnapshot();
         expect(CheckStatus.getZosmfInfo).toHaveBeenCalledTimes(1);
     });
 });
