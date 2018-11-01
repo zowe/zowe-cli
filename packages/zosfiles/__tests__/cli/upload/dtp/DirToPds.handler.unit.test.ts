@@ -98,7 +98,13 @@ describe("Upload dir-to-pds handler", () => {
             expect(error).toBeDefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.dirToPds).toHaveBeenCalledTimes(1);
-            expect(Upload.dirToPds).toHaveBeenCalledWith(fakeSession, inputdir, dataSetName, {});
+            expect(Upload.dirToPds).toHaveBeenCalledWith(fakeSession, inputdir, dataSetName, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Uploading directory to PDS"
+                }
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

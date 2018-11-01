@@ -91,7 +91,13 @@ describe("Download AllMembers handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.allMembers).toHaveBeenCalledTimes(1);
-            expect(Download.allMembers).toHaveBeenCalledWith(fakeSession, dataSetName, {});
+            expect(Download.allMembers).toHaveBeenCalledWith(fakeSession, dataSetName, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Downloading all members"
+                }
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
