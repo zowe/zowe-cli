@@ -67,7 +67,7 @@ export class CancelJobs {
             "You must specify jobname and jobid for the job you want to cancel.");
 
         // set default if unset
-        if (parms.version === null) {
+        if (parms.version == null) {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
         }
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
