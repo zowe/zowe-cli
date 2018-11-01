@@ -153,6 +153,15 @@ describe("Download Data Set", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
             expect(response.stdout.toString()).toContain(fileName);
         });
+
+        it("should download data set with extension = \"\" flag", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set_no_extension.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            expect(response.stdout.toString()).toContain(dsname.split(".")[2].toLowerCase());
+        });
     });
 
     describe("Expected failures", () => {
@@ -160,7 +169,7 @@ describe("Download Data Set", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
 
