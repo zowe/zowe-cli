@@ -3,6 +3,7 @@
 exports[`zosmf utils should create a session object 1`] = `
 Object {
   "base64EncodedAuth": "fake",
+  "basePath": "",
   "hostname": "fake",
   "password": "fake",
   "port": "fake",
