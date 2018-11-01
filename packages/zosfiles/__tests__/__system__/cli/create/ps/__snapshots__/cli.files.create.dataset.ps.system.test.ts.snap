@@ -185,7 +185,7 @@ exports[`Create Physical Sequential Data Set Success scenarios should display cr
 }"
 `;
 
-exports[`Create Physical Sequential Data Set Without profile should create a physical sequential data set 1`] = `
+exports[`Create Physical Sequential Data Set without profiles should create a physical sequential data set 1`] = `
 "Data set created successfully.
 "
 `;

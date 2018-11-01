@@ -47,7 +47,7 @@ describe("Download All Member", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 

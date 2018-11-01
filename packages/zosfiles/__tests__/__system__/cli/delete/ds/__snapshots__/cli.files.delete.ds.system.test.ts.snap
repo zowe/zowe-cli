@@ -129,7 +129,7 @@ exports[`Delete Data Set Success scenarios should display delete data-set help 1
 }"
 `;
 
-exports[`Delete Data Set Without profile should delete a data set 1`] = `
+exports[`Delete Data Set without profiles should delete a data set 1`] = `
 "Data set deleted successfully.
 "
 `;

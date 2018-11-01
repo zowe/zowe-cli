@@ -58,7 +58,7 @@ describe("Invoke AMS CLI", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 

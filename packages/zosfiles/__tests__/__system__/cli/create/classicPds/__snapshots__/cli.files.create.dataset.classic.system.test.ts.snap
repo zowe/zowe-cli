@@ -190,7 +190,7 @@ exports[`Create Classic Data Set Success scenarios should display create classic
 }"
 `;
 
-exports[`Create Classic Data Set Without profile should create a classic partitioned data set 1`] = `
+exports[`Create Classic Data Set without profiles should create a classic partitioned data set 1`] = `
 "Data set created successfully.
 "
 `;

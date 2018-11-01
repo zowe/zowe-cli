@@ -143,7 +143,7 @@ Data set deleted successfully.
 "
 `;
 
-exports[`Delete VSAM Data Set Without profile should delete a data set 1`] = `
+exports[`Delete VSAM Data Set without profiles should delete a data set 1`] = `
 "Data set deleted successfully.
 "
 `;

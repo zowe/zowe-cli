@@ -196,7 +196,7 @@ exports[`Create Partitioned Data Set Success scenarios should display create dat
 }"
 `;
 
-exports[`Create Partitioned Data Set Without profile should create a partitioned data set 1`] = `
+exports[`Create Partitioned Data Set without profiles should create a partitioned data set 1`] = `
 "Data set created successfully.
 "
 `;
