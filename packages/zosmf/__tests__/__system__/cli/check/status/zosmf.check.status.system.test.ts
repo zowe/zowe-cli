@@ -116,7 +116,8 @@ describe("zosmf check status", () => {
         it("should fail due to invalid port", async () => {
             // create a temporary zowe profile with an invalid port
             const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
-            const command = "zowe profiles create zosmf " + host + "temp --host " + host + " --port " + port + 1
+            const bogusPort = 12345;
+            const command = "zowe profiles create zosmf " + host + "temp --host " + host + " --port " + bogusPort
                 + " --user " + user + " --pass " + pass + " --ru false";
             await IO.writeFileAsync(scriptPath, command);
             let response = runCliScript(scriptPath, testEnvironment);
@@ -127,7 +128,7 @@ describe("zosmf check status", () => {
             expect(response.status).toBe(0);
             // now check the status
             response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment);
-            expect(stripNewLines(response.stderr.toString())).toContain(`Unable to establish connection at port ${port + "1"}`);
+            expect(stripNewLines(response.stderr.toString())).toContain("connect ECONNREFUSED");
         });
     });
 });
