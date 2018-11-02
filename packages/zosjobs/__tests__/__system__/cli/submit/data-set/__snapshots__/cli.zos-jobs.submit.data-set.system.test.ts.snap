@@ -163,6 +163,12 @@ You specified the following unknown values: \\"blah\\".
 
  Could not interpret them as a group, command name, or positional option.
 
+Example:
+
+ - Submit the JCL in the data set \\"ibmuser.cntl(deploy)\\":
+
+      $ zowe zos-jobs submit data-set \\"ibmuser.cntl(deploy)\\"
+
 Use \\"zowe zos-jobs submit data-set blah --help\\" to view command description, usage, and options.
 "
 `;
