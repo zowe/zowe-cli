@@ -650,7 +650,7 @@ describe("Get Status APIs", () => {
     describe("get status common API", () => {
         describe("invalid request error handling", () => {
             // pending until z/OSMF returns 401 status for invalid credentials
-            xit("should detect and surface and error for an invalid user", async () => {
+            it("should detect and surface and error for an invalid user", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusCommon(INVALID_SESSION, {jobname: "FAKE", jobid: "FAKE"});
