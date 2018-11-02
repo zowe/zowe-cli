@@ -18,9 +18,10 @@ exports[`Upload file-to-uss handler process method should upload a file to a uss
 
 exports[`Upload file-to-uss handler process method should upload a file to a uss if requested 3`] = `
 "
-[33msuccess: [39m[32mtrue[39m
-[33mfrom: [39m   test-file
-[33mto: [39m     testing
+[32m- [39m
+  [33msuccess: [39m[32mtrue[39m
+  [33mfrom: [39m   test-file
+  [33mto: [39m     testing
 
 
 uploaded"
