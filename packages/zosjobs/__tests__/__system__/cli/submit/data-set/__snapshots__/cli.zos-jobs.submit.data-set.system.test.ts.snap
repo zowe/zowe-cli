@@ -170,13 +170,16 @@ Use \\"zowe zos-jobs submit data-set blah --help\\" to view command description,
 exports[`zos-jobs submit data-set command syntax errors should occur if the data set name is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-dataset
-
-Option Description:
-The z/OS data set containing the JCL to submit. You can specify a physical
+Missing Positional Argument: dataset
+Argument Description: The z/OS data set containing the JCL to submit. You can specify a physical
 sequential data set (for example, \\"DATA.SET\\") or a partitioned data set
 qualified by a member (for example, \\"DATA.SET(MEMBER)\\").
+
+Example:
+
+ - Submit the JCL in the data set \\"ibmuser.cntl(deploy)\\":
+
+      $ zowe zos-jobs submit data-set \\"ibmuser.cntl(deploy)\\"
 
 Use \\"zowe zos-jobs submit data-set --help\\" to view command description, usage, and options.
 "
@@ -190,6 +193,12 @@ If you specify the following option:
 
 You must also specify:
 --directory
+
+Example:
+
+ - Submit the JCL in the data set \\"ibmuser.cntl(deploy)\\":
+
+      $ zowe zos-jobs submit data-set \\"ibmuser.cntl(deploy)\\"
 
 Use \\"zowe zos-jobs submit data-set --help\\" to view command description, usage, and options.
 "
