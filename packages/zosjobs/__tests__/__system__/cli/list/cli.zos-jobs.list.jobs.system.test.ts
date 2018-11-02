@@ -109,6 +109,14 @@ describe("zos-jobs list jobs command", () => {
             });
 
             it("should be able to submit two jobs and then find both in the output", async () => {
+                const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+                // if API Mediation layer is being used (basePath has a value) then
+                // set an ENVIRONMENT variable to be used by zowe.
+                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                }
+
                 const response = runCliScript(scriptDir + "/submit_and_list_jobs_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
