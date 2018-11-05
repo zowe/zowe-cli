@@ -1,8 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] prerelease -2018-10-29
+## [2.0.0] prerelease -2018-11-6
 
+### Changed
+
+* Progress bars were introduced for the following commands: 
+   * `zowe zos-jobs submit data-set`
+   * `zowe zos-jobs submit local-file`
+   * `zowe zos-files download all-members`
+   * `zowe zos-files upload dir-to-pds`
+
+## [2.0.0] prerelease -2018-11-1
+
+### Added
+
+* `zowe zos-jobs cancel job <jobid>` command was added
+ 
+## [2.0.0] prerelease -2018-10-29
 
 ## BREAKING CHANGES 
 

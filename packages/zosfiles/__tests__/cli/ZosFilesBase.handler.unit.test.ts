@@ -31,21 +31,21 @@ describe("ZosFilesBaseHandler", () => {
     it("should create a session and call the subclass method", async () => {
         const zosmfProfileString = "zosmf";
         const zosmfProfile = {
-            host              : "secure.host.com",
-            port              : 443,
-            user              : "user",
-            pass              : "password",
-            auth              : Buffer.from("user:password").toString("base64"),
+            host: "secure.host.com",
+            port: 443,
+            user: "user",
+            pass: "password",
+            auth: Buffer.from("user:password").toString("base64"),
             rejectUnauthorized: true
         };
 
         const sessionArgs: any = {
-            type              : "basic",
-            hostname          : zosmfProfile.host,
-            port              : zosmfProfile.port,
-            user              : zosmfProfile.user,
-            password          : zosmfProfile.pass,
-            base64EncodedAuth : zosmfProfile.auth,
+            type: "basic",
+            hostname: zosmfProfile.host,
+            port: zosmfProfile.port,
+            user: zosmfProfile.user,
+            password: zosmfProfile.pass,
+            base64EncodedAuth: zosmfProfile.auth,
             rejectUnauthorized: zosmfProfile.rejectUnauthorized,
         };
         const expectedSession = new Session(sessionArgs);
@@ -68,15 +68,23 @@ describe("ZosFilesBaseHandler", () => {
                 console: {
                     log: jest.fn()
                 },
-                data   : {
+                data: {
                     setObj: jest.fn()
+                },
+                progress: {
+                    startBar: jest.fn((parms) => {
+                        // do nothing
+                    }),
+                    endBar: jest.fn(() => {
+                        // do nothing
+                    })
                 }
             },
             arguments: args
         };
 
         const apiResponse: IZosFilesResponse = {
-            success        : true,
+            success: true,
             commandResponse: "Success"
         };
 

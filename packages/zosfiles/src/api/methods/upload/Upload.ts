@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -261,6 +261,7 @@ export class Upload {
             dataSetName = dataSetName.substr(0, dataSetName.indexOf("("));
         }
 
+
         // Retreive the information on the input data set name to determine if it is a
         // sequential data set or PDS.
         const listResponse = await List.dataSet(session, dataSetName, {attributes: true});
@@ -296,11 +297,13 @@ export class Upload {
         // entire list is processed.
         try {
             let uploadError;
+            let uploadsInitiated = 0;
             for (const file of uploadFileList) {
                 uploadingFile = file;
                 uploadingDsn = dataSetName;
 
                 if (isUploadToPds) {
+
                     if (memberName.length === 0) {
                         uploadingDsn = `${uploadingDsn}(${ZosFilesUtils.generateMemberName(uploadingFile)})`;
                     } else {
@@ -308,6 +311,16 @@ export class Upload {
                     }
                 }
                 uploadingDsn = uploadingDsn.toUpperCase();
+
+                if (options.task != null) {
+                    // update the progress bar if any
+                    const LAST_FIFTEEN_CHARS = -15;
+                    const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
+                    options.task.statusMessage = "Uploading ..." + abbreviatedFile;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (uploadsInitiated / uploadFileList.length));
+                    uploadsInitiated++;
+                }
 
                 if (uploadError === undefined) {
                     try {
@@ -429,7 +442,6 @@ export class Upload {
             from: inputFile,
             to: ussname
         };
-
         return {
             success: true,
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
