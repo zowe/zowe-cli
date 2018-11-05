@@ -60,9 +60,9 @@ export class Upload {
                 } else {
                     reject(
                         new ImperativeError({
-                            msg              : ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosFilesMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
-                            causeErrors      : err
+                            causeErrors: err
                         })
                     );
                 }
@@ -109,9 +109,9 @@ export class Upload {
                 } else {
                     reject(
                         new ImperativeError({
-                            msg              : ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosFilesMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
-                            causeErrors      : err
+                            causeErrors: err
                         })
                     );
                 }
@@ -186,7 +186,7 @@ export class Upload {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeader, fileBuffer);
 
             return {
-                success        : true,
+                success: true,
                 commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
             };
         } catch (error) {
@@ -318,24 +318,24 @@ export class Upload {
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
                             success: result.success,
-                            from   : uploadingFile,
-                            to     : uploadingDsn
+                            from: uploadingFile,
+                            to: uploadingDsn
                         });
                     } catch (err) {
                         this.log.error(`Failure Uploading data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
                             success: false,
-                            from   : uploadingFile,
-                            to     : uploadingDsn,
-                            error  : err
+                            from: uploadingFile,
+                            to: uploadingDsn,
+                            error: err
                         });
                         uploadError = err;
                     }
                 } else {
                     results.push({
                         success: undefined,
-                        from   : uploadingFile,
-                        to     : uploadingDsn,
+                        from: uploadingFile,
+                        to: uploadingDsn,
                     });
                 }
             }
@@ -344,16 +344,16 @@ export class Upload {
             }
 
             return {
-                success        : true,
+                success: true,
                 commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
-                apiResponse    : results
+                apiResponse: results
             };
 
         } catch (error) {
             return {
-                success        : false,
+                success: false,
                 commandResponse: error.message,
-                apiResponse    : results
+                apiResponse: results
             };
         }
     }
@@ -406,9 +406,9 @@ export class Upload {
                 } else {
                     reject(
                         new ImperativeError({
-                            msg              : ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosFilesMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
-                            causeErrors      : err
+                            causeErrors: err
                         })
                     );
                 }
@@ -419,32 +419,21 @@ export class Upload {
 
         let payload;
         let result: IUploadResult;
-        try {
-            // read payload from file
-            payload = fs.readFileSync(inputFile);
 
-            await this.bufferToUSSFile(session, ussname, payload, binary);
-            result = {
-                success: true,
-                from   : inputFile,
-                to     : ussname
-            };
-        } catch (err) {
-            return {
-                success        : false,
-                commandResponse: err,
-                apiResponse    : {
-                    success: false,
-                    from   : inputFile,
-                    to     : ussname,
-                    error  : err
-                }
-            };
-        }
+        // read payload from file
+        payload = fs.readFileSync(inputFile);
+
+        await this.bufferToUSSFile(session, ussname, payload, binary);
+        result = {
+            success: true,
+            from: inputFile,
+            to: ussname
+        };
+
         return {
-            success        : true,
+            success: true,
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
-            apiResponse    : result
+            apiResponse: result
         };
     }
 
