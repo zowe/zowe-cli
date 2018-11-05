@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -60,9 +60,9 @@ export class Upload {
                 } else {
                     reject(
                         new ImperativeError({
-                            msg              : ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosFilesMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
-                            causeErrors      : err
+                            causeErrors: err
                         })
                     );
                 }
@@ -109,9 +109,9 @@ export class Upload {
                 } else {
                     reject(
                         new ImperativeError({
-                            msg              : ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosFilesMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
-                            causeErrors      : err
+                            causeErrors: err
                         })
                     );
                 }
@@ -186,7 +186,7 @@ export class Upload {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeader, fileBuffer);
 
             return {
-                success        : true,
+                success: true,
                 commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
             };
         } catch (error) {
@@ -261,6 +261,7 @@ export class Upload {
             dataSetName = dataSetName.substr(0, dataSetName.indexOf("("));
         }
 
+
         // Retreive the information on the input data set name to determine if it is a
         // sequential data set or PDS.
         const listResponse = await List.dataSet(session, dataSetName, {attributes: true});
@@ -296,11 +297,13 @@ export class Upload {
         // entire list is processed.
         try {
             let uploadError;
+            let uploadsInitiated = 0;
             for (const file of uploadFileList) {
                 uploadingFile = file;
                 uploadingDsn = dataSetName;
 
                 if (isUploadToPds) {
+
                     if (memberName.length === 0) {
                         uploadingDsn = `${uploadingDsn}(${ZosFilesUtils.generateMemberName(uploadingFile)})`;
                     } else {
@@ -308,6 +311,16 @@ export class Upload {
                     }
                 }
                 uploadingDsn = uploadingDsn.toUpperCase();
+
+                if (options.task != null) {
+                    // update the progress bar if any
+                    const LAST_FIFTEEN_CHARS = -15;
+                    const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
+                    options.task.statusMessage = "Uploading ..." + abbreviatedFile;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (uploadsInitiated / uploadFileList.length));
+                    uploadsInitiated++;
+                }
 
                 if (uploadError === undefined) {
                     try {
@@ -318,24 +331,24 @@ export class Upload {
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
                             success: result.success,
-                            from   : uploadingFile,
-                            to     : uploadingDsn
+                            from: uploadingFile,
+                            to: uploadingDsn
                         });
                     } catch (err) {
                         this.log.error(`Failure Uploading data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
                             success: false,
-                            from   : uploadingFile,
-                            to     : uploadingDsn,
-                            error  : err
+                            from: uploadingFile,
+                            to: uploadingDsn,
+                            error: err
                         });
                         uploadError = err;
                     }
                 } else {
                     results.push({
                         success: undefined,
-                        from   : uploadingFile,
-                        to     : uploadingDsn,
+                        from: uploadingFile,
+                        to: uploadingDsn,
                     });
                 }
             }
@@ -344,16 +357,16 @@ export class Upload {
             }
 
             return {
-                success        : true,
+                success: true,
                 commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
-                apiResponse    : results
+                apiResponse: results
             };
 
         } catch (error) {
             return {
-                success        : false,
+                success: false,
                 commandResponse: error.message,
-                apiResponse    : results
+                apiResponse: results
             };
         }
     }
@@ -406,9 +419,9 @@ export class Upload {
                 } else {
                     reject(
                         new ImperativeError({
-                            msg              : ZosFilesMessages.nodeJsFsError.message,
+                            msg: ZosFilesMessages.nodeJsFsError.message,
                             additionalDetails: err.toString(),
-                            causeErrors      : err
+                            causeErrors: err
                         })
                     );
                 }
@@ -426,25 +439,25 @@ export class Upload {
             await this.bufferToUSSFile(session, ussname, payload, binary);
             result = {
                 success: true,
-                from   : inputFile,
-                to     : ussname
+                from: inputFile,
+                to: ussname
             };
         } catch (err) {
             return {
-                success        : false,
+                success: false,
                 commandResponse: err,
-                apiResponse    : {
+                apiResponse: {
                     success: false,
-                    from   : inputFile,
-                    to     : ussname,
-                    error  : err
+                    from: inputFile,
+                    to: ussname,
+                    error: err
                 }
             };
         }
         return {
-            success        : true,
+            success: true,
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
-            apiResponse    : result
+            apiResponse: result
         };
     }
 

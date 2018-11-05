@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@brightside/imperative";
 import { SubmitJobs } from "../../../src/api/SubmitJobs";
 import { IJob } from "../../api/doc/response/IJob";
 import { isNullOrUndefined } from "util";
@@ -35,6 +35,11 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
      * @memberof SubmitDataSetHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
+        const status: ITaskWithStatus = {
+            statusMessage: "Submitting job",
+            percentComplete: TaskProgress.TEN_PERCENT,
+            stageName: TaskStage.IN_PROGRESS
+        };
         // Save the needed parameters for convenience
         const parms: ISubmitParms = {
             jclSource: undefined,
@@ -42,8 +47,10 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             directory: this.mArguments.directory,
             extension: this.mArguments.extension,
             volume: this.mArguments.volume,
+            task: status
         };
         const options: IDownloadOptions = {};
+        params.response.progress.startBar({task: status});
 
         // Determine the positional parameter specified and invoke the correct API
         // TODO: More will be added with additional commands
@@ -140,7 +147,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             directory = directory.includes("./") ? directory : `./${directory}`;
             params.response.console.log(`Successfully downloaded output to ${directory}/${apiObj.jobid}`);
         }
-
+        params.response.progress.endBar();
         this.data.setMessage(`Submitted JCL contained in "${sourceType}": "${source}"`);
     }
 }

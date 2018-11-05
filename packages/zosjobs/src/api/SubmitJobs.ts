@@ -10,7 +10,7 @@
 */
 
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
 import { IJob, ISubmitJclNotifyParm, ISubmitJclParms, ISubmitJobNotifyParm, ISubmitJobParms, JOB_STATUS } from "../../../zosjobs";
 import { JobsConstants } from "./JobsConstants";
 import { ZosJobsMessages } from "./JobsMessages";
@@ -189,15 +189,23 @@ export class SubmitJobs {
      * @returns {Promise<IJob | ISpoolFile[]>} - Promise that resolves to an IJob or ISpoolFile[]
      * @memberof SubmitJobs
      */
-    public static async checkSubmitOptions(session: AbstractSession , parms: ISubmitParms , responseJobInfo: IJob): Promise<IJob | ISpoolFile[]>{
+    public static async checkSubmitOptions(session: AbstractSession, parms: ISubmitParms, responseJobInfo: IJob): Promise<IJob | ISpoolFile[]> {
 
         // if viewAppSpoolContent option passed, it waits till job status is output
         // then get content of each spool file and return array of ISpoolFiles object
-        if(parms.viewAllSpoolContent) {
+        if (parms.viewAllSpoolContent) {
+            if (parms.task != null) {
+                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
+                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
+            }
             const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
+            if (parms.task != null) {
+                parms.task.statusMessage = "Retrieving spool content";
+                parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
+            }
             const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
             const arrOfSpoolFile: ISpoolFile[] = [];
-            for(const file of spoolFiles) {
+            for (const file of spoolFiles) {
                 const spoolContent = await GetJobs.getSpoolContent(session, file);
                 arrOfSpoolFile.push({
                     id: file.id,
@@ -211,16 +219,24 @@ export class SubmitJobs {
 
             // if directory option passed, it waits till job status is output
             // then downloads content of all spool files and returns IJob object
-        } else if(parms.directory) {
+        } else if (parms.directory) {
             // waits job status to be output
+            if (parms.task != null) {
+                parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
+                parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
+            }
             const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             const downloadParms: IDownloadAllSpoolContentParms = {
                 jobid: job.jobid,
                 jobname: job.jobname,
                 outDir: parms.directory
             };
-            if(parms.extension) {
+            if (parms.extension) {
                 downloadParms.extension = IO.normalizeExtension(parms.extension);
+            }
+            if (parms.task != null) {
+                parms.task.statusMessage = "Downloading spool content";
+                parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
             (await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms));
             return job;
