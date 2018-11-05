@@ -90,7 +90,7 @@ describe("zos-jobs download output command", () => {
             });
 
             it("should download all spool files of a job", async () => {
-                const outdir: string = TEST_ENVIRONMENT.workingDir + "/output/JES2"
+                const outdir: string = TEST_ENVIRONMENT.workingDir + "/output/JES2";
                 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
                 // if API Mediation layer is being used (basePath has a value) then
