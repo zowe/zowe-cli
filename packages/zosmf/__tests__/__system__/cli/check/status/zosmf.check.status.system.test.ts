@@ -84,7 +84,7 @@ describe("zosmf check status", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
                 "The user '" + DEFAULT_SYSTEM_PROPS.zosmf.user +
-                "' successfully connected to z/OSMF on '" + DEFAULT_SYSTEM_PROPS.zosmf.host + "'."
+                "' successfully connected to z/OSMF"
             );
         });
     });
