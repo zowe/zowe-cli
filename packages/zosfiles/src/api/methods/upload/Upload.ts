@@ -314,12 +314,12 @@ export class Upload {
 
                 if (options.task != null) {
                     // update the progress bar if any
-                    uploadsInitiated++;
                     const LAST_FIFTEEN_CHARS = -15;
                     const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
                     options.task.statusMessage = "Uploading ..." + abbreviatedFile;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / uploadFileList.length));
+                    uploadsInitiated++;
                 }
 
                 if (uploadError === undefined) {

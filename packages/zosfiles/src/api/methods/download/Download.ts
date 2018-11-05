@@ -171,10 +171,10 @@ export class Download {
             const createDownloadPromise = (mem: { member: string }) => {
                 // update the progress bar if any
                 if (options.task != null) {
-                    downloadsInitiated++;
                     options.task.statusMessage = "Downloading " + mem.member;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (downloadsInitiated / memberList.length));
+                    downloadsInitiated++;
                 }
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
