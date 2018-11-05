@@ -174,7 +174,7 @@ describe("zos-jobs view spool-file-by-id command", () => {
             expect(response.stderr.toString()).toContain("z/OSMF REST API Error:");
             expect(response.stderr.toString()).toContain("does not contain spool file id 9999");
             expect(response.stderr.toString()).toContain("Error Details:");
-            expect(response.stderr.toString()).toContain("Request: GET");
+            expect(response.stderr.toString()).toContain("Request:   GET");
         });
     });
 });
