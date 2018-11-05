@@ -1,6 +1,6 @@
 {
   "name": "@brightside/core",
-  "version": "2.0.0-next.201811051835",
+  "version": "2.0.0-next.201811051858",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "license": "EPL-2.0",
   "author": "CA",
