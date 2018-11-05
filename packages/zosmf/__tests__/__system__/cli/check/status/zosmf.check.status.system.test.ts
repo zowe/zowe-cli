@@ -64,25 +64,21 @@ describe("zosmf check status", () => {
         });
 
         it("should successfully check status with options only on the command line", async () => {
+            const opts = [
+                "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
+                "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
+                "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
+                "--pass", DEFAULT_SYSTEM_PROPS.zosmf.pass,
+                "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
+            ];
 
-            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
-
-            // if API Mediation layer is being used (basePath has a value) then
-            // set an ENVIRONMENT variable to be used by zowe.
             if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
-                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                opts.push("--base-path");
+                opts.push(DEFAULT_SYSTEM_PROPS.zosmf.basePath);
             }
 
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status_use_cli_opts.sh",
-                TEST_ENVIRONMENT_NO_PROF,
-                [
-                    "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    "--pass", DEFAULT_SYSTEM_PROPS.zosmf.pass,
-                    "--base-path", DEFAULT_SYSTEM_PROPS.zosmf.basePath,
-                    "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
-                ]
+                TEST_ENVIRONMENT_NO_PROF, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
