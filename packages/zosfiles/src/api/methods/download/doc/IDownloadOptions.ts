@@ -9,6 +9,8 @@
 *                                                                                 *
 */
 
+import { ITaskWithStatus } from "@brightside/imperative";
+
 /**
  * This interface defines the options that can be sent into the download data set function
  */
@@ -65,4 +67,11 @@ export interface IDownloadOptions {
      * Default: 1
      */
     maxConcurrentRequests?: number;
+
+    /**
+     * Task status object used by CLI handlers to create progress bars
+     * for certain download requests such as downloading all members
+     * Optional
+     */
+    task?: ITaskWithStatus;
 }

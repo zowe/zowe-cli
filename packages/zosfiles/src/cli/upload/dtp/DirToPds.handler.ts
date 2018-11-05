@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@brightside/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Upload } from "../../../api/methods/upload";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -23,9 +23,16 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
+        const status: ITaskWithStatus = {
+            statusMessage: "Uploading directory to PDS",
+            percentComplete: 0,
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task: status});
         const response = await Upload.dirToPds(session, commandParameters.arguments.inputdir, commandParameters.arguments.dataSetName, {
             volume: commandParameters.arguments.volumeSerial,
-            binary: commandParameters.arguments.binary
+            binary: commandParameters.arguments.binary,
+            task: status
         });
 
         if (response.apiResponse) {
