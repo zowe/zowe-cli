@@ -86,7 +86,8 @@ describe("Invoke AMS CLI", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.pass,
+                    defaultSystem.datasets.list[0].vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
@@ -117,7 +118,7 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using control statements", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.list[0].vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
@@ -133,7 +134,7 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using a control statement and print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_rfj.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.list[0].vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
