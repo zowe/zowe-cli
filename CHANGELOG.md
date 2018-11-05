@@ -11,8 +11,13 @@ All notable changes to this project will be documented in this file.
    * `zowe zos-files download all-members`
    * `zowe zos-files upload dir-to-pds`
 
-## [2.0.0] prerelease -2018-10-29
+## [2.0.0] prerelease -2018-11-1
 
+### Added
+
+* `zowe zos-jobs cancel job <jobid>` command was added
+ 
+## [2.0.0] prerelease -2018-10-29
 
 ## BREAKING CHANGES 
 
