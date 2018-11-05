@@ -60,6 +60,7 @@ export class TestEnvironment {
         // scripts in the test environment
         const env: { [key: string]: string } = {};
         env[Constants.HOME_ENV_KEY] = testDirectory;
+        env.PATH = nodePath.resolve(__dirname, "../../__resources__/application_instances") + ";" + process.env.PATH;
 
         const result: ITestEnvironment = {
             workingDir: testDirectory,
