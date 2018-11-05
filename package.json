@@ -91,6 +91,7 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-html-reporter": "^0.5.7",
     "jest-junit": "^3.6.0",
+    "jest-sonar-reporter": "2.0.0",
     "jest-stare": "1.6.0",
     "jsonfile": "^4.0.0",
     "madge": "^3.2.0",
@@ -153,11 +154,15 @@
     ],
     "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
   },
+  "jestSonar": {
+    "reportPath" : "__tests__/__results__/jest-sonar"
+  },
   "jest-stare": {
     "resultDir": "__tests__/__results__/jest-stare",
     "additionalResultsProcessors": [
       "jest-junit",
-      "jest-html-reporter"
+      "jest-html-reporter",
+      "jest-sonar-reporter"
     ],
     "coverageLink": "../unit/coverage/lcov-report/index.html"
   },
