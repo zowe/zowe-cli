@@ -432,28 +432,16 @@ export class Upload {
 
         let payload;
         let result: IUploadResult;
-        try {
-            // read payload from file
-            payload = fs.readFileSync(inputFile);
 
-            await this.bufferToUSSFile(session, ussname, payload, binary);
-            result = {
-                success: true,
-                from: inputFile,
-                to: ussname
-            };
-        } catch (err) {
-            return {
-                success: false,
-                commandResponse: err,
-                apiResponse: {
-                    success: false,
-                    from: inputFile,
-                    to: ussname,
-                    error: err
-                }
-            };
-        }
+        // read payload from file
+        payload = fs.readFileSync(inputFile);
+
+        await this.bufferToUSSFile(session, ussname, payload, binary);
+        result = {
+            success: true,
+            from: inputFile,
+            to: ussname
+        };
         return {
             success: true,
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,

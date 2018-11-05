@@ -22,13 +22,9 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
-        const response =  await Upload.fileToUSSFile(session, commandParameters.arguments.inputfile,
+        const response = await Upload.fileToUSSFile(session, commandParameters.arguments.inputfile,
             commandParameters.arguments.USSFileName, commandParameters.arguments.binary);
-        const formatMessage = TextUtils.prettyJson({
-            success: true,
-            from: commandParameters.arguments.inputfile,
-            to: commandParameters.arguments.USSFileName
-        });
+        const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;
     }
