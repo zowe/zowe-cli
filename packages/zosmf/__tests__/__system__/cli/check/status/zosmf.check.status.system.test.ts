@@ -64,6 +64,15 @@ describe("zosmf check status", () => {
         });
 
         it("should successfully check status with options only on the command line", async () => {
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status_use_cli_opts.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
@@ -79,7 +88,7 @@ describe("zosmf check status", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
                 "The user '" + DEFAULT_SYSTEM_PROPS.zosmf.user +
-                "' successfully connected to z/OSMF on '" + DEFAULT_SYSTEM_PROPS.zosmf.host + "'."
+                "' successfully connected to z/OSMF"
             );
         });
     });
