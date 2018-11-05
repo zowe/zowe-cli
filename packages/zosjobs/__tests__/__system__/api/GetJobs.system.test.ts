@@ -95,17 +95,16 @@ describe("Get Jobs - System Tests", () => {
             rejectUnauthorized: false
         });
 
-
         ACCOUNT = defaultSystem.tso.account;
         MONITOR_JOB_NAME = REAL_SESSION.ISession.user.toUpperCase().substring(0, SIX_CHARS) + "G";
 
-        // TODO: What string goes in the removed section?
-        JCL =
-            "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "'\n" +
-            "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
-
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
+
+        // TODO: What string goes in the removed section?
+        JCL =
+            "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "',CLASS=" + JOBCLASS + "\n" +
+            "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
     });
 
     // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
