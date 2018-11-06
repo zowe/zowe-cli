@@ -442,10 +442,10 @@ pipeline {
                 timeout(time: 30, unit: 'MINUTES') {
                     echo 'Integration Test'
 
-                    // Create the custom properties file so the test can run, however the values inside
+                    // Create the custom properties file so the tests can run, however the values inside
                     // are not necessary for integration tests
                     sh "cp __tests__/__resources__/properties/default_properties.yaml __tests__/__resources__/properties/custom_properties.yaml"
-                    sh "npm run test:integration"
+                    sh "npm run test:integration || exit 0"
 
                     junit JEST_JUNIT_OUTPUT
 
