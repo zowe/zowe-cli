@@ -48,7 +48,7 @@ describe("zos-tso start address-space", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
-    
+
     it("should successfully issue the command", async () => {
         const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_success.sh", TEST_ENVIRONMENT);
