@@ -52,13 +52,6 @@ describe("zos-tso send as", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/as/as_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should successfully send data = \"time\"", async () => {
         const key = (await StartTso.start(REAL_SESSION, acc)).servletKey;
         const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();

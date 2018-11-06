@@ -15,8 +15,7 @@ import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { StartTso, StopTso } from "../../../../index";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { Imperative, Session } from "@brightside/imperative";
-import { inspect } from "util";
+import { Session } from "@brightside/imperative";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 
 // Test Environment populated in the beforeAll();
@@ -51,14 +50,6 @@ describe("zos-tso ping address-space", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_help.sh", TEST_ENVIRONMENT);
-        Imperative.console.info(inspect(response));
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
     });
 
     it("should throw an error if provided address space is inactive", async () => {

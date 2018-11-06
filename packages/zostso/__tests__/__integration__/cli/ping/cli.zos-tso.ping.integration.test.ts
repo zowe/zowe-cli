@@ -10,39 +10,25 @@
 */
 
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("zos-tso", () => {
+describe("zos-tso ping", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                        testName: "zos_tso_root"
+            testName: "zos_tso_ping_integration"
         });
     });
 
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/zos-tso_help.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/ping_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
-    it("should fail with invalid parameter", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/invalid_command.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toBe("");
-    });
-
-    it("should fail with invalid option", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/invalid_option.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toBe("");
     });
 });
