@@ -372,7 +372,7 @@ pipeline {
             }
         }
 
-        /************************************************************************
+         /************************************************************************
          * STAGE
          * -----
          * Test: Integration
@@ -423,50 +423,41 @@ pipeline {
          * Jenkins: Integration Test Report (through junit plugin)
          * HTML: Integration Test Report
          ************************************************************************/
-//        stage('Test: Integration') {
-//            when {
-//                expression {
-//                    return SHOULD_BUILD == 'true'
-//                }
-//            }
-//            environment {
-//                JEST_JUNIT_OUTPUT = "${INTEGRATION_RESULTS}/junit.xml"
-//                JEST_SUITE_NAME = "Integration Tests"
-//                JEST_JUNIT_ANCESTOR_SEPARATOR = " > "
-//                JEST_JUNIT_CLASSNAME="Integration.{classname}"
-//                JEST_JUNIT_TITLE="{title}"
-//                JEST_HTML_REPORTER_OUTPUT_PATH = "${INTEGRATION_RESULTS}/index.html"
-//                JEST_HTML_REPORTER_PAGE_TITLE = "${BRANCH_NAME} - Integration Test"
-//                TEST_SCRIPT = "./jenkins/integration_tests.sh"
-//            }
-//            steps {
-//                timeout(time: 30, unit: 'MINUTES') {
-//                    echo 'Integration Test'
-//
-//                    /**************************************************************************
-//                     * Welp, IDK even how to describe this witchcraft in a simple fashion so
-//                     * just checkout the README in the jenkins folder for a more in depth
-//                     * explanation for what is going on here.
-//                     *
-//                     * THE README IS EXTREMELY DENSE WITH CONTENT. READ AT YOUR OWN RISK!
-//                     *************************************************************************/
-//                    sh "chmod +x $TEST_SCRIPT && dbus-launch $TEST_SCRIPT"
-//
-//                    junit JEST_JUNIT_OUTPUT
-//
-//                    // Publish HTML report
-//                    publishHTML(target: [
-//                            allowMissing         : false,
-//                            alwaysLinkToLastBuild: true,
-//                            keepAll              : true,
-//                            reportDir            : INTEGRATION_RESULTS,
-//                            reportFiles          : 'index.html',
-//                            reportName           : 'Imperative - Integration Test Report'
-//                    ])
-//                }
-//            }
-//        }
+        stage('Test: Integration') {
+            when {
+                expression {
+                    return SHOULD_BUILD == 'true'
+                }
+            }
+            environment {
+                JEST_JUNIT_OUTPUT = "${INTEGRATION_RESULTS}/junit.xml"
+                JEST_SUITE_NAME = "Integration Tests"
+                JEST_JUNIT_ANCESTOR_SEPARATOR = " > "
+                JEST_JUNIT_CLASSNAME="Integration.{classname}"
+                JEST_JUNIT_TITLE="{title}"
+                JEST_HTML_REPORTER_OUTPUT_PATH = "${INTEGRATION_RESULTS}/index.html"
+                JEST_HTML_REPORTER_PAGE_TITLE = "${BRANCH_NAME} - Integration Test"
+            }
+            steps {
+                timeout(time: 30, unit: 'MINUTES') {
+                    echo 'Integration Test'
 
+                    sh "npm run test:integration"
+
+                    junit JEST_JUNIT_OUTPUT
+
+                    // Publish HTML report
+                    publishHTML(target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll              : true,
+                            reportDir            : INTEGRATION_RESULTS,
+                            reportFiles          : 'index.html',
+                            reportName           : 'Zowe CLI - Integration Test Report'
+                    ])
+                }
+            }
+        }
         /************************************************************************
          * STAGE
          * -----
