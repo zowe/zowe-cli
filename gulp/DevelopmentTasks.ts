@@ -69,9 +69,7 @@ const license: ITaskFunction = (done: (err: Error) => void) => {
         let alreadyContainedCopyright = 0;
         const header = "/*\n" + fs.readFileSync("LICENSE_HEADER").toString()
                 .split(/\r?\n/g).map((line: string) => {
-                    const lenAdjust = desiredLineLength - line.length;
-                    const pad = Array((lenAdjust < 0) ? 0 : lenAdjust).join(" ");
-                    return "* " + line + pad + " *";
+                    return ("* " + line).trim();
                 })
                 .join(require("os").EOL) + require("os").EOL + "*/" +
             require("os").EOL + require("os").EOL;
