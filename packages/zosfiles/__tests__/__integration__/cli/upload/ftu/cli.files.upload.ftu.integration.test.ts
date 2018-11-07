@@ -49,7 +49,7 @@ describe("Upload uss file", () => {
 
         it("should fail when local file does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftu.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localFileThatDoesNotExist", ussname]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localFileThatDoesNotExist", "/a/uss/file"]);
             expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory, lstat");
             expect(stripNewLines(response.stderr.toString())).toContain("localFileThatDoesNotExist");
         });
