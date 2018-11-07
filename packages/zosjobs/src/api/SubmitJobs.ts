@@ -22,7 +22,6 @@ import { DownloadJobs } from "./DownloadJobs";
 import { MonitorJobs } from "./MonitorJobs";
 import { ISpoolFile } from "./doc/response/ISpoolFile";
 
-
 /**
  * Class to handle submitting of z/OS batch jobs via z/OSMF
  * @export

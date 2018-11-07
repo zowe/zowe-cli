@@ -15,4 +15,5 @@ export interface ITestZosmfSchema {
     host: string;
     port: number;
     rejectUnauthorized: boolean;
+    basePath?: string;
 }

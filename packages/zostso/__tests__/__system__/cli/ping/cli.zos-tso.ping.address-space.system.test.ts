@@ -37,14 +37,7 @@ describe("zos-tso ping address-space", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         acc = defaultSystem.tso.account;
     });
 
@@ -91,6 +84,15 @@ describe("zos-tso ping address-space", () => {
         it("should successfully issue the command without a profile", async () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/as_ping_response.regex").toString();
             const key = (await StartTso.start(REAL_SESSION, acc)).servletKey;
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/address-space/as_ping_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [

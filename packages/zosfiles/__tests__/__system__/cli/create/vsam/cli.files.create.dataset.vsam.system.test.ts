@@ -17,6 +17,8 @@ import { TestProperties } from "../../../../../../../__tests__/__src__/propertie
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { Delete, IDeleteVsamOptions } from "../../../../../src/api/methods/delete";
 
+const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -38,14 +40,7 @@ describe("Create VSAM Data Set", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VSAM`);
         volume = defaultSystem.datasets.list[0].vol;
@@ -56,7 +51,7 @@ describe("Create VSAM Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -80,6 +75,13 @@ describe("Create VSAM Data Set", () => {
         });
 
         it("should create a VSAM data set", () => {
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [dsname,

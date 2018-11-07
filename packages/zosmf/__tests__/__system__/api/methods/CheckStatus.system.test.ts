@@ -32,14 +32,7 @@ describe("Check Status Api", () => {
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
     afterAll(async () => {
@@ -82,10 +75,11 @@ describe("Check Status Api", () => {
         });
 
         it("should return with proper message for invalid hostname", async () => {
+            const badHostName = "badHost";
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.pass,
-                hostname: "badHost",
+                hostname: badHostName,
                 port: defaultSystem.zosmf.port,
                 type: "basic",
                 rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
@@ -103,15 +97,16 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(ZosmfMessages.invalidHostName.message);
+            expect(error.message).toContain(`Error: getaddrinfo ENOTFOUND ${badHostName}`);
         });
 
         it("should return with proper message for invalid port", async () => {
+            const badPort = 9999;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.pass,
                 hostname: defaultSystem.zosmf.host,
-                port: 9999,
+                port: badPort,
                 type: "basic",
                 rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
             });
@@ -128,7 +123,8 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(ZosmfMessages.invalidPort.message);
+            expect(error.message).toContain(`Error: connect ECONNREFUSED`);
+            expect(error.message).toContain(badPort);
         });
 
         it("should return with proper message for rejectUnauthorized = true", async () => {
@@ -153,8 +149,7 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain("A self-signed certificate was used");
-            expect(error.message).toContain("your reject-unauthorized option is 'true'.");
+            expect(error.message).toContain("Error: self signed certificate in certificate chain");
         });
     });
 });

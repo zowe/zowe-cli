@@ -37,14 +37,7 @@ describe("Download Data Set", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
@@ -53,7 +46,7 @@ describe("Download Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -89,6 +82,15 @@ describe("Download Data Set", () => {
 
         it("should download data set", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set_fully_qualified.sh");
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
                 [dsname,

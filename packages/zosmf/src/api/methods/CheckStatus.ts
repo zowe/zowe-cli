@@ -9,14 +9,12 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, ImperativeError, TextUtils } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, Logger } from "@brightside/imperative";
 import { posix } from "path";
 import { ZosmfConstants } from "../constants/Zosmf.constants";
 import { ZosmfMessages } from "../constants/Zosmf.messages";
 import { ZosmfRestClient } from "../../../../rest/src/ZosmfRestClient";
 import { IZosmfInfoResponse } from "../doc/IZosmfInfoResponse";
-import { CheckStatusMessages } from "../../cli/constants/CheckStatus.messages";
-import { isNullOrUndefined } from "util";
 
 /**
  * This class holds the helper functions that are used to gather zosmf information throgh the
@@ -34,63 +32,8 @@ export class CheckStatus {
         this.log.trace("getZosmfInfo called");
         const infoEndpoint = posix.join(ZosmfConstants.RESOURCE, ZosmfConstants.INFO);
         this.log.debug(`Endpoint: ${infoEndpoint}`);
-        let error: ImperativeError;
-        let response: IZosmfInfoResponse = {};
-        let message: string;
-
         ImperativeExpect.toNotBeNullOrUndefined(session, ZosmfMessages.missingSession.message);
-
-        try{
-            response = await ZosmfRestClient.getExpectJSON(session, infoEndpoint);
-        } catch (err) {
-            this.log.error(err);
-
-            error = err;
-            if ("causeErrors" in error && "code" in error.causeErrors) {
-                switch (error.causeErrors.code) {
-                    case ZosmfConstants.ERROR_CODES.BAD_HOST_NAME:
-                        message = ZosmfMessages.invalidHostName.message;
-                        if (session.ISession != null && session.ISession.hostname != null) {
-                            message += session.ISession.hostname;
-                        }
-                        message += ".";
-                        error = new ImperativeError({
-                            msg: message,
-                            causeErrors: error.causeErrors
-                        });
-                        break;
-                    case ZosmfConstants.ERROR_CODES.BAD_PORT:
-                        message = ZosmfMessages.invalidPort.message;
-                        if (session.ISession != null && session.ISession.port != null) {
-                            message += session.ISession.port;
-                        }
-                        message += ".";
-                        error = new ImperativeError({
-                            msg: message,
-                            causeErrors: error.causeErrors
-                        });
-                        break;
-                    case ZosmfConstants.ERROR_CODES.SELF_SIGNED_CERT_IN_CHAIN:
-                    case ZosmfConstants.ERROR_CODES.UNABLE_TO_VERIFY_LEAF_SIGNATURE:
-                        let causeMsg = "No cause reported";
-                        if ("message" in error.causeErrors) {
-                            causeMsg = error.causeErrors.message;
-                        }
-                        error = new ImperativeError({
-                            msg: TextUtils.formatMessage(ZosmfMessages.improperRejectUnauthorized.message, {
-                                causeMsg,
-                                rejectUnauthorized: session.ISession.rejectUnauthorized
-                            }),
-                            causeErrors: error.causeErrors
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
-            throw error;
-        }
-        return response;
+        return ZosmfRestClient.getExpectJSON(session, infoEndpoint);
     }
 
     /**

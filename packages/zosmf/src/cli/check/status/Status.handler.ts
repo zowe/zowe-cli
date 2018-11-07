@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils, ImperativeError } from "@brightside/imperative";
 import { CheckStatus, IZosmfInfoResponse } from "../../../..";
 import { CheckStatusMessages } from "../../constants/CheckStatus.messages";
 import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
@@ -24,23 +24,8 @@ export default class Handler extends ZosmfBaseHandler {
 
     public async processCmd(commandParameters: IHandlerParameters) {
 
-
         // our getZosmfInfo API does all of the work
-        let zosResponse: IZosmfInfoResponse = null;
-        try {
-            zosResponse = await CheckStatus.getZosmfInfo(this.mSession);
-        }
-        catch (impErr) {
-            commandParameters.response.console.error(TextUtils.chalk.red(
-                TextUtils.formatMessage(CheckStatusMessages.cmdFailed.message, {
-                    userName: commandParameters.arguments.user,
-                    hostName: commandParameters.arguments.host,
-                    portNum: commandParameters.arguments.port,
-                    reasonMsg: impErr.message
-                })
-            ));
-            return;
-        }
+        const zosResponse: IZosmfInfoResponse = await CheckStatus.getZosmfInfo(this.mSession);
 
         /* After a successful retrieval, collect the zosmf response object
          * into an object that provides a better display.
