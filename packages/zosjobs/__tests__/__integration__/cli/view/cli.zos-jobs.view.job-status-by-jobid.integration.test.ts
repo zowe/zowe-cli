@@ -29,8 +29,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_view_job_status_by_jobid_command",
-            tempProfileTypes: ["zosmf"]
+            testName: "zos_jobs_view_job_status_by_jobid_command"
         });
 
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
