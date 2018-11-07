@@ -154,6 +154,12 @@ You specified the following unknown values: \\"blah\\".
 
  Could not interpret them as a group, command name, or positional option.
 
+Example:
+
+ - Submit the JCL in the file \\"iefbr14.txt\\":
+
+      $ zowe zos-jobs submit local-file \\"iefbr14.txt\\"
+
 Use \\"zowe zos-jobs submit local-file blah --help\\" to view command description, usage, and options.
 "
 `;
@@ -161,11 +167,14 @@ Use \\"zowe zos-jobs submit local-file blah --help\\" to view command descriptio
 exports[`zos-jobs submit local-file command syntax errors should occur if the local file name is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-localFile
+Missing Positional Argument: localFile
+Argument Description: The local file containing the JCL to submit.
 
-Option Description:
-The local file containing the JCL to submit.
+Example:
+
+ - Submit the JCL in the file \\"iefbr14.txt\\":
+
+      $ zowe zos-jobs submit local-file \\"iefbr14.txt\\"
 
 Use \\"zowe zos-jobs submit local-file --help\\" to view command description, usage, and options.
 "

@@ -144,6 +144,12 @@ You specified the following unknown values: \\"blah\\".
 
  Could not interpret them as a group, command name, or positional option.
 
+Example:
+
+ - View status and other details of the job with the job ID JOB00123:
+
+      $ zowe zos-jobs view job-status-by-jobid j123
+
 Use \\"zowe zos-jobs view job-status-by-jobid blah --help\\" to view command description, usage, and options.
 "
 `;
@@ -151,12 +157,15 @@ Use \\"zowe zos-jobs view job-status-by-jobid blah --help\\" to view command des
 exports[`zos-jobs view job-status-by-jobid command syntax errors should occur if the jobid is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-jobid
-
-Option Description:
-The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is
+Missing Positional Argument: jobid
+Argument Description: The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is
 performed.
+
+Example:
+
+ - View status and other details of the job with the job ID JOB00123:
+
+      $ zowe zos-jobs view job-status-by-jobid j123
 
 Use \\"zowe zos-jobs view job-status-by-jobid --help\\" to view command description, usage, and options.
 "

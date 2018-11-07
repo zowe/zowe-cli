@@ -180,7 +180,7 @@ describe("Upload directory to PDS", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("inputdir");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
@@ -190,7 +190,7 @@ describe("Upload directory to PDS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
 

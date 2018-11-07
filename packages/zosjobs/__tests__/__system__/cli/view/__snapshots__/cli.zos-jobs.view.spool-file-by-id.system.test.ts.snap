@@ -105,21 +105,21 @@ exports[`zos-jobs view spool-file-by-id command help should not have changed 1`]
 exports[`zos-jobs view spool-file-by-id command syntax errors should occur if the jobid and spool file id are missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-jobid
-
-Option Description:
-The z/OS JOBID of the job containing the spool file you want to view. No
+Missing Positional Argument: jobid
+Argument Description: The z/OS JOBID of the job containing the spool file you want to view. No
 pre-validation of the JOBID is performed.
 
 Syntax Error:
-Missing Positional Option:
-spoolfileid
-
-Option Description:
-The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
+Missing Positional Argument: spoolfileid
+Argument Description: The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
 spool-files-by-jobid\\" command to obtain spool ID numbers.No pre-validation of
 the ID is performed.
+
+Example:
+
+ - View the spool file with ID 4 for the job with job ID JOB00123:
+
+      $ zowe zos-jobs view spool-file-by-id JOB00123 4
 
 Use \\"zowe zos-jobs view sfbi --help\\" to view command description, usage, and options.
 "
@@ -128,13 +128,16 @@ Use \\"zowe zos-jobs view sfbi --help\\" to view command description, usage, and
 exports[`zos-jobs view spool-file-by-id command syntax errors should occur if the spool file id is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-spoolfileid
-
-Option Description:
-The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
+Missing Positional Argument: spoolfileid
+Argument Description: The spool file ID number for the spool file to view. Use the \\"zowe zos-jobs list
 spool-files-by-jobid\\" command to obtain spool ID numbers.No pre-validation of
 the ID is performed.
+
+Example:
+
+ - View the spool file with ID 4 for the job with job ID JOB00123:
+
+      $ zowe zos-jobs view spool-file-by-id JOB00123 4
 
 Use \\"zowe zos-jobs view sfbi --help\\" to view command description, usage, and options.
 "

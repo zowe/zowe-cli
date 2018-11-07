@@ -143,7 +143,7 @@ describe("Create VSAM Data Set", () => {
         it("should fail creating a VSAM data set due to missing data set name", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
               TEST_ENVIRONMENT, []);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
     });

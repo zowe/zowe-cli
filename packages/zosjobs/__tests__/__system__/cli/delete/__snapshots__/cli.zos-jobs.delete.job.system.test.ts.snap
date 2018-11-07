@@ -3,13 +3,16 @@
 exports[`zos-jobs delete job command error handling should display an error when jobid is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-jobid
-
-Option Description:
-The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS
+Missing Positional Argument: jobid
+Argument Description: The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS
 batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows
 you to abbreviate the job ID if desired. You can use, for example \\"J123\\".
+
+Example:
+
+ - Delete job with job ID JOB03456.:
+
+      $ zowe zos-jobs delete job JOB03456
 
 Use \\"zowe zos-jobs delete job --help\\" to view command description, usage, and options.
 "

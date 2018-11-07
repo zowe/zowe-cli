@@ -134,12 +134,15 @@ exports[`zos-jobs list spool-files-by-jobid command help should not have changed
 exports[`zos-jobs list spool-files-by-jobid command syntax should detect a missing jobid 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-jobid
-
-Option Description:
-The z/OS JOBID of the job with the spool files you want to list. No
+Missing Positional Argument: jobid
+Argument Description: The z/OS JOBID of the job with the spool files you want to list. No
 pre-validation of the JOBID is performed.
+
+Example:
+
+ - List the spool files of the job with JOBID JOB00123:
+
+      $ zowe zos-jobs list spool-files-by-jobid job00123
 
 Use \\"zowe jobs ls sfbj --help\\" to view command description, usage, and options.
 "

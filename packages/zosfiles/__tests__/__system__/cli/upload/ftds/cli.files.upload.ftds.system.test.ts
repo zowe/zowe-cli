@@ -222,7 +222,7 @@ describe("Upload file to data set", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftds.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
 

@@ -159,7 +159,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should fail creating a physical sequential data set due to missing data set name", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
     });

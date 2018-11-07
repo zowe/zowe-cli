@@ -3,13 +3,16 @@
 exports[`zos-console collect response should display error if no response-key provided 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-responsekey
-
-Option Description:
-The \\"solicited response key\\" provided in response to a previously issued console
+Missing Positional Argument: responsekey
+Argument Description: The \\"solicited response key\\" provided in response to a previously issued console
 command. Used by the z/OSMF console API to collect any additional outstanding
 solicited responses from a previously issued console command.
+
+Example:
+
+ - Collect any outstanding additional solicited response messages:
+
+      $ zowe zos-console collect sync-responses C4866969
 
 Use \\"zowe zos-console collect sync-responses --help\\" to view command description, usage, and options.
 "
@@ -150,6 +153,12 @@ You specified:
 
 The value must match one of the following regular expressions:
 [ '^[a-zA-Z0-9]+$' ].
+
+Example:
+
+ - Collect any outstanding additional solicited response messages:
+
+      $ zowe zos-console collect sync-responses C4866969
 
 Use \\"zowe zos-console collect sync-responses --help\\" to view command description, usage, and options.
 "

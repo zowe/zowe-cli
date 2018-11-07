@@ -3,12 +3,16 @@
 exports[`zos-jobs download output command error handling should display an error when jobid is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
-jobid
-
-Option Description:
-The z/OS JOBID of the job containing the spool files you want to view. No
+Missing Positional Argument: jobid
+Argument Description: The z/OS JOBID of the job containing the spool files you want to view. No
 pre-validation of the JOBID is performed.
+
+Example:
+
+ - Download all the output of the job with job ID JOB00234 to an automatically
+ generated directory.:
+
+      $ zowe zos-jobs download output JOB00234
 
 Use \\"zowe zos-jobs download output --help\\" to view command description, usage, and options.
 "

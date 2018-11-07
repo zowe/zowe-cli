@@ -152,7 +152,7 @@ describe("Create Classic Data Set", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("dataSetName");
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
         });
     });
 });
