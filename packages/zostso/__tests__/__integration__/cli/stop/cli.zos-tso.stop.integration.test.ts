@@ -21,7 +21,7 @@ describe("zos-tso stop", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_tso_start_integration"
+            testName: "zos_tso_stop_integration"
         });
     });
 

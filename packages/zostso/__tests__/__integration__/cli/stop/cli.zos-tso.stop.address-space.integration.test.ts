@@ -15,12 +15,12 @@ import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-describe("zos-tso start address-space", () => {
+describe("zos-tso stop address-space", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_tso_start_as_integration",
+            testName: "zos_tso_stop_as_integration",
         });
     });
     afterAll(async () => {

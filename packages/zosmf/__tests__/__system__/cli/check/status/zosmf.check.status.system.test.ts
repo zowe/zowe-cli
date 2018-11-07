@@ -106,11 +106,6 @@ describe("zosmf check status", () => {
 
     describe("Expected failures", () => {
 
-        it("should fail due to invalid status command", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_missing_status.sh", testEnvironment);
-            expect(stripNewLines(response.stderr.toString())).toContain("Command failed due to improper syntax");
-        });
-
         it("should fail due to invalid port", async () => {
             // create a temporary zowe profile with an invalid port
             const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
