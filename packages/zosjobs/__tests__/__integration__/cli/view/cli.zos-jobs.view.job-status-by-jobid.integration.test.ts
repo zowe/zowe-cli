@@ -18,26 +18,12 @@ import { ITestSystemSchema } from "../../../../../../__tests__/__src__/propertie
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-// Pulled from test properties file
-let account: string;
-let defaultSystem: ITestSystemSchema;
-let systemProps: TestProperties;
-let jclMember: string;
-let psJclDataSet: string;
-
 describe("zos-jobs view job-status-by-jobid command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_view_job_status_by_jobid_command"
         });
-
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
-        account = defaultSystem.tso.account;
-        jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
-        psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
     });
 
     afterAll(async () => {
