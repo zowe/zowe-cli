@@ -9,8 +9,6 @@
 *                                                                                 *
 */
 
-
-
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript, stripNewLines } from "../../../../__tests__/__src__/TestUtils";
@@ -30,7 +28,7 @@ describe("zosmf check status", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    it("should display zosmf help", async () => {
+    it("should display the help", async () => {
         const response = runCliScript(__dirname + "/__scripts__/zosmf_check_status_help.sh", testEnvironment);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);

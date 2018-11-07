@@ -91,13 +91,6 @@ describe("zosmf check status", () => {
 
     describe("Success scenarios", () => {
 
-        it("should display zosmf help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/zosmf_check_status_help.sh", testEnvironment);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should display successful connection to z/OSMF", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment);
             expect(response.stderr.toString()).toBe("");
