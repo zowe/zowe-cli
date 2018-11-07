@@ -15,19 +15,32 @@ import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
+let IEFBR14_JCL: string;
 
-describe("zos-jobs view command", () => {
+describe("zos-jobs delete job command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_view_command"
+            testName: "zos_jobs_delete_job_command_integration"
         });
+        IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
+    });
+
+    afterAll(() => {
+        TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/view_help.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/job/help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
+    });
+
+    it("should display an error when jobid is missing", () => {
+        const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stdout.toString()).toBe("");
+        expect(response.stderr.toString()).toMatchSnapshot();
     });
 });

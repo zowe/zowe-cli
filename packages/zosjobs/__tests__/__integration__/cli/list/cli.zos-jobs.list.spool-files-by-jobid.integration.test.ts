@@ -16,18 +16,32 @@ import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("zos-jobs list command", () => {
+describe("zos-jobs list spool-files-by-jobid command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_list_command"
+            testName: "zos_jobs_list_spool_files_by_jobid_command"
         });
     });
 
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/list_help.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
+
+    describe("syntax", () => {
+        it("should detect a missing jobid", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/missing_jobid.sh", TEST_ENVIRONMENT);
+            expect(response.status).toBe(1);
+            expect(response.stdout.toString()).toBe("");
+            expect(response.stderr.toString()).toMatchSnapshot();
+        });
+    });
+
 });

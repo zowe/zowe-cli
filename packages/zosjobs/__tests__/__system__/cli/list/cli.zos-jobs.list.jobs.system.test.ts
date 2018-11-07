@@ -59,15 +59,6 @@ describe("zos-jobs list jobs command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("help", () => {
-        it("should not have changed", async () => {
-            const response = runCliScript(scriptDir + "/help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
     describe("positive tests", () => {
 
         it("should be able to submit two jobs and then find both in the output",

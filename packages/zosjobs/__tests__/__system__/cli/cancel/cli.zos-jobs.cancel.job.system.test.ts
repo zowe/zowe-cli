@@ -42,22 +42,7 @@ describe("zos-jobs cancel job command", () => {
         IO.deleteFile(LOCAL_JCL_FILE);
     });
 
-    describe("help", () => {
-        it("should not have changed", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
     describe("error handling", () => {
-        it("should display an error when jobid is missing", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/missing_jobid.sh", TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
 
         it("should surface an error from z/OSMF if the jobid doesn't exist", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/not_found.sh", TEST_ENVIRONMENT);

@@ -9,35 +9,25 @@
 *                                                                                 *
 */
 
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript, stripNewLines } from "../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 
-let testEnvironment: ITestEnvironment;
+// Test Environment populated in the beforeAll();
+let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("zosmf check status", () => {
-
+describe("zos-jobs view command", () => {
     // Create the unique test environment
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_check_status_integration"
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            testName: "zos_jobs_view_command"
         });
     });
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
-    });
-
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/zosmf_check_status_help.sh", testEnvironment);
+        const response = runCliScript(__dirname + "/__scripts__/view_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
-
-    it("should fail due to invalid status command", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_missing_status.sh", testEnvironment);
-        expect(stripNewLines(response.stderr.toString())).toContain("Command failed due to improper syntax");
-    });
-
 });

@@ -60,24 +60,6 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("help", () => {
-        it("should not have changed", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
-    describe("syntax", () => {
-        it("should detect a missing jobid", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/missing_jobid.sh", TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
-    });
-
     describe("error handling", () => {
         it("should present an error message if the JOBID is not found", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/not_found.sh", TEST_ENVIRONMENT);

@@ -100,15 +100,6 @@ describe("zos-jobs submit local-file command", () => {
             expect(new RegExp("JOB\\d{5}", "g").test(response.stdout.toString())).toBe(true);
         });
 
-
-        it("should fail if the local file does not exist ", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_invalid_local_file.sh",
-                TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString().toLowerCase()).toContain("error");
-            expect(response.stderr.toString().toLowerCase()).toContain("no such file");
-        });
-
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
@@ -154,21 +145,4 @@ describe("zos-jobs submit local-file command", () => {
         });
     });
 
-    describe("syntax errors", () => {
-        it("should occur if the local file name is missing", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_syntax_missing_file_name.sh", TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
-
-        it("should occur if an extra unknown option is specified", async () => {
-
-            const response = runCliScript(__dirname + "/__scripts__/submit_syntax_invalid_parm.sh",
-                TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
-            expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
-    });
 });
