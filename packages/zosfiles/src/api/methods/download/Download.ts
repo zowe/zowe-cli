@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -82,12 +82,16 @@ export class Download {
 
             // Get contents of the data set
             let content = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
+            if (options.extension != null) {
+                extension = options.extension;
+            }
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the data set name
             // Note that the "extension" options do not affect the destination if the "file" options were provided
             const destination = options.file || ZosFilesUtils.getDirsFromDataSet(dataSetName) +
-                IO.normalizeExtension(options.extension || ZosFilesUtils.DEFAULT_FILE_EXTENSION);
+                IO.normalizeExtension(extension);
 
             IO.createDirsSyncFromFilePath(destination);
 
@@ -153,16 +157,29 @@ export class Download {
             }
 
             const baseDir = options.directory || ZosFilesUtils.getDirsFromDataSet(dataSetName);
+            let downloadsInitiated = 0;
+
+            let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
+            if (options.extension != null) {
+                extension = options.extension;
+            }
 
             /**
              * Function that takes a member and turns it into a promise to download said member
              * @param mem - an object with a "member" field containing the name of the data set member
              */
             const createDownloadPromise = (mem: { member: string }) => {
+                // update the progress bar if any
+                if (options.task != null) {
+                    options.task.statusMessage = "Downloading " + mem.member;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (downloadsInitiated / memberList.length));
+                    downloadsInitiated++;
+                }
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + mem.member.toLowerCase() +
-                        IO.normalizeExtension(options.extension || ZosFilesUtils.DEFAULT_FILE_EXTENSION),
+                        IO.normalizeExtension(extension),
                     binary: options.binary
                 });
             };

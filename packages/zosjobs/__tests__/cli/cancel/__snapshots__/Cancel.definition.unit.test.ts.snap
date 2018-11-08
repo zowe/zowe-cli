@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs cancel definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "can",
+  ],
+  "description": "Cancel a single job by job ID. This cancels the job if it is running or on input.",
+  "name": "cancel",
+  "summary": "Cancel a job",
+  "type": "group",
+}
+`;

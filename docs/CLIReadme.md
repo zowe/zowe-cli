@@ -5,7 +5,7 @@ Welcome to Zowe CLI!
 
 Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
 
-For additional Zowe CLI documentation, visit https://zowe.org.
+For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site.
 
 For Zowe CLI support, visit https://zowe.org.
 
@@ -68,6 +68,7 @@ For Zowe CLI support, visit https://zowe.org.
 	* [download | dl](#module-download)
 		* [data-set](#command-data-set)
 		* [all-members](#command-all-members)
+		* [uss-file](#command-uss-file)
 	* [list | ls](#module-list)
 		* [all-members](#command-all-members)
 		* [data-set](#command-data-set)
@@ -75,15 +76,21 @@ For Zowe CLI support, visit https://zowe.org.
 		* [file-to-data-set](#command-file-to-data-set)
 		* [stdin-to-data-set](#command-stdin-to-data-set)
 		* [dir-to-pds](#command-dir-to-pds)
+		* [file-to-uss](#command-file-to-uss)
 * [zos-jobs | jobs](#module-zos-jobs)
 	* [submit | sub](#module-submit)
 		* [data-set](#command-data-set)
+		* [local-file](#command-local-file)
+	* [download | dl](#module-download)
+		* [output](#command-output)
 	* [view | vw](#module-view)
 		* [job-status-by-jobid](#command-job-status-by-jobid)
 		* [spool-file-by-id](#command-spool-file-by-id)
 	* [list | ls](#module-list)
 		* [spool-files-by-jobid](#command-spool-files-by-jobid)
 		* [jobs](#command-jobs)
+	* [delete | del](#module-delete)
+		* [job](#command-job)
 * [zos-tso | tso](#module-zos-tso)
 	* [send](#module-send)
 		* [address-space](#command-address-space)
@@ -139,12 +146,12 @@ plug-ins are installed. For more information on the plugins.json file, see the
 want to install.
 
 All plug-ins specified in plugins.json will be installed to the base CLI and the
-contents will be placed into C:\users\boech02\Desktop\logs\plugins\plugins.json.
+contents will be placed into C:\Users\USER\.zowe\plugins\plugins.json.
 
 If you do not specify a plugins.json file and do not specify a plug-in, the
-default plugin.json file (C:\users\boech02\Desktop\logs\plugins\plugins.json)
-will be used. This provides a way to install plug-ins that were lost or
-corrupted after reinstalling or updating Zowe CLI.
+default plugin.json file (C:\Users\USER\.zowe\plugins\plugins.json) will be
+used. This provides a way to install plug-ins that were lost or corrupted after
+reinstalling or updating Zowe CLI.
 
 *   `--registry`  *(string)*
 
@@ -157,7 +164,7 @@ https://docs.npmjs.com/misc/registry
 ### Examples
 
    *-  Install plug-ins saved in
-   C:\users\boech02\Desktop\logs\plugins\plugins.json:
+   C:\Users\USER\.zowe\plugins\plugins.json:
 
 * `          $  zowe plugins install `
 
@@ -1883,9 +1890,9 @@ Download content from a z/OS data set to a local file
 
 *   `--binary`  | `-b` *(boolean)*
 
-	* Download the data set content in binary mode, which means that no data
-conversion is performed. The data transfer process returns each record as-is,
-without translation. No delimiters are added between records.
+	* Download the file content in binary mode, which means that no data conversion is
+performed. The data transfer process returns each line as-is, without
+translation. No delimiters are added between records.
 
 *   `--extension`  | `-e` *(string)*
 
@@ -1932,9 +1939,9 @@ Download all members from a partitioned data set to a local folder
 
 *   `--binary`  | `-b` *(boolean)*
 
-	* Download the data set content in binary mode, which means that no data
-conversion is performed. The data transfer process returns each record as-is,
-without translation. No delimiters are added between records.
+	* Download the file content in binary mode, which means that no data conversion is
+performed. The data transfer process returns each line as-is, without
+translation. No delimiters are added between records.
 
 *   `--directory`  | `-d` *(string)*
 
@@ -1946,6 +1953,19 @@ data set ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).
 *   `--extension`  | `-e` *(string)*
 
 	* Save the local files with a specified file extension. For example, .txt.
+
+*   `--max-concurrent-requests`  | `--mcr` *(number)*
+
+	* Specifies the maximum number of concurrent z/OSMF REST API requests to download
+members. Increasing the value results in faster downloads. However, increasing
+the value increases resource consumption on z/OS and can be prone to errors
+caused by making too many concurrent requests. If the download process
+encounters an error, the following message displays:
+The maximum number of TSO address spaces were created. When you specify 0, Zowe
+CLI attempts to download all members at once without a maximum number of
+concurrent requests.
+
+Default value: 1
 
 *   `--volume-serial`  | `--vs` *(string)*
 
@@ -1970,6 +1990,50 @@ cataloged on the system. A VOLSER is analogous to a drive name on a PC.
    mode to the directory "jcl/":
 
 * `          $  zowe zos-files download all-members "ibmuser.cntl" -d jcl`
+
+### uss-file<a name="command-uss-file"></a>
+Download content from a USS file to a local file on your PC
+
+#### Usage
+
+   zowe zos-files download uss-file <ussFileName> [options]
+
+#### Positional Arguments
+
+*   `ussFileName`		 *(string)*
+
+	* The name of the USS file you want to download
+
+#### Options
+
+*   `--binary`  | `-b` *(boolean)*
+
+	* Download the file content in binary mode, which means that no data conversion is
+performed. The data transfer process returns each line as-is, without
+translation. No delimiters are added between records.
+
+*   `--file`  | `-f` *(string)*
+
+	* The path to the local file where you want to download the content. When you omit
+the option, the command generates a file name automatically for you.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Download the file "/a/ibmuser/my_text.txt" to
+   ./my_text.txt:
+
+* `          $  zowe zos-files download uss-file "/a/ibmuser/my_text.txt" -f ./my_text.txt`
+
+   *-  Download the file "/a/ibmuser/MyJava.class" to
+   "java/MyJava.class" in binary mode:
+
+* `          $  zowe zos-files download uss-file "/a/ibmuser/MyJava.class" -b -f "java/MyJava.class"`
 
 ## list | ls<a name="module-list"></a>
 List data sets and data set members. Optionally, you can list their details and attributes.
@@ -2258,6 +2322,44 @@ cataloged on the system. A VOLSER is analogous to a drive name on a PC.
 
 * `          $  zowe zos-files upload dir-to-pds "src" "ibmuser.src" --mr wait`
 
+### file-to-uss<a name="command-file-to-uss"></a>
+Upload content to a USS file from local file
+
+#### Usage
+
+   zowe zos-files upload file-to-uss <inputfile> <USSFileName> [options]
+
+#### Positional Arguments
+
+*   `inputfile`		 *(string)*
+
+	* The local file that you want to upload to a USS file
+
+*   `USSFileName`		 *(string)*
+
+	* The name of the USS file to which you want to upload the file
+
+#### Options
+
+*   `--binary`  | `-b` *(boolean)*
+
+	* Data content in binary mode, which means that no data conversion is performed.
+The data transfer process returns each record as-is, without translation. No
+delimiters are added between records.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Upload to the USS file "/a/ibmuser/my_text.txt" from the
+   file "file.txt":
+
+* `          $  zowe zos-files upload file-to-uss "file.txt" "/a/ibmuser/my_text.txt"`
+
 # zos-jobs | jobs<a name="module-zos-jobs"></a>
 Manage z/OS jobs.
 ## submit | sub<a name="module-submit"></a>
@@ -2279,8 +2381,29 @@ documentation.
 
 	* The z/OS data set containing the JCL to submit. You can specify a physical
 sequential data set (for example, "DATA.SET") or a partitioned data set
-qualified by a member (for example, "DATA.SET(MEMBER)"). The data set must be
-cataloged.
+qualified by a member (for example, "DATA.SET(MEMBER)").
+
+#### Options
+
+*   `--volume`  | `--vol` *(string)*
+
+	* The volume serial (VOLSER) where the data set resides. The option is required
+only when the data set is not catalogued on the system.
+
+*   `--view-all-spool-content`  | `--vasc` *(boolean)*
+
+	* Print all spool output. If you use this option you will wait the job to
+complete.
+
+*   `--directory`  | `-d` *(string)*
+
+	* The local directory you would like to download the output of the job. Creates a
+subdirectory using the jobID as the name and files are titled based on DD names.
+If you use this option you will wait the job to complete.
+
+*   `--extension`  | `-e` *(string)*
+
+	* A file extension to save the job output with. Default is '.txt'.
 
 #### Profile Options
 
@@ -2328,6 +2451,134 @@ the output.
    *-  Submit the JCL in the data set "ibmuser.cntl(deploy)":
 
 * `          $  zowe zos-jobs submit data-set "ibmuser.cntl(deploy)"`
+
+   *-  Submit the JCL in the data set "ibmuser.cntl(deploy)", wait
+   for the job to complete and print all output from the job:
+
+* `          $  zowe zos-jobs submit data-set "ibmuser.cntl(deploy)" --vasc`
+
+### local-file<a name="command-local-file"></a>
+Submit a job (JCL) contained in a local file. The command presents errors
+verbatim from the z/OSMF Jobs REST endpoints. For more information about z/OSMF
+Jobs API errors, see the z/OSMF Jobs API REST documentation.
+
+#### Usage
+
+   zowe zos-jobs submit local-file <localFile> [options]
+
+#### Positional Arguments
+
+*   `localFile`		 *(string)*
+
+	* The local file containing the JCL to submit.
+
+#### Options
+
+*   `--view-all-spool-content`  | `--vasc` *(boolean)*
+
+	* View all spool content for specified job ID
+
+*   `--directory`  | `-d` *(string)*
+
+	* The local directory you would like to download the output for the job to.
+Creates a subdirectory using the jobID as the name and files are titled based on
+DD names.
+
+*   `--extension`  | `-e` *(string)*
+
+	* A file extension to save the job output with
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+#### response format options
+
+*   `--response-format-filter`  | `--rff` *(array)*
+
+	* Filter (include) fields in the response. Accepts an array of field/property
+names to include in the output response. You can filter JSON objects properties
+OR table columns/fields. In addition, you can use this option in conjunction
+with '--response-format-type' to reduce the output of a command to a single
+field/property or a list of a single field/property.
+
+*   `--response-format-type`  | `--rft` *(string)*
+
+	* The command response output format type. Must be one of the following:
+
+table: Formats output data as a table. Use this option when the output data is
+an array of homogeneous JSON objects. Each property of the object will become a
+column in the table.
+
+list: Formats output data as a list of strings. Can be used on any data type
+(JSON objects/arrays) are stringified and a new line is added after each entry
+in an array.
+
+object: Formats output data as a list of prettified objects (or single object).
+Can be used in place of "table" to change from tabular output to a list of
+prettified objects.
+
+string: Formats output data as a string. JSON objects/arrays are stringified.
+
+Allowed values: table, list, object, string
+
+*   `--response-format-header`  | `--rfh` *(boolean)*
+
+	* If "--response-format-type table" is specified, include the column headers in
+the output.
+
+### Examples
+
+   *-  Submit the JCL in the file "iefbr14.txt":
+
+* `          $  zowe zos-jobs submit local-file "iefbr14.txt"`
+
+## download | dl<a name="module-download"></a>
+Download the output of a job as separate files.
+### output<a name="command-output"></a>
+Download all job output to a local directory. Each spool DD will be downloaded
+to its own file in the directory.
+
+#### Usage
+
+   zowe zos-jobs download output <jobid> [options]
+
+#### Positional Arguments
+
+*   `jobid`		 *(string)*
+
+	* The z/OS JOBID of the job containing the spool files you want to view. No
+pre-validation of the JOBID is performed.
+
+#### Options
+
+*   `--directory`  | `-d` | `--dir` *(string)*
+
+	* The local directory you would like to download the output for the job to.
+
+*   `--extension`  | `-e` *(string)*
+
+	* A file extension to save the job output with. Defaults to '.txt'.
+
+*   `--omit-jobid-directory`  | `--ojd` *(boolean)*
+
+	* If specified, job output will be saved directly to the specified directory
+rather than creating a subdirectory named after the ID of the job.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Download all the output of the job with job ID JOB00234 to
+   an automatically generated directory.:
+
+* `          $  zowe zos-jobs download output JOB00234`
 
 ## view | vw<a name="module-view"></a>
 View details of z/OS jobs on spool/JES queues.
@@ -2582,6 +2833,35 @@ the output.
    displaying only the job ID of each job:
 
 * `          $  zowe zos-jobs list jobs --rff jobid --rft table`
+
+## delete | del<a name="module-delete"></a>
+Delete a single job by job ID or delete multiple jobs in OUTPUT status. This cancels the job if it is running and purges its output from the system
+### job<a name="command-job"></a>
+Delete a single job by job ID
+
+#### Usage
+
+   zowe zos-jobs delete job <jobid> [options]
+
+#### Positional Arguments
+
+*   `jobid`		 *(string)*
+
+	* The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS
+batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows
+you to abbreviate the job ID if desired. You can use, for example "J123".
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Delete job with job ID JOB03456.:
+
+* `          $  zowe zos-jobs delete job JOB03456`
 
 # zos-tso | tso<a name="module-zos-tso"></a>
 Issue TSO commands and interact with TSO address spaces

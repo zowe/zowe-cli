@@ -62,6 +62,11 @@ export class TestEnvironment {
         const env: { [key: string]: string } = {};
         env[Constants.HOME_ENV_KEY] = testDirectory;
 
+        // Ensure correct path separator for windows or linux like systems.
+        const separator = process.platform === "win32" ? ";" : ":";
+
+        env.PATH = `${nodePath.resolve(__dirname, "../../__resources__/application_instances")}${separator}${process.env.PATH}`;
+
         const result: ITestEnvironment = {
             workingDir: testDirectory,
             systemTestProperties: systemProps,

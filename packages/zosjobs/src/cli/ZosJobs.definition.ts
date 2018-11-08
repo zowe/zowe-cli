@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@brightside/imperative";
 import { SubmitDefinition } from "./submit/Submit.definition";
 import { ViewDefinition } from "./view/View.definition";
 import { ListDefinition } from "./list/List.definition";
+import { CancelDefinition } from "./cancel/Cancel.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { DownloadDefinition } from "./download/Download.definition";
 import { ZosmfSession } from "../../../zosmf";
@@ -29,6 +30,7 @@ export const definition: ICommandDefinition = {
         ViewDefinition,
         ListDefinition,
         DeleteDefinition,
+        CancelDefinition,
     ],
     passOn: [
         {

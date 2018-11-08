@@ -119,4 +119,18 @@ export class JobsConstants {
      * @memberof JobsConstants
      */
     public static readonly RESOURCE_SPOOL_CONTENT: string = "/records";
+
+    /**
+     * Cancel request constant
+     * @static
+     * @memberof JobsConstants
+     */
+    public static readonly REQUEST_CANCEL = "cancel";
+
+    /**
+     * Default version of cancel
+     * @static
+     * @memberof JobsConstants
+     */
+    public static readonly DEFAULT_CANCEL_VERSION = "1.0";
 }
