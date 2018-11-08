@@ -10,7 +10,7 @@
 */
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
-import { ImperativeError, ImperativeExpect, Logger, TextUtils } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger, Session, TextUtils } from "@brightside/imperative";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirpSync } from "fs-extra";
@@ -19,6 +19,7 @@ import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import * as fs from "fs";
 import { Constants } from "../../../packages/Constants";
 import { TempTestProfiles } from "../profiles/TempTestProfiles";
+import { TestProperties } from "../properties/TestProperties";
 
 const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
@@ -106,6 +107,24 @@ export class TestEnvironment {
         const path = nodePath.resolve(TEST_RESULT_DATA_DIR + "/" + app);
         mkdirpSync(path);
         return path;
+    }
+
+    /**
+     * Create a ZOSMF session from properties present in your test environment
+     * @param testEnvironment - your test environment with system test properties populated
+     */
+    public static createZosmfSession(testEnvironment: ITestEnvironment): AbstractSession {
+        const SYSTEM_PROPS = new TestProperties(testEnvironment.systemTestProperties);
+        const defaultSystem = SYSTEM_PROPS.getDefaultSystem();
+        return new Session({
+            user: defaultSystem.zosmf.user,
+            password: defaultSystem.zosmf.pass,
+            hostname: defaultSystem.zosmf.host,
+            port: defaultSystem.zosmf.port,
+            type: "basic",
+            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+            basePath: defaultSystem.zosmf.basePath
+        });
     }
 
     private static readonly DEFAULT_PROPERTIES = "custom_properties.yaml";

@@ -43,14 +43,7 @@ describe("zos-jobs view spool-file-by-id command", () => {
         const systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         const defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
@@ -136,6 +129,14 @@ describe("zos-jobs view spool-file-by-id command", () => {
             });
 
             it("should be able to get the content of every spool file for a job", async () => {
+                const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+                // if API Mediation layer is being used (basePath has a value) then
+                // set an ENVIRONMENT variable to be used by zowe.
+                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                }
+
                 const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/get_all_spool_content_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
@@ -173,7 +174,7 @@ describe("zos-jobs view spool-file-by-id command", () => {
             expect(response.stderr.toString()).toContain("z/OSMF REST API Error:");
             expect(response.stderr.toString()).toContain("does not contain spool file id 9999");
             expect(response.stderr.toString()).toContain("Error Details:");
-            expect(response.stderr.toString()).toContain("Request: GET");
+            expect(response.stderr.toString()).toContain("Request:   GET");
         });
     });
 });

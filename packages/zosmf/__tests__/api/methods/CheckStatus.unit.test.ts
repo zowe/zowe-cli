@@ -18,6 +18,7 @@ describe("Check Status api", () => {
     const endpoint = ZosmfConstants.RESOURCE + ZosmfConstants.INFO;
     const dummyResponse: IZosmfInfoResponse = {};
     let mySpy: any;
+    const restErrMsgText = "The error message thrown by our Rest API";
 
     beforeEach(() => {
         mySpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
@@ -48,7 +49,7 @@ describe("Check Status api", () => {
             let response;
             let error;
             mySpy.mockRejectedValue(new ImperativeError({
-                msg: "dummy msg",
+                msg: restErrMsgText,
                 causeErrors: {
                     code: ZosmfConstants.ERROR_CODES.BAD_HOST_NAME
                 }
@@ -62,14 +63,15 @@ describe("Check Status api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(ZosmfMessages.invalidHostName.message);
+            expect(error.message).toContain(restErrMsgText);
+            expect(error.mDetails.causeErrors.code).toContain(ZosmfConstants.ERROR_CODES.BAD_HOST_NAME);
          });
 
         it("should throw appropriate error when unable to connect to port", async () => {
             let response;
             let error;
             mySpy.mockRejectedValue(new ImperativeError({
-                msg: "dummy msg",
+                msg: restErrMsgText,
                 causeErrors: {
                     code: ZosmfConstants.ERROR_CODES.BAD_PORT
                 }
@@ -83,14 +85,15 @@ describe("Check Status api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(ZosmfMessages.invalidPort.message);
+            expect(error.message).toContain(restErrMsgText);
+            expect(error.mDetails.causeErrors.code).toContain(ZosmfConstants.ERROR_CODES.BAD_PORT);
         });
 
         it("should throw appropriate error when unsigned cert is in chain", async () => {
             let response;
             let error;
             mySpy.mockRejectedValue(new ImperativeError({
-                msg: "dummy msg",
+                msg: restErrMsgText,
                 causeErrors: {
                     code: ZosmfConstants.ERROR_CODES.SELF_SIGNED_CERT_IN_CHAIN,
                     message: "Some cert in the chain is unsigned"
@@ -110,17 +113,15 @@ describe("Check Status api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(
-                "A self-signed certificate was used (Some cert in the chain is unsigned),\n" +
-                "and your reject-unauthorized option is 'true'."
-            );
+            expect(error.message).toContain(restErrMsgText);
+            expect(error.mDetails.causeErrors.code).toContain(ZosmfConstants.ERROR_CODES.SELF_SIGNED_CERT_IN_CHAIN);
         });
 
         it("should throw appropriate error when the first (leaf) cert is unsigned", async () => {
             let response;
             let error;
             mySpy.mockRejectedValue(new ImperativeError({
-                msg: "dummy msg",
+                msg: restErrMsgText,
                 causeErrors: {
                     code: ZosmfConstants.ERROR_CODES.UNABLE_TO_VERIFY_LEAF_SIGNATURE,
                     message: "The first, aka leaf, cert is unsigned"
@@ -140,10 +141,8 @@ describe("Check Status api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(
-                "A self-signed certificate was used (The first, aka leaf, cert is unsigned),\n" +
-                "and your reject-unauthorized option is 'true'."
-            );
+            expect(error.message).toContain(restErrMsgText);
+            expect(error.mDetails.causeErrors.code).toContain(ZosmfConstants.ERROR_CODES.UNABLE_TO_VERIFY_LEAF_SIGNATURE);
         });
     });
 });
