@@ -134,7 +134,7 @@ exports[`zos-jobs list spool-files-by-jobid command help should not have changed
 exports[`zos-jobs list spool-files-by-jobid command syntax should detect a missing jobid 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 jobid
 
 Option Description:

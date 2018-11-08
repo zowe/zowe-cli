@@ -1,12 +1,12 @@
 /*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
 */
 
 import { Session } from "@brightside/imperative";
@@ -95,16 +95,6 @@ describe("Create VSAM Data Set", () => {
         });
     });
 
-    describe("Help scenarios", () => {
-
-        it("should display create data-set-vsam help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_vsam_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
     describe("Success scenarios", () => {
 
         afterEach(async () => {
@@ -118,7 +108,7 @@ describe("Create VSAM Data Set", () => {
 
         it("should create a VSAM data set", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
-              TEST_ENVIRONMENT, [dsname, `-v ${volume}`]);
+                TEST_ENVIRONMENT, [dsname, `-v ${volume}`]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });
@@ -135,16 +125,6 @@ describe("Create VSAM Data Set", () => {
                 TEST_ENVIRONMENT, [dsname, `-v ${volume} --size 30MB`]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-        });
-    });
-
-    describe("Expected failures", () => {
-
-        it("should fail creating a VSAM data set due to missing data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
-              TEST_ENVIRONMENT, []);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
-            expect(response.stderr.toString()).toContain("dataSetName");
         });
     });
 });

@@ -3,7 +3,7 @@
 exports[`zos-jobs download output command error handling should display an error when jobid is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 jobid
 
 Option Description:

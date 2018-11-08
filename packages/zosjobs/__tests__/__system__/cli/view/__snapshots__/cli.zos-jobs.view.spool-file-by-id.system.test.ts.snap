@@ -105,7 +105,7 @@ exports[`zos-jobs view spool-file-by-id command help should not have changed 1`]
 exports[`zos-jobs view spool-file-by-id command syntax errors should occur if the jobid and spool file id are missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 jobid
 
 Option Description:
@@ -113,7 +113,7 @@ The z/OS JOBID of the job containing the spool file you want to view. No
 pre-validation of the JOBID is performed.
 
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 spoolfileid
 
 Option Description:
@@ -128,7 +128,7 @@ Use \\"zowe zos-jobs view sfbi --help\\" to view command description, usage, and
 exports[`zos-jobs view spool-file-by-id command syntax errors should occur if the spool file id is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 spoolfileid
 
 Option Description:

@@ -1,12 +1,12 @@
 /*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
 */
 
 import * as path from "path";
@@ -29,7 +29,7 @@ describe("Upload uss file", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display upload uss file help", async () => {
+    it("should display the help", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command_upload_ftu_help.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");

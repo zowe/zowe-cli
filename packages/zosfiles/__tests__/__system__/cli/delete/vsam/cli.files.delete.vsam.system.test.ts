@@ -1,12 +1,12 @@
 /*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
 */
 
 import { Session } from "@brightside/imperative";
@@ -91,17 +91,6 @@ describe("Delete VSAM Data Set", () => {
         });
     });
 
-    describe("Help scenarios", () => {
-
-        it("should display delete vsam help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/delete_vsam_help.sh",
-                TEST_ENVIRONMENT);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
     describe("Success scenarios", () => {
 
         it("should delete a VSAM data set", async () => {
@@ -135,23 +124,6 @@ describe("Delete VSAM Data Set", () => {
     });
 
     describe("Expected failures", () => {
-
-        it("should fail deleting a data set due to missing data set name", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
-                TEST_ENVIRONMENT, [""]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("dataSetName");
-            expect(response.stderr.toString()).toContain("Missing Positional");
-        });
-
-        it("should fail deleting a data set without specifying --for-sure", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
-                TEST_ENVIRONMENT, [dsname]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("--for-sure");
-            expect(response.stderr.toString()).toContain("Missing Required Option");
-        });
-
         it("should fail deleting a data set that does not exist", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [user + ".DOES.NOT.EXIST", "--for-sure"]);

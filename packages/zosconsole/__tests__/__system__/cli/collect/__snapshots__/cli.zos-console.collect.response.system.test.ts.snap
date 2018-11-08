@@ -3,7 +3,7 @@
 exports[`zos-console collect response should display error if no response-key provided 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 responsekey
 
 Option Description:

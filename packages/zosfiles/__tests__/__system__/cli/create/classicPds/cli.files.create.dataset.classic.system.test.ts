@@ -1,12 +1,12 @@
 /*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
 */
 
 import { Session } from "@brightside/imperative";
@@ -152,7 +152,7 @@ describe("Create Classic Data Set", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("dataSetName");
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
         });
     });
 });

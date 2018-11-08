@@ -1,12 +1,12 @@
 /*
-* This program and the accompanying materials are made available under the terms of the *
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
-* https://www.eclipse.org/legal/epl-v20.html                                      *
-*                                                                                 *
-* SPDX-License-Identifier: EPL-2.0                                                *
-*                                                                                 *
-* Copyright Contributors to the Zowe Project.                                     *
-*                                                                                 *
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
 */
 
 import { Session } from "@brightside/imperative";
@@ -151,7 +151,7 @@ describe("Create C Data Set", () => {
         it("should fail creating a C partitioned data set due to missing data set name", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
 
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
             expect(response.status).toBe(1);
         });

@@ -151,7 +151,7 @@ Use \\"zowe zos-jobs view job-status-by-jobid blah --help\\" to view command des
 exports[`zos-jobs view job-status-by-jobid command syntax errors should occur if the jobid is missing 1`] = `
 "
 Syntax Error:
-Missing Positional Option:
+Missing Positional Argument:
 jobid
 
 Option Description:
