@@ -467,6 +467,29 @@ pipeline {
 //            }
 //        }
 
+         /************************************************************************
+         * STAGE
+         * -----
+         * SonarQube Scanner
+         *
+         * EXECUTION CONDITIONS
+         * --------------------
+         * - SHOULD_BUILD is true
+         * - The build is still successful and not unstable
+         *
+         * DESCRIPTION
+         * -----------
+         * Runs the sonar-scanner analysis tool, which submits the source, test resutls,
+         *  and coverage results for analysis in our SonarQube server. 
+         * TODO: This step does not yet support branch or PR submissions properly. 
+         ***********************************************************************/
+        stage('sonar') {
+            def scannerHome = tool 'sonar-scanner-maven-install'
+            withSonarQubeEnv('sonar-default-server') {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+        }
+
         /************************************************************************
          * STAGE
          * -----
