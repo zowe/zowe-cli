@@ -14,9 +14,9 @@ Array [
     "aliases": Array [
       "e",
     ],
-    "description": "Save the local files with a specified file extension. For example, .txt.",
+    "description": "Save the local files with a specified file extension. For example, .txt. Or \\"\\" for no extension.  When no extension is specified, .txt is used as the default file extension.",
     "name": "extension",
-    "type": "string",
+    "type": "stringOrEmpty",
   },
   Object {
     "aliases": Array [

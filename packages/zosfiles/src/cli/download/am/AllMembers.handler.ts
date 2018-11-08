@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@brightside/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Download } from "../../../api/methods/download";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -20,12 +20,19 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class AllMembersHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        const status: ITaskWithStatus = {
+            statusMessage: "Downloading all members",
+            percentComplete: 0,
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task: status});
         return Download.allMembers(session, commandParameters.arguments.dataSetName, {
             volume: commandParameters.arguments.volumeSerial,
             binary: commandParameters.arguments.binary,
             directory: commandParameters.arguments.directory,
             extension: commandParameters.arguments.extension,
-            maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests
+            maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+            task: status
         });
     }
 }

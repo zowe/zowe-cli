@@ -63,7 +63,7 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "extension",
         aliases: ["e"],
         description: strings.EXTENSION,
-        type: "string"
+        type: "stringOrEmpty"
     },
 
     /**

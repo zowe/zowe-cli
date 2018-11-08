@@ -9,6 +9,8 @@
 *                                                                                 *
 */
 
+import { ITaskWithStatus } from "@brightside/imperative";
+
 /**
  * Interface for submit job API
  * @export
@@ -44,4 +46,11 @@ export interface ISubmitParms {
      * The volume on which the data set is stored
      */
     volume?: string;
+
+    /**
+     * Task status object used by CLI handlers to create progress bars
+     * for certain job submit requests
+     * Optional
+     */
+    task?: ITaskWithStatus;
 }
