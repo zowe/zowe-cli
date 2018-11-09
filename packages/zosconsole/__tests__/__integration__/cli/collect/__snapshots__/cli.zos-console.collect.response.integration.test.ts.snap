@@ -8,27 +8,6 @@ Argument Description: The \\"solicited response key\\" provided in response to a
 command. Used by the z/OSMF console API to collect any additional outstanding
 solicited responses from a previously issued console command.
 
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---pass (--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
-
 Example:
 
  - Collect any outstanding additional solicited response messages:
@@ -174,27 +153,6 @@ You specified:
 
 The value must match one of the following regular expressions:
 [ '^[a-zA-Z0-9]+$' ].
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---pass (--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
 Example:
 

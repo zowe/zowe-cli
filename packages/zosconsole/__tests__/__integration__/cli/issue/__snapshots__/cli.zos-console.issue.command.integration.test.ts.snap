@@ -25,27 +25,6 @@ The following options conflict (mutually exclusive):
 --wait-to-collect
 --return-first
 
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---pass (--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
-
 Example:
 
  - Issue a z/OS console command to display the IPL information for the system:
@@ -82,27 +61,6 @@ Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-to-collect
 --return-first
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---pass (--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
 Example:
 
@@ -309,27 +267,6 @@ You specified:
 
 The value must match one of the following regular expressions:
 [ '^[a-zA-Z0-9]+$' ].
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---pass (--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
 Example:
 
