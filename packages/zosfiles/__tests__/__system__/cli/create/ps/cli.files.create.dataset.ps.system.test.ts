@@ -112,13 +112,6 @@ describe("Create Physical Sequential Data Set", () => {
             }
         });
 
-        it("should display create physical sequential help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_ps_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should create a physical sequential data set", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps.sh",

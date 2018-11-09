@@ -110,17 +110,10 @@ describe("Create Binary Data Set", () => {
             }
         });
 
-        it("should display create binary help",  () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_binary_pds_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should create a binary partitioned data set", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds.sh",
-              TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -129,7 +122,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set and print attributes", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_rfj.sh",
-              TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -138,7 +131,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set with specified size", () => {
             dsnameSuffix = "binary.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_with_size.sh",
-              TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

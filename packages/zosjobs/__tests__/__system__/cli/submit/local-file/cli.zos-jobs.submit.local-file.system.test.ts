@@ -60,16 +60,6 @@ describe("zos-jobs submit local-file command", () => {
         IO.deleteFile(localJCL);
     });
 
-    describe("help", () => {
-        it("should not change", () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_local_file_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
-
     describe("Live system tests", () => {
         it("should submit a job in an existing valid local file ", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file.sh",

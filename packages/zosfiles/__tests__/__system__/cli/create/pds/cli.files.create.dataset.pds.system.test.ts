@@ -112,13 +112,6 @@ describe("Create Partitioned Data Set", () => {
             }
         });
 
-        it("should display create data-set-partitioned help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_pds_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should create a partitioned data set", () => {
             dsnameSuffix = "pds";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds.sh",
