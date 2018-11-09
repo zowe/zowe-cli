@@ -149,7 +149,7 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain("Error: self signed certificate in certificate chain");
+            expect(error.message).toContain("Error: unable to verify the first certificate");
         });
     });
 });

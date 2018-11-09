@@ -25,6 +25,12 @@ The following options conflict (mutually exclusive):
 --wait-to-collect
 --return-first
 
+Example:
+
+ - Issue a z/OS console command to display the IPL information for the system:
+
+      $ zowe zos-console issue command \\"D IPLINFO\\"
+
 Use \\"zowe zos-console issue command --help\\" to view command description, usage, and options.
 "
 `;
@@ -55,6 +61,12 @@ Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-to-collect
 --return-first
+
+Example:
+
+ - Issue a z/OS console command to display the IPL information for the system:
+
+      $ zowe zos-console issue command \\"D IPLINFO\\"
 
 Use \\"zowe zos-console issue command --help\\" to view command description, usage, and options.
 "
@@ -255,6 +267,12 @@ You specified:
 
 The value must match one of the following regular expressions:
 [ '^[a-zA-Z0-9]+$' ].
+
+Example:
+
+ - Issue a z/OS console command to display the IPL information for the system:
+
+      $ zowe zos-console issue command \\"D IPLINFO\\"
 
 Use \\"zowe zos-console issue command --help\\" to view command description, usage, and options.
 "
