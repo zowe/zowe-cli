@@ -25,6 +25,9 @@ systems:
       host: &zosmfhost zosmf-host
       port: &zosmfport zosmf-port
       rejectUnauthorized: &zosmfreject false
+      # base path if any to be prepended to all z/OSMF resources
+      # such as a base path exposed from a gateway/ API mediation layer
+      basePath: null
     #-------------------------------------------------------------------------#
     #  TSO testing properties                                                 #
     #-------------------------------------------------------------------------#

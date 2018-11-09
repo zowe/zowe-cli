@@ -28,9 +28,6 @@ import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/d
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 
 let REAL_SESSION: Session;
 
@@ -50,17 +47,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_instance-info"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
     afterAll(async () => {

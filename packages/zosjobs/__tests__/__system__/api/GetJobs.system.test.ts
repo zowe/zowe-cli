@@ -84,14 +84,7 @@ describe("Get Jobs - System Tests", () => {
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         INVALID_SESSION = new Session({
             user: "fakeuser",
@@ -102,17 +95,16 @@ describe("Get Jobs - System Tests", () => {
             rejectUnauthorized: false
         });
 
-
         ACCOUNT = defaultSystem.tso.account;
         MONITOR_JOB_NAME = REAL_SESSION.ISession.user.toUpperCase().substring(0, SIX_CHARS) + "G";
 
-        // TODO: What string goes in the removed section?
-        JCL =
-            "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "'\n" +
-            "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
-
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
+
+        // TODO: What string goes in the removed section?
+        JCL =
+            "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "',CLASS=" + JOBCLASS + "\n" +
+            "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
     });
 
     // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
@@ -657,7 +649,7 @@ describe("Get Status APIs", () => {
     describe("get status common API", () => {
         describe("invalid request error handling", () => {
             // pending until z/OSMF returns 401 status for invalid credentials
-            xit("should detect and surface and error for an invalid user", async () => {
+            it("should detect and surface and error for an invalid user", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusCommon(INVALID_SESSION, {jobname: "FAKE", jobid: "FAKE"});

@@ -67,6 +67,15 @@ Object {
           "name": "reject-unauthorized",
           "type": "boolean",
         },
+        Object {
+          "aliases": Array [
+            "bp",
+          ],
+          "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
+          "group": "Zosmf Connection Options",
+          "name": "base-path",
+          "type": "string",
+        },
       ],
     },
   ],
