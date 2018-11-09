@@ -23,8 +23,7 @@ describe("provisioning list instance-variables", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance-info",
-            tempProfileTypes: ["zosmf"]
+            testName: "provisioning_list_instance-info"
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
