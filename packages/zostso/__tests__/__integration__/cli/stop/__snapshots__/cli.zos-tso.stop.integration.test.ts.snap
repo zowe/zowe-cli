@@ -10,7 +10,9 @@ exports[`zos-tso stop should display the help 1`] = `
  USAGE
  -----
 
-   zowe zos-tso stop [command]
+   zowe zos-tso stop <command>
+
+   Where <command> is one of the following:
 
  COMMANDS
  --------
@@ -32,9 +34,9 @@ exports[`zos-tso stop should display the help 1`] = `
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: stop.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Stop TSO/E address space\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso stop [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Stop a TSO address space, from which you previously started\\\\n                      and received a token (a.k.a 'servlet-key').                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Stop TSO/E address space\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso stop <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Stop a TSO address space, from which you previously started\\\\n                      and received a token (a.k.a 'servlet-key').                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Stop TSO/E address space\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso stop [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Stop a TSO address space, from which you previously started\\\\n                      and received a token (a.k.a 'servlet-key').                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Stop TSO/E address space\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso stop <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Stop a TSO address space, from which you previously started\\\\n                      and received a token (a.k.a 'servlet-key').                \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
 }"
 `;
 

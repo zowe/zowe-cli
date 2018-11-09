@@ -13,7 +13,9 @@ exports[`zos-console collect should display the help 1`] = `
  USAGE
  -----
 
-   zowe zos-console collect [command]
+   zowe zos-console collect <command>
+
+   Where <command> is one of the following:
 
  COMMANDS
  --------
@@ -35,8 +37,8 @@ exports[`zos-console collect should display the help 1`] = `
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: collect.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   z/OSMF console services provides a command response key upon successful issue of\\\\n   a console command. You can use this key to collect additional console message\\\\n   responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console collect [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   sync-responses | sr Collect outstanding synchronous console response messages\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   z/OSMF console services provides a command response key upon successful issue of\\\\n   a console command. You can use this key to collect additional console message\\\\n   responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console collect <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   sync-responses | sr Collect outstanding synchronous console response messages\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   z/OSMF console services provides a command response key upon successful issue of\\\\n   a console command. You can use this key to collect additional console message\\\\n   responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console collect [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   sync-responses | sr Collect outstanding synchronous console response messages\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   z/OSMF console services provides a command response key upon successful issue of\\\\n   a console command. You can use this key to collect additional console message\\\\n   responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console collect <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   sync-responses | sr Collect outstanding synchronous console response messages\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
 }"
 `;

@@ -11,7 +11,9 @@ exports[`zos-console issue should display the help 1`] = `
  USAGE
  -----
 
-   zowe zos-console issue [command]
+   zowe zos-console issue <command>
+
+   Where <command> is one of the following:
 
  COMMANDS
  --------
@@ -33,8 +35,8 @@ exports[`zos-console issue should display the help 1`] = `
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: issue.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue z/OS console commands and optionally collect responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console issue [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   command | cmd Issue a z/OS console command and print the response\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue z/OS console commands and optionally collect responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console issue <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   command | cmd Issue a z/OS console command and print the response\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue z/OS console commands and optionally collect responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console issue [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   command | cmd Issue a z/OS console command and print the response\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue z/OS console commands and optionally collect responses.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console issue <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   command | cmd Issue a z/OS console command and print the response\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
 }"
 `;

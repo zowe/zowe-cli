@@ -11,7 +11,9 @@ exports[`Invoke AMS CLI should display the help 1`] = `
  USAGE
  -----
 
-   zowe zos-files invoke [command]
+   zowe zos-files invoke <command>
+
+   Where <command> is one of the following:
 
  COMMANDS
  --------
@@ -34,9 +36,9 @@ exports[`Invoke AMS CLI should display the help 1`] = `
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: invoke.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files invoke <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
 }================Z/OS FILES INVOKE AMS-FILE HELP===========
 
  COMMAND NAME
