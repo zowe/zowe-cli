@@ -37,13 +37,12 @@ Unit testing is an important aspect for testing as it makes sure all of our unde
 - For abstract classes (where necessary, some abstracts have "base" implementations that will suffice for unit testing), create a `__model__` directory under `__tests__` directory and create a test implementation of the abstract class.
 
 ## Integration Tests
-**Note:** Do NOT write integration tests until we get a proper delivery mechanism for the mock server.
 
 Package/Plugin integration tests are divided into two categories:
 - **API**: Invoking the REST/other public APIs directly (as an app, CI/CD environment, etc. would)
 - **CLI**: Issuing commands via script/exec and ensuring correctness of output (as a user at their terminal/console would)
 
-The intent of integration tests is to test all edge cases without having to rely on a specific system setup. Instead of sending the requests to one of your systems, you can do so to a mock server that can be modified on the fly. 
+The intent of integration tests is to test all edge cases without having to rely on a specific system setup. Instead of sending the requests to one of your systems, you can do so to a mock server that can be modified on the fly. They can also test help text output and syntax error responses from the CLI/Plugin.
 
 ### Integration Test Layout
 - Place integration tests under the packages `__tests__/__integration__` directory. 
