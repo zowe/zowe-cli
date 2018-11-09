@@ -35,7 +35,8 @@ describe("zos-jobs view spool-file-by-id command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_view_spool_file_by_id_command"
+            testName: "zos_jobs_view_spool_file_by_id_command",
+            tempProfileTypes: ["zosmf"]
         });
 
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
