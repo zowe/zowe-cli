@@ -23,7 +23,7 @@ describe("provisioning perform action", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_perform"
+            testName: "provisioning_perform_action_integration"
         });
     });
 

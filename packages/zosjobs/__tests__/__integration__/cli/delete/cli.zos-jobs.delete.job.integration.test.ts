@@ -26,8 +26,8 @@ describe("zos-jobs delete job command", () => {
         IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
     });
 
-    afterAll(() => {
-        TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
     it("should display the help", async () => {
