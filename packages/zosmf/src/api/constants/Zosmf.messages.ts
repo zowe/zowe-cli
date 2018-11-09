@@ -21,7 +21,7 @@ export const ZosmfMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     missingSession: {
-        message: "Missing provile session information."
+        message: "Missing profile session information."
     },
     /**
      * Message indicate that unable to connect to specified host name

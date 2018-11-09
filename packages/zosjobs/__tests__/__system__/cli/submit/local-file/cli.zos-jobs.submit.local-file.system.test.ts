@@ -37,15 +37,7 @@ describe("zos-jobs submit local-file command", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
-
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = defaultSystem.tso.account;
         const maxJobNamePrefixLength = 5;
         // JCL to submit
@@ -137,6 +129,14 @@ describe("zos-jobs submit local-file command", () => {
             });
 
             it("should submit a job in an existing valid local file", async () => {
+                const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+                // if API Mediation layer is being used (basePath has a value) then
+                // set an ENVIRONMENT variable to be used by zowe.
+                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                }
+
                 const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [

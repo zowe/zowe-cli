@@ -76,17 +76,10 @@ describe("DeleteInstance (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_perform_action"
         });
+
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
-
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         instanceName = testEnvironment.systemTestProperties.provisioning.instanceName;
@@ -97,7 +90,7 @@ describe("DeleteInstance (system)", () => {
             instanceId = await findInstanceId("deprovisioned");
             Imperative.console.info(`Instance id of deprovisioned instance ${instanceId}`);
             if (isNullOrUndefined(instanceId)) {
-                instanceId = await  findInstanceId("provisioned");
+                instanceId = await findInstanceId("provisioned");
                 if (isNullOrUndefined(instanceId)) {
                     await ProvisionPublishedTemplate.provisionTemplateCommon(
                         REAL_SESSION,

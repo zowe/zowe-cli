@@ -106,18 +106,23 @@ export class TempTestProfiles {
     private static async createZosmfProfile(testEnvironment: ITestEnvironment): Promise<string> {
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_zosmf";
         const zosmfProperties = testEnvironment.systemTestProperties.systems.common.zosmf;
-        const createProfileScript = this.SHEBANG +
+        let createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create zosmf ${profileName} --user ${zosmfProperties.user} --pw ` +
             `${zosmfProperties.pass} --ru ${zosmfProperties.rejectUnauthorized}` +
             ` --host ${zosmfProperties.host} --port ${zosmfProperties.port}`;
+        // if basePath has been entered in custom_properties, add it to the
+        // create zosmf profile arguments
+        if (zosmfProperties.basePath != null) {
+            createProfileScript += ` --base-path ${zosmfProperties.basePath}`;
+        }
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
         if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
             throw new ImperativeError({
                 msg: "Creation of zosmf profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
-                "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString() +
-                TempTestProfiles.GLOBAL_INSTALL_NOTE
+                    "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString() +
+                    TempTestProfiles.GLOBAL_INSTALL_NOTE
             });
         }
         IO.deleteFile(scriptPath);
@@ -141,8 +146,8 @@ export class TempTestProfiles {
         if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
             throw new ImperativeError({
                 msg: "Creation of tso profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
-                "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
-                + TempTestProfiles.GLOBAL_INSTALL_NOTE
+                    "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
+                    + TempTestProfiles.GLOBAL_INSTALL_NOTE
             });
         }
         this.log(testEnvironment, `Created tso profile '${profileName}'. Stdout from creation:\n${output.stdout.toString()}`);
@@ -169,8 +174,8 @@ export class TempTestProfiles {
         if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
             throw new ImperativeError({
                 msg: "Deletion of " + profileType + " profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
-                "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
-                + TempTestProfiles.GLOBAL_INSTALL_NOTE
+                    "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
+                    + TempTestProfiles.GLOBAL_INSTALL_NOTE
             });
         }
         this.log(testEnvironment, `Deleted ${profileType} profile '${profileName}'. Stdout from deletion:\n${output.stdout.toString()}`);

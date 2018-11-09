@@ -1,14 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`check status behavior should display an error when getZosmfInfo throws an exception 1`] = `
-"[31mUser 'someone' failed to get information from 'somewhere.com:43443'[39m
-[31mdue to the following error:[39m
-[31mMock GetInfo Error[39m
-[31m[39m
-[31mYour command-line options or your z/OSMF profile may not be correct,[39m
-[31mor the z/OSMF subsystem on 'somewhere.com' may not be available.[39m"
-`;
-
 exports[`check status behavior should display zosmf properties 1`] = `
 "The user 'someone' successfully connected to z/OSMF on 'CAMainframe'.
 [33mzosmf_port: [39m        1234
@@ -35,6 +26,8 @@ Object {
   "zosmf_version": "v123",
 }
 `;
+
+exports[`check status behavior should pass the rest client error to the command processor (no transformation) 1`] = `"Mock GetInfo Error"`;
 
 exports[`check status behavior should return a json object with the right properties 1`] = `
 Object {

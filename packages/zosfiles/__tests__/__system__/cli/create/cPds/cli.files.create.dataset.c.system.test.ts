@@ -17,6 +17,8 @@ import { TestProperties } from "../../../../../../../__tests__/__src__/propertie
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { Delete } from "../../../../../src/api/methods/delete";
 
+const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -39,14 +41,7 @@ describe("Create C Data Set", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         dsname = `${user}.TEST.DATA.SET`;
@@ -57,7 +52,7 @@ describe("Create C Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -82,8 +77,15 @@ describe("Create C Data Set", () => {
             }
         });
 
-        it("should create a classic partitioned data set", () => {
+        it("should create a c partitioned data set", () => {
             dsnameSuffix = "c";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [user,
@@ -149,7 +151,7 @@ describe("Create C Data Set", () => {
         it("should fail creating a C partitioned data set due to missing data set name", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
 
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
             expect(response.status).toBe(1);
         });

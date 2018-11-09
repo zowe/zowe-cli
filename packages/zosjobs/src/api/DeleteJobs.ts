@@ -64,7 +64,7 @@ export class DeleteJobs {
         this.log.trace("deleteJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to delete.");
-        this.log.info("Deleting job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.modifyVersion);
+        this.log.info("Deleting job %s (%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.modifyVersion + "");
         const headers: any = [];
 
         // check the desired version of the job modify header - influences whether the API is synchronous or asynchronous

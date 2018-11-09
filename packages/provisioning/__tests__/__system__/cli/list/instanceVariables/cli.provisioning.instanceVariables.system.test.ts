@@ -20,8 +20,6 @@ import { ListRegistryInstances } from "../../../../../";
 import { ProvisioningConstants } from "../../../../../index";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
 let REAL_SESSION: Session;
 const TIMEOUT = 30000;
 
@@ -33,17 +31,7 @@ describe("provisioning list instance-variables", () => {
             testName: "provisioning_list_instance-info",
             tempProfileTypes: ["zosmf"]
         });
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
     it("should display the help", async () => {

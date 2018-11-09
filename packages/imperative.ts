@@ -64,6 +64,10 @@ const config: IImperativeConfig = {
                         type: "boolean",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
                     },
+                    basePath: {
+                        type: "string",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH,
+                    },
                 },
                 required: ["host"],
             },
@@ -74,6 +78,11 @@ const config: IImperativeConfig = {
                 },
                 {
                     options: "zos124 --host zos124 --user ibmuser --pass myp4ss --reject-unauthorized false",
+                    description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
+                        "and allow self-signed certificates"
+                },
+                {
+                    options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --pass myp4ss --reject-unauthorized false --base-path basePath",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
                 }

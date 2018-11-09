@@ -86,8 +86,8 @@ describe("Create Dataset", () => {
     // });
 
     const options: ICreateDataSetOptions = {} as any;
-    it("should create a partitioned data set", () => pending());
-    it("should create a sequential data set", () => pending());
+    xit("should create a partitioned data set", () => pending());
+    xit("should create a sequential data set", () => pending());
 
     // it("should create a partitioned data set", async () => {
     //   const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);

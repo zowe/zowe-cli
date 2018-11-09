@@ -57,9 +57,5 @@ describe("Zowe CLI Logging", () => {
         // ensure that the password and encoded auth does not appear in the brightside log
         expect(zoweLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
         expect(zoweLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
-
-        // ensure that the password and encoded auth does not appear in the create profiles log
-        expect(tempTestLog.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
-        expect(tempTestLog.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
     });
 });

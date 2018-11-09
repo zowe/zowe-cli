@@ -38,15 +38,7 @@ describe("Upload directory to PDS", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
-
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
 
@@ -54,7 +46,7 @@ describe("Upload directory to PDS", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -86,6 +78,15 @@ describe("Upload directory to PDS", () => {
 
         it("should upload data set from local directory", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/command/command_upload_dtp_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
@@ -179,7 +180,7 @@ describe("Upload directory to PDS", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("inputdir");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
@@ -189,7 +190,7 @@ describe("Upload directory to PDS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
 

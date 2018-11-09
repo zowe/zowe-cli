@@ -83,6 +83,14 @@ describe("zos-console collect response", () => {
 
         it("should properly retrieve solicited messages by key with a fully qualified command", async () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/d_time.regex").toString();
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/response/response_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [

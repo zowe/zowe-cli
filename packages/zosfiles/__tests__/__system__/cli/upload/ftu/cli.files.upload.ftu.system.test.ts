@@ -11,7 +11,7 @@
 
 import { Imperative, IO, Session } from "@brightside/imperative";
 import * as path from "path";
-import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
@@ -37,14 +37,7 @@ describe("Upload uss file", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
         Imperative.console.info("Using ussfile:" + ussname);
@@ -54,7 +47,7 @@ describe("Upload uss file", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -72,6 +65,15 @@ describe("Upload uss file", () => {
         it("should upload USS file from local file", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_fully_qualified.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftu.txt");
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             const response = runCliScript(shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
                 [localFileName,
@@ -138,7 +140,7 @@ describe("Upload uss file", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Option");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("USSFileName");
         });
 

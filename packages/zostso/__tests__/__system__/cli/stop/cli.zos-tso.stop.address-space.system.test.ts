@@ -97,6 +97,15 @@ describe("zos-tso start address-space", () => {
 
         it("should successfully issue the command without a profile", async () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/as_stop_response.regex").toString();
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+            }
+
             const response = runCliScript(__dirname + "/__scripts__/address-space/as_fully_qualified.sh",
             TEST_ENVIRONMENT_NO_PROF,
                 [

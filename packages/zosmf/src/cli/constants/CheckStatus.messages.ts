@@ -17,18 +17,6 @@ import { IMessageDefinition } from "@brightside/imperative";
  */
 export const CheckStatusMessages: { [key: string]: IMessageDefinition } = {
     /**
-     * Displayed when checkStatus receives an error from our API.
-     * @type {IMessageDefinition}
-     */
-    cmdFailed: {
-        message:
-            "User '{{userName}}' failed to get information from " +
-            "'{{hostName}}:{{portNum}}'\ndue to the following error:\n" +
-            "{{reasonMsg}}\n\n" +
-            "Your command-line options or your z/OSMF profile may not be correct,\n" +
-            "or the z/OSMF subsystem on '{{hostName}}' may not be available."
-    },
-    /**
      * Displayed when checkStatus succeeds and returns status information.
      * @type {IMessageDefinition}
      */

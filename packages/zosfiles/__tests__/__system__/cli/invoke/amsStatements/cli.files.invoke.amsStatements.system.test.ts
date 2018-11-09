@@ -14,9 +14,8 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
-import * as fs from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -39,14 +38,7 @@ describe("Invoke AMS CLI", () => {
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
 
-        REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
-            type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-        });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         volume = defaultSystem.datasets.list[0].vol;
@@ -57,7 +49,7 @@ describe("Invoke AMS CLI", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Without profile", () => {
+    describe("without profiles", () => {
         let sysProps;
         let defaultSys: ITestSystemSchema;
 
@@ -79,13 +71,23 @@ describe("Invoke AMS CLI", () => {
         });
 
         it("should invoke ams to create and then delete a VSAM cluster using control statements", async () => {
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [user,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.pass,
+                    defaultSystem.datasets.list[0].vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
@@ -116,7 +118,7 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using control statements", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.list[0].vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
@@ -132,7 +134,7 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using a control statement and print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_rfj.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.list[0].vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
