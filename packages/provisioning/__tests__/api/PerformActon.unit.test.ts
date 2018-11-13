@@ -50,7 +50,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 }
 
 
-describe("PerformAction.getResourcesQuery", () => {
+describe("PerformAction getResourcesQuery", () => {
     it("it should successfully build resources query from passed parameters", () => {
         const resourcesQuery: string = PerformAction.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, instanceId, actionName);
         Imperative.console.info(`Generated query ${resourcesQuery}`);

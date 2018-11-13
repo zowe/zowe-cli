@@ -98,7 +98,7 @@ describe("ListTemplateInfo getResourcesQuery", () => {
     });
 });
 
-describe("ListTemplateInfo.listTemplateCommon", () => {
+describe("ListTemplateInfo listTemplateCommon", () => {
     it("should succeed with all correctly provided parameters", async () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
             return new Promise((resolve) => {
