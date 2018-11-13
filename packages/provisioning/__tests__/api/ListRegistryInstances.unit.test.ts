@@ -113,7 +113,7 @@ function expectZosmfResponseFailed(response: IProvisionedInstances, error: Imper
     expect(error.details.msg).toContain(msg);
 }
 
-describe("ListRegistryInstances.getResourcesQuery", () => {
+describe("ListRegistryInstances getResourcesQuery", () => {
 
     it("should return query without filters", () => {
         const resourcesQuery = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION);

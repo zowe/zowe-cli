@@ -59,7 +59,7 @@ describe("PerformAction.getResourcesQuery", () => {
     });
 });
 
-describe("PerformAction.doProvisioningActionCommon", () => {
+describe("PerformAction doProvisioningActionCommon", () => {
 
     it("should succeed with all correct parameters", async () => {
         (ZosmfRestClient.postExpectJSON as any) = jest.fn<object>((): Promise<object> => {

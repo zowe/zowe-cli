@@ -89,7 +89,7 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
     expect(error.details.msg).toContain(msg);
 }
 
-describe("ListTemplateInfo.getResourcesQuery", () => {
+describe("ListTemplateInfo getResourcesQuery", () => {
     it("should successfully generate a query from provided parameters", () => {
         const resourcesQuery = ListTemplateInfo.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, templateName);
         Imperative.console.info(`Generated query: ${resourcesQuery}`);
