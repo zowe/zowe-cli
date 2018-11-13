@@ -40,7 +40,7 @@ def RELEASE_BRANCH = false
 /**
  * List of people who will get all emails for master builds
  */
-def MASTER_RECIPIENTS_LIST = "cc:Christopher.Wright@ca.com, cc:Fernando.RijoCedeno@ca.com, cc:Michael.Bauer2@ca.com, cc:Mark.Ackert@ca.com, cc:Daniel.Kelosky@ca.com"
+def MASTER_RECIPIENTS_LIST = "cc:christopher.wright@broadcom.com, cc:fernando.rijocedeno@broadcom.com, cc:michael.bauer2@broadcom.com, cc:mark.ackert@broadcom.com, cc:daniel.kelosky@broadcom.com"
 
 /**
  * The result string for a successful build
