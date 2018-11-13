@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning perform should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   Perform actions against instances provisioned with z/OSMF.
+
+ USAGE
+ -----
+
+   zowe provisioning perform <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   action | act Perform instance actions.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: perform.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions against instances provisioned with z/OSMF.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   action | act Perform instance actions.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions against instances provisioned with z/OSMF.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning perform <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   action | act Perform instance actions.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;

@@ -111,13 +111,6 @@ describe("Create Classic Data Set", () => {
             }
         });
 
-        it("should display create classic help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_classic_pds_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should create a classic partitioned data set", () => {
             dsnameSuffix = "classic";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds.sh",
@@ -146,13 +139,4 @@ describe("Create Classic Data Set", () => {
         });
     });
 
-    describe("Expected failures", () => {
-
-        it("should fail creating a classic partitioned data set due to missing data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("dataSetName");
-            expect(response.stderr.toString()).toContain("Missing Positional Argument");
-        });
-    });
 });

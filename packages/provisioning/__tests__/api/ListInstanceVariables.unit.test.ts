@@ -52,7 +52,7 @@ function expectZosmfResponseFailed(response: IProvisionedInstanceVariables, erro
     expect(error.details.msg).toContain(msg);
 }
 
-describe("ListInstanceVariables.getResourcesQuery", () => {
+describe("ListInstanceVariables getResourcesQuery", () => {
 
     it("should successfully build a query from passed parameters", () => {
         const resourcesQuery = ListInstanceVariables.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, instanceId);
@@ -61,7 +61,7 @@ describe("ListInstanceVariables.getResourcesQuery", () => {
     });
 });
 
-describe("ListInstanceVariables.listVariablesCommon", () => {
+describe("ListInstanceVariables listVariablesCommon", () => {
 
     it("should succeed and return list of variables", async () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {

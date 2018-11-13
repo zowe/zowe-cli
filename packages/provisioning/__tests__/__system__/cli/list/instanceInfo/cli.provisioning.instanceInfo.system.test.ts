@@ -34,13 +34,6 @@ describe("provisioning list instance-info", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/instanceInfo_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should display instance info", async () => {
         const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
             .pop()["external-name"];

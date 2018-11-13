@@ -55,31 +55,6 @@ describe("zos-jobs view spool-file-by-id command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("help", () => {
-        it("should not have changed", () => {
-            const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
-            expect(response.status).toBe(0);
-        });
-    });
-
-    describe("syntax errors", () => {
-        it("should occur if the jobid and spool file id are missing", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/missing_jobid_and_spool_id.sh", TEST_ENVIRONMENT);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-            expect(response.status).toBe(1);
-        });
-
-        it("should occur if the spool file id is missing", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/missing_spool_id.sh", TEST_ENVIRONMENT);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-            expect(response.status).toBe(1);
-        });
-    });
-
     describe("response", () => {
         it("should be able to get the content of every spool file for a job", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-file-by-id/get_all_spool_content.sh",
@@ -94,7 +69,7 @@ describe("zos-jobs view spool-file-by-id command", () => {
             // Construct the JCL
             const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/multiple_procs.jcl")).toString();
             const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                { JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS });
+                {JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS});
 
             // Submit the job
             const job: IJob = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);

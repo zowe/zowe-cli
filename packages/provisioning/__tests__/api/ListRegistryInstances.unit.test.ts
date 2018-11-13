@@ -113,7 +113,7 @@ function expectZosmfResponseFailed(response: IProvisionedInstances, error: Imper
     expect(error.details.msg).toContain(msg);
 }
 
-describe("ListRegistryInstances.getResourcesQuery", () => {
+describe("ListRegistryInstances getResourcesQuery", () => {
 
     it("should return query without filters", () => {
         const resourcesQuery = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION);
@@ -144,7 +144,7 @@ describe("ListRegistryInstances.getResourcesQuery", () => {
     });
 });
 
-describe("ListRegistryInstances.listRegistryCommon", () => {
+describe("ListRegistryInstances listRegistryCommon", () => {
 
     it("should succeed and return list of provisioned instances", async () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
@@ -237,7 +237,7 @@ describe("ListRegistryInstances.listRegistryCommon", () => {
     });
 });
 
-describe("ListRegistryInstances.listFilteredRegistry", () => {
+describe("ListRegistryInstances listFilteredRegistry", () => {
 
     it("should succeed and return list of instances filtered by 'type'", async () => {
         (ListRegistryInstances.listRegistryCommon as any) = jest.fn<object>((): Promise<object> => {

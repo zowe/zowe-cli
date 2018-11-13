@@ -21,15 +21,8 @@ describe("zos-tso stop", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                        testName: "zos_tso_start"
+            testName: "zos_tso_stop"
         });
-    });
-
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/stop_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
     });
 
     it("should fail with invalid parameter", async () => {

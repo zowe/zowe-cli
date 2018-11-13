@@ -15,7 +15,6 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import * as path from "path";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -98,14 +97,6 @@ describe("Delete Data Set", () => {
             dsnameSuffix = "";  // reset
         });
 
-        it("should display delete data-set help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/delete_data_set_help.sh",
-                TEST_ENVIRONMENT);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should delete a data set", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);
@@ -128,23 +119,6 @@ describe("Delete Data Set", () => {
     });
 
     describe("Expected failures", () => {
-
-        it("should fail deleting a data set due to missing data set name", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
-                TEST_ENVIRONMENT, [""]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("dataSetName");
-            expect(response.stderr.toString()).toContain("Missing Positional");
-        });
-
-        it("should fail deleting a data set without specifying --for-sure", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
-                TEST_ENVIRONMENT, [dsname]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("--for-sure");
-            expect(response.stderr.toString()).toContain("Missing Required Option");
-        });
-
         it("should fail deleting a data set that does not exist", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [user + ".does.not.exist", "--for-sure"]);

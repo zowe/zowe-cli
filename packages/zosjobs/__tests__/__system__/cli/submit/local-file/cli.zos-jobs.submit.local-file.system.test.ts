@@ -60,16 +60,6 @@ describe("zos-jobs submit local-file command", () => {
         IO.deleteFile(localJCL);
     });
 
-    describe("help", () => {
-        it("should not change", () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_local_file_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-    });
-
-
     describe("Live system tests", () => {
         it("should submit a job in an existing valid local file ", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file.sh",
@@ -98,15 +88,6 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stdout.toString()).toContain("jobid");
             expect(response.stdout.toString()).toContain("Successfully downloaded output to ./");
             expect(new RegExp("JOB\\d{5}", "g").test(response.stdout.toString())).toBe(true);
-        });
-
-
-        it("should fail if the local file does not exist ", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_invalid_local_file.sh",
-                TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString().toLowerCase()).toContain("error");
-            expect(response.stderr.toString().toLowerCase()).toContain("no such file");
         });
 
         describe("without profiles", () => {
@@ -154,21 +135,4 @@ describe("zos-jobs submit local-file command", () => {
         });
     });
 
-    describe("syntax errors", () => {
-        it("should occur if the local file name is missing", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_syntax_missing_file_name.sh", TEST_ENVIRONMENT);
-            expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
-
-        it("should occur if an extra unknown option is specified", async () => {
-
-            const response = runCliScript(__dirname + "/__scripts__/submit_syntax_invalid_parm.sh",
-                TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
-            expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
-    });
 });

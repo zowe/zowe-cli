@@ -93,13 +93,6 @@ describe("provisioning provision template", () => {
         await cleanUp();
     }, MAX_TIMEOUT_NUMBER);
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/template/provision_template_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should successfully issue the command", async () => {
         const regex = fs.readFileSync(__dirname + "/../provision/__regex__/provision_template_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/template/provision_template_success.sh", TEST_ENVIRONMENT,

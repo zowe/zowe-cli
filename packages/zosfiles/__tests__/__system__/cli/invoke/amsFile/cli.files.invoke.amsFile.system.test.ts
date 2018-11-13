@@ -135,13 +135,6 @@ describe("Invoke AMS CLI", () => {
 
     describe("Success scenarios", () => {
 
-        it("should display invoke and invoke ams help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/invoke_ams_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should invoke ams to create and then delete a VSAM cluster using files containing the appropriate control statement", async () => {
             const dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
 
@@ -177,13 +170,4 @@ describe("Invoke AMS CLI", () => {
         });
     });
 
-    describe("Expected failures", () => {
-
-        it("should fail due to controlStatements not specified", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_missing_statement.sh", TEST_ENVIRONMENT);
-            expect(stripNewLines(response.stderr.toString())).toContain("Syntax Error");
-            expect(stripNewLines(response.stderr.toString())).toContain("Missing Positional");
-            expect(stripNewLines(response.stderr.toString())).toContain("controlStatements");
-        });
-    });
 });

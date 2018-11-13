@@ -33,13 +33,6 @@ describe("zos-console collect response", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/response/response_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should properly retrieve solicited messages by key", async () => {
         const regex = fs.readFileSync(__dirname + "/__regex__/d_time.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/response/response_key.sh", TEST_ENVIRONMENT);
@@ -47,20 +40,6 @@ describe("zos-console collect response", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    });
-
-    it("should display error if no response-key provided", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/response/response_no_key.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toBe("");
-    });
-
-    it("should not accept wrong characters in the console name", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/response/response_console_wrong_.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toBe("");
     });
 
     describe("without profiles", () => {
