@@ -31,13 +31,6 @@ describe("zos-tso start address-space", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should throw an error if servlet key parameter is not provided", async () => {
         const response = runCliScript(__dirname + "/__scripts__/address-space/as_error_stop.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);

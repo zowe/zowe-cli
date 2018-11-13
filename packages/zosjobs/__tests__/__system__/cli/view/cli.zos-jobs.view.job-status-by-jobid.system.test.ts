@@ -30,8 +30,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_view_job_status_by_jobid_command",
-            tempProfileTypes: ["zosmf"]
+            testName: "zos_jobs_view_job_status_by_jobid_command"
         });
 
         systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
@@ -44,16 +43,6 @@ describe("zos-jobs view job-status-by-jobid command", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
-    describe("help", () => {
-        it("should not have changed", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job-status-by-jobid/job_help.sh",
-                TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
     });
 
     describe("response", () => {
@@ -141,24 +130,6 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                 expect(response.stdout.toString()).toContain("status:");
                 expect(response.stdout.toString()).toContain("retcode:");
             });
-        });
-    });
-
-    describe("syntax errors", () => {
-        it("should occur if the jobid is missing", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/job-status-by-jobid/job_syntax_missing_jobid.sh",
-                TEST_ENVIRONMENT);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toMatchSnapshot();
-        });
-
-        it("should occur if an extra unknown option is specified", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/job-status-by-jobid/job_syntax_invalid_parm.sh",
-                TEST_ENVIRONMENT);
-            expect(response.stdout.toString()).toBe("");
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toMatchSnapshot();
         });
     });
 

@@ -42,13 +42,6 @@ describe("zos-tso start address-space", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should successfully issue the command", async () => {
         const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_success.sh", TEST_ENVIRONMENT);

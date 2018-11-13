@@ -120,24 +120,6 @@ describe("Upload Data Set", () => {
             }
         });
 
-        it("should display upload standard input help", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command_upload_stds_help.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            const helpText = response.stdout.toString();
-            expect(helpText).toContain("COMMAND NAME");
-            expect(helpText).toContain("DESCRIPTION");
-            expect(helpText).toContain("USAGE");
-            expect(helpText).toContain("OPTIONS");
-            expect(helpText).toContain("EXAMPLES");
-            expect(helpText).toContain("\"success\": true");
-            expect(helpText).toContain("\"message\":");
-            expect(helpText).toContain("\"stdout\":");
-            expect(helpText).toContain("\"stderr\":");
-            expect(helpText).toContain("\"data\":");
-        });
-
         it("should upload data set from standard input", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
@@ -196,13 +178,6 @@ describe("Upload Data Set", () => {
     });
 
     describe("Expected failures", () => {
-        it("should fail due to missing data set name", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            expect(response.stderr.toString()).toContain("dataSetName");
-        });
 
         it("should fail when mf dataset does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds.sh");

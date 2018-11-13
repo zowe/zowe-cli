@@ -126,14 +126,6 @@ describe("List all members of data set", () => {
             }
         });
 
-        it("should display list data set help", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command_list_all_members_help.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should list data set", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_all_members.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);

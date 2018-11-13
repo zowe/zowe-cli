@@ -11,12 +11,12 @@
 
 import { Session } from "@brightside/imperative";
 import * as path from "path";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { Create, CreateDataSetTypeEnum, Delete, Upload } from "../../../../../../zosfiles";
+import { Create, CreateDataSetTypeEnum, Delete } from "../../../../../../zosfiles";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -72,7 +72,7 @@ describe("Download Data Set", () => {
             }
         });
 
-        afterEach( async () => {
+        afterEach(async () => {
             try {
                 await Delete.dataSet(REAL_SESSION, dsname);
             } catch (err) {
@@ -104,7 +104,7 @@ describe("Download Data Set", () => {
         });
     });
 
-    describe ("Success scenarios", () => {
+    describe("Success scenarios", () => {
 
         beforeEach(async () => {
             try {
@@ -114,20 +114,12 @@ describe("Download Data Set", () => {
             }
         });
 
-        afterEach( async () => {
+        afterEach(async () => {
             try {
                 await Delete.dataSet(REAL_SESSION, dsname);
             } catch (err) {
                 throw err;
             }
-        });
-
-        it("should display download data set help", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command_download_data_set_help.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
         });
 
         it("should download data set", async () => {
