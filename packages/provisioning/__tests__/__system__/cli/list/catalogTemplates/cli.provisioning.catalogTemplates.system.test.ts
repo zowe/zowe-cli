@@ -29,13 +29,6 @@ describe("provisioning list catalog-templates", () => {
         });
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/catalogTemplates_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should display template catalog", async () => {
         const regex = fs.readFileSync(__dirname + "/__regex__/catalog_templates_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/catalogTemplates.sh", TEST_ENVIRONMENT);

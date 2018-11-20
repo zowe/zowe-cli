@@ -23,7 +23,6 @@ const MAX_CN_LENGTH: number = 10;
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 // Expected length constants
-const STDOUT_EXPECTED_LEN: number = 10;
 const FOLLOW_UP_ATTEMPTS: number = 3;
 
 describe("zos-console issue command", () => {
@@ -38,14 +37,6 @@ describe("zos-console issue command", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
-
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
     });
 
     it("should complete the command successfully", async () => {
@@ -70,26 +61,6 @@ describe("zos-console issue command", () => {
         expect(new RegExp(regex, "g").test(respObj.stdout.toString())).toBe(true);
     });
 
-    it("should detect if the mutually exclusive options are specified", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_mutual.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
-    it("should detect if the mutually exclusive options are specified and return valid JSON", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_mutual_rfj.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-
-        // Convert response to an object and check fields
-        const respObj: ICommandResponse = JSON.parse(response.stdout.toString());
-        expect(respObj.success).toBe(false);
-        expect(respObj.message).toBe("Command syntax invalid");
-        expect(respObj.stdout).toBe("");
-        expect(respObj.stderr).toMatchSnapshot();
-        expect(respObj.data).toBeDefined();
-    });
-
     it("should accept console name", async () => {
         const regex = fs.readFileSync(__dirname + "/__regex__/d_time.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/command/command_console.sh", TEST_ENVIRONMENT);
@@ -111,13 +82,6 @@ describe("zos-console issue command", () => {
         expect(respObj.stderr).toBe("");
         expect(respObj.error).toBeUndefined();
         expect(new RegExp(regex, "g").test(respObj.stdout.toString())).toBe(true);
-    });
-
-    it("should not accept wrong characters in the console name", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_console_wrong_.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toBe("");
     });
 
     it("should include detailed info", async () => {

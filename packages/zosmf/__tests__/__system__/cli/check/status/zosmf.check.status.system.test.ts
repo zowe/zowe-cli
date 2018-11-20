@@ -91,13 +91,6 @@ describe("zosmf check status", () => {
 
     describe("Success scenarios", () => {
 
-        it("should display zosmf help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/zosmf_check_status_help.sh", testEnvironment);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should display successful connection to z/OSMF", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment);
             expect(response.stderr.toString()).toBe("");
@@ -112,11 +105,6 @@ describe("zosmf check status", () => {
     });
 
     describe("Expected failures", () => {
-
-        it("should fail due to invalid status command", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_missing_status.sh", testEnvironment);
-            expect(stripNewLines(response.stderr.toString())).toContain("Command failed due to improper syntax");
-        });
 
         it("should fail due to invalid port", async () => {
             // create a temporary zowe profile with an invalid port

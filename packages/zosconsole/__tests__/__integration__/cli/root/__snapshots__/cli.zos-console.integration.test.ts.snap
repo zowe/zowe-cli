@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-console should display the help 1`] = `
+"================Z/OS CONSOLE HELP===============
+
+ DESCRIPTION
+ -----------
+
+   Interact with z/OSMF console services. Issue z/OS console commands and collect
+   responses. z/OS console services establishes extended MCS (EMCS) consoles on
+   behalf of the user, which are used to issue the commands and collect responses.
+
+   Important! Before you use commands in the zos-console command group, ensure that
+   you understand the implications of issuing z/OS console commands in your
+   environment.
+
+ USAGE
+ -----
+
+   zowe zos-console <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   collect Collect z/OS console command responses
+   issue   Issue z/OS Console Commands           
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+================Z/OS CONSOLE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: zos-console.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Interact with z/OSMF console services. Issue z/OS console commands and collect\\\\n   responses. z/OS console services establishes extended MCS (EMCS) consoles on\\\\n   behalf of the user, which are used to issue the commands and collect responses.\\\\n\\\\n   Important! Before you use commands in the zos-console command group, ensure that\\\\n   you understand the implications of issuing z/OS console commands in your\\\\n   environment.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   collect Collect z/OS console command responses\\\\n   issue   Issue z/OS Console Commands           \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Interact with z/OSMF console services. Issue z/OS console commands and collect\\\\n   responses. z/OS console services establishes extended MCS (EMCS) consoles on\\\\n   behalf of the user, which are used to issue the commands and collect responses.\\\\n\\\\n   Important! Before you use commands in the zos-console command group, ensure that\\\\n   you understand the implications of issuing z/OS console commands in your\\\\n   environment.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-console <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   collect Collect z/OS console command responses\\\\n   issue   Issue z/OS Console Commands           \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-console should fail with invalid option 1`] = `
+"Command Error:
+Unknown argument: foo-bar
+Command failed due to improper syntax
+Error Details:
+Unknown argument: foo-bar
+"
+`;
+
+exports[`zos-console should fail with invalid option 2`] = `
+"================Z/OS CONSOLE INVALID PARAMETERS===============
+"
+`;
+
+exports[`zos-console should fail with invalid parameter 1`] = `
+"Command Error:
+Unknown argument: foobar
+Command failed due to improper syntax
+Error Details:
+Unknown argument: foobar
+"
+`;
+
+exports[`zos-console should fail with invalid parameter 2`] = `
+"================Z/OS CONSOLE INVALID PARAMETERS===============
+"
+`;

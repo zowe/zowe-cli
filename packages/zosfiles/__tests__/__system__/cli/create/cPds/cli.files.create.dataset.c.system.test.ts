@@ -112,13 +112,6 @@ describe("Create C Data Set", () => {
             }
         });
 
-        it("should display create help", () => {
-            const response = runCliScript(__dirname + "/__scripts__/create_c_pds_help.sh", TEST_ENVIRONMENT);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should create a c partitioned data set", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds.sh",
@@ -147,13 +140,4 @@ describe("Create C Data Set", () => {
         });
     });
 
-    describe("Expected failures", () => {
-        it("should fail creating a C partitioned data set due to missing data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_fail_missing_dataset_name.sh", TEST_ENVIRONMENT);
-
-            expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            expect(response.stderr.toString()).toContain("dataSetName");
-            expect(response.status).toBe(1);
-        });
-    });
 });

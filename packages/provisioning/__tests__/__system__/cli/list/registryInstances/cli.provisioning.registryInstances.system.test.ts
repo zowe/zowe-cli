@@ -29,13 +29,6 @@ describe("provisioning list registry_instances", () => {
         });
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/registryInstances_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
     it("should display registry instances", async () => {
         const regex = fs.readFileSync(__dirname + "/__regex__/registry_instances_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/registryInstances.sh", TEST_ENVIRONMENT);

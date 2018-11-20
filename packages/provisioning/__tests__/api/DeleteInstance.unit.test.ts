@@ -43,7 +43,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 }
 
 
-describe("DeleteInstance.deleteDeprovisionedInstance", () => {
+describe("DeleteInstance deleteDeprovisionedInstance", () => {
 
     it("it should succeed with all correct parameters", async () => {
 

@@ -40,7 +40,7 @@ def RELEASE_BRANCH = false
 /**
  * List of people who will get all emails for master builds
  */
-def MASTER_RECIPIENTS_LIST = "cc:Christopher.Wright@ca.com, cc:Fernando.RijoCedeno@ca.com, cc:Michael.Bauer2@ca.com, cc:Mark.Ackert@ca.com, cc:Daniel.Kelosky@ca.com"
+def MASTER_RECIPIENTS_LIST = "cc:christopher.wright@broadcom.com, cc:fernando.rijocedeno@broadcom.com, cc:michael.bauer2@broadcom.com, cc:mark.ackert@broadcom.com, cc:daniel.kelosky@broadcom.com"
 
 /**
  * The result string for a successful build
@@ -423,49 +423,44 @@ pipeline {
          * Jenkins: Integration Test Report (through junit plugin)
          * HTML: Integration Test Report
          ************************************************************************/
-//        stage('Test: Integration') {
-//            when {
-//                expression {
-//                    return SHOULD_BUILD == 'true'
-//                }
-//            }
-//            environment {
-//                JEST_JUNIT_OUTPUT = "${INTEGRATION_RESULTS}/junit.xml"
-//                JEST_SUITE_NAME = "Integration Tests"
-//                JEST_JUNIT_ANCESTOR_SEPARATOR = " > "
-//                JEST_JUNIT_CLASSNAME="Integration.{classname}"
-//                JEST_JUNIT_TITLE="{title}"
-//                JEST_HTML_REPORTER_OUTPUT_PATH = "${INTEGRATION_RESULTS}/index.html"
-//                JEST_HTML_REPORTER_PAGE_TITLE = "${BRANCH_NAME} - Integration Test"
-//                TEST_SCRIPT = "./jenkins/integration_tests.sh"
-//            }
-//            steps {
-//                timeout(time: 30, unit: 'MINUTES') {
-//                    echo 'Integration Test'
-//
-//                    /**************************************************************************
-//                     * Welp, IDK even how to describe this witchcraft in a simple fashion so
-//                     * just checkout the README in the jenkins folder for a more in depth
-//                     * explanation for what is going on here.
-//                     *
-//                     * THE README IS EXTREMELY DENSE WITH CONTENT. READ AT YOUR OWN RISK!
-//                     *************************************************************************/
-//                    sh "chmod +x $TEST_SCRIPT && dbus-launch $TEST_SCRIPT"
-//
-//                    junit JEST_JUNIT_OUTPUT
-//
-//                    // Publish HTML report
-//                    publishHTML(target: [
-//                            allowMissing         : false,
-//                            alwaysLinkToLastBuild: true,
-//                            keepAll              : true,
-//                            reportDir            : INTEGRATION_RESULTS,
-//                            reportFiles          : 'index.html',
-//                            reportName           : 'Imperative - Integration Test Report'
-//                    ])
-//                }
-//            }
-//        }
+        stage('Test: Integration') {
+            when {
+                expression {
+                    return SHOULD_BUILD == 'true'
+                }
+            }
+            environment {
+                JEST_JUNIT_OUTPUT = "${INTEGRATION_RESULTS}/junit.xml"
+                JEST_SUITE_NAME = "Integration Tests"
+                JEST_JUNIT_ANCESTOR_SEPARATOR = " > "
+                JEST_JUNIT_CLASSNAME="Integration.{classname}"
+                JEST_JUNIT_TITLE="{title}"
+                JEST_HTML_REPORTER_OUTPUT_PATH = "${INTEGRATION_RESULTS}/index.html"
+                JEST_HTML_REPORTER_PAGE_TITLE = "${BRANCH_NAME} - Integration Test"
+            }
+            steps {
+                timeout(time: 30, unit: 'MINUTES') {
+                    echo 'Integration Test'
+
+                    // Create the custom properties file so the tests can run, however the values inside
+                    // are not necessary for integration tests
+                    sh "cp __tests__/__resources__/properties/default_properties.yaml __tests__/__resources__/properties/custom_properties.yaml"
+                    sh "npm run test:integration || exit 0"
+
+                    junit JEST_JUNIT_OUTPUT
+
+                    // Publish HTML report
+                    publishHTML(target: [
+                            allowMissing         : false,
+                            alwaysLinkToLastBuild: true,
+                            keepAll              : true,
+                            reportDir            : INTEGRATION_RESULTS,
+                            reportFiles          : 'index.html',
+                            reportName           : 'Zowe CLI - Integration Test Report'
+                    ])
+                }
+            }
+        }
 
          /************************************************************************
          * STAGE
@@ -480,8 +475,8 @@ pipeline {
          * DESCRIPTION
          * -----------
          * Runs the sonar-scanner analysis tool, which submits the source, test resutls,
-         *  and coverage results for analysis in our SonarQube server. 
-         * TODO: This step does not yet support branch or PR submissions properly. 
+         *  and coverage results for analysis in our SonarQube server.
+         * TODO: This step does not yet support branch or PR submissions properly.
          ***********************************************************************/
         stage('sonar') {
              when {

@@ -126,14 +126,6 @@ describe("List data set", () => {
             }
         });
 
-        it("should display list data set help", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command_list_data_set_help.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toMatchSnapshot();
-        });
-
         it("should list data set", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
@@ -186,13 +178,4 @@ describe("List data set", () => {
         });
     });
 
-    describe("Expected failures", () => {
-        it("should fail due to missing data set name", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
-            expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            expect(response.stderr.toString()).toContain("dataSetName");
-        });
-    });
 });

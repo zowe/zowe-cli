@@ -71,12 +71,6 @@ describe("provisioning delete instance", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/instance/delete_instance_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
     // system test for perform action
     it("should successfully perform checkStatus action", async () => {
         instanceName = (await ListInstanceInfo.listInstanceCommon(REAL_SESSION,
