@@ -21,7 +21,7 @@ import { List } from "../../../../src/api/methods/list";
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
     const dsFolder = "user/data/set";
-    const dsContent = "This\nis\r\na\ntest";
+    const dsContent = Buffer.from("This\nis\r\na\ntest");
     const ussname = "/a/user/test.txt";
     const arrOfUssPath: string[] = ussname.split("/");
     const localFileName = arrOfUssPath[arrOfUssPath.length - 1];
@@ -37,7 +37,7 @@ describe("z/OS Files - Download", () => {
     });
 
     describe("dataset", () => {
-        const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectString");
+        const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
 
@@ -106,13 +106,13 @@ describe("z/OS Files - Download", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
-            const newDsContent = IO.processNewlines(dsContent);
+            const newDsContent = IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: newDsContent
+                apiResponse: Buffer.from(newDsContent)
             });
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
@@ -139,13 +139,13 @@ describe("z/OS Files - Download", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
-            const newDsContent = IO.processNewlines(dsContent);
+            const newDsContent = IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: newDsContent
+                apiResponse: Buffer.from(newDsContent)
             });
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
