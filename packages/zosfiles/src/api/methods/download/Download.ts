@@ -95,7 +95,7 @@ export class Download {
 
             IO.createDirsSyncFromFilePath(destination);
 
-            if ((!options.binary) && (content.toString().length > 0)) {
+            if ((!options.binary) && (content.byteLength > 0)) {
                 content = Buffer.from(IO.processNewlines(content.toString()));
             }
 
