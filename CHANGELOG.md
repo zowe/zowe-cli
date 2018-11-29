@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] prerelease -2018-11-28
+
+### Fixed
+
+* Corruption of binary content with the command `zowe zos-files download data-set <dsname> --binary` was fixed 
+
 ## [2.0.0] prerelease -2018-11-6
 
 ### Changed

@@ -9,14 +9,14 @@
 *
 */
 
-import { Session } from "@brightside/imperative";
+import { IO, Session } from "@brightside/imperative";
 import * as path from "path";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getRandomBytes, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { Create, CreateDataSetTypeEnum, Delete } from "../../../../../../zosfiles";
+import { Create, CreateDataSetTypeEnum, Delete, Upload } from "../../../../../../zosfiles";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -128,6 +128,23 @@ describe("Download Data Set", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+        });
+
+        it("should download data set in binary mode", async () => {
+            const randomDataLength = 70;
+            const randomData = await getRandomBytes(randomDataLength);
+            const randomDataFile = path.join(TEST_ENVIRONMENT.workingDir, "random_data.bin");
+            IO.writeFile(randomDataFile, randomData);
+            expect(IO.readFileSync(randomDataFile, undefined, true)).toEqual(randomData);
+            await Upload.pathToDataSet(REAL_SESSION, randomDataFile, dsname + "(member)", {binary: true});
+            const downloadDestination = path.join(TEST_ENVIRONMENT.workingDir, "download.bin");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set_binary.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + "(member)", downloadDestination]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+            const downloadedContent = IO.readFileSync(downloadDestination, undefined, true);
+            expect(downloadedContent.subarray(0, randomData.length)).toEqual(randomData);
         });
 
         it("should download data set with response-format-json flag", async () => {

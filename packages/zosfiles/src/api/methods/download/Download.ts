@@ -81,7 +81,7 @@ export class Download {
             }
 
             // Get contents of the data set
-            let content = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            let content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
                 extension = options.extension;
@@ -95,8 +95,8 @@ export class Download {
 
             IO.createDirsSyncFromFilePath(destination);
 
-            if ((!options.binary) && (content.toString().length > 0)) {
-                content = IO.processNewlines(content.toString());
+            if ((!options.binary) && (content.byteLength > 0)) {
+                content = Buffer.from(IO.processNewlines(content.toString()));
             }
 
             IO.writeFile(destination, Buffer.from(content));
