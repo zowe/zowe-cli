@@ -43,6 +43,9 @@ exports[`provisioning provision should fail with invalid option 1`] = `
 "Command Error:
 Unknown argument: foo-bar
 Command failed due to improper syntax
+Command entered: \\"zowe provisioning provision template --foo-bar true --fooBar true\\"
+Available commands are \\"template\\".
+Use \\"zowe provisioning provision --help\\" to view groups, commands, and options.
 Error Details:
 Unknown argument: foo-bar
 "
@@ -54,6 +57,9 @@ exports[`provisioning provision should fail with invalid parameter 1`] = `
 "Command Error:
 Unknown argument: foobar
 Command failed due to improper syntax
+Command entered: \\"zowe provisioning provision foobar\\"
+Available commands are \\"template\\".
+Use \\"zowe provisioning provision --help\\" to view groups, commands, and options.
 Error Details:
 Unknown argument: foobar
 "
