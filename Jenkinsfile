@@ -846,6 +846,7 @@ pipeline {
                                     subject: subject,
                                     to: recipients,
                                     body: "${details} ${consoleOutput}",
+                                    mimeType: "text/html",
                                     recipientProviders: [[$class: 'DevelopersRecipientProvider'],
                                                          [$class: 'UpstreamComitterRecipientProvider'],
                                                          [$class: 'CulpritsRecipientProvider'],
