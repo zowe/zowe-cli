@@ -13,9 +13,9 @@ import { AbstractSession, TextUtils, ImperativeExpect } from "@brightside/impera
 import { noSession } from "./WorkflowConstants";
 
 /**
- * Class validates parameters for provisioning commands.
+ * Class validates parameters for workflows commands.
  * @export
- * @class ProvisioningValidator
+ * @class WorkflowValidator
  */
 export class WorkflowValidator {
 
@@ -23,7 +23,7 @@ export class WorkflowValidator {
      * Validate session
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @memberof ProvisioningValidator
+     * @memberof WorkflowValidator
      */
     public static validateSession(session: AbstractSession) {
         ImperativeExpect.toNotBeNullOrUndefined(session,
@@ -36,7 +36,7 @@ export class WorkflowValidator {
      * @static
      * @param {string} text - string to check if not null or undefined
      * @param {string} errorMsg - message to show in case validation fails
-     * @memberof ProvisioningValidator
+     * @memberof WorkflowValidator
      */
     public static validateString(text: string, errorMsg: string) {
         ImperativeExpect.toNotBeNullOrUndefined(text, errorMsg);
@@ -47,7 +47,7 @@ export class WorkflowValidator {
      * @static
      * @param {string} text - string to check if empty
      * @param {string} errorMsg - message to show in case validation fails
-     * @memberof ProvisioningValidator
+     * @memberof WorkflowValidator
      */
     public static validateNotEmptyString(text: string, errorMsg: string) {
         ImperativeExpect.toNotBeEqual("", text, errorMsg);

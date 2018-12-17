@@ -12,14 +12,14 @@
 import { IMessageDefinition, apiErrorHeader } from "@brightside/imperative";
 
 /**
- * Constants for provisioning related info.
+ * Constants for workflow related APIs.
  * @export
- * @class ProvisioningConstants
+ * @class WorkflowConstants
  */
 export class WorkflowConstants {
 
     /**
-     * URI base for provisioning API.
+     * URI base for workflow API.
      * @static
      * @type {string}
      * @memberof WorkflowConstants
@@ -27,7 +27,7 @@ export class WorkflowConstants {
     public static readonly RESOURCE: string = "/zosmf/workflow/rest";
 
     /**
-     * URI base for provisioned instances API.
+     * URI base for workflows API.
      * @static
      * @type {string}
      * @memberof WorkflowConstants
@@ -35,7 +35,7 @@ export class WorkflowConstants {
     public static readonly WORKFLOW_RESOURCE: string = "workflows";
 
     /**
-     * URI base for published templates API.
+     * URI base for starting workflow API.
      * @static
      * @type {string}
      * @memberof WorkflowConstants
@@ -43,7 +43,7 @@ export class WorkflowConstants {
     public static readonly START_WORKFLOW: string = "operations/start";
 
     /**
-     * URI base for published templates API.
+     * URI base for filtering workflow by name API.
      * @static
      * @type {string}
      * @memberof WorkflowConstants
@@ -51,17 +51,17 @@ export class WorkflowConstants {
     public static readonly WF_NAME: string = "workflowName";
 
     /**
-     * Version of the z/OSMF software services template service
+     * Version of the z/OSMF
      * @static
      * @type {string}
-     * @memberOf ProvisioningConstants
+     * @memberOf WorkflowConstants
      */
     public static readonly ZOSMF_VERSION: string = "1.0";
 
 }
 
 /**
- * Error message that no session provided.
+ * Error message that no session was supplied.
  * @static
  * @type {IMessageDefinition}
  * @memberof WorkflowConstants
@@ -82,32 +82,12 @@ export const nozOSMFVersion: IMessageDefinition = {
 
 
 /**
- * Error message that no template name parameter string was supplied.
+ * Error message that no workflow key string was supplied.
  * @static
  * @type {IMessageDefinition}
  * @memberof WorkflowConstants
  */
 export const noWorkflowKey: IMessageDefinition = {
     message: apiErrorHeader + `No workflow key parameter was supplied.`
-};
-
-/**
- * Error message that no template name parameter string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const noWorkflowName: IMessageDefinition = {
-    message: apiErrorHeader + `No workflow name parameter was supplied.`
-};
-
-/**
- * Error message that no template name parameter string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const noWorkflowDefinitionFile: IMessageDefinition = {
-    message: apiErrorHeader + `No workflow definition file parameter was supplied.`
 };
 

@@ -12,31 +12,20 @@
 
 import { AbstractSession, Headers } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { WorkflowConstants, nozOSMFVersion, noWorkflowName, noWorkflowKey } from "./WorkflowConstants";
+import { WorkflowConstants, noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 // import { GetWfKey } from "./GetWfKey";
 import { isNullOrUndefined } from "util";
 
 export class StartWorkflow{
-    public static async startWorkflow(session: AbstractSession, WorkflowName: string, WorkflowKey: string) {
-        let error;
+    public static async startWorkflow(session: AbstractSession, workflowKey: string) {
+
         const zOSMFVersion = WorkflowConstants.ZOSMF_VERSION;
         WorkflowValidator.validateSession(session);
-        let wfKey: string;
-        if (isNullOrUndefined(WorkflowKey)){
-            WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
-            try {
-            // wfKey = await GetWfKey.WorkflowKey(session, WorkflowName);
-            } catch (err) {
-                error = "Get workflow key: " + err;
-                throw error;
-            }
-        } else {
-            WorkflowValidator.validateNotEmptyString(WorkflowKey, noWorkflowKey.message);
-            wfKey = WorkflowKey;
-        }
+        WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
+
         let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
-        resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}/${WorkflowConstants.START_WORKFLOW}`;
+        resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${workflowKey}/${WorkflowConstants.START_WORKFLOW}`;
 
         return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], { });
     }
