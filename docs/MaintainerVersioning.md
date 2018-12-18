@@ -15,44 +15,54 @@ Frequently referred to as `"major.minor.patch"`
 We used the following terms for the three digits (instead of `major.minor.patch`) to reinforce the semantic versioning strategy that we use.
 
 * **BreakingChange**
+
     This number will change when the product introduces a modification that is **non**-backward-compatible with previous releases.
 
 * **Enhancement**
+
     This number will change when one or more new backward-compatible features are introduced.
 
 * **Patch**
+
     This number will change when one or more bug fixes are made available. All modifications within a patch are limited to bug fixes.
 
 * **PrereleaseString**
+
     This string is a frequently changing text indicator which indicates that a new version of a yet-to-be-released version of the product was available for early validation. In this case, the `BreakingChange.Enhancement.Patch` numbers represent the version number of the product that will be used after the up-coming set of features are delivered as a supported release.
 
 ## Tag Names
 We tag various releases of our product in an NPM registry. The tag names are as follows:
 
 * **`daily`**
+
    This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation.
 
 * **`beta`**
+
    This tag points to the yet-to-become-community-edition version of the product. This pre-release snapshot is avalilable for validation.
 
 * **`latest`**
+
    This tag points to the latest community edition version of the product. This version is intended for public consumption.
 
 * **`lts-incremental-v<MAJOR>`**
-   This tag points to a Long Term Support (LTS) Incremental version of the product.<br/>
+
+   This tag points to a Long Term Support (LTS) Incremental version of the product.
    
-   The `<MAJOR>` indicator is a number which matches the supported Major version of the product. For example: `lts-incremental-v2`<br/>
+   The `<MAJOR>` indicator is a number which matches the supported Major version of the product. For example: `lts-incremental-v2`
 
    **Note:** This version (what the tag points to) can and will be updated to introduce new backward-compatible enhancements as well as bug fixes.
 
 * **`lts-stable-v<MAJOR>.<MINOR>`**
-  This tag points to a Long Term Support (LTS) Stable version of the product.<br/>
 
-  The `<MAJOR>.<MINOR>` indicator is a number which matches the supported not-feature-adding Major version of the product. For example: `lts-stable-v2.1`<br/>
+  This tag points to a Long Term Support (LTS) Stable version of the product.
+
+  The `<MAJOR>.<MINOR>` indicator is a number which matches the supported not-feature-adding Major version of the product. For example: `lts-stable-v2.1`
 
   **Note:** This version (what the tag points to) can and will be updated only when there are bug fixes.
 
 * **`next` *DEPRECATED***
+
   This tag is deprecated and will not be changing.
 
 ## Requirements
@@ -75,15 +85,19 @@ The following table shows a tentative Zowe CLI release schedule:
 
 ## Tag Usage
 * To obtain the beta validation version:
+
   `npm install -g @brightside/core@beta`
 
 * To obtain the most current community edition version:
+
   `npm install -g @brightside/core` OR `npm install -g @brightside/core@latest`
 
 * To obtain the supported incremental version:
+
   `npm install -g @brightside/core@lts-incrementsl.v<MAJOR>`
 
 * To obtain the supported stable version:
+
   `npm install -g @brightside/core@lts-stable.v<MAJOR>.<MINOR>`
 
 
