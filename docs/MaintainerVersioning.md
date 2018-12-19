@@ -88,21 +88,16 @@ Our versioning scheme contains the following requirements:
 The following table shows a tentative Zowe CLI release schedule:
 
 | Zowe CLI Version | Validation Begin | Validation End | Begin Support | End Support |
-| ----- | ----------- | ----------- | ----------- | ------------ |
-| 1.0.x | n/a         | n/a         | 05-30-2018  | **07-31-2019 |
-| 2.x.x | n/a         | 01-21-2019  | 01-22-2019  | 01-22-2020   |
-| 3.x.x | 01-22-2019  | *07-30-2019 | *07-31-2019 | *07-31-2020  |
-| 4.x.x | *07-31-2019 | *01-30-2020 | *01-31-2020 | *01-31-2021  |
-| 5.x.x | *01-31-2020 | *07-30-2020 | *07-31-2020 | *07-31-2021  |
-| TBD   | TBD         | TBD         | TBD         | TBD          |
+| ------------- | ----------- | ----------- | ----------- | ----------- |
+| 1.0.x         | n/a         | n/a         | 05-30-2018  | *05-31-2019 |
+| 2.x.x         | n/a         | 01-21-2019  | 01-22-2019  | 01-22-2020  |
+| `<MAJOR>`.x.x | *01-22-2019 | *01-21-2020 | *01-22-2020 | *01-22-2020 |
 
-**(`*`)** This is a rough calculation.
-
-**(`**`)** This is an attempt to normalize the release schedule.
-
-**Note:** The Date format is `MM-DD-YYYY`.
-
-**Note:** This release schedule is subject to change.
+**Notes:**
+* The Date format is `MM-DD-YYYY`.
+* This release schedule is subject to change.
+* **`*`** This is a rough calculation.
+* **`<MAJOR>`** The BreakingChange number validated when support begins.
 
 ## Tag Usage
 
