@@ -43,11 +43,11 @@ We tag various releases of our product in an NPM registry. The tag names are as 
 
 * **`daily`**
 
-   This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation.
+   This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after  a feature completion or bug fix.
 
 * **`beta`**
 
-   This tag points to the yet-to-become-community-edition version of the product. This pre-release snapshot is avalilable for validation.
+   This tag points to the yet-to-become-community-edition version of the product. This pre-release snapshot is avalilable for validation which contains a set of features and bug fixes. It will remain unchanged for a period of time (approximately 2 weeks) to allow consumers to verify the features and/or fixes before it is generally available to the community.
 
 * **`latest`**
 
@@ -111,11 +111,11 @@ The following table shows a tentative Zowe CLI release schedule:
 
 * To obtain the supported incremental version:
 
-  `npm install -g @brightside/core@lts-incrementsl.v<MAJOR>`
+  `npm install -g @brightside/core@lts-incrementsl-v<MAJOR>`
 
 * To obtain the supported stable version:
 
-  `npm install -g @brightside/core@lts-stable.v<MAJOR>.<MINOR>`
+  `npm install -g @brightside/core@lts-stable-v<MAJOR>.<MINOR>`
 
 
 ## Example timeline
@@ -183,7 +183,7 @@ When 4.0.0 was delivered, it was tagged as LTS-incremental. Thereafter, each new
 - 4.1.0
     - 4.1.1
     - 4.1.2
-    - 4.1.3   @lts-incremental.v4
+    - 4.1.3   @lts-incremental-v4
 ```
 
 New development is also in progress on a 5.x feature-set which includes breaking changes. With each merge to our master branch, a new alpha version with a pre-release string is published, for example `5.4.0-alpha.201912301259`. It will be tagged as `@daily` to prevent NPM from automatically moving the latest tag to this new version. At the end of each sprint, the newest pre-release version produced in that sprint is tagged as `@beta`, for example `5.4.0-beta.201912301259`.
