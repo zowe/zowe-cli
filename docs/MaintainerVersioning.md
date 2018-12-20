@@ -43,11 +43,11 @@ We tag various releases of our product in an NPM registry. The tag names are as 
 
 * **`daily`**
 
-   This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after  a feature completion or bug fix.
+   This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
 
 * **`beta`**
 
-   This tag points to the yet-to-become-community-edition version of the product. This pre-release snapshot is avalilable for validation which contains a set of features and bug fixes. It will remain unchanged for a period of time (approximately 2 weeks) to allow consumers to verify the features and/or fixes before it is generally available to the community.
+   This tag points to the yet-to-become-community-edition version of the product. This pre-release snapshot is avalilable for validation which contains a set of features and bug fixes. It will remain unchanged for a longer period of time (approximately 2 weeks) to allow consumers to verify the features and/or fixes before it is generally available to the community.
 
 * **`latest`**
 
