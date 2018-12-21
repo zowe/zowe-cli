@@ -36,7 +36,7 @@ We use the following terms for the three digits (instead of `major.minor.patch`)
 
 * **PrereleaseString**
 
-    This string is a text indicator that changes frequently. The indicator represents a yet-to-be-released version of the product\ that is available for early validation. In this case, the `BreakingChange.Enhancement.Patch` numbers represent the version number of the product that will be used as a supported release after the up-coming set of features are delivered.
+    This string is a text indicator that changes frequently. The indicator represents a yet-to-be-released version of the product that is available for early validation. In this case, the `BreakingChange.Enhancement.Patch` numbers represent the version number of the product that will be used as a supported release after the up-coming set of features are delivered.
 
 ## NPM Tag Names
 
