@@ -233,7 +233,8 @@ export class SubmitJobs {
                 downloadParms.extension = IO.normalizeExtension(parms.extension);
             }
             if (parms.task != null) {
-                parms.task.statusMessage = "Downloading spool content";
+                parms.task.statusMessage = "Downloading spool content for " + job.jobid +
+                    (job.retcode == null ? "" : ", " + job.retcode);
                 parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
             (await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms));
