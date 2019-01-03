@@ -283,7 +283,7 @@ pipeline {
          * -------
          * None
          ************************************************************************/
-        stage('Install Dependencies') {
+        stage('Check for Vulnerabilities') {
             when {
                 expression {
                     return SHOULD_BUILD == 'true'
