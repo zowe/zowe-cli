@@ -101,16 +101,14 @@ export class SubmitJobs {
         if (parms.internalReaderLrecl) {
             this.log.debug("Custom internal reader logical record length (internalReaderLrecl) '%s' specified ", parms.internalReaderLrecl);
             headers.push({"X-IBM-Intrdr-Lrecl": parms.internalReaderLrecl});
-        }
-        else {
+        } else {
             // default to 80 record length
             headers.push(ZosmfHeaders.X_IBM_INTRDR_LRECL_80);
         }
         if (parms.internalReaderRecfm) {
             this.log.debug("Custom internal reader record format (internalReaderRecfm) '%s' specified ", parms.internalReaderRecfm);
             headers.push({"X-IBM-Intrdr-Recfm": parms.internalReaderRecfm});
-        }
-        else {
+        } else {
             // default to fixed format records
             headers.push(ZosmfHeaders.X_IBM_INTRDR_RECFM_F);
         }
@@ -199,7 +197,8 @@ export class SubmitJobs {
             }
             const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
             if (parms.task != null) {
-                parms.task.statusMessage = "Retrieving spool content";
+                parms.task.statusMessage = "Retrieving spool content for " + job.jobid +
+                    (job.retcode == null ? "" : ", " + job.retcode);
                 parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
             const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
