@@ -43,6 +43,10 @@ exports[`Root level help tests top level help should contain support link 1`] = 
 
       Display the current version of Zowe CLI
 
+   --available-commands | --ac (boolean)
+
+      Displays a list of available commands
+
  GLOBAL OPTIONS
  --------------
 
