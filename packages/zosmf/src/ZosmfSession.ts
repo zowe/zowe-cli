@@ -58,8 +58,8 @@ export class ZosmfSession {
     /**
      * Option used in profile creation and commands for password/passphrase for z/OSMF
      */
-    public static ZOSMF_OPTION_PASS: ICommandOptionDefinition = {
-        name: "pass",
+    public static ZOSMF_OPTION_PASSWORD: ICommandOptionDefinition = {
+        name: "password",
         aliases: ["pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
@@ -100,7 +100,7 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_HOST,
         ZosmfSession.ZOSMF_OPTION_PORT,
         ZosmfSession.ZOSMF_OPTION_USER,
-        ZosmfSession.ZOSMF_OPTION_PASS,
+        ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
         ZosmfSession.ZOSMF_OPTION_BASE_PATH
     ];
@@ -139,7 +139,7 @@ export class ZosmfSession {
             hostname: args.host,
             port: args.port,
             user: args.user,
-            password: args.pass,
+            password: args.password,
             base64EncodedAuth: args.auth,
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,

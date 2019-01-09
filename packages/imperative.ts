@@ -55,10 +55,10 @@ const config: IImperativeConfig = {
                         secure: true,
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_USER,
                     },
-                    pass: {
+                    password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASS,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD,
                     },
                     rejectUnauthorized: {
                         type: "boolean",
@@ -73,16 +73,16 @@ const config: IImperativeConfig = {
             },
             createProfileExamples: [
                 {
-                    options: "zos123 --host zos123 --port 1443 --user ibmuser --pass myp4ss",
+                    options: "zos123 --host zos123 --port 1443 --user ibmuser --password myp4ss",
                     description: "Create a zosmf profile called 'zos123' to connect to z/OSMF at host zos123 and port 1443"
                 },
                 {
-                    options: "zos124 --host zos124 --user ibmuser --pass myp4ss --reject-unauthorized false",
+                    options: "zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
                 },
                 {
-                    options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --pass myp4ss --reject-unauthorized false --base-path basePath",
+                    options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
                 }
