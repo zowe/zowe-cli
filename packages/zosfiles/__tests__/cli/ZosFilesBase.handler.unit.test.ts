@@ -34,7 +34,7 @@ describe("ZosFilesBaseHandler", () => {
             host: "secure.host.com",
             port: 443,
             user: "user",
-            pass: "password",
+            password: "password",
             auth: Buffer.from("user:password").toString("base64"),
             rejectUnauthorized: true
         };
@@ -44,12 +44,12 @@ describe("ZosFilesBaseHandler", () => {
             hostname: zosmfProfile.host,
             port: zosmfProfile.port,
             user: zosmfProfile.user,
-            password: zosmfProfile.pass,
+            password: zosmfProfile.password,
             base64EncodedAuth: zosmfProfile.auth,
             rejectUnauthorized: zosmfProfile.rejectUnauthorized,
         };
         const expectedSession = new Session(sessionArgs);
-        const args = {...sessionArgs, host: zosmfProfile.host, pass: zosmfProfile.pass};
+        const args = {...sessionArgs, host: zosmfProfile.host, password: zosmfProfile.password};
 
         /**
          * This object is used as a dummy command parameters object
