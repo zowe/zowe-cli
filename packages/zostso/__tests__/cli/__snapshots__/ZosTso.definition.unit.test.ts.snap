@@ -53,7 +53,7 @@ Object {
           ],
           "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
           "group": "Zosmf Connection Options",
-          "name": "pass",
+          "name": "password",
           "required": true,
           "type": "string",
         },
