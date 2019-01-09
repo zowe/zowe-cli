@@ -119,7 +119,7 @@ export class ZosmfSession {
             hostname: profile.host,
             port: profile.port,
             user: profile.user,
-            password: profile.pass,
+            password: profile.password,
             base64EncodedAuth: profile.auth,
             rejectUnauthorized: profile.rejectUnauthorized,
             basePath: profile.basePath,
