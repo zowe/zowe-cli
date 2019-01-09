@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] prerelease -2019-1-11
+
+### BREAKING CHANGES
+
+* The option for a user's password in `zosmf` profiles has changed from `--pass` to `--password` for clarity and in order to be consistent with
+other Zowe CLI plugins. `zosmf` profiles must be recreated in order to function with the new version. The alias `--pw` still functions as it did before. We apologize for any inconvenience.
+
 ## [2.0.0] prerelease -2018-11-28
 
 ### Fixed

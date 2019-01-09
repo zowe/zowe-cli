@@ -7,7 +7,7 @@ USER=$4
 PASS=$5
 
 # Submit the command and get the JSON response with the JOBID field
-JOBID=$(zowe zos-jobs submit data-set "$JCL" --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff jobid --rft string)
+JOBID=$(zowe zos-jobs submit data-set "$JCL" --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string)
 RC=$?
 if [ $RC -gt 0 ]
 then
@@ -17,5 +17,5 @@ then
 fi
 
 # view the status of the job
-zowe zos-jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false
+zowe zos-jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 exit $?

@@ -111,7 +111,7 @@ describe("zosmf check status", () => {
             const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
             const bogusPort = 12345;
             const command = "zowe profiles create zosmf " + host + "temp --host " + host + " --port " + bogusPort
-                + " --user " + user + " --pass " + pass + " --ru false";
+                + " --user " + user + " --password " + pass + " --ru false";
             await IO.writeFileAsync(scriptPath, command);
             let response = runCliScript(scriptPath, testEnvironment);
             expect(response.status).toBe(0);
