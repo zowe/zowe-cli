@@ -5,8 +5,7 @@ All notable changes to this project will be documented in this file.
 
 ### BREAKING CHANGES
 
-* The option for a user's password in `zosmf` profiles has changed from `--pass` to `--password` for clarity and in order to be consistent with
-other Zowe CLI plugins. `zosmf` profiles must be recreated in order to function with the new version. The alias `--pw` still functions as it did before. We apologize for any inconvenience.
+* The --pass command option is changed to --password for all core Zowe CLI commands for clarity and to be consistent with plug-ins. You must recreate existing zosmf profiles to use the --password option. The aliases --pw and --pass still function as they did prior to this breaking change when you issue commands. You do not need to modify scripts that use --pass.
 
 ## [2.0.0] prerelease -2018-11-28
 
