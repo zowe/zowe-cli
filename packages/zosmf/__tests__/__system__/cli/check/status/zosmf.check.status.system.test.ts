@@ -68,7 +68,7 @@ describe("zosmf check status", () => {
                 "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
                 "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
                 "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
-                "--pass", DEFAULT_SYSTEM_PROPS.zosmf.pass,
+                "--password", DEFAULT_SYSTEM_PROPS.zosmf.pass,
                 "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 
