@@ -60,7 +60,7 @@ export class ZosmfSession {
      */
     public static ZOSMF_OPTION_PASSWORD: ICommandOptionDefinition = {
         name: "password",
-        aliases: ["pw"],
+        aliases: ["pass", "pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
