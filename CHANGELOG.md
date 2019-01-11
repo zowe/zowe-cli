@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] prerelease -2019-1-11
+
+### BREAKING CHANGES
+
+* The --pass command option is changed to --password for all core Zowe CLI commands for clarity and to be consistent with plug-ins. You must recreate existing zosmf profiles to use the --password option. The aliases --pw and --pass still function as they did prior to this breaking change when you issue commands. You do not need to modify scripts that use --pass.
+
 ## [2.0.0] prerelease -2018-11-28
 
 ### Fixed
