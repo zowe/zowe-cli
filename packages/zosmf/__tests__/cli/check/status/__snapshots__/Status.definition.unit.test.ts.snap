@@ -14,7 +14,7 @@ Object {
     },
     Object {
       "description": "Report the status of the z/OSMF server that you specified manually via command line",
-      "options": "--host myhost --port 443 --user myuser --pass mypass",
+      "options": "--host myhost --port 443 --user myuser --password mypass",
     },
   ],
   "name": "status",
@@ -51,11 +51,12 @@ Object {
     },
     Object {
       "aliases": Array [
+        "pass",
         "pw",
       ],
       "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
       "group": "Zosmf Connection Options",
-      "name": "pass",
+      "name": "password",
       "required": true,
       "type": "string",
     },

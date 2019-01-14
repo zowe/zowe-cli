@@ -7,6 +7,6 @@ USER=$3
 PASSWORD=$4
 ACCOUNT=$5
 
-zowe zos-tso issue command "time" --host $HOST --port $PORT --user $USER --pass $PASSWORD --account $ACCOUNT --ru=false
+zowe zos-tso issue command "time" --host $HOST --port $PORT --user $USER --password $PASSWORD --account $ACCOUNT --ru=false
 
 exit $?
