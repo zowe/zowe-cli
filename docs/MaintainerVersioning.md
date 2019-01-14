@@ -54,19 +54,15 @@ We tag various releases of our product in an NPM registry. End users install the
 
    This tag points to the latest community edition version of the product. This version is intended for public consumption.
 
-* **`lts-incremental-v<MAJOR>`**
+* **`lts-incremental`**
 
    This tag points to a Long Term Support (LTS) Incremental version of the product.
-   
-   The `<MAJOR>` indicator is a number which matches the supported new-feature-friendly version of the product. For example: `lts-incremental-v2`
 
    **Note:** This version (what the tag points to) can and will be updated to introduce new backward-compatible enhancements as well as bug fixes.
 
-* **`lts-stable-v<MAJOR>.<MINOR>`**
+* **`lts-stable`**
 
   This tag points to a Long Term Support (LTS) Stable version of the product.
-
-  The `<MAJOR>.<MINOR>` indicator is a number which matches the supported no-feature-changing version of the product. For example: `lts-stable-v2.1`
 
   **Note:** This version (what the tag points to) can and will be updated only when there are bug fixes.
 
@@ -81,7 +77,7 @@ See the [example timeline](#example-timeline) for examples that show how the abo
 Our versioning scheme has the following requirements:
 
 * New features are not introduced for bug fixes.
-* Support two stable releases: `@lts-incremental-vX` and `@lts-stable-vX.Y`
+* Support two stable releases: `@lts-incremental` and `@lts-stable`
 * Each release must be supported for a minimum of one calendar year.
 
 ## Tentative Release Schedule
@@ -114,11 +110,11 @@ The following is a list of commands that users issue to install product versions
 
 * To obtain the supported incremental version:
 
-  `npm install -g @brightside/core@lts-incrementsl-v<MAJOR>`
+  `npm install -g @brightside/core@lts-incremental`
 
 * To obtain the supported stable version:
 
-  `npm install -g @brightside/core@lts-stable-v<MAJOR>.<MINOR>`
+  `npm install -g @brightside/core@lts-stable`
 
 
 ## Example timeline
@@ -132,7 +128,7 @@ In this scenario, the following were released before this versioning scheme was 
     - 1.0.1
     - 1.0.2
     - ...
-    - 1.0.10  @lts-stable-v1.0
+    - 1.0.10  @lts-stable
 ```
 
 A breaking change is a trigger for a new LTS release. Thereafter, the newest non-breaking enhancement or bug fix would have been tagged with LTS-incremental.
@@ -148,7 +144,7 @@ A breaking change is a trigger for a new LTS release. Thereafter, the newest non
     - 2.2.1
     - 2.2.2
     - 2.2.3
-    - 2.2.4  @lts-incremental-v2
+    - 2.2.4  @lts-incremental
 ```
 
 Product Management (and the passing of another calendar year) determined that 1.0 should be decommissioned. Version 2.3.0 became LTS-incremental. Version 2.2.2 could have been tagged as LTS-stable. Thereafter, the LTS-stable tag would have moved forward with the newest 2.2.x patch above, and the LTS-incremental tag would have moved forward with the newest 2.x.x version below.
@@ -158,12 +154,12 @@ Product Management (and the passing of another calendar year) determined that 1.
     - 2.2.1
     - 2.2.2
     - 2.2.3
-    - 2.2.4  @lts-stable-v2.2
+    - 2.2.4  @lts-stable
 - 2.3.0
     - 2.3.1
     - 2.3.2
 - 2.4.0
-- 2.5.0      @lts-incremental-v2
+- 2.5.0      @lts-incremental
 ```
 
 Assume that the following example is our current point in time. Assume that 2.x has been decommissioned, and the 3.2.0 release is tagged as LTS-stable. Only patches (3.2.x) will be delivered for this LTS release. The LTS-stable tag will move to each such new patch release.
@@ -175,7 +171,7 @@ Assume that the following example is our current point in time. Assume that 2.x 
 - 3.1.0
     - 3.1.1
     - 3.1.2
-- 3.2.0      @LTS-stable-v3.2
+- 3.2.0      @LTS-stable
 ```
 
 When 4.0.0 was delivered, it was tagged as LTS-incremental. Thereafter, each new non-breaking enhancement or bug fix was tagged as LTS-incremental. At this point in time, the 4.1.3 version is tagged as LTS-incremental. Additional non-breaking enhancements and bug fixes may be introduced in the future, and LTS-incremental will move to that new version.
@@ -186,7 +182,7 @@ When 4.0.0 was delivered, it was tagged as LTS-incremental. Thereafter, each new
 - 4.1.0
     - 4.1.1
     - 4.1.2
-    - 4.1.3   @lts-incremental-v4
+    - 4.1.3   @lts-incremental
 ```
 
 As we move forward in this scenario, development is also in progress on a 5.x feature-set which includes breaking changes. With each merge to our master branch, a new alpha version with a pre-release string is published. For example `5.4.0-alpha.201912301259`. It will be tagged as `@daily` to prevent NPM from automatically moving the latest tag to this new version. At the end of each sprint (2 weeks), the newest pre-release version produced in that sprint is tagged as `@beta`, for example `5.4.0-beta.201912301259`.
