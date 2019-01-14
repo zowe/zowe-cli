@@ -35,29 +35,12 @@ export class WorkflowConstants {
     public static readonly WORKFLOW_RESOURCE: string = "workflows";
 
     /**
-     * URI base for starting workflow API.
-     * @static
-     * @type {string}
-     * @memberof WorkflowConstants
-     */
-    public static readonly START_WORKFLOW: string = "operations/start";
-
-    /**
-     * URI base for filtering workflow by name API.
-     * @static
-     * @type {string}
-     * @memberof WorkflowConstants
-     */
-    public static readonly WF_NAME: string = "workflowName";
-
-    /**
      * Version of the z/OSMF
      * @static
      * @type {string}
      * @memberOf WorkflowConstants
      */
     public static readonly ZOSMF_VERSION: string = "1.0";
-
 
     /**
      * URI base for list workflows from registry API.
@@ -106,14 +89,6 @@ export class WorkflowConstants {
       * @memberof WorkflowConstants
       */
     public static readonly statusName: string = "statusName";
-
-    /**
-    * URI base for provisioned instance variables.
-     * @static
-     * @type { string }
-     * @memberof ProvisioningConstants
-    */
-    public static readonly VARIABLES_RESOURCE: string = "variables";
 
 }
 
