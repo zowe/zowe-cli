@@ -51,85 +51,129 @@ export class WorkflowConstants {
     public static readonly LIST_WORKFLOWS: string = "operations/list";
 
     /**
-        * URI base for filter workflows from registry API.
-        * @static
-        * @type {string}
-        * @memberof WorkflowConstants
-        */
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly category: string = "category";
 
     /**
-      * URI base for filter workflows from registry API.
-      * @static
-      * @type {string}
-      * @memberof WorkflowConstants
-      */
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly system: string = "system";
 
     /**
-      * URI base for filter workflows from registry API.
-      * @static
-      * @type {string}
-      * @memberof WorkflowConstants
-      */
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly owner: string = "owner";
 
     /**
-      * URI base for filter workflows from registry API.
-      * @static
-      * @type {string}
-      * @memberof WorkflowConstants
-      */
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly vendor: string = "vendor";
 
     /**
-      * URI base for filter workflows from registry API.
-      * @static
-      * @type {string}
-      * @memberof WorkflowConstants
-      */
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly statusName: string = "statusName";
 
 }
+    /**
+     * Error message that no session was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+     export const noSession: IMessageDefinition = {
+        message: apiErrorHeader + `No session was supplied.`
+     };
 
-/**
- * Error message that no session was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const noSession: IMessageDefinition = {
-    message: apiErrorHeader + `No session was supplied.`
-};
-
-/**
- * Error message that no z/OSMF version parameter string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const nozOSMFVersion: IMessageDefinition = {
-    message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
-};
-
-
-/**
- * Error message that no workflow key string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const noWorkflowKey: IMessageDefinition = {
-    message: apiErrorHeader + `No workflow key parameter was supplied.`
-};
+    /**
+     * Error message that no z/OSMF version parameter string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const nozOSMFVersion: IMessageDefinition = {
+        message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
+    };
 
 
-/**
- * Error message that no value for filter string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const noFilter: IMessageDefinition = {
-    message: apiErrorHeader + `No value for filter parameter was supplied.`
-};
+    /**
+     * Error message that no workflow key string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const noOwner: IMessageDefinition = {
+        message: apiErrorHeader + `No workflow key parameter was supplied.`
+    };
+
+
+    /**
+     * Error message that no value for filter string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const noFilter: IMessageDefinition = {
+        message: apiErrorHeader + `No value for filter parameter was supplied.`
+    };
+
+
+    /**
+     * Error message that no value for filter string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const noVendor: IMessageDefinition = {
+        message: apiErrorHeader + `No value for filter parameter was supplied.`
+    };
+
+
+    /**
+     * Error message that no value for filter string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const noSystem: IMessageDefinition = {
+        message: apiErrorHeader + `No value for filter parameter was supplied.`
+    };
+
+
+    /**
+     * Error message that no value for filter string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const noStatusName: IMessageDefinition = {
+        message: apiErrorHeader + `No value for filter parameter was supplied.`
+    };
+
+
+    /**
+     * Error message that no value for filter string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+    export const noCategory: IMessageDefinition = {
+        message: apiErrorHeader + `No value for filter parameter was supplied.`
+    };
+

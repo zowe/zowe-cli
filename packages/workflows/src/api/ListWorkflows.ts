@@ -9,35 +9,45 @@
 *
 */
 
-
-import { AbstractSession, Headers } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { WorkflowConstants, noFilter, nozOSMFVersion } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
+import { AbstractSession, Headers, ImperativeError } from "@brightside/imperative";
+import { WorkflowConstants, nozOSMFVersion, noVendor, noStatusName, noSystem, noOwner, noCategory, noFilter } from "./WorkflowConstants";
 import { isNullOrUndefined } from "util";
-
-
+import { IWorkflowInfo } from "./doc/IWorkflowInfo";
+import { IWorkflowsInfo } from "./doc/IWorkflowsInfo";
+import { IVariable } from "./doc/IVariables";
 
 export class ListWorkflows {
-    //Optional, request can include one or more parameters to filter the results
-    public static async listWorkflows(session: AbstractSession, zOSMFVersion: string, filteredQuery?: string) {
- 
-    //This operation returns list of all workflows 
+    // Optional, request can include one or more parameters to filter the results
+    public static async listWorkflows(session: AbstractSession, filteredQuery?: string, category?: string, system?: string, owner?: string,
+                                      vendor?: string, statusName?: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
+    // This operation returns list of all workflows
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+        WorkflowValidator.validateNotEmptyString(vendor, noVendor.message);
+        WorkflowValidator.validateNotEmptyString(statusName, noStatusName.message);
+        WorkflowValidator.validateNotEmptyString(system, noSystem.message);
+        WorkflowValidator.validateNotEmptyString(owner, noOwner.message);
         const resourcesQuery = filteredQuery ? filteredQuery : this.getResourcesQuery(zOSMFVersion);
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery, [Headers.APPLICATION_JSON]);
     }
+
+    //   public static ListWorkflows(session: AbstractSession, owner?: string, vendor?: string,
+    //     system?: string, statusName?: string, category?: string,
+    //     zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,WorkflowValidator.validateSession(session);
     
-    //This operation returns list filtered workflows
-    public static async listFilteredWorkflows(session: AbstractSession, zOSMFVersion: string, category?: string, system?: string, owner?: string, vendor?: string, statusName?: string) {
+
+    // This operation returns list filtered workflows
+    public static async listFilteredWorkflows(session: AbstractSession, zOSMFVersion: string, category?: string, system?: string,
+                                              owner?: string, vendor?: string, statusName?: string)
+    {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         const query = this.getResourcesQuery(zOSMFVersion, category, system, owner, vendor, statusName);
         return this.listWorkflows(session, zOSMFVersion, query);
     }
-
-    //Builds URI path from provided parameters.
+    // Builds URI path from provided parameters.
     public static getResourcesQuery(zOSMFVersion: string, category?: string, system?: string, owner?: string, vendor?: string, statusName?: string) {
         let query = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         if (!isNullOrUndefined(category)) {
@@ -58,5 +68,4 @@ export class ListWorkflows {
         return query;
     }
 }
-
 
