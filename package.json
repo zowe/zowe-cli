@@ -4,7 +4,7 @@
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zowe/zowe-cli"
+    "url": "https://github.com/zowe/zowe-cli.git"
   },
   "license": "EPL-2.0",
   "author": "CA",
