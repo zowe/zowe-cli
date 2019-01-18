@@ -75,6 +75,6 @@ export class CreateWorkflow{
 
         const resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
 
-        return ZosmfRestClient.postExpectJSON<ICreatedWorkflow>(session, resourcesQuery, [], data);
+        return ZosmfRestClient.postExpectJSON<ICreatedWorkflow>(session, resourcesQuery, [Headers.APPLICATION_JSON], data);
     }
 }
