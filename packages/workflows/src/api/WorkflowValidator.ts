@@ -53,4 +53,10 @@ export class WorkflowValidator {
         ImperativeExpect.toNotBeEqual("", text, errorMsg);
         WorkflowValidator.validateString(text, errorMsg);
     }
+
+    public static validateUSSpath(path: string, errorMsg: string) {
+        // TODO then validation if it's not Dataset
+        const result = new RegExp(/^\/*/).test(path);
+        ImperativeExpect.toBeEqual(true, result, errorMsg);
+    }
 }
