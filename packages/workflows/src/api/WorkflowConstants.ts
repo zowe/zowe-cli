@@ -97,9 +97,9 @@ export class WorkflowConstants {
      * @type {IMessageDefinition}
      * @memberof WorkflowConstants
      */
-     export const noSession: IMessageDefinition = {
-        message: apiErrorHeader + `No session was supplied.`
-     };
+export const noSession: IMessageDefinition = {
+         message: apiErrorHeader + `No session was supplied.`
+};
 
     /**
      * Error message that no z/OSMF version parameter string was supplied.
@@ -107,9 +107,9 @@ export class WorkflowConstants {
      * @type {IMessageDefinition}
      * @memberof WorkflowConstants
      */
-    export const nozOSMFVersion: IMessageDefinition = {
+export const nozOSMFVersion: IMessageDefinition = {
         message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
-    };
+};
 
 
     /**
@@ -118,62 +118,6 @@ export class WorkflowConstants {
      * @type {IMessageDefinition}
      * @memberof WorkflowConstants
      */
-    export const noOwner: IMessageDefinition = {
+export const noOwner: IMessageDefinition = {
         message: apiErrorHeader + `No workflow key parameter was supplied.`
-    };
-
-
-    /**
-     * Error message that no value for filter string was supplied.
-     * @static
-     * @type {IMessageDefinition}
-     * @memberof WorkflowConstants
-     */
-    export const noFilter: IMessageDefinition = {
-        message: apiErrorHeader + `No value for filter parameter was supplied.`
-    };
-
-
-    /**
-     * Error message that no value for filter string was supplied.
-     * @static
-     * @type {IMessageDefinition}
-     * @memberof WorkflowConstants
-     */
-    export const noVendor: IMessageDefinition = {
-        message: apiErrorHeader + `No value for filter parameter was supplied.`
-    };
-
-
-    /**
-     * Error message that no value for filter string was supplied.
-     * @static
-     * @type {IMessageDefinition}
-     * @memberof WorkflowConstants
-     */
-    export const noSystem: IMessageDefinition = {
-        message: apiErrorHeader + `No value for filter parameter was supplied.`
-    };
-
-
-    /**
-     * Error message that no value for filter string was supplied.
-     * @static
-     * @type {IMessageDefinition}
-     * @memberof WorkflowConstants
-     */
-    export const noStatusName: IMessageDefinition = {
-        message: apiErrorHeader + `No value for filter parameter was supplied.`
-    };
-
-
-    /**
-     * Error message that no value for filter string was supplied.
-     * @static
-     * @type {IMessageDefinition}
-     * @memberof WorkflowConstants
-     */
-    export const noCategory: IMessageDefinition = {
-        message: apiErrorHeader + `No value for filter parameter was supplied.`
-    };
-
+};
