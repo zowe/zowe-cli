@@ -12,7 +12,15 @@
 
 import { AbstractSession, Headers, ImperativeError } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { WorkflowConstants, nozOSMFVersion, noWorkflowName, noWorkflowDefinitionFile, noSystemName, noOwner } from "./WorkflowConstants";
+import {
+    WorkflowConstants,
+    nozOSMFVersion,
+    noWorkflowName,
+    noWorkflowDefinitionFile,
+    noSystemName,
+    noOwner,
+    wrongOwner, wrongPath
+} from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { isNullOrUndefined } from "util";
 import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
@@ -46,8 +54,11 @@ export class CreateWorkflow{
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
         WorkflowValidator.validateNotEmptyString(WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
+        WorkflowValidator.validatePath(WorkflowDefinitionFile, wrongPath.message);
         WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
         WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
+        WorkflowValidator.validateOwner(Owner, wrongOwner.message);
+
         const data: ICreateWorkflow = {
             workflowName: WorkflowName,
             workflowDefinitionFile: WorkflowDefinitionFile,
@@ -58,6 +69,7 @@ export class CreateWorkflow{
             deleteCompletedJobs: DeleteCompletedJobs,
         };
         if (!isNullOrUndefined(VariableInputFile)){
+            WorkflowValidator.validatePath(VariableInputFile, wrongPath.message);
             data.variableInputFile = VariableInputFile;
         }
         if (!isNullOrUndefined(Variables)){

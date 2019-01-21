@@ -35,7 +35,7 @@ let wfKey: string;
 let system: string;
 let owner: string;
 // TODO add workflow name to default properties and to all relevant schemes
-const wfName = "Testing-workflow";
+let wfName: string;
 
 describe("Create workflow", () => {
 
@@ -46,8 +46,9 @@ describe("Create workflow", () => {
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
-        system = testEnvironment.systemTestProperties.systems.primary;
-        owner = testEnvironment.systemTestProperties.systems.common.zosmf.user;
+        system = testEnvironment.systemTestProperties.workflows.system;
+        owner = testEnvironment.systemTestProperties.workflows.owner;
+        wfName = testEnvironment.systemTestProperties.workflows.workflowName;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

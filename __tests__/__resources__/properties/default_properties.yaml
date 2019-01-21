@@ -83,3 +83,15 @@ provisioning:
   templateName: template-name
   # The name of instance created after provisioning the template
   instanceName: instance-name
+
+#-----------------------------------------------------------------------------#
+#  Set of properties for testing workflows                                    #
+#-----------------------------------------------------------------------------#
+workflows:
+  # The name of the workflow you want to test
+  workflowName: workflow-name
+  # The system where you want to run your workflow (must exist and be active within your zOSMF)
+  system: system
+  # Owner of the workflow (userID that exists in zOSMF)
+  owner: owner
+
