@@ -1,4 +1,4 @@
-    /*
+/*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
 * https://www.eclipse.org/legal/epl-v20.html
@@ -73,7 +73,7 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 describe("List workflows", () => {
     it("Successful call with all optional parameters returns IWorkflows response.", async () => {
 
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -90,8 +90,8 @@ describe("List workflows", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [], PRETEND_INPUT);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [], PRETEND_INPUT);
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
@@ -99,7 +99,7 @@ describe("List workflows", () => {
 
     it("Successful call without optional parameters returns IWorkflows response.", async () => {
 
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -116,15 +116,15 @@ describe("List workflows", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY);
         expectZosmfResponseSucceeded(response, error);
+      //  expect(response["scr-list"].length).toEqual(2);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
 
-    
     it(" Should succeed even with zOSMF version undefined (because of default value).", async () => {
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
                     resolve(PRETEND_ZOSMF_RESPONSE);
@@ -141,8 +141,8 @@ describe("List workflows", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [], PRETEND_INPUT_NO_FILTER);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [], PRETEND_INPUT_NO_FILTER);
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
