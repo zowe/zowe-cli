@@ -22,21 +22,21 @@ export interface IWorkflowsInfo {
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    owner: string;
+    owner?: string;
 
     /**
      * System on which the software is provisioned.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    workflowDefinitionFileMD5Value: string;
+    workflowDefinitionFileMD5Value?: string;
 
     /**
      * Sysplex on which the software is provisioned.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    instanceURI: string;
+    instanceURI?: string;
 
     /**
      * Vendor of the software.
@@ -44,41 +44,70 @@ export interface IWorkflowsInfo {
      * @memberof IWorkflowsInfo
      * null - what type is that
      */
-    access: string;
+    access?: string;
 
     /**
      * Version of the software.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    workflowKey: string;
+    workflowKey?: string;
 
     /**
      * Description for the software.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    workflowName: string;
+    workflowName?: string;
 
     /**
      * The user ID that identifies the owner of the software.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    workflowVersion: string;
+    workflowVersion?: string;
 
     /**
      * The user ID that identifies the provider of the software.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    workflowDescription: string;
+    workflowDescription?: string;
 
     /**
      * The current state of the software.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
-    workflowID: string;
+    workflowID?: string;
+
+    /**
+   * The current state of the software.
+   * @type {string}
+   * @memberof IWorkflowsInfo
+   */
+    vendor?: string;
+
+   /**
+      * The current state of the software.
+      * @type {string}
+      * @memberof IWorkflowsInfo
+      */
+   system?: string;
+
+      /**
+      * The current state of the software.
+      * @type {string}
+      * @memberof IWorkflowsInfo
+      */
+     category?: string;
+   /**
+      * The current state of the software.
+      * @type {string}
+      * @memberof IWorkflowsInfo
+      */
+     statusName?: string;
+
 
 }
+

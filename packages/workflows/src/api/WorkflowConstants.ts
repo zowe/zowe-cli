@@ -110,14 +110,12 @@ export const noSession: IMessageDefinition = {
 export const nozOSMFVersion: IMessageDefinition = {
         message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
 };
-
-
     /**
      * Error message that no workflow key string was supplied.
      * @static
      * @type {IMessageDefinition}
      * @memberof WorkflowConstants
      */
-export const noOwner: IMessageDefinition = {
-        message: apiErrorHeader + `No workflow key parameter was supplied.`
+export const noValue: IMessageDefinition = {
+        message: apiErrorHeader + `No value for parameter was supplied.`
 };
