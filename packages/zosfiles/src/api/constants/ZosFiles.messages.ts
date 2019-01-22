@@ -56,11 +56,35 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the USS directory name is required
+     * @type {IMessageDefinition}
+     */
+    missingUSSDirectoryName: {
+        message: "Specify the USS directory name."
+    },
+
+    /**
+     * Message indicating that the request type is required
+     * @type {IMessageDefinition}
+     */
+    missingRequestType: {
+        message: "Specify request type, file or directory."
+    },
+
+    /**
      * Message indicating that the input file is required
      * @type {IMessageDefinition}
      */
     missingInputFile: {
         message: "Specify the input file and, if needed, the path."
+    },
+
+    /**
+     * Message indicating that the input directory path is required
+     * @type {IMessageDefinition}
+     */
+    missingInputDirectory: {
+        message: "Specify directory path, to upload."
     },
 
     /**
@@ -104,11 +128,19 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that the uss file was downloaded successfully
+     * Message indicating that the uss file was uploaded successfully
      * @type {string}
      */
     ussFileUploadedSuccessfully: {
         message: "USS file uploaded successfully."
+    },
+
+    /**
+     * Message indicating that the uss folder was uploaded successfully
+     * @type {string}
+     */
+    ussFolderUploadedSuccessfully: {
+        message: "USS folder uploaded successfully."
     },
 
     /**
