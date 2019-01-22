@@ -22,6 +22,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list";
 import { IUploadOptions } from "./doc/IUploadOptions";
 import { IUploadResult } from "./doc/IUploadResult";
+import { Create } from "../create";
 
 export class Upload {
 
@@ -447,6 +448,127 @@ export class Upload {
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
             apiResponse: result
         };
+    }
+
+    /**
+     * Upload local directory to USS directory
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} inputDirectory   - the path of local directory
+     * @param {string} ussname          - the name of uss folder
+     * @param {boolean} binary          - the indicator to upload the file in binary mode
+     * @param {boolean} recursive       - the indicator to upload local folder recursively
+     * @returns {Promise<IZosFilesResponse>}
+     */
+    public static async dirToUssDir(session: AbstractSession,
+                                    inputDirectory: string,
+                                    ussname: string,
+                                    binary: boolean = false,
+                                    recursive: boolean = false): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeEqual("", ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
+        ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
+
+        // Check if inputDirectory is directory
+        if(!fs.lstatSync(inputDirectory).isDirectory()) {
+            throw new ImperativeError({
+                msg: ZosFilesMessages.missingInputFile.message
+            });
+        }
+
+        if(recursive === false) {
+            // Check if provided unix directory exists
+            const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+
+            if(!isDirectoryExist) {
+                await Create.uss(session, ussname, "directory");
+            }
+
+            const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+            files.forEach(async (fileName) => {
+                const filePath = path.normalize(path.join(inputDirectory, fileName));
+                if(!IO.isDir(filePath)) {
+                    try {
+                        const ussFilePath = path.posix.join(ussname, fileName);
+                        await this.fileToUSSFile(session, filePath, ussFilePath, binary);
+                    } catch(err) {
+                        throw err;
+                    }
+                }
+            });
+        } else {
+            await this.dirToUssDirRecursive(session, inputDirectory, ussname, binary);
+        }
+
+        const result: IUploadResult = {
+            success: true,
+            from: inputDirectory,
+            to: ussname
+        };
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.ussFolderUploadedSuccessfully.message,
+            apiResponse: result
+        };
+    }
+
+    /**
+     * Upload directory to USS recursively
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} inputDirectory   - the path of local directory
+     * @param {string} ussname          - the name of uss folder
+     * @param {boolean} binary          - the indicator to upload the file in binary mode
+     * @return {null}
+     */
+    private static async dirToUssDirRecursive(session: AbstractSession,
+                                              inputDirectory: string,
+                                              ussname: string,
+                                              binary: boolean) {
+        // Check if provided unix directory exists
+        const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+
+        if(!isDirectoryExist) {
+            await Create.uss(session, ussname, "directory");
+        }
+
+        fs.readdirSync(inputDirectory).forEach(async (fileName) => {
+            const filePath = path.normalize(path.join(inputDirectory, fileName));
+            if(!IO.isDir(filePath)) {
+                try {
+                    const ussFilePath = path.posix.join(ussname, fileName);
+                    await this.fileToUSSFile(session, filePath, ussFilePath, binary);
+                } catch(err) {
+                    throw err;
+                }
+            } else {
+                try {
+                    const tempUssPath = path.posix.join(ussname, fileName);
+                    await Create.uss(session, tempUssPath, "directory");
+                    await this.dirToUssDirRecursive(session, filePath, tempUssPath, binary);
+                } catch(err) {
+                    throw err;
+                }
+            }
+        });
+        return;
+    }
+
+    /**
+     * Check if USS directory exists
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} ussname          - the name of uss folder
+     * @return {Promise<boolean>}
+     */
+    private static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
+        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
+        try {
+            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);
+            if(response.items) {
+                return true;
+            }
+        } catch (err) {
+            return false;
+        }
     }
 
     /**
