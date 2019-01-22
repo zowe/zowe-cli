@@ -27,8 +27,18 @@ import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
 import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { IVariable } from "./doc/IVariables";
 
-// copied from ProvisioningService.ts
+/**
+ * Class to handle creation of zOSMF workflow instance
+ */
 export class CreateWorkflow{
+
+    /**
+     * copied from ProvisioningService.ts
+     * Parsers text with properties in key1=val1,key2=val2 format and returns IInputProperty[]
+     * @param {string} propertiesText - required runtime property objects passed as a string.
+     * @returns {IPropertiesInput[]} array of properties, @see {IPropertiesInput}
+     * @memberof ProvisioningService
+     */
     public static parseProperties(propertiesText: string): IVariable[] {
         if (propertiesText === "") {
             return [];
@@ -42,7 +52,21 @@ export class CreateWorkflow{
             }
         });
     }
-
+    /**
+     * Create a zOSMF workflow instance
+     * @param {AbstractSession} session                     - z/OSMF connection info
+     * @param {string} WorkflowName                         - Name of the workflow that will be created
+     * @param {string} WorkflowDefinitionFile               - Full path to USS file or DATASET/MEMBER with zml
+     * @param {string} systemName                           - System where the workflow will run
+     * @param {string} Owner                                - User ID of the workflow owner.
+     * @param {string} VariableInputFile                    - Properties file with pre-specify values for workflow variables
+     * @param {string} Variables                            - A list of one or more variables for the workflow.
+     * @param {boolean} AssignToOwner                       - Indicates whether the workflow steps are assigned to the workflow owner
+     * @param {accessT} AccessType                          - Specifies the access type for the workflow. Public, Restricted or Private.
+     * @param {boolean} DeleteCompletedJobs                 - Specifies whether the job is deleted from the JES spool after it completes successfully.
+     * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
+     * @returns {Promise<ICreatedWorkflow>}
+     */
     public static createWorkflow(session: AbstractSession, WorkflowName: string, WorkflowDefinitionFile: string,
                                  systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
                                  AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,

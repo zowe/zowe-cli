@@ -1,4 +1,4 @@
-   /*
+/*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
 * https://www.eclipse.org/legal/epl-v20.html
@@ -43,94 +43,96 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 
 
 describe("Delete workflow", () => {
+    describe("Successful scenarios", () => {
+        it("Successful call returns 204 - No Content.", async () => {
 
-    it("Successful call returns 204 - No Content.", async () => {
+            (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
+                return "";
+            });
 
-        (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
-            return "";
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, wfKey);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
+            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, []);
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual("");
         });
+        it("Successful even with zOSMF version undefined (because of default value).", async () => {
 
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, wfKey);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, []);
-        expectZosmfResponseSucceeded(response, error);
-        expect(response).toEqual("");
-    });
-    it("Successful even with zOSMF version undefined (because of default value).", async () => {
+            (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
+                return "";
+            });
 
-        (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
-            return "";
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, wfKey, undefined);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
+            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, []);
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual("");
         });
-
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, wfKey, undefined);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, []);
-        expectZosmfResponseSucceeded(response, error);
-        expect(response).toEqual("");
     });
-
-    it("should throw an error if the session parameter is undefined", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await DeleteWorkflow.deleteWorkflow(undefined, wfKey);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noSession.message);
-    });
-    it("should throw an error if the workflowKey parameter is undefined", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noWorkflowKey.message);
-    });
-    it("Should throw error if workflowKey is empty string.", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, "");
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noWorkflowKey.message);
-    });
-    it("Should throw error if zOSMF version is empty string.", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, wfKey, "");
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+    describe("Fail scenarios", () => {
+        it("should throw an error if the session parameter is undefined", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await DeleteWorkflow.deleteWorkflow(undefined, wfKey);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noSession.message);
+        });
+        it("should throw an error if the workflowKey parameter is undefined", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, undefined);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if workflowKey is empty string.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, "");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if zOSMF version is empty string.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await DeleteWorkflow.deleteWorkflow(PRETEND_SESSION, wfKey, "");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        });
     });
 });

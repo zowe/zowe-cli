@@ -30,4 +30,11 @@ export interface ITestPropertiesSchema {
         templateName: string,
         instanceName: string
     };
+
+    workflows: {
+        system: string,
+        owner: string,
+        workflowName: string,
+        workflowDefinitionFile: string
+    };
 }

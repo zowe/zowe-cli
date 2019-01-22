@@ -15,7 +15,18 @@ import { ZosmfRestClient } from "../../../rest";
 import { WorkflowConstants, nozOSMFVersion, noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 
+/**
+ * Class to handle deletion of zOSMF workflow instance
+ */
 export class DeleteWorkflow {
+
+    /**
+     * Delete a workflow instance
+     * @param {AbstractSession} session                     - z/OSMF connection info
+     * @param {string} workflowKey                          - Unique identifier of the workflow instance.
+     * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
+     * @returns {string}
+     */
  public static async deleteWorkflow(session: AbstractSession, workflowKey: string,
                                     zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
     WorkflowValidator.validateSession(session);

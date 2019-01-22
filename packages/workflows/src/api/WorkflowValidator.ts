@@ -64,13 +64,13 @@ export class WorkflowValidator {
      */
     public static validatePath(path: string, errorMsg: string) {
         const DSN = /^[A-Z#$@][A-Z0-9#$@-]{0,7}([.][A-Z#$@][A-Z0-9#$@-]{0,7}){0,21}$/;
-        const MEMBER = /^[A-Z#$@][A-Z0-9#$@-]{0,7}/;
+        const MEMBER = /^\([A-Z#$@]{1}[A-Z0-9#$@-]{0,7}\)$/;
         const USS = /^\/.*$/;
         const memberLen = 44;
 
         if (path.search(/\(/) >= 0) {
             // if there is '(' in path it is not USS path nor DSNAME, so check if it is DSNAME incl. member
-            const member = path.slice(path.search(/\(/), -1);
+            const member = path.slice(path.search(/\(/));
             const dsname = path.slice(0, path.search(/\(/));
             const resultDSN = new RegExp(DSN).test(dsname);
             const result44 = dsname.length <= memberLen;
