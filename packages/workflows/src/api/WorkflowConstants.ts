@@ -115,7 +115,25 @@ export const nozOSMFVersion: IMessageDefinition = {
      * @static
      * @type {IMessageDefinition}
      * @memberof WorkflowConstants
-     */
+     *//*
 export const noValue: IMessageDefinition = {
         message: apiErrorHeader + `No value for parameter was supplied.`
 };
+    /**
+     * Error message that no workflow key string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+export const noFilter: IMessageDefinition = {
+        message: apiErrorHeader + `No value for parameter was supplied.`
+};
+    /**
+     * Error message that no workflow key string was supplied.
+     * @static
+     * @type {IMessageDefinition}
+     * @memberof WorkflowConstants
+     */
+  /*  export const noVendor: IMessageDefinition = {
+        message: apiErrorHeader + `No value for parameter was supplied.`
+};*/

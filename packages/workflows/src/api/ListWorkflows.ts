@@ -11,15 +11,14 @@
 
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { AbstractSession, Headers, ImperativeError } from "@brightside/imperative";
+import { AbstractSession } from "@brightside/imperative";
 import { WorkflowConstants, nozOSMFVersion } from "./WorkflowConstants";
 import { isNullOrUndefined } from "util";
 
-
 export class ListWorkflows {
     // Optional, request can include one or more parameters to filter the results
-    public static async listWorkflows(session: AbstractSession, filteredQuery?: string, category?: string, system?: string, owner?: string,
-                                      vendor?: string, statusName?: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
+    public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION, category?: string, system?: string,
+                                      owner?: string, vendor?: string, statusName?: string ) {
     // This operation returns list of all workflows
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
@@ -29,7 +28,8 @@ export class ListWorkflows {
         } else {
             resourcesQuery = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         }
-        return ZosmfRestClient.getExpectJSON(session, resourcesQuery, [Headers.APPLICATION_JSON]);
+        return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
+       // return ZosmfRestClient.getExpectJSON(session, resourcesQuery, [Headers.APPLICATION_JSON]);
     }
     // Builds URI path from provided parameters.
     public static getResourcesQuery(zOSMFVersion: string, category?: string, system?: string, owner?: string, vendor?: string, statusName?: string) {

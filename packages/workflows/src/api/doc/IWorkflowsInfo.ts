@@ -82,32 +82,30 @@ export interface IWorkflowsInfo {
     workflowID?: string;
 
     /**
-   * The current state of the software.
-   * @type {string}
-   * @memberof IWorkflowsInfo
-   */
+     * The vendor of the software.
+     * @type {string}
+     * @memberof IWorkflowsInfo
+     */
     vendor?: string;
 
+    /**
+     * System on which the software is provisioned.
+     * @type {string}
+     * @memberof IWorkflowsInfo
+     */
+    system?: string;
+
    /**
-      * The current state of the software.
-      * @type {string}
-      * @memberof IWorkflowsInfo
-      */
-   system?: string;
-
-      /**
-      * The current state of the software.
-      * @type {string}
-      * @memberof IWorkflowsInfo
-      */
-     category?: string;
-   /**
-      * The current state of the software.
-      * @type {string}
-      * @memberof IWorkflowsInfo
-      */
-     statusName?: string;
-
-
+    * The category of the software workflow.
+    * @type {string}
+    * @memberof IWorkflowsInfo
+    */
+    category?: string;
+    /**
+     * The name of the status of the workflow.
+     * @type {string}
+     * @memberof IWorkflowsInfo
+     */
+    statusName?: string;
 }
 
