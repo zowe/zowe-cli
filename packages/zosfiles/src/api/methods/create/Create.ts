@@ -369,7 +369,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
 
-        const parameters: string = `${ZosFilesConstants.RESOURCE}/${ZosFilesConstants.RES_USS_FILES}${ussFilePath}`;
+        const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}${ussFilePath}`;
         const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, {"Content-Type": "application/json"}];
         let payload: object = { type };
         if(mode) {
