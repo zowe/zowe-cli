@@ -20,18 +20,8 @@ import * as path from "path";
  * Handler to upload content from a local directory to a USS directory
  * @export
  */
-// TO DELETE IF NOT NEEDED
-// export default class DirToUSSHandler extends ZosFilesBaseHandler {
-//     public async processWithSession(commandParameters: IHandlerParameters,
-//                                     session: AbstractSession): Promise<IZosFilesResponse> {
-//         const response = await Upload.DirToUSSDir(session, commandParameters.arguments.inputdir,
-//             commandParameters.arguments.USSDir, commandParameters.arguments.binary);
-//         const formatMessage = TextUtils.prettyJson(response.apiResponse);
-//         commandParameters.response.console.log(formatMessage);
-//         return response;
-//     }
-// }
-export default class DirToUSSHandler extends ZosFilesBaseHandler {
+
+export default class DirToUssDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
         const status: ITaskWithStatus = {
@@ -40,12 +30,10 @@ export default class DirToUSSHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
         commandParameters.response.progress.startBar({task: status});
-        // CHECK IF USER PROVIDED RELATIVE PATH FOR inputdir, AND TRANSFORM IT TO FULL PATH BEFORE PASSING
-        // IT TO inputdir
-        // Get full path of the inputdir (in case user provides relative path)
+
         commandParameters.arguments.inputdir = path.resolve(commandParameters.arguments.inputdir);
 
-        const response = await Upload.dirToUSS(session, commandParameters.arguments.inputdir,commandParameters.arguments.USSDir,
+        const response = await Upload.dirToUssDir(session, commandParameters.arguments.inputdir,commandParameters.arguments.USSDir,
             commandParameters.arguments.binary, commandParameters.arguments.recursive);
         if (response.apiResponse) {
             let skipCount: number = 0;
