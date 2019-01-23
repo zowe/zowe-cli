@@ -16,7 +16,7 @@ describe("Upload dir-to-uss handler", () => {
     describe("process method", () => {
         it("should upload a directory to a USS directory if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSS.handler");
+            const handlerReq = require("../../../../src/cli/upload/dtu/DirToUssDir.handler");
             const handler = new handlerReq.default();
             const inputdir = "test_dir";
             const USSDir = "USS_dir";
@@ -29,7 +29,7 @@ describe("Upload dir-to-uss handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.dirToUSSDir = jest.fn((session) => {
+            Upload.dirToUssDir = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: false,
@@ -97,8 +97,8 @@ describe("Upload dir-to-uss handler", () => {
 
             expect(error).toBeDefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-            expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
-            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputdir, USSDir, {
+            expect(Upload.dirToUssDir).toHaveBeenCalledTimes(1);
+            expect(Upload.dirToUssDir).toHaveBeenCalledWith(fakeSession, inputdir, USSDir, {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
