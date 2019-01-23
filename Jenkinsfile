@@ -98,6 +98,10 @@ def ARTIFACTORY_EMAIL = GIT_USER_EMAIL
  */
 def PRODUCT_NAME = "Zowe CLI"
 
+/**
+ * Release branches
+ */
+def RELEASE_BRANCHES = ["1.0.0", "lts-stable", "lts-incremental", /*"latest"*/] // Remove latest until GA
 
 // Setup conditional build options. Would have done this in the options of the declarative pipeline, but it is pretty
 // much impossible to have conditional options based on the branch :/
@@ -112,7 +116,7 @@ if (BRANCH_NAME == MASTER_BRANCH) {
     // twice in quick succession
     opts.push(disableConcurrentBuilds())
 } else {
-    if (BRANCH_NAME == "1.0.0"){
+    if (RELEASE_BRANCHES.contains(BRANCH_NAME){
         RELEASE_BRANCH = true
     }
     // Only keep 5 builds on other branches
@@ -689,21 +693,20 @@ pipeline {
                                 script: "node -e \"process.stdout.write(require('./package.json').publishConfig.registry)\""
                         sh "sudo npm config set registry ${npmRegistry.trim()}"
                     }
-                    script {
-                         if (RELEASE_BRANCH){
-                            withCredentials([usernamePassword(credentialsId: ARTIFACTORY_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                sh "expect -f ./jenkins/npm_login.expect $USERNAME $PASSWORD \"$ARTIFACTORY_EMAIL\""
+                    withCredentials([usernamePassword(credentialsId: ARTIFACTORY_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh "expect -f ./jenkins/npm_login.expect $USERNAME $PASSWORD \"$ARTIFACTORY_EMAIL\""
+                        script {
+                            if (RELEASE_BRANCH && BRANCH_NAME.equals("1.0.0")) {
                                 sh 'npm publish --tag latest'
-                                sh 'npm logout'
-                             }
-                        }
-                        else{
-                            withCredentials([usernamePassword(credentialsId: ARTIFACTORY_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                sh "expect -f ./jenkins/npm_login.expect $USERNAME $PASSWORD \"$ARTIFACTORY_EMAIL\""
+                            }
+                            else if (RELEASE_BRANCH) {
+                                sh "npm publish --tag ${BRANCH_NAME}"
+                            }
+                            else {
                                 sh 'npm publish --tag beta'
-                                sh 'npm logout'
                             }
                         }
+                        sh 'npm logout'
                     }
                     // Change it back
                     sh 'mv .npmrc-temp .npmrc'
