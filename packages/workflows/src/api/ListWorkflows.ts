@@ -18,8 +18,8 @@ import { isNullOrUndefined } from "util";
 
 export class ListWorkflows {
     // Optional, request can include one or more parameters to filter the results
-    public static async listWorkflows(session: AbstractSession, filteredQuery?: string, category?: string, system?: string, owner?: string,
-                                      vendor?: string, statusName?: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
+    public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION, category?: string, system?: string, owner?: string,
+                                      vendor?: string, statusName?: string) {
     // This operation returns list of all workflows
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
