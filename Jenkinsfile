@@ -116,7 +116,7 @@ if (BRANCH_NAME == MASTER_BRANCH) {
     // twice in quick succession
     opts.push(disableConcurrentBuilds())
 } else {
-    if (RELEASE_BRANCHES.contains(BRANCH_NAME){
+    if (RELEASE_BRANCHES.contains(BRANCH_NAME)){
         RELEASE_BRANCH = true
     }
     // Only keep 5 builds on other branches
