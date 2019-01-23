@@ -1,5 +1,6 @@
 coverage/
 node_modules/
+package-lock.json # currently causes an issue installing dependencies for users without giza artifactory access
 npm-debug.log
 local.json
 output/

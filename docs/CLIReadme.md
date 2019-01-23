@@ -2835,7 +2835,7 @@ the output.
 * `          $  zowe zos-jobs list jobs --rff jobid --rft table`
 
 ## delete | del<a name="module-delete"></a>
-Delete a single job by job ID or delete multiple jobs in OUTPUT status. This cancels the job if it is running and purges its output from the system
+Delete a single job by job ID in OUTPUT status. This cancels the job if it is running and purges its output from the system
 ### job<a name="command-job"></a>
 Delete a single job by job ID
 
