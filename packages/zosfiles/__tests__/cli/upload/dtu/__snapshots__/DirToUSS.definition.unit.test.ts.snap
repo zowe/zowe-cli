@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files upload dtu command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Data content in binary mode, which means that no data conversion is performed. The data transfer process returns each record as-is, without translation. No delimiters are added between records.",
+    "name": "binary",
+    "type": "boolean",
+  },
+]
+`;
+
+exports[`zos-files upload dtu command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Upload to the USS directory \\"/a/ibmuser/my_dir\\" from the local directory \\"local_dir\\"",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\"",
+  },
+]
+`;

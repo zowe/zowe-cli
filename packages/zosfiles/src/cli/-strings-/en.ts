@@ -313,7 +313,7 @@ export default {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {
             DIR_TO_PDS: {
-                DESCRIPTION: "Upload files from a directory to a partioned data set (PDS)",
+                DESCRIPTION: "Upload files from a directory to a partitioned data set (PDS)",
                 POSITIONALS: {
                     INPUTDIR: "The path for a local directory that you want to upload to a PDS",
                     DATASETNAME: "The name of the partitioned data set to which you want to upload the files"
@@ -356,6 +356,16 @@ export default {
                     EX1: `Upload to the USS file "/a/ibmuser/my_text.txt" from the file "file.txt"`
                 }
             },
+            DIR_TO_USS: {
+                DESCRIPTION: "Upload files from a directory to USS directory",
+                POSITIONALS: {
+                    INPUTDIR: "The path for a local directory that you want to upload to USS",
+                    USSDIR: "The name of the USS directory to which you want to upload the files"
+                },
+                EXAMPLES: {
+                    EX1: `Upload a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"`
+                }
+            },
         },
         OPTIONS: {
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
@@ -363,7 +373,8 @@ export default {
             BINARY: "Data content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each record as-is, without translation. No delimiters are added between records.",
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
-                "specify the following values: wait, nowait, error"
+                "specify the following values: wait, nowait, error",
+            RECURSIVE: "!!!!! TO BE FILLED LATER !!!!! text here for recursive option " + " Upload all directories recursively."
         }
     }
 };

@@ -130,6 +130,34 @@ export class Upload {
         return this.pathToDataSet(session, inputDir, dataSetName, options);
     }
 
+    /**
+     * Upload content from a directory to a USS directory
+     * @param {AbstractSession} session      - z/OS connection info
+     * @param {string}          inputDir     - path to a directory
+     * @param {string}          USSDir       - Name of the directory to upload to
+     * @param {IUploadOptions}  [options={}] - Uploading options
+     *
+     * @return {Promise<IZosFilesResponse>} A response indicating the out come
+     *
+     * @throws {ImperativeError} When encounter error scenarios.
+     *
+     */
+
+    public static async dirToUSS(session: AbstractSession,
+                                 inputDir: string,
+                                 USSDir: string,
+                                 binary: boolean = false,
+                                 recursive: boolean = false): Promise<IZosFilesResponse> {
+        this.log.info(`Uploading directory ${inputDir} to ${USSDir}`);
+
+// Content deleted (originally taken from dirToPds)
+// empty return
+        return {
+            success: true,
+            commandResponse: "nothing here",
+            apiResponse: "result"
+        };
+    }
 
     /**
      * Writting data buffer to a data set.
@@ -263,7 +291,7 @@ export class Upload {
         }
 
 
-        // Retreive the information on the input data set name to determine if it is a
+        // Retrieve the information on the input data set name to determine if it is a
         // sequential data set or PDS.
         const listResponse = await List.dataSet(session, dataSetName, {attributes: true});
         if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
@@ -292,7 +320,7 @@ export class Upload {
         }
 
         // Loop through the array of upload file and perform upload one file at a time.
-        // The reason we can not perform this task in parallel is because the Enqueing on a PDS.  It will
+        // The reason we can not perform this task in parallel is because the Enqueueing on a PDS.  It will
         // result will random errors when trying to upload to multiple member of the same PDS at the same time.
         // This also allow us to break out as soon as the first error is encounter instead of wait until the
         // entire list is processed.
