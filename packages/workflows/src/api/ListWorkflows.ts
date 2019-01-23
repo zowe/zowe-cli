@@ -29,7 +29,7 @@ export class ListWorkflows {
         } else {
             resourcesQuery = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         }
-        return ZosmfRestClient.getExpectJSON(session, resourcesQuery, [Headers.APPLICATION_JSON]);
+        return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
     }
     // Builds URI path from provided parameters.
     public static getResourcesQuery(zOSMFVersion: string, category?: string, system?: string, owner?: string, vendor?: string, statusName?: string) {
