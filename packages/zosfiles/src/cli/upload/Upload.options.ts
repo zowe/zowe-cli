@@ -52,5 +52,16 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         description: strings.RECALL,
         type: "string",
         defaultValue: "nowait"
+    },
+
+    /**
+     * The recursive option
+     * @type {ICommandOptionDefinition}
+     */
+    recursive: {
+        name: "recursive",
+        aliases: ["r"],
+        description: strings.RECURSIVE,
+        type: "boolean"
     }
 };

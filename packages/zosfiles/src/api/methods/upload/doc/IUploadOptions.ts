@@ -38,4 +38,9 @@ export interface IUploadOptions {
      * Optional
      */
     task?: ITaskWithStatus;
+
+    /**
+     * The indicator to upload the directories recursively
+     */
+    recursive?: boolean;
 }
