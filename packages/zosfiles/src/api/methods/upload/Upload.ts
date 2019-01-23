@@ -131,35 +131,6 @@ export class Upload {
     }
 
     /**
-     * Upload content from a directory to a USS directory
-     * @param {AbstractSession} session      - z/OS connection info
-     * @param {string}          inputDir     - path to a directory
-     * @param {string}          USSDir       - Name of the directory to upload to
-     * @param {IUploadOptions}  [options={}] - Uploading options
-     *
-     * @return {Promise<IZosFilesResponse>} A response indicating the out come
-     *
-     * @throws {ImperativeError} When encounter error scenarios.
-     *
-     */
-
-    public static async dirToUSS(session: AbstractSession,
-                                 inputDir: string,
-                                 USSDir: string,
-                                 binary: boolean = false,
-                                 recursive: boolean = false): Promise<IZosFilesResponse> {
-        this.log.info(`Uploading directory ${inputDir} to ${USSDir}`);
-
-// Content deleted (originally taken from dirToPds)
-// empty return
-        return {
-            success: true,
-            commandResponse: "nothing here",
-            apiResponse: "result"
-        };
-    }
-
-    /**
      * Writting data buffer to a data set.
      * @param {AbstractSession} session      - z/OS connection info
      * @param {Buffer}          fileBuffer   - Data buffer to be written
