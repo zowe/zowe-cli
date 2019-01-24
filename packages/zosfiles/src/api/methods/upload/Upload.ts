@@ -458,7 +458,7 @@ export class Upload {
      * @param {boolean} recursive       - the indicator to upload local folder recursively
      * @returns {Promise<IZosFilesResponse>}
      */
-    public static async dirToUssDir(session: AbstractSession,
+    public static async dirToUSSDir(session: AbstractSession,
                                     inputDirectory: string,
                                     ussname: string,
                                     binary: boolean = false,
@@ -475,14 +475,14 @@ export class Upload {
             });
         }
 
+        // Check if provided unix directory exists
+        const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+
+        if(!isDirectoryExist) {
+            await Create.uss(session, ussname, "directory");
+        }
+
         if(recursive === false) {
-            // Check if provided unix directory exists
-            const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-
-            if(!isDirectoryExist) {
-                await Create.uss(session, ussname, "directory");
-            }
-
             const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
             files.forEach(async (fileName) => {
                 const filePath = path.normalize(path.join(inputDirectory, fileName));
@@ -491,12 +491,12 @@ export class Upload {
                         const ussFilePath = path.posix.join(ussname, fileName);
                         await this.fileToUSSFile(session, filePath, ussFilePath, binary);
                     } catch(err) {
-                        throw err;
+                        throw new ImperativeError(err);
                     }
                 }
             });
         } else {
-            await this.dirToUssDirRecursive(session, inputDirectory, ussname, binary);
+            await this.dirToUSSDirRecursive(session, inputDirectory, ussname, binary);
         }
 
         const result: IUploadResult = {
@@ -519,17 +519,10 @@ export class Upload {
      * @param {boolean} binary          - the indicator to upload the file in binary mode
      * @return {null}
      */
-    private static async dirToUssDirRecursive(session: AbstractSession,
+    private static async dirToUSSDirRecursive(session: AbstractSession,
                                               inputDirectory: string,
                                               ussname: string,
                                               binary: boolean) {
-        // Check if provided unix directory exists
-        const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-
-        if(!isDirectoryExist) {
-            await Create.uss(session, ussname, "directory");
-        }
-
         fs.readdirSync(inputDirectory).forEach(async (fileName) => {
             const filePath = path.normalize(path.join(inputDirectory, fileName));
             if(!IO.isDir(filePath)) {
@@ -537,15 +530,20 @@ export class Upload {
                     const ussFilePath = path.posix.join(ussname, fileName);
                     await this.fileToUSSFile(session, filePath, ussFilePath, binary);
                 } catch(err) {
-                    throw err;
+                    throw new ImperativeError(err);
                 }
             } else {
                 try {
                     const tempUssPath = path.posix.join(ussname, fileName);
-                    await Create.uss(session, tempUssPath, "directory");
-                    await this.dirToUssDirRecursive(session, filePath, tempUssPath, binary);
+                    // Check if provided unix directory exists
+                    const isDirectoryExist = await this.isDirectoryExist(session, tempUssPath);
+                    if(!isDirectoryExist) {
+                        await Create.uss(session, tempUssPath, "directory");
+                    }
+
+                    await this.dirToUSSDirRecursive(session, filePath, tempUssPath, binary);
                 } catch(err) {
-                    throw err;
+                    throw new ImperativeError(err);
                 }
             }
         });
