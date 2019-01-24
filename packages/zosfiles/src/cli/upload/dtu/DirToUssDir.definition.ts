@@ -22,12 +22,12 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).UP
  * Upload dir-to-uss command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
-export const DirToUssDirDefinition: ICommandDefinition = {
+export const DirToUSSDirDefinition: ICommandDefinition = {
     name: "dir-to-uss",
     aliases: ["dtu"],
     description: strings.DESCRIPTION,
     type: "command",
-    handler: path.join(__dirname, "/DirToUssDir.handler"),
+    handler: path.join(__dirname, "/DirToUSSDir.handler"),
     profile: {
         optional: ["zosmf"],
     },

@@ -15,13 +15,14 @@ import { IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { IUploadResult } from "../../../api/methods/upload/doc/IUploadResult";
 import * as path from "path";
+import { IUploadMap } from "../../../api/methods/upload/doc/IUploadMap";
 
 /**
  * Handler to upload content from a local directory to a USS directory
  * @export
  */
 
-export default class DirToUssDirHandler extends ZosFilesBaseHandler {
+export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
         const status: ITaskWithStatus = {
@@ -33,9 +34,28 @@ export default class DirToUssDirHandler extends ZosFilesBaseHandler {
 
         const inputdir = path.resolve(commandParameters.arguments.inputdir);
 
-        const response = await Upload.dirToUssDir(session, inputdir, commandParameters.arguments.USSDir,
-            commandParameters.arguments.binary, commandParameters.arguments.recursive,
-            commandParameters.arguments.binary_map, commandParameters.arguments.ascii_map);
+        if(commandParameters.arguments.binary_map) {
+            fileNamesString = commandParameters.arguments.binary_map;
+        }
+
+        if(commandParameters.arguments.ascii_map) {
+            fileNamesString = commandParameters.arguments.ascii_map;
+        }
+
+        const fileNamesStringArray = fileNamesString.split(",");
+
+        fileNamesStringArray.forEach(function(element,index): void {
+            fileNamesStringArray[index] = element.trim();
+        });
+        const fileString: IUploadMap = {
+            binary: false,
+            fileNames : fileNamesStringArray
+        };
+
+
+        const response = await Upload.dirToUSSDir(session, inputdir, commandParameters.arguments.USSDir,
+            commandParameters.arguments.binary, commandParameters.arguments.recursive, fileString);
+            // commandParameters.arguments.binary_map, commandParameters.arguments.ascii_map);
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;
