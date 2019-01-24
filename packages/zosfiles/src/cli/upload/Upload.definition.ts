@@ -16,7 +16,7 @@ import { DirToPdsDefinition } from "./dtp/DirToPds.definition";
 
 import i18nTypings from "../-strings-/en";
 import { FileToUSSDefinition } from "./ftu/FileToUSS.definition";
-import { DirToUssDirDefinition } from "./dtu/DirToUssDir.definition";
+import { DirToUSSDirDefinition } from "./dtu/DirToUSSDir.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).UPLOAD;
@@ -35,6 +35,6 @@ export const UploadDefinition: ICommandDefinition = {
         StdinToDataSetDefinition,
         DirToPdsDefinition,
         FileToUSSDefinition,
-        DirToUssDirDefinition,
+        DirToUSSDirDefinition,
     ],
 };
