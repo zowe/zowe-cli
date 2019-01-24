@@ -363,7 +363,13 @@ export default {
                     USSDIR: "The name of the USS directory to which you want to upload the files"
                 },
                 EXAMPLES: {
-                    EX1: `Upload a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"`
+                    EX1: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"`,
+                    EX2: `Upload all files from a directory named "local_dir" and all its sub-directories, `+
+                    `to a USS directory named "/a/ibmuser/my_dir"`,
+                    EX3: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"` +
+                    `in default ASCII mode, while specifying a list of files to be uploaded in binary mode`,
+                    EX4: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"` +
+                    `in binary mode, while specifying a list of files to be uploaded in ASCII mode`
                 }
             },
         },
@@ -374,7 +380,13 @@ export default {
                 "returns each record as-is, without translation. No delimiters are added between records.",
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
                 "specify the following values: wait, nowait, error",
-            RECURSIVE: "!!!!! TO BE FILLED LATER !!!!! text here for recursive option " + " Upload all directories recursively."
+            RECURSIVE: "Upload all directories recursively.",
+            BINARY_MAP: "List of files to be uploaded in binary mode. " +
+            "Use this option when you upload the directory in default ASCII " +
+            "but you want to specify certain files to be uploaded in binary.",
+            ASCII_MAP: "List of files to be uploaded in ASCII mode. " +
+            "Use this option when you upload the directory with --binary/-b flag " +
+            "but you want to specify certain files to be uploaded in ASCII."
         }
     }
 };
