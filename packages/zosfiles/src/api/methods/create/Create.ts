@@ -356,20 +356,20 @@ export class Create {
 
     /**
      * Create a uss file or folder
-     * @param {AbstractSession} session                     - z/OSMF connection info
-     * @param {string} ussFilePath               - USS path to create file or directory
+     * @param {AbstractSession} session              - z/OSMF connection info
+     * @param {string} ussPath                       - USS path to create file or directory
      * @param {string} type                          - the request type "file" or "directory"
      * @param {string} mode                          - the characters to describe permissions
      * @returns {Promise<IZosFilesResponse>}
      */
-    public static uss(session: AbstractSession,
-                      ussFilePath: string,
-                      type: string,
-                      mode?: string) {
+    public static async uss(session: AbstractSession,
+                            ussPath: string,
+                            type: string,
+                            mode?: string) {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
 
-        const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}${ussFilePath}`;
+        const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}${ussPath}`;
         const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, {"Content-Type": "application/json"}];
         let payload: object = { type };
         if(mode) {
