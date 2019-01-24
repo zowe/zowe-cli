@@ -8,7 +8,7 @@ PASS=$5
 
 # TODO - delete the job from spool
 # Submit the job and ensure the RC is 0
-JOBID="$(zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff jobid --rft string)"
+JOBID="$(zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string)"
 CMDRC=$?
 if [ $CMDRC -gt 0 ]
 then
@@ -22,7 +22,7 @@ STATUS=""
 while [ "$STATUS" != "OUTPUT" ]; do 
     
     # get the status
-    STATUS="$(zowe zos-jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff status --rft string)"
+    STATUS="$(zowe zos-jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff status --rft string)"
     RC=$?
     if [ $RC -gt 0 ]
     then
@@ -33,7 +33,7 @@ while [ "$STATUS" != "OUTPUT" ]; do
 done 
 
 # Obtain all the spool files
-SPOOL_FILES="$(zowe zos-jobs list spool-files-by-jobid $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff jobid id --rft table)"
+SPOOL_FILES="$(zowe zos-jobs list spool-files-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid id --rft table)"
 RC=$?
 if [ $RC -gt 0 ]
 then
@@ -50,7 +50,7 @@ for FILE in $SPOOL_FILES; do
     echo "*********************************************************************"
     echo "*   !!!SPOOL FILE ${ARRAY[1]}!!!"
     echo "*********************************************************************"
-    zowe jobs vw sfbi ${ARRAY[0]} ${ARRAY[1]} --host $HOST --port $PORT --user $USER --pass $PASS --ru=false
+    zowe jobs vw sfbi ${ARRAY[0]} ${ARRAY[1]} --host $HOST --port $PORT --user $USER --password $PASS --ru=false
     RC=$?
     if [ $RC -gt 0 ]
     then
