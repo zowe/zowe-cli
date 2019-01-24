@@ -23,6 +23,7 @@ import { List } from "../list";
 import { IUploadOptions } from "./doc/IUploadOptions";
 import { IUploadResult } from "./doc/IUploadResult";
 import { Create } from "../create";
+import {IUploadMap} from "./doc/IUploadMap";
 
 export class Upload {
 
@@ -456,13 +457,15 @@ export class Upload {
      * @param {string} ussname          - the name of uss folder
      * @param {boolean} binary          - the indicator to upload the file in binary mode
      * @param {boolean} recursive       - the indicator to upload local folder recursively
+     * @param {IUploadMap} filesMap     - the map to define which files to upload in binary or asci mode
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dirToUSSDir(session: AbstractSession,
                                     inputDirectory: string,
                                     ussname: string,
                                     binary: boolean = false,
-                                    recursive: boolean = false): Promise<IZosFilesResponse> {
+                                    recursive: boolean = false,
+                                    filesMap: IUploadMap): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeEqual("", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
@@ -477,7 +480,6 @@ export class Upload {
 
         // Check if provided unix directory exists
         const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-
         if(!isDirectoryExist) {
             await Create.uss(session, ussname, "directory");
         }
@@ -488,15 +490,21 @@ export class Upload {
                 const filePath = path.normalize(path.join(inputDirectory, fileName));
                 if(!IO.isDir(filePath)) {
                     try {
+                        let tempBinary;
+                        if(filesMap.fileNames.indexOf(fileName) > -1) {
+                            tempBinary = filesMap.binary;
+                        } else {
+                            tempBinary = binary;
+                        }
                         const ussFilePath = path.posix.join(ussname, fileName);
-                        await this.fileToUSSFile(session, filePath, ussFilePath, binary);
+                        await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
                     } catch(err) {
                         throw new ImperativeError(err);
                     }
                 }
             });
         } else {
-            await this.dirToUSSDirRecursive(session, inputDirectory, ussname, binary);
+            await this.dirToUSSDirRecursive(session, inputDirectory, ussname, binary, filesMap);
         }
 
         const result: IUploadResult = {
@@ -517,18 +525,26 @@ export class Upload {
      * @param {string} inputDirectory   - the path of local directory
      * @param {string} ussname          - the name of uss folder
      * @param {boolean} binary          - the indicator to upload the file in binary mode
+     * @param {IUploadMap} filesMap     - the map to define which files to upload in binary or asci mode
      * @return {null}
      */
     private static async dirToUSSDirRecursive(session: AbstractSession,
                                               inputDirectory: string,
                                               ussname: string,
-                                              binary: boolean) {
+                                              binary: boolean,
+                                              filesMap: IUploadMap) {
         fs.readdirSync(inputDirectory).forEach(async (fileName) => {
             const filePath = path.normalize(path.join(inputDirectory, fileName));
             if(!IO.isDir(filePath)) {
                 try {
+                    let tempBinary;
+                    if(filesMap.fileNames.indexOf(fileName) > -1) {
+                        tempBinary = filesMap.binary;
+                    } else {
+                        tempBinary = binary;
+                    }
                     const ussFilePath = path.posix.join(ussname, fileName);
-                    await this.fileToUSSFile(session, filePath, ussFilePath, binary);
+                    await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
                 } catch(err) {
                     throw new ImperativeError(err);
                 }
@@ -540,8 +556,7 @@ export class Upload {
                     if(!isDirectoryExist) {
                         await Create.uss(session, tempUssPath, "directory");
                     }
-
-                    await this.dirToUSSDirRecursive(session, filePath, tempUssPath, binary);
+                    await this.dirToUSSDirRecursive(session, filePath, tempUssPath, binary, filesMap);
                 } catch(err) {
                     throw new ImperativeError(err);
                 }
@@ -564,8 +579,11 @@ export class Upload {
                 return true;
             }
         } catch (err) {
-            return false;
+            if (err) {
+                return false;
+            }
         }
+        return false;
     }
 
     /**
