@@ -31,34 +31,13 @@ export default class DirToUssDirHandler extends ZosFilesBaseHandler {
         };
         commandParameters.response.progress.startBar({task: status});
 
-        commandParameters.arguments.inputdir = path.resolve(commandParameters.arguments.inputdir);
+        const inputdir = path.resolve(commandParameters.arguments.inputdir);
 
-        const response = await Upload.dirToUssDir(session, commandParameters.arguments.inputdir,commandParameters.arguments.USSDir,
-            commandParameters.arguments.binary, commandParameters.arguments.recursive);
-        if (response.apiResponse) {
-            let skipCount: number = 0;
-            let successCount: number = 0;
-            let errorCount: number = 0;
-            response.apiResponse.forEach((element: IUploadResult) => {
-                if (element.success === true) {
-                    const formatMessage = TextUtils.prettyJson(element);
-                    commandParameters.response.console.log(formatMessage);
-                    successCount++;
-                } else if (element.success === false) {
-                    const formatMessage = TextUtils.prettyJson(element);
-                    commandParameters.response.console.error(TextUtils.chalk.red(formatMessage));
-                    errorCount++;
-                } else {
-                    skipCount++;
-                }
-            });
-            commandParameters.response.console.log(TextUtils.prettyJson({
-                file_to_upload: response.apiResponse.length,
-                success: successCount,
-                error: errorCount,
-                skipped: skipCount
-            }));
-        }
+        const response = await Upload.dirToUssDir(session, inputdir, commandParameters.arguments.USSDir,
+            commandParameters.arguments.binary, commandParameters.arguments.recursive,
+            commandParameters.arguments.binary_map, commandParameters.arguments.ascii_map);
+        const formatMessage = TextUtils.prettyJson(response.apiResponse);
+        commandParameters.response.console.log(formatMessage);
         return response;
     }
 }

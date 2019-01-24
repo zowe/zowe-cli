@@ -43,4 +43,14 @@ export interface IUploadOptions {
      * The indicator to upload the directories recursively
      */
     recursive?: boolean;
+
+    /**
+     * The list of files to be uploaded in binary mode
+     */
+    binary_map?: string;
+
+    /**
+     * The list of files to be uploaded in ASCII mode
+     */
+    ascii_map?: string;
 }

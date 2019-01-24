@@ -63,5 +63,29 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         aliases: ["r"],
         description: strings.RECURSIVE,
         type: "boolean"
+    },
+
+    /**
+     * The binary_map option
+     * @type {ICommandOptionDefinition}
+     */
+    binary_map: {
+        name: "binary_map",
+        aliases: ["bm"],
+        description: strings.BINARY_MAP,
+        type: "string",
+        conflictsWith: ["ascii_map"]
+    },
+
+    /**
+     * The ascii_map option
+     * @type {ICommandOptionDefinition}
+     */
+    ascii_map: {
+        name: "ascii_map",
+        aliases: ["am"],
+        description: strings.ASCII_MAP,
+        type: "string",
+        conflictsWith: ["binary_map"]
     }
 };
