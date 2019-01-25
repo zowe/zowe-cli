@@ -8,16 +8,13 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative } from "@brightside/imperative";
 import { ListWorkflows } from "../../../workflows";
 import {
     WorkflowConstants,
     noSession,
-    nozOSMFVersion,
-    //noValue,
-    noFilter
+    nozOSMFVersion
 } from "../../src/api/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
 
@@ -26,12 +23,9 @@ const category = "Provisioning";
 const statusName = "complete";
 const owner = "owner1";
 const vendor = "IBM";
-const nocategory = "null ";
-const novendor = "null";
-const nosystem = "";
-const nostatusname = "";
-const noowner = ""
-
+const nosystem = "null";
+const nostatusname = "null";
+const propertiesText = "WRONG_VAR"
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
 
@@ -53,7 +47,21 @@ const PRETEND_INPUT: IWorkflowsInfo = {
     vendor: vendor,
     statusName: statusName
 };
+const PRETEND_OUTPUT: IWorkflowsInfo = {
+"category": "Provisioning", 
+"owner": "owner1", 
+"statusName": "complete", 
+"system": "SYS1", 
+"vendor": "IBM", 
+"workflowDescription": "Workflow test", 
+"workflowID": "Workflow test", 
+"workflowKey": "73c81ef4-eccc-47ce-8f08-8a5c97e753f1", 
+"workflowVersion": "1.0"
+};
+
 const PRETEND_URL = "/zosmf/workflow/rest/Provisioning/workflows?category=owner1&system=complete&owner=SYS1&vendor=IBM"
+const PRETEND_URL_NULL = "/zosmf/workflow/rest/1.0/workflows?vendor=null&statusName=null"
+const PRETEND_URL_SYSTEM = "/zosmf/workflow/rest/1.0/workflows?category=Provisioning&system=complete"
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -76,7 +84,7 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 }
 
 describe("List workflows", () => {
-    it("Successful call with all optional parameters returns IWorkflows response.", async () => {
+    it("Successful call with all optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
             return new Promise((resolve) => {
@@ -89,20 +97,46 @@ describe("List workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, category, owner, statusName, system, vendor );
+            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, category, owner, statusName, system, vendor );
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, PRETEND_URL);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_URL);
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
 
+    
+        it("Successful call with empty optional parameters.", async () => {
+    
+            (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(PRETEND_ZOSMF_RESPONSE);
+                    });
+                });
+            });
+    
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, null, null, null, nosystem, nostatusname );
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
+            expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_URL_NULL);
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
+        });
+    
 
-    it("Successful call without optional parameters returns IWorkflows response.", async () => {
+    it("Successful call without optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
             return new Promise((resolve) => {
@@ -127,6 +161,7 @@ describe("List workflows", () => {
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
 
+
     it(" Should succeed even with zOSMF version undefined (because of default value).", async () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
             return new Promise((resolve) => {
@@ -139,17 +174,19 @@ describe("List workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined);
+            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, category, statusName);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
         expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY);
+        expect((ZosmfRestClient.getExpectJSON as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_URL_SYSTEM);
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
+
+
     it("Throws an error with undefined session.", async () => {
         let error: ImperativeError;
         let response: any;
@@ -162,6 +199,7 @@ describe("List workflows", () => {
         }
         expectZosmfResponseFailed(response, error, noSession.message);
     });
+
     it("Throws an error with zOSMF version as empty string.", async () => {
         let error: ImperativeError;
         let response: any;
@@ -174,19 +212,19 @@ describe("List workflows", () => {
         }
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
-    
-    it("Throws an error with category name as empty string.", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, nocategory);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noFilter.message);
-    });
-
 });
+
+/*
+it("Throws an error with incorrect variable format.", async () => {
+    let error: ImperativeError;
+    let response: any;
+    try {
+        response = await ListWorkflows.listWorkflows(PRETEND_SESSION, statusName, category);
+        Imperative.console.info(`Response ${response}`);
+    } catch (thrownError) {
+        error = thrownError;
+        Imperative.console.info(`Error ${error}`);
+    }
+    expectZosmfResponseFailed(response, error, propertiesText);
+});*/
 
