@@ -9,11 +9,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { Upload } from "../../../api/methods/upload";
 import { IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IUploadResult } from "../../../api/methods/upload/doc/IUploadResult";
 import * as path from "path";
 import { IUploadMap } from "../../../api/methods/upload/doc/IUploadMap";
 
@@ -25,15 +24,8 @@ import { IUploadMap } from "../../../api/methods/upload/doc/IUploadMap";
 export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
-        const status: ITaskWithStatus = {
-            statusMessage: "Uploading directory to USS",
-            percentComplete: 0,
-            stageName: TaskStage.IN_PROGRESS
-        };
-        commandParameters.response.progress.startBar({task: status});
-
         // resolving to full path before passing to specific Upload function
-        const inputdir = path.resolve(commandParameters.arguments.inputdir);
+        const inputDir = path.resolve(commandParameters.arguments.inputDir);
 
         // build filesMap argument
         let filesMap: IUploadMap = null;
@@ -52,7 +44,7 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             };
         }
 
-        const response = await Upload.dirToUSSDir(session, inputdir, commandParameters.arguments.USSDir,
+        const response = await Upload.dirToUSSDir(session, inputDir, commandParameters.arguments.USSDir,
             commandParameters.arguments.binary, commandParameters.arguments.recursive, filesMap);
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);

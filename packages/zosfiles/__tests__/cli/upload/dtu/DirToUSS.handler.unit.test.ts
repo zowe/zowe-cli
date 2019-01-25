@@ -18,7 +18,7 @@ describe("Upload dir-to-uss handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSSDir.handler");
             const handler = new handlerReq.default();
-            const inputdir = "test_dir";
+            const inputDir = "test_dir";
             const USSDir = "USS_dir";
 
             // Vars populated by the mocked function
@@ -35,7 +35,7 @@ describe("Upload dir-to-uss handler", () => {
                     success: false,
                     commandResponse: "uploaded",
                     apiResponse: [
-                        {success: true, from: inputdir, to: USSDir},
+                        {success: true, from: inputDir, to: USSDir},
                         {success: false, from: "testfrom", to: "testto"},
                         {success: undefined, from: "dummy", to: "nowhere"}
                     ]
@@ -60,7 +60,7 @@ describe("Upload dir-to-uss handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        inputdir,
+                        inputDir,
                         USSDir,
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
@@ -98,13 +98,7 @@ describe("Upload dir-to-uss handler", () => {
             expect(error).toBeDefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
-            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputdir, USSDir, {
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Uploading directory to USS"
-                }
-            });
+            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, undefined);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

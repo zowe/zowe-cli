@@ -33,7 +33,7 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
     },
     positionals: [
         {
-            name: "inputdir",
+            name: "inputDir",
             description: strings.POSITIONALS.INPUTDIR,
             type: "string",
             required: true
@@ -48,8 +48,8 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
     options: [
         UploadOptions.binary,
         UploadOptions.recursive,
-        UploadOptions.binary_files,
-        UploadOptions.ascii_files
+        UploadOptions.binaryFiles,
+        UploadOptions.asciiFiles
     ],
     examples: [
         {
