@@ -39,28 +39,18 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         let filesMap: IUploadMap = null;
 
         // checking if binary-files or ascii-files are used, and update filesMap argument
-        if(commandParameters.arguments.binary_files) {
+        if(commandParameters.arguments.binaryFiles) {
             filesMap = {
                 binary : true,
-                fileNames : commandParameters.arguments.binary_files.split(",").forEach((element: string,index: number) =>{
-                    filesMap.fileNames[index] = element.trim();
-                }),
+                fileNames : commandParameters.arguments.binaryFiles.split(",").map((fileName: string) => fileName.trim()),
             };
         }
-        if(commandParameters.arguments.ascii_files) {
+        if(commandParameters.arguments.asciiFiles) {
             filesMap = {
                 binary : false,
-                fileNames : commandParameters.arguments.ascii_files.split(",").forEach((element: string,index: number) =>{
-                    filesMap.fileNames[index] = element.trim();
-                }),
+                fileNames : commandParameters.arguments.asciiFiles.split(",").map((fileName: string) => fileName.trim()),
             };
         }
-        commandParameters.response.console.log(inputdir);
-        commandParameters.response.console.log(commandParameters.arguments.USSDir);
-        commandParameters.response.console.log(commandParameters.arguments.recursive);
-        commandParameters.response.console.log(commandParameters.arguments.binary_files.toString());
-        commandParameters.response.console.log(filesMap.fileNames.toString());
-        commandParameters.response.console.log(filesMap.binary.toString());
 
         const response = await Upload.dirToUSSDir(session, inputdir, commandParameters.arguments.USSDir,
             commandParameters.arguments.binary, commandParameters.arguments.recursive, filesMap);
