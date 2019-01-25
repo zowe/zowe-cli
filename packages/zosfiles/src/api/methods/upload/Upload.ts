@@ -486,25 +486,21 @@ export class Upload {
 
         if(recursive === false) {
             const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
-            files.forEach(async (fileName) => {
+            await Promise.all(files.map(async (fileName) => {
                 const filePath = path.normalize(path.join(inputDirectory, fileName));
                 if(!IO.isDir(filePath)) {
-                    try {
-                        let tempBinary;
-                        if(filesMap) {
-                            if(filesMap.fileNames.indexOf(fileName) > -1) {
-                                tempBinary = filesMap.binary;
-                            } else {
-                                tempBinary = binary;
-                            }
+                    let tempBinary;
+                    if(filesMap) {
+                        if(filesMap.fileNames.indexOf(fileName) > -1) {
+                            tempBinary = filesMap.binary;
+                        } else {
+                            tempBinary = binary;
                         }
-                        const ussFilePath = path.posix.join(ussname, fileName);
-                        await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
-                    } catch(err) {
-                        throw new ImperativeError(err);
                     }
+                    const ussFilePath = path.posix.join(ussname, fileName);
+                    await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
                 }
-            });
+            }));
         } else {
             await this.dirToUSSDirRecursive(session, inputDirectory, ussname, binary, filesMap);
         }
@@ -535,37 +531,29 @@ export class Upload {
                                               ussname: string,
                                               binary: boolean,
                                               filesMap?: IUploadMap) {
-        fs.readdirSync(inputDirectory).forEach(async (fileName) => {
+        await Promise.all(fs.readdirSync(inputDirectory).map(async (fileName) => {
             const filePath = path.normalize(path.join(inputDirectory, fileName));
             if(!IO.isDir(filePath)) {
-                try {
-                    let tempBinary;
-                    if(filesMap) {
-                        if(filesMap.fileNames.indexOf(fileName) > -1) {
-                            tempBinary = filesMap.binary;
-                        } else {
-                            tempBinary = binary;
-                        }
+                let tempBinary;
+                if(filesMap) {
+                    if(filesMap.fileNames.indexOf(fileName) > -1) {
+                        tempBinary = filesMap.binary;
+                    } else {
+                        tempBinary = binary;
                     }
-                    const ussFilePath = path.posix.join(ussname, fileName);
-                    await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
-                } catch(err) {
-                    throw new ImperativeError(err);
                 }
+                const ussFilePath = path.posix.join(ussname, fileName);
+                await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
             } else {
-                try {
-                    const tempUssPath = path.posix.join(ussname, fileName);
-                    // Check if provided unix directory exists
-                    const isDirectoryExist = await this.isDirectoryExist(session, tempUssPath);
-                    if(!isDirectoryExist) {
-                        await Create.uss(session, tempUssPath, "directory");
-                    }
-                    await this.dirToUSSDirRecursive(session, filePath, tempUssPath, binary, filesMap);
-                } catch(err) {
-                    throw new ImperativeError(err);
+                const tempUssPath = path.posix.join(ussname, fileName);
+                // Check if provided unix directory exists
+                const isDirectoryExist = await this.isDirectoryExist(session, tempUssPath);
+                if(!isDirectoryExist) {
+                    await Create.uss(session, tempUssPath, "directory");
                 }
+                await this.dirToUSSDirRecursive(session, filePath, tempUssPath, binary, filesMap);
             }
-        });
+        }));
         return;
     }
 
