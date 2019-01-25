@@ -23,7 +23,7 @@ import { List } from "../list";
 import { IUploadOptions } from "./doc/IUploadOptions";
 import { IUploadResult } from "./doc/IUploadResult";
 import { Create } from "../create";
-import {IUploadMap} from "./doc/IUploadMap";
+import { IUploadMap } from "./doc/IUploadMap";
 
 export class Upload {
 
