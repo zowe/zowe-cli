@@ -48,8 +48,8 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
     options: [
         UploadOptions.binary,
         UploadOptions.recursive,
-        UploadOptions.binary_map,
-        UploadOptions.ascii_map
+        UploadOptions.binary_files,
+        UploadOptions.ascii_files
     ],
     examples: [
         {
@@ -62,11 +62,11 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"local_dir" "/a/ibmuser/my_dir" "--binary_map" "myFile1.exe,myFile2.exe,myFile3.exe"`
+            options: `"local_dir" "/a/ibmuser/my_dir" "--binary-files" "myFile1.exe,myFile2.exe,myFile3.exe"`
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"local_dir" "/a/ibmuser/my_dir" "--binary" "--ascii_map" "myFile1.txt,myFile2.txt,myFile3.txt"`
+            options: `"local_dir" "/a/ibmuser/my_dir" "--binary" "--ascii-files" "myFile1.txt,myFile2.txt,myFile3.txt"`
         }
     ]
 };
