@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list registry_instances should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   registry-instances | ri
+
+ DESCRIPTION
+ -----------
+
+   List the provisioned instances from the z/OSMF software registry.
+
+ USAGE
+ -----
+
+   bright provisioning list registry-instances [options]
+
+ OPTIONS
+ -------
+
+   --all-info  | --ai (flag) (optional)
+
+      Display all available information about provisioned instances (summary by
+      default).
+
+   --filter-by-type  | --fbt (string) (optional)
+
+      Filter the list of provisioned instances by type (e.g. DB2 or CICS).
+
+   --filter-by-external-name  | --fben (string) (optional)
+
+      Filter the list of provisioned instances by External Name.
+
+   --types  | -t (flag) (optional)
+
+      Display a list of all types for provisioned instances (e.g. DB2 or CICS).
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   List all provisioned instances (with full detail):
+
+	 bright provisioning list registry-instances --all-info
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: registry-instances.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   registry-instances | ri\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List the provisioned instances from the z/OSMF software registry.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning list registry-instances [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --all-info  | --ai (flag) (optional)\\\\n\\\\n      Display all available information about provisioned instances (summary by\\\\n      default).\\\\n\\\\n   --filter-by-type  | --fbt (string) (optional)\\\\n\\\\n      Filter the list of provisioned instances by type (e.g. DB2 or CICS).\\\\n\\\\n   --filter-by-external-name  | --fben (string) (optional)\\\\n\\\\n      Filter the list of provisioned instances by External Name.\\\\n\\\\n   --types  | -t (flag) (optional)\\\\n\\\\n      Display a list of all types for provisioned instances (e.g. DB2 or CICS).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   List all provisioned instances (with full detail):\\\\n\\\\n\\\\t bright provisioning list registry-instances --all-info\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   registry-instances | ri\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List the provisioned instances from the z/OSMF software registry.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning list registry-instances [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --all-info  | --ai (flag) (optional)\\\\n\\\\n      Display all available information about provisioned instances (summary by\\\\n      default).\\\\n\\\\n   --filter-by-type  | --fbt (string) (optional)\\\\n\\\\n      Filter the list of provisioned instances by type (e.g. DB2 or CICS).\\\\n\\\\n   --filter-by-external-name  | --fben (string) (optional)\\\\n\\\\n      Filter the list of provisioned instances by External Name.\\\\n\\\\n   --types  | -t (flag) (optional)\\\\n\\\\n      Display a list of all types for provisioned instances (e.g. DB2 or CICS).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   List all provisioned instances (with full detail):\\\\n\\\\n\\\\t bright provisioning list registry-instances --all-info\\\\n\\\\n\\"
+}"
+`;

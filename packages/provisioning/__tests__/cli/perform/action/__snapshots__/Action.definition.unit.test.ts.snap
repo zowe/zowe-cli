@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning perform action command definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "act",
+  ],
+  "description": "Perform actions on instances previously provisioned with z/OSMF cloud
+   provisioning services. To view the list of provisioned instances, use the
+   \\"bright provisioning list registry-instances\\" command. Once you have
+   obtained an instance name you can use the \\"bright provisioning list
+   instance-info <name>\\" command to view the available instance actions.",
+  "examples": Array [
+    Object {
+      "description": "Perform the \\"start\\" action on the provisioned instance \\"instance1\\"",
+      "options": "instance1 start",
+    },
+  ],
+  "name": "action",
+  "positionals": Array [
+    Object {
+      "description": "Provisioned Instance name.",
+      "name": "name",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "The action name. Use the \\"bright provisioning list instance-info <name>\\"
+      command to view available instance actions.",
+      "name": "actionname",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Perform instance actions.",
+  "type": "command",
+}
+`;

@@ -1,0 +1,4 @@
+//EHAUTOJ JOB (***REMOVED***),'EHAUTO',
+//             CLASS=A,MSGCLASS=X,
+//             NOTIFY=&SYSUID
+//* 73 characters means a line is too long to read for jcl...need more...

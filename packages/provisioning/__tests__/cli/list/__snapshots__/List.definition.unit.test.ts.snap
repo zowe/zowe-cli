@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ls",
+  ],
+  "description": "Lists z/OSMF provisioning information such as the provisioned instances from the registry, the provisioned instance details, the available provisioning templates and provisioning template details.",
+  "name": "list",
+  "summary": "List Provisioning Information",
+  "type": "group",
+}
+`;

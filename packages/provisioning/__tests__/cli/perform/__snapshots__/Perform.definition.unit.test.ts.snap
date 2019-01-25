@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning perform action group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "perf",
+  ],
+  "description": "Perform actions against instances provisioned with z/OSMF.",
+  "name": "perform",
+  "summary": "Perform instance actions.",
+  "type": "group",
+}
+`;

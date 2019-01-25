@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso start address-space should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   address-space | as
+
+ DESCRIPTION
+ -----------
+
+   Start a TSO address space, from which you will receive a token (a.k.a
+   'servelet-key') for further address space interaction (e.g. termination).
+
+ USAGE
+ -----
+
+   bright zos-tso start address-space [options]
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+   --tso-profile  | --tso-p (string) (optional)
+
+      The name of a (tso) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Start TSO/E address space:
+
+	 bright zos-tso start address-space 
+
+   Start TSO/E address space, and receive response in JSON format:
+
+	 bright zos-tso start address-space --rfj
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: address-space.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   address-space | as\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Start a TSO address space, from which you will receive a token (a.k.a\\\\n   'servelet-key') for further address space interaction (e.g. termination).\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-tso start address-space [options]\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --tso-profile  | --tso-p (string) (optional)\\\\n\\\\n      The name of a (tso) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Start TSO/E address space:\\\\n\\\\n\\\\t bright zos-tso start address-space \\\\n\\\\n   Start TSO/E address space, and receive response in JSON format:\\\\n\\\\n\\\\t bright zos-tso start address-space --rfj\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   address-space | as\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Start a TSO address space, from which you will receive a token (a.k.a\\\\n   'servelet-key') for further address space interaction (e.g. termination).\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-tso start address-space [options]\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --tso-profile  | --tso-p (string) (optional)\\\\n\\\\n      The name of a (tso) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Start TSO/E address space:\\\\n\\\\n\\\\t bright zos-tso start address-space \\\\n\\\\n   Start TSO/E address space, and receive response in JSON format:\\\\n\\\\n\\\\t bright zos-tso start address-space --rfj\\\\n\\\\n\\"
+}"
+`;

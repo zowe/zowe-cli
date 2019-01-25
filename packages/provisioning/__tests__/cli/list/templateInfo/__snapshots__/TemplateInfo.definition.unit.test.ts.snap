@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list template info definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ti",
+  ],
+  "description": "List details about a template published with z/OSMF Cloud Provisioning.",
+  "examples": Array [
+    Object {
+      "description": "List summary information for template \\"template1\\"",
+      "options": "template1",
+    },
+  ],
+  "name": "template-info",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "ai",
+      ],
+      "description": "Display detailed information about published z/OSMF service catalog template (summary information is printed by default).",
+      "name": "all-info",
+      "type": "boolean",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "The name of a z/OSMF cloud provisioning template.",
+      "name": "name",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "List Published Template Details.",
+  "type": "command",
+}
+`;

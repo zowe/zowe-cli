@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs view job-status-by-jobid command help should not have changed 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   job-status-by-jobid | jsbj
+
+ DESCRIPTION
+ -----------
+
+   View status details of a single z/OS job on spool/JES queues. The command does
+   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF
+   Jobs REST endpoints (expect for \\"no jobs found\\").
+
+ USAGE
+ -----
+
+   bright zos-jobs view job-status-by-jobid <jobid> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   jobid		 (string)
+
+      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is
+      performed.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ RESPONSE FORMAT OPTIONS
+ -----------------------
+
+   --response-format-filter  | --rff (array) (optional)
+
+      Filter (include) fields in the response. Accepts an array of field/property
+      names to include in the output response. You can filter JSON objects properties
+      OR table columns/fields. In addition, you can use this option in conjunction
+      with '--response-format-type' to reduce the output of a command to a single
+      field/property or a list of a single field/property.
+
+   --response-format-type  | --rft (string) (optional)
+
+      The command response output format type. Must be one of the following:
+
+      table: Formats output data as a table. Use this option when the output data is
+      an array of homogeneous JSON objects. Each property of the object will become a
+      column in the table.
+
+      list: Formats output data as a list of strings. Can be used on any data type
+      (JSON objects/arrays) are stringified and a new line is added after each entry
+      in an array.
+
+      object: Formats output data as a list of prettified objects (or single object).
+      Can be used in place of \\"table\\" to change from tabular output to a list of
+      prettified objects.
+
+      string: Formats output data as a string. JSON objects/arrays are stringified.
+
+      Allowed values: table, list, object, string
+
+   --response-format-header  | --rfh (flag) (optional)
+
+      If \\"--response-format-type table\\" is specified, include the column headers in
+      the output.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   View status and other details of the job with the job ID JOB00123:
+
+	 bright zos-jobs view job-status-by-jobid j123
+
+   Print only the status (for example, \\"OUTPUT\\" or \\"ACTIVE\\") of the job
+   with the job ID JOB00123:
+
+	 bright zos-jobs view job-status-by-jobid j123 --rff status --rft string
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: job-status-by-jobid.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job-status-by-jobid | jsbj\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View status details of a single z/OS job on spool/JES queues. The command does\\\\n   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF\\\\n   Jobs REST endpoints (expect for \\\\\\"no jobs found\\\\\\").\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-jobs view job-status-by-jobid <jobid> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is\\\\n      performed.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter  | --rff (array) (optional)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type  | --rft (string) (optional)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header  | --rfh (flag) (optional)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   View status and other details of the job with the job ID JOB00123:\\\\n\\\\n\\\\t bright zos-jobs view job-status-by-jobid j123\\\\n\\\\n   Print only the status (for example, \\\\\\"OUTPUT\\\\\\" or \\\\\\"ACTIVE\\\\\\") of the job\\\\n   with the job ID JOB00123:\\\\n\\\\n\\\\t bright zos-jobs view job-status-by-jobid j123 --rff status --rft string\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job-status-by-jobid | jsbj\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View status details of a single z/OS job on spool/JES queues. The command does\\\\n   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF\\\\n   Jobs REST endpoints (expect for \\\\\\"no jobs found\\\\\\").\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-jobs view job-status-by-jobid <jobid> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is\\\\n      performed.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter  | --rff (array) (optional)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type  | --rft (string) (optional)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header  | --rfh (flag) (optional)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   View status and other details of the job with the job ID JOB00123:\\\\n\\\\n\\\\t bright zos-jobs view job-status-by-jobid j123\\\\n\\\\n   Print only the status (for example, \\\\\\"OUTPUT\\\\\\" or \\\\\\"ACTIVE\\\\\\") of the job\\\\n   with the job ID JOB00123:\\\\n\\\\n\\\\t bright zos-jobs view job-status-by-jobid j123 --rff status --rft string\\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-jobs view job-status-by-jobid command syntax errors should occur if an extra unknown option is specified 1`] = `
+"
+Syntax Error:
+You specified the following unknown values: \\"blah\\".
+
+ Could not interpret them as a group, command name, or positional option.
+
+Use \\"bright zos-jobs view job-status-by-jobid blah --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs view job-status-by-jobid command syntax errors should occur if the jobid is missing 1`] = `
+"
+Syntax Error:
+Missing Positional Option:
+jobid
+
+Option Description:
+The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is
+performed.
+
+Use \\"bright zos-jobs view job-status-by-jobid --help\\" to view command description, usage, and options.
+"
+`;

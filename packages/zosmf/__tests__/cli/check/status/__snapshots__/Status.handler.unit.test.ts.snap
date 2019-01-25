@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`check status behavior should display an error when getZosmfInfo throws an exception 1`] = `
+"[31mUser 'someone' failed to get information from 'somewhere.com:43443'[39m
+[31mdue to the following error:[39m
+[31mMock GetInfo Error[39m
+[31m[39m
+[31mYour bright z/OSMF profile may not be configured properly,[39m
+[31mor the z/OSMF subsystem on 'somewhere.com' may not be available.[39m"
+`;
+
+exports[`check status behavior should display zosmf properties 1`] = `
+"The user 'someone' successfully connected to z/OSMF on 'CAMainframe'.
+[33mzosmf_port: [39m        1234
+[33mzosmf_saf_realm: [39m   MakeBelieve
+[33mzos_version: [39m       zosv123
+[33mzosmf_full_version: [39mv123456
+[33mapi_version: [39m       apiV1
+
+z/OSMF Plug-ins that are installed on 'CAMainframe':
+(empty array)
+
+"
+`;
+
+exports[`check status behavior should display zosmf properties 2`] = `
+Object {
+  "api_version": "apiV1",
+  "plugins": Array [],
+  "zos_version": "zosv123",
+  "zosmf_full_version": "v123456",
+  "zosmf_hostname": "CAMainframe",
+  "zosmf_port": "1234",
+  "zosmf_saf_realm": "MakeBelieve",
+  "zosmf_version": "v123",
+}
+`;
+
+exports[`check status behavior should return a json object with the right properties 1`] = `
+Object {
+  "api_version": "apiV1",
+  "plugins": Array [],
+  "zos_version": "zosv123",
+  "zosmf_full_version": "v123456",
+  "zosmf_hostname": "CAMainframe",
+  "zosmf_port": "1234",
+  "zosmf_saf_realm": "MakeBelieve",
+  "zosmf_version": "v123",
+}
+`;

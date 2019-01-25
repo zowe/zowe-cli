@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set and print attributes 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL ===============
+{
+  \\"success\\": true,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"Data set created successfully.\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set created successfully.\\"
+  }
+}"
+`;
+
+exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set with specified size 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Physical Sequential Data Set Success scenarios should display create physical sequential help 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-set-sequential | ps
+
+ DESCRIPTION
+ -----------
+
+   Create physical sequential data sets (PS)
+
+ USAGE
+ -----
+
+   bright zos-files create data-set-sequential <dataSetName> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   dataSetName		 (string)
+
+      The name of the data set that you want to create
+
+ OPTIONS
+ -------
+
+   --block-size  | --bs (number) (optional)
+
+      The block size for the data set (for example, 6160)
+
+      Default value: 6160
+
+   --data-class  | --dc (string) (optional)
+
+      The SMS data class to use for the allocation
+
+   --device-type  | --dt (string) (optional)
+
+      The device type, also known as 'unit'
+
+   --directory-blocks  | --db (number) (optional)
+
+      The number of directory blocks (for example, 25)
+
+   --management-class  | --mc (string) (optional)
+
+      The SMS management class to use for the allocation
+
+   --record-format  | --rf (string) (optional)
+
+      The record format for the data set (for example, FB for \\"Fixed Block\\")
+
+      Default value: FB
+
+   --record-length  | --rl (number) (optional)
+
+      The logical record length. Analogous to the length of a line (for example, 80)
+
+      Default value: 80
+
+   --secondary-space  | --ss (number) (optional)
+
+      The secondary space allocation (for example, 1)
+
+      Default value: 1
+
+   --show-attributes  | --pa (flag) (optional)
+
+      Show the full allocation attributes
+
+   --size  | --sz (string) (optional)
+
+      The size of the data set (specified as nCYL or nTRK - where n is the number of
+      cylinders or tracks). Sets the primary allocation (the secondary allocation
+      becomes ~10% of the primary).
+
+      Default value: 1CYL
+
+   --storage-class  | --sc (string) (optional)
+
+      The SMS storage class to use for the allocation
+
+   --volume-serial  | --vs (string) (optional)
+
+      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
+      is analogous to a drive name on a PC.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Create an empty physical sequential data set with default parameters:
+
+	 bright zos-files create data-set-sequential NEW.PS.DATASET
+
+================Z/OS CFILES CREATE DATA-SET-SEQUENTIAL HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: data-set-sequential.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set-sequential | ps\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create physical sequential data sets (PS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files create data-set-sequential <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to create\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --block-size  | --bs (number) (optional)\\\\n\\\\n      The block size for the data set (for example, 6160)\\\\n\\\\n      Default value: 6160\\\\n\\\\n   --data-class  | --dc (string) (optional)\\\\n\\\\n      The SMS data class to use for the allocation\\\\n\\\\n   --device-type  | --dt (string) (optional)\\\\n\\\\n      The device type, also known as 'unit'\\\\n\\\\n   --directory-blocks  | --db (number) (optional)\\\\n\\\\n      The number of directory blocks (for example, 25)\\\\n\\\\n   --management-class  | --mc (string) (optional)\\\\n\\\\n      The SMS management class to use for the allocation\\\\n\\\\n   --record-format  | --rf (string) (optional)\\\\n\\\\n      The record format for the data set (for example, FB for \\\\\\"Fixed Block\\\\\\")\\\\n\\\\n      Default value: FB\\\\n\\\\n   --record-length  | --rl (number) (optional)\\\\n\\\\n      The logical record length. Analogous to the length of a line (for example, 80)\\\\n\\\\n      Default value: 80\\\\n\\\\n   --secondary-space  | --ss (number) (optional)\\\\n\\\\n      The secondary space allocation (for example, 1)\\\\n\\\\n      Default value: 1\\\\n\\\\n   --show-attributes  | --pa (flag) (optional)\\\\n\\\\n      Show the full allocation attributes\\\\n\\\\n   --size  | --sz (string) (optional)\\\\n\\\\n      The size of the data set (specified as nCYL or nTRK - where n is the number of\\\\n      cylinders or tracks). Sets the primary allocation (the secondary allocation\\\\n      becomes ~10% of the primary).\\\\n\\\\n      Default value: 1CYL\\\\n\\\\n   --storage-class  | --sc (string) (optional)\\\\n\\\\n      The SMS storage class to use for the allocation\\\\n\\\\n   --volume-serial  | --vs (string) (optional)\\\\n\\\\n      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER\\\\n      is analogous to a drive name on a PC.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Create an empty physical sequential data set with default parameters:\\\\n\\\\n\\\\t bright zos-files create data-set-sequential NEW.PS.DATASET\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set-sequential | ps\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create physical sequential data sets (PS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files create data-set-sequential <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to create\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --block-size  | --bs (number) (optional)\\\\n\\\\n      The block size for the data set (for example, 6160)\\\\n\\\\n      Default value: 6160\\\\n\\\\n   --data-class  | --dc (string) (optional)\\\\n\\\\n      The SMS data class to use for the allocation\\\\n\\\\n   --device-type  | --dt (string) (optional)\\\\n\\\\n      The device type, also known as 'unit'\\\\n\\\\n   --directory-blocks  | --db (number) (optional)\\\\n\\\\n      The number of directory blocks (for example, 25)\\\\n\\\\n   --management-class  | --mc (string) (optional)\\\\n\\\\n      The SMS management class to use for the allocation\\\\n\\\\n   --record-format  | --rf (string) (optional)\\\\n\\\\n      The record format for the data set (for example, FB for \\\\\\"Fixed Block\\\\\\")\\\\n\\\\n      Default value: FB\\\\n\\\\n   --record-length  | --rl (number) (optional)\\\\n\\\\n      The logical record length. Analogous to the length of a line (for example, 80)\\\\n\\\\n      Default value: 80\\\\n\\\\n   --secondary-space  | --ss (number) (optional)\\\\n\\\\n      The secondary space allocation (for example, 1)\\\\n\\\\n      Default value: 1\\\\n\\\\n   --show-attributes  | --pa (flag) (optional)\\\\n\\\\n      Show the full allocation attributes\\\\n\\\\n   --size  | --sz (string) (optional)\\\\n\\\\n      The size of the data set (specified as nCYL or nTRK - where n is the number of\\\\n      cylinders or tracks). Sets the primary allocation (the secondary allocation\\\\n      becomes ~10% of the primary).\\\\n\\\\n      Default value: 1CYL\\\\n\\\\n   --storage-class  | --sc (string) (optional)\\\\n\\\\n      The SMS storage class to use for the allocation\\\\n\\\\n   --volume-serial  | --vs (string) (optional)\\\\n\\\\n      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER\\\\n      is analogous to a drive name on a PC.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Create an empty physical sequential data set with default parameters:\\\\n\\\\n\\\\t bright zos-files create data-set-sequential NEW.PS.DATASET\\\\n\\\\n\\"
+}"
+`;

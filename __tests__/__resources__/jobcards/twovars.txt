@@ -1,0 +1,3 @@
+//{{jobname}} JOB ({{account}}),EHAUTO,CLASS=A,
+// MSGCLASS=X,NOTIFY=&SYSUID
+//*comment

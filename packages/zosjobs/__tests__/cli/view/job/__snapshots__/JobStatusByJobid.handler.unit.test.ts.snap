@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`view job-status-by-jobid handler tests should be able respond with error message 1`] = `"You fail"`;
+
+exports[`view job-status-by-jobid handler tests should be able to get a job 1`] = `
+Object {
+  "class": "A",
+  "files-url": "www.nowhere.com/restjobs/jobs/files",
+  "job-correlator": "123545asdfadf",
+  "jobid": "TSUxxx",
+  "jobname": "IBMUSER$",
+  "owner": "IBMUSER",
+  "phase": 88,
+  "phase-name": "testagain",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+  "subsystem": "JES2",
+  "type": "job",
+  "url": "www.nowhere.com/restjobs/jobs",
+}
+`;
+
+exports[`view job-status-by-jobid handler tests should be able to get a job 2`] = `"Details obtained for job j12345"`;
+
+exports[`view job-status-by-jobid handler tests should be able to get a job 3`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "object",
+  "output": Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+}
+`;

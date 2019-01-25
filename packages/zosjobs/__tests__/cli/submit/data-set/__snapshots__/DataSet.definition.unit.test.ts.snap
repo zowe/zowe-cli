@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs submit group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ds",
+  ],
+  "description": "Submit a job (JCL) contained in a data set. The data set may be of type physical sequential or a PDS member. The command does not pre-validate the data set name. The command presents errors verbatim from the z/OSMF Jobs REST endpoints. For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+  "examples": Array [
+    Object {
+      "description": "Submit the JCL in the data set \\"ibmuser.cntl(deploy)\\"",
+      "options": "\\"ibmuser.cntl(deploy)\\"",
+    },
+  ],
+  "name": "data-set",
+  "outputFormatOptions": true,
+  "positionals": Array [
+    Object {
+      "description": "The z/OS data set containing the JCL to submit. You can specify a physical sequential data set (for example, \\"DATA.SET\\") or a partitioned data set qualified by a member (for example, \\"DATA.SET(MEMBER)\\"). The data set must be cataloged.",
+      "name": "dataset",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Submit a job contained in a data set",
+  "type": "command",
+}
+`;

@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provision template handler tests should be able respond with error message 1`] = `"IYUCM0004E:The resource was not found. The resource type is Template and the identifier or name is some_bad_name."`;
+
+exports[`provision template handler tests should be able to provision a template 1`] = `
+"[33mRegistry Info: [39m
+  [33mId: [39m  objidunique1
+  [33mName: [39msome_name1
+[33mWorkflow Info: [39m
+  [33mKey: [39m        workflowkey1234
+  [33mDescription: [39mProcedure to provision a MQ for zOS Queue Manager
+  [33mId: [39m         ProvisionQueueManager
+  [33mVersion: [39m    1.0.1
+  [33mVendor: [39m     IBM
+[33mSystem Nickname: [39mDUMBNODE
+
+"
+`;
+
+exports[`provision template handler tests should be able to provision a template 2`] = `
+Object {
+  "registry-info": Object {
+    "external-name": "some_name1",
+    "object-id": "objidunique1",
+    "object-name": "obj_name1",
+    "object-uri": "/zosmf/provisioning/rest/1.0/scr/objidunique1",
+    "system-nickname": "DUMBNODE",
+  },
+  "system-nickname": "DUMBNODE",
+  "workflow-info": Object {
+    "vendor": "IBM",
+    "workflowDescription": "Procedure to provision a MQ for zOS Queue Manager",
+    "workflowID": "ProvisionQueueManager",
+    "workflowKey": "workflowkey1234",
+    "workflowVersion": "1.0.1",
+  },
+}
+`;

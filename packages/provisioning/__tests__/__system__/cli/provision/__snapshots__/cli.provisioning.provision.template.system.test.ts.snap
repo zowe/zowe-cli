@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning provision template should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   template | tem
+
+ DESCRIPTION
+ -----------
+
+   Using z/OSMF cloud provisioning services, provision available templates.
+   You can view available templates using the bright provisioning list
+   catalog-templates command.
+
+ USAGE
+ -----
+
+   bright provisioning provision template <name> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   name		 (string)
+
+      The name of a z/OSMF cloud provisioning template.
+
+ OPTIONS
+ -------
+
+   --properties  | -p (string) (optional)
+
+      A sequence of string enclosed \\"name=value\\" pairs of prompt variables.
+      e.g: \\"CSQ_MQ_SSID=ZCT1,CSQ_CMD_PFX=!ZCT1\\".
+
+   --properties-file  | --pf (string) (optional)
+
+      Path to .yml file containing properties.
+
+   --domain-name  | --dn (string) (optional)
+
+      Required if the user has consumer authorization to more than one domain with
+      this template name.
+
+   --tenant-name  | --tn (string) (optional)
+
+      Required if the user has consumer authorization to more than one tenant in the
+      same domain that contains this template name.
+
+   --user-data-id  | --udi (string) (optional)
+
+      ID for the user data specified with user-data. Passed into the software services
+      registry.
+
+   --user-data  | --ud (string) (optional)
+
+      User data that is passed into the software services registry. Can be specified
+      only if user-data-id is provided.
+
+   --account-info  | --ai (string) (optional)
+
+      Account information to use in the JCL JOB statement. The default is the account
+      information that is associated with the resource pool for the tenant.
+
+   --system-nick-names  | --snn (string) (optional)
+
+      Each string is the nickname of the system upon which to provision the software
+      service defined by the template. The field is required if the resource pool
+      associated with the tenant used for this operation is not set up to
+      automatically select a system. Only one nickname is allowed.If the field is
+      provided it is validated.
+      e.g: \\"SYSNAME1,SYSNAME2\\".
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Provision a published software service template.:
+
+	 bright provisioning provision template template1
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: template.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   template | tem\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Using z/OSMF cloud provisioning services, provision available templates.\\\\n   You can view available templates using the bright provisioning list\\\\n   catalog-templates command.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning provision template <name> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      The name of a z/OSMF cloud provisioning template.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --properties  | -p (string) (optional)\\\\n\\\\n      A sequence of string enclosed \\\\\\"name=value\\\\\\" pairs of prompt variables.\\\\n      e.g: \\\\\\"CSQ_MQ_SSID=ZCT1,CSQ_CMD_PFX=!ZCT1\\\\\\".\\\\n\\\\n   --properties-file  | --pf (string) (optional)\\\\n\\\\n      Path to .yml file containing properties.\\\\n\\\\n   --domain-name  | --dn (string) (optional)\\\\n\\\\n      Required if the user has consumer authorization to more than one domain with\\\\n      this template name.\\\\n\\\\n   --tenant-name  | --tn (string) (optional)\\\\n\\\\n      Required if the user has consumer authorization to more than one tenant in the\\\\n      same domain that contains this template name.\\\\n\\\\n   --user-data-id  | --udi (string) (optional)\\\\n\\\\n      ID for the user data specified with user-data. Passed into the software services\\\\n      registry.\\\\n\\\\n   --user-data  | --ud (string) (optional)\\\\n\\\\n      User data that is passed into the software services registry. Can be specified\\\\n      only if user-data-id is provided.\\\\n\\\\n   --account-info  | --ai (string) (optional)\\\\n\\\\n      Account information to use in the JCL JOB statement. The default is the account\\\\n      information that is associated with the resource pool for the tenant.\\\\n\\\\n   --system-nick-names  | --snn (string) (optional)\\\\n\\\\n      Each string is the nickname of the system upon which to provision the software\\\\n      service defined by the template. The field is required if the resource pool\\\\n      associated with the tenant used for this operation is not set up to\\\\n      automatically select a system. Only one nickname is allowed.If the field is\\\\n      provided it is validated.\\\\n      e.g: \\\\\\"SYSNAME1,SYSNAME2\\\\\\".\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Provision a published software service template.:\\\\n\\\\n\\\\t bright provisioning provision template template1\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   template | tem\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Using z/OSMF cloud provisioning services, provision available templates.\\\\n   You can view available templates using the bright provisioning list\\\\n   catalog-templates command.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning provision template <name> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      The name of a z/OSMF cloud provisioning template.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --properties  | -p (string) (optional)\\\\n\\\\n      A sequence of string enclosed \\\\\\"name=value\\\\\\" pairs of prompt variables.\\\\n      e.g: \\\\\\"CSQ_MQ_SSID=ZCT1,CSQ_CMD_PFX=!ZCT1\\\\\\".\\\\n\\\\n   --properties-file  | --pf (string) (optional)\\\\n\\\\n      Path to .yml file containing properties.\\\\n\\\\n   --domain-name  | --dn (string) (optional)\\\\n\\\\n      Required if the user has consumer authorization to more than one domain with\\\\n      this template name.\\\\n\\\\n   --tenant-name  | --tn (string) (optional)\\\\n\\\\n      Required if the user has consumer authorization to more than one tenant in the\\\\n      same domain that contains this template name.\\\\n\\\\n   --user-data-id  | --udi (string) (optional)\\\\n\\\\n      ID for the user data specified with user-data. Passed into the software services\\\\n      registry.\\\\n\\\\n   --user-data  | --ud (string) (optional)\\\\n\\\\n      User data that is passed into the software services registry. Can be specified\\\\n      only if user-data-id is provided.\\\\n\\\\n   --account-info  | --ai (string) (optional)\\\\n\\\\n      Account information to use in the JCL JOB statement. The default is the account\\\\n      information that is associated with the resource pool for the tenant.\\\\n\\\\n   --system-nick-names  | --snn (string) (optional)\\\\n\\\\n      Each string is the nickname of the system upon which to provision the software\\\\n      service defined by the template. The field is required if the resource pool\\\\n      associated with the tenant used for this operation is not set up to\\\\n      automatically select a system. Only one nickname is allowed.If the field is\\\\n      provided it is validated.\\\\n      e.g: \\\\\\"SYSNAME1,SYSNAME2\\\\\\".\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Provision a published software service template.:\\\\n\\\\n\\\\t bright provisioning provision template template1\\\\n\\\\n\\"
+}"
+`;

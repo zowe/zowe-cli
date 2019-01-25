@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list catalog-templates should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   catalog-templates | ct
+
+ DESCRIPTION
+ -----------
+
+   Lists the z/OSMF service catalog published templates.
+
+ USAGE
+ -----
+
+   bright provisioning list catalog-templates [options]
+
+ OPTIONS
+ -------
+
+   --all-info  | --ai (flag) (optional)
+
+      Display information about published z/OSMF service catalog templates (summary
+      information is printed by default).
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   List all published templates in the z/OSMF service catalog (with full
+   detail):
+
+	 bright provisioning list catalog-templates --all-info
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: catalog-templates.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   catalog-templates | ct\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Lists the z/OSMF service catalog published templates.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning list catalog-templates [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --all-info  | --ai (flag) (optional)\\\\n\\\\n      Display information about published z/OSMF service catalog templates (summary\\\\n      information is printed by default).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   List all published templates in the z/OSMF service catalog (with full\\\\n   detail):\\\\n\\\\n\\\\t bright provisioning list catalog-templates --all-info\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   catalog-templates | ct\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Lists the z/OSMF service catalog published templates.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning list catalog-templates [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --all-info  | --ai (flag) (optional)\\\\n\\\\n      Display information about published z/OSMF service catalog templates (summary\\\\n      information is printed by default).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   List all published templates in the z/OSMF service catalog (with full\\\\n   detail):\\\\n\\\\n\\\\t bright provisioning list catalog-templates --all-info\\\\n\\\\n\\"
+}"
+`;

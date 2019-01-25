@@ -1,0 +1,122 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 1`] = `
+Array [
+  Object {
+    "byte-count": 1297,
+    "class": "Z",
+    "ddname": "JESMSGLG",
+    "id": 2,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 133,
+    "procstep": null,
+    "recfm": "UA",
+    "record-count": 19,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 223,
+    "class": "Z",
+    "ddname": "JESJCL",
+    "id": 3,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 136,
+    "procstep": null,
+    "recfm": "V",
+    "record-count": 4,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/3/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+  Object {
+    "byte-count": 3195,
+    "class": "Z",
+    "ddname": "JESYSMSG",
+    "id": 4,
+    "job-correlator": "J0007172USILDAMDD41B4773.......:",
+    "jobid": "JOB07172",
+    "jobname": "RUNMAIN",
+    "lrecl": 137,
+    "procstep": null,
+    "recfm": "VA",
+    "record-count": 42,
+    "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/4/records",
+    "stepname": "JES2",
+    "subsystem": "JES2",
+  },
+]
+`;
+
+exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 2`] = `"\\"3\\" spool files obtained for job \\"IBMUSER$(TSUxxx)\\""`;
+
+exports[`zos-jobs list spool-files-by-jobid handler should be able to get spool files 3`] = `
+Object {
+  "fields": Array [
+    "id",
+    "ddname",
+    "procstep",
+    "stepname",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "byte-count": 1297,
+      "class": "Z",
+      "ddname": "JESMSGLG",
+      "id": 2,
+      "job-correlator": "J0007172USILDAMDD41B4773.......:",
+      "jobid": "JOB07172",
+      "jobname": "RUNMAIN",
+      "lrecl": 133,
+      "procstep": null,
+      "recfm": "UA",
+      "record-count": 19,
+      "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/2/records",
+      "stepname": "JES2",
+      "subsystem": "JES2",
+    },
+    Object {
+      "byte-count": 223,
+      "class": "Z",
+      "ddname": "JESJCL",
+      "id": 3,
+      "job-correlator": "J0007172USILDAMDD41B4773.......:",
+      "jobid": "JOB07172",
+      "jobname": "RUNMAIN",
+      "lrecl": 136,
+      "procstep": null,
+      "recfm": "V",
+      "record-count": 4,
+      "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/3/records",
+      "stepname": "JES2",
+      "subsystem": "JES2",
+    },
+    Object {
+      "byte-count": 3195,
+      "class": "Z",
+      "ddname": "JESYSMSG",
+      "id": 4,
+      "job-correlator": "J0007172USILDAMDD41B4773.......:",
+      "jobid": "JOB07172",
+      "jobname": "RUNMAIN",
+      "lrecl": 137,
+      "procstep": null,
+      "recfm": "VA",
+      "record-count": 42,
+      "records-url": "https://tso1:443/zosmf/restjobs/jobs/J0007172USILDAMDD41B4773.......%3A/files/4/records",
+      "stepname": "JES2",
+      "subsystem": "JES2",
+    },
+  ],
+}
+`;
+
+exports[`zos-jobs list spool-files-by-jobid handler should not transform an error thrown from get jobs getJob API 1`] = `"You fail"`;
+
+exports[`zos-jobs list spool-files-by-jobid handler should not transform an error thrown from get jobs getSpoolFilesForJob API 1`] = `"You fail"`;

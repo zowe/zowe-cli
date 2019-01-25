@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files list am command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "a",
+    ],
+    "description": "Display more information about each member. Data sets with an undefined record format display information related to executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
+    "name": "attributes",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "max",
+    ],
+    "description": "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items. If you specify an incorrect value, the parameter returns up to 1000 items.",
+    "name": "max-length",
+    "type": "number",
+  },
+]
+`;
+
+exports[`zos-files list am command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Show members of the data set \\"ibmuser.asm\\"",
+    "options": "\\"ibmuser.asm\\"",
+  },
+  Object {
+    "description": "Show attributes of members of the data set \\"ibmuser.cntl\\"",
+    "options": "\\"ibmuser.cntl\\" -a",
+  },
+  Object {
+    "description": "Show the first 5 members of the data set \\"ibmuser.cntl\\"",
+    "options": "\\"ibmuser.cntl\\" --max 5",
+  },
+]
+`;

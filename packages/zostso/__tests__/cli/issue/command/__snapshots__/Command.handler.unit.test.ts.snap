@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`issue command handler tests should be able respond with error message 1`] = `
+"IZUG1126E: z/OSMF cannot correlate the request for key \\"ZOSMFAD-SYS2-55-aaakaaac\\"
+with an active z/OS application session."
+`;
+
+exports[`issue command handler tests should issue command 1`] = `
+Object {
+  "account": "fake",
+  "name": "tso",
+  "password": "fake",
+  "type": "tso",
+}
+`;
+
+exports[`issue command handler tests should issue command 2`] = `"messages from TSO"`;
+
+exports[`issue command handler tests should issue command 3`] = `"this is the command response"`;
+
+exports[`issue command handler tests should issue command 4`] = `
+Object {
+  "commandResponse": "this is the command response",
+  "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
+  "startResponse": Object {
+    "messages": "messages from TSO",
+  },
+  "success": true,
+  "zosmfPingResponse": Object {
+    "reused": false,
+    "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
+    "timeout": false,
+    "ver": "0100",
+  },
+}
+`;

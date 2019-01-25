@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "JOBxxx",
+    "jobname": "CAUSER$",
+    "owner": "CAUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+]
+`;
+
+exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 2`] = `"List of jobs returned for prefix \\"TESTOWN\\" and owner \\"*\\""`;
+
+exports[`list jobs handler tests should be able to get a list of jobs for a specific owner 3`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "TSUxxx",
+      "jobname": "IBMUSER$",
+      "owner": "IBMUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "JOBxxx",
+      "jobname": "CAUSER$",
+      "owner": "CAUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+  ],
+}
+`;
+
+exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "JOBxxx",
+    "jobname": "CAUSER$",
+    "owner": "CAUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+]
+`;
+
+exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 2`] = `"List of jobs returned for prefix \\"someone\\" and owner \\"TESTPRFX\\""`;
+
+exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 3`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "TSUxxx",
+      "jobname": "IBMUSER$",
+      "owner": "IBMUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "JOBxxx",
+      "jobname": "CAUSER$",
+      "owner": "CAUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+  ],
+}
+`;
+
+exports[`list jobs handler tests should be able to get a list of jobs using defaults 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "JOBxxx",
+    "jobname": "CAUSER$",
+    "owner": "CAUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+]
+`;
+
+exports[`list jobs handler tests should be able to get a list of jobs using defaults 2`] = `"List of jobs returned for prefix \\"someone\\" and owner \\"*\\""`;
+
+exports[`list jobs handler tests should be able to get a list of jobs using defaults 3`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "table",
+  "output": Array [
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "TSUxxx",
+      "jobname": "IBMUSER$",
+      "owner": "IBMUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+    Object {
+      "class": "A",
+      "files-url": "www.nowhere.com/restjobs/jobs/files",
+      "job-correlator": "123545asdfadf",
+      "jobid": "JOBxxx",
+      "jobname": "CAUSER$",
+      "owner": "CAUSER",
+      "phase": 88,
+      "phase-name": "testagain",
+      "retcode": "CC 0000",
+      "status": "OUTPUT",
+      "subsystem": "JES2",
+      "type": "job",
+      "url": "www.nowhere.com/restjobs/jobs",
+    },
+  ],
+}
+`;
+
+exports[`list jobs handler tests should not transform an error from the zosmf rest client 1`] = `"You fail"`;

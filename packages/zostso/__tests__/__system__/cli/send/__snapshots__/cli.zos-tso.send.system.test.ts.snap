@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso send should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   Send data to TSO and collect responses until the prompt is reached
+
+ USAGE
+ -----
+
+   bright zos-tso send [command]
+
+ COMMANDS
+ --------
+
+   address-space | as Send data to a TSO address space
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: send.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Send data to TSO and collect responses until the prompt is reached\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-tso send [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Send data to a TSO address space\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Send data to TSO and collect responses until the prompt is reached\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-tso send [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   address-space | as Send data to a TSO address space\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;

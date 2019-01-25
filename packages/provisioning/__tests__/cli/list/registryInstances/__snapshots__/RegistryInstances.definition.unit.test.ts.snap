@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list registry instances definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ri",
+  ],
+  "description": "List the provisioned instances from the z/OSMF software registry.",
+  "examples": Array [
+    Object {
+      "description": "List all provisioned instances (with full detail)",
+      "options": "--all-info",
+    },
+  ],
+  "name": "registry-instances",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "ai",
+      ],
+      "description": "Display all available information about provisioned instances (summary by default).",
+      "name": "all-info",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "fbt",
+      ],
+      "description": "Filter the list of provisioned instances by type (e.g. DB2 or CICS).",
+      "name": "filter-by-type",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "fben",
+      ],
+      "description": "Filter the list of provisioned instances by External Name.",
+      "name": "filter-by-external-name",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "t",
+      ],
+      "description": "Display a list of all types for provisioned instances (e.g. DB2 or CICS).",
+      "name": "types",
+      "type": "boolean",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "List provisioned instances.",
+  "type": "command",
+}
+`;

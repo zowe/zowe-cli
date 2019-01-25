@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso issue command should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   command | cmd
+
+ DESCRIPTION
+ -----------
+
+   Creates a TSO address space, issues a TSO command through the newly created
+   address space, waits for the READY prompt to print the response, and terminates
+   the TSO address space. All response data are returned to the user up to (but not
+   including) the TSO 'READY' prompt.
+
+ USAGE
+ -----
+
+   bright zos-tso issue command <commandText> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   commandText		 (string)
+
+      The TSO command to issue.
+
+ OPTIONS
+ -------
+
+   --suppress-startup-messages  | --ssm (flag) (optional)
+
+      Suppress console messages from start of address space.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+   --tso-profile  | --tso-p (string) (optional)
+
+      The name of a (tso) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Issue the TSO command \\"status\\" to display information about jobs for
+   your user ID.:
+
+	 bright zos-tso issue command \\"status\\"
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: command.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   command | cmd\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Creates a TSO address space, issues a TSO command through the newly created\\\\n   address space, waits for the READY prompt to print the response, and terminates\\\\n   the TSO address space. All response data are returned to the user up to (but not\\\\n   including) the TSO 'READY' prompt.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-tso issue command <commandText> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   commandText\\\\t\\\\t (string)\\\\n\\\\n      The TSO command to issue.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --suppress-startup-messages  | --ssm (flag) (optional)\\\\n\\\\n      Suppress console messages from start of address space.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --tso-profile  | --tso-p (string) (optional)\\\\n\\\\n      The name of a (tso) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Issue the TSO command \\\\\\"status\\\\\\" to display information about jobs for\\\\n   your user ID.:\\\\n\\\\n\\\\t bright zos-tso issue command \\\\\\"status\\\\\\"\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   command | cmd\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Creates a TSO address space, issues a TSO command through the newly created\\\\n   address space, waits for the READY prompt to print the response, and terminates\\\\n   the TSO address space. All response data are returned to the user up to (but not\\\\n   including) the TSO 'READY' prompt.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-tso issue command <commandText> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   commandText\\\\t\\\\t (string)\\\\n\\\\n      The TSO command to issue.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --suppress-startup-messages  | --ssm (flag) (optional)\\\\n\\\\n      Suppress console messages from start of address space.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --tso-profile  | --tso-p (string) (optional)\\\\n\\\\n      The name of a (tso) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Issue the TSO command \\\\\\"status\\\\\\" to display information about jobs for\\\\n   your user ID.:\\\\n\\\\n\\\\t bright zos-tso issue command \\\\\\"status\\\\\\"\\\\n\\\\n\\"
+}"
+`;

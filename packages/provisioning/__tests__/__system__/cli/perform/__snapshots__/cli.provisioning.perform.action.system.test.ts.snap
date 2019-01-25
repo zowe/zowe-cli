@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning perform action should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   action | act
+
+ DESCRIPTION
+ -----------
+
+   Perform actions on instances previously provisioned with z/OSMF cloud
+   provisioning services. To view the list of provisioned instances, use the
+   \\"bright provisioning list registry-instances\\" command. Once you have
+   obtained an instance name you can use the \\"bright provisioning list
+   instance-info <name>\\" command to view the available instance actions.
+
+ USAGE
+ -----
+
+   bright provisioning perform action <name> <actionname> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   name		 (string)
+
+      Provisioned Instance name.
+
+   actionname		 (string)
+
+      The action name. Use the \\"bright provisioning list instance-info <name>\\"
+      command to view available instance actions.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Perform the \\"start\\" action on the provisioned instance \\"instance1\\":
+
+	 bright provisioning perform action instance1 start
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: action.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   action | act\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions on instances previously provisioned with z/OSMF cloud\\\\n   provisioning services. To view the list of provisioned instances, use the\\\\n   \\\\\\"bright provisioning list registry-instances\\\\\\" command. Once you have\\\\n   obtained an instance name you can use the \\\\\\"bright provisioning list\\\\n   instance-info <name>\\\\\\" command to view the available instance actions.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning perform action <name> <actionname> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Provisioned Instance name.\\\\n\\\\n   actionname\\\\t\\\\t (string)\\\\n\\\\n      The action name. Use the \\\\\\"bright provisioning list instance-info <name>\\\\\\"\\\\n      command to view available instance actions.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Perform the \\\\\\"start\\\\\\" action on the provisioned instance \\\\\\"instance1\\\\\\":\\\\n\\\\n\\\\t bright provisioning perform action instance1 start\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   action | act\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Perform actions on instances previously provisioned with z/OSMF cloud\\\\n   provisioning services. To view the list of provisioned instances, use the\\\\n   \\\\\\"bright provisioning list registry-instances\\\\\\" command. Once you have\\\\n   obtained an instance name you can use the \\\\\\"bright provisioning list\\\\n   instance-info <name>\\\\\\" command to view the available instance actions.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning perform action <name> <actionname> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Provisioned Instance name.\\\\n\\\\n   actionname\\\\t\\\\t (string)\\\\n\\\\n      The action name. Use the \\\\\\"bright provisioning list instance-info <name>\\\\\\"\\\\n      command to view available instance actions.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Perform the \\\\\\"start\\\\\\" action on the provisioned instance \\\\\\"instance1\\\\\\":\\\\n\\\\n\\\\t bright provisioning perform action instance1 start\\\\n\\\\n\\"
+}"
+`;

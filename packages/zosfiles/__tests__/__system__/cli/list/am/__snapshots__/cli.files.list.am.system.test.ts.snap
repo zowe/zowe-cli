@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List data set Success scenarios should display list data set help 1`] = `
+"================Z/OS FILES LIST All MEMBERS HELP===============
+
+ COMMAND NAME
+ ------------
+
+   all-members | am
+
+ DESCRIPTION
+ -----------
+
+   List all members of a partitioned data set. To view additional information about
+   each member, use the --attributes option under the Options section of this help
+   text.
+
+ USAGE
+ -----
+
+   bright zos-files list all-members <dataSetName> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   dataSetName		 (string)
+
+      The name of the data set for which you want to list the members
+
+ OPTIONS
+ -------
+
+   --attributes  | -a (flag) (optional)
+
+      Display more information about each member. Data sets with an undefined record
+      format display information related to executable modules. Variable and fixed
+      block data sets display information about when the members were created and
+      modified.
+
+   --max-length  | --max (number) (optional)
+
+      The option --max-length specifies the maximum number of items to return. Skip
+      this parameter to return all items. If you specify an incorrect value, the
+      parameter returns up to 1000 items.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Show members of the data set \\"ibmuser.asm\\":
+
+	 bright zos-files list all-members \\"ibmuser.asm\\"
+
+   Show attributes of members of the data set \\"ibmuser.cntl\\":
+
+	 bright zos-files list all-members \\"ibmuser.cntl\\" -a
+
+   Show the first 5 members of the data set \\"ibmuser.cntl\\":
+
+	 bright zos-files list all-members \\"ibmuser.cntl\\" --max 5
+
+================Z/OS CFILES LIST All MEMBERS HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: all-members.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   all-members | am\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List all members of a partitioned data set. To view additional information about\\\\n   each member, use the --attributes option under the Options section of this help\\\\n   text.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files list all-members <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set for which you want to list the members\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --attributes  | -a (flag) (optional)\\\\n\\\\n      Display more information about each member. Data sets with an undefined record\\\\n      format display information related to executable modules. Variable and fixed\\\\n      block data sets display information about when the members were created and\\\\n      modified.\\\\n\\\\n   --max-length  | --max (number) (optional)\\\\n\\\\n      The option --max-length specifies the maximum number of items to return. Skip\\\\n      this parameter to return all items. If you specify an incorrect value, the\\\\n      parameter returns up to 1000 items.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Show members of the data set \\\\\\"ibmuser.asm\\\\\\":\\\\n\\\\n\\\\t bright zos-files list all-members \\\\\\"ibmuser.asm\\\\\\"\\\\n\\\\n   Show attributes of members of the data set \\\\\\"ibmuser.cntl\\\\\\":\\\\n\\\\n\\\\t bright zos-files list all-members \\\\\\"ibmuser.cntl\\\\\\" -a\\\\n\\\\n   Show the first 5 members of the data set \\\\\\"ibmuser.cntl\\\\\\":\\\\n\\\\n\\\\t bright zos-files list all-members \\\\\\"ibmuser.cntl\\\\\\" --max 5\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   all-members | am\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List all members of a partitioned data set. To view additional information about\\\\n   each member, use the --attributes option under the Options section of this help\\\\n   text.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files list all-members <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set for which you want to list the members\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --attributes  | -a (flag) (optional)\\\\n\\\\n      Display more information about each member. Data sets with an undefined record\\\\n      format display information related to executable modules. Variable and fixed\\\\n      block data sets display information about when the members were created and\\\\n      modified.\\\\n\\\\n   --max-length  | --max (number) (optional)\\\\n\\\\n      The option --max-length specifies the maximum number of items to return. Skip\\\\n      this parameter to return all items. If you specify an incorrect value, the\\\\n      parameter returns up to 1000 items.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Show members of the data set \\\\\\"ibmuser.asm\\\\\\":\\\\n\\\\n\\\\t bright zos-files list all-members \\\\\\"ibmuser.asm\\\\\\"\\\\n\\\\n   Show attributes of members of the data set \\\\\\"ibmuser.cntl\\\\\\":\\\\n\\\\n\\\\t bright zos-files list all-members \\\\\\"ibmuser.cntl\\\\\\" -a\\\\n\\\\n   Show the first 5 members of the data set \\\\\\"ibmuser.cntl\\\\\\":\\\\n\\\\n\\\\t bright zos-files list all-members \\\\\\"ibmuser.cntl\\\\\\" --max 5\\\\n\\\\n\\"
+}"
+`;

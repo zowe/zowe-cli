@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Get JCL APIs invalid request error handling should detect and surface an error for getting JCL that doesnt exist 1`] = `4`;
+
+exports[`Get JCL APIs invalid request error handling should detect and surface an error for getting JCL that doesnt exist 2`] = `10`;
+
+exports[`Get JCL APIs invalid request error handling should detect and surface an error for getting JCL that doesnt exist 3`] = `6`;
+
+exports[`Get Jobs - System Tests Get Jobs APIs get jobs API invalid request error handling should detect and surface an error for an invalid user 1`] = `
+"z/OSMF REST API Error:
+Rest API failure with HTTP(S) status 401
+"
+`;
+
+exports[`Get Jobs - System Tests get jobs by owner API invalid request handling should detect and surface an error for an invalid user 1`] = `
+"z/OSMF REST API Error:
+Rest API failure with HTTP(S) status 401
+"
+`;
+
+exports[`Get Jobs - System Tests get jobs by prefix API invalid request handling should detect and surface an error for an invalid userblah 1`] = `
+"z/OSMF REST API Error:
+Rest API failure with HTTP(S) status 401
+"
+`;
+
+exports[`Get Status APIs get status for job API  invalid request error handling should be able to get a job that was submitted and get proper error when the job is deleted 1`] = `4`;
+
+exports[`Get Status APIs get status for job API  invalid request error handling should be able to get a job that was submitted and get proper error when the job is deleted 2`] = `10`;
+
+exports[`Get Status APIs get status for job API  invalid request error handling should be able to get a job that was submitted and get proper error when the job is deleted 3`] = `6`;
+
+exports[`Get spool APIs download spool files Should get spool content for a single job 1`] = `
+"1READY
+ repro infile(SYSIN) outfile(SYSUT2)
+ NUMBER OF RECORDS PROCESSED WAS 3
+ READY
+ %REXXSAMP
+ PUTTYPUTTYPUTTYPUTTY
+ READY
+ END
+"
+`;
+
+exports[`Get spool APIs download spool files Should get spool content from a job 1`] = `
+"1READY
+ repro infile(SYSIN) outfile(SYSUT2)
+ NUMBER OF RECORDS PROCESSED WAS 3
+ READY
+ %REXXSAMP
+ PUTTYPUTTYPUTTYPUTTY
+ READY
+ END
+"
+`;
+
+exports[`Get spool APIs invalid request error handling should detect and surface an error for getting spool content that doesnt exist 1`] = `4`;
+
+exports[`Get spool APIs invalid request error handling should detect and surface an error for getting spool content that doesnt exist 2`] = `10`;
+
+exports[`Get spool APIs invalid request error handling should detect and surface an error for getting spool content that doesnt exist 3`] = `6`;

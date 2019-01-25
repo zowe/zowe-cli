@@ -1,0 +1,80 @@
+coverage/
+node_modules/
+npm-debug.log
+local.json
+output/
+logs/
+CCS141/
+.vscode
+.idea
+src/brightside.iml
+### JetBrains template
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff:
+.idea/workspace.xml
+.idea/tasks.xml
+
+# Sensitive or high-churn files:
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+
+# Gradle:
+.idea/gradle.xml
+.idea/libraries
+
+# Mongo Explorer plugin:
+.idea/mongoSettings.xml
+
+## File-based project format:
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+!/.idea/runConfigurations/
+!/.idea/artifacts/
+/.idea/dictionaries/
+/gui/BrightSide-win32-x64/
+lib/
+typings/
+/gui/BrightSide-linux-x64/
+/gui/BrightSide-darwin-x64/
+/brightside.iml
+/config/
+/docs/typedoc/
+__tests__/__results__/
+/__tests__/tmpproj/
+/__tests__/src/locales
+/.nyc_output
+/test/brightproject/
+/.brightside/
+/__tests__/__resources__/properties/**
+!/__tests__/__resources__/properties/default_properties.yaml
+/__tests__/tmpprofile/
+/src/experimental
+/src/experimental.txt
+/src/experimental.ts
+node-report*
+/docs/typedoc/
+__tests__/__system__/util/Zosmf.info.ts

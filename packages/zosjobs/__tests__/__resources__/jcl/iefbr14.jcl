@@ -1,0 +1,6 @@
+//{{JOBNAME}} JOB ({{ACCOUNT}}),
+//             CLASS={{JOBCLASS}}{{TYPERUNPARM}}
+/*JOBPARM SYSAFF={{SYSAFF}}
+//* Comments
+//STEP1  EXEC PGM=IEFBR14
+//

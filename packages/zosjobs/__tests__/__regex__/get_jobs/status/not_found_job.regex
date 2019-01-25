@@ -1,0 +1,1 @@
+^[\s]*z\/OSMF REST API Error:[\s]*\n[\s]*Rest API failure with HTTP\(S\) status 400[\s]*\n[\s]*rc:       4[\s]*\n[\s]*reason:   10[\s]*\n[\s]*stack:[\s\S]*category: 6[\s]*\n[\s]*message:  No job found for reference: '.*?G\(JOB\d{5}\)'[\s]*[\n]?[\s]*$

@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files create bin command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "bs",
+    ],
+    "defaultValue": 27998,
+    "description": "The block size for the data set (for example, 6160)",
+    "name": "block-size",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "dc",
+    ],
+    "description": "The SMS data class to use for the allocation",
+    "name": "data-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "dst",
+    ],
+    "description": "The data set type",
+    "name": "data-set-type",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "dt",
+    ],
+    "description": "The device type, also known as 'unit'",
+    "name": "device-type",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "db",
+    ],
+    "defaultValue": 25,
+    "description": "The number of directory blocks (for example, 25)",
+    "name": "directory-blocks",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "mc",
+    ],
+    "description": "The SMS management class to use for the allocation",
+    "name": "management-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "rf",
+    ],
+    "defaultValue": "U",
+    "description": "The record format for the data set (for example, FB for \\"Fixed Block\\")",
+    "name": "record-format",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "rl",
+    ],
+    "defaultValue": 27998,
+    "description": "The logical record length. Analogous to the length of a line (for example, 80)",
+    "name": "record-length",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "ss",
+    ],
+    "defaultValue": 10,
+    "description": "The secondary space allocation (for example, 1)",
+    "name": "secondary-space",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "pa",
+    ],
+    "description": "Show the full allocation attributes",
+    "name": "show-attributes",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "sz",
+    ],
+    "defaultValue": "10CYL",
+    "description": "The size of the data set (specified as nCYL or nTRK - where n is the number of cylinders or tracks). Sets the primary allocation (the secondary allocation becomes ~10% of the primary).",
+    "name": "size",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "sc",
+    ],
+    "description": "The SMS storage class to use for the allocation",
+    "name": "storage-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "vs",
+    ],
+    "description": "The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER is analogous to a drive name on a PC.",
+    "name": "volume-serial",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files create bin command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Create an empty binary partitioned data set (PDS) with default parameters",
+    "options": "NEW.BINARY.DATASET",
+  },
+]
+`;

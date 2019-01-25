@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "jobs",
+  ],
+  "description": "Manage z/OS jobs.",
+  "name": "zos-jobs",
+  "summary": "Manage z/OS jobs",
+  "type": "group",
+}
+`;

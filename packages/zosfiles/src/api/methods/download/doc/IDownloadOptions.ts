@@ -1,0 +1,68 @@
+/*
+* This program and the accompanying materials are made available under the terms of the *
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at *
+* https://www.eclipse.org/legal/epl-v20.html                                      *
+*                                                                                 *
+* SPDX-License-Identifier: EPL-2.0                                                *
+*                                                                                 *
+* Copyright Contributors to the Zowe Project.                                     *
+*                                                                                 *
+*/
+
+/**
+ * This interface defines the options that can be sent into the download data set function
+ */
+export interface IDownloadOptions {
+
+    /**
+     * The volume where the data set resides
+     */
+    volume?: string;
+
+    /**
+     * The indicator to download the data set in binary mode
+     */
+    binary?: boolean;
+
+    /**
+     * The local file to download the data set to
+     * @example "./path/to/file.txt"
+     */
+    file?: string;
+
+    /**
+     * The extension you want to use for the file
+     * @example .txt
+     * @example .c
+     */
+    extension?: string;
+
+    /**
+     * The local directory to download all members from a pds
+     * @example "./path/to/dir"
+     */
+    directory?: string;
+
+    /**
+     * Exclude data sets that match these DSLEVEL patterns. Any data sets that match
+     * this pattern will not be downloaded
+     * @example "ibmuser.**.jcl, ibmuser.rexa.*"
+     */
+    excludePatterns?: string[];
+
+    /**
+     * Map data set names that match your pattern to the desired extension
+     * @example cpgm=c,asmpgm=asm
+     */
+    extensionMap?: {[key: string]: string };
+
+
+    /**
+     * The maximum REST requests to perform at once
+     * Increasing this value results in faster downloads but increases resource consumption
+     * on z/OS and risks encountering an error caused
+     * by making too many requests at once.
+     * Default: 1
+     */
+    maxConcurrentRequests?: number;
+}

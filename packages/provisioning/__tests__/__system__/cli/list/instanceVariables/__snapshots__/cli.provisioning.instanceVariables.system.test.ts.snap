@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list instance-variables should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   instance-variables | iv   
+
+ DESCRIPTION
+ -----------
+
+   List a set of variables and their values for a given name.
+
+ USAGE
+ -----
+
+   bright provisioning list instance-variables <name> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   name		 (string)
+
+      Provisioned Instance Name
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ RESPONSE FORMAT OPTIONS
+ -----------------------
+
+   --response-format-filter  | --rff (array) (optional)
+
+      Filter (include) fields in the response. Accepts an array of field/property
+      names to include in the output response. You can filter JSON objects properties
+      OR table columns/fields. In addition, you can use this option in conjunction
+      with '--response-format-type' to reduce the output of a command to a single
+      field/property or a list of a single field/property.
+
+   --response-format-type  | --rft (string) (optional)
+
+      The command response output format type. Must be one of the following:
+
+      table: Formats output data as a table. Use this option when the output data is
+      an array of homogeneous JSON objects. Each property of the object will become a
+      column in the table.
+
+      list: Formats output data as a list of strings. Can be used on any data type
+      (JSON objects/arrays) are stringified and a new line is added after each entry
+      in an array.
+
+      object: Formats output data as a list of prettified objects (or single object).
+      Can be used in place of \\"table\\" to change from tabular output to a list of
+      prettified objects.
+
+      string: Formats output data as a string. JSON objects/arrays are stringified.
+
+      Allowed values: table, list, object, string
+
+   --response-format-header  | --rfh (flag) (optional)
+
+      If \\"--response-format-type table\\" is specified, include the column headers in
+      the output.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   List instance variables of \\"instance1\\":
+
+	 bright provisioning list instance-variables instance1
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: instance-variables.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   instance-variables | iv   \\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List a set of variables and their values for a given name.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning list instance-variables <name> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Provisioned Instance Name\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter  | --rff (array) (optional)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type  | --rft (string) (optional)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header  | --rfh (flag) (optional)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   List instance variables of \\\\\\"instance1\\\\\\":\\\\n\\\\n\\\\t bright provisioning list instance-variables instance1\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   instance-variables | iv   \\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List a set of variables and their values for a given name.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright provisioning list instance-variables <name> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   name\\\\t\\\\t (string)\\\\n\\\\n      Provisioned Instance Name\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter  | --rff (array) (optional)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type  | --rft (string) (optional)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header  | --rfh (flag) (optional)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   List instance variables of \\\\\\"instance1\\\\\\":\\\\n\\\\n\\\\t bright provisioning list instance-variables instance1\\\\n\\\\n\\"
+}"
+`;

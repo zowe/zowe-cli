@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs command should display the help 1`] = `
+"
+ DESCRIPTION
+ -----------
+
+   Manage z/OS jobs.
+
+ USAGE
+ -----
+
+   bright zos-jobs [group]
+
+ GROUPS
+ ------
+
+   list | ls    List jobs and spool files 
+   submit | sub Submit z/OS jobs          
+   view | vw    View details of a z/OS job
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: zos-jobs.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-jobs [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   list | ls    List jobs and spool files \\\\n   submit | sub Submit z/OS jobs          \\\\n   view | vw    View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-jobs [group]\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   list | ls    List jobs and spool files \\\\n   submit | sub Submit z/OS jobs          \\\\n   view | vw    View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}"
+`;

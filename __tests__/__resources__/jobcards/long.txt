@@ -1,0 +1,11 @@
+//{{jobname}} JOB ({{account}}),
+//    '{{programmer_name}}',
+//    CLASS={{job_class}},MSGCLASS={{msgclass}}
+//* I've got lots of info in here 
+//ROUTE    OUTPUT DEFAULT=YES,                                    
+//    BUILDING='123 DRURY LANE',                           
+//    TITLE='MUFFIN MAN',                    
+//    ROOM='123',                                             
+//    DEPT='CA COMMON SERVICES DEVELOPMENT',                      
+//    ADDRESS=('PITTSBURGH','PENNSYLVANIA','(412)555-5555'),     
+//    NAME='BERRY,BLUE'                    

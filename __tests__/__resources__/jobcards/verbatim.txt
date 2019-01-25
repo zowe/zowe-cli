@@ -1,0 +1,4 @@
+//EHAUTOJ JOB (***REMOVED***),EHAUTO,
+//             CLASS=A,MSGCLASS=X,
+//             NOTIFY=&SYSUID
+/*JOBPARM      SYSAFF=ANY

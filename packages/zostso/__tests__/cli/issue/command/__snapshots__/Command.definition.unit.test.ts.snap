@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso issue address-space definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "cmd",
+  ],
+  "description": "Creates a TSO address space, issues a TSO command through the newly created address space, waits for the READY prompt to print the response, and terminates the TSO address space.  All response data  are returned to the user up to (but not including) the TSO 'READY' prompt.",
+  "examples": Array [
+    Object {
+      "description": "Issue the TSO command \\"status\\" to display information about jobs for your user ID.",
+      "options": "\\"status\\"",
+    },
+  ],
+  "name": "command",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "ssm",
+      ],
+      "description": "Suppress console messages from start of address space.",
+      "name": "suppress-startup-messages",
+      "type": "boolean",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "The TSO command to issue.",
+      "name": "commandText",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+      "tso",
+    ],
+  },
+  "summary": "Issue a TSO command",
+  "type": "command",
+}
+`;

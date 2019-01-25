@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete Data Set Success scenarios should delete a data set 1`] = `
+"================Z/OS FILES DELETE DATA SET===============
+Data set deleted successfully.
+"
+`;
+
+exports[`Delete Data Set Success scenarios should delete a partitioned data set and print attributes 1`] = `
+"================Z/OS FILES DELETE DATA SET===============
+{
+  \\"success\\": true,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"Data set deleted successfully.\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set deleted successfully.\\"
+  }
+}"
+`;
+
+exports[`Delete Data Set Success scenarios should display delete data-set help 1`] = `
+"================Z/OS FILES CREATE HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-set | ds
+
+ DESCRIPTION
+ -----------
+
+   Delete a data set permanently
+
+ USAGE
+ -----
+
+   bright zos-files delete data-set <dataSetName> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   dataSetName		 (string)
+
+      The name of the data set that you want to delete
+
+ OPTIONS
+ -------
+
+   --for-sure  | -f (flag)
+
+      Specify this option to confirm that you want to delete the data set permanently.
+
+   --volume  | --vol (string) (optional)
+
+      The volume serial (VOLSER) where the data set resides. The option is required
+      only when the data set is not catalogued on the system.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Delete the data set named 'ibmuser.cntl':
+
+	 bright zos-files delete data-set \\"ibmuser.cntl\\" -f
+
+================Z/OS CFILES CREATE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: data-set.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set | ds\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Delete a data set permanently\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files delete data-set <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to delete\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --for-sure  | -f (flag)\\\\n\\\\n      Specify this option to confirm that you want to delete the data set permanently.\\\\n\\\\n   --volume  | --vol (string) (optional)\\\\n\\\\n      The volume serial (VOLSER) where the data set resides. The option is required\\\\n      only when the data set is not catalogued on the system.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Delete the data set named 'ibmuser.cntl':\\\\n\\\\n\\\\t bright zos-files delete data-set \\\\\\"ibmuser.cntl\\\\\\" -f\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set | ds\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Delete a data set permanently\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files delete data-set <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to delete\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --for-sure  | -f (flag)\\\\n\\\\n      Specify this option to confirm that you want to delete the data set permanently.\\\\n\\\\n   --volume  | --vol (string) (optional)\\\\n\\\\n      The volume serial (VOLSER) where the data set resides. The option is required\\\\n      only when the data set is not catalogued on the system.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Delete the data set named 'ibmuser.cntl':\\\\n\\\\n\\\\t bright zos-files delete data-set \\\\\\"ibmuser.cntl\\\\\\" -f\\\\n\\\\n\\"
+}"
+`;

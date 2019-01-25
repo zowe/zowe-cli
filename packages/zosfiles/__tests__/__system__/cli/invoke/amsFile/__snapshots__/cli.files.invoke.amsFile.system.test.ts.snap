@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Invoke AMS CLI Success scenarios should display invoke and invoke ams help 1`] = `
+"================Z/OS FILES INVOKE HELP===============
+
+ DESCRIPTION
+ -----------
+
+   Invoke z/OS utilities such as Access Method Services (AMS)
+
+ USAGE
+ -----
+
+   bright zos-files invoke [command]
+
+ COMMANDS
+ --------
+
+   ams-file | af       Invoke AMS to submit a file    
+   ams-statements | as Invoke AMS to submit statements
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+================Z/OS FILES INVOKE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: invoke.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files invoke [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Invoke z/OS utilities such as Access Method Services (AMS)\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files invoke [command]\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   ams-file | af       Invoke AMS to submit a file    \\\\n   ams-statements | as Invoke AMS to submit statements\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\"
+}================Z/OS FILES INVOKE AMS-FILE HELP===========
+
+ COMMAND NAME
+ ------------
+
+   ams-file | af
+
+ DESCRIPTION
+ -----------
+
+   Submit control statements for execution by Access Method Services (IDCAMS). You
+   can use IDCAMS to create VSAM data sets (CSI, ZFS, etc...), delete data sets,
+   and more. You must format the control statements exactly as the IDCAMS utility
+   expects. For more information about control statements, see the IBM publication
+   'z/OS DFSMS Access Method Services Commands'.
+
+ USAGE
+ -----
+
+   bright zos-files invoke ams-file <controlStatementsFile> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   controlStatementsFile		 (string)
+
+      The path to a file that contains IDCAMS control statements. Ensure that your
+      file does not contain statements that are longer than 255 characters (maximum
+      allowed length).
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Reads the specified file and submits the controls statements:
+
+	 bright zos-files invoke ams-file \\"./path/to/file/MyControlStatements.idcams\\"
+
+================Z/OS FILES INVOKE AMS-FILE HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: ams-file.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   ams-file | af\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Submit control statements for execution by Access Method Services (IDCAMS). You\\\\n   can use IDCAMS to create VSAM data sets (CSI, ZFS, etc...), delete data sets,\\\\n   and more. You must format the control statements exactly as the IDCAMS utility\\\\n   expects. For more information about control statements, see the IBM publication\\\\n   'z/OS DFSMS Access Method Services Commands'.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files invoke ams-file <controlStatementsFile> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   controlStatementsFile\\\\t\\\\t (string)\\\\n\\\\n      The path to a file that contains IDCAMS control statements. Ensure that your\\\\n      file does not contain statements that are longer than 255 characters (maximum\\\\n      allowed length).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Reads the specified file and submits the controls statements:\\\\n\\\\n\\\\t bright zos-files invoke ams-file \\\\\\"./path/to/file/MyControlStatements.idcams\\\\\\"\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   ams-file | af\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Submit control statements for execution by Access Method Services (IDCAMS). You\\\\n   can use IDCAMS to create VSAM data sets (CSI, ZFS, etc...), delete data sets,\\\\n   and more. You must format the control statements exactly as the IDCAMS utility\\\\n   expects. For more information about control statements, see the IBM publication\\\\n   'z/OS DFSMS Access Method Services Commands'.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files invoke ams-file <controlStatementsFile> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   controlStatementsFile\\\\t\\\\t (string)\\\\n\\\\n      The path to a file that contains IDCAMS control statements. Ensure that your\\\\n      file does not contain statements that are longer than 255 characters (maximum\\\\n      allowed length).\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Reads the specified file and submits the controls statements:\\\\n\\\\n\\\\t bright zos-files invoke ams-file \\\\\\"./path/to/file/MyControlStatements.idcams\\\\\\"\\\\n\\\\n\\"
+}"
+`;

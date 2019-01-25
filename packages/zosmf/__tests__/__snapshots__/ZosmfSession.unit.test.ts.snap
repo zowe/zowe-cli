@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zosmf utils should create a session object 1`] = `
+Object {
+  "base64EncodedAuth": "fake",
+  "hostname": "fake",
+  "password": "fake",
+  "port": "fake",
+  "protocol": "https",
+  "rejectUnauthorized": "fake",
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "type": "basic",
+  "user": "fake",
+}
+`;

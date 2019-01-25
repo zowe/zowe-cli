@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`provisioning list instance vars definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "iv   ",
+  ],
+  "description": "List a set of variables and their values for a given name.",
+  "examples": Array [
+    Object {
+      "description": "List instance variables of \\"instance1\\"",
+      "options": "instance1",
+    },
+  ],
+  "name": "instance-variables",
+  "outputFormatOptions": true,
+  "positionals": Array [
+    Object {
+      "description": "Provisioned Instance Name",
+      "name": "name",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "required": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "List Instance Variables and Values.",
+  "type": "command",
+}
+`;

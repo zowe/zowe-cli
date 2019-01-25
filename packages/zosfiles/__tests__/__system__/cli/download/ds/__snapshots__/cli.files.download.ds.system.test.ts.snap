@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download Data Set Success scenarios should display download data set help 1`] = `
+"================Z/OS FILES DOWNLOAD DATA SET HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-set | ds
+
+ DESCRIPTION
+ -----------
+
+   Download content from a z/OS data set to a local file
+
+ USAGE
+ -----
+
+   bright zos-files download data-set <dataSetName> [options]
+
+ POSITIONAL OPTIONS
+ ------------------
+
+   dataSetName		 (string)
+
+      The name of the data set that you want to download
+
+ OPTIONS
+ -------
+
+   --binary  | -b (flag) (optional)
+
+      Download the data set content in binary mode, which means that no data
+      conversion is performed. The data transfer process returns each record as-is,
+      without translation. No delimiters are added between records.
+
+   --extension  | -e (string) (optional)
+
+      Save the local files with a specified file extension. For example, .txt.
+
+   --file  | -f (string) (optional)
+
+      The path to the local file where you want to download the content. When you omit
+      the option, the command generates a file name automatically for you.
+
+   --volume-serial  | --vs (string) (optional)
+
+      The volume serial (VOLSER) where the data set resides. You can use this option
+      at any time. However, the VOLSER is required only when the data set is not
+      cataloged on the system. A VOLSER is analogous to a drive name on a PC.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string) (optional)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (flag) (optional)
+
+      Produce the command response as a JSON document
+
+   --help  | -h (flag) (optional)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   Download the data set \\"ibmuser.loadlib(main)\\" in binary mode to the
+   local file \\"main.obj\\":
+
+	 bright zos-files download data-set \\"ibmuser.loadlib(main)\\" -b -f main.obj
+
+================Z/OS CFILES DOWNLOAD DATA SET HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"message\\": \\"The help was constructed for command: data-set.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set | ds\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Download content from a z/OS data set to a local file\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files download data-set <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to download\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --binary  | -b (flag) (optional)\\\\n\\\\n      Download the data set content in binary mode, which means that no data\\\\n      conversion is performed. The data transfer process returns each record as-is,\\\\n      without translation. No delimiters are added between records.\\\\n\\\\n   --extension  | -e (string) (optional)\\\\n\\\\n      Save the local files with a specified file extension. For example, .txt.\\\\n\\\\n   --file  | -f (string) (optional)\\\\n\\\\n      The path to the local file where you want to download the content. When you omit\\\\n      the option, the command generates a file name automatically for you.\\\\n\\\\n   --volume-serial  | --vs (string) (optional)\\\\n\\\\n      The volume serial (VOLSER) where the data set resides. You can use this option\\\\n      at any time. However, the VOLSER is required only when the data set is not\\\\n      cataloged on the system. A VOLSER is analogous to a drive name on a PC.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Download the data set \\\\\\"ibmuser.loadlib(main)\\\\\\" in binary mode to the\\\\n   local file \\\\\\"main.obj\\\\\\":\\\\n\\\\n\\\\t bright zos-files download data-set \\\\\\"ibmuser.loadlib(main)\\\\\\" -b -f main.obj\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   data-set | ds\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Download content from a z/OS data set to a local file\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   bright zos-files download data-set <dataSetName> [options]\\\\n\\\\n POSITIONAL OPTIONS\\\\n ------------------\\\\n\\\\n   dataSetName\\\\t\\\\t (string)\\\\n\\\\n      The name of the data set that you want to download\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --binary  | -b (flag) (optional)\\\\n\\\\n      Download the data set content in binary mode, which means that no data\\\\n      conversion is performed. The data transfer process returns each record as-is,\\\\n      without translation. No delimiters are added between records.\\\\n\\\\n   --extension  | -e (string) (optional)\\\\n\\\\n      Save the local files with a specified file extension. For example, .txt.\\\\n\\\\n   --file  | -f (string) (optional)\\\\n\\\\n      The path to the local file where you want to download the content. When you omit\\\\n      the option, the command generates a file name automatically for you.\\\\n\\\\n   --volume-serial  | --vs (string) (optional)\\\\n\\\\n      The volume serial (VOLSER) where the data set resides. You can use this option\\\\n      at any time. However, the VOLSER is required only when the data set is not\\\\n      cataloged on the system. A VOLSER is analogous to a drive name on a PC.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string) (optional)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (flag) (optional)\\\\n\\\\n      Produce the command response as a JSON document\\\\n\\\\n   --help  | -h (flag) (optional)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   Download the data set \\\\\\"ibmuser.loadlib(main)\\\\\\" in binary mode to the\\\\n   local file \\\\\\"main.obj\\\\\\":\\\\n\\\\n\\\\t bright zos-files download data-set \\\\\\"ibmuser.loadlib(main)\\\\\\" -b -f main.obj\\\\n\\\\n\\"
+}"
+`;

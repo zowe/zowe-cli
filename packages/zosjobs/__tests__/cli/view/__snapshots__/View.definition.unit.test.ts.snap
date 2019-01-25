@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs view group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "vw",
+  ],
+  "description": "View details of z/OS jobs on spool/JES queues.",
+  "name": "view",
+  "summary": "View details of a z/OS job",
+  "type": "group",
+}
+`;
