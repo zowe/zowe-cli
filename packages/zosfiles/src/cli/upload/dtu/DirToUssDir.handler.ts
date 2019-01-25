@@ -32,30 +32,38 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         };
         commandParameters.response.progress.startBar({task: status});
 
+        // resolving to full path before passing to specific Upload function
         const inputdir = path.resolve(commandParameters.arguments.inputdir);
 
-        if(commandParameters.arguments.binary_map) {
-            fileNamesString = commandParameters.arguments.binary_map;
+        // build filesMap argument
+        let filesMap: IUploadMap = null;
+
+        // checking if binary-files or ascii-files are used, and update filesMap argument
+        if(commandParameters.arguments.binary_files) {
+            filesMap = {
+                binary : true,
+                fileNames : commandParameters.arguments.binary_files.split(",").forEach((element: string,index: number) =>{
+                    filesMap.fileNames[index] = element.trim();
+                }),
+            };
         }
-
-        if(commandParameters.arguments.ascii_map) {
-            fileNamesString = commandParameters.arguments.ascii_map;
+        if(commandParameters.arguments.ascii_files) {
+            filesMap = {
+                binary : false,
+                fileNames : commandParameters.arguments.ascii_files.split(",").forEach((element: string,index: number) =>{
+                    filesMap.fileNames[index] = element.trim();
+                }),
+            };
         }
-
-        const fileNamesStringArray = fileNamesString.split(",");
-
-        fileNamesStringArray.forEach(function(element,index): void {
-            fileNamesStringArray[index] = element.trim();
-        });
-        const fileString: IUploadMap = {
-            binary: false,
-            fileNames : fileNamesStringArray
-        };
-
+        commandParameters.response.console.log(inputdir);
+        commandParameters.response.console.log(commandParameters.arguments.USSDir);
+        commandParameters.response.console.log(commandParameters.arguments.recursive);
+        commandParameters.response.console.log(commandParameters.arguments.binary_files.toString());
+        commandParameters.response.console.log(filesMap.fileNames.toString());
+        commandParameters.response.console.log(filesMap.binary.toString());
 
         const response = await Upload.dirToUSSDir(session, inputdir, commandParameters.arguments.USSDir,
-            commandParameters.arguments.binary, commandParameters.arguments.recursive, fileString);
-            // commandParameters.arguments.binary_map, commandParameters.arguments.ascii_map);
+            commandParameters.arguments.binary, commandParameters.arguments.recursive, filesMap);
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;

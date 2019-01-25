@@ -66,26 +66,26 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
     },
 
     /**
-     * The binary_map option
+     * The binary-files option
      * @type {ICommandOptionDefinition}
      */
-    binary_map: {
-        name: "binary_map",
-        aliases: ["bm"],
-        description: strings.BINARY_MAP,
+    binary_files: {
+        name: "binary-files",
+        aliases: ["bf"],
+        description: strings.BINARY_FILES,
         type: "string",
-        conflictsWith: ["ascii_map"]
+        conflictsWith: ["ascii-files"]
     },
 
     /**
-     * The ascii_map option
+     * The ascii-files option
      * @type {ICommandOptionDefinition}
      */
-    ascii_map: {
-        name: "ascii_map",
-        aliases: ["am"],
-        description: strings.ASCII_MAP,
+    ascii_files: {
+        name: "ascii-files",
+        aliases: ["af"],
+        description: strings.ASCII_FILES,
         type: "string",
-        conflictsWith: ["binary_map"]
+        conflictsWith: ["binary-files"]
     }
 };

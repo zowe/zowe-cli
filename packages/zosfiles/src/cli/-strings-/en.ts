@@ -313,7 +313,7 @@ export default {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {
             DIR_TO_PDS: {
-                DESCRIPTION: "Upload files from a directory to a partitioned data set (PDS)",
+                DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",
                 POSITIONALS: {
                     INPUTDIR: "The path for a local directory that you want to upload to a PDS",
                     DATASETNAME: "The name of the partitioned data set to which you want to upload the files"
@@ -357,7 +357,7 @@ export default {
                 }
             },
             DIR_TO_USS: {
-                DESCRIPTION: "Upload files from a directory to USS directory",
+                DESCRIPTION: "Upload files from a local directory to USS directory",
                 POSITIONALS: {
                     INPUTDIR: "The path for a local directory that you want to upload to USS",
                     USSDIR: "The name of the USS directory to which you want to upload the files"
@@ -381,10 +381,10 @@ export default {
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
                 "specify the following values: wait, nowait, error",
             RECURSIVE: "Upload all directories recursively.",
-            BINARY_MAP: "List of files to be uploaded in binary mode. " +
+            BINARY_FILES: "Comma separated list of files to be uploaded in binary mode. " +
             "Use this option when you upload the directory in default ASCII " +
             "but you want to specify certain files to be uploaded in binary.",
-            ASCII_MAP: "List of files to be uploaded in ASCII mode. " +
+            ASCII_FILES: "Comma separated list of files to be uploaded in ASCII mode. " +
             "Use this option when you upload the directory with --binary/-b flag " +
             "but you want to specify certain files to be uploaded in ASCII."
         }
