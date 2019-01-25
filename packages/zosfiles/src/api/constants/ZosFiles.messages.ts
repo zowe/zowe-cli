@@ -136,11 +136,11 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that the uss folder was uploaded successfully
+     * Message indicating that the uss directory was uploaded successfully
      * @type {string}
      */
-    ussFolderUploadedSuccessfully: {
-        message: "USS folder uploaded successfully."
+    ussDirUploadedSuccessfully: {
+        message: "Directory uploaded successfully."
     },
 
     /**
