@@ -69,7 +69,7 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
      * The binary-files option
      * @type {ICommandOptionDefinition}
      */
-    binary_files: {
+    binaryFiles: {
         name: "binary-files",
         aliases: ["bf"],
         description: strings.BINARY_FILES,
@@ -81,7 +81,7 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
      * The ascii-files option
      * @type {ICommandOptionDefinition}
      */
-    ascii_files: {
+    asciiFiles: {
         name: "ascii-files",
         aliases: ["af"],
         description: strings.ASCII_FILES,

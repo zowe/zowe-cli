@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@brightside/imperative";
 
 describe("zos-files upload dtu command definition", () => {
     fit ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/upload/dtu/DirToUSSDir.definition").DirToUssDefinition;
+        const definition: ICommandDefinition = require("../../../../src/cli/upload/dtu/DirToUSSDir.definition").DirToUSSDefinition;
 
         expect(definition).toBeDefined();
 
@@ -23,7 +23,7 @@ describe("zos-files upload dtu command definition", () => {
         // Should require a zosmf profile
         expect(definition.profile.optional).toEqual(["zosmf"]);
 
-        // Should only contain one positional
+        // Should only contain 2 positional
         expect(definition.positionals.length).toEqual(2);
 
         // The positionals should be required
