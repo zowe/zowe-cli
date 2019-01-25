@@ -465,7 +465,7 @@ export class Upload {
                                     ussname: string,
                                     binary: boolean = false,
                                     recursive: boolean = false,
-                                    filesMap: IUploadMap): Promise<IZosFilesResponse> {
+                                    filesMap?: IUploadMap): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeEqual("", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
@@ -491,10 +491,12 @@ export class Upload {
                 if(!IO.isDir(filePath)) {
                     try {
                         let tempBinary;
-                        if(filesMap.fileNames.indexOf(fileName) > -1) {
-                            tempBinary = filesMap.binary;
-                        } else {
-                            tempBinary = binary;
+                        if(filesMap) {
+                            if(filesMap.fileNames.indexOf(fileName) > -1) {
+                                tempBinary = filesMap.binary;
+                            } else {
+                                tempBinary = binary;
+                            }
                         }
                         const ussFilePath = path.posix.join(ussname, fileName);
                         await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
@@ -532,16 +534,18 @@ export class Upload {
                                               inputDirectory: string,
                                               ussname: string,
                                               binary: boolean,
-                                              filesMap: IUploadMap) {
+                                              filesMap?: IUploadMap) {
         fs.readdirSync(inputDirectory).forEach(async (fileName) => {
             const filePath = path.normalize(path.join(inputDirectory, fileName));
             if(!IO.isDir(filePath)) {
                 try {
                     let tempBinary;
-                    if(filesMap.fileNames.indexOf(fileName) > -1) {
-                        tempBinary = filesMap.binary;
-                    } else {
-                        tempBinary = binary;
+                    if(filesMap) {
+                        if(filesMap.fileNames.indexOf(fileName) > -1) {
+                            tempBinary = filesMap.binary;
+                        } else {
+                            tempBinary = binary;
+                        }
                     }
                     const ussFilePath = path.posix.join(ussname, fileName);
                     await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
