@@ -512,7 +512,7 @@ export class Upload {
         };
         return {
             success: true,
-            commandResponse: ZosFilesMessages.ussFolderUploadedSuccessfully.message,
+            commandResponse: ZosFilesMessages.ussDirUploadedSuccessfully.message,
             apiResponse: result
         };
     }
