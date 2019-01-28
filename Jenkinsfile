@@ -261,7 +261,42 @@ pipeline {
                 }
             }
         }
+      /************************************************************************
+         * STAGE
+         * -----
+         * Audit - check for vulnerabilities
+         *
+         * TIMEOUT
+         * -------
+         * 10 Minutes
+         *
+         * EXECUTION CONDITIONS
+         * --------------------
+         * - SHOULD_BUILD is true
+         * - The build is still successful
+         *
+         * DESCRIPTION
+         * -----------
+         * Runs an npm audit command to check for vulnerabilities.
+         *
+         * OUTPUTS
+         * -------
+         * None
+         ************************************************************************/
+        stage('Check for Vulnerabilities') {
+            when {
+                expression {
+                    return SHOULD_BUILD == 'true'
+                }
+            }
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    echo 'Installing Dependencies'
 
+                    sh 'npm run audit:public'
+                }
+            }
+        }
         /************************************************************************
          * STAGE
          * -----
