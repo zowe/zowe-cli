@@ -19,6 +19,7 @@ import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/proper
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Get, ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
+import { IUploadMap } from "../../../../../src/api/methods/upload/doc/IUploadMap";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -471,7 +472,6 @@ describe("Upload USS file", () => {
 
             try {
                 uploadResponse = await Upload.bufferToUSSFile(REAL_SESSION, ussname, data);
-                getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -533,6 +533,294 @@ describe("Upload USS file", () => {
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(testdata));
 
+        });
+    });
+});
+
+describe("Upload a local directory to USS directory", () => {
+    describe("Success scenarios", () => {
+        const localDir = `${__dirname}/testfiles`;
+        let parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=`;
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                tempProfileTypes: ["zosmf"],
+                testName: "zos_file_upload_dir_to_uss"
+            });
+            systemProps = new TestProperties(testEnvironment.systemTestProperties);
+            defaultSystem = systemProps.getDefaultSystem();
+
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+            parameters += ussname;
+            Imperative.console.info("Using ussfile:" + ussname);
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(testEnvironment);
+        });
+
+        afterEach(async () => {
+            let error;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            try {
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
+            } catch (err) {
+                error = err;
+            }
+        });
+
+        it("should upload local directory to USS", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: boolean;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname);
+                Imperative.console.info(`THIS IS USS ${ussname}/testfiles`);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+        });
+
+        it("should upload local directory to USS recursively", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: any;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, false, true);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+        });
+
+        it("should upload local directory to USS in binary mode", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: any;
+            let getResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, true);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
+                getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: true});
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+            expect(getResponse).toEqual(Buffer.from(testdata));
+        });
+
+        it("should upload local directory to USS recursively and all files in binary mode", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            const magicNum = 6;
+            let isDirectoryExist: any;
+            let getResponse;
+            let longResponse: string = "";
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, true, true);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
+                getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: true});
+                for(let i = 0; i < magicNum; i++) {
+                    longResponse += testdata;
+                }
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+            expect(getResponse).toEqual(Buffer.from(longResponse));
+        });
+
+        it("should upload local directory to USS some files need to be uploaded as binary", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: any;
+            let getResponseFile3;
+            let getResponseFile1;
+            let getResponseLongFile;
+            let longResponse: string = "";
+            const magicNum = 6;
+            const filesMap: IUploadMap = {binary:  true, fileNames: ["file3.txt", "longline.txt"]};
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, false, true, filesMap);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
+                // file3.txt should be binary as it is mentioned in filesMap
+                getResponseFile3 = await Get.USSFile(REAL_SESSION, `${ussname}/file3.txt`, {binary: true});
+                // longline/longline.txt should be binary as it is mentioned in filesMap
+                getResponseLongFile = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: true});
+                // file1.txt should be ASCII like other files not mentioned in filesMap
+                getResponseFile1 = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: false});
+                for(let i = 0; i < magicNum; i++) {
+                    longResponse += testdata;
+                }
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+            expect(getResponseFile3).toEqual(Buffer.from(testdata));
+            expect(getResponseLongFile).toEqual(Buffer.from(longResponse));
+            expect(getResponseFile1.toString()).toEqual(testdata);
+        });
+
+        it("should upload local directory to USS some files need to be uploaded as ASCII", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: any;
+            let getResponseFile3;
+            let getResponseFile1;
+            let getResponseLongFile;
+            let longResponse: string = "";
+            const magicNum = 6;
+            const filesMap: IUploadMap = {binary:  false, fileNames: ["file3.txt", "longline.txt"]};
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, true, true, filesMap);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
+                // file3.txt should be ASCII as it is mentioned in filesMap
+                getResponseFile3 = await Get.USSFile(REAL_SESSION, `${ussname}/file3.txt`, {binary: false});
+                // longline/longline.txt should be ASCII as it is mentioned in filesMap
+                getResponseLongFile = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: false});
+                // file1.txt should be binary like other files not mentioned in filesMap
+                getResponseFile1 = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: true});
+                for(let i = 0; i < magicNum; i++) {
+                    longResponse += testdata;
+                }
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+            expect(getResponseFile3).toEqual(Buffer.from(testdata));
+            expect(getResponseLongFile).toEqual(Buffer.from(longResponse));
+            expect(getResponseFile1).toEqual(Buffer.from(testdata));
+        });
+    });
+
+    describe("Fail scenarios", () => {
+        it("should throw an error if local directory is null", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, null, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(stripNewLines(error.message)).toContain(ZosFilesMessages.missingInputDirectory.message);
+            expect(uploadResponse).not.toBeDefined();
+        });
+
+        it("should throw an error if local directory is empty string", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "", ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(stripNewLines(error.message)).toContain(ZosFilesMessages.missingInputDirectory.message);
+            expect(uploadResponse).not.toBeDefined();
+        });
+
+        it("should throw an error if passed local directory doesn't exist", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "some/path", ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(stripNewLines(error.message)).toContain("no such file or directory");
+            expect(uploadResponse).not.toBeDefined();
+        });
+
+        it("should throw an error if passed local directory is file", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, `${__dirname}/testfiles/file1.txt`, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(stripNewLines(error.message)).toContain(ZosFilesMessages.missingInputDirectory.message);
+            expect(uploadResponse).not.toBeDefined();
+        });
+
+        it("should throw an error if USS directory path is null", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "some/path", null);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(stripNewLines(error.message)).toContain(ZosFilesMessages.missingUSSDirectoryName.message);
+            expect(uploadResponse).not.toBeDefined();
+        });
+
+        it("should throw an error if USS directory path is empty string", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, "some/path", "");
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(stripNewLines(error.message)).toContain(ZosFilesMessages.missingUSSDirectoryName.message);
+            expect(uploadResponse).not.toBeDefined();
         });
     });
 });

@@ -467,14 +467,14 @@ export class Upload {
                                     recursive: boolean = false,
                                     filesMap?: IUploadMap): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
-        ImperativeExpect.toNotBeEqual("", ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeEqual(inputDirectory,"", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
 
         // Check if inputDirectory is directory
         if(!fs.lstatSync(inputDirectory).isDirectory()) {
             throw new ImperativeError({
-                msg: ZosFilesMessages.missingInputFile.message
+                msg: ZosFilesMessages.missingInputDirectory.message
             });
         }
 
@@ -496,6 +496,8 @@ export class Upload {
                         } else {
                             tempBinary = binary;
                         }
+                    } else {
+                        tempBinary = binary;
                     }
                     const ussFilePath = path.posix.join(ussname, fileName);
                     await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
@@ -515,6 +517,27 @@ export class Upload {
             commandResponse: ZosFilesMessages.ussDirUploadedSuccessfully.message,
             apiResponse: result
         };
+    }
+
+    /**
+     * Check if USS directory exists
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} ussname          - the name of uss folder
+     * @return {Promise<boolean>}
+     */
+    public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
+        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
+        try {
+            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);
+            if(response.items) {
+                return true;
+            }
+        } catch (err) {
+            if (err) {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -541,6 +564,8 @@ export class Upload {
                     } else {
                         tempBinary = binary;
                     }
+                } else {
+                    tempBinary = binary;
                 }
                 const ussFilePath = path.posix.join(ussname, fileName);
                 await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
@@ -555,27 +580,6 @@ export class Upload {
             }
         }));
         return;
-    }
-
-    /**
-     * Check if USS directory exists
-     * @param {AbstractSession} session - z/OS connection info
-     * @param {string} ussname          - the name of uss folder
-     * @return {Promise<boolean>}
-     */
-    private static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
-        try {
-            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);
-            if(response.items) {
-                return true;
-            }
-        } catch (err) {
-            if (err) {
-                return false;
-            }
-        }
-        return false;
     }
 
     /**
