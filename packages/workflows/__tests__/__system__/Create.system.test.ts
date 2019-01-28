@@ -20,6 +20,7 @@ import { ITestSystemSchema } from "../../../../__tests__/__src__/properties/ITes
 import { ZosFilesConstants } from "../../../zosfiles/src/api";
 import { ICreatedWorkflow } from "../../src/api/doc/ICreatedWorkflow";
 import { inspect } from "util";
+import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
 import {
     noOwner,
     noSession,
@@ -38,8 +39,8 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
+let inputFile: string;
 
-const inputFile = "/tmp/input.properties";
 const workflow = __dirname + "/testfiles/demo.xml";
 const vars = __dirname + "/testfiles/vars.properties";
 const propertiesText = "WRONG_VAR";
@@ -65,9 +66,10 @@ describe("Create workflow", () => {
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
         system = testEnvironment.systemTestProperties.workflows.system;
-        owner = testEnvironment.systemTestProperties.workflows.owner;
-        wfName = testEnvironment.systemTestProperties.workflows.workflowName;
-        definitionFile = testEnvironment.systemTestProperties.workflows.workflowDefinitionFile;
+        owner = defaultSystem.zosmf.user;
+        wfName = `${getUniqueDatasetName(owner)}`;
+        definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
+        inputFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.properties`;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
@@ -113,7 +115,7 @@ describe("Create workflow", () => {
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -128,7 +130,7 @@ describe("Create workflow", () => {
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -146,7 +148,7 @@ describe("Create workflow", () => {
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
@@ -164,7 +166,7 @@ describe("Create workflow", () => {
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();

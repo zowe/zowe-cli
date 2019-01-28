@@ -32,9 +32,6 @@ export interface ITestPropertiesSchema {
     };
 
     workflows: {
-        system: string,
-        owner: string,
-        workflowName: string,
-        workflowDefinitionFile: string
+        system: string
     };
 }
