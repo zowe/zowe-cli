@@ -20,6 +20,7 @@ import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestE
 import { Upload } from "../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../zosfiles/src/api";
 import { inspect } from "util";
+import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -53,9 +54,9 @@ describe("Delete workflow", () => {
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
         system = testEnvironment.systemTestProperties.workflows.system;
-        owner = testEnvironment.systemTestProperties.workflows.owner;
-        wfName = testEnvironment.systemTestProperties.workflows.workflowName;
-        definitionFile = testEnvironment.systemTestProperties.workflows.workflowDefinitionFile;
+        owner = defaultSystem.zosmf.user;
+        wfName = `${getUniqueDatasetName(owner)}`;
+        definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
