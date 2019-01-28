@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflow>
+    <autoTakeOwnership>false</autoTakeOwnership>
+    <workflowInfo>
+        <workflowID scope="none">Greeting</workflowID>
+        <workflowDescription>Greeting workflow</workflowDescription>
+        <workflowVersion>1</workflowVersion>
+        <vendor>Broadcom</vendor>
+        <Provisioning>
+            <productID>Demo</productID>
+            <productName>Demo</productName>
+            <productVersion>Demo</productVersion>
+            <softwareType>Demo</softwareType>
+        </Provisioning>
+    </workflowInfo>
+    <variable name="GREETING" scope="instance" visibility="public">
+        <label>Greeting</label>
+        <abstract>Greeting</abstract>
+        <description>Greeting</description>
+        <category>General</category>
+        <string valueMustBeChoice="false" multiLine="false">
+            <minLength>1</minLength>
+            <maxLength>1000000</maxLength>
+            <default>Hello</default>
+        </string>
+    </variable>
+    <atCreate name="GREETING" scope="instance" required="false" prompt="true"/>
+	   <step name="echo" optional="false">
+        <title>echo</title>
+        <description/>
+        <instructions substitution="false">Generated instruction text for step: echo
+Update this field with your own text</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <canMarkAsFailed>false</canMarkAsFailed>
+        <template>
+            <inlineTemplate substitution="true">echo &quot;${instance-GREETING}&quot;</inlineTemplate>
+            <submitAs maxRc="0">shell-JCL</submitAs>
+        </template>
+    </step>
+</workflow>
