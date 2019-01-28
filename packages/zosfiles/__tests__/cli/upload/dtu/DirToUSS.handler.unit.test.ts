@@ -11,6 +11,7 @@
 
 import { Upload } from "../../../../src/api/methods/upload";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import * as path from "path";
 
 describe("Upload dir-to-uss handler", () => {
     describe("process method", () => {
@@ -18,7 +19,8 @@ describe("Upload dir-to-uss handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSSDir.handler");
             const handler = new handlerReq.default();
-            const inputDir = "test_dir";
+            let inputDir = "test_dir";
+            inputDir = path.resolve(inputDir);
             const USSDir = "USS_dir";
 
             // Vars populated by the mocked function
@@ -62,6 +64,10 @@ describe("Upload dir-to-uss handler", () => {
                         _: ["fake"],
                         inputDir,
                         USSDir,
+                        // binary: boolean,
+                        // recursive: boolean,
+                        // asciiFiles: "a,b,c",
+                        // binaryFiles: "a,b,c",
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
@@ -95,10 +101,10 @@ describe("Upload dir-to-uss handler", () => {
                 error = e;
             }
 
-            expect(error).toBeDefined();
+            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
-            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, undefined);
+            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, undefined, undefined, null);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

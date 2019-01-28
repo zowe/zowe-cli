@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "C:\\\\Users\\\\dumal01\\\\Documents\\\\GitHub\\\\WORK\\\\zowe-cli\\\\packages\\\\zosfiles\\\\__tests__\\\\cli\\\\upload\\\\dtu\\\\test_dir",
+      "success": true,
+      "to": "USS_dir",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
+
+exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 2`] = `""`;
+
+exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 3`] = `
+"
+[32m- [39m
+  [33msuccess: [39m[32mtrue[39m
+  [33mfrom: [39m   C:\\\\Users\\\\dumal01\\\\Documents\\\\GitHub\\\\WORK\\\\zowe-cli\\\\packages\\\\zosfiles\\\\__tests__\\\\cli\\\\upload\\\\dtu\\\\test_dir
+  [33mto: [39m     USS_dir
+[32m- [39m
+  [33msuccess: [39m[31mfalse[39m
+  [33mfrom: [39m   testfrom
+  [33mto: [39m     testto
+[32m- [39m
+  [33mfrom: [39mdummy
+  [33mto: [39m  nowhere
+
+
+uploaded"
+`;
