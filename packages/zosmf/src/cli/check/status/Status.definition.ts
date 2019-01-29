@@ -36,7 +36,7 @@ export const StatusDefinition: ICommandDefinition = {
         },
         {
             description: "Report the status of the z/OSMF server that you specified manually via command line",
-            options: "--host myhost --port 443 --user myuser --pass mypass"
+            options: "--host myhost --port 443 --user myuser --password mypass"
         },
     ]
 };

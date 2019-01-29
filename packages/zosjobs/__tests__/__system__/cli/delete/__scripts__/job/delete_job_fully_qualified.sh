@@ -13,7 +13,7 @@ ATTEMPTS=10
 WAIT=10
 
 # Submit the job and ensure the RC is 0
-JOBID=`zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff jobid --rft string`
+JOBID=`zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string`
 RC=$?
 if [ $RC -gt 0 ]
 then
@@ -25,7 +25,7 @@ fi
 # Loop until the job goes to the output queue
 until [ $ATTEMPTS -gt 0 ]
 do
-    STATUS=`zowe jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff status --rft string`
+    STATUS=`zowe jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff status --rft string`
     RC=$?
     if [ $RC -gt 0 ] ; then
         echo $STATUS 1>&2
@@ -47,7 +47,7 @@ if [ $ATTEMPTS -eq 0 -a "$STATUS" != "OUTPUT" ]; then
 fi
 
 # Purge the job
-zowe jobs delete job $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false 
+zowe jobs delete job $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 RC=$?
 
 if [ $RC -gt 0 ]
