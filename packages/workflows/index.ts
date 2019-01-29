@@ -19,6 +19,5 @@
  * a Job viewer/tree extension.
  */
 
-
 export * from "./src/api/Create";
 export * from "./src/api/Delete";
