@@ -1,3 +1,3 @@
 #!/bin/bash
-zowe zos-jobs view sfbi --host fakehost --user fakeuser --pass fakepass
+zowe zos-jobs view sfbi --host fakehost --user fakeuser --password fakepass
 exit $?

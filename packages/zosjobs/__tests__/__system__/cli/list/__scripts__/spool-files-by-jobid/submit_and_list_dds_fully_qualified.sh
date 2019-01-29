@@ -8,7 +8,7 @@ PASS=$5
 
 # TODO - delete the job from spool
 # Submit the job and ensure the RC is 0
-JOBID="$(zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff jobid --rft string)"
+JOBID="$(zowe jobs submit ds "$JCL" --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string)"
 CMDRC=$?
 if [ $CMDRC -gt 0 ]
 then
@@ -22,7 +22,7 @@ STATUS=""
 while [ "$STATUS" != "OUTPUT" ]; do 
     
     # get the status
-    STATUS="$(zowe zos-jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false --rff status --rft string)"
+    STATUS="$(zowe zos-jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff status --rft string)"
     RC=$?
     if [ $RC -gt 0 ]
     then
@@ -32,5 +32,5 @@ while [ "$STATUS" != "OUTPUT" ]; do
     fi
 done 
 
-zowe zos-jobs list spool-files-by-jobid $JOBID --host $HOST --port $PORT --user $USER --pass $PASS --ru=false
+zowe zos-jobs list spool-files-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 exit $?

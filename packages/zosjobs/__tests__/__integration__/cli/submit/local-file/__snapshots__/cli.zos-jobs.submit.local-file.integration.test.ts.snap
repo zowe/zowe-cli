@@ -23,7 +23,7 @@ Mainframe (z/OSMF) user name, which can be the same as your TSO login.
 
 Syntax Error:
 Missing Required Option:
---pass (--pw)
+--password (--pass,--pw)
 
 Option Description:
 Mainframe (z/OSMF) password, which can be the same as your TSO password.
@@ -60,7 +60,7 @@ Mainframe (z/OSMF) user name, which can be the same as your TSO login.
 
 Syntax Error:
 Missing Required Option:
---pass (--pw)
+--password (--pass,--pw)
 
 Option Description:
 Mainframe (z/OSMF) password, which can be the same as your TSO password.

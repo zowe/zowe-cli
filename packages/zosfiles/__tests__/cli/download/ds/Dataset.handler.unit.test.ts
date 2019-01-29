@@ -42,7 +42,7 @@ describe("Download data set handler", () => {
                     host: "fake",
                     port: "fake",
                     user: "fake",
-                    pass: "fake",
+                    password: "fake",
                     auth: "fake",
                     rejectUnauthorized: "fake",
                 };

@@ -8,7 +8,7 @@ PASS=$5
 shift
 
 echo "========= Z/OS FILES UPLOAD FROM STDIN ========="
-cat << ___ENDCAT | zowe zos-files upload stdin-to-data-set "$zosFile" --host $HOST --port $PORT --user $USER --pass $PASS --ru=false
+cat << ___ENDCAT | zowe zos-files upload stdin-to-data-set "$zosFile" --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 This text was uploaded through standard input on
 `date`
 ___ENDCAT

@@ -17,7 +17,7 @@ export const UNIT_TEST_ZOSMF_PROF_OPTS = {
     host: "somewhere.com",
     port: "43443",
     user: "someone",
-    pass: "somesecret"
+    password: "somesecret"
 };
 
 export const UNIT_TEST_TSO_PROF_OPTS = {

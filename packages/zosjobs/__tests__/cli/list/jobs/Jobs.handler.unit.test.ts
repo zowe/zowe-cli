@@ -22,7 +22,7 @@ const ZOSMF_PROF_OPTS = {
     host: "somewhere.com",
     port: "43443",
     user: "someone",
-    pass: "somesecret"
+    password: "somesecret"
 };
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
