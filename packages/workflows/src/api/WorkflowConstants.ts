@@ -43,6 +43,14 @@ export class WorkflowConstants {
     public static readonly START_WORKFLOW: string = "operations/start";
 
     /**
+     * URI base for list workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly LIST_WORKFLOWS: string = "operations/list";
+
+    /**
      * URI base for filtering workflow by name API.
      * @static
      * @type {string}
@@ -133,3 +141,4 @@ export const wrongPath: IMessageDefinition = {
 export const wrongOwner: IMessageDefinition = {
     message: apiErrorHeader + `Wrong format of user ID supplied.`
 };
+
