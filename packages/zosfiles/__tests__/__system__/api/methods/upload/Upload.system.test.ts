@@ -472,6 +472,7 @@ describe("Upload USS file", () => {
 
             try {
                 uploadResponse = await Upload.bufferToUSSFile(REAL_SESSION, ussname, data);
+                getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -540,7 +541,6 @@ describe("Upload USS file", () => {
 describe("Upload a local directory to USS directory", () => {
     describe("Success scenarios", () => {
         const localDir = `${__dirname}/testfiles`;
-        let parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=`;
         beforeAll(async () => {
             testEnvironment = await TestEnvironment.setUp({
                 tempProfileTypes: ["zosmf"],
@@ -551,7 +551,6 @@ describe("Upload a local directory to USS directory", () => {
 
             REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-            parameters += ussname;
             Imperative.console.info("Using ussfile:" + ussname);
         });
 
@@ -733,6 +732,30 @@ describe("Upload a local directory to USS directory", () => {
     });
 
     describe("Fail scenarios", () => {
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                tempProfileTypes: ["zosmf"],
+                testName: "zos_file_upload_dir_to_uss"
+            });
+            systemProps = new TestProperties(testEnvironment.systemTestProperties);
+            defaultSystem = systemProps.getDefaultSystem();
+
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+            Imperative.console.info("Using ussfile:" + ussname);
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(testEnvironment);
+            let error;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            try {
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
+            } catch (err) {
+                error = err;
+            }
+        });
+
         it("should throw an error if local directory is null", async () => {
             let error;
             let uploadResponse: IZosFilesResponse;
@@ -821,6 +844,21 @@ describe("Upload a local directory to USS directory", () => {
             expect(error).toBeDefined();
             expect(stripNewLines(error.message)).toContain(ZosFilesMessages.missingUSSDirectoryName.message);
             expect(uploadResponse).not.toBeDefined();
+        });
+
+        it("should throw an error if uploading file is binary but we are uploading it as ASCII", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, `${__dirname}/failtestfiles`, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toContain("Illegal character sequence detected by iconv()");
+            expect(uploadResponse).toBeUndefined();
         });
     });
 });
