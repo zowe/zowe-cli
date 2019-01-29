@@ -14,17 +14,29 @@ import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession } from "@brightside/imperative";
 import { WorkflowConstants, nozOSMFVersion } from "./WorkflowConstants";
 
-//jsdoc
+/**
+ * Get list of workflows from registry.
+ * @export
+ * @class ListWorkflows
+ */
 export class ListWorkflows {
-    // Optional, request can include one or more parameters to filter the results
+    /**
+     * This operation returns list of workflows. 
+     * Parametrs are optional,request can include one or more parameters to filter the results.
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
+     * @param {string} category - URI path with filters for listing filtered registry instances.
+     * @returns {Promise<IProvisionedInstances>} z/OSMF response object
+     * @memberof ListWorkflows
+     */
+ 
     public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-                                        category?: string, system?: string,
-                                        owner?: string, vendor?: string, statusName?: string ) {
-    // This operation returns list of all workflows
+                                      category?: string, system?: string,
+                                      owner?: string, vendor?: string, statusName?: string ) {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-
-        const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion, 
+        
+        const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion,
             [
                 {key: WorkflowConstants.category, value : category},
                 {key: WorkflowConstants.system, value : system},
@@ -34,16 +46,24 @@ export class ListWorkflows {
             ]
         );
 
-        return await ZosmfRestClient.getExpectJSON(session, resourcesQuery);
+       return await ZosmfRestClient.getExpectJSON(session, resourcesQuery);
     }
-    // Builds URI path from provided parameters.
+
+    /**
+     * This operation Builds URI path from provided parameters.
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
+     * @param {string} filteredQuery - URI path with filters for listing filtered registry instances.
+     * @returns {string} URI path for the REST call.
+     * @memberof ListRegistryInstances
+     */
+
     public static getResourcesQuery(zOSMFVersion: string ,params: {key: string, value: string}[]) {
         let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         let sign = "?";
-
         params.forEach(element => {
             if (element.value) {
-                //some validator ? 
+                // some validator ?
                 query += sign + `${element.key}=${element.value}`;
                 sign = "&";
             }

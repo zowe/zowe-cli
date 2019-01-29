@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative } from "@brightside/imperative";
 import { ListWorkflows } from "../../../workflows";
@@ -240,7 +241,7 @@ describe("List workflows", () => {
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
-
+/*
 
     it("Throws an error with undefined session.", async () => {
         let error: ImperativeError;
@@ -253,6 +254,6 @@ describe("List workflows", () => {
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseFailed(response, error, noSession.message);
-    });
+    }); */
 });
 
