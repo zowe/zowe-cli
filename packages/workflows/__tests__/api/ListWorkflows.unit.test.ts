@@ -254,18 +254,5 @@ describe("List workflows", () => {
         }
         expectZosmfResponseFailed(response, error, noSession.message);
     });
-
-    it("Throws an error with zOSMF version as empty string.", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, null);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
-    });
 });
 
