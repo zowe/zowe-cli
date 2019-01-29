@@ -472,7 +472,7 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
 
         // Check if inputDirectory is directory
-        if(!fs.lstatSync(inputDirectory).isDirectory()) {
+        if(!IO.isDir(inputDirectory)) {
             throw new ImperativeError({
                 msg: ZosFilesMessages.missingInputDirectory.message
             });
@@ -579,7 +579,6 @@ export class Upload {
                 await this.dirToUSSDirRecursive(session, filePath, tempUssPath, binary, filesMap);
             }
         }));
-        return;
     }
 
     /**
