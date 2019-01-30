@@ -25,8 +25,12 @@ export class ListWorkflows {
      * Parametrs are optional,request can include one or more parameters to filter the results.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
-     * @param {string} category - URI path with filters for listing filtered registry instances.
-     * @returns {Promise<IProvisionedInstances>} z/OSMF response object
+     * @param {string} category - the URI path with optional parametr for listing filtered workflows.
+     * @param {string} system - the URI path with optional parametr for listing filtered workflows.
+     * @param {string} owner - the URI path with optional parametr for listing filtered workflows.
+     * @param {string} vendor - the URI path with optional parametr for listing filtered workflows.
+     * @param {string} statusName - the URI path with optional parametr for listing filtered workflows.
+     * @returns {string} z/OSMF response object
      * @memberof ListWorkflows
      */
  
@@ -51,11 +55,10 @@ export class ListWorkflows {
 
     /**
      * This operation Builds URI path from provided parameters.
-     * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
-     * @param {string} filteredQuery - URI path with filters for listing filtered registry instances.
+     * @param {string} params - The array with URI path with filters for listing filtered workflows.
      * @returns {string} URI path for the REST call.
-     * @memberof ListRegistryInstances
+     * @memberof ListWorkflows
      */
 
     public static getResourcesQuery(zOSMFVersion: string ,params: {key: string, value: string}[]) {
