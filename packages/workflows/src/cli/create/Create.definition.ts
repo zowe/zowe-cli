@@ -23,7 +23,7 @@ export const CreateDefinition: ICommandDefinition = {
     name: "create",
     aliases: ["cre"],
     type: "group",
-    description: "Register workflow in ZOSMF",
+    description: "Create workflow in ZOSMF",
     children: [
         Workflow
     ]

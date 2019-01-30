@@ -22,7 +22,7 @@ import { join } from "path";
 export const Workflow: ICommandDefinition = {
     name: "workflow",
     aliases: ["wf"],
-    description: "Register a workflow in ZOSMF using an Data set or USS fie",
+    description: "Create a workflow in ZOSMF using an Data set or USS fie",
     type: "command",
     handler: join(__dirname, "Workflow.handler"),
     profile: {
