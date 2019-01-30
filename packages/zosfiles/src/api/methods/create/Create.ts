@@ -21,6 +21,7 @@ import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
 import { Invoke } from "../invoke";
 import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import i18nTypings from "../../../cli/-strings-/en";
+import * as path from "path";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 const strings = (require("../../../cli/-strings-/en").default as typeof i18nTypings);
@@ -368,8 +369,9 @@ export class Create {
                             mode?: string) {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
-
-        const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}${ussPath}`;
+        ussPath = path.posix.normalize(ussPath);
+        ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
+        const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
         const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, {"Content-Type": "application/json"}];
         let payload: object = { type };
         if(mode) {
