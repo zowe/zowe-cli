@@ -551,6 +551,9 @@ describe("Upload a local directory to USS directory", () => {
 
             REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
+            dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
+            ussname = dsname.replace(/\./g, "");
+            ussname = `${defaultSystem.unix.testdir}/${ussname}`;
             Imperative.console.info("Using ussfile:" + ussname);
         });
 
