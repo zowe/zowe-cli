@@ -60,7 +60,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@brightside/imperative": ">=2.0.0-0",
+    "@brightside/imperative": "2.0.0-next.201901292011",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
   },
