@@ -101,4 +101,15 @@ export class WorkflowValidator {
         const result = new RegExp(/^[a-zA-Z0-9#\$@]{1,8}$/).test(userID);
         ImperativeExpect.toBeEqual(true, result, errorMsg);
     }
+     /**
+     * Validate supplied string
+     * @static
+     * @param {string} parameterValue - string to check if it does not contain value ? or &
+     * @param {string} errorMsg - message to show in case validation fails
+     * @memberof WorkflowValidator
+     */
+    public static validateParameter(parameterValue: string, errorMsg: string) {
+        const result = new RegExp(/^[a-zA-Z0-9]$/).test(parameterValue);
+        ImperativeExpect.toBeEqual(true, result, errorMsg);
+    }
 }

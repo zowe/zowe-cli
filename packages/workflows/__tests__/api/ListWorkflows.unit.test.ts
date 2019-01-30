@@ -20,6 +20,8 @@ const category = "Provisioning";
 const statusName = "complete";
 const owner = "owner1";
 const vendor = "IBM";
+const workflowName = "workflow1"
+const wrongString = "G$#&"
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
 const PRETEND_URL = START_RESOURCE_QUERY + `?category=${category}&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
@@ -51,8 +53,14 @@ function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
     expect(response).toBeDefined();
 }
 
+function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: string) {
+    expect(response).not.toBeDefined();
+    expect(error).toBeDefined();
+    expect(error.details.msg).toContain(msg);
+}
+
 describe("List workflows", () => {
-    // List workflow that match all optional parametrs
+    // List workflow that match all optional parameters
     it("Successful call with all optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
@@ -77,7 +85,7 @@ describe("List workflows", () => {
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
-    // List workflow without any optional parametrs
+    // List workflow without any optional parameters
     it("Successful call without any optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
@@ -102,5 +110,19 @@ describe("List workflows", () => {
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
-});
 
+    describe("Fail scenarios", () => {
+        it("Throws an error with incorrect variable format.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, wrongString, null);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, wrongString);
+        });   
+     });
+});

@@ -12,7 +12,7 @@
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession } from "@brightside/imperative";
-import { WorkflowConstants, nozOSMFVersion } from "./WorkflowConstants";
+import { WorkflowConstants, nozOSMFVersion, wrongString } from "./WorkflowConstants";
 
 /**
  * Get list of workflows from registry.
@@ -25,11 +25,11 @@ export class ListWorkflows {
      * Parametrs are optional,request can include one or more parameters to filter the results.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
-     * @param {string} category - the URI path with optional parametr for listing filtered workflows.
-     * @param {string} system - the URI path with optional parametr for listing filtered workflows.
-     * @param {string} owner - the URI path with optional parametr for listing filtered workflows.
-     * @param {string} vendor - the URI path with optional parametr for listing filtered workflows.
-     * @param {string} statusName - the URI path with optional parametr for listing filtered workflows.
+     * @param {string} category - the URI path with optional parameter for listing filtered workflows.
+     * @param {string} system - the URI path with optional parameter for listing filtered workflows.
+     * @param {string} owner - the URI path with optional parameter for listing filtered workflows.
+     * @param {string} vendor - the URI path with optional parameter for listing filtered workflows.
+     * @param {string} statusName - the URI path with optional parameter for listing filtered workflows.
      * @returns {string} z/OSMF response object
      * @memberof ListWorkflows
      */
@@ -60,9 +60,10 @@ export class ListWorkflows {
     public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>) {
         let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         let sign = "?";
+        // Validate if parameter value does not contains ? or &
+        WorkflowValidator.validateParameter(params.forEach(element), wrongString.message);
         params.forEach((element) => {
             if (element.value) {
-                // some validator ?
                 query += sign + `${element.key}=${element.value}`;
                 sign = "&";
             }

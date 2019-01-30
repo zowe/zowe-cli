@@ -166,6 +166,15 @@ export const noSystemName: IMessageDefinition = {
     message: apiErrorHeader + `No system name parameter was supplied.`
 };
 /**
+ * Error message that no system name parameter string was supplied.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const wrongString: IMessageDefinition = {
+    message: apiErrorHeader + `Parameter contains wrong character - & or ?.`
+};
+/**
  * Error message that no owner parameter string was supplied.
  * @static
  * @type {IMessageDefinition}
