@@ -14,8 +14,8 @@ import { WorkflowKey } from "./workflowkey/WorkflowKey.definition";
 
 
 /**
- * This object defines the command for the delete group within workflows. This is not
- * something that is intended to be used outside of the workflows package.
+ * This object defines the command for the delete group within zosworkflows. This is not
+ * something that is intended to be used outside of this npm package.
  *
  * @private
  */
@@ -23,7 +23,7 @@ export const DeleteDefinition: ICommandDefinition = {
     name: "delete",
     aliases: ["del"],
     type: "group",
-    description: "Delete workflow",
+    description: "Delete workflow instance in z/OSMF",
     children: [
         WorkflowKey
     ]

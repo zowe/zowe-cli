@@ -12,5 +12,6 @@
 import { AbstractSession, IHandlerParameters } from "@brightside/imperative";
 
 /**
- * Handler to delete a workflow using workflow key
+ * Handler to delete a workflow instance in z/OSMF using a workflow key.
+ * This is not something that is intended to be used outside of this npm package.
  */

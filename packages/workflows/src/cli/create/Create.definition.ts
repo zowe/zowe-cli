@@ -10,12 +10,13 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { Workflow } from "./workflow/Workflow.definition";
+import { DataSet } from "./dataset/Dataset.definition";
+import { UssFile } from "./ussfile/UssFile.definition";
 
 
 /**
- * This object defines the command for the create group within workflows. This is not
- * something that is intended to be used outside of the workflows package.
+ * This object defines the command for the create group within zosworkflows. This is not
+ * something that is intended to be used outside of this npm package.
  *
  * @private
  */
@@ -23,8 +24,9 @@ export const CreateDefinition: ICommandDefinition = {
     name: "create",
     aliases: ["cre"],
     type: "group",
-    description: "Create workflow in ZOSMF",
+    description: "Create workflow instance in z/OSMF",
     children: [
-        Workflow
+        DataSet,
+        UssFile
     ]
 };

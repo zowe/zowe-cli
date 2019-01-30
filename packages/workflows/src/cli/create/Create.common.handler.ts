@@ -12,5 +12,6 @@
 import { AbstractSession, IHandlerParameters } from "@brightside/imperative";
 
 /**
- * Handler to create a workflow
+ * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.
+ * This is not something that is intended to be used outside of this npm package.
  */

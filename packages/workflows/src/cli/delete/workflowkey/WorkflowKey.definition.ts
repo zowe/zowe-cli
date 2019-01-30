@@ -14,13 +14,13 @@ import { join } from "path";
 
 
 /**
- * This object defines the command for delete workflow using workflow key withing  zosworkflows.
- * This is not something that is intended to be used outside of the zosworkflows package.
+ * This object defines the command for delete workflow using workflow key withing zosworkflows.
+ * This is not something that is intended to be used outside of this npm package.
  *
  * @private
  */
 export const WorkflowKey: ICommandDefinition = {
-    name: "workflowKey",
+    name: "workflow-key",
     aliases: ["wk"],
     description: "Delete workflow with specified workflow key",
     type: "command",
@@ -32,11 +32,10 @@ export const WorkflowKey: ICommandDefinition = {
         {
             name: "workflowKey",
             type: "string",
-            description: "workflow key",
+            description: "workflow key of workflow instance to be deleted",
             required: true,
         },
     ],
-    outputFormatOptions: true,
     examples: [
         {
             description: "some example of delete",

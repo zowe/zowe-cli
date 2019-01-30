@@ -22,10 +22,10 @@ import { ZosmfSession } from "../../../zosmf";
  */
 const definition: ICommandDefinition = {
     name: "zos-workflows",
-    aliases: ["ws"],
+    aliases: ["wf"],
     type: "group",
-    summary: "Manage z/OS workflows",
-    description: "Manage z/OS workflows, create workflows, and more",
+    summary: "Manage z/OSMF workflows",
+    description: "Manage z/OSMF workflows, create workflow instances, and more",
     children: [
         CreateDefinition,
         DeleteDefinition
