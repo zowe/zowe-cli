@@ -52,6 +52,7 @@ function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
 }
 
 describe("List workflows", () => {
+    // List workflow that match all optional parametrs
     it("Successful call with all optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
@@ -65,7 +66,7 @@ describe("List workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined,category, system, owner, vendor, statusName );
+            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, category, system, owner, vendor, statusName );
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -76,7 +77,7 @@ describe("List workflows", () => {
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
-
+    // List workflow without any optional parametrs
     it("Successful call without any optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
