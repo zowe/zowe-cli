@@ -20,9 +20,9 @@ const category = "Provisioning";
 const statusName = "complete";
 const owner = "owner1";
 const vendor = "IBM";
-const PRETEND_URL = "/zosmf/workflow/rest/1.0/workflows?category=Provisioning&system=SYS1&owner=owner1&vendor=IBM&statusName=complete"
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
+const PRETEND_URL = START_RESOURCE_QUERY + `?category=${category}&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowsInfo = {
     workflowKey: "73c81ef4-eccc-47ce-8f08-8a5c97e753f1",

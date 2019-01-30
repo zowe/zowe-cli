@@ -21,7 +21,7 @@ import { WorkflowConstants, nozOSMFVersion } from "./WorkflowConstants";
  */
 export class ListWorkflows {
     /**
-     * This operation returns list of workflows. 
+     * This operation returns list of workflows.
      * Parametrs are optional,request can include one or more parameters to filter the results.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
@@ -33,13 +33,11 @@ export class ListWorkflows {
      * @returns {string} z/OSMF response object
      * @memberof ListWorkflows
      */
- 
     public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                       category?: string, system?: string,
                                       owner?: string, vendor?: string, statusName?: string ) {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        
         const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion,
             [
                 {key: WorkflowConstants.category, value : category},
@@ -49,8 +47,7 @@ export class ListWorkflows {
                 {key: WorkflowConstants.statusName, value : statusName},
             ]
         );
-
-       return await ZosmfRestClient.getExpectJSON(session, resourcesQuery);
+        return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
     }
 
     /**
@@ -60,11 +57,10 @@ export class ListWorkflows {
      * @returns {string} URI path for the REST call.
      * @memberof ListWorkflows
      */
-
-    public static getResourcesQuery(zOSMFVersion: string ,params: {key: string, value: string}[]) {
+    public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>) {
         let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         let sign = "?";
-        params.forEach(element => {
+        params.forEach((element) => {
             if (element.value) {
                 // some validator ?
                 query += sign + `${element.key}=${element.value}`;
