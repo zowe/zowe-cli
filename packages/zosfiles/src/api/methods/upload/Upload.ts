@@ -92,7 +92,7 @@ export class Upload {
                                  inputDir: string,
                                  dataSetName: string,
                                  options: IUploadOptions = {}): Promise<IZosFilesResponse> {
-        this.log.info(`Uploading file ${inputDir} to ${dataSetName}`);
+        this.log.info(`Uploading directory ${inputDir} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputDir, ZosFilesMessages.missingInputDir.message);
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
