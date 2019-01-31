@@ -24,8 +24,15 @@ import { IUploadMap } from "../../../api/methods/upload/doc/IUploadMap";
 export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
-        // resolving to full path before passing to specific Upload function
-        const inputDir = path.resolve(commandParameters.arguments.inputDir);
+
+        let inputDir: string;
+
+        // resolving to full path if passed path is not absolute
+        if (path.isAbsolute(commandParameters.arguments.inputDir)) {
+            inputDir = commandParameters.arguments.inputDir;
+        } else {
+            inputDir = path.resolve(commandParameters.arguments.inputDir);
+        }
 
         // build filesMap argument
         let filesMap: IUploadMap = null;
