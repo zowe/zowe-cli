@@ -47,10 +47,10 @@ export interface IUploadOptions {
     /**
      * The list of files to be uploaded in binary mode
      */
-    binary_map?: string;
+    binary_files?: string;
 
     /**
      * The list of files to be uploaded in ASCII mode
      */
-    ascii_map?: string;
+    ascii_files?: string;
 }
