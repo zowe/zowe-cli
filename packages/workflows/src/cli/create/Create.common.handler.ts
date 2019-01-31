@@ -9,9 +9,76 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { CreateWorkflow } from "../../api/Create";
+import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.
  * This is not something that is intended to be used outside of this npm package.
  */
+
+export default class CreateCommonHandler extends ZosmfBaseHandler {
+    /**
+     * Command line arguments passed
+     * @private
+     * @type {*}
+     * @memberof CreateCommonHandler
+     */
+    private arguments: any;
+
+    /**
+     * Command handler process - invoked by the command processor to handle the "zos-workflows create"
+     * @param {IHandlerParameters} params - Command handler parameters
+     * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
+     * @memberof CreateCommonHandler
+     */
+    public async processCmd(params: IHandlerParameters): Promise<void> {
+        this.arguments = params.arguments;
+
+        let sourceType: string;
+        if (this.arguments.definitionDataset) {
+            sourceType = "dataset";
+        } else if (this.arguments.definitionUssFile) {
+            sourceType = "uss-file";
+        }
+
+        let resp;
+        let error;
+
+        switch (sourceType) {
+            case "dataset":
+                try{
+                    resp = await CreateWorkflow.createWorkflow(this.mSession, this.arguments.workflowName, this.arguments.definitionDataset,
+                        this.arguments.systemName, this.arguments.owner, this.arguments.inputFile, this.arguments.variables,
+                        this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
+                } catch (err){
+                    error = "Register workflow: " + err;
+                    throw error;
+                }
+                params.response.data.setObj("Workflow created with workflow-key " + resp.workflowKey);
+                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+                break;
+
+            case "uss-file":
+                try{
+                    resp = await CreateWorkflow.createWorkflow(this.mSession, this.arguments.workflowName, this.arguments.definitionUssFile,
+                        this.arguments.systemName, this.arguments.owner, this.arguments.inputFile, this.arguments.variables,
+                        this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
+                } catch (err){
+                    error = "Register workflow: " + err;
+                    throw error;
+                }
+                params.response.data.setObj("Workflow created with workflow-key " + resp.workflowKey);
+                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+                break;
+
+            default:
+                throw new ImperativeError({
+                    msg: `Internal create error: Unable to determine the source of the definition file. ` +
+                        `Please contact support.`,
+                    additionalDetails: JSON.stringify(params)
+                });
+        }
+    }
+}

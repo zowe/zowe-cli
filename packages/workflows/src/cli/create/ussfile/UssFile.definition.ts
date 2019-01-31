@@ -10,11 +10,12 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { CreateCommonOptions } from "../Create.common.options";
 import { join } from "path";
 
 
 /**
- * This object defines the command for creating workflow instance from uss file withing zosworkflows.
+ * This object defines the command for creating workflow instance from uss file within zosworkflows.
  * This is not something that is intended to be used outside of this npm package.
  *
  * @private
@@ -24,7 +25,7 @@ export const UssFile: ICommandDefinition = {
     aliases: ["uf"],
     description: "Create a workflow instance in z/OSMF using a USS file",
     type: "command",
-    handler: join(__dirname, "../Create.shared.handler"),
+    handler: join(__dirname, "../Create.common.handler"),
     profile: {
         optional: ["zosmf"],
     },
@@ -48,66 +49,25 @@ export const UssFile: ICommandDefinition = {
             required: true
         },
         {
-            name: "Owner",
+            name: "owner",
             description: "User id of the owner of the workflow",
             type: "string",
             required: true
         },
     ],
     options: ([
-
-        {
-            name: "input-file",
-            aliases: ["if"],
-            description: "Properties file with pre-specified values for workflow variables ",
-            type: "string",
-            required: false
-        },
-        {
-            name: "variables",
-            aliases: ["vs"],
-            description: "A list of one or more variables for the workflow.",
-            type: "string",
-            required: false
-        },
-        {
-            name: "assignt-to-owner",
-            aliases: ["ao"],
-            description: "Indicates whether the workflow steps are assigned to the workflow owner",
-            type: "boolean",
-            required: false
-        },
-        {
-            name: "access-type",
-            aliases: ["at"],
-            description: "Specifies the access type for the workflow. Public, Restricted or Private.",
-            type: "string",
-            required: false,
-            allowableValues: {
-                values : ["Public", "Restricted", "Private"],
-                caseSensitive: true
-            },
-        },
-        {
-            name: "delete-completed",
-            aliases: ["dc"],
-            description: "Whether the successfully completed jobs to  be deleted from the JES spool.",
-            type: "boolean",
-            required: false
-        },
-        {
-            name: "zosmf-version",
-            aliases: ["zosmf-v"],
-            description: "Identifies the version of the zOSMF workflow service.",
-            type: "boolean",
-            required: false
-        },
+        CreateCommonOptions.inputFile,
+        CreateCommonOptions.variables,
+        CreateCommonOptions.assignToOwner,
+        CreateCommonOptions.accessType,
+        CreateCommonOptions.deleteCompleted,
+        // CreateCommonOptions.zosmfVersion
     ]),
     outputFormatOptions: true,
     examples: [
         {
-            description: "some example of create",
-            options: `"create create`
+            description: "Create a workflow with name \"testworkflow\" uss file \"/path/workflow.xml\", system name \"TESTM1\" and owner \"testid\"",
+            options: "\"testworkflow\" \"/path/workflow.xml\" \"TESTM1\" \"testid\""
         }
     ],
 };

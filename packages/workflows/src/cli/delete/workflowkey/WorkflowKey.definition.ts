@@ -14,7 +14,7 @@ import { join } from "path";
 
 
 /**
- * This object defines the command for delete workflow using workflow key withing zosworkflows.
+ * This object defines the command for delete workflow using workflow key within zosworkflows.
  * This is not something that is intended to be used outside of this npm package.
  *
  * @private
@@ -24,7 +24,7 @@ export const WorkflowKey: ICommandDefinition = {
     aliases: ["wk"],
     description: "Delete workflow with specified workflow key",
     type: "command",
-    handler: join(__dirname, "WorkflowKey.handler"),
+    handler: join(__dirname, "../Delete.common.handler"),
     profile: {
         optional: ["zosmf"],
     },
@@ -38,8 +38,8 @@ export const WorkflowKey: ICommandDefinition = {
     ],
     examples: [
         {
-            description: "some example of delete",
-            options: `"ibmuser.cntl" -f`
+            description: "To delete a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
+            options: "\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
         }
     ],
 };
