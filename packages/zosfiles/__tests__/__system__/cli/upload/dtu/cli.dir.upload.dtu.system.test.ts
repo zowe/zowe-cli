@@ -210,8 +210,8 @@ describe("Upload directory to USS", () => {
                 [
                     localDirName,
                     ussname,
-                    "--recursive",
                     "--binary",
+                    "--recursive",
                     "--ascii-files " + asciiFiles
                 ]);
             expect(response.stderr.toString()).toBe("");

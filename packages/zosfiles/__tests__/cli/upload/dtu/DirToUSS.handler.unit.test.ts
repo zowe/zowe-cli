@@ -11,7 +11,6 @@
 
 import { Upload } from "../../../../src/api/methods/upload";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import * as path from "path";
 
 describe("Upload dir-to-uss handler", () => {
     describe("process method", () => {
@@ -19,8 +18,7 @@ describe("Upload dir-to-uss handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSSDir.handler");
             const handler = new handlerReq.default();
-            let inputDir = "test_dir";
-            inputDir = path.resolve(inputDir);
+            const inputDir = "C:/user/somedir/test_dir";
             const USSDir = "USS_dir";
 
             // Vars populated by the mocked function
