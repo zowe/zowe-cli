@@ -9,15 +9,14 @@
 *
 */
 
-import { Imperative, IO, Session } from "@brightside/imperative";
+import { Imperative, Session } from "@brightside/imperative";
 import * as path from "path";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-// import { Create, CreateDataSetTypeEnum, Delete, ZosFilesMessages } from "../../../../../../zosfiles";
-import { Get, ZosFilesConstants } from "../../../../../index";
+import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 
 let REAL_SESSION: Session;
@@ -56,10 +55,10 @@ describe("Upload directory to USS", () => {
         asciiFiles = "ascii_file.txt,subdir_ascii_file1.txt,subdir_ascii_file2.txt";
     });
 
-    // afterAll(async () => {
-    //     await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    //     await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
-    // });
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+    });
 
     describe("without profiles", () => {
         let sysProps;
@@ -132,39 +131,121 @@ describe("Upload directory to USS", () => {
             }
         });
 
-        it("should upload from local directory to USS directory", async () => {
+        it("should upload local directory to USS directory", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu_fully_qualified.sh");
-            console.log(TEST_ENVIRONMENT);
-            console.log(defaultSystem.zosmf.host);
-            console.log(defaultSystem.zosmf.port);
-            console.log(defaultSystem.zosmf.user);
-            console.log(defaultSystem.zosmf.pass);
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, ussname]);
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+            [
+                localDirName,
+                ussname,
+            ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
         });
 
-        // it("should upload from recursively local directory to USS directory", async () => {
-        //     const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
-        //     const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu_fully_qualified.sh");
-        //     const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, ussname, "--recursive"]);
-        //     expect(response.stderr.toString()).toBe("");
-        //     expect(response.status).toBe(0);
-        //     expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
-        // });
+        it("should upload recursively local directory and subdirectories to USS directory in binary mode", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+                    "--recursive",
+                    "--binary"
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
+        });
 
-        // it("should upload local directory with response-format-json flag", async () => {
-        //     const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
-        //     const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
-        //     const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, ussname, "--rfj"]);
-        //     expect(response.stderr.toString()).toBe("");
-        //     expect(response.status).toBe(0);
-        //     const stdoutText = response.stdout.toString();
-        //     expect(stdoutText).toContain("\"stdout\": \"success: true");
-        //     expect(stdoutText).toContain(
-        //         "\"commandResponse\": \"Directory uploaded successfully.\"");
-        // });
+        it("should upload local directory to USS directory with binary list files", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+                    "--binary-files " + binaryFile
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
+        });
+
+        it("should upload local directory to USS directory in binary mode with ascii list files", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+                    "--binary",
+                    "--ascii-files " + asciiFile
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
+        });
+
+        it("should upload recursively local directory and subdirectories to USS directory with binary list files", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+                    "--recursive",
+                    "--binary-files " + binaryFiles
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
+        });
+
+        it("should upload recursively local directory and subdirectories to USS directory in binary mode with ascii list files", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+                    "--recursive",
+                    "--binary",
+                    "--ascii-files " + asciiFiles
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
+        });
+
+        it("should give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+    ]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("Rest API failure with HTTP(S) status 500");
+        });
+
+        it("should upload local directory to USS directory with response-format-json flag", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT,
+                [
+                    localDirName,
+                    ussname,
+                    "--rfj"
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("\"stdout\": \"success: true");
+            expect(stdoutText).toContain(
+                "\"commandResponse\": \"Directory uploaded successfully.\"");
+        });
     });
 });
