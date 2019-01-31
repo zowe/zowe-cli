@@ -58,15 +58,15 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"local_dir" "/a/ibmuser/my_dir" "--recursive"`
+            options: `"local_dir" "/a/ibmuser/my_dir" --recursive`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"local_dir" "/a/ibmuser/my_dir" "--binary-files" "myFile1.exe,myFile2.exe,myFile3.exe"`
+            options: `"local_dir" "/a/ibmuser/my_dir" --binary-files "myFile1.exe,myFile2.exe,myFile3.exe"`
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"local_dir" "/a/ibmuser/my_dir" "--binary" "--ascii-files" "myFile1.txt,myFile2.txt,myFile3.txt"`
+            options: `"local_dir" "/a/ibmuser/my_dir" --binary --ascii-files "myFile1.txt,myFile2.txt,myFile3.txt"`
         }
     ]
 };
