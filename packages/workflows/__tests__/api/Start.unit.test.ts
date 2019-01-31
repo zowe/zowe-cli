@@ -12,13 +12,16 @@
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative, Headers } from "@brightside/imperative";
 import { StartWorkflow } from "../../../workflows";
-import { WorkflowConstants, noSession, noWorkflowKey } from "../../src/api/WorkflowConstants";
+import { WorkflowConstants, noSession, noWorkflowKey, nozOSMFVersion } from "../../src/api/WorkflowConstants";
+import { IStartWorkflow, startT } from "../../src/api/doc/IStartWorkflow";
 
 const wfKey = "1234567_abcde";
+const conflict: startT = "outputFileValue";
+const step = "Start";
+const subsequet = false;
 
 let START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/`;
 START_RESOURCE_QUERY += `${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}/${WorkflowConstants.START_WORKFLOW}`;
-
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -43,62 +46,125 @@ function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: s
 
 
 describe("Start workflow", () => {
+    describe("Successful tests.", () => {
 
-    it("Successfull call returns 201 - no message. Test just with workflow key.", async () => {
+        it("Successful call returns 201 - no message. Test just with workflow key.", async () => {
 
-        (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
-            return "";
+            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+                return "";
+            });
+
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
+            expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
+                [Headers.APPLICATION_JSON], {});
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual("");
         });
+        it("Should succeed even with zOSMF version undefined(because of default value).", async () => {
 
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
-        expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, [Headers.APPLICATION_JSON], { });
-        expectZosmfResponseSucceeded(response, error);
-        expect(response).toEqual("");
-    });
+            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+                return "";
+            });
 
-    it("should throw an error if the session parameter is undefined", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await StartWorkflow.startWorkflow(undefined, wfKey);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noSession.message);
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey, null, null, null, undefined);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
+            expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
+                [Headers.APPLICATION_JSON], {});
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual("");
+        });
+        it("Should succeed with all optional variables.", async () => {
+
+            (ZosmfRestClient.putExpectString as any) = jest.fn<string>(() => {
+                return "";
+            });
+
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey, conflict, step, subsequet);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            const data: IStartWorkflow = {
+                resolveConflictByUsing: conflict,
+                stepName: step,
+                performSubsequent: subsequet
+            }
+            expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
+            expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
+                [Headers.APPLICATION_JSON], data);
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual("");
+        });
     });
-    it("should throw an error if the workflowKey parameter is undefined", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await StartWorkflow.startWorkflow(PRETEND_SESSION, undefined);
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noWorkflowKey.message);
-    });
-    it("Should throw error if workflowKey is empty string.", async () => {
-        let error: ImperativeError;
-        let response: any;
-        try {
-            response = await StartWorkflow.startWorkflow(PRETEND_SESSION, "");
-            Imperative.console.info(`Response ${response}`);
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-        expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+    describe("Failing tests.", () => {
+        it("should throw an error if the session parameter is undefined", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(undefined, wfKey);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noSession.message);
+        });
+        it("should throw an error if the workflowKey parameter is undefined", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(PRETEND_SESSION, undefined);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if workflowKey is empty string.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(PRETEND_SESSION, "");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if zOSMF version is empty string.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await StartWorkflow.startWorkflow(PRETEND_SESSION, wfKey, null, null, null,"");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        });
     });
 });

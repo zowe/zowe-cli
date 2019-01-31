@@ -12,22 +12,52 @@
 
 import { AbstractSession, Headers } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { WorkflowConstants, noWorkflowKey } from "./WorkflowConstants";
+import { WorkflowConstants, noWorkflowKey, nozOSMFVersion } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
-// import { GetWfKey } from "./GetWfKey";
+import { IStartWorkflow, startT } from "./doc/IStartWorkflow";
 import { isNullOrUndefined } from "util";
 
+/**
+ * Class to handle starting of zOSMF workflow instance
+ */
 export class StartWorkflow{
-    public static async startWorkflow(session: AbstractSession, workflowKey: string) {
 
-        const zOSMFVersion = WorkflowConstants.ZOSMF_VERSION;
+    /**
+     * Create a zOSMF workflow instance
+     * @param {AbstractSession} session                     - z/OSMF connection info
+     * @param {string} workflowKey                          - Unique key that workflow instant got assigned by zOSMF
+     * @param {string} resolveConflict                      - Indicates how variable conflicts are to be handled when
+     *                                                        the Workflows task reads in the output file from a step.
+     *                                                        Allowed values are: outputFileValue, existingValue,
+     *                                                        leaveConflict(have to resolve conflict manually)
+     * @param {string} step                                 - Specifies the step name that will run.
+     * @param {string} subsequent                           - If the workflow contains any subsequent automated steps,
+     *                                                        this property indicates whether z/OSMF is to perform the steps.
+     * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
+     * @returns {Promise}
+     */
+    public static async startWorkflow(session: AbstractSession, workflowKey: string, resolveConflict?: startT, step?: string,
+                                      subsequent?: boolean, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
+
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
+        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+
+        const data: IStartWorkflow = {};
+        if (resolveConflict) {
+            data.resolveConflictByUsing = resolveConflict;
+        }
+        if (step) {
+            data.stepName = step;
+        }
+        if (!isNullOrUndefined(subsequent)) {
+            data.performSubsequent = subsequent;
+        }
 
         let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
         resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${workflowKey}/${WorkflowConstants.START_WORKFLOW}`;
 
-        return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], { });
+        return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], data );
     }
 }
 
