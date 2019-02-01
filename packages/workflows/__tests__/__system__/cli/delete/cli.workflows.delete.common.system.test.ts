@@ -11,7 +11,7 @@
 
 import { ZosmfRestClient } from "../../../../../rest";
 import { Session } from "@brightside/imperative";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript, getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { CreateWorkflow } from "../../../..";
@@ -19,7 +19,6 @@ import { TestProperties } from "../../../../../../__tests__/__src__/properties/T
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
-import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { join } from "path";
 
 let REAL_SESSION: Session;
@@ -85,7 +84,7 @@ describe("Delete workflow cli system tests", () => {
     });
     describe("Failure Scenarios", () => {
         it("Should throw error if workflowKey is empty string.", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh", testEnvironment)
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh", testEnvironment);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("workflowKey");
             expect(response.stderr.toString()).toContain("Missing Positional Argument");
@@ -93,7 +92,7 @@ describe("Delete workflow cli system tests", () => {
     });
     describe("Display Help", () => {
         it("should display delete workflow-key help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/delete_workflowkey_help.sh", testEnvironment)
+            const response = runCliScript(__dirname + "/__scripts__/delete_workflowkey_help.sh", testEnvironment);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
