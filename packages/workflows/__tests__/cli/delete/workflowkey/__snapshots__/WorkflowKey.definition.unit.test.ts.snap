@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows delete workflow-key definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "wk",
+  ],
+  "description": "Delete workflow with specified workflow key",
+  "examples": Array [
+    Object {
+      "description": "To delete a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+      "options": "\\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+    },
+  ],
+  "name": "workflow-key",
+  "positionals": Array [
+    Object {
+      "description": "workflow key of workflow instance to be deleted",
+      "name": "workflowKey",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;

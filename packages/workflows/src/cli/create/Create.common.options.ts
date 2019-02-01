@@ -15,6 +15,11 @@ import { ICommandOptionDefinition } from "@brightside/imperative";
  * Object containing all extra options to be used by the create workflow commands.
  */
 export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = {
+
+    /**
+     * Property file containing key-value pairs as workflow variables.
+     * @type {ICommandOptionDefinition}
+     */
     inputFile: {
         name: "input-file",
         aliases: ["if"],
@@ -22,6 +27,11 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         type: "string",
         required: false
     },
+
+    /**
+     * Variables list for workflow.
+     * @type {ICommandOptionDefinition}
+     */
     variables: {
         name: "variables",
         aliases: ["vs"],
@@ -29,6 +39,11 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         type: "string",
         required: false
     },
+
+    /**
+     * Indicates whether the workflow steps are assigned to the workflow owner.
+     * @type {ICommandOptionDefinition}
+     */
     assignToOwner: {
         name: "assign-to-owner",
         aliases: ["ao"],
@@ -36,6 +51,11 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         type: "boolean",
         required: false
     },
+
+    /**
+     * Specifies the access type for the workflow. Public, Restricted or Private.
+     * @type {ICommandOptionDefinition}
+     */
     accessType: {
         name: "access-type",
         aliases: ["at"],
@@ -47,6 +67,11 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
             caseSensitive: true
         },
     },
+
+    /**
+     * Whether the successfully completed jobs to  be deleted from the JES spool.
+     * @type {ICommandOptionDefinition}
+     */
     deleteCompleted: {
         name: "delete-completed",
         aliases: ["dc"],
@@ -54,6 +79,11 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         type: "boolean",
         required: false
     },
+
+    /**
+     * Identifies the version of the zOSMF workflow service.
+     * @type {ICommandOptionDefinition}
+     */
     zosmfVersion: {
         name: "zosmf-version",
         aliases: ["zosmf-v"],
