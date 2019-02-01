@@ -111,7 +111,7 @@ describe("Create workflow common handler", () => {
 
             expect(error).toBeUndefined();
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession, 
+            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
                                                                         workflowName,
                                                                         definitionDataset,
                                                                         systemName,
@@ -197,7 +197,7 @@ describe("Create workflow common handler", () => {
 
             expect(error).toBeUndefined();
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession, 
+            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
                                                                         workflowName,
                                                                         definitionUssFile,
                                                                         systemName,
