@@ -22,9 +22,10 @@ import { WorkflowConstants, nozOSMFVersion, wrongString } from "./WorkflowConsta
 export class ListWorkflows {
     /**
      * This operation returns list of workflows.
-     * Parametrs are optional,request can include one or more parameters to filter the results.
+     * Parameters are optional,request can include one or more parameters to filter the results.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
+     * @param {string} workflowName - the URI path with optional parameter for listing filtered workflows.
      * @param {string} category - the URI path with optional parameter for listing filtered workflows.
      * @param {string} system - the URI path with optional parameter for listing filtered workflows.
      * @param {string} owner - the URI path with optional parameter for listing filtered workflows.
@@ -34,12 +35,13 @@ export class ListWorkflows {
      * @memberof ListWorkflows
      */
     public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-                                      category?: string, system?: string,
+                                      workflowName?: string, category?: string, system?: string,
                                       owner?: string, vendor?: string, statusName?: string ) {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion,
             [
+                {key: WorkflowConstants.workflowName, value : workflowName},
                 {key: WorkflowConstants.category, value : category},
                 {key: WorkflowConstants.system, value : system},
                 {key: WorkflowConstants.owner, value : owner},
@@ -60,10 +62,10 @@ export class ListWorkflows {
     public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>) {
         let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         let sign = "?";
-        // Validate if parameter value does not contains ? or &
-        WorkflowValidator.validateParameter(params.forEach(element), wrongString.message);
         params.forEach((element) => {
             if (element.value) {
+                // Validate if parameter value does not contains ? or &
+                WorkflowValidator.validateParameter(element.value, wrongString.message);
                 query += sign + `${element.key}=${element.value}`;
                 sign = "&";
             }

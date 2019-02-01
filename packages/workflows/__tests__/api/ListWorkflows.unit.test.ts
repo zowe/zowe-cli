@@ -12,7 +12,7 @@
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative } from "@brightside/imperative";
 import { ListWorkflows } from "../../../workflows";
-import { WorkflowConstants } from "../../src/api/WorkflowConstants";
+import { WorkflowConstants, wrongString, noSession } from "../../src/api/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
 
 const system = "SYS1";
@@ -20,14 +20,16 @@ const category = "Provisioning";
 const statusName = "complete";
 const owner = "owner1";
 const vendor = "IBM";
-const workflowName = "workflow1"
-const wrongString = "G$#&"
+const workflowName = "workflow1";
+const badString = "Ba?d&";
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
-const PRETEND_URL = START_RESOURCE_QUERY + `?category=${category}&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
+const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${workflowName}&category=${category}`
+                                         + `&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowsInfo = {
     workflowKey: "73c81ef4-eccc-47ce-8f08-8a5c97e753f1",
+    workflowName: "workflow1",
     workflowDescription: "Workflow test",
     workflowID: "Workflow test",
     workflowVersion: "1.0",
@@ -74,7 +76,7 @@ describe("List workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, category, system, owner, vendor, statusName );
+            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, workflowName, category, system, owner, vendor, statusName );
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -112,17 +114,29 @@ describe("List workflows", () => {
     });
 
     describe("Fail scenarios", () => {
-        it("Throws an error with incorrect variable format.", async () => {
+        it("Throws an error with incorrect parameter format.", async () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, wrongString, null);
+                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, badString, badString, badString, badString, badString);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongString);
-        });   
-     });
+            expectZosmfResponseFailed(response, error, wrongString.message);
+        });
+        it("Throws an error with undefined session.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await ListWorkflows.listWorkflows(undefined);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+              error = thrownError;
+              Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noSession.message);
+        });
+    });
 });
