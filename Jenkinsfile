@@ -104,11 +104,6 @@ def ARTIFACTORY_EMAIL = GIT_USER_EMAIL
  */
 def PRODUCT_NAME = "Zowe CLI"
 
-/**
- * Release branches
- */
-def RELEASE_BRANCHES = ["1.0.0", "lts-stable", "lts-incremental", /*"latest"*/] // Remove latest until GA
-
 // Setup conditional build options. Would have done this in the options of the declarative pipeline, but it is pretty
 // much impossible to have conditional options based on the branch :/
 def opts = []
