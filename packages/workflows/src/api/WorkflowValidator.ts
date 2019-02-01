@@ -102,9 +102,9 @@ export class WorkflowValidator {
         ImperativeExpect.toBeEqual(true, result, errorMsg);
     }
     /**
-     * Validate supplied string for parameter
+     * Validate supplied string for parameters if there is not value "?" or "&"
      * @static
-     * @param {string} parameterValue - string to check if it does not contain value ? or &
+     * @param {string} parameterValue - check if the provided parameters does not contain value "?" or "&"
      * @param {string} errorMsg - message to show in case validation fails
      * @memberof WorkflowValidator
      */
