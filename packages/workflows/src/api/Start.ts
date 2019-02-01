@@ -48,6 +48,7 @@ export class StartWorkflow{
             data.resolveConflictByUsing = resolveConflict;
         }
         if (step) {
+            // TODO error if stepName doesn't exist + add to unit and system tests
             data.stepName = step;
         }
         if (!isNullOrUndefined(subsequent)) {

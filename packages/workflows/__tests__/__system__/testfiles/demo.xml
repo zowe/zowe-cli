@@ -2,6 +2,7 @@
 <workflow>
     <autoTakeOwnership>false</autoTakeOwnership>
     <workflowInfo>
+        <parallelSteps>false</parallelSteps>
         <workflowID scope="none">Greeting</workflowID>
         <workflowDescription>Greeting workflow</workflowDescription>
         <workflowVersion>1</workflowVersion>
@@ -25,7 +26,7 @@
         </string>
     </variable>
     <atCreate name="GREETING" scope="instance" required="false" prompt="true"/>
-	   <step name="echo" optional="false">
+    <step name="echo" optional="false">
         <title>echo</title>
         <description/>
         <instructions substitution="false">Generated instruction text for step: echo
@@ -34,8 +35,23 @@ Update this field with your own text</instructions>
         <autoEnable>true</autoEnable>
         <canMarkAsFailed>false</canMarkAsFailed>
         <template>
-            <inlineTemplate substitution="true">echo &quot;${instance-GREETING}&quot;</inlineTemplate>
+            <inlineTemplate substitution="true">echo "${instance-GREETING}"</inlineTemplate>
             <submitAs maxRc="0">shell-JCL</submitAs>
+        </template>
+    </step>
+    <step name="echo2" optional="false">
+        <title>Second echo</title>
+        <description></description>
+        <instructions substitution="false">Generated instruction text for step: echo2
+Update this field with your own text</instructions>
+        <weight>1</weight>
+        <autoEnable>true</autoEnable>
+        <canMarkAsFailed>false</canMarkAsFailed>
+        <template>
+            <inlineTemplate substitution="false">echo "Shouldn't run when stepName is \'echo\'"
+echo "and at the same time erformSubsequent is false"</inlineTemplate>
+            <submitAs maxRc="0">shell-JCL</submitAs>
+            <maxLrecl>80</maxLrecl>
         </template>
     </step>
 </workflow>

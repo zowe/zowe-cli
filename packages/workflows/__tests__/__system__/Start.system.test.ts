@@ -106,7 +106,34 @@ describe("Start workflow", () => {
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expectZosmfResponseSucceeded(response, error);
+        });
+        it("Should start workflow in zOSMF with all options.", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, "outputFileValue", "echo", false);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            // when properties are ready, check if just wan step was run
+            expectZosmfResponseSucceeded(response, error);
+        });
+        it("Should start workflow in zOSMF even if zOSMF version is undefined.", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, null, null, null, undefined);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
         });
