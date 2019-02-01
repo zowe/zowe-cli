@@ -18,7 +18,7 @@ describe("Upload dir-to-uss handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSSDir.handler");
             const handler = new handlerReq.default();
-            const inputDir = "C:/user/somedir/test_dir";
+            const inputDir = "/somedir/test_dir";
             const USSDir = "USS_dir";
 
             // Vars populated by the mocked function

@@ -4,7 +4,7 @@ exports[`Upload dir-to-uss handler process method should upload a directory to a
 Object {
   "apiResponse": Array [
     Object {
-      "from": "C:/user/somedir/test_dir",
+      "from": "/somedir/test_dir",
       "success": true,
       "to": "USS_dir",
     },
@@ -30,7 +30,7 @@ exports[`Upload dir-to-uss handler process method should upload a directory to a
 "
 [32m- [39m
   [33msuccess: [39m[32mtrue[39m
-  [33mfrom: [39m   C:/user/somedir/test_dir
+  [33mfrom: [39m   /somedir/test_dir
   [33mto: [39m     USS_dir
 [32m- [39m
   [33msuccess: [39m[31mfalse[39m
