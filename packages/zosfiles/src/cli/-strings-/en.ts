@@ -357,18 +357,18 @@ export default {
                 }
             },
             DIR_TO_USS: {
-                DESCRIPTION: "Upload files from a local directory to USS directory",
+                DESCRIPTION: "Upload a local directory to a USS directory",
                 POSITIONALS: {
-                    INPUTDIR: "The path for a local directory that you want to upload to USS",
-                    USSDIR: "The name of the USS directory to which you want to upload the files"
+                    INPUTDIR: "The local directory path that you want to upload to a USS directory",
+                    USSDIR: "The name of the USS directory to which you want to upload the local directory"
                 },
                 EXAMPLES: {
                     EX1: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"`,
                     EX2: `Upload all files from a directory named "local_dir" and all its sub-directories, `+
                     `to a USS directory named "/a/ibmuser/my_dir"`,
-                    EX3: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"` +
+                    EX3: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir" ` +
                     `in default ASCII mode, while specifying a list of files to be uploaded in binary mode`,
-                    EX4: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"` +
+                    EX4: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir" ` +
                     `in binary mode, while specifying a list of files to be uploaded in ASCII mode`
                 }
             },
