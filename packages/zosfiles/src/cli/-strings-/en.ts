@@ -363,13 +363,13 @@ export default {
                     USSDIR: "The name of the USS directory to which you want to upload the local directory"
                 },
                 EXAMPLES: {
-                    EX1: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir"`,
-                    EX2: `Upload all files from a directory named "local_dir" and all its sub-directories, `+
-                    `to a USS directory named "/a/ibmuser/my_dir"`,
-                    EX3: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir" ` +
-                    `in default ASCII mode, while specifying a list of files to be uploaded in binary mode`,
-                    EX4: `Upload all files from a directory named "local_dir" to a USS directory named "/a/ibmuser/my_dir" ` +
-                    `in binary mode, while specifying a list of files to be uploaded in ASCII mode`
+                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
+                    EX2: `Upload all files from the "local_dir" directory and all its sub-directories, `+
+                    `to the "/a/ibmuser/my_dir" USS directory:`,
+                    EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
+                    `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
+                    EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
+                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`
                 }
             },
         },
@@ -381,12 +381,14 @@ export default {
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
                 "specify the following values: wait, nowait, error",
             RECURSIVE: "Upload all directories recursively.",
-            BINARY_FILES: "Comma separated list of files to be uploaded in binary mode. " +
-            "Use this option when you upload the directory in default ASCII " +
-            "but you want to specify certain files to be uploaded in binary.",
-            ASCII_FILES: "Comma separated list of files to be uploaded in ASCII mode. " +
-            "Use this option when you upload the directory with --binary/-b flag " +
-            "but you want to specify certain files to be uploaded in ASCII."
+            BINARY_FILES: "Comma separated list of file names to be uploaded in binary mode. " +
+            "Use this option when you upload a directory in default ASCII mode, " +
+            "but you want to specify certain files to be uploaded in binary mode. " +
+            "All files matching specified file names will be uploaded in binary mode.",
+            ASCII_FILES: "Comma separated list of file names to be uploaded in ASCII mode. " +
+            "Use this option when you upload a directory with --binary/-b flag, " +
+            "but you want to specify certain files to be uploaded in ASCII mode. "  +
+            "All files matching specified file names will be uploaded in ASCII mode."
         }
     }
 };

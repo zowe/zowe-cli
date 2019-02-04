@@ -25,7 +25,7 @@ Array [
     "conflictsWith": Array [
       "ascii-files",
     ],
-    "description": "Comma separated list of files to be uploaded in binary mode. Use this option when you upload the directory in default ASCII but you want to specify certain files to be uploaded in binary.",
+    "description": "Comma separated list of file names to be uploaded in binary mode. Use this option when you upload a directory in default ASCII mode, but you want to specify certain files to be uploaded in binary mode. All files matching specified file names will be uploaded in binary mode.",
     "name": "binary-files",
     "type": "string",
   },
@@ -36,7 +36,7 @@ Array [
     "conflictsWith": Array [
       "binary-files",
     ],
-    "description": "Comma separated list of files to be uploaded in ASCII mode. Use this option when you upload the directory with --binary/-b flag but you want to specify certain files to be uploaded in ASCII.",
+    "description": "Comma separated list of file names to be uploaded in ASCII mode. Use this option when you upload a directory with --binary/-b flag, but you want to specify certain files to be uploaded in ASCII mode. All files matching specified file names will be uploaded in ASCII mode.",
     "name": "ascii-files",
     "type": "string",
   },
@@ -46,19 +46,19 @@ Array [
 exports[`zos-files upload dtu command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Upload all files from a directory named \\"local_dir\\" to a USS directory named \\"/a/ibmuser/my_dir\\"",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory:\\"",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\"",
   },
   Object {
-    "description": "Upload all files from a directory named \\"local_dir\\" and all its sub-directories, to a USS directory named \\"/a/ibmuser/my_dir\\"",
+    "description": "Upload all files from the \\"local_dir\\" directory and all its sub-directories, to the \\"/a/ibmuser/my_dir\\" USS directory:",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --recursive",
   },
   Object {
-    "description": "Upload all files from a directory named \\"local_dir\\" to a USS directory named \\"/a/ibmuser/my_dir\\" in default ASCII mode, while specifying a list of files to be uploaded in binary mode",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary-files \\"myFile1.exe,myFile2.exe,myFile3.exe\\"",
   },
   Object {
-    "description": "Upload all files from a directory named \\"local_dir\\" to a USS directory named \\"/a/ibmuser/my_dir\\" in binary mode, while specifying a list of files to be uploaded in ASCII mode",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary --ascii-files \\"myFile1.txt,myFile2.txt,myFile3.txt\\"",
   },
 ]
