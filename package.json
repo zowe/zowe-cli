@@ -1,13 +1,13 @@
 {
   "name": "@brightside/core",
-  "version": "2.0.0-next.201901181325",
+  "version": "2.0.0-alpha.201902011403",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
+  "author": "Broadcom",
+  "license": "EPL-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/zowe/zowe-cli.git"
   },
-  "license": "EPL-2.0",
-  "author": "CA",
   "bin": {
     "bright": "./lib/main.js",
     "zowe": "./lib/main.js"
@@ -60,7 +60,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@brightside/imperative": ">=2.0.0-0",
+    "@brightside/imperative": "2.0.0-next.201901292011",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
   },
