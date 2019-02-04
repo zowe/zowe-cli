@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows create uss-file definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "uf",
+  ],
+  "description": "Create a workflow instance in z/OSMF using a USS file",
+  "examples": Array [
+    Object {
+      "description": "Create a workflow with name \\"testworkflow\\" uss file \\"/path/workflow.xml\\", system name \\"TESTM1\\" and owner \\"testid\\"",
+      "options": "\\"testworkflow\\" \\"/path/workflow.xml\\" \\"TESTM1\\" \\"testid\\"",
+    },
+  ],
+  "name": "uss-file",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "if",
+      ],
+      "description": "Properties file with pre-specified values for workflow variables ",
+      "name": "input-file",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "vs",
+      ],
+      "description": "A list of one or more variables for the workflow.",
+      "name": "variables",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ao",
+      ],
+      "description": "Indicates whether the workflow steps are assigned to the workflow owner",
+      "name": "assign-to-owner",
+      "required": false,
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "at",
+      ],
+      "allowableValues": Object {
+        "caseSensitive": true,
+        "values": Array [
+          "Public",
+          "Restricted",
+          "Private",
+        ],
+      },
+      "description": "Specifies the access type for the workflow. Public, Restricted or Private.",
+      "name": "access-type",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "dc",
+      ],
+      "description": "Whether the successfully completed jobs to  be deleted from the JES spool.",
+      "name": "delete-completed",
+      "required": false,
+      "type": "boolean",
+    },
+  ],
+  "outputFormatOptions": true,
+  "positionals": Array [
+    Object {
+      "description": "Name of the workflow instance to create",
+      "name": "workflowName",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "USS file containing workflow definiton",
+      "name": "definitionUssFile",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "System where the workflow will run",
+      "name": "systemName",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "User id of the owner of the workflow",
+      "name": "owner",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;
