@@ -109,7 +109,7 @@ describe("Start workflow", () => {
                 resolveConflictByUsing: conflict,
                 stepName: step,
                 performSubsequent: subsequet
-            }
+            };
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
                 [Headers.APPLICATION_JSON], data);
