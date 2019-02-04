@@ -9,15 +9,14 @@
 *
 */
 
-export { Constants } from "./Constants";
-export * from "./rest";
-export * from "./utils";
-export * from "./zosconsole";
-export * from "./zosfiles";
-export * from "./zosjobs";
-export * from "./zostso";
-export * from "./zosunix";
-export * from "./zosmf";
-export * from "./provisioning";
-export * from "./workflows";
+import { ITestSystemSchema } from "./ITestSystemSchema";
 
+export interface ITestSystemsGroupSchema {
+
+    common: ITestSystemSchema;
+    specific: [
+        ITestSystemSchema
+        ];
+    primary: string;
+
+}
