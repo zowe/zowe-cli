@@ -61,7 +61,10 @@
   },
   "dependencies": {
     "@brightside/imperative": ">=2.0.0-0",
+    "@types/ssh2": "^0.5.37",
     "js-yaml": "3.9.0",
+    "popper.js": "^1.14.7",
+    "ssh2": "^0.8.2",
     "string-width": "2.1.1"
   },
   "devDependencies": {

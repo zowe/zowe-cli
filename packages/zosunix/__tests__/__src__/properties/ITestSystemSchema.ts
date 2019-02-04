@@ -9,15 +9,9 @@
 *
 */
 
-export { Constants } from "./Constants";
-export * from "./rest";
-export * from "./utils";
-export * from "./zosconsole";
-export * from "./zosfiles";
-export * from "./zosjobs";
-export * from "./zostso";
-export * from "./zosunix";
-export * from "./zosmf";
-export * from "./provisioning";
-export * from "./workflows";
+import { ITestZosmfSchema } from "./ITestZosmfSchema";
 
+export interface ITestSystemSchema {
+    name?: string;
+    zosmf?: ITestZosmfSchema;
+}

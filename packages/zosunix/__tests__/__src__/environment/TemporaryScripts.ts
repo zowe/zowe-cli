@@ -9,15 +9,11 @@
 *
 */
 
-export { Constants } from "./Constants";
-export * from "./rest";
-export * from "./utils";
-export * from "./zosconsole";
-export * from "./zosfiles";
-export * from "./zosjobs";
-export * from "./zostso";
-export * from "./zosunix";
-export * from "./zosmf";
-export * from "./provisioning";
-export * from "./workflows";
+export class TemporaryScripts {
+    /**
+     * Shebang to generated start script files with
+     */
+    public static readonly SHEBANG = "#!/bin/bash\n\n";
 
+    public static readonly ZOWE_BIN = "zowe";
+}
