@@ -109,7 +109,7 @@ export class WorkflowValidator {
      * @memberof WorkflowValidator
      */
     public static validateParameter(parameterValue: string, errorMsg: string) {
-        const result: boolean = /^[^ ?&]+$/.test(parameterValue);
+        const result: boolean = /^[^+?&]+$/.test(parameterValue);
         if(!result){
             throw new ImperativeError({msg : errorMsg});
         }

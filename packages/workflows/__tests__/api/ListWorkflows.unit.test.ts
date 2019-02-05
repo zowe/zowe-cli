@@ -21,7 +21,8 @@ const statusName = "complete";
 const owner = "owner1";
 const vendor = "IBM";
 const workflowName = "workflow1";
-const badString = "Ba?d&";
+const badString = "Ba?d";
+const badString1 = "Ba&d";
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
 const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${workflowName}&category=${category}`
@@ -87,7 +88,7 @@ describe("List workflows", () => {
         expectZosmfResponseSucceeded(response, error);
         expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
     });
-    // List workflow without any optional parameters
+    // List all workflows - without any optional parameters
     it("Successful call without any optional parameters.", async () => {
 
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
@@ -118,7 +119,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, badString, badString, badString, badString, badString);
+                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, badString, badString1, badString, badString, badString);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
