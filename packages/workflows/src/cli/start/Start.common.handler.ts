@@ -12,6 +12,7 @@
 import { IHandlerParameters } from "@brightside/imperative";
 import { StartWorkflow } from "../../api/Start";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { isNullOrUndefined } from "util";
 
 
 /**
@@ -37,9 +38,12 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
         let error;
         this.arguments = params.arguments;
         // TODO after list is done: if workflow name is passed, get key
+        if (isNullOrUndefined(this.arguments.performOneStep)) {
+            this.arguments.performOneStep = false;
+        }
         try{
             await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict,
-                this.arguments.stepName, this.arguments.performSubsequent);
+                this.arguments.stepName, !this.arguments.performOneStep);
         } catch (err){
             error = "Start workflow: " + err;
             throw error;
@@ -48,5 +52,8 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
         params.response.data.setObj("Started.");
         params.response.console.log("Workflow started.");
         // TODO after properties are done: if wait, make loop asking for workflow status
+        // TODO when there is some step and wait specified, check only the step (eventually subsequent) check just the step
+        // TODO and/or subsequent, because when was run only part of the workflow was it ends 'in-progress'
+        // TODO which is otherwise 'fail'
     }
 }

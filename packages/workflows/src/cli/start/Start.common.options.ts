@@ -51,14 +51,10 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
      * this property indicates whether z/OSMF is to perform the steps.
      * @type {ICommandOptionDefinition}
      */
-    performSubsequent: {
-        name: "perform-subsequent",
-        aliases: ["ps"],
-        // TODO should there be in the description how to set it to false?
-        // TODO if omitting this flag zOSMF will take it's default which is true
-        // TODO it can't be automatically set to false if omitted cause customer could just forget it
-        // TODO and then the workflow wouldn't run properly (just the first step)
-        description: "Identifies whether to perform all subsequent automated steps.",
+    performOneStep: {
+        name: "perform-one-step",
+        aliases: ["pos"],
+        description: "Identifies whether to perform just one specified step.",
         type: "boolean",
         required: false
     },
