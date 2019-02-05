@@ -56,7 +56,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     error = "Register workflow: " + err;
                     throw error;
                 }
-                params.response.data.setObj("Workflow created with workflow-key " + resp.workflowKey);
+                params.response.data.setObj(resp);
                 params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
                 break;
 
@@ -69,7 +69,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     error = "Register workflow: " + err;
                     throw error;
                 }
-                params.response.data.setObj("Workflow created with workflow-key " + resp.workflowKey);
+                params.response.data.setObj(resp);
                 params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
                 break;
 
