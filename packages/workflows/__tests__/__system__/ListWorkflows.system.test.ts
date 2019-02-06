@@ -23,7 +23,7 @@ import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
 import {
     noSession,
-    nozOSMFVersion, 
+    nozOSMFVersion,
     wrongString
 } from "../../src/api/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
@@ -37,11 +37,10 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
-let workflowName: string;
-let vendor: string;
-let category: string;
-let statusName: string;
 
+const vendor = "Broadcom";
+const category = "General";
+const statusName = "in-progress";
 const badString = "Ba?d";
 const badString1 = "Ba&d";
 const workflow = __dirname + "/testfiles/demo.xml";
@@ -102,13 +101,26 @@ describe("List workflows", () => {
         afterEach(async () => {
             // deleting workflow
             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
-        });    
+        });
+        it("List all workflows - without any optional parameters.", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await ListWorkflows.listWorkflows(REAL_SESSION);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error wut: " + inspect(error));
+            }
+            expectZosmfResponseSucceeded(response, error);
+         });
         it("List workflow that match all optional parameters", async () => {
             let error;
             let response;
 
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, workflowName, category, system, owner, vendor, statusName);
+                response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined, wfName, category, system, owner, vendor, statusName);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -129,19 +141,6 @@ describe("List workflows", () => {
             }
             expectZosmfResponseSucceeded(response, error);
          });
-         it("List all workflows - without any optional parameters.", async () => {
-            let error;
-            let response;
-
-            try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION);
-                Imperative.console.info("Response: " + inspect(response));
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
-            }
-            expectZosmfResponseSucceeded(response, error);
-         }); 
     });
     describe("Failure scenarios", () => {
         it("Throws an error with undefined session.", async () => {
@@ -172,7 +171,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, null, null, null, null, null, "");
+                response = await ListWorkflows.listWorkflows(REAL_SESSION, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
