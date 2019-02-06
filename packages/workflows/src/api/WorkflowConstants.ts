@@ -43,6 +43,62 @@ export class WorkflowConstants {
     public static readonly START_WORKFLOW: string = "operations/start";
 
     /**
+     * URI base for list workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly LIST_WORKFLOWS: string = "operations/list";
+
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly category: string = "category";
+
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly system: string = "system";
+
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly owner: string = "owner";
+
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly vendor: string = "vendor";
+
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly statusName: string = "statusName";
+
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly workflowName: string = "workflowName";
+
+    /**
      * URI base for filtering workflow by name API.
      * @static
      * @type {string}
@@ -116,6 +172,16 @@ export const noWorkflowName: IMessageDefinition = {
  */
 export const noSystemName: IMessageDefinition = {
     message: apiErrorHeader + `No system name parameter was supplied.`
+};
+
+/**
+ * Error message that no system name parameter string was supplied.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const wrongString: IMessageDefinition = {
+    message: apiErrorHeader + `Parameter contains wrong character - & or ?.`
 };
 /**
  * Error message that no owner parameter string was supplied.
