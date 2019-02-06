@@ -18,7 +18,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to upload content from a local file to a USS file
  * @export
  */
-export default class FileToDataSetHandler extends ZosFilesBaseHandler {
+export default class FileToUSSHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
