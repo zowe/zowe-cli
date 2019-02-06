@@ -86,7 +86,7 @@ describe("List workflows", () => {
             let response;
 
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // deleting uploaded workflow file
+            // Deleting uploaded workflow file
             try {
                 const wfEndpoint = endpoint + definitionFile;
                 response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
