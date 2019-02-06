@@ -220,6 +220,8 @@ pipeline {
                     }
 
                     sh 'npm install'
+                    // log out the imperative version
+                    sh 'node -e "console.log(\\\"Imperative version: \\\"+require(\\\"./node_modules/@brightside/imperative/package.json\\\").version)"'
                     sh 'npm logout'
                 }
             }
