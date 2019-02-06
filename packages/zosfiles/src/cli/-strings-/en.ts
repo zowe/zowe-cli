@@ -313,7 +313,7 @@ export default {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {
             DIR_TO_PDS: {
-                DESCRIPTION: "Upload files from a directory to a partioned data set (PDS)",
+                DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",
                 POSITIONALS: {
                     INPUTDIR: "The path for a local directory that you want to upload to a PDS",
                     DATASETNAME: "The name of the partitioned data set to which you want to upload the files"
@@ -356,6 +356,22 @@ export default {
                     EX1: `Upload to the USS file "/a/ibmuser/my_text.txt" from the file "file.txt"`
                 }
             },
+            DIR_TO_USS: {
+                DESCRIPTION: "Upload a local directory to a USS directory",
+                POSITIONALS: {
+                    INPUTDIR: "The local directory path that you want to upload to a USS directory",
+                    USSDIR: "The name of the USS directory to which you want to upload the local directory"
+                },
+                EXAMPLES: {
+                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
+                    EX2: `Upload all files from the "local_dir" directory and all its sub-directories, `+
+                    `to the "/a/ibmuser/my_dir" USS directory:`,
+                    EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
+                    `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
+                    EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
+                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`
+                }
+            },
         },
         OPTIONS: {
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
@@ -363,7 +379,16 @@ export default {
             BINARY: "Data content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each record as-is, without translation. No delimiters are added between records.",
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
-                "specify the following values: wait, nowait, error"
+                "specify the following values: wait, nowait, error",
+            RECURSIVE: "Upload all directories recursively.",
+            BINARY_FILES: "Comma separated list of file names to be uploaded in binary mode. " +
+            "Use this option when you upload a directory in default ASCII mode, " +
+            "but you want to specify certain files to be uploaded in binary mode. " +
+            "All files matching specified file names will be uploaded in binary mode.",
+            ASCII_FILES: "Comma separated list of file names to be uploaded in ASCII mode. " +
+            "Use this option when you upload a directory with --binary/-b flag, " +
+            "but you want to specify certain files to be uploaded in ASCII mode. "  +
+            "All files matching specified file names will be uploaded in ASCII mode."
         }
     }
 };

@@ -188,7 +188,6 @@ export const wrongString: IMessageDefinition = {
  * @static
  * @type {IMessageDefinition}
  * @memberof WorkflowConstants
- * TODO: userID validation: consists of one to eight alphanumeric characters (A-Z, a-z, 0-9, #, $, and @)
  */
 export const noOwner: IMessageDefinition = {
     message: apiErrorHeader + `No owner parameter was supplied.`
