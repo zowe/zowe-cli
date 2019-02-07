@@ -40,7 +40,7 @@ export const WorkflowKey: ICommandDefinition = {
     options: ([
         StartCommonOptions.resolveConflict,
         StartCommonOptions.stepName,
-        StartCommonOptions.performSubsequent,
+        StartCommonOptions.performOneStep,
         // StartCommonOptions.wait,
         // StartCommonOptions.zosmfVersion
     ]),
