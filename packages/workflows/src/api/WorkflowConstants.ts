@@ -58,6 +58,30 @@ export class WorkflowConstants {
      */
     public static readonly ZOSMF_VERSION: string = "1.0";
 
+    /**
+     * URI base for returnData for workflow properties from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly returnData: string = "returnData";
+
+    /**
+     * URI base for steps for workflow properties from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly steps: string = "steps";
+
+    /**
+     * URI base for variables for workflow properties from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly variables: string = "variables";
+
 }
 
 /**
@@ -90,6 +114,26 @@ export const nozOSMFVersion: IMessageDefinition = {
 export const noWorkflowKey: IMessageDefinition = {
     message: apiErrorHeader + `No workflow key parameter was supplied.`
 };
+/**
+ * Error message that no steps parameter was supplied.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const noSteps: IMessageDefinition = {
+        message: apiErrorHeader + `No steps parameter was supplied.`
+};
+
+/**
+ * Error message that no variables parameter was supplied.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const noVariables: IMessageDefinition = {
+        message: apiErrorHeader + `No variables parameter was supplied.`
+};
+
 /**
  * Error message that no workflow definition file parameter string was supplied.
  * @static
