@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, TextUtils, ITaskWithStatus, TaskStage } from "@brightside/imperative";
 import { Upload } from "../../../api/methods/upload";
 import { IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -24,6 +24,12 @@ import { IUploadMap } from "../../../api/methods/upload/doc/IUploadMap";
 export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
+
+        const status: ITaskWithStatus = {
+            statusMessage: "Uploading all files",
+            percentComplete: 0,
+            stageName: TaskStage.IN_PROGRESS
+        };
 
         let inputDir: string;
 
@@ -51,8 +57,17 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             };
         }
 
-        const response = await Upload.dirToUSSDir(session, inputDir, commandParameters.arguments.USSDir,
-            commandParameters.arguments.binary, commandParameters.arguments.recursive, filesMap);
+        commandParameters.response.progress.startBar({task: status});
+
+        const response = await Upload.dirToUSSDir(session,
+            inputDir,
+            commandParameters.arguments.USSDir, {
+            binary: commandParameters.arguments.binary,
+            recursive: commandParameters.arguments.recursive,
+            fileMap: filesMap,
+            maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+            task: status
+        });
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;

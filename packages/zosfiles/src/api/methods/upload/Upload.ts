@@ -463,60 +463,121 @@ export class Upload {
     public static async dirToUSSDir(session: AbstractSession,
                                     inputDirectory: string,
                                     ussname: string,
-                                    binary: boolean = false,
-                                    recursive: boolean = false,
-                                    filesMap?: IUploadMap): Promise<IZosFilesResponse> {
+                                    options: IUploadOptions,
+                                    // binary: boolean = false,
+                                    // recursive: boolean = false,
+                                    // filesMap?: IUploadMap,
+                                    // maxConcurrentRequests?: number
+                                    ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeEqual(inputDirectory,"", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
 
-        // Check if inputDirectory is directory
-        if(!IO.isDir(inputDirectory)) {
-            throw new ImperativeError({
-                msg: ZosFilesMessages.missingInputDirectory.message
-            });
-        }
+        try {
+            // Check if inputDirectory is directory
+            if(!IO.isDir(inputDirectory)) {
+                throw new ImperativeError({
+                    msg: ZosFilesMessages.missingInputDirectory.message
+                });
+            }
 
-        // Check if provided unix directory exists
-        const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-        if(!isDirectoryExist) {
-            await Create.uss(session, ussname, "directory");
-        }
+            // Check if provided unix directory exists
+            const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+            if(!isDirectoryExist) {
+                await Create.uss(session, ussname, "directory");
+            }
 
-        if(recursive === false) {
-            const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
-            await Promise.all(files.map(async (fileName) => {
-                const filePath = path.normalize(path.join(inputDirectory, fileName));
-                if(!IO.isDir(filePath)) {
-                    let tempBinary;
-                    if(filesMap) {
-                        if(filesMap.fileNames.indexOf(fileName) > -1) {
-                            tempBinary = filesMap.binary;
-                        } else {
-                            tempBinary = binary;
-                        }
-                    } else {
-                        tempBinary = binary;
-                    }
-                    const ussFilePath = path.posix.join(ussname, fileName);
-                    await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
+            let uploadsInitiated = 0;
+
+            const createUploadPromise = (mem: { member: string }) => {
+                // update the progress bar if any
+                if (options.task != null) {
+                    options.task.statusMessage = "Uploading " + mem.member;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (uploadsInitiated / memberList.length));
+                    uploadsInitiated++;
                 }
-            }));
-        } else {
-            await this.dirToUSSDirRecursive(session, inputDirectory, ussname, binary, filesMap);
+                return this.dataSet(session, `${dataSetName}(${mem.member})`, {
+                    volume: options.volume,
+                    file: baseDir + IO.FILE_DELIM + mem.member.toLowerCase() +
+                        IO.normalizeExtension(extension),
+                    binary: options.binary
+                });
+            };
+
+            // Set maxConcurrentRequests default value to 1
+            const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+
+            if (maxConcurrentRequests === 0) {
+                await Promise.all(memberList.map(createDownloadPromise));
+            } else {
+                await asyncPool(maxConcurrentRequests, memberList, createDownloadPromise);
+            }
+
+            return {
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, baseDir),
+                apiResponse: response.apiResponse
+            };
+
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+
+            throw error;
         }
 
-        const result: IUploadResult = {
-            success: true,
-            from: inputDirectory,
-            to: ussname
-        };
-        return {
-            success: true,
-            commandResponse: ZosFilesMessages.ussDirUploadedSuccessfully.message,
-            apiResponse: result
-        };
+        
+
+        // // Check if inputDirectory is directory
+        // if(!IO.isDir(inputDirectory)) {
+        //     throw new ImperativeError({
+        //         msg: ZosFilesMessages.missingInputDirectory.message
+        //     });
+        // }
+
+        // // Set maxConcurrentRequests default value to 1
+        // maxConcurrentRequests = maxConcurrentRequests == null ? 1 : maxConcurrentRequests;
+
+        // // Check if provided unix directory exists
+        // const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+        // if(!isDirectoryExist) {
+        //     await Create.uss(session, ussname, "directory");
+        // }
+
+        // if(recursive === false) {
+        //     const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+        //     await Promise.all(files.map(async (fileName) => {
+        //         const filePath = path.normalize(path.join(inputDirectory, fileName));
+        //         if(!IO.isDir(filePath)) {
+        //             let tempBinary;
+        //             if(filesMap) {
+        //                 if(filesMap.fileNames.indexOf(fileName) > -1) {
+        //                     tempBinary = filesMap.binary;
+        //                 } else {
+        //                     tempBinary = binary;
+        //                 }
+        //             } else {
+        //                 tempBinary = binary;
+        //             }
+        //             const ussFilePath = path.posix.join(ussname, fileName);
+        //             await this.fileToUSSFile(session, filePath, ussFilePath, tempBinary);
+        //         }
+        //     }));
+        // } else {
+        //     await this.dirToUSSDirRecursive(session, inputDirectory, ussname, binary, filesMap);
+        // }
+
+        // const result: IUploadResult = {
+        //     success: true,
+        //     from: inputDirectory,
+        //     to: ussname
+        // };
+        // return {
+        //     success: true,
+        //     commandResponse: ZosFilesMessages.ussDirUploadedSuccessfully.message,
+        //     apiResponse: result
+        // };
     }
 
     /**
