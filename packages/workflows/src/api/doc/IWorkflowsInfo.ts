@@ -18,64 +18,42 @@ import { IExplanationMap } from "@brightside/imperative";
  */
 export interface IWorkflowsInfo {
     /**
-     * Type of the software.
+     * The user ID that identifies the owner of the software.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
     owner?: string;
 
     /**
-     * System on which the software is provisioned.
-     * @type {string}
-     * @memberof IWorkflowsInfo
-     */
-    workflowDefinitionFileMD5Value?: string;
-
-    /**
-     * Sysplex on which the software is provisioned.
-     * @type {string}
-     * @memberof IWorkflowsInfo
-     */
-    instanceURI?: string;
-
-    /**
-     * Vendor of the software.
-     * @type {string}
-     * @memberof IWorkflowsInfo
-     * null - what type is that
-     */
-    access?: string;
-
-    /**
-     * Version of the software.
+     * Unique workflow key.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
     workflowKey?: string;
 
     /**
-     * Description for the software.
+     * Descriptive name for the workflow.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
     workflowName?: string;
 
     /**
-     * The user ID that identifies the owner of the software.
+     * Version of the workflow.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
     workflowVersion?: string;
 
     /**
-     * The user ID that identifies the provider of the software.
+     * Description of the workflow.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
     workflowDescription?: string;
 
     /**
-     * The current state of the software.
+     * Short ID that identifies the workflow.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
@@ -89,20 +67,21 @@ export interface IWorkflowsInfo {
     vendor?: string;
 
     /**
-     * System on which the software is provisioned.
+     * Nickname of the system on which the workflow is to be performed.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
     system?: string;
 
-   /**
-    * The category of the software workflow.
-    * @type {string}
-    * @memberof IWorkflowsInfo
-    */
-    category?: string;
     /**
-     * The name of the status of the workflow.
+     * The category of the software workflow.
+     * @type {string}
+     * @memberof IWorkflowsInfo
+     */
+    category?: string;
+
+    /**
+     * Indicates the current workflow status.
      * @type {string}
      * @memberof IWorkflowsInfo
      */
