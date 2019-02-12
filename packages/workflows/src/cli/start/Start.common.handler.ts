@@ -13,6 +13,8 @@ import { IHandlerParameters } from "@brightside/imperative";
 import { StartWorkflow } from "../../api/Start";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { isNullOrUndefined } from "util";
+import {PropertiesWorkflow} from "../../..";
+import {IWorkflowInfo} from "../../api/doc/IWorkflowInfo";
 
 
 /**
@@ -49,9 +51,29 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
             throw error;
         }
         // TODO: should be still shown if there is wait?
-        params.response.data.setObj("Started.");
-        params.response.console.log("Workflow started.");
-        // TODO after properties are done: if wait, make loop asking for workflow status
+        if (this.arguments.wait){
+            let response: IWorkflowInfo;
+            let x = true;
+            while(x) {
+                response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
+                if (response.automationStatus){
+                    if(isNullOrUndefined(response.automationStatus.currentStepName)){
+                        if (response.statusName === "complete"){
+                            params.response.data.setObj("Complete.");
+                            params.response.console.log("Workflow completed successfully.");
+                            x=false;
+                        } else {
+                            params.response.data.setObj("Fail.");
+                            params.response.console.log("Workflow failed.");
+                            x=false;
+                        }
+                    }
+                }
+            }
+        } else {
+            params.response.data.setObj("Started.");
+            params.response.console.log("Workflow started.");
+        }
         // TODO when there is some step and wait specified, check only the step (eventually subsequent) check just the step
         // TODO and/or subsequent, because when was run only part of the workflow was it ends 'in-progress'
         // TODO which is otherwise 'fail'
