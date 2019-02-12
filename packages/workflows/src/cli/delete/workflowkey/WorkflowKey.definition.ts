@@ -20,9 +20,9 @@ import { join } from "path";
  * @private
  */
 export const WorkflowKey: ICommandDefinition = {
-    name: "workflow-key",
+    name: "by-workflow-key",
     aliases: ["wk"],
-    description: "Delete workflow with specified workflow key",
+    description: "Delete workflow instance with specified workflow key",
     type: "command",
     handler: join(__dirname, "../Delete.common.handler"),
     profile: {
