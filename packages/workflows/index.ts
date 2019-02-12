@@ -23,3 +23,4 @@ export * from "./src/api/Create";
 export * from "./src/api/Delete";
 export * from "./src/api/Start";
 export * from "./src/api/Properties";
+export * from "./src/api/ListWorkflows";
