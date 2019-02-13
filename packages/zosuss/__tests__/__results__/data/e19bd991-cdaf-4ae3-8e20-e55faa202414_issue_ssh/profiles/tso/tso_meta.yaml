@@ -1,0 +1,85 @@
+defaultProfile: null
+configuration:
+    type: tso
+    schema:
+        type: object
+        title: 'TSO Profile'
+        description: 'z/OS TSO/E User Profile'
+        properties:
+            account:
+                type: string
+                optionDefinition:
+                    name: account
+                    aliases:
+                        - a
+                    description: 'Your z/OS TSO/E accounting information.'
+                    type: string
+                    required: true
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+            characterSet:
+                type: string
+                optionDefinition:
+                    name: character-set
+                    aliases:
+                        - cs
+                    description: 'Character set for address space to convert messages and responses from UTF-8 to EBCDIC.'
+                    type: string
+                    defaultValue: '697'
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+            codePage:
+                type: string
+                optionDefinition:
+                    name: code-page
+                    aliases:
+                        - cp
+                    description: 'Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.'
+                    type: string
+                    defaultValue: '1047'
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+            columns:
+                type: number
+                optionDefinition:
+                    name: columns
+                    aliases:
+                        - cols
+                    description: 'The number of columns on a screen.'
+                    type: number
+                    defaultValue: 80
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+            logonProcedure:
+                type: string
+                optionDefinition:
+                    name: logon-procedure
+                    aliases:
+                        - l
+                    description: 'The logon procedure to use when creating TSO procedures on your behalf.'
+                    type: string
+                    defaultValue: IZUFPROC
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+            regionSize:
+                type: number
+                optionDefinition:
+                    name: region-size
+                    aliases:
+                        - rs
+                    description: 'Region size for the TSO/E address space.'
+                    type: number
+                    defaultValue: 4096
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+            rows:
+                type: number
+                optionDefinition:
+                    name: rows
+                    description: 'The number of rows on a screen.'
+                    type: number
+                    defaultValue: 24
+                    group: 'TSO ADDRESS SPACE OPTIONS'
+        required:
+            - account
+    createProfileExamples:
+        -
+            description: 'Create a tso profile called ''myprof'' with default settings and JES accounting information of ''IZUACCT'''
+            options: 'myprof -a IZUACCT'
+        -
+            description: 'Create a tso profile called ''largeregion'' with a region size of 8192, a logon procedure of MYPROC, and JES accounting information of ''1234'''
+            options: 'largeregion -a 1234 --rs 8192'

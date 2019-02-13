@@ -1,0 +1,10 @@
+systems:
+  common:
+    #-------------------------------------------------------------------------#
+    #  Connection details/credentials for SSH                                 #
+    #-------------------------------------------------------------------------#
+    ssh:
+      user: &sshuser user
+      password: &sshpass password
+      host: &sshhost mvshost.mycompany.com
+      port: &sshport 32070

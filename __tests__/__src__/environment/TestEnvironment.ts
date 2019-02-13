@@ -127,6 +127,21 @@ export class TestEnvironment {
         });
     }
 
+    /**
+     * Create a SSH session from properties present in your test environment
+     * @param testEnvironment - your test environment with system test properties populated
+     */
+    public static createSshSession(testEnvironment: ITestEnvironment): AbstractSession {
+        const SYSTEM_PROPS = new TestProperties(testEnvironment.systemTestProperties);
+        const defaultSystem = SYSTEM_PROPS.getDefaultSystem();
+        return new Session({
+            user: defaultSystem.ssh.user,
+            password: defaultSystem.ssh.password,
+            hostname: defaultSystem.ssh.host,
+            port: defaultSystem.ssh.port
+        });
+    }
+
     private static readonly DEFAULT_PROPERTIES = "custom_properties.yaml";
     private static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(__dirname + "/../../__resources__/properties/") + "/";
 
