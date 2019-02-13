@@ -22,6 +22,7 @@ import {
     TSO_OPTION_REGION_SIZE,
     TSO_OPTION_ROWS
 } from "./zostso/src/cli/constants/ZosTso.constants";
+import { SshSession } from "./zosuss";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -150,6 +151,47 @@ const config: IImperativeConfig = {
                 }
             ]
         },
+        {
+            type: "ssh",
+            schema: {
+                type: "object",
+                title: "z/OS SSH Profile",
+                description: "z/OS SSH Profile",
+                properties: {
+                    host: {
+                        type: "string",
+                        optionDefinition: SshSession.SSH_OPTION_HOST,
+                    },
+                    port: {
+                        type: "number",
+                        optionDefinition: SshSession.SSH_OPTION_PORT,
+                    },
+                    user: {
+                        type: "string",
+                        secure: true,
+                        optionDefinition: SshSession.SSH_OPTION_USER,
+                    },
+                    password: {
+                        type: "string",
+                        secure: true,
+                        optionDefinition: SshSession.SSH_OPTION_PASSWORD,
+                    },
+                },
+                required: ["host", "user", "password"],
+            },
+            createProfileExamples: [
+                {
+                    options: "ssh111 --host ssh123 --user ibmuser --password myp4ss",
+                    description: "Create a zos ssh profile called 'ssh111' to connect to z/OS SSH server at host zos123 and default port 22"
+                },
+                {
+                    options: "ssh222 --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
+                    description: "Create a zos ssh profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
+                        "and allow self-signed certificates"
+                }
+            ]
+        },
+
     ]
 };
 module.exports = config;

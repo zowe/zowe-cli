@@ -1,0 +1,3 @@
+#!/bin/bash
+
+zowe profiles create ssh tmp_ssh_9bc16eb7-7338-4550-b --user gb1220 --pass emma7507 --host winmvs27.hursley.ibm.com --port 32070

@@ -1,0 +1,18 @@
+Creating the following profileTypes: ssh
+Created ssh profile 'tmp_ssh_1d24d1f2-0a92-462f-8'. Stdout from creation:
+Profile created successfully! Path:
+/Users/jeonghyukpark/Documents/dev/cics/zowe-cli/packages/zosuss/__tests__/__results__/data/6cb2d497-01cc-4f48-8db3-8b237312f54b_issue_ssh/profiles/ssh/tmp_ssh_1d24d1f2-0a92-462f-8.yaml
+
+host:     winmvs27.hursley.ibm.com
+port:     32070
+user:     gb1220
+password: emma7507
+
+Review the created profile and edit if necessary using the profile update command.
+
+Deleting the following profiles:
+{"myProfileType":[],"ssh":["tmp_ssh_1d24d1f2-0a92-462f-8"]}
+Deleting profile tmp_ssh_1d24d1f2-0a92-462f-8 of type ssh
+Deleted ssh profile 'tmp_ssh_1d24d1f2-0a92-462f-8'. Stdout from deletion:
+Profile "tmp_ssh_1d24d1f2-0a92-462f-8" of type "ssh" successfully deleted.
+

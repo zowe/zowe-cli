@@ -47,6 +47,7 @@
     "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.integration\\.(spec|test)\\.ts\" --coverage false",
     "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.system\\.(spec|test)\\.ts\" --coverage false",
     "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.unit\\.(spec|test)\\.ts\" --coverage",
+    "test:uss": "cross-env FORCE_COLOR=1 jest \".*zosuss.*\\.*__tests__.*\\.(spec|test)\\.ts\" --coverage",
     "watch": "tsc --pretty --watch",
     "watch:test": "jest --watch",
     "typedoc": "typedoc --options ./typedoc.json ./packages/",
