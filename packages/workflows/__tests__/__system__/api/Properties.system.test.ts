@@ -9,19 +9,19 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "../../../../rest";
 import { Session, ImperativeError, Imperative } from "@brightside/imperative";
-import { noSession, noWorkflowKey, nozOSMFVersion } from "../../src/api/WorkflowConstants";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { CreateWorkflow, DeleteWorkflow, PropertiesWorkflow } from "../..";
-import { TestProperties } from "../../../../__tests__/__src__/properties/TestProperties";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../zosfiles/src/api/methods/upload";
-import { ZosFilesConstants } from "../../../zosfiles/src/api";
+import { noSession, noWorkflowKey, nozOSMFVersion } from "../../../src/api/WorkflowConstants";
+import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { CreateWorkflow, DeleteWorkflow, PropertiesWorkflow } from "../../..";
+import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
+import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+import { Upload } from "../../../../zosfiles/src/api/methods/upload";
+import { ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { inspect } from "util";
-import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
-import { IWorkflowInfo } from "../../src/api/doc/IWorkflowInfo";
+import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
+import { IWorkflowInfo } from "../../../src/api/doc/IWorkflowInfo";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -33,7 +33,7 @@ let system: string;
 let owner: string;
 let wfName: string;
 
-const workflow = __dirname + "/testfiles/demo.xml";
+const workflow = __dirname + "../testfiles/demo.xml";
 const wfVersion = "1.0";
 const propertiesSteps = false;
 const propertiesVariables = false;

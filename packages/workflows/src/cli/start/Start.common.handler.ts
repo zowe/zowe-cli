@@ -15,6 +15,8 @@ import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { isNullOrUndefined } from "util";
 import {PropertiesWorkflow} from "../../..";
 import {IWorkflowInfo} from "../../api/doc/IWorkflowInfo";
+import {WorkflowConstants} from "../../api/WorkflowConstants";
+import {IStepInfo} from "../../api/doc/IStepInfo";
 
 
 /**
@@ -50,22 +52,49 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
             error = "Start workflow: " + err;
             throw error;
         }
-        // TODO: should be still shown if there is wait?
+        // TODO: check for nested steps
         if (this.arguments.wait){
             let response: IWorkflowInfo;
-            let x = true;
-            while(x) {
-                response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
-                if (response.automationStatus){
-                    if(isNullOrUndefined(response.automationStatus.currentStepName)){
-                        if (response.statusName === "complete"){
-                            params.response.data.setObj("Complete.");
-                            params.response.console.log("Workflow completed successfully.");
-                            x=false;
-                        } else {
-                            params.response.data.setObj("Fail.");
-                            params.response.console.log("Workflow failed.");
-                            x=false;
+            let flag = false;
+            while(!flag) {
+                if (!isNullOrUndefined(params.arguments.stepName) && params.arguments.performOneStep) {
+                    let returnCode = null;
+                    while (isNullOrUndefined(returnCode)) {
+                        response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey,
+                            WorkflowConstants.ZOSMF_VERSION, true);
+                        response.steps.forEach((step: IStepInfo) => {
+                            if (step.name === params.arguments.stepName) {
+                                returnCode = step.returnCode;
+                            }
+                        });
+                    }
+                    params.response.data.setObj("Return code: " + returnCode);
+                    params.response.console.log("Step's return code is: " + returnCode);
+                    flag=true;
+                }
+                else if (!isNullOrUndefined(params.arguments.stepName)) {
+                    response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
+                    // TODO: this will fail if automationStatus is null - that means workflow hasn't been started yet which is ok
+                    // TODO: completed workflow does gave automationStatus but currentStep is null, statusName is same
+                    if (!isNullOrUndefined(response.automationStatus.currentStepName) && response.statusName === "in-progress"){
+                                params.response.data.setObj("Fail.");
+                                params.response.console.log("Workflow failed.");
+                                flag = true;
+                    }
+                }
+                else {
+                    response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
+                    if (response.automationStatus) {
+                        if (isNullOrUndefined(response.automationStatus.currentStepName)) {
+                            if (response.statusName === "complete") {
+                                params.response.data.setObj("Complete.");
+                                params.response.console.log("Workflow completed successfully.");
+                                flag = true;
+                            } else {
+                                params.response.data.setObj("Fail.");
+                                params.response.console.log("Workflow failed.");
+                                flag = true;
+                            }
                         }
                     }
                 }

@@ -21,7 +21,7 @@ import { join } from "path";
  * @private
  */
 export const WorkflowKey: ICommandDefinition = {
-    name: "workflow-key",
+    name: "workflow-with-workflow-key",
     aliases: ["wk"],
     description: "Start workflow with specified workflow key",
     type: "command",
