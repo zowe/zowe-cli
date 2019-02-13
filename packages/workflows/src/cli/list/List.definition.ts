@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { Workflow } from "./registeredWorkflows/RegisteredWorkflows.definition";
+import { ActiveWorkflows } from "./activeWorkflows/ActiveWorkflows.definition";
 
 
 /**
@@ -25,6 +25,6 @@ export const ListDefinition: ICommandDefinition = {
     type: "group",
     description: "List workflow instance(s) in z/OSMF",
     children: [
-        Workflow,
+        ActiveWorkflows,
     ]
 };

@@ -20,7 +20,7 @@
 *
 */
 
-import { ListWorkflows } from "../../../src/api/ListWorkflows";
+import { ListWorkflows } from "../../../../src/api/ListWorkflows";
 
 
 describe("List workflows handler", () => {
@@ -33,7 +33,7 @@ describe("List workflows handler", () => {
         const statusName = "canceled";
         it("should list workflows", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/list/List.handler");
+            const handlerReq = require("../../../src/cli/list/activeWorkflows/List.activeWorkflows.handler");
             const handler = new handlerReq.default();
 
 
@@ -106,6 +106,7 @@ describe("List workflows handler", () => {
             expect(ListWorkflows.listWorkflows).toHaveBeenCalledWith(
                 fakeSession,
                 workflowName,
+                undefined,
                 category,
                 system,
                 owner,

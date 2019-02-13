@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ListOptions } from "../List.options";
+import { ListOptions } from "./ActiveWorkflows.options";
 import { join } from "path";
 
 
@@ -20,12 +20,12 @@ import { join } from "path";
  *
  * @private
  */
-export const Workflow: ICommandDefinition = {
-    name: "registered-workflows",
-    aliases: ["reg"],
+export const ActiveWorkflows: ICommandDefinition = {
+    name: "active-workflows",
+    aliases: ["act"],
     description: "List a workflow instance(s) in z/OSMF",
     type: "command",
-    handler: join(__dirname, "../List.handler"),
+    handler: join(__dirname, "List.activeWorkflows.handler"),
     profile: {
         optional: ["zosmf"],
     },
@@ -41,8 +41,8 @@ export const Workflow: ICommandDefinition = {
         ListOptions.category,
         ListOptions.system,
         ListOptions.owner,
-        ListOptions.statusName,
         ListOptions.vendor,
+        ListOptions.statusName,
     ]),
     outputFormatOptions: true,
     examples: [
