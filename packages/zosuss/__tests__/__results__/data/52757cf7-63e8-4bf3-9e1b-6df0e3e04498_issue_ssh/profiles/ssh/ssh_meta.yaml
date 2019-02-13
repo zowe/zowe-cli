@@ -1,0 +1,62 @@
+defaultProfile: tmp_ssh_0aedf655-2813-4a72-b
+configuration:
+    type: ssh
+    schema:
+        type: object
+        title: 'z/OS SSH Profile'
+        description: 'z/OS SSH Profile'
+        properties:
+            host:
+                type: string
+                optionDefinition:
+                    name: host
+                    aliases:
+                        - H
+                    description: 'The z/OS SSH server host name.'
+                    type: string
+                    required: true
+                    group: 'Zos Ssh Connection Options'
+            port:
+                type: number
+                optionDefinition:
+                    name: port
+                    aliases:
+                        - P
+                    description: 'The z/OS SSH server port.'
+                    type: number
+                    defaultValue: 22
+                    group: 'Zos Ssh Connection Options'
+            user:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: user
+                    aliases:
+                        - u
+                    description: 'Mainframe user name, which can be the same as your TSO login.'
+                    type: string
+                    required: true
+                    group: 'Zos Ssh Connection Options'
+            password:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: password
+                    aliases:
+                        - pass
+                        - pw
+                    description: 'Mainframe password, which can be the same as your TSO password.'
+                    type: string
+                    group: 'Zos Ssh Connection Options'
+                    required: true
+        required:
+            - host
+            - user
+            - password
+    createProfileExamples:
+        -
+            options: 'ssh111 --host ssh123 --user ibmuser --password myp4ss'
+            description: 'Create a zos ssh profile called ''ssh111'' to connect to z/OS SSH server at host zos123 and default port 22'
+        -
+            options: 'ssh222 --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath'
+            description: 'Create a zos ssh profile called ''zos124'' to connect to z/OSMF at the host zos124 (default port - 443) and allow self-signed certificates'

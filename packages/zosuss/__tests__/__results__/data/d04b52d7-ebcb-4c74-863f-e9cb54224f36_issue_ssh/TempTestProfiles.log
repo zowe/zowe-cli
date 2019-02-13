@@ -1,0 +1,12 @@
+Creating the following profileTypes: ssh
+Created ssh profile 'tmp_ssh_b6156d42-a59a-483e-8'. Stdout from creation:
+Profile created successfully! Path:
+/Users/jeonghyukpark/Documents/dev/cics/zowe-cli/packages/zosuss/__tests__/__results__/data/d04b52d7-ebcb-4c74-863f-e9cb54224f36_issue_ssh/profiles/ssh/tmp_ssh_b6156d42-a59a-483e-8.yaml
+
+host:     winmvs27.hursley.ibm.com
+port:     32070
+user:     gb1220
+password: emma7507
+
+Review the created profile and edit if necessary using the profile update command.
+
