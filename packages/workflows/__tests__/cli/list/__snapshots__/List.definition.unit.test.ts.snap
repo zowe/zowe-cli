@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows list definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ls",
+  ],
+  "description": "List workflow instance(s) in z/OSMF",
+  "name": "list",
+  "type": "group",
+}
+`;
