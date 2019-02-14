@@ -13,6 +13,7 @@ import { IHandlerParameters } from "@brightside/imperative";
 import { ListWorkflows } from "../../../api/ListWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
+
 /**
  * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.
  * This is not something that is intended to be used outside of this npm package.
@@ -50,7 +51,6 @@ export default class ListWorkflowHandler extends ZosmfBaseHandler {
         commandParameters.response.data.setObj(response);
         // tslint:disable-next-line:no-console
         console.log(response);
-        commandParameters.response.console.log("List of workflows matching the search query " + response.toString())
-        ;
+        commandParameters.response.console.log("List of workflows matching the search query " + response.toString());
     }
 }
