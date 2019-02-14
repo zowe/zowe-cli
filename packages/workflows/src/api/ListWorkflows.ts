@@ -13,6 +13,8 @@ import { ZosmfRestClient } from "../../../rest";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession } from "@brightside/imperative";
 import { WorkflowConstants, nozOSMFVersion, wrongString } from "./WorkflowConstants";
+import { IWorkflowInfo } from "./doc/IWorkflowInfo";
+import { IWorkflows } from "./doc/IWorkflows";
 
 /**
  * Get list of workflows from registry.
@@ -36,7 +38,7 @@ export class ListWorkflows {
      */
     public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                       workflowName?: string, category?: string, system?: string,
-                                      owner?: string, vendor?: string, statusName?: string ) {
+                                      owner?: string, vendor?: string, statusName?: string ): Promise<IWorkflows> {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion,

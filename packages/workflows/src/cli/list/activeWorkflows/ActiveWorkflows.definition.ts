@@ -25,7 +25,7 @@ export const ActiveWorkflows: ICommandDefinition = {
     aliases: ["act"],
     description: "List a workflow instance(s) in z/OSMF",
     type: "command",
-    handler: join(__dirname, "List.activeWorkflows.handler"),
+    handler: join(__dirname, "ActiveWorkflows.handler"),
     profile: {
         optional: ["zosmf"],
     },

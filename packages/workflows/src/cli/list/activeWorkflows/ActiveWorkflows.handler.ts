@@ -19,7 +19,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
  * This is not something that is intended to be used outside of this npm package.
  */
 
-export default class ListWorkflowHandler extends ZosmfBaseHandler {
+export default class ListActiveWorkflowHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
      * @private
@@ -49,8 +49,16 @@ export default class ListWorkflowHandler extends ZosmfBaseHandler {
         }
 
         commandParameters.response.data.setObj(response);
-        // tslint:disable-next-line:no-console
-        console.log(response);
-        commandParameters.response.console.log("List of workflows matching the search query " + response.toString());
+
+        // Format & print the response
+        if (response.workflows.length) {
+            commandParameters.response.format.output({
+                fields: ["workflowName", "workflowKey", "workflowDescription"],
+                output: response.workflows,
+                format: "table"
+            });
+        } else {
+            commandParameters.response.console.log("No workflows match the requested querry");
+        }
     }
 }

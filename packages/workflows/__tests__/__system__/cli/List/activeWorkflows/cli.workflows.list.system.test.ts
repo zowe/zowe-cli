@@ -104,7 +104,7 @@ describe("List workflow cli system tests", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_liste_workflow.sh",
                 testEnvironment, [`${wfName}${wfName}${wfName}`]);
                 expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain(`"workflows": []`);
+                expect(response.stdout.toString()).toContain("No workflows match the requested querry");
             });
         });
         describe("Display Help", () => {
