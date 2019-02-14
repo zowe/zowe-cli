@@ -3,7 +3,7 @@
 exports[`zos-workflows delete workflow-key definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "reg",
+    "act",
   ],
   "description": "List a workflow instance(s) in z/OSMF",
   "examples": Array [
@@ -12,7 +12,7 @@ Object {
       "options": "\\"testworkflow\\"",
     },
   ],
-  "name": "registered-workflows",
+  "name": "active-workflows",
   "options": Array [
     Object {
       "aliases": Array [
@@ -43,6 +43,15 @@ Object {
     },
     Object {
       "aliases": Array [
+        "vd",
+      ],
+      "description": "Name of the vendor that provided the workflow definition file.",
+      "name": "vendor",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
         "sn",
       ],
       "allowableValues": Object {
@@ -59,20 +68,11 @@ Object {
       "required": false,
       "type": "string",
     },
-    Object {
-      "aliases": Array [
-        "vd",
-      ],
-      "description": "Name of the vendor that provided the workflow definition file.",
-      "name": "vendor",
-      "required": false,
-      "type": "string",
-    },
   ],
   "outputFormatOptions": true,
   "positionals": Array [
     Object {
-      "description": "Workflow name. You can specify a regular expression here to match desired workflow names.",
+      "description": "Specify a regular expression to match desired workflow names.",
       "name": "workflowName",
       "required": false,
       "type": "string",
