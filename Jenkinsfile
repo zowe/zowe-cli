@@ -100,7 +100,7 @@ node('ca-jenkins-agent') {
             JEST_STARE_RESULT_DIR: "${UNIT_TEST_ROOT}/jest-stare",
             JEST_STARE_RESULT_HTML: "index.html"
         ],
-        testResults: [dir: "${UNIT_TEST_ROOT}", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Report"],
+        testResults: [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Report"],
         coverageResults: [dir: "__tests__/__results__/unit/coverage/lcov-report", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Coverage Report"],
         junitOutput: UNIT_JUNIT_OUTPUT,
         cobertura: [
@@ -144,7 +144,7 @@ node('ca-jenkins-agent') {
             JEST_STARE_RESULT_DIR: "${INTEGRATION_TEST_ROOT}/jest-stare",
             JEST_STARE_RESULT_HTML: "index.html"
         ],
-        testResults: [dir: INTEGRATION_TEST_ROOT, files: "index.html", name: "$PRODUCT_NAME - Integration Test Report"],
+        testResults: [dir: "$INTEGRATION_TEST_ROOT/jest-stare", files: "index.html", name: "$PRODUCT_NAME - Integration Test Report"],
         junitOutput: INTEGRATION_JUNIT_OUTPUT
     )
 
