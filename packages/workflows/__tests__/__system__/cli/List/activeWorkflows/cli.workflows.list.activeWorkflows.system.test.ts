@@ -9,19 +9,18 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient } from "../../../../../../rest";
 import { Session } from "@brightside/imperative";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { DeleteWorkflow, CreateWorkflow } from "../../../..";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
-import { Create, CreateDataSetTypeEnum } from "../../../../../zosfiles/src/api/methods/create";
-import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
+import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { DeleteWorkflow, CreateWorkflow } from "../../../../..";
+import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
+import { ZosFilesConstants } from "../../../../../../zosfiles/src/api";
 import { join } from "path";
-import { IWorkflows } from "../../../../src/api/doc/IWorkflows";
+import { IWorkflows } from "../../../../../src/api/doc/IWorkflows";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -34,7 +33,7 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
-const workflow = join(__dirname, "../../testfiles/demo.xml");
+const workflow = join(__dirname, "../../../testfiles/demo.xml");
 const workflowDs = join(__dirname, "../../testfiles/demods.xml");
 
 describe("List workflow cli system tests", () => {
@@ -94,15 +93,16 @@ describe("List workflow cli system tests", () => {
         });
         describe("Success Scenarios", () => {
             it("Should return list of workflows in zOSMF.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_liste_workflow.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
                 testEnvironment, []);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(`"owner": ${owner}`);
+                expect(response.stdout.toString()).toContain(`${wfName}`);
             });
             it("Should return an empty object if search does not match any existing workflows", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_liste_workflow.sh",
-                testEnvironment, [`${wfName}${wfName}${wfName}`]);
+                const fakeName = `${wfName}${wfName}${wfName}`;
+                const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
+                testEnvironment, [fakeName]);
                 expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toContain("No workflows match the requested querry");
             });

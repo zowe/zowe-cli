@@ -12,6 +12,7 @@
 import { IHandlerParameters } from "@brightside/imperative";
 import { ListWorkflows } from "../../../api/ListWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { IActiveWorkflows } from "../../../api/doc/IActiveWorkflows";
 
 
 /**
@@ -36,7 +37,7 @@ export default class ListActiveWorkflowHandler extends ZosmfBaseHandler {
      */
     public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
         this.arguments = commandParameters.arguments;
-        let response;
+        let response: IActiveWorkflows;
         let error;
         try {
             response = await ListWorkflows.listWorkflows(
@@ -55,7 +56,8 @@ export default class ListActiveWorkflowHandler extends ZosmfBaseHandler {
             commandParameters.response.format.output({
                 fields: ["workflowName", "workflowKey", "workflowDescription"],
                 output: response.workflows,
-                format: "table"
+                format: "table",
+                header: true,
             });
         } else {
             commandParameters.response.console.log("No workflows match the requested querry");

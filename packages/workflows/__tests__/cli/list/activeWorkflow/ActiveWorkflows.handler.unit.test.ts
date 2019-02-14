@@ -48,7 +48,14 @@ describe("List workflows handler", () => {
                 fakeSession = session;
                 return {
                     success: true,
-                    commandResponse: "Some list of workflow(s)"
+                    commandResponse: "Some list of workflow(s)",
+                    workflows: [
+                        {
+                            owner: `${owner}`,
+                            workflowName: `${workflowName}`,
+                            workflowDescription: "Test wf",
+                        }
+                    ],
                 };
             });
 
@@ -68,8 +75,8 @@ describe("List workflows handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.processCmd({
                     arguments: {
-                        $0: "fake",
-                        _: ["fake"],
+                        $0: "zowe",
+                        _: ["zos-workflows", "list", "active-workflows" ],
                         workflowName,
                         category,
                         system,
@@ -78,6 +85,11 @@ describe("List workflows handler", () => {
                         statusName,
                     },
                     response: {
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        },
                         data: {
                             setMessage: jest.fn((setMsgArgs) => {
                                 apiMessage = setMsgArgs;
