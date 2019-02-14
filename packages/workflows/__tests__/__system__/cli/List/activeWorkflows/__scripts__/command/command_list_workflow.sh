@@ -5,7 +5,7 @@ sysname=$3
 owner=$4
 set -e
 
-zowe zos-workflows list act $wname "$definiton" $sysname $owner
+bright wf list act $wname --rfj
 if [ $? -gt 0 ]
 then
     exit $?
