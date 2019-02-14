@@ -6,7 +6,7 @@ pos=$4
 set -e
 
 echo "================Z/OS WORKFLOWS START WORKFLOW-KEY ==============="
-bright zos-workflows start workflow-key $wk --resolve-conflict-by $rcb --step-name $sn --perform-one-step $pos
+bright zos-workflows start workflow-with-workflow-key $wk --resolve-conflict-by $rcb --step-name $sn --perform-one-step $pos
 if [ $? -gt 0 ]
 then
     exit $?

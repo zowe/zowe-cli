@@ -54,7 +54,7 @@ Object {
       "aliases": Array [
         "w",
       ],
-      "description": "Identifies whether to wait for workflow instance to finish.",
+      "description": "Identifies whether to wait for workflow instance to finish. Supports only automated workflows that are run from the beginning.",
       "name": "wait",
       "required": false,
       "type": "boolean",

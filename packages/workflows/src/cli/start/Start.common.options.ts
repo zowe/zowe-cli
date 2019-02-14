@@ -66,7 +66,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
     wait: {
         name: "wait",
         aliases: ["w"],
-        description: "Identifies whether to wait for workflow instance to finish.",
+        description: "Identifies whether to wait for workflow instance to finish. Supports only automated workflows that are run from the beginning.",
         type: "boolean",
         required: false
     },

@@ -12,11 +12,9 @@
 import { IHandlerParameters } from "@brightside/imperative";
 import { StartWorkflow } from "../../api/Start";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
-import { isNullOrUndefined } from "util";
-import {PropertiesWorkflow} from "../../..";
-import {IWorkflowInfo} from "../../api/doc/IWorkflowInfo";
-import {WorkflowConstants} from "../../api/WorkflowConstants";
-import {IStepInfo} from "../../api/doc/IStepInfo";
+import { isNull, isNullOrUndefined } from "util";
+import { PropertiesWorkflow } from "../../..";
+import { IWorkflowInfo } from "../../api/doc/IWorkflowInfo";
 
 
 /**
@@ -52,50 +50,28 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
             error = "Start workflow: " + err;
             throw error;
         }
-        // TODO: check for nested steps
         if (this.arguments.wait){
             let response: IWorkflowInfo;
             let flag = false;
             while(!flag) {
-                if (!isNullOrUndefined(params.arguments.stepName) && params.arguments.performOneStep) {
-                    let returnCode = null;
-                    while (isNullOrUndefined(returnCode)) {
-                        response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey,
-                            WorkflowConstants.ZOSMF_VERSION, true);
-                        response.steps.forEach((step: IStepInfo) => {
-                            if (step.name === params.arguments.stepName) {
-                                returnCode = step.returnCode;
-                            }
-                        });
-                    }
-                    params.response.data.setObj("Return code: " + returnCode);
-                    params.response.console.log("Step's return code is: " + returnCode);
-                    flag=true;
-                }
-                else if (!isNullOrUndefined(params.arguments.stepName)) {
-                    response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
-                    // TODO: this will fail if automationStatus is null - that means workflow hasn't been started yet which is ok
-                    // TODO: completed workflow does gave automationStatus but currentStep is null, statusName is same
-                    if (!isNullOrUndefined(response.automationStatus.currentStepName) && response.statusName === "in-progress"){
-                                params.response.data.setObj("Fail.");
-                                params.response.console.log("Workflow failed.");
-                                flag = true;
-                    }
+                if (!isNullOrUndefined(params.arguments.stepName)) {
+                    params.response.data.setObj("Started.");
+                    params.response.console.log("Workflow started.");
+                    flag = true;
                 }
                 else {
                     response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
-                    if (response.automationStatus) {
-                        if (isNullOrUndefined(response.automationStatus.currentStepName)) {
+                    if (response.automationStatus && isNull(response.automationStatus.currentStepName)) {
                             if (response.statusName === "complete") {
                                 params.response.data.setObj("Complete.");
                                 params.response.console.log("Workflow completed successfully.");
                                 flag = true;
-                            } else {
+                            }
+                            else if (response.statusName === "in-progress"){
                                 params.response.data.setObj("Fail.");
                                 params.response.console.log("Workflow failed.");
                                 flag = true;
                             }
-                        }
                     }
                 }
             }
@@ -103,8 +79,5 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
             params.response.data.setObj("Started.");
             params.response.console.log("Workflow started.");
         }
-        // TODO when there is some step and wait specified, check only the step (eventually subsequent) check just the step
-        // TODO and/or subsequent, because when was run only part of the workflow was it ends 'in-progress'
-        // TODO which is otherwise 'fail'
     }
 }

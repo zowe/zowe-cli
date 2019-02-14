@@ -14,14 +14,17 @@ import { Session } from "@brightside/imperative";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { CreateWorkflow, DeleteWorkflow } from "../../../..";
+import { CreateWorkflow, DeleteWorkflow, PropertiesWorkflow } from "../../../..";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
 import { join } from "path";
 import { startT } from "../../../../src/api/doc/IStartWorkflow";
-import { sleep } from "../../../../../utils";
+import { IWorkflowInfo } from "../../../../src/api/doc/IWorkflowInfo";
+import { isNullOrUndefined } from "util";
+import { WorkflowConstants } from "../../../../src/api/WorkflowConstants";
+import { IStepInfo } from "../../../../src/api/doc/IStepInfo";
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";
@@ -77,12 +80,19 @@ describe("Create workflow cli system tests", () => {
         });
         describe("Success Scenarios", () => {
             afterEach(async () =>{
-                // TODO change with waiting for status when properties are done
-                const one = 1;
-                const minute = 60;
-                const mili = 1000;
-                const someMins = one * minute * mili;
-                await sleep(someMins);
+                let response: IWorkflowInfo;
+                let flag = false;
+                while(!flag) {
+                    response = await PropertiesWorkflow.getWorkflowProperties(REAL_SESSION, wfKey, WorkflowConstants.ZOSMF_VERSION, true);
+                    response.steps.forEach((step: IStepInfo) => {
+                        if (step.state === "Complete") {
+                            flag = true;
+                        }
+                    });
+                    if (response.automationStatus && isNullOrUndefined(response.automationStatus.currentStepName)) {
+                        flag = true;
+                    }
+                }
                 await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
             });
             beforeEach(async () => {
@@ -91,10 +101,10 @@ describe("Create workflow cli system tests", () => {
             });
             it("Should start workflow in zOSMF.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key.sh",
-                testEnvironment, [wfKey]);
+                testEnvironment, [wfKey, "--wait"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Workflow started.");
+                expect(response.stdout.toString()).toContain("Workflow");
             });
             it("Should start workflow with optional arguments in zOSMF.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_options.sh",
