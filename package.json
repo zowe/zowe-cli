@@ -93,10 +93,9 @@
     "jest-cli": "^22.4.3",
     "jest-environment-node": "^22.4.3",
     "jest-environment-node-debug": "^2.0.0",
-    "jest-html-reporter": "^0.5.7",
     "jest-junit": "^3.6.0",
     "jest-sonar-reporter": "2.0.0",
-    "jest-stare": "1.6.0",
+    "jest-stare": "1.11.1",
     "jsonfile": "^4.0.0",
     "madge": "3.2.0",
     "prompt": "1.0.0",
@@ -115,10 +114,6 @@
   },
   "engines": {
     "node": ">=6.0.0"
-  },
-  "jest-html-reporter": {
-    "pageTitle": "Zowe CLI Tests",
-    "outputPath": "__tests__/__results__/results.html"
   },
   "jest": {
     "globals": {
@@ -165,7 +160,6 @@
     "resultDir": "__tests__/__results__/jest-stare",
     "additionalResultsProcessors": [
       "jest-junit",
-      "jest-html-reporter",
       "jest-sonar-reporter"
     ],
     "coverageLink": "../unit/coverage/lcov-report/index.html"
