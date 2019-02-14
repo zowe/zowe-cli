@@ -128,7 +128,8 @@
       "__tests__/__snapshots__/"
     ],
     "setupTestFrameworkScriptFile": "./__tests__/beforeTests.js",
-    "reporters": ["default", "jest-stare", "jest-junit", "jest-sonar-reporter"],
+    "reporters": ["default", "jest-stare", "jest-junit"],
+    "testResultProcessor": "jest-sonar-reporter",
     "transform": {
       ".(ts)": "ts-jest"
     },
