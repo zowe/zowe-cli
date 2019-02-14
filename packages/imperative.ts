@@ -181,13 +181,12 @@ const config: IImperativeConfig = {
             },
             createProfileExamples: [
                 {
-                    options: "ssh111 --host ssh123 --user ibmuser --password myp4ss",
+                    options: "ssh111 --host sshhost --user ibmuser --password myp4ss",
                     description: "Create a zos ssh profile called 'ssh111' to connect to z/OS SSH server at host zos123 and default port 22"
                 },
                 {
-                    options: "ssh222 --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
-                    description: "Create a zos ssh profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
-                        "and allow self-signed certificates"
+                    options: "ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss",
+                    description: "Create a zos ssh profile called 'ssh222' to connect to z/OS SSH server at host zos123 and port 13022"
                 }
             ]
         },
