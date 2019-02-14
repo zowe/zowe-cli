@@ -128,7 +128,7 @@
       "__tests__/__snapshots__/"
     ],
     "setupTestFrameworkScriptFile": "./__tests__/beforeTests.js",
-    "testResultsProcessor": "jest-stare",
+    "reporters": ["default", "jest-stare", "jest-junit", "jest-sonar-reporter"],
     "transform": {
       ".(ts)": "ts-jest"
     },
@@ -158,10 +158,6 @@
   },
   "jest-stare": {
     "resultDir": "__tests__/__results__/jest-stare",
-    "additionalResultsProcessors": [
-      "jest-junit",
-      "jest-sonar-reporter"
-    ],
     "coverageLink": "../unit/coverage/lcov-report/index.html"
   },
   "jest-junit": {
