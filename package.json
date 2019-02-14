@@ -93,7 +93,7 @@
     "jest-cli": "^22.4.3",
     "jest-environment-node": "^22.4.3",
     "jest-environment-node-debug": "^2.0.0",
-    "jest-junit": "^3.6.0",
+    "jest-junit": "5.2.0",
     "jest-sonar-reporter": "2.0.0",
     "jest-stare": "1.11.1",
     "jsonfile": "^4.0.0",
