@@ -43,6 +43,14 @@ export class WorkflowConstants {
     public static readonly START_WORKFLOW: string = "operations/start";
 
     /**
+     * URI base for canceling workflow API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly CANCEL_WORKFLOW: string = "operations/cancel";
+
+    /**
      * URI base for list workflows from registry API.
      * @static
      * @type {string}
