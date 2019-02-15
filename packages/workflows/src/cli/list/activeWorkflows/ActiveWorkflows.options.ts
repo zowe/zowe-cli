@@ -75,7 +75,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "string",
         required: false,
         allowableValues: {
-            values : ["n-progress", "complete", "automation-in-progress", "canceled"],
+            values : ["in-progress", "complete", "automation-in-progress", "canceled"],
             caseSensitive: true
         },
     },
