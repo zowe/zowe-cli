@@ -3,7 +3,7 @@
 exports[`zos-workflows delete workflow-key definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "act",
+    "acw",
   ],
   "description": "List a workflow instance(s) in z/OSMF",
   "examples": Array [

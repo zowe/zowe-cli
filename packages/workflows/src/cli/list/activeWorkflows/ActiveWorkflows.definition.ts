@@ -22,7 +22,7 @@ import { join } from "path";
  */
 export const ActiveWorkflows: ICommandDefinition = {
     name: "active-workflows",
-    aliases: ["act"],
+    aliases: ["acw"],
     description: "List a workflow instance(s) in z/OSMF",
     type: "command",
     handler: join(__dirname, "ActiveWorkflows.handler"),
