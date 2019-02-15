@@ -57,7 +57,7 @@ Object {
       "allowableValues": Object {
         "caseSensitive": true,
         "values": Array [
-          "n-progress",
+          "in-progress",
           "complete",
           "automation-in-progress",
           "canceled",
