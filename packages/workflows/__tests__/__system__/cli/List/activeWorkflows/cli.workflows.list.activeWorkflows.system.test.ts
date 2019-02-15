@@ -27,14 +27,11 @@ let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let definitionFile: string;
-let definitionDs: string;
-let fakeDefFile: string;
 let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
 const workflow = join(__dirname, "../../../testfiles/demo.xml");
-const workflowDs = join(__dirname, "../../testfiles/demods.xml");
 
 describe("List workflow cli system tests", () => {
     beforeAll(async () => {
@@ -47,10 +44,7 @@ describe("List workflow cli system tests", () => {
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
-        definitionDs = `${getUniqueDatasetName("PUBLIC")}`;
         definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
-        fakeDefFile = definitionFile + "FAKEFILE";
-
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
@@ -58,7 +52,7 @@ describe("List workflow cli system tests", () => {
         await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
         await TestEnvironment.cleanUp(testEnvironment);
     });
-    describe("List all workflows (with and without options)", () => {
+    describe("List all workflows", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
@@ -99,7 +93,7 @@ describe("List workflow cli system tests", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain(`${wfName}`);
             });
-            it("Should return an empty object if search does not match any existing workflows", async () => {
+            it("Should return a message if search does not match any existing workflows", async () => {
                 const fakeName = `${wfName}${wfName}${wfName}`;
                 const response = await runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
                 testEnvironment, [fakeName]);
@@ -108,7 +102,7 @@ describe("List workflow cli system tests", () => {
             });
         });
         describe("Display Help", () => {
-            it("should display delete workflow-key help", async () => {
+            it("should display list active workflows help", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/list_workflow_help.sh", testEnvironment);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
