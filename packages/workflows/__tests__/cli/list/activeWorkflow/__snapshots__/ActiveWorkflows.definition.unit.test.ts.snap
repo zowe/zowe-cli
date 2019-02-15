@@ -1,11 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-workflows delete workflow-key definition should not have changed 1`] = `
+exports[`zos-workflows list active workflows definition should not have changed 1`] = `
 Object {
   "aliases": Array [
     "acw",
   ],
-  "description": "List a workflow instance(s) in z/OSMF",
+  "description": "List workflow instance(s) in z/OSMF.
+Omitting all options will list all workflows on the sysplex",
   "examples": Array [
     Object {
       "description": "List the workflow with name \\"testworkflow\\"",
@@ -14,6 +15,15 @@ Object {
   ],
   "name": "active-workflows",
   "options": Array [
+    Object {
+      "aliases": Array [
+        "wfn",
+      ],
+      "description": "Specify a regular expression to match desired workflow names.",
+      "name": "workflow-name",
+      "required": false,
+      "type": "string",
+    },
     Object {
       "aliases": Array [
         "cat",
@@ -70,14 +80,6 @@ Object {
     },
   ],
   "outputFormatOptions": true,
-  "positionals": Array [
-    Object {
-      "description": "Specify a regular expression to match desired workflow names.",
-      "name": "workflowName",
-      "required": false,
-      "type": "string",
-    },
-  ],
   "profile": Object {
     "optional": Array [
       "zosmf",

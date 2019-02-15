@@ -17,6 +17,18 @@ import { ICommandOptionDefinition } from "@brightside/imperative";
 export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
 
     /**
+     * The name of the workflow.
+     * @type {ICommandOptionDefinition}
+     */
+    workflowName: {
+        name: "workflow-name",
+        aliases: ["wfn"],
+        description: "Specify a regular expression to match desired workflow names.",
+        type: "string",
+        required: false
+    },
+
+    /**
      * Category of the workflow, which is either general or configuration
      * @type {ICommandOptionDefinition}
      */
