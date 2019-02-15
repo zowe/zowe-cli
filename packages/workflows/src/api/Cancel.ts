@@ -25,7 +25,7 @@ export class CancelWorkflow {
      * @param {AbstractSession} session                     - z/OSMF connection info
      * @param {string} workflowKey                          - Unique identifier of the workflow instance.
      * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
-     * @returns {Promise}
+     * @returns {Promise<string>}                           - Promise that specifies the new name of the canceled workflow.
      * @memberof CancelWorkflow
      */
  public static async cancelWorkflow(session: AbstractSession, workflowKey: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
@@ -33,10 +33,9 @@ export class CancelWorkflow {
     WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
     WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
 
-    const data = {};
     let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
     resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${workflowKey}/${WorkflowConstants.CANCEL_WORKFLOW}`;
 
-    return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], data);
+    return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], {} );
  }
 }
