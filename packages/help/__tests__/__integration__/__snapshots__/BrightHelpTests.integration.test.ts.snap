@@ -36,7 +36,6 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    zos-jobs | jobs       Manage z/OS jobs                                        
    zos-tso | tso         Issue TSO commands and interact with TSO address spaces 
    zos-workflows | wf    Manage z/OSMF workflows                                 
-   zos-workflows | wf    Manage z/OSMF workflows                                 
    zosmf                 Interact with z/OSMF                                    
 
  OPTIONS
