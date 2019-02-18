@@ -11,17 +11,18 @@
 
 import { ZosmfRestClient } from "../../../../rest";
 import { Session, ImperativeError, Imperative } from "@brightside/imperative";
-import { noSession, noWorkflowKey, nozOSMFVersion } from "../../../src/api/WorkflowConstants";
+import { noSession, noWorkflowKey, nozOSMFVersion, WorkflowConstants } from "../../../src/api/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { CreateWorkflow, DeleteWorkflow, StartWorkflow } from "../../..";
+import { CreateWorkflow, DeleteWorkflow, PropertiesWorkflow, StartWorkflow } from "../../..";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../zosfiles/src/api";
-import { inspect } from "util";
+import { inspect, isNullOrUndefined } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
-import { sleep } from "../../../../utils";
+import { IWorkflowInfo } from "../../../src/api/doc/IWorkflowInfo";
+import { IStepInfo } from "../../../src/api/doc/IStepInfo";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -33,7 +34,7 @@ let system: string;
 let owner: string;
 let wfName: string;
 
-const workflow = __dirname + "../testfiles/demo.xml";
+const workflow = __dirname + "/../testfiles/demo.xml";
 
 function expectZosmfResponseSucceeded(response: string, error: ImperativeError) {
     expect(error).not.toBeDefined();
@@ -68,7 +69,15 @@ describe("Start workflow", () => {
     describe("Success Scenarios", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            let error;
+            let response;
+            try {
+                response = await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error upload: " + inspect(error));
+            }
         });
         afterAll(async () => {
             let error;
@@ -84,16 +93,31 @@ describe("Start workflow", () => {
             }
         });
         beforeEach(async () =>{
-            const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
+            let error;
+            let response;
+            try {
+                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error create: " + inspect(error));
+            }
             wfKey = response.workflowKey;
         });
         afterEach(async () => {
-            // TODO change with waiting for status when properties are done
-            const two = 2;
-            const minute = 60;
-            const mili = 1000;
-            const someMins = two * minute * mili;
-            await sleep(someMins);
+            let response: IWorkflowInfo;
+            let flag = false;
+            while(!flag) {
+                response = await PropertiesWorkflow.getWorkflowProperties(REAL_SESSION, wfKey, WorkflowConstants.ZOSMF_VERSION, true);
+                response.steps.forEach((step: IStepInfo) => {
+                    if (step.state === "Complete" && response.statusName !== "automation-in-progress") {
+                        flag = true;
+                    }
+                });
+                if (response.automationStatus && response.statusName !== "automation-in-progress") {
+                    flag = true;
+                }
+            }
             // deleting workflow
             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
         });

@@ -22,7 +22,6 @@ import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
 import { join } from "path";
 import { startT } from "../../../../src/api/doc/IStartWorkflow";
 import { IWorkflowInfo } from "../../../../src/api/doc/IWorkflowInfo";
-import { isNullOrUndefined } from "util";
 import { WorkflowConstants } from "../../../../src/api/WorkflowConstants";
 import { IStepInfo } from "../../../../src/api/doc/IStepInfo";
 
@@ -85,11 +84,11 @@ describe("Create workflow cli system tests", () => {
                 while(!flag) {
                     response = await PropertiesWorkflow.getWorkflowProperties(REAL_SESSION, wfKey, WorkflowConstants.ZOSMF_VERSION, true);
                     response.steps.forEach((step: IStepInfo) => {
-                        if (step.state === "Complete") {
-                            flag = true;
+                    if (step.state === "Complete" && response.statusName !== "automation-in-progress") {
+                        flag = true;
                         }
-                    });
-                    if (response.automationStatus && isNullOrUndefined(response.automationStatus.currentStepName)) {
+                }   );
+                    if (response.automationStatus && response.statusName !== "automation-in-progress") {
                         flag = true;
                     }
                 }

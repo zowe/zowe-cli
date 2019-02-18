@@ -43,7 +43,7 @@ const category = "General";
 const statusName = "in-progress";
 const badString = "Ba?d";
 const badString1 = "Ba&d";
-const workflow = __dirname + "../testfiles/demo.xml";
+const workflow = __dirname + "/../testfiles/demo.xml";
 
 
 function expectZosmfResponseSucceeded(response: IWorkflowsInfo, error: ImperativeError) {

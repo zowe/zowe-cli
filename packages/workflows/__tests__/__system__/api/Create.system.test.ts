@@ -41,8 +41,8 @@ let owner: string;
 let wfName: string;
 let inputFile: string;
 
-const workflow = __dirname + "../testfiles/demo.xml";
-const vars = __dirname + "../testfiles/vars.properties";
+const workflow = __dirname + "/../testfiles/demo.xml";
+const vars = __dirname + "/../testfiles/vars.properties";
 const propertiesText = "WRONG_VAR";
 
 function expectZosmfResponseSucceeded(response: ICreatedWorkflow, error: ImperativeError) {

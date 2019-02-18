@@ -12,7 +12,7 @@
 import { IHandlerParameters } from "@brightside/imperative";
 import { StartWorkflow } from "../../api/Start";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
-import { isNull, isNullOrUndefined } from "util";
+import { isNullOrUndefined } from "util";
 import { PropertiesWorkflow } from "../../..";
 import { IWorkflowInfo } from "../../api/doc/IWorkflowInfo";
 
@@ -61,15 +61,15 @@ export default class StartCommonHandler extends ZosmfBaseHandler {
                 }
                 else {
                     response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
-                    if (response.automationStatus && isNull(response.automationStatus.currentStepName)) {
+                    if (response.automationStatus && response.statusName !== "automation-in-progress") {
                             if (response.statusName === "complete") {
                                 params.response.data.setObj("Complete.");
                                 params.response.console.log("Workflow completed successfully.");
                                 flag = true;
                             }
-                            else if (response.statusName === "in-progress"){
+                            else {
                                 params.response.data.setObj("Fail.");
-                                params.response.console.log("Workflow failed.");
+                                params.response.console.log("Workflow failed or was cancelled.");
                                 flag = true;
                             }
                     }

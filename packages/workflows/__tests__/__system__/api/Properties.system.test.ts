@@ -33,7 +33,7 @@ let system: string;
 let owner: string;
 let wfName: string;
 
-const workflow = __dirname + "../testfiles/demo.xml";
+const workflow = __dirname + "/../testfiles/demo.xml";
 const wfVersion = "1.0";
 const propertiesSteps = false;
 const propertiesVariables = false;
