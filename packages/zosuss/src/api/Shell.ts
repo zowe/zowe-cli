@@ -9,11 +9,12 @@
 *
 */
 
-import { Logger, AbstractSession } from "@brightside/imperative";
+import { Logger } from "@brightside/imperative";
 import { Client, ClientChannel } from "ssh2";
+import { Session } from "./index";
 
 export class Shell {
-    public static executeSsh(session: AbstractSession, command: string, callback: any): void {
+    public static executeSsh(session: Session, command: string, callback: any): void {
         const conn = new Client();
 
         conn.on("ready", () => {
@@ -37,7 +38,7 @@ export class Shell {
         });
     }
 
-    public static executeSshCwd(session: AbstractSession, command: string, cwd: string, callback: any): void {
+    public static executeSshCwd(session: Session, command: string, cwd: string, callback: any): void {
         const cwdCommand = `cd ${cwd} && ${command}`;
         this.executeSsh(session, cwdCommand, callback);
     }

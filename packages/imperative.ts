@@ -168,7 +168,6 @@ const config: IImperativeConfig = {
                     },
                     user: {
                         type: "string",
-                        secure: true,
                         optionDefinition: SshSession.SSH_OPTION_USER,
                     },
                     password: {
@@ -176,8 +175,16 @@ const config: IImperativeConfig = {
                         secure: true,
                         optionDefinition: SshSession.SSH_OPTION_PASSWORD,
                     },
+                    privateKey: {
+                        type: "string",
+                        optionDefinition: SshSession.SSH_OPTION_PRIVATEKEY,
+                    },
+                    passphrase: {
+                        type: "string",
+                        optionDefinition: SshSession.SSH_OPTION_PASSPHRASE,
+                    },
                 },
-                required: ["host", "user", "password"],
+                required: ["host", "user"],
             },
             createProfileExamples: [
                 {

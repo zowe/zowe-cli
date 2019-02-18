@@ -9,7 +9,8 @@
 *
 */
 
-import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session } from "@brightside/imperative";
+import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger } from "@brightside/imperative";
+import { Session } from "./api/index";
 
 /**
  * Utility Methods for Brightside
@@ -64,7 +65,28 @@ export class SshSession {
         description: "Mainframe password, which can be the same as your TSO password.",
         type: "string",
         group: SshSession.SSH_CONNECTION_OPTION_GROUP,
-        required: true
+    };
+
+    /**
+     * Option used in profile creation and commands for password/passphrase for z/OS SSH
+     */
+    public static SSH_OPTION_PRIVATEKEY: ICommandOptionDefinition = {
+        name: "privateKey",
+        aliases: ["key", "pk"],
+        description: "Private key that matches with a public key that can be stored in the SSH server for authentication.",
+        type: "string",
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
+    };
+
+    /**
+     * Option used in profile creation and commands for password/passphrase for z/OS SSH
+     */
+    public static SSH_OPTION_PASSPHRASE: ICommandOptionDefinition = {
+        name: "passphrase",
+        aliases: ["phrase", "pp"],
+        description: "Passphrase to decrypt the private key, if it is encrypted.",
+        type: "string",
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
     };
 
     /**
@@ -75,41 +97,45 @@ export class SshSession {
         SshSession.SSH_OPTION_HOST,
         SshSession.SSH_OPTION_PORT,
         SshSession.SSH_OPTION_USER,
-        SshSession.SSH_OPTION_PASSWORD
+        SshSession.SSH_OPTION_PASSWORD,
+        SshSession.SSH_OPTION_PRIVATEKEY,
+        SshSession.SSH_OPTION_PASSPHRASE,
     ];
 
 
     /**
-     * Given a z/OS SSH profile, create a REST Client Session.
+     * Given a z/OS SSH profile, create a SSH Client Session.
      * @static
-     * @param {IProfile} profile - The z/OSMF profile contents
-     * @returns {Session} - A session for usage in the z/OSMF REST Client
+     * @param {IProfile} profile - The SSH profile contents
+     * @returns {Session} - A session for usage in the SSH Client
      */
     public static createBasicSshSession(profile: IProfile): Session {
         this.log.debug("Creating a z/OS SSH session from the profile named %s", profile.name);
         return new Session({
-            type: "basic",
             hostname: profile.host,
             port: profile.port,
             user: profile.user,
-            password: profile.password
+            password: profile.password,
+            privateKey: profile.privateKey,
+            passphrase: profile.passphrase
         });
     }
 
     /**
-     * Given command line arguments, create a REST Client Session.
+     * Given command line arguments, create a SSH Client Session.
      * @static
      * @param {IProfile} args - The arguments specified by the user
-     * @returns {Session} - A session for usage in the z/OSMF REST Client
+     * @returns {Session} - A session for usage in the SSH Client
      */
     public static createBasicSshSessionFromArguments(args: ICommandArguments): Session {
         this.log.debug("Creating a z/OS SSH session from arguments");
         return new Session({
-            type: "basic",
             hostname: args.host,
             port: args.port,
             user: args.user,
-            password: args.password
+            password: args.password,
+            privateKey: args.privateKey,
+            passphrase: args.passphrase
         });
     }
 

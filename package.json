@@ -57,8 +57,8 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@brightside/imperative": ">=2.0.0-0",
-    "@types/ssh2": "^0.5.37",
+    "@brightside/imperative": "^2.1.0",
+    "@types/ssh2": "^0.5.38",
     "js-yaml": "3.9.0",
     "popper.js": "^1.14.7",
     "ssh2": "^0.8.2",
@@ -70,6 +70,10 @@
     "@types/fs-extra": "^5.0.5",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
+<<<<<<< HEAD
+=======
+    "@types/lodash": "^4.14.121",
+>>>>>>> temp commit, it doesn't work
     "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
     "@types/yargs": "8.0.2",
