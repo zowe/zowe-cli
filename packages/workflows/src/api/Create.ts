@@ -73,9 +73,6 @@ export class CreateWorkflow{
                                  zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                     // add job statement, account info, comments and resolveGlobalConflictByUsing,
                                     ): Promise<ICreatedWorkflow> {
-        if (WorkflowDefinitionFile.charAt(0) === "/" && WorkflowDefinitionFile.charAt(1) === "/") {
-            WorkflowDefinitionFile = WorkflowDefinitionFile.substring(1);
-        }
 
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
@@ -85,6 +82,10 @@ export class CreateWorkflow{
         WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
         WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
         WorkflowValidator.validateOwner(Owner, wrongOwner.message);
+
+        if (WorkflowDefinitionFile.charAt(0) === "/" && WorkflowDefinitionFile.charAt(1) === "/") {
+            WorkflowDefinitionFile = WorkflowDefinitionFile.substring(1);
+        }
 
         const data: ICreateWorkflow = {
             workflowName: WorkflowName,
