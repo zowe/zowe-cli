@@ -20,8 +20,7 @@ import { ITestSystemSchema } from "../../../../__tests__/__src__/properties/ITes
 import { ZosFilesConstants } from "../../../zosfiles/src/api";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
-import { noSession, noWorkflowKey, nozOSMFVersion } from "../../src/api/WorkflowConstants";
-
+import { noSession, noWorkflowKey, nozOSMFVersion, WrongWorkflowKey } from "../../src/api/WorkflowConstants";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -121,7 +120,7 @@ describe("Cancel workflow", () => {
     });
     describe("Fail scenarios", () => {
         // wfKey has value from last called CreateWorkflow
-        it("should throw an error if the session parameter is undefined", async () => {
+        it("Should throw an error if the session parameter is undefined", async () => {
             let error: ImperativeError;
             let response: any;
             try {
@@ -133,7 +132,7 @@ describe("Cancel workflow", () => {
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
-        it("should throw an error if the workflowKey parameter is undefined", async () => {
+        it("Should throw an error if the workflowKey parameter is undefined", async () => {
             let error: ImperativeError;
             let response: any;
             try {
@@ -156,6 +155,22 @@ describe("Cancel workflow", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if workflow does not exist (workflowKey is wrong).", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, "blabla");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, WrongWorkflowKey.message);
+            // parse from message the workflow key
+            const actual: string = JSON.stringify(error);
+            const expected: RegExp = /The workflow key .+ was not found/gm;
+            expect(actual).toEqual(expect.stringMatching(expected));
         });
         it("Should throw error if zOSMF version is empty string.", async () => {
             let error: ImperativeError;

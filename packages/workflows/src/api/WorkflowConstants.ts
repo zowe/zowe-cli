@@ -178,6 +178,18 @@ export const nozOSMFVersion: IMessageDefinition = {
 export const noWorkflowKey: IMessageDefinition = {
     message: apiErrorHeader + `No workflow key parameter was supplied.`
 };
+
+/**
+ * Error message that workflow key that was supplied does not exist.
+ * IZUWF5001W: The workflow key "workflowkey" was not found.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const WrongWorkflowKey: IMessageDefinition = {
+    message: "IZUWF5001W"
+    };
+
 /**
  * Error message that no steps parameter was supplied.
  * @static

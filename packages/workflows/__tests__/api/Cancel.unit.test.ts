@@ -88,7 +88,7 @@ describe("Cancel workflow", () => {
         });
     });
     describe("Fail scenarios", () => {
-        it("should throw an error if the session parameter is undefined", async () => {
+        it("Should throw an error if the session parameter is undefined", async () => {
             let error: ImperativeError;
             let response: any;
             try {
@@ -100,7 +100,7 @@ describe("Cancel workflow", () => {
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });
-        it("should throw an error if the workflowKey parameter is undefined", async () => {
+        it("Should throw an error if the workflowKey parameter is undefined", async () => {
             let error: ImperativeError;
             let response: any;
             try {
