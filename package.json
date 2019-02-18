@@ -79,7 +79,6 @@
     "chalk": "2.3.0",
     "clear-require": "^2.0.0",
     "codepage": "^1.10.1",
-    "cpx": "^1.5.0",
     "cross-env": "^5.1.4",
     "dataobject-parser": "^1.1.3",
     "fs-extra": "^7.0.1",
@@ -113,6 +112,9 @@
     "typedoc": "^0.11.1",
     "typescript": "^2.6.2",
     "uuid": "^3.3.2"
+  },
+  "resolutions": {
+    "cpx/chokidar": "^2.1.1"
   },
   "engines": {
     "node": ">=6.0.0"
