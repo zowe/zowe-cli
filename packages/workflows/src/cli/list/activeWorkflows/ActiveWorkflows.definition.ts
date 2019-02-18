@@ -42,7 +42,7 @@ export const ActiveWorkflows: ICommandDefinition = {
     examples: [
         {
             description: "List the workflow with name \"testworkflow\"",
-            options: "\"testworkflow\""
+            options: "--wfn \"testworkflow\""
         }
     ],
 };
