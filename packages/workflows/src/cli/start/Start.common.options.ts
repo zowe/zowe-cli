@@ -35,15 +35,31 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
-     * Step to be run.
+     * Workflow key of workflow to be run.
      * @type {ICommandOptionDefinition}
      */
-    stepName: {
-        name: "step-name",
-        aliases: ["sn"],
-        description: "Specifies the step name that will run.",
+    workflowKey: {
+        name: "with-workflow-key",
+        aliases: ["wk"],
         type: "string",
-        required: false
+        description: "Workflow key of workflow instance to be started",
+        // TODO after introducing workflow name delete required
+        required: true
+        // absenceImplications: ["with-workflow-name"],
+        // conflictsWith: ["with-workflow-name"]
+    },
+
+    /**
+     * Workflow name of workflow to be run.
+     * @type {ICommandOptionDefinition}
+     */
+    workflowName: {
+        name: "with-workflow-name",
+        aliases: ["wn"],
+        type: "string",
+        description: "Workflow name of workflow instance to be started",
+        // absenceImplications: ["with-workflow-key"],
+        // conflictsWith: ["with-workflow-key"]
     },
 
     /**
@@ -51,11 +67,12 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
      * this property indicates whether z/OSMF is to perform the steps.
      * @type {ICommandOptionDefinition}
      */
-    performOneStep: {
-        name: "perform-one-step",
-        aliases: ["pos"],
-        description: "Identifies whether to perform just one specified step.",
+    performFollowingSteps: {
+        name: "perform-following-steps",
+        aliases: ["pfs"],
+        description: "Identifies whether to perform also following steps in the workflow instance.",
         type: "boolean",
+        defaultValue: false,
         required: false
     },
 

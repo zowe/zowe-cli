@@ -9,45 +9,45 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
-import { StartCommonOptions } from "../Start.common.options";
-import { join } from "path";
 
+import { ICommandDefinition } from "@brightside/imperative";
+import { join } from "path";
+import { StartCommonOptions } from "../Start.common.options";
 
 /**
- * This object defines the command for delete workflow using workflow key within zosworkflows.
+ * This object defines the command for delete workflow using workflow key within zos-workflows.
  * This is not something that is intended to be used outside of this npm package.
  *
  * @private
  */
-export const WorkflowKey: ICommandDefinition = {
-    name: "workflow-with-workflow-key",
-    aliases: ["wk"],
-    description: "Start workflow with specified workflow key",
+export const WorkflowStep: ICommandDefinition = {
+    name: "workflow-step",
+    aliases: ["ws"],
+    description: "Will run specified step of workflow workflow instance plus following steps if specified.",
     type: "command",
-    handler: join(__dirname, "../Start.common.handler"),
+    handler: join(__dirname, "./WorkflowStep.handler"),
     profile: {
         optional: ["zosmf"],
     },
     positionals: [
         {
-            name: "workflowKey",
+            name: "step-name",
+            description: "Specifies the step name that will be run.",
             type: "string",
-            description: "workflow key of workflow instance to be started",
-            required: true,
+            required: true
         },
     ],
     options: ([
+        StartCommonOptions.workflowKey,
+        // StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
-        StartCommonOptions.stepName,
-        StartCommonOptions.performOneStep,
-        StartCommonOptions.wait,
+        StartCommonOptions.performFollowingSteps,
         // StartCommonOptions.zosmfVersion
     ]),
     examples: [
         {
             description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
-            options: "\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
+            options: "\"Step1\" --workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
         }
     ],
 };
