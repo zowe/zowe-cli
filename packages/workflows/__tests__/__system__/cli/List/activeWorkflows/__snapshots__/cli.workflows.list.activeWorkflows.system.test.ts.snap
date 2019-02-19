@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`List workflow cli system tests List all workflows Display Help should display list active workflows help 1`] = `
-"================Z/OS WORKFLOWS LIST WORKFLOWS HELP===============
+"================Z/OS WORKFLOWS LIST ACTIVE WORKFLOWS HELP===============
 
  COMMAND NAME
  ------------
@@ -143,7 +143,7 @@ exports[`List workflow cli system tests List all workflows Display Help should d
 
       $ zowe zos-workflows list active-workflows --wfn \\"testworkflow\\"
 
-================Z/OS WORKFLOWS LIST WORKFLOWS HELP RFJ===========
+================Z/OS WORKFLOWS LIST ACTIVE WORKFLOWS HELP RFJ===========
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: active-workflows.\\",
