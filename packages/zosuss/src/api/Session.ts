@@ -9,25 +9,22 @@
 *
 */
 
+import { AbstractSession } from "./AbstractSession";
 import { ISession } from "./doc/ISession";
 /**
  * Non-abstract session class
  * @export
  * @class Session
+ * @extends {AbstractSession}
  */
-export declare class Session {
-    /**
-     * Obtain session info and defaults
-     * @readonly
-     * @type {ISession}
-     * @memberof Session
-     */
-    public readonly ISession: ISession;
+export class Session extends AbstractSession {
 
     /**
      * Creates an instance of Session.
      * @param {ISession} newSession - contains input for new session
      * @memberof Session
      */
-    constructor(newSession: ISession);
+    constructor(newSession: ISession) {
+        super(newSession);
+    }
 }

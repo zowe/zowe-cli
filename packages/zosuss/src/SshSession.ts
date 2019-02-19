@@ -64,27 +64,28 @@ export class SshSession {
         aliases: ["pass", "pw"],
         description: "Mainframe password, which can be the same as your TSO password.",
         type: "string",
-        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
+        required: true,
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
 
     /**
-     * Option used in profile creation and commands for password/passphrase for z/OS SSH
+     * Option used in profile creation and commands for private key path
      */
     public static SSH_OPTION_PRIVATEKEY: ICommandOptionDefinition = {
         name: "privateKey",
         aliases: ["key", "pk"],
-        description: "Private key that matches with a public key that can be stored in the SSH server for authentication.",
+        description: "Path to a private key that matches with a public key stored in the server for authentication",
         type: "string",
         group: SshSession.SSH_CONNECTION_OPTION_GROUP,
     };
 
     /**
-     * Option used in profile creation and commands for password/passphrase for z/OS SSH
+     * Option used in profile creation and commands for password for private key
      */
-    public static SSH_OPTION_PASSPHRASE: ICommandOptionDefinition = {
-        name: "passphrase",
-        aliases: ["phrase", "pp"],
-        description: "Passphrase to decrypt the private key, if it is encrypted.",
+    public static SSH_OPTION_KEYPASSWORD: ICommandOptionDefinition = {
+        name: "keyPassword",
+        aliases: ["keypass", "kpass"],
+        description: "Private key password, which unlocks the private key.",
         type: "string",
         group: SshSession.SSH_CONNECTION_OPTION_GROUP,
     };
@@ -99,9 +100,8 @@ export class SshSession {
         SshSession.SSH_OPTION_USER,
         SshSession.SSH_OPTION_PASSWORD,
         SshSession.SSH_OPTION_PRIVATEKEY,
-        SshSession.SSH_OPTION_PASSPHRASE,
+        SshSession.SSH_OPTION_KEYPASSWORD
     ];
-
 
     /**
      * Given a z/OS SSH profile, create a SSH Client Session.
@@ -117,7 +117,7 @@ export class SshSession {
             user: profile.user,
             password: profile.password,
             privateKey: profile.privateKey,
-            passphrase: profile.passphrase
+            keyPassword: profile.keyPassword
         });
     }
 
@@ -135,7 +135,7 @@ export class SshSession {
             user: args.user,
             password: args.password,
             privateKey: args.privateKey,
-            passphrase: args.passphrase
+            keyPassword: args.keyPassword
         });
     }
 

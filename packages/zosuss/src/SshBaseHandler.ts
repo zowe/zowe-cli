@@ -10,7 +10,7 @@
 */
 
 import {
-    AbstractSession,
+    // AbstractSession,
     ICommandArguments,
     ICommandHandler,
     IHandlerParameters,
@@ -22,6 +22,7 @@ import {
     IImperativeError,
     ImperativeError
 } from "@brightside/imperative";
+import { AbstractSession } from "../src/api/index";
 import { SshSession } from "../index";
 import { Session } from "./api/index";
 
