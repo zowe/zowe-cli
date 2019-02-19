@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "acw",
   ],
-  "description": "List workflow instance(s) in z/OSMF.
+  "description": "List active workflow instance(s) in z/OSMF.
 Omitting all options will list all workflows on the sysplex",
   "examples": Array [
     Object {
@@ -13,7 +13,7 @@ Omitting all options will list all workflows on the sysplex",
       "options": "--wfn \\"testworkflow\\"",
     },
     Object {
-      "description": "List multiple workflows matching the string \\"workflow\\"",
+      "description": "List multiple active workflows matching the string \\"workflow\\"",
       "options": "--wfn \\".*workflow.*\\"",
     },
   ],
@@ -89,6 +89,7 @@ Omitting all options will list all workflows on the sysplex",
       "zosmf",
     ],
   },
+  "summary": "List active workflow instance(s) in z/OSMF.",
   "type": "command",
 }
 `;
