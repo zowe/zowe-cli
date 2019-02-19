@@ -11,6 +11,7 @@
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
 import { join } from "path";
+import { DeleteWorkflowOptions } from "../deleteActiveWorkflow/DeleteActiveWorkflow.options";
 
 
 /**
@@ -19,27 +20,22 @@ import { join } from "path";
  *
  * @private
  */
-export const WorkflowKey: ICommandDefinition = {
-    name: "by-workflow-key",
-    aliases: ["wk"],
-    description: "Delete workflow instance with specified workflow key",
+export const DeleteActiveWorkflow: ICommandDefinition = {
+    name: "active-workflow",
+    aliases: ["aw"],
+    description: "Delete an active workflow instance in z/OSMF",
     type: "command",
     handler: join(__dirname, "../Delete.common.handler"),
     profile: {
         optional: ["zosmf"],
     },
-    positionals: [
-        {
-            name: "workflowKey",
-            type: "string",
-            description: "workflow key of workflow instance to be deleted",
-            required: true,
-        },
-    ],
+    options: ([
+        DeleteWorkflowOptions.workflowKey
+    ]),
     examples: [
         {
             description: "To delete a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
-            options: "\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
+            options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
         }
     ],
 };

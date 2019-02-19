@@ -86,13 +86,12 @@ describe("Delete workflow cli system tests", () => {
         it("Should throw error if workflowKey is empty string.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh", testEnvironment);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("workflowKey");
-            expect(response.stderr.toString()).toContain("Missing Positional Argument");
+            expect(response.stderr.toString()).toContain("No value specified for option");
         });
     });
     describe("Display Help", () => {
         it("should display delete workflow-key help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/delete_workflowkey_help.sh", testEnvironment);
+            const response = runCliScript(__dirname + "/__scripts__/delete_active_workflow_help.sh", testEnvironment);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

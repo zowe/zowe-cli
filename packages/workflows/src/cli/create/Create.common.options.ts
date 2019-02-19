@@ -17,13 +17,62 @@ import { ICommandOptionDefinition } from "@brightside/imperative";
 export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = {
 
     /**
+     * Data set containing workflow definiton option.
+     * @type {ICommandOptionDefinition}
+     */
+    dataSet: {
+        name: "data-set",
+        aliases: ["ds"],
+        type: "string",
+        description: "Data set containing workflow definiton.",
+        required: true,
+    },
+
+    /**
+     * Uss file containing workflow definiton option.
+     * @type {ICommandOptionDefinition}
+     */
+    ussFile: {
+        name: "uss-file",
+        aliases: ["uf"],
+        type: "string",
+        description: "Uss file containing workflow definiton.",
+        required: true,
+    },
+
+    /**
+     * System where the workflow will run.
+     * @type {ICommandOptionDefinition}
+     */
+    systemName: {
+        name: "system-name",
+        aliases: ["sn"],
+        description: "System where the workflow will run.",
+        type: "string",
+        required: true
+    },
+
+    /**
+     * User id of the owner of the workflow.
+     * @type {ICommandOptionDefinition}
+     */
+    owner: {
+        name: "owner",
+        aliases: ["ow"],
+        description: "User ID of the workflow owner. This user can perform the workflow steps or delegate the steps to other users.",
+        type: "string",
+        required: true
+    },
+
+    /**
      * Property file containing key-value pairs as workflow variables.
      * @type {ICommandOptionDefinition}
      */
     inputFile: {
-        name: "input-file",
+        name: "variables-input-file",
         aliases: ["if"],
-        description: "Properties file with pre-specified values for workflow variables ",
+        description: "Specifies an optional properties file that you can use to pre-specify values for one or more of the variables that" +
+        " are defined in the workflow definition file.",
         type: "string",
         required: false
     },
@@ -35,7 +84,8 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     variables: {
         name: "variables",
         aliases: ["vs"],
-        description: "A list of one or more variables for the workflow.",
+        description: "A list of one or more variables for the workflow. " +
+        "The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
         type: "string",
         required: false
     },
@@ -47,7 +97,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     assignToOwner: {
         name: "assign-to-owner",
         aliases: ["ao"],
-        description: "Indicates whether the workflow steps are assigned to the workflow owner",
+        description: "Indicates whether the workflow steps are assigned to the workflow owner.",
         type: "boolean",
         required: false
     },

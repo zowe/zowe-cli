@@ -21,8 +21,8 @@ import { join } from "path";
  * @private
  */
 export const UssFile: ICommandDefinition = {
-    name: "uss-file",
-    aliases: ["uf"],
+    name: "workflow-from-uss-file",
+    aliases: ["wfuf"],
     description: "Create a workflow instance in z/OSMF using a USS file",
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
@@ -36,26 +36,11 @@ export const UssFile: ICommandDefinition = {
             description: "Name of the workflow instance to create",
             required: true,
         },
-        {
-            name: "definitionUssFile",
-            type: "string",
-            description: "USS file containing workflow definiton",
-            required: true,
-        },
-        {
-            name: "systemName",
-            description: "System where the workflow will run",
-            type: "string",
-            required: true
-        },
-        {
-            name: "owner",
-            description: "User id of the owner of the workflow",
-            type: "string",
-            required: true
-        },
     ],
     options: ([
+        CreateCommonOptions.ussFile,
+        CreateCommonOptions.systemName,
+        CreateCommonOptions.owner,
         CreateCommonOptions.inputFile,
         CreateCommonOptions.variables,
         CreateCommonOptions.assignToOwner,
@@ -66,8 +51,24 @@ export const UssFile: ICommandDefinition = {
     outputFormatOptions: true,
     examples: [
         {
-            description: "Create a workflow with name \"testworkflow\" uss file \"/path/workflow.xml\", system name \"TESTM1\" and owner \"testid\"",
-            options: "\"testworkflow\" \"/path/workflow.xml\" \"TESTM1\" \"testid\""
+            description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
+            "on system \"TESTM1\"",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\""
+        },
+        {
+            description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
+            "on system \"TESTM1\" with owner \"MYSYSID\" and delete succesfully completed jobs",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"MYSYSID\" --delete-completed"
+        },
+        {
+            description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
+            "on system \"TESTM1\" with variable values in the member PROPERTIES of data set TESTID.DATA",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --variables-input-file TESTID.DATA(PROPERTIES)"
+        },
+        {
+            description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
+            "on system \"TESTM1\" with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --variables DUMMYVAR=DUMMYVAL --assign-to-owner"
         }
     ],
 };

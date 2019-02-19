@@ -120,7 +120,7 @@ describe("Create workflow cli system tests", () => {
             });
         });
         describe("Display Help", () => {
-            it("should display delete workflow-key help", async () => {
+            it("should display create workflow-from-uss-file help", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/create_workflow_uss_help.sh", testEnvironment);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
@@ -201,7 +201,7 @@ describe("Create workflow cli system tests", () => {
             });
         });
         describe("Display Help", () => {
-            it("should display delete workflow-key help", async () => {
+            it("should display create workflow-from-data-set help", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/create_workflow_ds_help.sh", testEnvironment);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
