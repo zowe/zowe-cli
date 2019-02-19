@@ -13,6 +13,7 @@ Object {
     Object {
       "owner": "FAKEUID",
       "workflowDescription": "Test wf",
+      "workflowKey": "Some-key-here",
       "workflowName": "fakeWorkflow",
     },
   ],

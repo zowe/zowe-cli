@@ -9,10 +9,11 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { ListWorkflows } from "../../../api/ListWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { IActiveWorkflows } from "../../../api/doc/IActiveWorkflows";
+import { IWorkflowsInfo } from "../../../api/doc/IWorkflowsInfo";
 
 
 /**
@@ -38,6 +39,7 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         this.arguments = commandParameters.arguments;
         let response: IActiveWorkflows;
         let error;
+        const width = 42;
         try {
             response = await ListWorkflows.listWorkflows(
                 this.mSession, undefined, this.arguments.workflowName,
@@ -49,6 +51,12 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         }
 
         commandParameters.response.data.setObj(response);
+
+        response.workflows.forEach((workflow: IWorkflowsInfo) => {
+            workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
+            workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
+            workflow.workflowDescription = TextUtils.wordWrap(`${workflow.workflowDescription}`, width);
+        });
 
         // Format & print the response
         if (response.workflows.length) {

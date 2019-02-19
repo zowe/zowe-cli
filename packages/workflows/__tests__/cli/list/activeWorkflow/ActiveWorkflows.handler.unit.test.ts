@@ -54,6 +54,7 @@ describe("List workflows handler", () => {
                             owner: `${owner}`,
                             workflowName: `${workflowName}`,
                             workflowDescription: "Test wf",
+                            workflowKey: "Some-key-here"
                         }
                     ],
                 };

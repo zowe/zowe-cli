@@ -12,6 +12,10 @@ Omitting all options will list all workflows on the sysplex",
       "description": "List the workflow with name \\"testworkflow\\"",
       "options": "--wfn \\"testworkflow\\"",
     },
+    Object {
+      "description": "List multiple workflows matching the string \\"workflow\\"",
+      "options": "--wfn \\".*workflow.*\\"",
+    },
   ],
   "name": "active-workflows",
   "options": Array [
