@@ -12,6 +12,12 @@
 import { IExplanationMap } from "@brightside/imperative";
 import { IWorkflowsInfo } from "./IWorkflowsInfo";
 
+/**
+ * Interface for z/OSMF API response.
+ * @export
+ * @interface IActiveWorkflows
+ */
+
 export interface IActiveWorkflows {
  workflows?: IWorkflowsInfo[];
 }

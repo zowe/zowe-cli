@@ -58,7 +58,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
      */
     owner: {
         name: "owner",
-        aliases: ["o"],
+        aliases: ["ow"],
         description: "Workflow owner (a valid z/OS user ID).",
         type: "string",
         required: false

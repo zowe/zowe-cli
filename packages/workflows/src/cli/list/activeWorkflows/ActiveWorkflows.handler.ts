@@ -16,11 +16,10 @@ import { IActiveWorkflows } from "../../../api/doc/IActiveWorkflows";
 
 
 /**
- * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.
- * This is not something that is intended to be used outside of this npm package.
+ * Common Handler for listing active workflow(s) instance(s) in z/OSMF.
  */
 
-export default class ListActiveWorkflowHandler extends ZosmfBaseHandler {
+export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
      * @private

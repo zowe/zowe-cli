@@ -73,7 +73,6 @@
     "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
     "@types/yargs": "8.0.2",
-    "braces": "^2.3.1",
     "chai": "^4.1.2",
     "chai-string": "^1.4.0",
     "chalk": "2.3.0",
