@@ -11,7 +11,7 @@
 
 import { Shell } from "../../src/api/Shell";
 import { Client } from "ssh2";
-import { Session } from "@brightside/imperative";
+import { Session } from "../../index";
 import { EventEmitter } from "events";
 jest.mock("ssh2");
 

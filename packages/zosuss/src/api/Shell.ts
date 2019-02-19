@@ -34,7 +34,9 @@ export class Shell {
             host: session.ISession.hostname,
             port: session.ISession.port,
             username: session.ISession.user,
-            password: session.ISession.password
+            password: session.ISession.password,
+            privateKey: session.ISession.privateKey ? require("fs").readFileSync(session.ISession.privateKey) : "",
+            passphrase: session.ISession.keyPassword
         });
     }
 

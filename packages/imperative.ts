@@ -169,7 +169,8 @@ const config: IImperativeConfig = {
                     },
                     passphrase: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_PASSPHRASE,
+                        secure: true,
+                        optionDefinition: SshSession.SSH_OPTION_KEYPASSWORD,
                     },
                 },
                 required: ["host", "user"],
