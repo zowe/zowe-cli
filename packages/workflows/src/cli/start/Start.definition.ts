@@ -11,11 +11,11 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 import { WorkflowStep } from "./workflowStep/WorkflowStep.definition";
-// import { FullWorkflow } from "./fullWorkflow/FullWorkflow.definition;
+import { FullWorkflow } from "./fullWorkflow/FullWorkflow.definition";
 
 
 /**
- * This object defines the command for the start group within zosworkflows. This is not
+ * This object defines the command for the start group within zos-workflows. This is not
  * something that is intended to be used outside of this npm package.
  *
  * @private
@@ -27,6 +27,6 @@ export const StartDefinition: ICommandDefinition = {
     description: "Start workflow instance in z/OSMF",
     children: [
         WorkflowStep,
-        // FullWorkflow
+        FullWorkflow
     ]
 };

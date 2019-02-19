@@ -23,7 +23,7 @@ import { StartCommonOptions } from "../Start.common.options";
 export const WorkflowStep: ICommandDefinition = {
     name: "workflow-step",
     aliases: ["ws"],
-    description: "Will run specified step of workflow workflow instance plus following steps if specified.",
+    description: "Will run given step of workflow instance plus following steps if specified.",
     type: "command",
     handler: join(__dirname, "./WorkflowStep.handler"),
     profile: {
@@ -31,7 +31,7 @@ export const WorkflowStep: ICommandDefinition = {
     },
     positionals: [
         {
-            name: "step-name",
+            name: "stepName",
             description: "Specifies the step name that will be run.",
             type: "string",
             required: true
@@ -46,8 +46,17 @@ export const WorkflowStep: ICommandDefinition = {
     ]),
     examples: [
         {
-            description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
-            options: "\"Step1\" --workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
+            description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
+            options: "\"Step1\" --with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
+        },
+        {
+            description: "To start a workflow instance in z/OSMF from step \"Step1\" with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
+            options: "\"Step1\" --with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --perform-following-steps"
+        },
+        {
+            description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"" +
+                "and if there is a conflict in variable's value use the value that is in output file",
+            options: "\"Step1\" --with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
         }
     ],
 };

@@ -24,7 +24,10 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
     resolveConflict: {
         name: "resolve-conflict-by",
         aliases: ["rcb"],
-        description: "How variable conflicts are to be handled.",
+        description: "How variable conflicts should be handled.\n Options:\n " +
+            "outputFileValue: Allow the output file values to override the existing values.\n" +
+            "existingValue: Use the existing variables values instead of the output file values.\n" +
+            "leaveConflict: Automation is stopped. The user must resolve the conflict manually.",
         type: "string",
         required: false,
         defaultValue: "outputFileValue",
@@ -83,7 +86,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
     wait: {
         name: "wait",
         aliases: ["w"],
-        description: "Identifies whether to wait for workflow instance to finish. Supports only automated workflows that are run from the beginning.",
+        description: "Identifies whether to wait for workflow instance to finish.",
         type: "boolean",
         required: false
     },
