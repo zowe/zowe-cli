@@ -22,7 +22,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
      */
     workflowName: {
         name: "workflow-name",
-        aliases: ["wfn"],
+        aliases: ["wn"],
         description: "Specify a regular expression to match desired workflow names.",
         type: "string",
         required: false

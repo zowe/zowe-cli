@@ -3,7 +3,7 @@
 exports[`zos-workflows list active workflows definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "acw",
+    "aw",
   ],
   "description": "List active workflow instance(s) in z/OSMF.
 Omitting all options will list all workflows on the sysplex",
@@ -21,7 +21,7 @@ Omitting all options will list all workflows on the sysplex",
   "options": Array [
     Object {
       "aliases": Array [
-        "wfn",
+        "wn",
       ],
       "description": "Specify a regular expression to match desired workflow names.",
       "name": "workflow-name",

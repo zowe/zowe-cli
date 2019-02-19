@@ -7,7 +7,7 @@ set -e
 
 echo "================Z/OS WORKFLOWS LIST ACTIVE WORKFLOWS==========="
 
-bright wf list acw --wfn $wname --rfj
+bright wf list aw --wn $wname --rfj
 if [ $? -gt 0 ]
 then
     exit $?
