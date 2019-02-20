@@ -20,12 +20,12 @@ import { StartCommonOptions } from "../Start.common.options";
  *
  * @private
  */
-export const FullWorkflow: ICommandDefinition = {
-    name: "full-workflow",
-    aliases: ["fw"],
+export const WorkflowFull: ICommandDefinition = {
+    name: "workflow-full",
+    aliases: ["wf"],
     description: "Will run workflow from the beginning to the end or to the first manual step.",
     type: "command",
-    handler: join(__dirname, "./FullWorkflow.handler"),
+    handler: join(__dirname, "./WorkflowFull.handler"),
     profile: {
         optional: ["zosmf"],
     },

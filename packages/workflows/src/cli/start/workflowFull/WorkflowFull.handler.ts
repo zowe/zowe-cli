@@ -20,12 +20,12 @@ import { IWorkflowInfo } from "../../../api/doc/IWorkflowInfo";
  * Common handler to start a workflow instance in z/OSMF.
  * This is not something that is intended to be used outside of this npm package.
  */
-export default class FullWorkflowHandler extends ZosmfBaseHandler {
+export default class WorkflowFullHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
      * @private
      * @type {*}
-     * @memberof FullWorkflowHandler
+     * @memberof WorkflowFullHandler
      */
     private arguments: any;
 
@@ -33,7 +33,7 @@ export default class FullWorkflowHandler extends ZosmfBaseHandler {
      * Command handler process - invoked by the command processor to handle the "zos-workflows start full-workflow
      * @param {IHandlerParameters} params - Command handler parameters
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
-     * @memberof FullWorkflowHandler
+     * @memberof WorkflowFullHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;

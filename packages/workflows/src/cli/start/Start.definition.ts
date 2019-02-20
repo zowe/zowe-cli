@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 import { WorkflowStep } from "./workflowStep/WorkflowStep.definition";
-import { FullWorkflow } from "./fullWorkflow/FullWorkflow.definition";
+import { WorkflowFull } from "./workflowFull/WorkflowFull.definition";
 
 
 /**
@@ -26,7 +26,7 @@ export const StartDefinition: ICommandDefinition = {
     type: "group",
     description: "Start workflow instance in z/OSMF",
     children: [
-        WorkflowStep,
-        FullWorkflow
+        WorkflowFull,
+        WorkflowStep
     ]
 };
