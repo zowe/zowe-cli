@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ListOptions } from "./ActiveWorkflows.options";
+import { ListActiveWorkflowsOptions } from "./ActiveWorkflows.options";
 import { join } from "path";
 
 
@@ -33,12 +33,12 @@ export const ActiveWorkflows: ICommandDefinition = {
         optional: ["zosmf"],
     },
     options: ([
-        ListOptions.workflowName,
-        ListOptions.category,
-        ListOptions.system,
-        ListOptions.owner,
-        ListOptions.vendor,
-        ListOptions.statusName,
+        ListActiveWorkflowsOptions.workflowName,
+        ListActiveWorkflowsOptions.category,
+        ListActiveWorkflowsOptions.system,
+        ListActiveWorkflowsOptions.owner,
+        ListActiveWorkflowsOptions.vendor,
+        ListActiveWorkflowsOptions.statusName,
     ]),
     outputFormatOptions: true,
     examples: [

@@ -12,9 +12,9 @@
 import { ICommandOptionDefinition } from "@brightside/imperative";
 
 /**
- * Object containing all extra options to be used by the list workflow commands.
+ * Object containing all extra options to be used by the list active-workflow commands.
  */
-export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
+export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefinition } = {
 
     /**
      * The name of the workflow.
