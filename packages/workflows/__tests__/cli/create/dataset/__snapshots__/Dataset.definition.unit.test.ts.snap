@@ -55,7 +55,7 @@ Object {
     },
     Object {
       "aliases": Array [
-        "if",
+        "vif",
       ],
       "description": "Specifies an optional properties file that you can use to pre-specify values for one or more of the variables that are defined in the workflow definition file.",
       "name": "variables-input-file",
@@ -73,7 +73,7 @@ Object {
     },
     Object {
       "aliases": Array [
-        "ao",
+        "ato",
       ],
       "description": "Indicates whether the workflow steps are assigned to the workflow owner.",
       "name": "assign-to-owner",
