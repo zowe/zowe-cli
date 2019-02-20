@@ -28,14 +28,20 @@ def UNIT_RESULTS = "${TEST_RESULTS_FOLDER}/unit"
 def INTEGRATION_RESULTS = "${TEST_RESULTS_FOLDER}/integration"
 
 /**
- * The name of the master branch
- */
-def MASTER_BRANCH = "master"
+* Development branches considered for release purposes
+*/ 
+def DEV_BRANCH = [
+    master: "master",
+    beta: "beta",
+    latest: "latest",
+    incremental: "lts-incremental",
+    stable: "lts-stable",
+]
 
 /**
-* Is this a release branch? Temporary workaround that won't break everything horribly if we merge.
+* List of release branches
 */ 
-def RELEASE_BRANCH = false
+def RELEASE_BRANCHES = [DEV_BRANCH.master, DEV_BRANCH.beta, DEV_BRANCH.latest, DEV_BRANCH.incremental, DEV_BRANCH.stable]
 
 /**
  * List of people who will get all emails for master builds
@@ -103,7 +109,7 @@ def PRODUCT_NAME = "Zowe CLI"
 // much impossible to have conditional options based on the branch :/
 def opts = []
 
-if (BRANCH_NAME == MASTER_BRANCH) {
+if (RELEASE_BRANCHES.contains(BRANCH_NAME)) {
     // Only keep 20 builds
     opts.push(buildDiscarder(logRotator(numToKeepStr: '20')))
 
@@ -112,9 +118,6 @@ if (BRANCH_NAME == MASTER_BRANCH) {
     // twice in quick succession
     opts.push(disableConcurrentBuilds())
 } else {
-    if (BRANCH_NAME == "1.0.0"){
-        RELEASE_BRANCH = true
-    }
     // Only keep 5 builds on other branches
     opts.push(buildDiscarder(logRotator(numToKeepStr: '5')))
 }
@@ -548,7 +551,7 @@ pipeline {
          * EXECUTION CONDITIONS
          * --------------------
          * - SHOULD_BUILD is true
-         * - The current branch is the MASTER_BRANCH
+         * - The current branch is the DEV_BRANCH.master or DEV_BRANCH.beta
          * - The build is still successful and not unstable
          *
          * DESCRIPTION
@@ -575,7 +578,7 @@ pipeline {
          *         Commit Message:
          *         Bumped pre-release version <VERSION_HERE> [ci skip]
          ************************************************************************/
-        stage('Bump Version') {
+        stage('Bump Pre-release Version') {
             when {
                 allOf {
                     expression {
@@ -585,7 +588,7 @@ pipeline {
                         return currentBuild.resultIsBetterOrEqualTo(BUILD_SUCCESS)
                     }
                     expression {
-                        return BRANCH_NAME == MASTER_BRANCH && !RELEASE_BRANCH   
+                        return BRANCH_NAME.equals(DEV_BRANCH.master) || BRANCH_NAME.equals(DEV_BRANCH.beta)
                     }
                 }
             }
@@ -597,9 +600,9 @@ pipeline {
                     // this should be the same as our current commit since concurrency builds are turned
                     // off for that branch
                     sh "git reset --hard HEAD"
-                    sh "git checkout ${MASTER_BRANCH}"
+                    sh "git checkout ${BRANCH_NAME}"
 
-                    // Make sure that the revision of the build and the current revision of the MASTER_BRANCH match
+                    // Make sure that the revision of the build and the current revision of the BRANCH_NAME match
                     script {
                         revision = sh returnStdout: true, script: GIT_REVISION_LOOKUP
 
@@ -613,20 +616,27 @@ pipeline {
                     sh "git config user.email \"${GIT_USER_EMAIL}\""
                     sh "git config push.default simple"
 
-                    // This npm command does the version bump, and a git commit and tag
-                   script {
-                       def baseVersion = sh returnStdout: true, script: 'node -e "console.log(require(\'./package.json\').version.split(\'-\')[0])"'
-                       def preReleaseVersion = baseVersion.trim() + "-next." + new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC")) 
-                       sh "npm version ${preReleaseVersion} -m \"Bumped pre-release version to ${preReleaseVersion} [ci skip]\""
+                    // This script block does the version bump, and a git commit and tag
+                    script {
+                        if (BRANCH_NAME.equals(DEV_BRANCH.master)) {
+                            def baseVersion = sh returnStdout: true, script: 'node -e "console.log(require(\'./package.json\').version.split(\'-\')[0])"'
+                            def preReleaseVersion = baseVersion.trim() + "-alpha." + new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC")) 
+                            sh "npm version ${preReleaseVersion} -m \"Bumped pre-release version to ${preReleaseVersion} [ci skip]\""
+                        }
+                        else if (BRANCH_NAME.equals(DEV_BRANCH.beta)) {
+                            def baseVersion = sh returnStdout: true, script: 'node -e "console.log(require(\'./package.json\').version.split(\'-\')[0])"'
+                            def preReleaseVersion = baseVersion.trim() + "-beta." + new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC")) 
+                            sh "npm version ${preReleaseVersion} -m \"Bumped pre-release version to ${preReleaseVersion} [ci skip]\""
+                        }
                     }
 
                     // For debugging purposes
-                    echo "Current Status of ${MASTER_BRANCH}"
+                    echo "Current Status of ${BRANCH_NAME}"
                     sh "git status"
 
                     // Do the push with credentials from the jenkins server
                     withCredentials([usernameColonPassword(credentialsId: GIT_CREDENTIALS_ID, variable: 'TOKEN')]) {
-                        sh "git push https://${TOKEN}@${GIT_REPO_URL} ${MASTER_BRANCH} --follow-tags"
+                        sh "git push https://${TOKEN}@${GIT_REPO_URL} ${BRANCH_NAME} --follow-tags"
                     }
 
                     script {
@@ -649,7 +659,7 @@ pipeline {
          * --------------------
          * - SHOULD_BUILD is true
          * - GIT_SOURCE_UPDATED is true (meaning that we were able to do the bump)
-         * - The current branch is the MASTER_BRANCH
+         * - The current branch is the DEV_BRANCH.master
          * - The build is still successful and not unstable
          *
          * DESCRIPTION
@@ -668,13 +678,10 @@ pipeline {
                         return SHOULD_BUILD == 'true'
                     }
                     expression {
-                        return GIT_SOURCE_UPDATED == 'true' || RELEASE_BRANCH
-                    }
-                    expression {
                         return currentBuild.resultIsBetterOrEqualTo(BUILD_SUCCESS)
                     }
                     expression {
-                        return BRANCH_NAME == MASTER_BRANCH || RELEASE_BRANCH   
+                        return GIT_SOURCE_UPDATED == 'true' || RELEASE_BRANCHES.contains(BRANCH_NAME)
                     }
                 }
             }
@@ -691,22 +698,21 @@ pipeline {
                                 script: "node -e \"process.stdout.write(require('./package.json').publishConfig.registry)\""
                         sh "sudo npm config set registry ${npmRegistry.trim()}"
                     }
+                    // Login to the registry before publishing
+                    withCredentials([usernamePassword(credentialsId: ARTIFACTORY_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh "expect -f ./jenkins/npm_login.expect $USERNAME $PASSWORD \"$ARTIFACTORY_EMAIL\""
+                    }
+
                     script {
-                         if (RELEASE_BRANCH){
-                            withCredentials([usernamePassword(credentialsId: ARTIFACTORY_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                sh "expect -f ./jenkins/npm_login.expect $USERNAME $PASSWORD \"$ARTIFACTORY_EMAIL\""
-                                sh 'npm publish --tag latest'
-                                sh 'npm logout'
-                             }
+                        if (BRANCH_NAME.equals(DEV_BRANCH.master)) {
+                            sh 'npm publish --tag daily'
                         }
-                        else{
-                            withCredentials([usernamePassword(credentialsId: ARTIFACTORY_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                sh "expect -f ./jenkins/npm_login.expect $USERNAME $PASSWORD \"$ARTIFACTORY_EMAIL\""
-                                sh 'npm publish --tag beta'
-                                sh 'npm logout'
-                            }
+                        else {
+                            sh "npm publish --tag ${BRANCH_NAME}"
                         }
                     }
+                    sh 'npm logout || exit 0'
+
                     // Change it back
                     sh 'mv .npmrc-temp .npmrc'
                 }
@@ -726,7 +732,7 @@ pipeline {
          * --------------------
          * - SHOULD_BUILD is true
          * - GIT_SOURCE_UPDATED is true (meaning that we were able to do the bump)
-         * - The current branch is the MASTER_BRANCH
+         * - The current branch is the DEV_BRANCH.master
          * - The build is still successful and not unstable
          *
          * DESCRIPTION
@@ -752,13 +758,10 @@ pipeline {
                         return SHOULD_BUILD == 'true'
                     }
                     expression {
-                        return GIT_SOURCE_UPDATED == 'true' || RELEASE_BRANCH
-                    }
-                    expression {
                         return currentBuild.resultIsBetterOrEqualTo(BUILD_SUCCESS)
                     }
                     expression {
-                        return BRANCH_NAME == MASTER_BRANCH || RELEASE_BRANCH   
+                        return GIT_SOURCE_UPDATED == 'true' || RELEASE_BRANCHES.contains(BRANCH_NAME)
                     }
                 }
             }
@@ -810,11 +813,11 @@ pipeline {
          * - It is the first build for a new branch
          * - The build is successful but the previous build was not
          * - The build failed or is unstable
-         * - The build is on the MASTER_BRANCH
+         * - The build is on the DEV_BRANCH.master
          *
          * In the case that an email was sent out, it will send it to individuals
          * who were involved with the build and if broken those involved in
-         * breaking the build. If this build is for the MASTER_BRANCH, then an
+         * breaking the build. If this build is for the DEV_BRANCH.master, then an
          * additional set of individuals will also get an email that the build
          * occurred.
          ************************************************************************/
@@ -851,7 +854,7 @@ pipeline {
                             details = "${details}<p>Build Failure.</p>"
                         }
 
-                        if (BRANCH_NAME == MASTER_BRANCH) {
+                        if (BRANCH_NAME == DEV_BRANCH.master) {
                             recipients = MASTER_RECIPIENTS_LIST
 
                             details = "${details}<p>A build of master has finished.</p>"
@@ -866,7 +869,7 @@ pipeline {
 
                                 <b>Possible causes of this error:</b>
                                 <ul>
-                                    <li>A commit was made to <b>${MASTER_BRANCH}</b> during the current run.</li>
+                                    <li>A commit was made to <b>${DEV_BRANCH.master}</b> during the current run.</li>
                                     <li>The user account tied to the build is no longer valid.</li>
                                     <li>The remote server is experiencing issues.</li>
                                 </ul>

@@ -38,4 +38,19 @@ export interface IUploadOptions {
      * Optional
      */
     task?: ITaskWithStatus;
+
+    /**
+     * The indicator to upload the directories recursively
+     */
+    recursive?: boolean;
+
+    /**
+     * The list of files to be uploaded in binary mode
+     */
+    binary_files?: string;
+
+    /**
+     * The list of files to be uploaded in ASCII mode
+     */
+    ascii_files?: string;
 }
