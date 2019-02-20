@@ -26,12 +26,12 @@ import { CreateWorkflow } from "../../../src/api/Create";
 describe("Create workflow common handler", () => {
     describe("process method", () => {
         const workflowName = "fakeWorkflow";
-        const definitionDataset = "TEST.DATASET";
-        const definitionUssFile = "/fake/ussfile";
+        const dataSet = "TEST.DATASET";
+        const ussFile = "/fake/ussfile";
         const wrongFile = "file";
         const systemName = "FAKESYS1";
         const owner = "FAKEUID";
-        const inputFile = "/fake/file.xml";
+        const variablesInputFile = "/fake/file.xml";
         const variables = "var1=test,var2=test2";
         const assignToOwner = true;
         const accessType = "Public";
@@ -77,10 +77,10 @@ describe("Create workflow common handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         workflowName,
-                        definitionDataset,
+                        dataSet,
                         systemName,
                         owner,
-                        inputFile,
+                        variablesInputFile,
                         variables,
                         assignToOwner,
                         accessType,
@@ -113,10 +113,10 @@ describe("Create workflow common handler", () => {
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
                                                                         workflowName,
-                                                                        definitionDataset,
+                                                                        dataSet,
                                                                         systemName,
                                                                         owner,
-                                                                        inputFile,
+                                                                        variablesInputFile,
                                                                         variables,
                                                                         assignToOwner,
                                                                         accessType,
@@ -163,10 +163,10 @@ describe("Create workflow common handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         workflowName,
-                        definitionUssFile,
+                        ussFile,
                         systemName,
                         owner,
-                        inputFile,
+                        variablesInputFile,
                         variables,
                         assignToOwner,
                         accessType,
@@ -199,10 +199,10 @@ describe("Create workflow common handler", () => {
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
                                                                         workflowName,
-                                                                        definitionUssFile,
+                                                                        ussFile,
                                                                         systemName,
                                                                         owner,
-                                                                        inputFile,
+                                                                        variablesInputFile,
                                                                         variables,
                                                                         assignToOwner,
                                                                         accessType,
@@ -252,7 +252,7 @@ describe("Create workflow common handler", () => {
                         wrongFile,
                         systemName,
                         owner,
-                        inputFile,
+                        variablesInputFile,
                         variables,
                         assignToOwner,
                         accessType,

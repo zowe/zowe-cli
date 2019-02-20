@@ -3,23 +3,62 @@
 exports[`zos-workflows create data-set definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "ds",
+    "wfds",
   ],
   "description": "Create a workflow instance in z/OSMF using a Data set",
   "examples": Array [
     Object {
-      "description": "Create a workflow with name \\"testworkflow\\" data set \\"TESTID.WKFLOW\\", system name \\"TESTM1\\" and owner \\"testid\\"",
-      "options": "\\"testworkflow\\" \\"TESTID.WKFLOW\\" \\"TESTM1\\" \\"testid\\"",
+      "description": "Create a workflow with name \\"testworkflow\\" using data set \\"TESTID.WKFLOW\\" containing workflow definition xml, on system \\"TESTM1\\"",
+      "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\"",
+    },
+    Object {
+      "description": "Create a workflow with name \\"testworkflow\\" using data set \\"TESTID.WKFLOW\\" containing workflow definition xml, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and delete succesfully completed jobs",
+      "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\" --owner \\"MYSYSID\\" --delete-completed",
+    },
+    Object {
+      "description": "Create a workflow with name \\"testworkflow\\" using data set \\"TESTID.WKFLOW\\" containing workflow definition xml, on system \\"TESTM1\\" with variable values in the member PROPERTIES of data set TESTID.DATA",
+      "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\" --variables-input-file TESTID.DATA(PROPERTIES)",
+    },
+    Object {
+      "description": "Create a workflow with name \\"testworkflow\\" using data set \\"TESTID.WKFLOW\\" containing workflow definition xml, on system \\"TESTM1\\" with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
+      "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\" --variables DUMMYVAR=DUMMYVAL --assign-to-owner",
     },
   ],
-  "name": "data-set",
+  "name": "workflow-from-data-set",
   "options": Array [
+    Object {
+      "aliases": Array [
+        "ds",
+      ],
+      "description": "Data set containing workflow definiton.",
+      "name": "data-set",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "sn",
+      ],
+      "description": "System where the workflow will run.",
+      "name": "system-name",
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ow",
+      ],
+      "description": "User ID of the workflow owner. This user can perform the workflow steps or delegate the steps to other users.",
+      "name": "owner",
+      "required": true,
+      "type": "string",
+    },
     Object {
       "aliases": Array [
         "if",
       ],
-      "description": "Properties file with pre-specified values for workflow variables ",
-      "name": "input-file",
+      "description": "Specifies an optional properties file that you can use to pre-specify values for one or more of the variables that are defined in the workflow definition file.",
+      "name": "variables-input-file",
       "required": false,
       "type": "string",
     },
@@ -27,7 +66,7 @@ Object {
       "aliases": Array [
         "vs",
       ],
-      "description": "A list of one or more variables for the workflow.",
+      "description": "A list of one or more variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
       "name": "variables",
       "required": false,
       "type": "string",
@@ -36,7 +75,7 @@ Object {
       "aliases": Array [
         "ao",
       ],
-      "description": "Indicates whether the workflow steps are assigned to the workflow owner",
+      "description": "Indicates whether the workflow steps are assigned to the workflow owner.",
       "name": "assign-to-owner",
       "required": false,
       "type": "boolean",
@@ -73,24 +112,6 @@ Object {
     Object {
       "description": "Name of the workflow instance to create",
       "name": "workflowName",
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "Data set containing workflow definiton",
-      "name": "definitionDataset",
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "System where the workflow will run",
-      "name": "systemName",
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "User id of the owner of the workflow",
-      "name": "owner",
       "required": true,
       "type": "string",
     },

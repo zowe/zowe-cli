@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { WorkflowKey } from "./workflowkey/WorkflowKey.definition";
+import { DeleteActiveWorkflow } from "./deleteActiveWorkflow/DeleteActiveWorkflow.definition";
 
 
 /**
@@ -25,6 +25,6 @@ export const DeleteDefinition: ICommandDefinition = {
     type: "group",
     description: "Delete workflow instance in z/OSMF",
     children: [
-        WorkflowKey
+        DeleteActiveWorkflow
     ]
 };

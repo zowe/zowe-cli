@@ -37,9 +37,9 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
         this.arguments = params.arguments;
 
         let sourceType: string;
-        if (this.arguments.definitionDataset) {
+        if (this.arguments.dataSet) {
             sourceType = "dataset";
-        } else if (this.arguments.definitionUssFile) {
+        } else if (this.arguments.ussFile) {
             sourceType = "uss-file";
         }
 
@@ -49,8 +49,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
         switch (sourceType) {
             case "dataset":
                 try{
-                    resp = await CreateWorkflow.createWorkflow(this.mSession, this.arguments.workflowName, this.arguments.definitionDataset,
-                        this.arguments.systemName, this.arguments.owner, this.arguments.inputFile, this.arguments.variables,
+                    resp = await CreateWorkflow.createWorkflow(this.mSession, this.arguments.workflowName, this.arguments.dataSet,
+                        this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
                     error = "Register workflow: " + err;
@@ -62,8 +62,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
 
             case "uss-file":
                 try{
-                    resp = await CreateWorkflow.createWorkflow(this.mSession, this.arguments.workflowName, this.arguments.definitionUssFile,
-                        this.arguments.systemName, this.arguments.owner, this.arguments.inputFile, this.arguments.variables,
+                    resp = await CreateWorkflow.createWorkflow(this.mSession, this.arguments.workflowName, this.arguments.ussFile,
+                        this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
                     error = "Register workflow: " + err;
