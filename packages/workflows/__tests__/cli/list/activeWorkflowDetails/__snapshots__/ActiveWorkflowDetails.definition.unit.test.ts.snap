@@ -3,7 +3,7 @@
 exports[`zos-workflows list active-workflow-details definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "wd",
+    "awd",
   ],
   "description": "Get the details of an active z/OSMF workflow",
   "examples": Array [
