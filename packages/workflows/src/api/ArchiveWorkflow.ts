@@ -31,9 +31,9 @@ export class ArchiveWorkflow {
      * @returns {Promise<IArchivedWorkflow>} Promise of the output of the workflow archiving
      * @memberof ArchiveWorkflow
      */
-    public static async archiveWorfklowByKey(session: AbstractSession,
-                                             workflowKey: string,
-                                             zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
+    public static archiveWorfklowByKey(session: AbstractSession,
+                                       workflowKey: string,
+                                       zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
