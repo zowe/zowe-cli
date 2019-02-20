@@ -23,7 +23,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     workflowName: {
         name: "workflow-name",
         aliases: ["wn"],
-        description: "Specify a regular expression to match desired workflow names.",
+        description: "Filter by workflow name. For wildcard use .*",
         type: "string",
         required: false
     },
@@ -35,7 +35,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     category: {
         name: "category",
         aliases: ["cat"],
-        description: "Category of the workflow, which is either general or configuration.",
+        description: "Filter by the category of the workflow(s), which is either general or configuration.",
         type: "string",
         required: false
     },
@@ -47,7 +47,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     system: {
         name: "system",
         aliases: ["sys"],
-        description: "Nickname of the system on which the workflow is to be performed.",
+        description: "Nickname of the system on which the list workflows command is to be performed.",
         type: "string",
         required: false
     },
@@ -59,7 +59,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     owner: {
         name: "owner",
         aliases: ["ow"],
-        description: "Workflow owner (a valid z/OS user ID).",
+        description: "Filter by owner of the workflow(s) (a valid z/OS user ID).",
         type: "string",
         required: false
     },
@@ -71,7 +71,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     vendor: {
         name: "vendor",
         aliases: ["vd"],
-        description: "Name of the vendor that provided the workflow definition file.",
+        description: "Filter by the name of the vendor that provided the workflow(s) definition file.",
         type: "string",
         required: false,
     },
@@ -83,7 +83,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     statusName: {
         name: "status-name",
         aliases: ["sn"],
-        description: "Workflow status.",
+        description: "Filter by the status of the workflow(s).",
         type: "string",
         required: false,
         allowableValues: {

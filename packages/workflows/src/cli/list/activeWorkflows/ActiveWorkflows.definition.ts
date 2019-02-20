@@ -25,6 +25,7 @@ export const ActiveWorkflows: ICommandDefinition = {
     aliases: ["aw"],
     summary: "List active workflow instance(s) in z/OSMF.",
     description: "List active workflow instance(s) in z/OSMF.\n" +
+    "Multiple filters can be used together.\n" +
     "Omitting all options will list all workflows on the sysplex",
     type: "command",
     handler: join(__dirname, "ActiveWorkflows.handler"),
@@ -46,8 +47,12 @@ export const ActiveWorkflows: ICommandDefinition = {
             options: "--wn \"testworkflow\""
         },
         {
-            description: "List multiple active workflows matching the string \"workflow\"",
+            description: "List multiple active workflows on the entire syspex with names containing\"workflow\"",
             options: "--wn \".*workflow.*\""
+        },
+        {
+            description: "List multiple active workflows on system \"IBMSYS\" with names beginnig with \"testW\" that are in status \"complete\"",
+            options: "--wn \"test.*\" --sys \"IBMSYS\" --sn \"complete\""
         }
     ],
 };
