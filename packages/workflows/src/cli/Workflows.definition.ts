@@ -31,7 +31,7 @@ const definition: ICommandDefinition = {
     children: [
         CreateDefinition,
         DeleteDefinition,
-        ListDefinition
+        ListDefinition,
     ],
     passOn: [
         {
