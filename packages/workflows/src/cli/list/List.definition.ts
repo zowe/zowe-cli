@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ActiveWorkflowDetails } from "./ActiveWorkflowDetails/ActiveWorkflowDetails.definition";
+import { ActiveWorkflowDetails } from "./activeWorkflowDetails/ActiveWorkflowDetails.definition";
 
 
 /**
