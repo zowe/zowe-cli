@@ -23,7 +23,7 @@ import { StartCommonOptions } from "../Start.common.options";
 export const WorkflowStep: ICommandDefinition = {
     name: "workflow-step",
     aliases: ["ws"],
-    description: "Will run given step of workflow instance plus following steps if specified.",
+    description: "Will run given step of workflow instance plus following steps if specified by --perform-following-steps option.",
     type: "command",
     handler: join(__dirname, "./WorkflowStep.handler"),
     profile: {

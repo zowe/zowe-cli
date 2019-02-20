@@ -9,10 +9,9 @@
 *
 */
 
-import { StartWorkflow } from "../../../src/api/Start";
 import { AbstractSession } from "@brightside/imperative";
-import { startT } from "../../../src/api/doc/IStartWorkflow";
-import { PropertiesWorkflow } from "../../..";
+import { startT } from "../../../../src/api/doc/IStartWorkflow";
+import { PropertiesWorkflow, StartWorkflow } from "../../../..";
 
 
 describe("Start workflow common handler", () => {
@@ -26,7 +25,7 @@ describe("Start workflow common handler", () => {
 
         it("should start a workflow using workflow key", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/start/Start.common.handler");
+            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -84,15 +83,13 @@ describe("Start workflow common handler", () => {
 
             expect(error).toBeUndefined();
             expect(StartWorkflow.startWorkflow).toHaveBeenCalledTimes(1);
-            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined, undefined, true);
+            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined);
 
         });
         it("should start a workflow using workflow key and optional arguments - without wait", async () => {
             const resolveConflict: startT = "outputFileValue";
-            const stepName = "fake";
-            const performOneStep = true;
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/start/Start.common.handler");
+            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -124,9 +121,7 @@ describe("Start workflow common handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         workflowKey,
-                        resolveConflict,
-                        stepName,
-                        performOneStep
+                        resolveConflict
                     },
                     response: {
                         data: {
@@ -153,13 +148,13 @@ describe("Start workflow common handler", () => {
 
             expect(error).toBeUndefined();
             expect(StartWorkflow.startWorkflow).toHaveBeenCalledTimes(1);
-            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, resolveConflict, stepName, !performOneStep);
+            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, resolveConflict);
 
         });
         it("should start a workflow using workflow key and wait with workflow that failed", async () => {
             const wait = true;
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/start/Start.common.handler");
+            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -228,13 +223,13 @@ describe("Start workflow common handler", () => {
 
             expect(error).toBeUndefined();
             expect(StartWorkflow.startWorkflow).toHaveBeenCalledTimes(1);
-            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined, undefined, true);
+            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined);
 
         });
         it("should start a workflow using workflow key and wait with workflow that succeeded", async () => {
             const wait = true;
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/start/Start.common.handler");
+            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -303,74 +298,7 @@ describe("Start workflow common handler", () => {
 
             expect(error).toBeUndefined();
             expect(StartWorkflow.startWorkflow).toHaveBeenCalledTimes(1);
-            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined, undefined, true);
-
-        });
-        it("should start a workflow using workflow key and wait and step", async () => {
-            const wait = true;
-            // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/start/Start.common.handler");
-            const handler = new handlerReq.default();
-            const workflowKey = "fake-workflow-key";
-            const stepName = "fake";
-
-            // Mock the start function
-            StartWorkflow.startWorkflow = jest.fn((session) => {
-                fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "Started."
-                };
-            });
-
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    pass: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake",
-                };
-            });
-
-            try {
-                // Invoke the handler with a full set of mocked arguments and response functions
-                await handler.processCmd({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"],
-                        workflowKey,
-                        stepName,
-                        wait
-                    },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        }
-                    },
-                    profiles: {
-                        get: profFunc
-                    }
-                } as any);
-            } catch (e) {
-                error = e;
-            }
-
-            expect(error).toBeUndefined();
-            expect(StartWorkflow.startWorkflow).toHaveBeenCalledTimes(1);
-            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined, stepName, true);
+            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined);
 
         });
     });

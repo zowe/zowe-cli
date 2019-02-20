@@ -42,7 +42,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
      * @type {ICommandOptionDefinition}
      */
     workflowKey: {
-        name: "with-workflow-key",
+        name: "workflow-key",
         aliases: ["wk"],
         type: "string",
         description: "Workflow key of workflow instance to be started",
@@ -57,7 +57,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
      * @type {ICommandOptionDefinition}
      */
     workflowName: {
-        name: "with-workflow-name",
+        name: "workflow-name",
         aliases: ["wn"],
         type: "string",
         description: "Workflow name of workflow instance to be started",
