@@ -47,7 +47,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     system: {
         name: "system",
         aliases: ["sys"],
-        description: "Filter by the nickname of the system on which the list workflow(s) are active.",
+        description: "Filter by the nickname of the system on which the workflow(s) is/are active.",
         type: "string",
         required: false
     },
