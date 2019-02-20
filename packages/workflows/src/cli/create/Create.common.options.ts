@@ -70,7 +70,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
      */
     inputFile: {
         name: "variables-input-file",
-        aliases: ["if"],
+        aliases: ["vif"],
         description: "Specifies an optional properties file that you can use to pre-specify values for one or more of the variables that" +
         " are defined in the workflow definition file.",
         type: "string",
@@ -96,7 +96,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
      */
     assignToOwner: {
         name: "assign-to-owner",
-        aliases: ["ao"],
+        aliases: ["ato"],
         description: "Indicates whether the workflow steps are assigned to the workflow owner.",
         type: "boolean",
         required: false
