@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`List active workflow details cli system tests Create workflow using uss file Display Help should display delete workflow-key help 1`] = `
-"================Z/OS WORKFLOWS LIST ACTIVE-WORKFLOW-DETAILS HELP===============
+exports[`List Active Workflow Details should display the help 1`] = `
+"================Z/OS WORKFLOWS LIST ACTIVE WORKFLOW DETAILS HELP===============
 
  COMMAND NAME
  ------------
@@ -96,7 +96,7 @@ exports[`List active workflow details cli system tests Create workflow using uss
 
       $ zowe zos-workflows list active-workflow-details --by-workflow-key \\"7c62c790-0340-86b2-61ce618d8f8c\\" --list-steps --list-variables
 
-================Z/OS WORKFLOWS LIST ACTIVE-WORKFLOW-DETAILS HELP RFJ===========
+================Z/OS WORKFLOWS LIST ACTIVE WORKFLOW DETAILS HELP RFJ===========
 {
   \\"success\\": true,
   \\"message\\": \\"The help was constructed for command: active-workflow-details.\\",

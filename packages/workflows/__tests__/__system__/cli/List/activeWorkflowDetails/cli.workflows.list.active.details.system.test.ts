@@ -104,24 +104,11 @@ describe("List active workflow details cli system tests", () => {
             });
         });
         describe("Failure Scenarios", () => {
-            it("Should throw error if a positional parameter is empty string.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_details_no_wk.sh", testEnvironment);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("Missing Required Option");
-            });
             it("Should throw error if the workflow does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_details.sh",
                 testEnvironment, [ fakeDefFile ]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("does not exist.");
-            });
-        });
-        describe("Display Help", () => {
-            it("should display delete workflow-key help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/list_active_workflow_details_help.sh", testEnvironment);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
             });
         });
     });
