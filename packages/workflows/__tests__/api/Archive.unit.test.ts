@@ -58,7 +58,7 @@ describe("Missing session", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             const expectedError: object = { msg: "[object Object]No session was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -68,7 +68,7 @@ describe("Missing session", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             const expectedError: object = { msg: "[object Object]No session was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -78,7 +78,7 @@ describe("Missing session", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             const expectedError: object = { msg: "Required parameter 'hostname' must be defined" };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -91,7 +91,7 @@ describe("Missing workflow key", ()=> {
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             const expectedError: object = { msg: "[object Object]No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -101,7 +101,7 @@ describe("Missing workflow key", ()=> {
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             const expectedError: object = { msg: "[object Object]No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
@@ -111,10 +111,37 @@ describe("Missing workflow key", ()=> {
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             const expectedError: object = { msg: "[object Object]No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
+    });
+});
+
+describe("Missing z/OSMF version", ()=>{
+    it("Missing z/OSMF REST API version", async ()=>{
+        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
+            return new Promise((resolve)=>{
+                Imperative.console.info("Using mocked function");
+                process.nextTick(()=>{
+                    const promiseOutput: IArchivedWorkflow = {
+                        workflowKey: workflowKeyConst
+                    };
+
+                    resolve(promiseOutput);
+                });
+            });
+        });
+        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst);
+        const expected: IArchivedWorkflow = {
+            workflowKey: workflowKeyConst
+        };
+
+        expect(response).toEqual(expected);
+        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
+        let query: string = `${WorkflowConstants.RESOURCE}/1.0/${WorkflowConstants.WORKFLOW_RESOURCE}`;
+        query+=`/${workflowKeyConst}/${WorkflowConstants.ARCHIVE_WORKFLOW}`;
+        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(session, query, [Headers.APPLICATION_JSON], null);
     });
 });
 
@@ -137,7 +164,7 @@ describe("Errors caused by the user interaction", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
@@ -159,7 +186,7 @@ describe("Errors caused by the user interaction", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
@@ -181,7 +208,7 @@ describe("Errors caused by the user interaction", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
@@ -203,7 +230,7 @@ describe("Errors caused by the user interaction", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
@@ -225,7 +252,7 @@ describe("Errors caused by the user interaction", ()=>{
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
-            Imperative.console.error(error);
+            Imperative.console.info(error);
             expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
         }
     });
