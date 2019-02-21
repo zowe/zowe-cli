@@ -25,7 +25,7 @@ import { PropertiesWorkflow } from "../../../../src/api/Properties";
 
 describe("List workflow details handler", () => {
     describe("process method", () => {
-        const byWorkflowKey = "fakekey";
+        const workflowKey = "fakekey";
         const listSteps = true;
         const listVariables = true;
         it("should list workflow details using wf key", async () => {
@@ -68,7 +68,7 @@ describe("List workflow details handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        byWorkflowKey,
+                        workflowKey,
                         listSteps,
                         listVariables,
                     },
@@ -104,7 +104,7 @@ describe("List workflow details handler", () => {
             expect(PropertiesWorkflow.getWorkflowProperties).toHaveBeenCalledTimes(1);
             expect(PropertiesWorkflow.getWorkflowProperties).toHaveBeenCalledWith(
                 fakeSession,
-                byWorkflowKey,
+                workflowKey,
                 undefined,
                 listSteps,
                 listVariables);

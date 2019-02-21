@@ -20,28 +20,28 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
      * Parameter to list workflow details by workflow name
      * @type {ICommandOptionDefinition}
      */
-    byName: {
-        name: "by-name",
-        aliases: ["name"],
-        description: "List active workflow details by specified workflow name",
+    workflowName: {
+        name: "workflow-name",
+        aliases: ["wn"],
+        description: "List active workflow details by specified workflow name.",
         type: "string",
         required: false,
-        // absenceImplications: ["by-workflow-key"],
-        // conflictsWith: ["by-workflow-key"],
+        // absenceImplications: ["workflow-key"],
+        // conflictsWith: ["workflow-key"],
     },
 
     /**
      * Parameter to list workflow details by workflow key.
      * @type {ICommandOptionDefinition}
      */
-    byWorkflowKey: {
-        name: "by-workflow-key",
+    workflowKey: {
+        name: "workflow-key",
         aliases: ["wk"],
-        description: "List active workflow details by specified workflow key",
+        description: "List active workflow details by specified workflow key.",
         type: "string",
         required: true,
-        // absenceImplications: ["by-name"]
-        // conflictsWith: ["by-name"],
+        // absenceImplications: ["workflow-name"]
+        // conflictsWith: ["workflow-name"],
     },
 
     /**

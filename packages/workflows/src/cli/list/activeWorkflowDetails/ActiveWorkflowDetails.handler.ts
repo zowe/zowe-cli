@@ -37,7 +37,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         this.arguments = params.arguments;
 
         let sourceType: string;
-        if (this.arguments.byWorkflowKey) {
+        if (this.arguments.workflowKey) {
             sourceType = "workfowKey";
         }
         // else if (this.arguments.byName) {
@@ -51,7 +51,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             case "workfowKey":
 
                 try{
-                    resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.byWorkflowKey,
+                    resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey,
                                                                              undefined, this.arguments.listSteps, this.arguments.listVariables);
                 } catch (err){
                     error = "List workflow details error: " + err;
