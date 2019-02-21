@@ -27,7 +27,7 @@ import { IStepInfo } from "../../../../src/api/doc/IStepInfo";
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";
-const performOneStep = true;
+const performFollowingSteps = false;
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -59,7 +59,7 @@ describe("Create workflow cli system tests", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
-    describe("Create workflow using uss file", () => {
+    describe("Start workflow", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
@@ -84,8 +84,8 @@ describe("Create workflow cli system tests", () => {
                 while(!flag) {
                     response = await PropertiesWorkflow.getWorkflowProperties(REAL_SESSION, wfKey, WorkflowConstants.ZOSMF_VERSION, true);
                     response.steps.forEach((step: IStepInfo) => {
-                    if (step.state === "Complete" && response.statusName !== "automation-in-progress") {
-                        flag = true;
+                        if (step.state === "Complete" && response.statusName !== "automation-in-progress") {
+                            flag = true;
                         }
                 }   );
                     if (response.automationStatus && response.statusName !== "automation-in-progress") {
@@ -98,32 +98,45 @@ describe("Create workflow cli system tests", () => {
                 const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
                 wfKey = response.workflowKey;
             });
-            it("Should start workflow in zOSMF.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key.sh",
-                testEnvironment, [wfKey, "--wait"]);
+            it("Should start full workflow in zOSMF.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_full.sh",
+                testEnvironment, [wfKey, resolveConflict, "--wait"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow");
             });
-            it("Should start workflow with optional arguments in zOSMF.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_options.sh",
-                testEnvironment, [wfKey, resolveConflict, stepName, performOneStep]);
+            it("Should start one workflow step.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_step.sh",
+                testEnvironment, [stepName, wfKey, resolveConflict]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Workflow started.");
+                expect(response.stdout.toString()).toContain("Workflow step started.");
+            });
+            it("Should start one workflow step.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_step_plus_following.sh",
+                testEnvironment, [stepName, wfKey, resolveConflict, "--perform-following-steps"]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Workflow step started.");
             });
         });
         describe("Failure Scenarios", () => {
-            it("Should throw error if workflowKey is empty string.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key.sh", testEnvironment);
+            it("Should throw error if workflow step name is empty string.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_step.sh", testEnvironment);
                 expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("workflowKey");
+                expect(response.stderr.toString()).toContain("stepName");
                 expect(response.stderr.toString()).toContain("Missing Positional Argument");
         });
         });
         describe("Display Help", () => {
-            it("should display delete workflow-key help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/start_workflowkey_help.sh", testEnvironment);
+            it("should display start workflow-full help", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/start_workflow_full_help.sh", testEnvironment);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+            });
+            it("should display start workflow-step help", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/start_workflow_step_help.sh", testEnvironment);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();

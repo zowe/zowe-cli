@@ -86,6 +86,12 @@ const config: IImperativeConfig = {
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
                 }
+            ],
+            updateProfileExamples: [
+                {
+                    options: "zos123 --user newuser --password newp4ss",
+                    description: "Update a zosmf profile named 'zos123' with a new username and password"
+                }
             ]
         },
         {
@@ -137,6 +143,12 @@ const config: IImperativeConfig = {
                     options: "largeregion -a 1234 --rs 8192"
                 }
             ],
+            updateProfileExamples: [
+                {
+                    description: "Update a tso profile called myprof with new JES accounting information",
+                    options: "myprof -a NEWACCT"
+                }
+            ]
         },
     ]
 };
