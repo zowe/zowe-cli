@@ -120,27 +120,5 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain("Workflow step started.");
             });
         });
-        describe("Failure Scenarios", () => {
-            it("Should throw error if workflow step name is empty string.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_step.sh", testEnvironment);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("stepName");
-                expect(response.stderr.toString()).toContain("Missing Positional Argument");
-        });
-        });
-        describe("Display Help", () => {
-            it("should display start workflow-full help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/start_workflow_full_help.sh", testEnvironment);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-            });
-            it("should display start workflow-step help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/start_workflow_step_help.sh", testEnvironment);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-            });
-        });
     });
 });

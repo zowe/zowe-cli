@@ -28,6 +28,14 @@ describe("Create workflow cli system tests", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
     describe("Start workflow", () => {
+        describe("Failure Scenarios", () => {
+            it("Should throw error if workflow step name is empty string.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_step.sh", TEST_ENVIRONMENT);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("stepName");
+                expect(response.stderr.toString()).toContain("Missing Positional Argument");
+        });
+        });
         describe("Display Help", () => {
             it("should display start workflow-step help", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/start_workflow_step_help.sh", TEST_ENVIRONMENT);

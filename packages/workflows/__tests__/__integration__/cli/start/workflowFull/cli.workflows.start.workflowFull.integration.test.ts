@@ -28,6 +28,13 @@ describe("Create workflow cli system tests", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
     describe("Start workflow", () => {
+        describe("Failure Scenarios", () => {
+            it("Should throw error if workflow key is missing.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_full.sh", TEST_ENVIRONMENT);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("workflow-key");
+        });
+        });
         describe("Display Help", () => {
             it("should display start workflow-full help", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/start_workflow_full_help.sh", TEST_ENVIRONMENT);
