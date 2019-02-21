@@ -14,7 +14,7 @@ import { PerfTiming } from "@zowe/perf-timing";
 
 const timingApi = PerfTiming.api;
 
-timingApi.mark("pre-init");
+timingApi.mark("PRE-INIT");
 
 import { IImperativeConfig, Imperative } from "@brightside/imperative";
 import { Constants } from "./Constants";
@@ -26,21 +26,21 @@ const config: IImperativeConfig = {
 };
 
 (async () => {
-    timingApi.mark("post-init");
-    timingApi.measure("time to get into brightside main function", "pre-init", "post-init");
+    timingApi.mark("POST_INIT");
+    timingApi.measure("time to get into main function", "PRE_INIT", "POST_INIT");
 
     try {
-        timingApi.mark("before init");
+        timingApi.mark("BEFORE_INIT");
         await Imperative.init(config);
-        timingApi.mark("after init");
-        timingApi.measure("imperative.init", "before init", "after init");
+        timingApi.mark("AFTER_INIT");
+        timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");
 
         Imperative.api.appLogger.trace("Init was successful");
 
-        timingApi.mark("before parse");
+        timingApi.mark("BEFORE_PARSE");
         Imperative.parse();
-        timingApi.mark("after parse");
-        timingApi.measure("Imperative.parse", "before parse", "after parse");
+        timingApi.mark("AFTER_PARSE");
+        timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
     }
     catch (initErr) {
         Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
