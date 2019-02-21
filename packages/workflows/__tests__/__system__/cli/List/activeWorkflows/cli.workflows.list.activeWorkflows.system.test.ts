@@ -101,13 +101,5 @@ describe("List workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain("No workflows match the requested querry");
             });
         });
-        describe("Display Help", () => {
-            it("should display list active workflows help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/list_workflow_help.sh", testEnvironment);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-            });
-        });
     });
 });

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`List workflow cli system tests List all workflows Display Help should display list active workflows help 1`] = `
+exports[`List Active Workflows should display the help 1`] = `
 "================Z/OS WORKFLOWS LIST ACTIVE WORKFLOWS HELP===============
 
  COMMAND NAME
