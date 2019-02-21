@@ -56,7 +56,7 @@ export class CreateWorkflow{
      * Create a zOSMF workflow instance
      * @param {AbstractSession} session                     - z/OSMF connection info
      * @param {string} WorkflowName                         - Name of the workflow that will be created
-     * @param {string} WorkflowDefinitionFile               - Full path to USS file or DATASET/MEMBER with zml
+     * @param {string} WorkflowDefinitionFile               - Full path to USS file or DATASET/MEMBER with xml
      * @param {string} systemName                           - System where the workflow will run
      * @param {string} Owner                                - User ID of the workflow owner.
      * @param {string} VariableInputFile                    - Properties file with pre-specify values for workflow variables
@@ -73,7 +73,6 @@ export class CreateWorkflow{
                                  zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                     // add job statement, account info, comments and resolveGlobalConflictByUsing,
                                     ): Promise<ICreatedWorkflow> {
-
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
