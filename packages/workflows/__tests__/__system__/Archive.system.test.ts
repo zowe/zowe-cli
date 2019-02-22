@@ -10,7 +10,6 @@
 */
 
 import { Session, Imperative, Headers, ImperativeError } from "@brightside/imperative";
-import { ZosmfRestClient } from "../../../rest";
 import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../..";
 import { WorkflowConstants } from "../../src/api/WorkflowConstants";
@@ -20,7 +19,6 @@ import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestE
 import { Upload } from "../../../zosfiles/src/api";
 import { CreateWorkflow } from "../../src/api/Create";
 import { DeleteWorkflow } from "../../src/api/Delete";
-
 
 let session: Session;
 let testEnvironment: ITestEnvironment;
@@ -90,7 +88,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
 describe("Missing session", ()=>{
     it("Undefined session", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorfklowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -100,7 +98,7 @@ describe("Missing session", ()=>{
     });
     it("Null session", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorfklowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -110,7 +108,7 @@ describe("Missing session", ()=>{
     });
     it("Empty session", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorfklowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -123,7 +121,7 @@ describe("Missing session", ()=>{
 describe("Missing workflow key", ()=> {
     beforeAll(async ()=> {
         setup();
-    })
+    });
     it("Undefined workflow key", async ()=>{
         try {
             const response = await ArchiveWorkflow.archiveWorfklowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
@@ -163,11 +161,19 @@ describe("Missing workflow key", ()=> {
 describe("Errors caused by the user interaction", ()=>{
     beforeAll(async () => {
         await setup();
+        await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
     });
-
+    beforeEach(async ()=> {
+        const systemName = testEnvironment.systemTestProperties.systems.primary;
+        const system = sysProperties.getDefaultSystem();
+        const owner = system.zosmf.user;
+        const workflowInstance = await CreateWorkflow.createWorkflow(session, `Arch Workflow ${Date.now()}`, remoteWorkflowPath, systemName, owner);
+        workflowKeyActual = workflowInstance.workflowKey;
+        allWorkflowKeys.push(workflowKeyActual);
+    });
     it("404 Not Found", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(JSON.stringify(error));
@@ -175,29 +181,24 @@ describe("Errors caused by the user interaction", ()=>{
         }
     });
     it("409 Request Conflict", async ()=>{
-        const errorCodeConst = "409";
-        const msgConst = "Request Conflict";
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
-            return new Promise(()=>{
-                Imperative.console.info("Using mocked function");
-                const error =  new ImperativeError({
-                    msg: msgConst,
-                    errorCode: errorCodeConst
-                });
-                throw error;
-            });
-        });
-
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
-            expect(error.mDetails).toEqual({msg: msgConst, errorCode: errorCodeConst});
+            const reqConflict = 409;
+            expect(error.mDetails.errorCode).toBe(reqConflict);
         }
     });
 
     afterAll(async () => {
         cleanup();
+
+        while(allWorkflowKeys.length > 0) {
+            const currentKey = allWorkflowKeys.pop();
+            const deleted = await DeleteWorkflow.deleteWorkflow(session, currentKey);
+            Imperative.console.info(deleted);
+        }
     });
 });
