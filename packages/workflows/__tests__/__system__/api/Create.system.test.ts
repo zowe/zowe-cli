@@ -9,18 +9,18 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow } from "../..";
+import { CreateWorkflow, DeleteWorkflow } from "../../..";
 import { Imperative, ImperativeError, Session } from "@brightside/imperative";
-import { ZosmfRestClient } from "../../../rest";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../__tests__/__src__/properties/TestProperties";
-import { Upload } from "../../../zosfiles/src/api/methods/upload";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ZosFilesConstants } from "../../../zosfiles/src/api";
-import { ICreatedWorkflow } from "../../src/api/doc/ICreatedWorkflow";
+import { ZosmfRestClient } from "../../../../rest";
+import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
+import { Upload } from "../../../../zosfiles/src/api/methods/upload";
+import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ZosFilesConstants } from "../../../../zosfiles/src/api";
+import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
 import { inspect } from "util";
-import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import {
     noOwner,
     noSession,
@@ -28,7 +28,7 @@ import {
     noWorkflowDefinitionFile,
     noWorkflowName, nozOSMFVersion, wrongOwner,
     wrongPath
-} from "../../src/api/WorkflowConstants";
+} from "../../../src/api/WorkflowConstants";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -41,8 +41,8 @@ let owner: string;
 let wfName: string;
 let inputFile: string;
 
-const workflow = __dirname + "/testfiles/demo.xml";
-const vars = __dirname + "/testfiles/vars.properties";
+const workflow = __dirname + "/../testfiles/demo.xml";
+const vars = __dirname + "/../testfiles/vars.properties";
 const propertiesText = "WRONG_VAR";
 
 function expectZosmfResponseSucceeded(response: ICreatedWorkflow, error: ImperativeError) {
