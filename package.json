@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "@brightside/imperative": "^2.1.0",
+    "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
   },
@@ -89,9 +90,9 @@
     "gulp-plumber": "^1.1.0",
     "gulp-replace": "^0.6.1",
     "gulp-util": "^3.0.8",
-    "jest": "^22.4.3",
-    "jest-cli": "^22.4.3",
-    "jest-environment-node": "^22.4.3",
+    "jest": "^24.1.0",
+    "jest-cli": "^24.1.0",
+    "jest-environment-node": "^24.0.0",
     "jest-environment-node-debug": "^2.0.0",
     "jest-html-reporter": "^0.5.7",
     "jest-junit": "^3.6.0",
@@ -106,11 +107,11 @@
     "sinon-chai": "2.13.0",
     "strip-ansi": "^4.0.0",
     "through2": "^2.0.3",
-    "ts-jest": "^22.4.2",
+    "ts-jest": "^23.10.5",
     "ts-node": "^3.3.0",
     "tslint": "5.10.0",
     "typedoc": "^0.11.1",
-    "typescript": "^2.6.2",
+    "typescript": "3.2.2",
     "uuid": "^3.3.2"
   },
   "engines": {
