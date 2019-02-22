@@ -11,13 +11,13 @@ Zowe CLI is a command-line interface that lets application developers interact w
  - [Uninstall Zowe CLI](#uninstall-zowe-cli)
  - [Configure Zowe CLI](#configure-zowe-cli)
  - [Run System Tests](#run-system-tests)
+ - [FAQs](#frequently-asked-questions)
 
 ## Documentation
 
+For more information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://zowe.github.io/docs-site/latest/). The documentation also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
-For more information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://zowe.github.io/docs-site/). The documentation also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins. 
-
-After you install the Zowe CLI package, navigate to the local `node_modules` directory that contains the installed package and access the `docs` directory. The `docs` directory contains the markdown files from this repo as well as an auto-generated typescript documentation page under the `docs/typedoc` directory.
+The `docs` directory in this repository contains auto-generated typescript documentation under the `docs/typedoc` directory. To access the typescript documentation locally, navigate to the local `node_modules` directory that contains the installed package and access the `docs` directory after you install the Zowe CLI package.
 
 **Note:** Some links in the auto-generated typescript documentation are not functional at this time.
 
@@ -35,7 +35,7 @@ The following information is critical to working with the code, running/writing/
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs/MaintainerVersioning.md) |
 
 
-**Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/guides/cli-devTutorials.html). 
+**Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/latest/extend/extend-cli/cli-devTutorials.html). 
 
 ## Build Zowe CLI from Source
 The first time that you download Zowe CLI from the GitHub repository, issue the following commands to install the required Zowe CLI dependencies and several development tools:
@@ -132,3 +132,15 @@ npm run test:system
 ```
 
 If the `custom_properties.yaml` file cannot be found or loaded, an error with relevant details is thrown.
+
+## Frequently Asked Questions
+
+- [How can I install Zowe CLI as a root user on Mac/Linux?](how-can-i-install-zowe-cli-as-a-root-user-on-Mac-Linux)
+
+### How can I install Zowe CLI as a root user on Mac/Linux?
+
+You can install the CLI as root so that all users can access the CLI without installing it individually on their user account. As the root user on Mac/Linux, issue the following command: 
+
+```npm i -g @brightside/core@latest --ignore-scripts```
+
+**Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
