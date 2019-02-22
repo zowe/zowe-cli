@@ -1,6 +1,6 @@
 {
   "name": "@brightside/core",
-  "version": "2.1.0-alpha.201902191421",
+  "version": "2.5.0-alpha.201902221524",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -60,7 +60,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@brightside/imperative": "^2.1.0",
+    "@brightside/imperative": "^2.1.4-alpha.201902221433",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
@@ -70,7 +70,6 @@
     "@types/chai-string": "^1.1.30",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
-    "@types/lodash": "^4.14.106",
     "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
     "@types/yargs": "8.0.2",
@@ -93,10 +92,9 @@
     "jest-cli": "^24.1.0",
     "jest-environment-node": "^24.0.0",
     "jest-environment-node-debug": "^2.0.0",
-    "jest-html-reporter": "^0.5.7",
-    "jest-junit": "^3.6.0",
+    "jest-junit": "6.3.0",
     "jest-sonar-reporter": "2.0.0",
-    "jest-stare": "1.6.0",
+    "jest-stare": "1.11.1",
     "jsonfile": "^4.0.0",
     "madge": "3.2.0",
     "prompt": "1.0.0",
@@ -118,10 +116,6 @@
   },
   "engines": {
     "node": ">=6.0.0"
-  },
-  "jest-html-reporter": {
-    "pageTitle": "Zowe CLI Tests",
-    "outputPath": "__tests__/__results__/results.html"
   },
   "jest": {
     "globals": {
@@ -166,12 +160,11 @@
   },
   "jest-stare": {
     "resultDir": "__tests__/__results__/jest-stare",
+    "coverageLink": "../unit/coverage/lcov-report/index.html",
     "additionalResultsProcessors": [
       "jest-junit",
-      "jest-html-reporter",
       "jest-sonar-reporter"
-    ],
-    "coverageLink": "../unit/coverage/lcov-report/index.html"
+    ]
   },
   "jest-junit": {
     "output": "__tests__/__results__/junit.xml"
