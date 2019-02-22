@@ -92,6 +92,7 @@ export class ListWorkflows {
 
         const result: IActiveWorkflows = await this.listWorkflows(session, zOSMFVersion, workflowName);
 
+        // Check if there was more than one workflows found
         if (result.workflows.length > 1){
             throw new ImperativeError({
                 msg: `More than one workflows found with name ` + workflowName,
