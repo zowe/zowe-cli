@@ -909,7 +909,7 @@ describe("z/OS Files - Upload", () => {
             promiseSpy.mockReturnValueOnce({});
 
             try {
-                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, null, true);
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {recursive: true});
             } catch (err) {
                 error = err;
             }
@@ -919,7 +919,7 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse.success).toBeTruthy();
             expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
             expect(createUssDirSpy).toHaveBeenCalledTimes(2);
-            expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/file2.txt`)}`, `${dsName}/file2.txt`, null);
+            expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/file2.txt`)}`, `${dsName}/file2.txt`, false);
         });
     });
 });

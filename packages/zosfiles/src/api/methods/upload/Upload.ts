@@ -462,8 +462,7 @@ export class Upload {
     public static async dirToUSSDir(session: AbstractSession,
                                     inputDirectory: string,
                                     ussname: string,
-                                    options: IUploadOptions,
-                                    ): Promise<IZosFilesResponse> {
+                                    options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeEqual(inputDirectory,"", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
@@ -593,8 +592,7 @@ export class Upload {
     private static async dirToUSSDirRecursive(session: AbstractSession,
                                               inputDirectory: string,
                                               ussname: string,
-                                            //   maxConcurrentRequests: number,
-                                              options: IUploadOptions) {
+                                              options: IUploadOptions = {}) {
         // initialize array for the files to be uploaded
         const filesArray: IUploadFile[] = [];
 
