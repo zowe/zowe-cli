@@ -41,17 +41,17 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         }
 
         // build filesMap argument
-        let filesMap: IUploadMap = null;
+        let fileMap: IUploadMap = null;
 
         // checking if binary-files or ascii-files are used, and update filesMap argument
         if(commandParameters.arguments.binaryFiles) {
-            filesMap = {
+            fileMap = {
                 binary : true,
                 fileNames : commandParameters.arguments.binaryFiles.split(",").map((fileName: string) => fileName.trim()),
             };
         }
         if(commandParameters.arguments.asciiFiles) {
-            filesMap = {
+            fileMap = {
                 binary : false,
                 fileNames : commandParameters.arguments.asciiFiles.split(",").map((fileName: string) => fileName.trim()),
             };
@@ -64,7 +64,7 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             commandParameters.arguments.USSDir, {
             binary: commandParameters.arguments.binary,
             recursive: commandParameters.arguments.recursive,
-            fileMap: filesMap,
+            filesMap: fileMap,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             task: status
         });

@@ -58,7 +58,7 @@ export interface IUploadOptions {
     /**
      * The map of files and their upload mode to be used for binary_files and ascii_files
      */
-    fileMap?: IUploadMap;
+    filesMap?: IUploadMap;
 
     /**
      * The maximum REST requests to perform at once
