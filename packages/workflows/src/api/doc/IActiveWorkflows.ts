@@ -19,6 +19,6 @@ import { IWorkflowsInfo } from "./IWorkflowsInfo";
  */
 
 export interface IActiveWorkflows {
- workflows?: IWorkflowsInfo[];
+    workflows?: IWorkflowsInfo[];
 }
 
