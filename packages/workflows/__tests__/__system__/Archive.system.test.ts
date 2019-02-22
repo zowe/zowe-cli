@@ -68,28 +68,12 @@ describe("Archive workflow unit tests - successful scenarios", () => {
     });
 
     it("Missing z/OSMF REST API version", async ()=>{
-        (ZosmfRestClient.postExpectJSON as any) = jest.fn<string>(() => {
-            return new Promise((resolve)=>{
-                Imperative.console.info("Using mocked function");
-                process.nextTick(()=>{
-                    const promiseOutput: IArchivedWorkflow = {
-                        workflowKey: workflowKeyConst
-                    };
-
-                    resolve(promiseOutput);
-                });
-            });
-        });
-        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst);
+        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual);
         const expected: IArchivedWorkflow = {
-            workflowKey: workflowKeyConst
+            workflowKey: workflowKeyActual
         };
 
         expect(response).toEqual(expected);
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledTimes(1);
-        let query: string = `${WorkflowConstants.RESOURCE}/1.0/${WorkflowConstants.WORKFLOW_RESOURCE}`;
-        query+=`/${workflowKeyConst}/${WorkflowConstants.ARCHIVE_WORKFLOW}`;
-        expect((ZosmfRestClient.postExpectJSON as any)).toHaveBeenCalledWith(session, query, [Headers.APPLICATION_JSON], null);
     });
 
 
