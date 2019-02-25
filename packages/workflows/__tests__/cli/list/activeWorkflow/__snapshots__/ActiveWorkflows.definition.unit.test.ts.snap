@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows list active workflows definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "aw",
+  ],
+  "description": "List active workflow instance(s) in z/OSMF.
+Multiple filters can be used together.
+Omitting all options will list all workflows on the sysplex",
+  "examples": Array [
+    Object {
+      "description": "List the workflow with name \\"testworkflow\\"",
+      "options": "--wn \\"testworkflow\\"",
+    },
+    Object {
+      "description": "List multiple active workflows on the entire syspex with names containing\\"workflow\\"",
+      "options": "--wn \\".*workflow.*\\"",
+    },
+    Object {
+      "description": "List multiple active workflows on system \\"IBMSYS\\" with names beginnig with \\"testW\\" that are in status \\"complete\\"",
+      "options": "--wn \\"test.*\\" --sys \\"IBMSYS\\" --sn \\"complete\\"",
+    },
+  ],
+  "name": "active-workflows",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "wn",
+      ],
+      "description": "Filter by workflow name. For wildcard use .*",
+      "name": "workflow-name",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "cat",
+      ],
+      "description": "Filter by the category of the workflow(s), which is either general or configuration.",
+      "name": "category",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "sys",
+      ],
+      "description": "Filter by the nickname of the system on which the workflow(s) is/are active.",
+      "name": "system",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ow",
+      ],
+      "description": "Filter by owner of the workflow(s) (a valid z/OS user ID).",
+      "name": "owner",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "vd",
+      ],
+      "description": "Filter by the name of the vendor that provided the workflow(s) definition file.",
+      "name": "vendor",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "sn",
+      ],
+      "allowableValues": Object {
+        "caseSensitive": true,
+        "values": Array [
+          "in-progress",
+          "complete",
+          "automation-in-progress",
+          "canceled",
+        ],
+      },
+      "description": "Filter by the status of the workflow(s).",
+      "name": "status-name",
+      "required": false,
+      "type": "string",
+    },
+  ],
+  "outputFormatOptions": true,
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "List active workflow instance(s) in z/OSMF.",
+  "type": "command",
+}
+`;

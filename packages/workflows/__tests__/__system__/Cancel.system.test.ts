@@ -9,7 +9,7 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../..";
+import { CreateWorkflow, DeleteWorkflow, CancelWorkflow } from "../..";
 import { Imperative, ImperativeError, Session } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
@@ -18,15 +18,9 @@ import { Upload } from "../../../zosfiles/src/api/methods/upload";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ZosFilesConstants } from "../../../zosfiles/src/api";
-import { ICreatedWorkflow } from "../../src/api/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
-import {
-    noSession,
-    nozOSMFVersion,
-    wrongString
-} from "../../src/api/WorkflowConstants";
-import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
+import { noSession, noWorkflowKey, nozOSMFVersion, WrongWorkflowKey } from "../../src/api/WorkflowConstants";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -38,26 +32,21 @@ let system: string;
 let owner: string;
 let wfName: string;
 
-const vendor = "Broadcom";
-const category = "General";
-const statusName = "in-progress";
-const badString = "Ba?d";
-const badString1 = "Ba&d";
 const workflow = __dirname + "/testfiles/demo.xml";
 
 
-function expectZosmfResponseSucceeded(response: IWorkflowsInfo, error: ImperativeError) {
+function expectZosmfResponseSucceeded(response: string, error: ImperativeError) {
     expect(error).not.toBeDefined();
     expect(response).toBeDefined();
 }
 
-function expectZosmfResponseFailed(response: ICreatedWorkflow, error: ImperativeError, msg: string) {
+function expectZosmfResponseFailed(response: string, error: ImperativeError, msg: string) {
     expect(response).not.toBeDefined();
     expect(error).toBeDefined();
     expect(error.details.msg).toContain(msg);
 }
 
-describe("List workflows", () => {
+describe("Cancel workflow", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             // tempProfileTypes: ["zosmf"],
@@ -102,25 +91,12 @@ describe("List workflows", () => {
             // deleting workflow
             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
         });
-        it("List all workflows - without any optional parameters.", async () => {
+        it("Should cancel workflow in zOSMF.", async () => {
             let error;
             let response;
 
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION);
-                Imperative.console.info("Response: " + inspect(response));
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
-            }
-            expectZosmfResponseSucceeded(response, error);
-         });
-        it("List workflow that match all optional parameters", async () => {
-            let error;
-            let response;
-
-            try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined, wfName, category, system, owner, vendor, statusName);
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, wfKey);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -133,7 +109,7 @@ describe("List workflows", () => {
             let response;
 
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined);
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, wfKey, undefined);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -142,36 +118,65 @@ describe("List workflows", () => {
             expectZosmfResponseSucceeded(response, error);
          });
     });
-    describe("Failure scenarios", () => {
-        it("Throws an error with undefined session.", async () => {
+    describe("Fail scenarios", () => {
+        // wfKey has value from last called CreateWorkflow
+        it("Should throw an error if the session parameter is undefined", async () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(undefined);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-              error = thrownError;
-              Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, noSession.message);
-        });
-        it("Throws an error with incorrect parameter format.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, badString, badString1, badString, badString, badString);
+                response = await CancelWorkflow.cancelWorkflow(undefined, wfKey);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongString.message);
+            expectZosmfResponseFailed(response, error, noSession.message);
         });
-        it("Throws an error with zOSMF version as empty string.", async () => {
+        it("Should throw an error if the workflowKey parameter is undefined", async () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, null);
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, undefined);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if workflowKey is empty string.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, "");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, noWorkflowKey.message);
+        });
+        it("Should throw error if workflow does not exist (workflowKey is wrong).", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, "blabla");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, WrongWorkflowKey.message);
+            // parse from message the workflow key
+            const actual: string = JSON.stringify(error);
+            const expected: RegExp = /The workflow key .+ was not found/gm;
+            expect(actual).toEqual(expect.stringMatching(expected));
+        });
+        it("Should throw error if zOSMF version is empty string.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await CancelWorkflow.cancelWorkflow(REAL_SESSION, wfKey, "");
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

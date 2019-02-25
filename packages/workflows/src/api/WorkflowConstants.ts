@@ -44,12 +44,19 @@ export class WorkflowConstants {
 
     /**
      * URI base for archiving workflow API
-     *
      * @static
      * @type {string}
      * @memberof WorkflowConstants
      */
     public static readonly ARCHIVE_WORKFLOW: string = "operations/archive";
+    
+    /**
+     * URI base for canceling workflow API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly CANCEL_WORKFLOW: string = "operations/cancel";
 
     /**
      * URI base for list workflows from registry API.
@@ -179,6 +186,18 @@ export const nozOSMFVersion: IMessageDefinition = {
 export const noWorkflowKey: IMessageDefinition = {
     message: apiErrorHeader + `No workflow key parameter was supplied.`
 };
+
+/**
+ * Error message that workflow key that was supplied does not exist.
+ * IZUWF5001W: The workflow key "workflowkey" was not found.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const WrongWorkflowKey: IMessageDefinition = {
+    message: "IZUWF5001W"
+    };
+
 /**
  * Error message that no steps parameter was supplied.
  * @static
