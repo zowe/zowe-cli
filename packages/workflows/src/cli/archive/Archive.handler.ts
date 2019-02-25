@@ -11,7 +11,8 @@
 
 import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ArchiveWorkflow } from "../../api/ArchiveWorkflow";
-import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHimport { noWorkflowName } from "../../api/WorkflowConstants";
+andler";
 
 /**
  * Common Handler for archiving workflow instance in z/OSMF in zosworkflows package.
@@ -62,6 +63,12 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
             case "workflowName":
                 try{
                     getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    if (resp.noWorkflowName === null) {
+                        throw new ImperativeError({
+                            msg: `No workflows match the provided workflow name.`,
+                            additionalDetails: JSON.stringify(params)
+                        });
+                    }
                     resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, getWfKey, undefined);
                 } catch (err){
                     error = "Archive workflow: " + err;
