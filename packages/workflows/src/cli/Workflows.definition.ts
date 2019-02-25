@@ -14,6 +14,7 @@ import { DeleteDefinition } from "./delete/Delete.definition";
 import { CreateDefinition } from "./create/Create.definition";
 import { ZosmfSession } from "../../../zosmf";
 import { ListDefinition } from "./list/List.definition";
+import { ArchiveDefinition } from "./archive/Archive.definition";
 
 
 /**
@@ -32,6 +33,7 @@ const definition: ICommandDefinition = {
         CreateDefinition,
         DeleteDefinition,
         ListDefinition,
+        ArchiveDefinition,
     ],
     passOn: [
         {
