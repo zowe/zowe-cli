@@ -27,8 +27,13 @@ export default class Handler extends ZosTsoBaseHandler {
         commandParameters.response.data.setObj(response);
 
         if (response.success) {
-            commandParameters.response.console.log(`TSO address space began successfully, key is: ${response.servletKey}\n`);
-            commandParameters.response.console.log(response.messages);
+            if (commandParameters.arguments.servletKeyOnly) {
+                commandParameters.response.console.log(response.servletKey);
+            } else {
+                commandParameters.response.console.log(`TSO address space began successfully, key is: ${response.servletKey}\n`);
+                commandParameters.response.console.log(response.messages);
+            }
+
         } else {
             throw new ImperativeError({
                 msg: `TSO address space failed to start.`,
