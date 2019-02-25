@@ -41,7 +41,7 @@ describe("List Active Workflows", () => {
         const shellScript = path.join(__dirname, "__scripts__", "command", "command_archive_workflow.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["someName", "someKey"]);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toContain("SOme conflict there");
+        expect(response.stderr.toString()).toContain("The following options conflict");
     });
 
     it("should fail due to missing workflow key", async () => {
