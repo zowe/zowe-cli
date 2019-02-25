@@ -26,7 +26,6 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "string",
         description: "The name of the workflow to be archived.",
         required: false,
-        conflictsWith: ["workflow-key"]
     },
 
     /**

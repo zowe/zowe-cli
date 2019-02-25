@@ -3,7 +3,7 @@
 exports[`zos-workflows list active workflows definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "w",
+    "aw",
   ],
   "description": "Archive a workflow instance(s) in z/OSMF.",
   "examples": Array [
@@ -16,14 +16,11 @@ Object {
       "options": "--wk \\"123-456-abv-xyz\\" ",
     },
   ],
-  "name": "workflow",
+  "name": "active-workflow",
   "options": Array [
     Object {
       "aliases": Array [
         "wn",
-      ],
-      "conflictsWith": Array [
-        "workflow-key",
       ],
       "description": "The name of the workflow to be archived.",
       "name": "workflow-name",
