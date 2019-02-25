@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "aw",
   ],
-  "description": "Archive a workflow instance(s) in z/OSMF.",
+  "description": "Archive an active workflow instance in z/OSMF.",
   "examples": Array [
     Object {
       "description": "Archive a workflow with workflow name \\"testworkflow\\"",
@@ -27,7 +27,18 @@ Object {
       "required": false,
       "type": "string",
     },
-    undefined,
+    Object {
+      "aliases": Array [
+        "wk",
+      ],
+      "conflictsWith": Array [
+        "workflow-name",
+      ],
+      "description": "The workflow key of the workflow to be archived.",
+      "name": "workflow-key",
+      "required": false,
+      "type": "string",
+    },
   ],
   "outputFormatOptions": true,
   "profile": Object {

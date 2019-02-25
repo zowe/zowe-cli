@@ -32,7 +32,7 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
      * The workflow key of the workflow to be archived.
      * @type {ICommandOptionDefinition}
      */
-    WorkflowKey: {
+    workflowKey: {
         name: "workflow-key",
         aliases: ["wk"],
         type: "string",
