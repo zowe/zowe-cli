@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, Imperative, Headers, ImperativeError } from "@brightside/imperative";
+import { Session, Imperative } from "@brightside/imperative";
 import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../..";
 import { WorkflowConstants } from "../../src/api/WorkflowConstants";
@@ -18,7 +18,7 @@ import { TestProperties } from "../../../../__tests__/__src__/properties/TestPro
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../zosfiles/src/api";
 import { CreateWorkflow } from "../../src/api/Create";
-import { DeleteWorkflow } from "../../src/api/Delete";
+import { ZosmfRestClient } from "../../../rest";
 
 let session: Session;
 let testEnvironment: ITestEnvironment;
@@ -40,6 +40,15 @@ async function setup() {
 
 async function cleanup() {
     await TestEnvironment.cleanUp(testEnvironment);
+}
+
+async function removeWorkflows() {
+    while(allWorkflowKeys.length > 0) {
+        const currentKey = allWorkflowKeys.pop();
+        const query: string = `/zosmf/workflow/rest/1.0/archivedworkflows/${currentKey}`;
+        const deleted = await ZosmfRestClient.deleteExpectString(session, query);
+        Imperative.console.info(JSON.stringify(deleted));
+    }
 }
 
 describe("Archive workflow unit tests - successful scenarios", () => {
@@ -77,11 +86,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
 
     afterAll(async ()=>{
         await cleanup();
-        while(allWorkflowKeys.length > 0) {
-            const currentKey = allWorkflowKeys.pop();
-            const deleted = await DeleteWorkflow.deleteWorkflow(session, currentKey);
-            Imperative.console.info(deleted);
-        }
+        await removeWorkflows();
     });
 });
 
@@ -120,7 +125,7 @@ describe("Missing session", ()=>{
 
 describe("Missing workflow key", ()=> {
     beforeAll(async ()=> {
-        setup();
+        await setup();
     });
     it("Undefined workflow key", async ()=>{
         try {
@@ -154,7 +159,7 @@ describe("Missing workflow key", ()=> {
     });
 
     afterAll(async () => {
-        cleanup();
+        await cleanup();
     });
 });
 
@@ -193,12 +198,7 @@ describe("Errors caused by the user interaction", ()=>{
     });
 
     afterAll(async () => {
-        cleanup();
-
-        while(allWorkflowKeys.length > 0) {
-            const currentKey = allWorkflowKeys.pop();
-            const deleted = await DeleteWorkflow.deleteWorkflow(session, currentKey);
-            Imperative.console.info(deleted);
-        }
+        await cleanup();
+        await removeWorkflows();
     });
 });
