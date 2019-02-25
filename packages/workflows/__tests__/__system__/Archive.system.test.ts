@@ -168,14 +168,6 @@ describe("Errors caused by the user interaction", ()=>{
         await setup();
         await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
     });
-    beforeEach(async ()=> {
-        const systemName = testEnvironment.systemTestProperties.systems.primary;
-        const system = sysProperties.getDefaultSystem();
-        const owner = system.zosmf.user;
-        const workflowInstance = await CreateWorkflow.createWorkflow(session, `Arch Workflow ${Date.now()}`, remoteWorkflowPath, systemName, owner);
-        workflowKeyActual = workflowInstance.workflowKey;
-        allWorkflowKeys.push(workflowKeyActual);
-    });
     it("404 Not Found", async ()=>{
         try {
             await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
@@ -186,6 +178,14 @@ describe("Errors caused by the user interaction", ()=>{
         }
     });
     it("409 Request Conflict", async ()=>{
+        const systemName = testEnvironment.systemTestProperties.systems.primary;
+        const system = sysProperties.getDefaultSystem();
+        const owner = system.zosmf.user;
+        const workflowInstance = await CreateWorkflow.createWorkflow(session, `Arch Workflow ${Date.now()}`, remoteWorkflowPath, systemName, owner);
+        workflowKeyActual = workflowInstance.workflowKey;
+
+        allWorkflowKeys.push(workflowKeyActual);
+
         try {
             await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
             await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
@@ -195,10 +195,10 @@ describe("Errors caused by the user interaction", ()=>{
             const reqConflict = 409;
             expect(error.mDetails.errorCode).toBe(reqConflict);
         }
+        await removeWorkflows();
     });
 
     afterAll(async () => {
         await cleanup();
-        await removeWorkflows();
     });
 });
