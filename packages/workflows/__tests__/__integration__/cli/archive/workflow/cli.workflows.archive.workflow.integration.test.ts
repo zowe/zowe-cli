@@ -36,4 +36,32 @@ describe("List Active Workflows", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toMatchSnapshot();
     });
+
+    it("should fail due to conflicting options", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_archive_workflow.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["someName", "someKey"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("SOme conflict there");
+    });
+
+    it("should fail due to missing workflow key", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_archive_workflowt_wfkey.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Missing Positional Argument");
+    });
+
+    it("should fail due to missing workflow name", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_archive_workflow_wfname.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Missing Positional Argument");
+    });
+
+    it("should fail due to missing options", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_archive_workflow_empty.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("Missing Positional Argument");
+    });
 });

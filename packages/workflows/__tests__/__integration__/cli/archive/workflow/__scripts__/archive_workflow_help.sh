@@ -9,5 +9,5 @@ then
 fi
 
 echo "================Z/OS WORKFLOWS ARCHIVE WORKFLOW HELP RFJ==========="
-zowe zos-workflows archive w --help --rfj
+zowe zos-workflows archive aw --help --rfj
 exit $?

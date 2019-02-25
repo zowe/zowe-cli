@@ -22,9 +22,12 @@ Object {
       "aliases": Array [
         "wn",
       ],
+      "conflictsWith": Array [
+        "workflow-key",
+      ],
       "description": "The name of the workflow to be archived.",
       "name": "workflow-name",
-      "required": true,
+      "required": false,
       "type": "string",
     },
     undefined,

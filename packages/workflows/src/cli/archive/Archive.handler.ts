@@ -13,6 +13,7 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ArchiveWorkflow } from "../../api/ArchiveWorkflow";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { noWorkflowName } from "../../api/WorkflowConstants";
+import { ListWorkflows } from "../../..";
 
 
 /**
@@ -64,7 +65,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
             case "workflowName":
                 try{
                     getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                    if (resp.noWorkflowName === null) {
+                    if (getWfKey === null) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
                             additionalDetails: JSON.stringify(params)
@@ -76,12 +77,12 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow archived with workflow-name " + resp.workflowName);
+                params.response.console.log("Workflow archived with workflow-name " + resp);
                 break;
 
             default:
                 throw new ImperativeError({
-                    msg: `Internal archive error. Please contact support.`,
+                    msg: `Provide workflow key or workflow name to run archive command.`,
                     additionalDetails: JSON.stringify(params)
                 });
         }

@@ -25,7 +25,8 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["wn"],
         type: "string",
         description: "The name of the workflow to be archived.",
-        required: true,
+        required: false,
+        conflictsWith: ["workflow-key"]
     },
 
     /**
@@ -37,7 +38,8 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["wk"],
         type: "string",
         description: "The workflow key of the workflow to be archived.",
-        required: true,
+        required: false,
+        conflictsWith: ["workflow-name"]
     },
 
     /**
