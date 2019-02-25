@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 
-describe("zos-workflows list definition", () => {
+describe("zos-workflows start definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListDefinition;
+        const definition: ICommandDefinition = require("../../../src/cli/start/Start.definition").StartDefinition;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(2);
         delete definition.children;

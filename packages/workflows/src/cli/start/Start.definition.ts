@@ -10,23 +10,23 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ActiveWorkflows } from "./activeWorkflows/ActiveWorkflows.definition";
-import { ActiveWorkflowDetails } from "./activeWorkflowDetails/ActiveWorkflowDetails.definition";
+import { WorkflowStep } from "./workflowStep/WorkflowStep.definition";
+import { WorkflowFull } from "./workflowFull/WorkflowFull.definition";
 
 
 /**
- * This object defines the command for the List group within zosworkflows. This is not
+ * This object defines the command for the start group within zos-workflows. This is not
  * something that is intended to be used outside of this npm package.
  *
  * @private
  */
-export const ListDefinition: ICommandDefinition = {
-    name: "list",
-    aliases: ["ls"],
+export const StartDefinition: ICommandDefinition = {
+    name: "start",
+    aliases: ["sta"],
     type: "group",
-    description: "List workflow instance(s) in z/OSMF",
+    description: "Start workflow instance in z/OSMF",
     children: [
-        ActiveWorkflows,
-        ActiveWorkflowDetails,
+        WorkflowFull,
+        WorkflowStep
     ]
 };

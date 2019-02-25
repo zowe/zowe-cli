@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@brightside/imperative";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { CreateDefinition } from "./create/Create.definition";
+import { StartDefinition } from "./start/Start.definition";
 import { ZosmfSession } from "../../../zosmf";
 import { ListDefinition } from "./list/List.definition";
 import { ArchiveDefinition } from "./archive/Archive.definition";
@@ -31,9 +32,10 @@ const definition: ICommandDefinition = {
     description: "Manage z/OSMF workflows, create workflow instances, and more",
     children: [
         CreateDefinition,
-        DeleteDefinition,
+        StartDefinition,
         ListDefinition,
         ArchiveDefinition,
+        DeleteDefinition,
     ],
     passOn: [
         {
