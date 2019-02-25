@@ -11,8 +11,9 @@
 
 import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ArchiveWorkflow } from "../../api/ArchiveWorkflow";
-import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHimport { noWorkflowName } from "../../api/WorkflowConstants";
-andler";
+import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { noWorkflowName } from "../../api/WorkflowConstants";
+
 
 /**
  * Common Handler for archiving workflow instance in z/OSMF in zosworkflows package.
