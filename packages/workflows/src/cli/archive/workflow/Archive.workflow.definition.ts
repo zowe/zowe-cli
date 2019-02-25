@@ -25,7 +25,7 @@ export const Workflow: ICommandDefinition = {
     aliases: ["aw"],
     description: "Archive an active workflow instance in z/OSMF.",
     type: "command",
-    handler: join(__dirname, "Archive.handler"),
+    handler: join(__dirname, "ActiveWorkflows.handler"),
     profile: {
         optional: ["zosmf"],
     },
