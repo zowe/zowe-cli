@@ -49,7 +49,7 @@ export class WorkflowConstants {
      * @memberof WorkflowConstants
      */
     public static readonly ARCHIVE_WORKFLOW: string = "operations/archive";
-    
+
     /**
      * URI base for canceling workflow API.
      * @static
