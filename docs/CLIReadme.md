@@ -1705,7 +1705,7 @@ the volumes option when your cluster is not SMS-managed.
 * `          $  zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --retain-for 100 `
 
 ## delete | del<a name="module-delete"></a>
-Delete a data set...........Colin
+Delete a data set
 ### data-set<a name="command-data-set"></a>
 Delete a data set permanently
 
