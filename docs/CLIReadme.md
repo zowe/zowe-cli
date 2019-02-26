@@ -208,10 +208,10 @@ plug-ins are installed. For more information on the plugins.json file, see the
 want to install.
 
 All plug-ins specified in plugins.json will be installed to the base CLI and the
-contents will be placed into C:\Users\uzuko01\.zowe\plugins\plugins.json.
+contents will be placed into C:\Users\USER\.zowe\plugins\plugins.json.
 
 If you do not specify a plugins.json file and do not specify a plug-in, the
-default plugin.json file (C:\Users\uzuko01\.zowe\plugins\plugins.json) will be
+default plugin.json file (C:\Users\USER\.zowe\plugins\plugins.json) will be
 used. This provides a way to install plug-ins that were lost or corrupted after
 reinstalling or updating Zowe CLI.
 
@@ -237,7 +237,7 @@ https://docs.npmjs.com/cli/adduser
 ### Examples
 
    *-  Install plug-ins saved in
-   C:\Users\uzuko01\.zowe\plugins\plugins.json:
+   C:\Users\USER\.zowe\plugins\plugins.json:
 
 * `          $  zowe plugins install `
 
