@@ -57,7 +57,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
         await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
     });
     beforeEach(async ()=> {
-        const systemName = testEnvironment.systemTestProperties.systems.primary;
+        const systemName = testEnvironment.systemTestProperties.workflows.system;
         const system = sysProperties.getDefaultSystem();
         const owner = system.zosmf.user;
         const workflowInstance = await CreateWorkflow.createWorkflow(session, `Arch Workflow ${Date.now()}`, remoteWorkflowPath, systemName, owner);
