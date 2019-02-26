@@ -89,6 +89,21 @@ describe("List workflow cli system tests", () => {
                 // Create a workflow to list
                 await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             });
+            afterEach (async () => {
+                let error;
+                const archiveCleanUp =  await ZosmfRestClient.getExpectJSON<any>(REAL_SESSION,
+                                                                                "/zosmf/workflow/rest/1.0/archivedworkflows");
+                archiveCleanUp.archivedWorkflows.forEach(async (element: any) => {
+                    if(element.workflowName===wfName){
+                        wfKey = element.workflowKey;
+                        try {
+                            await ZosmfRestClient.deleteExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/archivedworkflows/" + wfKey);
+                        } catch (err) {
+                            error = err;
+                        }
+                    }
+                });
+            });
             it("Should return wf key if wf was archived using wf key.", async () => {
                 let thisWorkflowKey;
                 const actualWfKey =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION,
@@ -117,8 +132,6 @@ describe("List workflow cli system tests", () => {
                 testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                // tslint:disable-next-line:no-console
-                console.log("Waaazaaa" + response.stdout.toString());
                 expect(response.stdout.toString()).toContain(`${thisWorkflowKey}`);
             });
         });
