@@ -54,8 +54,8 @@
     "watch": "tsc --pretty --watch",
     "watch:test": "jest --watch",
     "typedoc": "typedoc --options ./typedoc.json ./packages/",
-    "doc:generate": "npm run doc:clean && npm run typedoc && gulp doc",
-    "doc:clean": "gulp cleanTypedoc && rimraf docs/CLIReadme.md",
+    "doc:generate": "npm run doc:clean && gulp doc",
+    "doc:clean": "rimraf docs/CLIReadme.md",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
@@ -107,7 +107,6 @@
     "ts-jest": "^23.10.5",
     "ts-node": "^3.3.0",
     "tslint": "5.10.0",
-    "typedoc": "^0.11.1",
     "typescript": "3.2.2",
     "uuid": "^3.3.2"
   },
