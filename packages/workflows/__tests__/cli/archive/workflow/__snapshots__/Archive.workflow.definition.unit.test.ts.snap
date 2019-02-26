@@ -19,8 +19,14 @@ Object {
   "name": "active-workflow",
   "options": Array [
     Object {
+      "absenceImplications": Array [
+        "workflow-key",
+      ],
       "aliases": Array [
         "wn",
+      ],
+      "conflictsWith": Array [
+        "workflow-key",
       ],
       "description": "The name of the workflow to be archived.",
       "name": "workflow-name",
@@ -30,9 +36,6 @@ Object {
     Object {
       "aliases": Array [
         "wk",
-      ],
-      "conflictsWith": Array [
-        "workflow-name",
       ],
       "description": "The workflow key of the workflow to be archived.",
       "name": "workflow-key",

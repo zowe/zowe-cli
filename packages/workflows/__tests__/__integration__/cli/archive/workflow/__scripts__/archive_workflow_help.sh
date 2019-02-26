@@ -2,7 +2,7 @@
 set -e
 
 echo "================Z/OS WORKFLOWS ARCHIVE WORKFLOW HELP==============="
-zowe zos-workflows archive w --help
+zowe zos-workflows archive aw --help
 if [ $? -gt 0 ]
 then
     exit $?

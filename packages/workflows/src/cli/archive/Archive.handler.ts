@@ -81,9 +81,10 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 break;
 
             default:
-                throw new ImperativeError({
-                    msg: `Provide workflow key or workflow name to run archive command.`,
-                    additionalDetails: JSON.stringify(params)
+            throw new ImperativeError({
+                msg: `Internal create error: Unable to determine the the criteria by which to list workflow details. ` +
+                    `Please contact support.`,
+                additionalDetails: JSON.stringify(params)
                 });
         }
     }
