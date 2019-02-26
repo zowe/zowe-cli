@@ -589,16 +589,15 @@ export class Upload {
      * @param {IUploadOptions} [options={}]   - Uploading options
      * @return {null}
      */
-    private static async dirToUSSDirRecursive(session: AbstractSession,
-                                              inputDirectory: string,
-                                              ussname: string,
-                                              options: IUploadOptions = {}) {
+    public static async dirToUSSDirRecursive(session: AbstractSession,
+                                             inputDirectory: string,
+                                             ussname: string,
+                                             options: IUploadOptions = {}) {
         // initialize array for the files to be uploaded
         const filesArray: IUploadFile[] = [];
 
         // getting list of files and directories from directory
         const files = fs.readdirSync(inputDirectory);
-
         // building list of files with full path and transfer mode
         files.forEach(async (file) => {
             // generate the full file specification
@@ -633,24 +632,27 @@ export class Upload {
             }
         });
 
-        let uploadsInitiated = 0;
-        const createUploadPromise = (file: IUploadFile) => {
-            // update the progress bar if any
-            if (options.task != null) {
-                options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
-                    (uploadsInitiated / filesArray.length));
-                uploadsInitiated++;
+        // skip if processing an empty directory
+        if(filesArray.length > 0) {
+            let uploadsInitiated = 0;
+            const createUploadPromise = (file: IUploadFile) => {
+                // update the progress bar if any
+                if (options.task != null) {
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (uploadsInitiated / filesArray.length));
+                    uploadsInitiated++;
+                }
+                const filePath = path.normalize(path.join(inputDirectory, file.fileName));
+                const ussFilePath = path.posix.join(ussname, file.fileName);
+                return this.fileToUSSFile(session, filePath, ussFilePath, file.binary);
+
+            };
+
+            if (options.maxConcurrentRequests === 0) {
+                await Promise.all(filesArray.map(createUploadPromise));
+            } else {
+                await asyncPool(options.maxConcurrentRequests, filesArray, createUploadPromise);
             }
-            const filePath = path.normalize(path.join(inputDirectory, file.fileName));
-            const ussFilePath = path.posix.join(ussname, file.fileName);
-            return this.fileToUSSFile(session, filePath, ussFilePath, file.binary);
-
-        };
-
-        if (options.maxConcurrentRequests === 0) {
-            await Promise.all(filesArray.map(createUploadPromise));
-        } else {
-            await asyncPool(options.maxConcurrentRequests, filesArray, createUploadPromise);
         }
     }
 

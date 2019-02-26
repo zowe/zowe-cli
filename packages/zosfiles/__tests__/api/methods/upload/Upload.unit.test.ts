@@ -784,7 +784,7 @@ describe("z/OS Files - Upload", () => {
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const promiseSpy = jest.spyOn(Promise, "all");
-
+        const dirToUSSDirRecursive = jest.spyOn(Upload, "dirToUSSDirRecursive");
 
         beforeEach(() => {
             USSresponse = undefined;
@@ -897,16 +897,6 @@ describe("z/OS Files - Upload", () => {
             isDirectoryExistsSpy.mockReturnValueOnce(false);
             createUssDirSpy.mockReturnValueOnce({});
             getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]);
-            isDirSpy.mockReturnValueOnce(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(false);
-            createUssDirSpy.mockReturnValueOnce({});
-            isDirSpy.mockReturnValueOnce(false);
-            pathNormalizeSpy.mockReturnValueOnce("test/path/file1.txt");
-            fileToUSSFileSpy.mockReturnValue(testReturn);
-            isDirSpy.mockReturnValueOnce(false);
-            pathNormalizeSpy.mockReturnValueOnce("test/path/file2.txt");
-            fileToUSSFileSpy.mockReturnValue(testReturn);
-            promiseSpy.mockReturnValueOnce({});
 
             try {
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {recursive: true});
@@ -917,9 +907,8 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
             expect(USSresponse.success).toBeTruthy();
-            expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
-            expect(createUssDirSpy).toHaveBeenCalledTimes(2);
-            expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/file2.txt`)}`, `${dsName}/file2.txt`, false);
+            expect(dirToUSSDirRecursive).toHaveBeenCalledTimes(1);
+            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
         });
     });
 });
