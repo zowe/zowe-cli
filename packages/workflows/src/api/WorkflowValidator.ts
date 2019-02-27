@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, TextUtils, ImperativeExpect } from "@brightside/imperative";
+import { AbstractSession, TextUtils, ImperativeExpect, ImperativeError } from "@brightside/imperative";
 import { noSession } from "./WorkflowConstants";
 
 /**
@@ -52,6 +52,20 @@ export class WorkflowValidator {
     public static validateNotEmptyString(text: string, errorMsg: string) {
         ImperativeExpect.toNotBeEqual("", text, errorMsg);
         WorkflowValidator.validateString(text, errorMsg);
+    }
+
+    /**
+     * Validate supplied string for parameters if there is not value "?" or "&"
+     * @static
+     * @param {string} parameterValue - check if the provided parameters does not contain value "?" or "&"
+     * @param {string} errorMsg - message to show in case validation fails
+     * @memberof WorkflowValidator
+     */
+    public static validateParameter(parameterValue: string, errorMsg: string) {
+        const result: boolean = /^[^+?&]+$/.test(parameterValue);
+        if(!result){
+            throw new ImperativeError({msg : errorMsg});
+        }
     }
 
     /**
