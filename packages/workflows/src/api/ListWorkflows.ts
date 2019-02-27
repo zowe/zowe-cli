@@ -11,8 +11,9 @@
 
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { AbstractSession } from "@brightside/imperative";
-import { WorkflowConstants, nozOSMFVersion, wrongString } from "./WorkflowConstants";
+import { AbstractSession, ImperativeError } from "@brightside/imperative";
+import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "./WorkflowConstants";
+import { IActiveWorkflows } from "./doc/IActiveWorkflows";
 
 /**
  * Get list of workflows from registry.
@@ -71,5 +72,32 @@ export class ListWorkflows {
             }
         });
         return query;
+    }
+
+    /**
+     * This operation is used to return a worflow-key by given workflow name.
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} workflowName - workflow name by which to list workflows
+     * @param {string} zOSMFVersion - identifies the version of the provisioning service.
+     * @returns {Promise<string> | null} - Promise with string containing wf key, or null if none was found
+     * @throws {ImperativeError}
+     * @memberof ListWorkflows
+     */
+    public static async getWfKey(session: AbstractSession, workflowName: string,
+                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<string> | null{
+
+        WorkflowValidator.validateSession(session);
+        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+        WorkflowValidator.validateNotEmptyString(workflowName, noWorkflowName.message);
+
+        const result: IActiveWorkflows = await this.listWorkflows(session, zOSMFVersion, workflowName);
+
+        // Check if there was more than one workflows found
+        if (result.workflows.length > 1){
+            throw new ImperativeError({
+                msg: `More than one workflows found with name ` + workflowName,
+            });
+        }
+        return result.workflows.length !== 0 ? result.workflows[0].workflowKey : null;
     }
 }

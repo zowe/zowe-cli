@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows create definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "cre",
+  ],
+  "description": "Create workflow instance in z/OSMF",
+  "name": "create",
+  "type": "group",
+}
+`;
