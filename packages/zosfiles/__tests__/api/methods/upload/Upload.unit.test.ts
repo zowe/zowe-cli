@@ -863,6 +863,26 @@ describe("z/OS Files - Upload", () => {
             expect(error.message).toContain(ZosFilesMessages.missingUSSDirectoryName.message);
         });
 
+        it("should upload recursively if option is specified", async () => {
+            const testReturn = {};
+            const testPath = "test/path";
+            isDirSpy.mockReturnValueOnce(true);
+            isDirectoryExistsSpy.mockReturnValueOnce(false);
+            createUssDirSpy.mockReturnValueOnce({});
+            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]);
+            try {
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {recursive: true});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(dirToUSSDirRecursive).toHaveBeenCalledTimes(1);
+            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
+        });
+
         it("should return with proper response", async () => {
             const testReturn = {};
             const testPath = "test/path";
@@ -888,27 +908,6 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse.success).toBeTruthy();
             expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
             expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/file2`)}`, `${dsName}/file2`, false);
-        });
-
-        it("should upload recursively if option is specified", async () => {
-            const testReturn = {};
-            const testPath = "test/path";
-            isDirSpy.mockReturnValueOnce(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(false);
-            createUssDirSpy.mockReturnValueOnce({});
-            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]);
-
-            try {
-                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {recursive: true});
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-            expect(dirToUSSDirRecursive).toHaveBeenCalledTimes(1);
-            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
         });
     });
 });
