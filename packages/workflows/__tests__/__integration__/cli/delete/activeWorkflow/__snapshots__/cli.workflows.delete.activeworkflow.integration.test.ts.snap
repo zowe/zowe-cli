@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Create workflow with data set integration test should display delete workflow-key help 1`] = `
+exports[`Delete active workflow integration test should display delete workflow-key help 1`] = `
 "================Z/OS WORKFLOWS DELETE ACTIVE-WORKFLOW HELP===============
 
  COMMAND NAME
