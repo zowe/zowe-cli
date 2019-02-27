@@ -14,7 +14,7 @@ import { PerfTiming } from "@zowe/perf-timing";
 
 const timingApi = PerfTiming.api;
 
-timingApi.mark("PRE-INIT");
+timingApi.mark("PRE_IMPORT_IMPERATIVE");
 
 import { IImperativeConfig, Imperative } from "@brightside/imperative";
 import { Constants } from "./Constants";
@@ -26,8 +26,8 @@ const config: IImperativeConfig = {
 };
 
 (async () => {
-    timingApi.mark("POST_INIT");
-    timingApi.measure("time to get into main function", "PRE_INIT", "POST_INIT");
+    timingApi.mark("POST_IMPORT_IMPERATIVE");
+    timingApi.measure("time to get into main function", "PRE_IMPORT_IMPERATIVE", "POST_IMPORT_IMPERATIVE");
 
     try {
         timingApi.mark("BEFORE_INIT");
