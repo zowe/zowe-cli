@@ -110,7 +110,7 @@ export default {
         },
     },
     DELETE: {
-        DESCRIPTION: "Delete a data set",
+        DESCRIPTION: "Delete a data set or Unix System Services file",
         ACTIONS: {
             DATA_SET: {
                 DESCRIPTION: "Delete a data set permanently",
@@ -142,6 +142,21 @@ export default {
                     EX2: "Delete all expired VSAM data sets that match 'ibmuser.AAA.**.FFF'",
                     EX3: "Delete a non-expired VSAM data set named 'ibmuser.cntl.vsam'",
                     EX4: "Delete an expired VSAM data set named 'ibmuser.cntl.vsam' by overwriting the components with zeros"
+                }
+            },
+            USS: {
+                DESCRIPTION: "Delete a Unix Systems Services (USS) File or directory permanently",
+                POSITIONALS: {
+                    FILENAME: "The name of the file or directory that you want to delete"
+                },
+                OPTIONS: {
+                    FOR_SURE: "Specify this option to confirm that you want to delete the file or directory permanently.",
+                    RECURSIVE: "Delete directories recursively.",
+                },
+                EXAMPLES: {
+                    EX1: "Delete the empty directory '/u/ibmuser/testcases'",
+                    EX2: "Delete the file named '/a/ibmuser/my_text.txt'",
+                    EX3: "Recursively delete the directory named '/u/ibmuser/testcases'"
                 }
             }
         }

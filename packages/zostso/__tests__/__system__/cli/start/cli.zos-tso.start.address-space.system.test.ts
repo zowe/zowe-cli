@@ -65,6 +65,14 @@ describe("zos-tso start address-space", () => {
         expect(response.stdout.toString()).toContain(fakeProc);
     });
 
+    it("should be able to successfully start an address space using --servlet-key-only", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_sko.sh", TEST_ENVIRONMENT);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        const key = response.stdout.toString().trim();
+        StopTso.stop(REAL_SESSION, key);
+    });
+
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles

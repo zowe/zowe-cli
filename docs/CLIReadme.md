@@ -11,6 +11,9 @@ For Zowe CLI support, visit https://zowe.org.
 
 
 ### Table of Contents
+* [config](#module-config)
+	* [set](#command-set)
+	* [reset](#command-reset)
 * [plugins](#module-plugins)
 	* [install](#command-install)
 	* [list](#command-list)
@@ -62,6 +65,7 @@ For Zowe CLI support, visit https://zowe.org.
 	* [delete | del](#module-delete)
 		* [data-set](#command-data-set)
 		* [data-set-vsam](#command-data-set-vsam)
+		* [uss-file](#command-uss-file)
 	* [invoke | call](#module-invoke)
 		* [ams-statements](#command-ams-statements)
 		* [ams-file](#command-ams-file)
@@ -77,6 +81,7 @@ For Zowe CLI support, visit https://zowe.org.
 		* [stdin-to-data-set](#command-stdin-to-data-set)
 		* [dir-to-pds](#command-dir-to-pds)
 		* [file-to-uss](#command-file-to-uss)
+		* [dir-to-uss](#command-dir-to-uss)
 * [zos-jobs | jobs](#module-zos-jobs)
 	* [submit | sub](#module-submit)
 		* [data-set](#command-data-set)
@@ -91,6 +96,8 @@ For Zowe CLI support, visit https://zowe.org.
 		* [jobs](#command-jobs)
 	* [delete | del](#module-delete)
 		* [job](#command-job)
+	* [cancel | can](#module-cancel)
+		* [job](#command-job)
 * [zos-tso | tso](#module-zos-tso)
 	* [send](#module-send)
 		* [address-space](#command-address-space)
@@ -102,10 +109,66 @@ For Zowe CLI support, visit https://zowe.org.
 		* [address-space](#command-address-space)
 	* [issue](#module-issue)
 		* [command](#command-command)
+* [zos-workflows | wf](#module-zos-workflows)
+	* [create | cre](#module-create)
+		* [workflow-from-data-set](#command-workflow-from-data-set)
+		* [workflow-from-uss-file](#command-workflow-from-uss-file)
+	* [start | sta](#module-start)
+		* [workflow-full](#command-workflow-full)
+		* [workflow-step](#command-workflow-step)
+	* [list | ls](#module-list)
+		* [active-workflows](#command-active-workflows)
+		* [active-workflow-details](#command-active-workflow-details)
+	* [delete | del](#module-delete)
+		* [active-workflow](#command-active-workflow)
 * [zosmf](#module-zosmf)
 	* [check](#module-check)
 		* [status](#command-status)
 
+
+# config<a name="module-config"></a>
+Manage configuration and overrides
+## set<a name="command-set"></a>
+Set a configuration setting
+
+#### Usage
+
+   zowe config set <configName> <configValue> [options]
+
+#### Positional Arguments
+
+*   `configName`		 *(string)*
+
+	* Setting name
+
+*   `configValue`		 *(string)*
+
+	* Value to set
+
+### Examples
+
+   *-  Set the default credential manager to @brightside/keytar:
+
+* `          $  zowe config set credential-manager @brightside/keytar`
+
+## reset<a name="command-reset"></a>
+Reset a configuration setting to default or blank.
+
+#### Usage
+
+   zowe config reset <configName> [options]
+
+#### Positional Arguments
+
+*   `configName`		 *(string)*
+
+	* Setting name to reset
+
+### Examples
+
+   *-  Reset the credential manager to default value:
+
+* `          $  zowe config reset credential-manager`
 
 # plugins<a name="module-plugins"></a>
 Install and manage plug-ins
@@ -161,6 +224,17 @@ is omitted, the value returned by `npm config get registry` is used.
 For more information about npm registries, see:
 https://docs.npmjs.com/misc/registry
 
+*   `--login`  *(boolean)*
+
+	* The flag to add a registry user account to install from secure registry. It
+saves credentials to the .npmrc file using `npm adduser`. When this value is
+omitted, credentials from .npmrc file is used. If you used this flag once for
+specific registry, you don't have to use it again, it uses credentials from
+.npmrc file.
+
+For more information about npm registries, see:
+https://docs.npmjs.com/cli/adduser
+
 ### Examples
 
    *-  Install plug-ins saved in
@@ -187,6 +261,11 @@ https://docs.npmjs.com/misc/registry
    *-  Install a local folder, local TAR file, and a git URL:
 
 * `          $  zowe plugins install ./local-file /root/tar/some-tar.tgz git://github.com/project/repository.git#v1.0.0`
+
+   *-  Install a remote plug-in from the registry which requires
+   authorization(don't need to use this flag if you have already logged in before):
+
+* `          $  zowe plugins install my-plugin --registry https://registry.npmjs.org/ --login`
 
 ## list<a name="command-list"></a>
 List all plug-ins installed.
@@ -241,11 +320,27 @@ is omitted, the value returned by `npm config get registry` is used.
 For more information about npm registries, see:
 https://docs.npmjs.com/misc/registry
 
+*   `--login`  *(boolean)*
+
+	* The flag to add a registry user account to install from secure registry. It
+saves credentials to the .npmrc file using `npm adduser`. When this value is
+omitted, credentials from .npmrc file is used. If you used this flag once for
+specific registry, you don't have to use it again, it uses credentials from
+.npmrc file.
+
+For more information about npm registries, see:
+https://docs.npmjs.com/cli/adduser
+
 ### Examples
 
    *-  Update a plug-in:
 
 * `          $  zowe plugins update my-plugin`
+
+   *-  Update a remote plug-in from the registry which requires
+   authorization(don't need to use this flag if you have already logged in before):
+
+* `          $  zowe plugins update my-plugin --registry https://registry.npmjs.org/ --login`
 
 ## validate<a name="command-validate"></a>
 Validate a plug-in that has been installed.
@@ -291,13 +386,11 @@ z/OSMF Profile
 	* Specifies the name of the new zosmf profile. You can load this profile by using
 the name on commands that support the "--zosmf-profile" option.
 
-#### Required Options
+#### Zosmf Connection Options
 
 *   `--host`  | `-H` *(string)*
 
 	* The z/OSMF server host name.
-
-#### Options
 
 *   `--port`  | `-P` *(number)*
 
@@ -309,7 +402,7 @@ Default value: 443
 
 	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
 
-*   `--password`  | `-p` *(string)*
+*   `--password`  | `--pass` | `--pw` *(string)*
 
 	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
@@ -318,6 +411,14 @@ Default value: 443
 	* Reject self-signed certificates.
 
 Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Options
 
 *   `--overwrite`  | `--ow` *(boolean)*
 
@@ -335,6 +436,11 @@ Default value: true
 
 * `          $  zowe profiles create zosmf-profile zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false`
 
+   *-  Create a zosmf profile called 'zos124' to connect to z/OSMF
+   at the host zos124 (default port - 443) and allow self-signed certificates:
+
+* `          $  zowe profiles create zosmf-profile zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath`
+
 ### tso-profile<a name="command-tso-profile"></a>
 z/OS TSO/E User Profile
 
@@ -349,13 +455,11 @@ z/OS TSO/E User Profile
 	* Specifies the name of the new tso profile. You can load this profile by using
 the name on commands that support the "--tso-profile" option.
 
-#### Required Options
+#### TSO ADDRESS SPACE OPTIONS
 
 *   `--account`  | `-a` *(string)*
 
 	* Your z/OS TSO/E accounting information.
-
-#### Options
 
 *   `--character-set`  | `--cs` *(string)*
 
@@ -395,6 +499,8 @@ Default value: 4096
 
 Default value: 24
 
+#### Options
+
 *   `--overwrite`  | `--ow` *(boolean)*
 
 	* Overwrite the tso profile when a profile of the same name exists.
@@ -428,7 +534,7 @@ z/OSMF Profile
 	* Specifies the name of the new zosmf profile. You can load this profile by using
 the name on commands that support the "--zosmf-profile" option.
 
-#### Options
+#### Zosmf Connection Options
 
 *   `--host`  | `-H` *(string)*
 
@@ -442,13 +548,26 @@ the name on commands that support the "--zosmf-profile" option.
 
 	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
 
-*   `--password`  | `-p` *(string)*
+*   `--password`  | `--pass` | `--pw` *(string)*
 
 	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
 *   `--reject-unauthorized`  | `--ru` *(boolean)*
 
 	* Reject self-signed certificates.
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+### Examples
+
+   *-  Update a zosmf profile named 'zos123' with a new username
+   and password:
+
+* `          $  zowe profiles update zosmf-profile zos123 --user newuser --password newp4ss`
 
 ### tso-profile<a name="command-tso-profile"></a>
 z/OS TSO/E User Profile
@@ -464,7 +583,7 @@ z/OS TSO/E User Profile
 	* Specifies the name of the new tso profile. You can load this profile by using
 the name on commands that support the "--tso-profile" option.
 
-#### Options
+#### TSO ADDRESS SPACE OPTIONS
 
 *   `--account`  | `-a` *(string)*
 
@@ -496,6 +615,13 @@ UTF-8 to EBCDIC.
 
 	* The number of rows on a screen.
 
+### Examples
+
+   *-  Update a tso profile called myprof with new JES accounting
+   information:
+
+* `          $  zowe profiles update tso-profile myprof -a NEWACCT`
+
 ## delete | rm<a name="module-delete"></a>
 Delete existing profiles.
 ### zosmf-profile<a name="command-zosmf-profile"></a>
@@ -521,6 +647,12 @@ profile by using the name on commands that support the "--zosmf-profile" option.
 	* Force deletion of profile, and dependent profiles if specified. No prompt will
 be displayed before deletion occurs.
 
+### Examples
+
+   *-  Delete a zosmf profile named profilename:
+
+* `          $  zowe profiles delete zosmf-profile profilename`
+
 ### tso-profile<a name="command-tso-profile"></a>
 Delete a tso profile. You must specify a profile name to be deleted. To find a
 list of available profiles for deletion, issue the profiles list command. By
@@ -544,6 +676,12 @@ profile by using the name on commands that support the "--tso-profile" option.
 	* Force deletion of profile, and dependent profiles if specified. No prompt will
 be displayed before deletion occurs.
 
+### Examples
+
+   *-  Delete a tso profile named profilename:
+
+* `          $  zowe profiles delete tso-profile profilename`
+
 ## list | ls<a name="module-list"></a>
 List profiles of the type 
 ### zosmf-profiles<a name="command-zosmf-profiles"></a>
@@ -560,6 +698,16 @@ z/OSMF Profile
 	* List zosmf profiles and their contents. All profile details will be printed as
 part of command output.
 
+### Examples
+
+   *-  List profiles of type zosmf:
+
+* `          $  zowe profiles list zosmf-profiles `
+
+   *-  List profiles of type zosmf and display their contents:
+
+* `          $  zowe profiles list zosmf-profiles --sc`
+
 ### tso-profiles<a name="command-tso-profiles"></a>
 z/OS TSO/E User Profile
 
@@ -573,6 +721,16 @@ z/OS TSO/E User Profile
 
 	* List tso profiles and their contents. All profile details will be printed as
 part of command output.
+
+### Examples
+
+   *-  List profiles of type tso:
+
+* `          $  zowe profiles list tso-profiles `
+
+   *-  List profiles of type tso and display their contents:
+
+* `          $  zowe profiles list tso-profiles --sc`
 
 ## set-default | set<a name="module-set-default"></a>
 Set which profiles are loaded by default.
@@ -595,6 +753,13 @@ profile for default usage within the zosmf group. When you issue commands within
 the zosmf group without a profile specified as part of the command, the default
 will be loaded instead.
 
+### Examples
+
+   *-  Set the default profile for type zosmf to the profile named
+   'profilename':
+
+* `          $  zowe profiles set-default zosmf-profile profilename`
+
 ### tso-profile<a name="command-tso-profile"></a>
 The tso set default-profiles command allows you to set the default profiles for
 this command group. When a tso command is issued and no profile override options
@@ -613,6 +778,13 @@ loaded for the command based on the commands profile requirements.
 profile for default usage within the tso group. When you issue commands within
 the tso group without a profile specified as part of the command, the default
 will be loaded instead.
+
+### Examples
+
+   *-  Set the default profile for type tso to the profile named
+   'profilename':
+
+* `          $  zowe profiles set-default tso-profile profilename`
 
 # provisioning | pv<a name="module-provisioning"></a>
 Perform z/OSMF provisioning tasks on Published Templates in the Service Catalog and Provisioned Instances in the Service Registry.
@@ -637,6 +809,38 @@ List details about a template published with z/OSMF Cloud Provisioning.
 
 	* Display detailed information about published z/OSMF service catalog template
 (summary information is printed by default).
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -663,6 +867,38 @@ Lists the z/OSMF service catalog published templates.
 
 	* Display information about published z/OSMF service catalog templates (summary
 information is printed by default).
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -705,6 +941,38 @@ full 	- all available information
 
 Allowed values: extended, summary, vars, actions, full
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -735,6 +1003,38 @@ List a set of variables and their values for a given name.
 *   `name`		 *(string)*
 
 	* Provisioned Instance Name
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -808,6 +1108,38 @@ default).
 *   `--types`  | `-t` *(boolean)*
 
 	* Display a list of all types for provisioned instances (e.g. DB2 or CICS).
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -883,6 +1215,38 @@ automatically select a system. Only one nickname is allowed.If the field is
 provided it is validated.
 e.g: "SYSNAME1,SYSNAME2".
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -919,6 +1283,38 @@ instance-info <name>" command to view the available instance actions.
 	* The action name. Use the "zowe provisioning list instance-info <name>"
 command to view available instance actions.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -946,6 +1342,38 @@ Deletes selected deprovisioned instance.
 *   `name`		 *(string)*
 
 	* Deprovisioned Instance name.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -1005,6 +1433,38 @@ arbitrary name, if your installation allows dynamic creation of consoles with
 arbitrary names.
 
 Allowed values: ^[a-zA-Z0-9]+$
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -1117,6 +1577,38 @@ attempt is made that results in no additional response messages.
 
 Default value: 1
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1215,6 +1707,38 @@ Default value: 1CYL
 	* The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
 is analogous to a drive name on a PC.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1310,6 +1834,38 @@ Default value: 1CYL
 	* The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
 is analogous to a drive name on a PC.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1403,6 +1959,38 @@ Default value: 10CYL
 
 	* The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
 is analogous to a drive name on a PC.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -1499,6 +2087,38 @@ Default value: 1CYL
 	* The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
 is analogous to a drive name on a PC.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1593,6 +2213,38 @@ Default value: 1CYL
 	* The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
 is analogous to a drive name on a PC.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1679,6 +2331,38 @@ by its volume serial (VOLSER). To specify more than one volume, enclose the
 option in double-quotes and separate each VOLSER with a space. You must specify
 the volumes option when your cluster is not SMS-managed.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1731,6 +2415,38 @@ Delete a data set permanently
 	* The volume serial (VOLSER) where the data set resides. The option is required
 only when the data set is not catalogued on the system.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1776,6 +2492,38 @@ period or date.
 	* Specify this option to confirm that you want to delete the VSAM cluster
 permanently.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -1803,6 +2551,53 @@ permanently.
 
 * `          $  zowe zos-files delete data-set-vsam "ibmuser.cntl.vsam" -f --erase`
 
+### uss-file<a name="command-uss-file"></a>
+Delete a Unix System Services (USS) file or directory
+
+#### Usage
+
+   zowe zos-files delete uss-file <fileName> [options]
+
+#### Positional Arguments
+
+*   `fileName`		 *(string)*
+
+	* The full path of the file that you want to delete
+
+#### Options
+
+*   `--recursive`  | `-r` *(boolean)*
+
+	* Specify this option to delete a directory that has children. Default 
+behavior is to reject a directory delete command if it has children. 
+
+#### Required Options
+
+*   `--for-sure`  | `-f` *(boolean)*
+
+	* Specify this option to confirm that you want to delete the file
+permanently.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Delete the USS file set named '/u/ibmuser/myFile.txt':
+
+* `          $  zowe zos-files delete uss-file "/u/ibmuser/myFile.txt" -f`
+
+   *-  Delete the empty USS directory '/u/ibmuser/testDir':
+
+* `          $  zowe zos-files delete uss-file "/u/ibmuser/testDir" -f`
+
+   *-  Recursively Delete a populated USS directory '/u/ibmuser/testDir':
+
+* `          $  zowe zos-files delete udd-files "/u/ibmuser/testDir" -rf`
+
 ## invoke | call<a name="module-invoke"></a>
 Invoke z/OS utilities such as Access Method Services (AMS)
 ### ams-statements<a name="command-ams-statements"></a>
@@ -1822,6 +2617,38 @@ expects. For more information about control statements, see the IBM publication
 
 	* The IDCAMS control statement that you want to submit. Zowe CLI attempts to split
 the inline control statement at 255 characters.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -1857,6 +2684,38 @@ expects. For more information about control statements, see the IBM publication
 	* The path to a file that contains IDCAMS control statements. Ensure that your
 file does not contain statements that are longer than 255 characters (maximum
 allowed length).
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -1896,7 +2755,9 @@ translation. No delimiters are added between records.
 
 *   `--extension`  | `-e` *(string)*
 
-	* Save the local files with a specified file extension. For example, .txt.
+	* Save the local files with a specified file extension. For example, .txt. Or ""
+for no extension. When no extension is specified, .txt is used as the default
+file extension.
 
 *   `--file`  | `-f` *(string)*
 
@@ -1908,6 +2769,38 @@ the option, the command generates a file name automatically for you.
 	* The volume serial (VOLSER) where the data set resides. You can use this option
 at any time. However, the VOLSER is required only when the data set is not
 cataloged on the system. A VOLSER is analogous to a drive name on a PC.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -1952,7 +2845,9 @@ data set ibmuser.new.cntl's members are downloaded to ibmuser/new/cntl).
 
 *   `--extension`  | `-e` *(string)*
 
-	* Save the local files with a specified file extension. For example, .txt.
+	* Save the local files with a specified file extension. For example, .txt. Or ""
+for no extension. When no extension is specified, .txt is used as the default
+file extension.
 
 *   `--max-concurrent-requests`  | `--mcr` *(number)*
 
@@ -1972,6 +2867,38 @@ Default value: 1
 	* The volume serial (VOLSER) where the data set resides. You can use this option
 at any time. However, the VOLSER is required only when the data set is not
 cataloged on the system. A VOLSER is analogous to a drive name on a PC.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2016,6 +2943,38 @@ translation. No delimiters are added between records.
 
 	* The path to the local file where you want to download the content. When you omit
 the option, the command generates a file name automatically for you.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2067,6 +3026,38 @@ modified.
 this parameter to return all items. If you specify an incorrect value, the
 parameter returns up to 1000 items.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2114,6 +3105,38 @@ modified.
 	* The option --max-length specifies the maximum number of items to return. Skip
 this parameter to return all items. If you specify an incorrect value, the
 parameter returns up to 1000 items.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2184,6 +3207,38 @@ Default value: nowait
 at any time. However, the VOLSER is required only when the data set is not
 cataloged on the system. A VOLSER is analogous to a drive name on a PC.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2242,6 +3297,38 @@ Default value: nowait
 at any time. However, the VOLSER is required only when the data set is not
 cataloged on the system. A VOLSER is analogous to a drive name on a PC.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2266,7 +3353,7 @@ cataloged on the system. A VOLSER is analogous to a drive name on a PC.
 * `          $  zowe zos-files upload stdin-to-data-set "ibmuser.ps" --mr wait < echo "hello world"`
 
 ### dir-to-pds<a name="command-dir-to-pds"></a>
-Upload files from a directory to a partioned data set (PDS)
+Upload files from a local directory to a partitioned data set (PDS)
 
 #### Usage
 
@@ -2303,6 +3390,38 @@ Default value: nowait
 	* The volume serial (VOLSER) where the data set resides. You can use this option
 at any time. However, the VOLSER is required only when the data set is not
 cataloged on the system. A VOLSER is analogous to a drive name on a PC.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2347,6 +3466,38 @@ Upload content to a USS file from local file
 The data transfer process returns each record as-is, without translation. No
 delimiters are added between records.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2359,6 +3510,111 @@ delimiters are added between records.
    file "file.txt":
 
 * `          $  zowe zos-files upload file-to-uss "file.txt" "/a/ibmuser/my_text.txt"`
+
+### dir-to-uss<a name="command-dir-to-uss"></a>
+Upload a local directory to a USS directory
+
+#### Usage
+
+   zowe zos-files upload dir-to-uss <inputDir> <USSDir> [options]
+
+#### Positional Arguments
+
+*   `inputDir`		 *(string)*
+
+	* The local directory path that you want to upload to a USS directory
+
+*   `USSDir`		 *(string)*
+
+	* The name of the USS directory to which you want to upload the local directory
+
+#### Options
+
+*   `--binary`  | `-b` *(boolean)*
+
+	* Data content in binary mode, which means that no data conversion is performed.
+The data transfer process returns each record as-is, without translation. No
+delimiters are added between records.
+
+*   `--recursive`  | `-r` *(boolean)*
+
+	* Upload all directories recursively.
+
+*   `--binary-files`  | `--bf` *(string)*
+
+	* Comma separated list of file names to be uploaded in binary mode. Use this
+option when you upload a directory in default ASCII mode, but you want to
+specify certain files to be uploaded in binary mode. All files matching
+specified file names will be uploaded in binary mode.
+
+*   `--ascii-files`  | `--af` *(string)*
+
+	* Comma separated list of file names to be uploaded in ASCII mode. Use this option
+when you upload a directory with --binary/-b flag, but you want to specify
+certain files to be uploaded in ASCII mode. All files matching specified file
+names will be uploaded in ASCII mode.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Upload all files from the "local_dir" directory to the
+   "/a/ibmuser/my_dir" USS directory:":
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir"`
+
+   *-  Upload all files from the "local_dir" directory and all its
+   sub-directories, to the "/a/ibmuser/my_dir" USS directory::
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --recursive`
+
+   *-  Upload all files from the "local_dir" directory to the
+   "/a/ibmuser/my_dir" USS directory in default ASCII mode, while specifying a list
+   of file names (without path) to be uploaded in binary mode::
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --binary-files "myFile1.exe,myFile2.exe,myFile3.exe"`
+
+   *-  Upload all files from the "local_dir" directory to the
+   "/a/ibmuser/my_dir" USS directory in binary mode, while specifying a list of
+   file names (without path) to be uploaded in ASCII mode::
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --binary --ascii-files "myFile1.txt,myFile2.txt,myFile3.txt"`
 
 # zos-jobs | jobs<a name="module-zos-jobs"></a>
 Manage z/OS jobs.
@@ -2404,6 +3660,38 @@ If you use this option you will wait the job to complete.
 *   `--extension`  | `-e` *(string)*
 
 	* A file extension to save the job output with. Default is '.txt'.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2488,6 +3776,38 @@ DD names.
 
 	* A file extension to save the job output with
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2567,6 +3887,38 @@ pre-validation of the JOBID is performed.
 	* If specified, job output will be saved directly to the specified directory
 rather than creating a subdirectory named after the ID of the job.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2597,6 +3949,38 @@ Jobs REST endpoints (expect for "no jobs found").
 
 	* The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is
 performed.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2673,6 +4057,38 @@ pre-validation of the JOBID is performed.
 spool-files-by-jobid" command to obtain spool ID numbers.No pre-validation of
 the ID is performed.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2703,6 +4119,38 @@ presents errors verbatim from the z/OSMF Jobs REST endpoints.
 
 	* The z/OS JOBID of the job with the spool files you want to list. No
 pre-validation of the JOBID is performed.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2775,6 +4223,38 @@ REST endpoint documentation, which is usually in the form "USER&ast;".
 	* Specify the job name prefix of the jobs you want to list. The command does not
 prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs
 REST endpoint documentation, which is usually in the form "JOB&ast;".
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2851,6 +4331,38 @@ Delete a single job by job ID
 batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows
 you to abbreviate the job ID if desired. You can use, for example "J123".
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2862,6 +4374,67 @@ you to abbreviate the job ID if desired. You can use, for example "J123".
    *-  Delete job with job ID JOB03456.:
 
 * `          $  zowe zos-jobs delete job JOB03456`
+
+## cancel | can<a name="module-cancel"></a>
+Cancel a single job by job ID. This cancels the job if it is running or on input.
+### job<a name="command-job"></a>
+Cancel a single job by job ID
+
+#### Usage
+
+   zowe zos-jobs cancel job <jobid> [options]
+
+#### Positional Arguments
+
+*   `jobid`		 *(string)*
+
+	* The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS
+batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows
+you to abbreviate the job ID if desired. You can use, for example "J123".
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Cancel job with job ID JOB03456:
+
+* `          $  zowe zos-jobs cancel job JOB03456`
 
 # zos-tso | tso<a name="module-zos-tso"></a>
 Issue TSO commands and interact with TSO address spaces
@@ -2888,6 +4461,38 @@ received a token (a.k.a 'servlet-key').
 	* The data to which we want to send to the TSO address space represented by the
 servlet key.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -2910,6 +4515,82 @@ Start a TSO address space, from which you will receive a token (a.k.a
 #### Usage
 
    zowe zos-tso start address-space [options]
+
+#### TSO ADDRESS SPACE OPTIONS
+
+*   `--account`  | `-a` *(string)*
+
+	* Your z/OS TSO/E accounting information.
+
+*   `--character-set`  | `--cs` *(string)*
+
+	* Character set for address space to convert messages and responses from UTF-8 to
+EBCDIC.
+
+Default value: 697
+
+*   `--code-page`  | `--cp` *(string)*
+
+	* Codepage value for TSO/E address space to convert messages and responses from
+UTF-8 to EBCDIC.
+
+Default value: 1047
+
+*   `--columns`  | `--cols` *(number)*
+
+	* The number of columns on a screen.
+
+Default value: 80
+
+*   `--logon-procedure`  | `-l` *(string)*
+
+	* The logon procedure to use when creating TSO procedures on your behalf.
+
+Default value: IZUFPROC
+
+*   `--region-size`  | `--rs` *(number)*
+
+	* Region size for the TSO/E address space.
+
+Default value: 4096
+
+*   `--rows`  *(number)*
+
+	* The number of rows on a screen.
+
+Default value: 24
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -2948,15 +4629,43 @@ Ping a TSO address space, from which you previously started and received a token
 
 	* The servlet key from a previously started TSO address space.
 
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
 
 	* The name of a (zosmf) profile to load for this command execution.
-
-*   `--tso-profile`  | `--tso-p` *(string)*
-
-	* The name of a (tso) profile to load for this command execution.
 
 ### Examples
 
@@ -2980,6 +4689,38 @@ Stop a TSO address space, from which you previously started and received a token
 *   `servletkey`		 *(string)*
 
 	* The servlet key from a previously started TSO address space.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -3018,6 +4759,82 @@ including) the TSO 'READY' prompt.
 
 	* Suppress console messages from start of address space.
 
+#### TSO ADDRESS SPACE OPTIONS
+
+*   `--account`  | `-a` *(string)*
+
+	* Your z/OS TSO/E accounting information.
+
+*   `--character-set`  | `--cs` *(string)*
+
+	* Character set for address space to convert messages and responses from UTF-8 to
+EBCDIC.
+
+Default value: 697
+
+*   `--code-page`  | `--cp` *(string)*
+
+	* Codepage value for TSO/E address space to convert messages and responses from
+UTF-8 to EBCDIC.
+
+Default value: 1047
+
+*   `--columns`  | `--cols` *(number)*
+
+	* The number of columns on a screen.
+
+Default value: 80
+
+*   `--logon-procedure`  | `-l` *(string)*
+
+	* The logon procedure to use when creating TSO procedures on your behalf.
+
+Default value: IZUFPROC
+
+*   `--region-size`  | `--rs` *(number)*
+
+	* Region size for the TSO/E address space.
+
+Default value: 4096
+
+*   `--rows`  *(number)*
+
+	* The number of rows on a screen.
+
+Default value: 24
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
 #### Profile Options
 
 *   `--zosmf-profile`  | `--zosmf-p` *(string)*
@@ -3035,6 +4852,758 @@ including) the TSO 'READY' prompt.
 
 * `          $  zowe zos-tso issue command "status"`
 
+# zos-workflows | wf<a name="module-zos-workflows"></a>
+Manage z/OSMF workflows, create workflow instances, and more
+## create | cre<a name="module-create"></a>
+Create workflow instance in z/OSMF
+### workflow-from-data-set<a name="command-workflow-from-data-set"></a>
+Create a workflow instance in z/OSMF using a Data set
+
+#### Usage
+
+   zowe zos-workflows create workflow-from-data-set <workflowName> [options]
+
+#### Positional Arguments
+
+*   `workflowName`		 *(string)*
+
+	* Name of the workflow instance to create
+
+#### Required Options
+
+*   `--data-set`  | `--ds` *(string)*
+
+	* Data set containing workflow definiton.
+
+*   `--system-name`  | `--sn` *(string)*
+
+	* System where the workflow will run.
+
+*   `--owner`  | `--ow` *(string)*
+
+	* User ID of the workflow owner. This user can perform the workflow steps or
+delegate the steps to other users.
+
+#### Options
+
+*   `--variables-input-file`  | `--vif` *(string)*
+
+	* Specifies an optional properties file that you can use to pre-specify values for
+one or more of the variables that are defined in the workflow definition file.
+
+*   `--variables`  | `--vs` *(string)*
+
+	* A list of one or more variables for the workflow. The variables that you specify
+here take precedence over the variables that are specified in the workflow
+variable input file.
+
+*   `--assign-to-owner`  | `--ato` *(boolean)*
+
+	* Indicates whether the workflow steps are assigned to the workflow owner.
+
+*   `--access-type`  | `--at` *(string)*
+
+	* Specifies the access type for the workflow. Public, Restricted or Private.
+
+Allowed values: Public, Restricted, Private
+
+*   `--delete-completed`  | `--dc` *(boolean)*
+
+	* Whether the successfully completed jobs to be deleted from the JES spool.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+#### response format options
+
+*   `--response-format-filter`  | `--rff` *(array)*
+
+	* Filter (include) fields in the response. Accepts an array of field/property
+names to include in the output response. You can filter JSON objects properties
+OR table columns/fields. In addition, you can use this option in conjunction
+with '--response-format-type' to reduce the output of a command to a single
+field/property or a list of a single field/property.
+
+*   `--response-format-type`  | `--rft` *(string)*
+
+	* The command response output format type. Must be one of the following:
+
+table: Formats output data as a table. Use this option when the output data is
+an array of homogeneous JSON objects. Each property of the object will become a
+column in the table.
+
+list: Formats output data as a list of strings. Can be used on any data type
+(JSON objects/arrays) are stringified and a new line is added after each entry
+in an array.
+
+object: Formats output data as a list of prettified objects (or single object).
+Can be used in place of "table" to change from tabular output to a list of
+prettified objects.
+
+string: Formats output data as a string. JSON objects/arrays are stringified.
+
+Allowed values: table, list, object, string
+
+*   `--response-format-header`  | `--rfh` *(boolean)*
+
+	* If "--response-format-type table" is specified, include the column headers in
+the output.
+
+### Examples
+
+   *-  Create a workflow with name "testworkflow" using data set
+   "TESTID.WKFLOW" containing workflow definition xml, on system "TESTM1":
+
+* `          $  zowe zos-workflows create workflow-from-data-set "testworkflow" --data-set "TESTID.WKFLOW" --system-name "TESTM1"`
+
+   *-  Create a workflow with name "testworkflow" using data set
+   "TESTID.WKFLOW" containing workflow definition xml, on system "TESTM1" with
+   owner "MYSYSID" and delete succesfully completed jobs:
+
+* `          $  zowe zos-workflows create workflow-from-data-set "testworkflow" --data-set "TESTID.WKFLOW" --system-name "TESTM1" --owner "MYSYSID" --delete-completed`
+
+   *-  Create a workflow with name "testworkflow" using data set
+   "TESTID.WKFLOW" containing workflow definition xml, on system "TESTM1" with
+   variable values in the member PROPERTIES of data set TESTID.DATA:
+
+* `          $  zowe zos-workflows create workflow-from-data-set "testworkflow" --data-set "TESTID.WKFLOW" --system-name "TESTM1" --variables-input-file TESTID.DATA(PROPERTIES)`
+
+   *-  Create a workflow with name "testworkflow" using data set
+   "TESTID.WKFLOW" containing workflow definition xml, on system "TESTM1" with
+   variable DUMMYVAR value DUMMYVAL and assign it to the owner:
+
+* `          $  zowe zos-workflows create workflow-from-data-set "testworkflow" --data-set "TESTID.WKFLOW" --system-name "TESTM1" --variables DUMMYVAR=DUMMYVAL --assign-to-owner`
+
+### workflow-from-uss-file<a name="command-workflow-from-uss-file"></a>
+Create a workflow instance in z/OSMF using a USS file
+
+#### Usage
+
+   zowe zos-workflows create workflow-from-uss-file <workflowName> [options]
+
+#### Positional Arguments
+
+*   `workflowName`		 *(string)*
+
+	* Name of the workflow instance to create
+
+#### Required Options
+
+*   `--uss-file`  | `--uf` *(string)*
+
+	* Uss file containing workflow definiton.
+
+*   `--system-name`  | `--sn` *(string)*
+
+	* System where the workflow will run.
+
+*   `--owner`  | `--ow` *(string)*
+
+	* User ID of the workflow owner. This user can perform the workflow steps or
+delegate the steps to other users.
+
+#### Options
+
+*   `--variables-input-file`  | `--vif` *(string)*
+
+	* Specifies an optional properties file that you can use to pre-specify values for
+one or more of the variables that are defined in the workflow definition file.
+
+*   `--variables`  | `--vs` *(string)*
+
+	* A list of one or more variables for the workflow. The variables that you specify
+here take precedence over the variables that are specified in the workflow
+variable input file.
+
+*   `--assign-to-owner`  | `--ato` *(boolean)*
+
+	* Indicates whether the workflow steps are assigned to the workflow owner.
+
+*   `--access-type`  | `--at` *(string)*
+
+	* Specifies the access type for the workflow. Public, Restricted or Private.
+
+Allowed values: Public, Restricted, Private
+
+*   `--delete-completed`  | `--dc` *(boolean)*
+
+	* Whether the successfully completed jobs to be deleted from the JES spool.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+#### response format options
+
+*   `--response-format-filter`  | `--rff` *(array)*
+
+	* Filter (include) fields in the response. Accepts an array of field/property
+names to include in the output response. You can filter JSON objects properties
+OR table columns/fields. In addition, you can use this option in conjunction
+with '--response-format-type' to reduce the output of a command to a single
+field/property or a list of a single field/property.
+
+*   `--response-format-type`  | `--rft` *(string)*
+
+	* The command response output format type. Must be one of the following:
+
+table: Formats output data as a table. Use this option when the output data is
+an array of homogeneous JSON objects. Each property of the object will become a
+column in the table.
+
+list: Formats output data as a list of strings. Can be used on any data type
+(JSON objects/arrays) are stringified and a new line is added after each entry
+in an array.
+
+object: Formats output data as a list of prettified objects (or single object).
+Can be used in place of "table" to change from tabular output to a list of
+prettified objects.
+
+string: Formats output data as a string. JSON objects/arrays are stringified.
+
+Allowed values: table, list, object, string
+
+*   `--response-format-header`  | `--rfh` *(boolean)*
+
+	* If "--response-format-type table" is specified, include the column headers in
+the output.
+
+### Examples
+
+   *-  Create a workflow with name "testworkflow" using uss file
+   "/path/workflow.xml" containing workflow definition, on system "TESTM1":
+
+* `          $  zowe zos-workflows create workflow-from-uss-file "testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1"`
+
+   *-  Create a workflow with name "testworkflow" using uss file
+   "/path/workflow.xml" containing workflow definition, on system "TESTM1" with
+   owner "MYSYSID" and delete succesfully completed jobs:
+
+* `          $  zowe zos-workflows create workflow-from-uss-file "testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1" --owner "MYSYSID" --delete-completed`
+
+   *-  Create a workflow with name "testworkflow" using uss file
+   "/path/workflow.xml" containing workflow definition, on system "TESTM1" with
+   variable values in the member PROPERTIES of data set TESTID.DATA:
+
+* `          $  zowe zos-workflows create workflow-from-uss-file "testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1" --variables-input-file TESTID.DATA(PROPERTIES)`
+
+   *-  Create a workflow with name "testworkflow" using uss file
+   "/path/workflow.xml" containing workflow definition, on system "TESTM1" with
+   variable DUMMYVAR value DUMMYVAL and assign it to the owner:
+
+* `          $  zowe zos-workflows create workflow-from-uss-file "testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1" --variables DUMMYVAR=DUMMYVAL --assign-to-owner`
+
+## start | sta<a name="module-start"></a>
+Start workflow instance in z/OSMF
+### workflow-full<a name="command-workflow-full"></a>
+Will run workflow from the beginning to the end or to the first manual step.
+
+#### Usage
+
+   zowe zos-workflows start workflow-full [options]
+
+#### Required Options
+
+*   `--workflow-key`  | `--wk` *(string)*
+
+	* Workflow key of workflow instance to be started
+
+#### Options
+
+*   `--resolve-conflict-by`  | `--rcb` *(string)*
+
+	* How variable conflicts should be handled.
+Options:
+outputFileValue: Allow the output file values to override the existing values.
+existingValue: Use the existing variables values instead of the output file
+values.
+leaveConflict: Automation is stopped. The user must resolve the conflict
+manually.
+
+Default value: outputFileValue
+Allowed values: outputFileValue, existingValue, leaveConflict
+
+*   `--wait`  | `-w` *(boolean)*
+
+	* Identifies whether to wait for workflow instance to finish.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  To start a workflow instance in z/OSMF with workflow key
+   "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0":
+
+* `          $  zowe zos-workflows start workflow-full --with-workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"`
+
+   *-  To start a workflow instance in z/OSMF with workflow key
+   "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" and wait forit to be finished:
+
+* `          $  zowe zos-workflows start workflow-full --with-workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --wait`
+
+   *-  To start a workflow instance in z/OSMF with workflow key
+   "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"and if there is a conflict in variable's
+   value use the value that is in output file:
+
+* `          $  zowe zos-workflows start workflow-full --with-workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --resolve-conflict-by "outputFileValue"`
+
+### workflow-step<a name="command-workflow-step"></a>
+Will run given step of workflow instance plus following steps if specified by
+--perform-following-steps option.
+
+#### Usage
+
+   zowe zos-workflows start workflow-step <stepName> [options]
+
+#### Positional Arguments
+
+*   `stepName`		 *(string)*
+
+	* Specifies the step name that will be run.
+
+#### Required Options
+
+*   `--workflow-key`  | `--wk` *(string)*
+
+	* Workflow key of workflow instance to be started
+
+#### Options
+
+*   `--resolve-conflict-by`  | `--rcb` *(string)*
+
+	* How variable conflicts should be handled.
+Options:
+outputFileValue: Allow the output file values to override the existing values.
+existingValue: Use the existing variables values instead of the output file
+values.
+leaveConflict: Automation is stopped. The user must resolve the conflict
+manually.
+
+Default value: outputFileValue
+Allowed values: outputFileValue, existingValue, leaveConflict
+
+*   `--perform-following-steps`  | `--pfs` *(boolean)*
+
+	* Identifies whether to perform also following steps in the workflow instance.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  To start step "Step1" only in a workflow instance in z/OSMF
+   with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0":
+
+* `          $  zowe zos-workflows start workflow-step "Step1" --with-workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"`
+
+   *-  To start a workflow instance in z/OSMF from step "Step1"
+   with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0":
+
+* `          $  zowe zos-workflows start workflow-step "Step1" --with-workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --perform-following-steps`
+
+   *-  To start step "Step1" only in a workflow instance in z/OSMF
+   with workflow key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"and if there is a
+   conflict in variable's value use the value that is in output file:
+
+* `          $  zowe zos-workflows start workflow-step "Step1" --with-workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0" --resolve-conflict-by "outputFileValue"`
+
+## list | ls<a name="module-list"></a>
+List workflow instance(s) in z/OSMF
+### active-workflows<a name="command-active-workflows"></a>
+List active workflow instance(s) in z/OSMF.
+Multiple filters can be used together.
+Omitting all options will list all workflows on the sysplex
+
+#### Usage
+
+   zowe zos-workflows list active-workflows [options]
+
+#### Options
+
+*   `--workflow-name`  | `--wn` *(string)*
+
+	* Filter by workflow name. For wildcard use .&ast;
+
+*   `--category`  | `--cat` *(string)*
+
+	* Filter by the category of the workflow(s), which is either general or
+configuration.
+
+*   `--system`  | `--sys` *(string)*
+
+	* Filter by the nickname of the system on which the workflow(s) is/are active.
+
+*   `--owner`  | `--ow` *(string)*
+
+	* Filter by owner of the workflow(s) (a valid z/OS user ID).
+
+*   `--vendor`  | `--vd` *(string)*
+
+	* Filter by the name of the vendor that provided the workflow(s) definition file.
+
+*   `--status-name`  | `--sn` *(string)*
+
+	* Filter by the status of the workflow(s).
+
+Allowed values: in-progress, complete, automation-in-progress, canceled
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+#### response format options
+
+*   `--response-format-filter`  | `--rff` *(array)*
+
+	* Filter (include) fields in the response. Accepts an array of field/property
+names to include in the output response. You can filter JSON objects properties
+OR table columns/fields. In addition, you can use this option in conjunction
+with '--response-format-type' to reduce the output of a command to a single
+field/property or a list of a single field/property.
+
+*   `--response-format-type`  | `--rft` *(string)*
+
+	* The command response output format type. Must be one of the following:
+
+table: Formats output data as a table. Use this option when the output data is
+an array of homogeneous JSON objects. Each property of the object will become a
+column in the table.
+
+list: Formats output data as a list of strings. Can be used on any data type
+(JSON objects/arrays) are stringified and a new line is added after each entry
+in an array.
+
+object: Formats output data as a list of prettified objects (or single object).
+Can be used in place of "table" to change from tabular output to a list of
+prettified objects.
+
+string: Formats output data as a string. JSON objects/arrays are stringified.
+
+Allowed values: table, list, object, string
+
+*   `--response-format-header`  | `--rfh` *(boolean)*
+
+	* If "--response-format-type table" is specified, include the column headers in
+the output.
+
+### Examples
+
+   *-  List the workflow with name "testworkflow":
+
+* `          $  zowe zos-workflows list active-workflows --wn "testworkflow"`
+
+   *-  List multiple active workflows on the entire syspex with
+   names containing"workflow":
+
+* `          $  zowe zos-workflows list active-workflows --wn ".*workflow.*"`
+
+   *-  List multiple active workflows on system "IBMSYS" with
+   names beginnig with "testW" that are in status "complete":
+
+* `          $  zowe zos-workflows list active-workflows --wn "test.*" --sys "IBMSYS" --sn "complete"`
+
+### active-workflow-details<a name="command-active-workflow-details"></a>
+Get the details of an active z/OSMF workflow
+
+#### Usage
+
+   zowe zos-workflows list active-workflow-details [options]
+
+#### Required Options
+
+*   `--workflow-key`  | `--wk` *(string)*
+
+	* List active workflow details by specified workflow key.
+
+#### Options
+
+*   `--list-steps`  | `--ls` *(boolean)*
+
+	* Optional parameter for listing steps and their properties.
+
+*   `--list-variables`  | `--lv` *(boolean)*
+
+	* Optional parameter for listing variables and their properties.
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  To list the details of an active workflow with key
+   "7c62c790-0340-86b2-61ce618d8f8c" including its steps and variables:
+
+* `          $  zowe zos-workflows list active-workflow-details --by-workflow-key "7c62c790-0340-86b2-61ce618d8f8c" --list-steps --list-variables`
+
+## delete | del<a name="module-delete"></a>
+Delete workflow instance in z/OSMF
+### active-workflow<a name="command-active-workflow"></a>
+Delete an active workflow instance in z/OSMF
+
+#### Usage
+
+   zowe zos-workflows delete active-workflow [options]
+
+#### Required Options
+
+*   `--workflow-key`  | `--wk` *(string)*
+
+	* Delete active workflow by specified workflow key
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  To delete a workflow instance in z/OSMF with workflow key
+   "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0":
+
+* `          $  zowe zos-workflows delete active-workflow --workflow-key "d043b5f1-adab-48e7-b7c3-d41cd95fa4b0"`
+
 # zosmf<a name="module-zosmf"></a>
 Retrieve and show the properties of a z/OSMF web server
 ## check<a name="module-check"></a>
@@ -3048,6 +5617,38 @@ plug-ins.
 #### Usage
 
    zowe zosmf check status [options]
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
 
 #### Profile Options
 
@@ -3066,4 +5667,9 @@ plug-ins.
    in a supplied z/OSMF profile:
 
 * `          $  zowe zosmf check status --zosmf-profile SomeZosmfProfileName`
+
+   *-  Report the status of the z/OSMF server that you specified
+   manually via command line:
+
+* `          $  zowe zosmf check status --host myhost --port 443 --user myuser --password mypass`
 
