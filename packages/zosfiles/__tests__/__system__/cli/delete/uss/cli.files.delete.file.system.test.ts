@@ -10,7 +10,7 @@
 */
 
 import { Imperative, Session } from "@brightside/imperative";
-import { Create } from "../../../../../";
+import { Create } from "../../../../..";
 import { inspect } from "util";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -42,7 +42,6 @@ describe("Delete File", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         user = defaultSystem.zosmf.user.trim();
         ussname = `${defaultSystem.zosmf.user.trim()}.aTestUssFileDelete.txt`;
-        ussname = ussname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
     });
 

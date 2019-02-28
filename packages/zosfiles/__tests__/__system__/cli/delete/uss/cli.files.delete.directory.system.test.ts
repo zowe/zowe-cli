@@ -43,7 +43,6 @@ describe("Delete Directory", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         user = defaultSystem.zosmf.user.trim();
         ussname = `${defaultSystem.zosmf.user.trim()}.aTestUssDirectory`;
-        ussname = ussname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
     });
 
