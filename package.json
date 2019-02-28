@@ -1,6 +1,6 @@
 {
   "name": "@brightside/core",
-  "version": "3.1.0-alpha.201902281242",
+  "version": "3.2.0-alpha.201902281453",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -113,7 +113,7 @@
     "globals": {"ts-jest": {"disableSourceMapSupport": true}},
     "watchPathIgnorePatterns": [".*jest-stare.*\\.js"],
     "modulePathIgnorePatterns": ["__tests__/__snapshots__/"],
-    "setupTestFrameworkScriptFile": "./__tests__/beforeTests.js",
+    "setupFilesAfterEnv": ["./__tests__/beforeTests.js"],
     "testResultsProcessor": "jest-stare",
     "transform": {".(ts)": "ts-jest"},
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",

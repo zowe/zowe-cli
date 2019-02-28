@@ -52,6 +52,7 @@ export class WorkflowConstants {
 
     /**
      * URI base for canceling workflow API.
+     *
      * @static
      * @type {string}
      * @memberof WorkflowConstants
