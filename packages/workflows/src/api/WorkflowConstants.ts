@@ -60,7 +60,6 @@ export class WorkflowConstants {
      */
     public static readonly ARCHIVE_WORKFLOW: string = "operations/archive";
 
-
     /**
      * URI base for list workflows from registry API.
      * @static
