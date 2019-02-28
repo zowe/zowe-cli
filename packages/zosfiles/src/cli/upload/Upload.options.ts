@@ -52,5 +52,40 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         description: strings.RECALL,
         type: "string",
         defaultValue: "nowait"
+    },
+
+    /**
+     * The recursive option
+     * @type {ICommandOptionDefinition}
+     */
+    recursive: {
+        name: "recursive",
+        aliases: ["r"],
+        description: strings.RECURSIVE,
+        type: "boolean"
+    },
+
+    /**
+     * The binary-files option
+     * @type {ICommandOptionDefinition}
+     */
+    binaryFiles: {
+        name: "binary-files",
+        aliases: ["bf"],
+        description: strings.BINARY_FILES,
+        type: "string",
+        conflictsWith: ["ascii-files"]
+    },
+
+    /**
+     * The ascii-files option
+     * @type {ICommandOptionDefinition}
+     */
+    asciiFiles: {
+        name: "ascii-files",
+        aliases: ["af"],
+        description: strings.ASCII_FILES,
+        type: "string",
+        conflictsWith: ["binary-files"]
     }
 };
