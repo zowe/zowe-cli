@@ -62,6 +62,7 @@ For Zowe CLI support, visit https://zowe.org.
 	* [delete | del](#module-delete)
 		* [data-set](#command-data-set)
 		* [data-set-vsam](#command-data-set-vsam)
+		* [uss-file](#command-uss-file)
 	* [invoke | call](#module-invoke)
 		* [ams-statements](#command-ams-statements)
 		* [ams-file](#command-ams-file)
@@ -1802,6 +1803,53 @@ permanently.
    by overwriting the components with zeros:
 
 * `          $  zowe zos-files delete data-set-vsam "ibmuser.cntl.vsam" -f --erase`
+
+### uss-file<a name="command-uss-file"></a>
+Delete a Unix System Services (USS) file or directory
+
+#### Usage
+
+   zowe zos-files delete uss-file <fileName> [options]
+
+#### Positional Arguments
+
+*   `fileName`		 *(string)*
+
+	* The full path of the file that you want to delete
+
+#### Options
+
+*   `--recursive`  | `-r` *(boolean)*
+
+	* Specify this option to delete a directory that has children. Default 
+behavior is to reject a directory delete command if it has children. 
+
+#### Required Options
+
+*   `--for-sure`  | `-f` *(boolean)*
+
+	* Specify this option to confirm that you want to delete the file
+permanently.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Delete the USS file set named '/u/ibmuser/myFile.txt':
+
+* `          $  zowe zos-files delete uss-file "/u/ibmuser/myFile.txt" -f`
+
+   *-  Delete the empty USS directory '/u/ibmuser/testDir':
+
+* `          $  zowe zos-files delete uss-file "/u/ibmuser/testDir" -f`
+
+   *-  Recursively Delete a populated USS directory '/u/ibmuser/testDir':
+
+* `          $  zowe zos-files delete udd-files "/u/ibmuser/testDir" -rf`
 
 ## invoke | call<a name="module-invoke"></a>
 Invoke z/OS utilities such as Access Method Services (AMS)

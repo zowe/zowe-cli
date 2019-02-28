@@ -144,6 +144,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the USS file or directory was deleted successfully
+     * @type {string}
+     */
+    ussFileDeletedSuccessfully: {
+        message: "USS File or directory deleted successfully."
+    },
+
+    /**
      * Message indicating that the data sets matching pattern was downloaded successfully
      * @type {string}
      */
