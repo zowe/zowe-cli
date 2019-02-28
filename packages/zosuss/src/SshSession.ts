@@ -64,7 +64,6 @@ export class SshSession {
         aliases: ["pass", "pw"],
         description: "Mainframe password, which can be the same as your TSO password.",
         type: "string",
-        required: true,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
 
