@@ -82,7 +82,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
 
             default:
             throw new ImperativeError({
-                msg: `Internal create error: Unable to determine the the criteria by which to list workflow details. ` +
+                msg: `Internal create error: Unable to determine the the criteria by which to run workflow archive action. ` +
                     `Please contact support.`,
                 additionalDetails: JSON.stringify(params)
                 });
