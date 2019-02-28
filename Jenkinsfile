@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines@v1.0.2') import org.zowe.pipelines.nodejs.NodeJSPipeline
+@Library('shared-pipelines@v1.2.0') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
@@ -25,7 +25,7 @@ node('ca-jenkins-agent') {
 
     // Build admins, users that can approve the build and receieve emails for 
     // all protected branch builds.
-    pipeline.admins.add("wrich04", "zfernand0", "mikebauerca", "markackert", "dkelosky")
+    pipeline.admins.add("zfernand0", "mikebauerca", "markackert", "dkelosky")
 
     // Protected branch property definitions
     pipeline.protectedBranches.addMap([
@@ -45,11 +45,17 @@ node('ca-jenkins-agent') {
     // npm publish configuration
     pipeline.publishConfig = [
         email: pipeline.gitConfig.email,
-        credentialsId: 'GizaArtifactory'
+        credentialsId: 'GizaArtifactory',
+        scope: '@brightside'
     ]
 
     pipeline.registryConfig = [
-        pipeline.publishConfig
+        [
+            email: pipeline.publishConfig.email,
+            credentialsId: pipeline.publishConfig.credentialsId,
+            url: 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
+            scope: pipeline.publishConfig.scope
+        ]
     ]
 
     // Initialize the pipeline library, should create 5 steps
