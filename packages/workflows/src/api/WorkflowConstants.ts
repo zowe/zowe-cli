@@ -43,6 +43,14 @@ export class WorkflowConstants {
     public static readonly START_WORKFLOW: string = "operations/start";
 
     /**
+     * URI base for archiving workflow API
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly ARCHIVE_WORKFLOW: string = "operations/archive";
+
+    /**
      * URI base for canceling workflow API.
      *
      * @static
