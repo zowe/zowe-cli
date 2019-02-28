@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files upload dtu command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "b",
+    ],
+    "description": "Data content in binary mode, which means that no data conversion is performed. The data transfer process returns each record as-is, without translation. No delimiters are added between records.",
+    "name": "binary",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "r",
+    ],
+    "description": "Upload all directories recursively.",
+    "name": "recursive",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "bf",
+    ],
+    "conflictsWith": Array [
+      "ascii-files",
+    ],
+    "description": "Comma separated list of file names to be uploaded in binary mode. Use this option when you upload a directory in default ASCII mode, but you want to specify certain files to be uploaded in binary mode. All files matching specified file names will be uploaded in binary mode.",
+    "name": "binary-files",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "af",
+    ],
+    "conflictsWith": Array [
+      "binary-files",
+    ],
+    "description": "Comma separated list of file names to be uploaded in ASCII mode. Use this option when you upload a directory with --binary/-b flag, but you want to specify certain files to be uploaded in ASCII mode. All files matching specified file names will be uploaded in ASCII mode.",
+    "name": "ascii-files",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files upload dtu command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory:\\"",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\"",
+  },
+  Object {
+    "description": "Upload all files from the \\"local_dir\\" directory and all its sub-directories, to the \\"/a/ibmuser/my_dir\\" USS directory:",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --recursive",
+  },
+  Object {
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary-files \\"myFile1.exe,myFile2.exe,myFile3.exe\\"",
+  },
+  Object {
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary --ascii-files \\"myFile1.txt,myFile2.txt,myFile3.txt\\"",
+  },
+]
+`;

@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List workflows handler process method should list workflows 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+    "workflowDescription",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "owner": "FAKEUID",
+      "workflowDescription": "Test wf",
+      "workflowKey": "Some-key-here",
+      "workflowName": "fakeWorkflow",
+    },
+  ],
+}
+`;
