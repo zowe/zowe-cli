@@ -60,15 +60,6 @@ export class WorkflowConstants {
     public static readonly CANCEL_WORKFLOW: string = "operations/cancel";
 
     /**
-     * URI base for archiving workflow API
-     *
-     * @static
-     * @type {string}
-     * @memberof WorkflowConstants
-     */
-    public static readonly ARCHIVE_WORKFLOW: string = "operations/archive";
-
-    /**
      * URI base for list workflows from registry API.
      * @static
      * @type {string}
