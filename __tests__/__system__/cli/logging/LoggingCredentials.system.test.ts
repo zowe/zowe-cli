@@ -58,4 +58,34 @@ describe("Zowe CLI Logging", () => {
         expect(zoweLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
         expect(zoweLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
     });
+
+    /**************************************************************************
+     * !!! NOTE: This test won't pass if your username and password match     *
+     **************************************************************************/
+    it("should not log passwords regardless if 'password', 'pass' or 'pw' used in command if the default log level of DEBUG is set", () => {
+
+        // Create the basic auth header
+        const zosmfUsername = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf.user;
+        const zosmfPassword = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf.pass;
+        const encodedAuth = Buffer.from(zosmfUsername + ":" + zosmfPassword).toString("base64");
+
+        // Issue a few commands (after the setup created a profile)
+        const response = runCliScript(join(__dirname, "/__scripts__/sample_commands_connect_options.sh"),
+            TEST_ENVIRONMENT, ["DEBUG", zosmfPassword]);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+
+        // Grab both log files
+        const imperativeLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "/imperative/logs/imperative.log"));
+        const zoweLogContents = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, "/" + Constants.LOG_LOCATION));
+        const tempTestLog = fs.readFileSync(join(TEST_ENVIRONMENT.workingDir, TempTestProfiles.LOG_FILE_NAME));
+
+        // ensure that the password and encoded auth does not appear in the imperative log
+        expect(imperativeLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
+        expect(imperativeLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
+
+        // ensure that the password and encoded auth does not appear in the brightside log
+        expect(zoweLogContents.indexOf(zosmfPassword)).not.toBeGreaterThanOrEqual(0);
+        expect(zoweLogContents.indexOf(encodedAuth)).not.toBeGreaterThanOrEqual(0);
+    });
 });
