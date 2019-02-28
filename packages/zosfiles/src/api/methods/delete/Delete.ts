@@ -118,4 +118,44 @@ export class Delete {
             throw error;
         }
     }
+
+    /**
+     * Deletes a USS file or directory
+     *
+     * @param {AbstractSession}           session      z/OSMF connection info
+     * @param {string}                    fileName     The name of the file or directory to delete
+     * @param {boolean}                   recursive    The indicator to delete directory recursively
+     * @returns {Promise<IDeleteVsamResponse>} A response indicating the status of the deletion
+     *
+     * @throws {ImperativeError} Data set name must be specified as a non-empty string
+     *
+     * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_DeleteUnixFile.htm
+     */
+    public static async ussFile(session: AbstractSession,
+                                fileName: string,
+                                recursive?: boolean): Promise<IZosFilesResponse> {
+        // required
+        ImperativeExpect.toNotBeNullOrUndefined(fileName, ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(fileName, "", ZosFilesMessages.missingUSSFileName.message);
+
+        // Format the endpoint to send the request to
+        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES);
+        endpoint = posix.join(endpoint, fileName);
+        Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
+
+        try {
+            if (recursive && recursive === true) {
+                await ZosmfRestClient.deleteExpectString(session, endpoint, [{"X-IBM-Option": "recursive"}]);
+            } else {
+                await ZosmfRestClient.deleteExpectString(session, endpoint);
+            }
+            return {
+                success: true,
+                commandResponse: ZosFilesMessages.ussFileDeletedSuccessfully.message
+            };
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
 }
