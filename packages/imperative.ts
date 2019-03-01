@@ -179,7 +179,7 @@ const config: IImperativeConfig = {
                         type: "string",
                         optionDefinition: SshSession.SSH_OPTION_PRIVATEKEY,
                     },
-                    passphrase: {
+                    keyPassword: {
                         type: "string",
                         secure: true,
                         optionDefinition: SshSession.SSH_OPTION_KEYPASSWORD,
