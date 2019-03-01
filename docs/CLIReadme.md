@@ -3554,6 +3554,19 @@ when you upload a directory with --binary/-b flag, but you want to specify
 certain files to be uploaded in ASCII mode. All files matching specified file
 names will be uploaded in ASCII mode.
 
+*   `--max-concurrent-requests`  | `--mcr` *(number)*
+
+	* Specifies the maximum number of concurrent z/OSMF REST API requests to upload
+files. Increasing the value results in faster uploads. However, increasing the
+value increases resource consumption on z/OS and can be prone to errors caused
+by making too many concurrent requests. If the upload process encounters an
+error, the following message displays:
+The maximum number of TSO address spaces were created. When you specify 0, Zowe
+CLI attempts to upload all members at once without a maximum number of
+concurrent requests.
+
+Default value: 1
+
 #### Zosmf Connection Options
 
 *   `--host`  | `-H` *(string)*
@@ -3595,7 +3608,7 @@ specify this option if you are not using an API mediation layer.
 ### Examples
 
    *-  Upload all files from the "local_dir" directory to the
-   "/a/ibmuser/my_dir" USS directory:":
+   "/a/ibmuser/my_dir" USS directory:":
 
 * `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir"`
 
