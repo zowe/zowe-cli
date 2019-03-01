@@ -169,7 +169,8 @@ export class TempTestProfiles {
         const sshProperties = testEnvironment.systemTestProperties.systems.common.ssh;
         const createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create ssh ${profileName} --user ${sshProperties.user} --pass ` +
-            `${sshProperties.password} --host ${sshProperties.host} --port ${sshProperties.port}`;
+            `${sshProperties.password} --host ${sshProperties.host} --port ${sshProperties.port} --privateKey ${sshProperties.privateKey} ` +
+             `--keyPassword ${sshProperties.keyPassword}`;
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
