@@ -11,12 +11,12 @@
 
 import { Shell } from "../../src/api/Shell";
 import { Client } from "ssh2";
-import { Session } from "../../index";
+import { SshSession } from "../../index";
 import { EventEmitter } from "events";
 jest.mock("ssh2");
 
 // Mock functions for SSH
-const fakeSshSession = new Session({
+const fakeSshSession = new SshSession({
     hostname: "localhost",
     port: 22,
     user: "",

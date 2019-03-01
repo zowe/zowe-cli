@@ -10,17 +10,19 @@
 */
 
 /**
- * SSH session interface for protocol information
+ * Session interface for maintaining cookie and protocol information
  * @export
- * @interface ISession
+ * @interface ISshSession
  */
-export interface ISession {
+export interface ISshSession {
+
     /**
      * Host to connect ssh to
      * @type {string}
      * @memberof ISession
      */
     hostname?: string;
+
     /**
      * Port to obtain data from
      * 22 is the default for ssh
@@ -28,28 +30,33 @@ export interface ISession {
      * @memberof ISession
      */
     port?: number;
+
     /**
      * User name for logging in
      * @type {string}
      * @memberof ISession
      */
     user?: string;
+
     /**
      * Password
      * @type {string}
      * @memberof ISession
      */
     password?: string;
+
     /**
-     * Path for the private key that matches with the public key that is stored in the server for authentication.
+     * Path to a private key that matches with a public key stored in the server for authentication
      * @type {string}
      * @memberof ISession
      */
     privateKey?: string;
+
     /**
-     * Passphrase to decrypt the private key if it is encrypted
+     * password to unlock the private key.
      * @type {string}
      * @memberof ISession
      */
-    passphrase?: string;
+    keyPassword?: string;
+
 }

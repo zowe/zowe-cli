@@ -11,10 +11,10 @@
 
 import { Logger } from "@brightside/imperative";
 import { Client, ClientChannel } from "ssh2";
-import { Session } from "./index";
+import { SshSession } from "../SshSession";
 
 export class Shell {
-    public static executeSsh(session: Session, command: string, callback: any): void {
+    public static executeSsh(session: SshSession, command: string, callback: any): void {
         const conn = new Client();
 
         conn.on("ready", () => {
@@ -31,16 +31,16 @@ export class Shell {
             });
         });
         conn.connect({
-            host: session.ISession.hostname,
-            port: session.ISession.port,
-            username: session.ISession.user,
-            password: session.ISession.password,
-            privateKey: session.ISession.privateKey ? require("fs").readFileSync(session.ISession.privateKey) : "",
-            passphrase: session.ISession.keyPassword
+            host: session.ISshSession.hostname,
+            port: session.ISshSession.port,
+            username: session.ISshSession.user,
+            password: session.ISshSession.password,
+            privateKey: session.ISshSession.privateKey ? require("fs").readFileSync(session.ISshSession.privateKey) : "",
+            passphrase: session.ISshSession.keyPassword
         });
     }
 
-    public static executeSshCwd(session: Session, command: string, cwd: string, callback: any): void {
+    public static executeSshCwd(session: SshSession, command: string, cwd: string, callback: any): void {
         const cwdCommand = `cd ${cwd} && ${command}`;
         this.executeSsh(session, cwdCommand, callback);
     }
