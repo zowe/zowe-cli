@@ -11,7 +11,7 @@ exports[`zos-tso stop address-space should display the help 1`] = `
  -----------
 
    Start a TSO address space, from which you will receive a token (a.k.a
-   'servelet-key') for further address space interaction (e.g. termination).
+   'servlet-key') for further address space interaction (e.g. termination).
 
  USAGE
  -----
@@ -62,6 +62,13 @@ exports[`zos-tso stop address-space should display the help 1`] = `
       The number of rows on a screen.
 
       Default value: 24
+
+ OPTIONS
+ -------
+
+   --servlet-key-only  | --sko (boolean)
+
+      Specify this option to print only the servlet key
 
  ZOSMF CONNECTION OPTIONS
  ------------------------
@@ -130,6 +137,10 @@ exports[`zos-tso stop address-space should display the help 1`] = `
    format:
 
       $ zowe zos-tso start address-space --rfj
+
+   - Start TSO/E address space, and print only the servlet key:
+
+      $ zowe zos-tso start address-space --sko
 
 {
   \\"success\\": true,

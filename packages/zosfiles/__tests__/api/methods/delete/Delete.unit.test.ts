@@ -275,4 +275,64 @@ describe("Delete", () => {
             expect(caughtError).toBe(error);
         });
     });
+    describe("uss", () => {
+        const dataset = "IJKL";
+
+        it("should throw an error if file name is missing", async () => {
+            let caughtError;
+
+            // TEST AGAINST EMPTY STRING
+            try {
+                await Delete.ussFile(dummySession, "");
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+
+            caughtError = undefined;
+
+            // TEST AGAINST NULL
+            try {
+                await Delete.ussFile(dummySession, null as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+
+            caughtError = undefined;
+
+            // TEST AGAINST UNDEFINED
+            try {
+                await Delete.ussFile(dummySession, undefined as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+
+        it("should handle an error from the ZosmfRestClient", async () => {
+            const error = new Error("This is a test");
+
+            deleteExpectStringSpy.mockImplementation(async () => {
+                throw error;
+            });
+
+            let caughtError;
+
+            try {
+                await Delete.ussFile(dummySession, dataset);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBe(error);
+        });
+    });
 });
+
