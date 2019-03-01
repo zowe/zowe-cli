@@ -10,13 +10,32 @@
 */
 
 import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger } from "@brightside/imperative";
-import { Session } from "./api/index";
+import { ISshSession } from "./api/doc/ISshSession";
+import { isNullOrUndefined } from "util";
+
 
 /**
  * Utility Methods for Brightside
  * @export
  */
 export class SshSession {
+
+    /**
+     * Default ssh port 22
+     * @static
+     * @memberof AbstractSession
+     */
+    public static readonly DEFAULT_SSH_PORT = 22;
+
+    /**
+     * Obtain session info and defaults
+     * @readonly
+     * @type {ISession}
+     * @memberof AbstractSession
+     */
+    get ISshSession(): ISshSession {
+        return this.mISshSession;
+    }
 
     public static SSH_CONNECTION_OPTION_GROUP = "Zos Ssh Connection Options";
 
@@ -108,9 +127,9 @@ export class SshSession {
      * @param {IProfile} profile - The SSH profile contents
      * @returns {Session} - A session for usage in the SSH Client
      */
-    public static createBasicSshSession(profile: IProfile): Session {
+    public static createBasicSshSession(profile: IProfile): SshSession {
         this.log.debug("Creating a z/OS SSH session from the profile named %s", profile.name);
-        return new Session({
+        return new SshSession({
             hostname: profile.host,
             port: profile.port,
             user: profile.user,
@@ -126,9 +145,9 @@ export class SshSession {
      * @param {IProfile} args - The arguments specified by the user
      * @returns {Session} - A session for usage in the SSH Client
      */
-    public static createBasicSshSessionFromArguments(args: ICommandArguments): Session {
+    public static createBasicSshSessionFromArguments(args: ICommandArguments): SshSession {
         this.log.debug("Creating a z/OS SSH session from arguments");
-        return new Session({
+        return new SshSession({
             hostname: args.host,
             port: args.port,
             user: args.user,
@@ -138,8 +157,32 @@ export class SshSession {
         });
     }
 
+    /**
+     * Creates an instance of AbstractSession.
+     * @param {ISession} session: Session parameter object
+     * @memberof AbstractSession
+     */
+    constructor(private mISshSession: ISshSession) {
+        mISshSession = this.buildSession(mISshSession);
+    }
 
     private static get log(): Logger {
         return Logger.getAppLogger();
+    }
+
+    /**
+     * Builds an ISession so all required pieces are filled in
+     * @private
+     * @param {ISession} session - the fully populated session
+     * @memberof AbstractSession
+     */
+    private buildSession(session: ISshSession): ISshSession {
+        const populatedSession = session;
+
+        // set port if not set
+        if (isNullOrUndefined(populatedSession.port)) {
+            populatedSession.port = SshSession.DEFAULT_SSH_PORT;
+        }
+        return populatedSession;
     }
 }

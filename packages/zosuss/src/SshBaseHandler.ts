@@ -22,9 +22,7 @@ import {
     IImperativeError,
     ImperativeError
 } from "@brightside/imperative";
-import { AbstractSession } from "../src/api/index";
 import { SshSession } from "../index";
-import { Session } from "./api/index";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -34,7 +32,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
     /**
      * The session creating from the command line arguments / profile
      */
-    protected mSession: Session;
+    protected mSession: SshSession;
 
     /**
      * Loaded z/OS SSH profile if needed

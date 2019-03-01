@@ -9,13 +9,12 @@
 *
 */
 
-import { Shell } from "../../../index";
-import { Session } from "@brightside/imperative";
+import { Shell, SshSession } from "../../../index";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
 let testEnvironment: ITestEnvironment;
-let SSH_SESSION: Session;
+let SSH_SESSION: SshSession;
 
 describe("Shell", () => {
 
