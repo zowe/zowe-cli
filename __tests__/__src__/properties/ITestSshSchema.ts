@@ -14,4 +14,6 @@ export interface ITestSshSchema {
     password: string;
     host: string;
     port: number;
+    privateKey: string;
+    keyPassword: string;
 }

@@ -143,7 +143,7 @@ export class SshSession {
      * Given command line arguments, create a SSH Client Session.
      * @static
      * @param {IProfile} args - The arguments specified by the user
-     * @returns {Session} - A session for usage in the SSH Client
+     * @returns {SshSession} - A session for usage in the SSH Client
      */
     public static createBasicSshSessionFromArguments(args: ICommandArguments): SshSession {
         this.log.debug("Creating a z/OS SSH session from arguments");
@@ -159,8 +159,7 @@ export class SshSession {
 
     /**
      * Creates an instance of AbstractSession.
-     * @param {ISession} session: Session parameter object
-     * @memberof AbstractSession
+     * @param {ISshSession} session: SshSession parameter object
      */
     constructor(private mISshSession: ISshSession) {
         mISshSession = this.buildSession(mISshSession);
@@ -171,7 +170,7 @@ export class SshSession {
     }
 
     /**
-     * Builds an ISession so all required pieces are filled in
+     * Builds an ISshSession so all required pieces are filled in
      * @private
      * @param {ISession} session - the fully populated session
      * @memberof AbstractSession
