@@ -34,7 +34,7 @@ let system: string;
 let owner: string;
 let wfName: string;
 
-const workflow = __dirname + "/testfiles/demo.xml";
+const workflow = __dirname + "/../testfiles/demo.xml";
 
 function expectZosmfResponseSucceeded(response: string, error: ImperativeError) {
     expect(error).not.toBeDefined();
@@ -47,7 +47,7 @@ function expectZosmfResponseFailed(response: string, error: ImperativeError, msg
     expect(error.details.msg).toContain(msg);
 }
 
-describe("Delete workflow", () => {
+describe("Delete archived workflow", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             // tempProfileTypes: ["zosmf"],
