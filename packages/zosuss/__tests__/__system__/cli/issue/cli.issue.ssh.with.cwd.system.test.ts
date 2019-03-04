@@ -138,32 +138,6 @@ describe("Use a test directory to do stuff in that creates files", () => {
         checkResponse(response);
         expect(response.stdout.toString()).toContain(randomDir);
     });
-
-    it("should run install npm express", async () => {
-        const directory = `${defaultSystem.unix.testdir}/`;
-        const testdir = directory + "usscwdtest/";
-        const commandName = "cd " + testdir + " &&npm install --registry http://cicsk8sm.hursley.ibm.com:30799 express";
-        const cwd =  `${defaultSystem.unix.testdir}/`;
-        Imperative.console.info("Run npm Command:" + commandName +"--cwd /" +cwd);
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
-
-        checkResponse(response);
-        expect(response.stdout.toString()).toContain("express@4.16.4");
-    });
-
-    it("should run npm on nonexistant module", async () => {
-        const directory = `${defaultSystem.unix.testdir}/`;
-        const testdir = directory + "usscwdtest/";
-        const commandName = "cd " + testdir + " &&npm install --registry http://cicsk8sm.hursley.ibm.com:30799 NoddyNonExist";
-        const cwd =  `${defaultSystem.unix.testdir}/`;
-        Imperative.console.info("Run npm nonexistant Command:" + commandName +"--cwd /" +cwd);
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
-
-        checkResponse(response);
-        expect(response.stdout.toString()).toContain("no such package available : NoddyNonExist");
-    });
-
-
 });
 
 
