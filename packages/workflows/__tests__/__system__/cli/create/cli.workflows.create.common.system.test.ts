@@ -95,7 +95,7 @@ describe("Create workflow cli system tests", () => {
                 testEnvironment, [wfName, definitionFile, system, owner]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Workflow created with workflow-key");
+                expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
@@ -176,7 +176,7 @@ describe("Create workflow cli system tests", () => {
                 testEnvironment, [wfName, definitionDs, system, owner]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Workflow created with workflow-key");
+                expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
