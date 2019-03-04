@@ -77,7 +77,6 @@ export class CreateWorkflow{
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
         WorkflowValidator.validateNotEmptyString(WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
-        WorkflowValidator.validatePath(WorkflowDefinitionFile, wrongPath.message);
         WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
         WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
         WorkflowValidator.validateOwner(Owner, wrongOwner.message);
@@ -96,7 +95,6 @@ export class CreateWorkflow{
             deleteCompletedJobs: DeleteCompletedJobs,
         };
         if (!isNullOrUndefined(VariableInputFile)){
-            WorkflowValidator.validatePath(VariableInputFile, wrongPath.message);
             data.variableInputFile = VariableInputFile;
         }
         if (!isNullOrUndefined(Variables)){
