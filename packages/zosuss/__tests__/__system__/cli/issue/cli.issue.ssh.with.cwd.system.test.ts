@@ -26,7 +26,6 @@ let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let ussname: string;
 
-// tslint:disable-next-line:no-unused-expression
 function checkResponse(response: any) {
     expect(response.stderr.toString()).toBe("");
     expect(response.status).toBe(0);
@@ -78,21 +77,18 @@ describe("zowe uss issue ssh without running bash scripts", () => {
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
-        // match only "/" with no following alpha-numeric character
+        // match only "/"+cwd with no following alpha-numeric character e.g. "/cwd   "
         expect(response.stdout.toString()).toMatch(new RegExp("\\" + cwd + "\\s"));
     });
 
 
     it("should get directory invalid --cwd option", async () => {
-        const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
-
         const commandName = "pwd";
         const cwd = "/invaliddir";
         Imperative.console.info("Invalid directory Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
-        // match only "/" with no following alpha-numeric character
         expect(response.stdout.toString()).toContain("EDC5129I No such file or directory");
     });
 });
@@ -115,7 +111,6 @@ describe("Use a test directory to do stuff in that creates files", () => {
         Imperative.console.info("Make test directory cmd:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
         checkResponse(response);
-        // match only "/" with no following alpha-numeric character
         expect(response.stdout.toString()).toContain(directory + "usscwdtest");
 
     });
@@ -131,7 +126,6 @@ describe("Use a test directory to do stuff in that creates files", () => {
     });
 
     it.skip("should write a long directory", async () => {
-        const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
         const j = 200;
         const randomDir = generateRandomString(j);
         const directory = `${defaultSystem.unix.testdir}/`;
@@ -142,38 +136,30 @@ describe("Use a test directory to do stuff in that creates files", () => {
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
-        // match only "/" with no following alpha-numeric character
         expect(response.stdout.toString()).toContain(randomDir);
     });
 
     it("should run install npm express", async () => {
-        const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
         const directory = `${defaultSystem.unix.testdir}/`;
         const testdir = directory + "usscwdtest/";
-// tslint:disable-next-line: max-line-length
         const commandName = "cd " + testdir + " &&npm install --registry http://cicsk8sm.hursley.ibm.com:30799 express";
         const cwd =  `${defaultSystem.unix.testdir}/`;
         Imperative.console.info("Run npm Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
-        // match only "/" with no following alpha-numeric character
         expect(response.stdout.toString()).toContain("express@4.16.4");
     });
 
     it("should run npm on nonexistant module", async () => {
-        const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
         const directory = `${defaultSystem.unix.testdir}/`;
-// tslint:disable-next-line: max-line-length
         const testdir = directory + "usscwdtest/";
-// tslint:disable-next-line: max-line-length
         const commandName = "cd " + testdir + " &&npm install --registry http://cicsk8sm.hursley.ibm.com:30799 NoddyNonExist";
         const cwd =  `${defaultSystem.unix.testdir}/`;
         Imperative.console.info("Run npm nonexistant Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
-        // match only "/" with no following alpha-numeric character
         expect(response.stdout.toString()).toContain("no such package available : NoddyNonExist");
     });
 
@@ -301,7 +287,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
         });
 
         it.skip("script issues exit64", async () => {
-            const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
             const directory = `${defaultSystem.unix.testdir}`;
             const commandName = "cd " + directory + " && chmod 777 exit64.sh && exit64.sh";
             const cwd =  `${defaultSystem.unix.testdir}/`;
@@ -309,14 +294,12 @@ describe("zowe uss issue ssh running bash scripts", () => {
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName,"/" + cwd]);
 
             checkResponse(response);
-            // match only "/" with no following alpha-numeric character
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).not.toContain("About to exit64");
         });
 
         it("script sleeps for 5 mins", async () => {
-            const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
             const directory = `${defaultSystem.unix.testdir}`;
             const commandName = "cd " + directory + " && chmod 777 sleepFor5mins.sh && sleepFor5mins.sh";
             const cwd =  `${defaultSystem.unix.testdir}/`;
@@ -324,7 +307,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName,"/" + cwd]);
 
             checkResponse(response);
-            // match only "/" with no following alpha-numeric character
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("FINISHED");
@@ -332,7 +314,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
 
         it("script asks for input", async () => {
-            const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
             const directory = `${defaultSystem.unix.testdir}`;
             const commandName = " cd " + directory + " && chmod 777 askForName.sh && askForName.sh < tester.txt";
             const cwd =  `${defaultSystem.unix.testdir}/`;
@@ -346,7 +327,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
         });
 
         it("script kills itself", async () => {
-            const zosmfProperties = TEST_ENVIRONMENT.systemTestProperties.systems.common.zosmf;
             const directory = `${defaultSystem.unix.testdir}`;
             const commandName = " cd " + directory + " && chmod 777 killItself.sh && killItself.sh";
             const cwd =  `${defaultSystem.unix.testdir}/`;
