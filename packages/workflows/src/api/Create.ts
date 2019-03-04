@@ -19,7 +19,7 @@ import {
     noWorkflowDefinitionFile,
     noSystemName,
     noOwner,
-    wrongOwner, wrongPath
+    wrongOwner
 } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { isNullOrUndefined } from "util";
