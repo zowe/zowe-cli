@@ -28,8 +28,7 @@ const definition: ICommandDefinition = {
     name: "zos-workflows",
     aliases: ["wf"],
     type: "group",
-    summary: "Manage z/OSMF workflows",
-    description: "Manage z/OSMF workflows, create workflow instances, and more",
+    description: "Create and manage z/OSMF workflows on a z/OS system",
     children: [
         CreateDefinition,
         StartDefinition,
