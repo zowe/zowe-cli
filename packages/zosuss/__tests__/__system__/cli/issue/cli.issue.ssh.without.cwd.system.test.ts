@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import { Imperative, IO, Session } from "@brightside/imperative";
 import * as path from "path";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
@@ -31,7 +32,7 @@ function checkResponse(response: any) {
     expect(response.status).toBe(0);
 }
 
-function generateRandomString(j) {
+function generateRandomString(j: number) {
     let text = "";
 
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
