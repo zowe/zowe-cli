@@ -19,6 +19,7 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
+import { IUSSListOptions } from "./doc/IUSSListOptions";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -29,7 +30,7 @@ export class List {
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           dataSetName  - contains the data set name
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {IListOptions}     [options={}] - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
@@ -77,7 +78,7 @@ export class List {
      *
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           dataSetName  - contains the data set name
-     * @param {IDownloadOptions} [options={}] - contains the options to be sent
+     * @param {IListOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
@@ -97,6 +98,48 @@ export class List {
             if (options.attributes) {
                 reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
+            if (options.maxLength) {
+                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+            } else {
+                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+
+            this.log.debug(`Endpoint: ${endpoint}`);
+
+            const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);
+
+            return {
+                success: true,
+                commandResponse: null,
+                apiResponse: response
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieve a list of all files from a path name
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {string}           path         - contains the uss path name
+     * @param {IUSSListOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} data set name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     */
+    public static async fileList(session: AbstractSession, path: string, options: IUSSListOptions = {}): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(path, ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(path, "", ZosFilesMessages.missingUSSFileName.message);
+
+        try {
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${path}`);
+
+            const reqHeaders: IHeaderContent[] = [];
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
