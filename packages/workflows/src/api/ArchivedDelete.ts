@@ -16,12 +16,12 @@ import { WorkflowConstants, nozOSMFVersion, noWorkflowKey } from "./WorkflowCons
 import { WorkflowValidator } from "./WorkflowValidator";
 
 /**
- * Class to handle deletion of workflow from an archived z/OSMF workflow from a z/OS system.
+ * Class to handle deletion of an archived z/OSMF workflow from a z/OS system
  */
 export class ArchivedDeleteWorkflow {
 
     /**
-     * Delete a workflow from an archived
+     * Delete archived workflow
      * @param {AbstractSession} session                     - z/OSMF connection info
      * @param {string} workflowKey                          - Unique identifier of the workflow instance.
      * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
