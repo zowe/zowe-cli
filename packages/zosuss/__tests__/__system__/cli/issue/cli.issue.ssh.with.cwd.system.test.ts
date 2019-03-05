@@ -268,8 +268,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName,"/" + cwd]);
 
             checkResponse(response);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).not.toContain("About to exit64");
         });
 
@@ -281,8 +279,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName,"/" + cwd]);
 
             checkResponse(response);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("FINISHED");
         });
 
@@ -295,8 +291,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName,"/" + cwd]);
 
             checkResponse(response);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Welcome Tester!");
         });
 
@@ -308,8 +302,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName,"/" + cwd]);
 
             checkResponse(response);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).not.toContain("Ended");
         });
 
