@@ -28,7 +28,7 @@ export class ArchivedDeleteWorkflow {
      * @returns {string}
      */
     public static async archivedDeleteWorkflow(session: AbstractSession, workflowKey: string,
-                                                zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
+                                               zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
