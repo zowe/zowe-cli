@@ -27,14 +27,14 @@ export class ArchivedDeleteWorkflow {
      * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
      * @returns {string}
      */
- public static async archivedDeleteWorkflow(session: AbstractSession, workflowKey: string,
-                                            zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
-    WorkflowValidator.validateSession(session);
-    WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-    WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
-    let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
-    resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}/${workflowKey}`;
+    public static async archivedDeleteWorkflow(session: AbstractSession, workflowKey: string,
+                                                zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
+        WorkflowValidator.validateSession(session);
+        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+        WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
+        let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
+        resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}/${workflowKey}`;
 
-    return ZosmfRestClient.deleteExpectString(session, resourcesQuery, []);
- }
+        return ZosmfRestClient.deleteExpectString(session, resourcesQuery, null);
+    }
 }

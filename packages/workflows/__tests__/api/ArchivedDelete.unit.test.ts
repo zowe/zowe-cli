@@ -60,7 +60,7 @@ describe("Delete archived workflow", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
-            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, []);
+            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, null);
             expectZosmfResponseSucceeded(response, error);
             expect(response).toEqual("");
         });
@@ -80,7 +80,7 @@ describe("Delete archived workflow", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledTimes(1);
-            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, []);
+            expect((ZosmfRestClient.deleteExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY, null);
             expectZosmfResponseSucceeded(response, error);
             expect(response).toEqual("");
         });
