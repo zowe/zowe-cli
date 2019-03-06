@@ -38,6 +38,18 @@ export class Shell {
             privateKey: session.ISshSession.privateKey ? require("fs").readFileSync(session.ISshSession.privateKey) : "",
             passphrase: session.ISshSession.keyPassword
         });
+        conn.on("error", (err) => {
+            process.stderr.write(err +
+                ". Check Zowe ssh-profile:" +
+                "\n\thost: " + session.ISshSession.hostname +
+                "\n\tport: " + session.ISshSession.port +
+                "\n\tusername: " + session.ISshSession.user +
+                "\n\tpassword: " + session.ISshSession.password +
+                "\n\tprivateKey: " + session.ISshSession.privateKey +
+                "\n\tpassphrase: " + session.ISshSession.keyPassword +
+                "\n"
+            );
+        });
     }
 
     public static executeSshCwd(session: SshSession, command: string, cwd: string, callback: any): void {
