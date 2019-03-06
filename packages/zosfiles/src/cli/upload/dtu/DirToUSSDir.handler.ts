@@ -33,7 +33,7 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
 
         let inputDir: string;
 
-        // resolving to full path if passed path is not absolute
+        // resolving to full path if local path passed is not absolute
         if (path.isAbsolute(commandParameters.arguments.inputDir)) {
             inputDir = commandParameters.arguments.inputDir;
         } else {
