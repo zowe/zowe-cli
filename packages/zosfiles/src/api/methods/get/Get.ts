@@ -77,6 +77,8 @@ export class Get {
         if (USSFileName.substr(0, 1) === "/") {
             USSFileName = USSFileName.substr(1);
         }
+
+        USSFileName = encodeURIComponent(USSFileName);
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
 
         let reqHeaders: IHeaderContent[] = [];

@@ -249,7 +249,7 @@ export default {
                 "However, increasing the value increases resource consumption on z/OS and can be prone " +
                 "to errors caused by making too many concurrent requests. If the download process encounters an error, " +
                 "the following message displays:\n" +
-                "The maximum number of TSO address spaces were created. When you specify 0, " +
+                "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
                 " without a maximum number of concurrent requests. "
         }
@@ -421,7 +421,7 @@ export default {
             "However, increasing the value increases resource consumption on z/OS and can be prone " +
             "to errors caused by making too many concurrent requests. If the upload process encounters an error, " +
             "the following message displays:\n" +
-            "The maximum number of TSO address spaces were created. When you specify 0, " +
+            "The maximum number of TSO address spaces have been created. When you specify 0, " +
             Constants.DISPLAY_NAME + " attempts to upload all members at once" +
             " without a maximum number of concurrent requests. "
         }

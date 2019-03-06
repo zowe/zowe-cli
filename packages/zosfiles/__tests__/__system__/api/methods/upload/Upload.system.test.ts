@@ -20,6 +20,7 @@ import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__test
 import { Get, ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 import { IUploadMap } from "../../../../../src/api/methods/upload/doc/IUploadMap";
+import * as path from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -541,6 +542,7 @@ describe("Upload USS file", () => {
 describe("Upload a local directory to USS directory", () => {
     describe("Success scenarios", () => {
         const localDir = `${__dirname}/testfiles`;
+        const localDirWithSpaces = `${__dirname}/testfiles/space dir`;
         beforeAll(async () => {
             testEnvironment = await TestEnvironment.setUp({
                 tempProfileTypes: ["zosmf"],
@@ -578,6 +580,27 @@ describe("Upload a local directory to USS directory", () => {
             try {
                 uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname);
                 Imperative.console.info(`THIS IS USS ${ussname}/testfiles`);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+        });
+
+        it("should upload local directory (with space in name) to USS", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: boolean;
+            try {
+                ussname = ussname + " space dir";
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDirWithSpaces, ussname);
+                Imperative.console.info(`THIS IS USS ${ussname} space dir`);
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;

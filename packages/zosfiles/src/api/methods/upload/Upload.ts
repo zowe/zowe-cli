@@ -388,6 +388,7 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = path.posix.normalize(ussname);
         ussname = Upload.formatUnixFilepath(ussname);
+        ussname = encodeURIComponent(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const headers: any[] = [];
         if (binary) {
@@ -567,6 +568,7 @@ export class Upload {
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
         ussname = path.posix.normalize(ussname);
+        ussname = encodeURIComponent(ussname);
         const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);

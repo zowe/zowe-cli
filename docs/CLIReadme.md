@@ -2009,7 +2009,7 @@ members. Increasing the value results in faster downloads. However, increasing
 the value increases resource consumption on z/OS and can be prone to errors
 caused by making too many concurrent requests. If the download process
 encounters an error, the following message displays:
-The maximum number of TSO address spaces were created. When you specify 0, Zowe
+The maximum number of TSO address spaces have been created. When you specify 0, Zowe
 CLI attempts to download all members at once without a maximum number of
 concurrent requests.
 
@@ -2460,7 +2460,7 @@ files. Increasing the value results in faster uploads. However, increasing the
 value increases resource consumption on z/OS and can be prone to errors caused
 by making too many concurrent requests. If the upload process encounters an
 error, the following message displays:
-The maximum number of TSO address spaces were created. When you specify 0, Zowe
+The maximum number of TSO address spaces have been created. When you specify 0, Zowe
 CLI attempts to upload all members at once without a maximum number of
 concurrent requests.
 
