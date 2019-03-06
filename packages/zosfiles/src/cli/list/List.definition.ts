@@ -10,6 +10,8 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { AllMembersDefinition } from "./am/AllMembers.definition";
+import { DataSetDefinition } from "./ds/DataSet.definition";
 import { USSFileDefinition } from "./uss/UssFile.definition";
 
 import i18nTypings from "../-strings-/en";
@@ -28,6 +30,8 @@ export const ListDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
+        AllMembersDefinition,
+        DataSetDefinition,
         USSFileDefinition
     ],
 };
