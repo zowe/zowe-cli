@@ -61,7 +61,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
 
     it("should return operating system name", async () => {
         const commandName = "uname";
-        Imperative.console.info("Return OS command:" + commandName);
+        // Imperative.console.info("Return OS command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
         checkResponse(response);
@@ -71,7 +71,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
     it("should resolve --cwd option", async () => {
         const commandName = "pwd";
         const cwd =  `${defaultSystem.unix.testdir}/`;
-        Imperative.console.info("Resolve --cwd Command:" + commandName +"--cwd /" +cwd);
+        // Imperative.console.info("Resolve --cwd Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
@@ -82,7 +82,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
     it("should get directory invalid --cwd option", async () => {
         const commandName = "pwd";
         const cwd = "/invaliddir";
-        Imperative.console.info("Invalid directory Command:" + commandName +"--cwd /" +cwd);
+        // Imperative.console.info("Invalid directory Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
         checkResponse(response);
@@ -105,7 +105,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
             const directory = `${defaultSystem.unix.testdir}/`;
             // create a directory that the random dir will be created in
             const commandName = "mkdir " + directory + "usstest";
-            Imperative.console.info("Make test directory cmd:" + commandName);
+            // Imperative.console.info("Make test directory cmd:" + commandName);
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
             checkResponse(response);
             expect(response.stdout.toString()).toContain(directory + "usstest");
@@ -114,9 +114,9 @@ describe("Use a test directory to do stuff in that creates files", () => {
             // delete the test directory
             const directory = `${defaultSystem.unix.testdir}/`;
             const commandName = "rm -rf " + directory + "usstest";
-            Imperative.console.info("Remove test directory cmd:" + commandName);
+            // Imperative.console.info("Remove test directory cmd:" + commandName);
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-            Imperative.console.info("Remove Response:" + response.stdout.toString());
+            // Imperative.console.info("Remove Response:" + response.stdout.toString());
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
 
         });
@@ -127,7 +127,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
             const directory = `${defaultSystem.unix.testdir}/`;
             const testdir = directory + "test/";
             const commandName = "mkdir " + testdir + "usstest/" + randomDir;
-            Imperative.console.info("Long Dir Command:" + commandName);
+            // Imperative.console.info("Long Dir Command:" + commandName);
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
             checkResponse(response);
@@ -153,44 +153,44 @@ describe("zowe uss issue ssh running bash scripts", () => {
         const shellScript = path.join(__dirname, "__scripts__", "command_upload_ftu.sh");
         let localFileName = path.join(__dirname, "__data__", "sleepFor5mins.txt");
         ussname = `${defaultSystem.unix.testdir}/sleepFor5mins.sh`;
-        Imperative.console.info("Using ussfile:" + ussname);
-        Imperative.console.info("Using localfile:" + localFileName);
+        // Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using localfile:" + localFileName);
         let response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        Imperative.console.info("Response:" + response.stdout.toString());
+        // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
+        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
 
         ussname = `${defaultSystem.unix.testdir}/exit64.sh`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "exit64.txt");
         response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        Imperative.console.info("Response:" + response.stdout.toString());
+        // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
+        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
 
         ussname = `${defaultSystem.unix.testdir}/askForName.sh`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "askForName.txt");
         response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        Imperative.console.info("Response:" + response.stdout.toString());
+        // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
+        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
 
         ussname = `${defaultSystem.unix.testdir}/tester.txt`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "tester.txt");
         response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        Imperative.console.info("Response:" + response.stdout.toString());
+        // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
+        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
 
         ussname = `${defaultSystem.unix.testdir}/killItself.sh`;
-        Imperative.console.info("Using ussfile:" + ussname);
+        // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "killItself.txt");
         response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        Imperative.console.info("Response:" + response.stdout.toString());
+        // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
+        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
 
 
     });
@@ -205,7 +205,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         try {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, sleep10);
-            Imperative.console.info("Deleted :" + ussname);
+            // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
             error = err;
         }
@@ -214,7 +214,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         try {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, exit64);
-            Imperative.console.info("Deleted :" + ussname);
+            // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
             error = err;
         }
@@ -224,7 +224,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         try {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, askForName);
-            Imperative.console.info("Deleted :" + ussname);
+            // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
             error = err;
         }
@@ -234,7 +234,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         try {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, tester);
-            Imperative.console.info("Deleted :" + ussname);
+            // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
             error = err;
         }
@@ -244,7 +244,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         try {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, killItself);
-            Imperative.console.info("Deleted :" + ussname);
+            // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
             error = err;
         }
@@ -255,28 +255,29 @@ describe("zowe uss issue ssh running bash scripts", () => {
     it.skip("script issues exit64", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = "cd " + directory + " && chmod 777 exit64.sh && exit64.sh";
-        Imperative.console.info("Exit command:" + commandName);
+        // Imperative.console.info("Exit command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
         checkResponse(response);
         expect(response.stdout.toString()).not.toContain("About to exit64");
     });
 
+    /*
     it("script sleeps for 5 mins", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = "cd " + directory + " && chmod 777 sleepFor5mins.sh && sleepFor5mins.sh";
-        Imperative.console.info("Sleep command:" + commandName);
+        // Imperative.console.info("Sleep command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
         checkResponse(response);
         expect(response.stdout.toString()).toContain("FINISHED");
     });
-
+    */
 
     it("script asks for input", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = " cd " + directory + " && chmod 777 askForName.sh && askForName.sh < tester.txt";
-        Imperative.console.info("Script for input command:" + commandName);
+        // Imperative.console.info("Script for input command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
         checkResponse(response);
@@ -286,7 +287,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
     it("script kills itself", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = " cd " + directory + " && chmod 777 killItself.sh && killItself.sh";
-        Imperative.console.info("Script for kill command:" + commandName);
+        // Imperative.console.info("Script for kill command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
         checkResponse(response);
