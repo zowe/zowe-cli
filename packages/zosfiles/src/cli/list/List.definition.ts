@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { USSFileDefinition } from "./uss/USSFile.definition";
+import { USSFileDefinition } from "./uss/UssFile.definition";
 
 import i18nTypings from "../-strings-/en";
 
