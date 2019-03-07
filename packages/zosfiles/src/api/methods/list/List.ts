@@ -137,7 +137,7 @@ export class List {
 
         try {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${path}`);
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             const reqHeaders: IHeaderContent[] = [];
             if (options.maxLength) {
