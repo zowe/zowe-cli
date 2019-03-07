@@ -372,7 +372,7 @@ describe("z/OS Files - List", () => {
                 items: []
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${path}`);
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
@@ -422,7 +422,8 @@ describe("z/OS Files - List", () => {
                         }
                 ],  returnedRows: 6, totalRows: 6, JSONversion: 1
             };
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${path}`);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, 
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
@@ -456,7 +457,8 @@ describe("z/OS Files - List", () => {
                         }
                 ],  returnedRows: 2, totalRows: 6, JSONversion: 1
             };
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${path}`);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
