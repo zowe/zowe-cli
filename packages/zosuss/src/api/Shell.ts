@@ -16,6 +16,12 @@ import { SshSession } from "../SshSession";
 export class Shell {
     public static executeSsh(session: SshSession, command: string, callback: any): void {
         const conn = new Client();
+        let privateKeyPath;
+        try {
+            privateKeyPath = require("fs").readFileSync(session.ISshSession.privateKey);
+        } catch (err) {
+            privateKeyPath = "";
+        }
 
         conn.on("ready", () => {
             conn.shell((err: any, stream: ClientChannel) => {
@@ -35,7 +41,7 @@ export class Shell {
             port: session.ISshSession.port,
             username: session.ISshSession.user,
             password: session.ISshSession.password,
-            privateKey: session.ISshSession.privateKey ? require("fs").readFileSync(session.ISshSession.privateKey) : "",
+            privateKey: privateKeyPath,
             passphrase: session.ISshSession.keyPassword
         });
         conn.on("error", (err) => {

@@ -198,7 +198,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
         let response;
-        let error;
         // delete uploaded test bash scripts
         ussname = `${defaultSystem.unix.testdir}/sleepFor5mins.sh`;
         const sleep10: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
@@ -207,7 +206,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, sleep10);
             // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
-            error = err;
+            Imperative.console.error(err);
         }
         ussname = `${defaultSystem.unix.testdir}/exit64.sh`;
         const exit64: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
@@ -216,7 +215,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, exit64);
             // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
-            error = err;
+            Imperative.console.error(err);
         }
 
         ussname = `${defaultSystem.unix.testdir}/askForName.sh`;
@@ -226,7 +225,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, askForName);
             // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
-            error = err;
+            Imperative.console.error(err);
         }
 
         ussname = `${defaultSystem.unix.testdir}/tester.txt`;
@@ -236,7 +235,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, tester);
             // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
-            error = err;
+            Imperative.console.error(err);
         }
 
         ussname = `${defaultSystem.unix.testdir}/killItself.sh`;
@@ -246,13 +245,13 @@ describe("zowe uss issue ssh running bash scripts", () => {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, killItself);
             // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
-            error = err;
+            Imperative.console.error(err);
         }
 
 
     });
 
-    it.skip("script issues exit64", async () => {
+    it("script issues exit64", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = "cd " + directory + " && chmod 777 exit64.sh && exit64.sh";
         // Imperative.console.info("Exit command:" + commandName);
