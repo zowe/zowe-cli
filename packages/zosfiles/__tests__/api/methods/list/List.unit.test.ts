@@ -422,7 +422,7 @@ describe("z/OS Files - List", () => {
                         }
                 ],  returnedRows: 6, totalRows: 6, JSONversion: 1
             };
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, 
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
