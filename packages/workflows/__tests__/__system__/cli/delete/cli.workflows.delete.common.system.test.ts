@@ -30,6 +30,7 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
+const fakewfkey: string = "FAKEKEY";
 
 const workflow = join(__dirname, "../../testfiles/demo.xml");
 
@@ -79,22 +80,15 @@ describe("Delete workflow cli system tests", () => {
             testEnvironment, [wfKey]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(response.stdout.toString()).toContain("Workflow deleted");
         });
     });
     describe("Failure Scenarios", () => {
-        it("Should throw error if workflowKey is empty string.", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh", testEnvironment);
+        it("Should throw error if no workflow with this wf key was found", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh",
+            testEnvironment, [wfKey + fakewfkey]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("No value specified for option");
-        });
-    });
-    describe("Display Help", () => {
-        it("should display delete workflow-key help", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/delete_active_workflow_help.sh", testEnvironment);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(response.stderr.toString()).toContain("was not found");
         });
     });
 });
