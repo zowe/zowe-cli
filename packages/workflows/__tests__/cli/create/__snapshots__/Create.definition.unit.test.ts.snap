@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "cre",
   ],
-  "description": "Create workflow instance in z/OSMF",
+  "description": "Create a z/OSMF workflow on a z/OS system.",
   "name": "create",
   "type": "group",
 }

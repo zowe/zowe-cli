@@ -35,7 +35,7 @@ export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefiniti
     category: {
         name: "category",
         aliases: ["cat"],
-        description: "Filter by the category of the workflow(s), which is either general or configuration.",
+        description: "Filter by the category of the workflows, which is either general or configuration.",
         type: "string",
         required: false
     },
@@ -47,7 +47,7 @@ export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefiniti
     system: {
         name: "system",
         aliases: ["sys"],
-        description: "Filter by the nickname of the system on which the workflow(s) is/are active.",
+        description: "Filter by the nickname of the system on which the workflows is/are active.",
         type: "string",
         required: false
     },

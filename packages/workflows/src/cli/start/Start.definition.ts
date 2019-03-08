@@ -24,7 +24,7 @@ export const StartDefinition: ICommandDefinition = {
     name: "start",
     aliases: ["sta"],
     type: "group",
-    description: "Start workflow instance in z/OSMF",
+    description: "Start a z/OSMF workflow on a z/OS system.",
     children: [
         WorkflowFull,
         WorkflowStep
