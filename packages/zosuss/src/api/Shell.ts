@@ -31,7 +31,7 @@ export class Shell {
                     conn.end();
                     process.stdout.write("Closed connection\n");
                 });
-                // exit multiple times in case of multiple shells running in depth
+                // exit multiple times in case of nested shells
                 stream.end(command + "\nexit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n");
                 callback(stream);
             });

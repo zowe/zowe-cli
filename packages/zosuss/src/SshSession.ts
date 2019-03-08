@@ -37,7 +37,7 @@ export class SshSession {
         return this.mISshSession;
     }
 
-    public static SSH_CONNECTION_OPTION_GROUP = "Zos Ssh Connection Options";
+    public static SSH_CONNECTION_OPTION_GROUP = "z/OS Ssh Connection Options";
 
     /**
      * Option used in profile creation and commands for hostname for z/OS SSH
@@ -92,18 +92,18 @@ export class SshSession {
     public static SSH_OPTION_PRIVATEKEY: ICommandOptionDefinition = {
         name: "privateKey",
         aliases: ["key", "pk"],
-        description: "Path to a private key that matches with a public key stored in the server for authentication",
+        description: "Path to a file containing your private key, that must match a public key stored in the server for authentication",
         type: "string",
         group: SshSession.SSH_CONNECTION_OPTION_GROUP,
     };
 
     /**
-     * Option used in profile creation and commands for password for private key
+     * Option used in profile creation and commands for passphrase for private key
      */
     public static SSH_OPTION_KEYPASSPHRASE: ICommandOptionDefinition = {
         name: "keyPassphrase",
         aliases: ["passphrase", "kp"],
-        description: "Private key password, which unlocks the private key.",
+        description: "Private key passphrase, which unlocks the private key.",
         type: "string",
         group: SshSession.SSH_CONNECTION_OPTION_GROUP,
     };

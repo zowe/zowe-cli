@@ -17,9 +17,8 @@ export const definition: ICommandDefinition = {
     name: "zos-uss",
     aliases: ["uss"],
     type: "group",
-    summary: "Issue z/OS uss commands and collect responses",
-    description: "Interact with z/OSMF console services or ssh connection." +
-        "Issue z/OS uss commands and collect responses. ",
+    summary: "Issue z/OS USS commands and receive responses",
+    description: "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",
     children: [
         IssueCommand,
     ],
