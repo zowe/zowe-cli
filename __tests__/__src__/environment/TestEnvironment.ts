@@ -141,7 +141,7 @@ export class TestEnvironment {
             hostname: defaultSystem.ssh.host,
             port: defaultSystem.ssh.port,
             privateKey: defaultSystem.ssh.privateKey,
-            keyPassword: defaultSystem.ssh.keyPassword
+            keyPassphrase: defaultSystem.ssh.keyPassphrase
         });
     }
 

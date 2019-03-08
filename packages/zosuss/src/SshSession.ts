@@ -100,9 +100,9 @@ export class SshSession {
     /**
      * Option used in profile creation and commands for password for private key
      */
-    public static SSH_OPTION_KEYPASSWORD: ICommandOptionDefinition = {
-        name: "keyPassword",
-        aliases: ["keypass", "kpass"],
+    public static SSH_OPTION_KEYPASSPHRASE: ICommandOptionDefinition = {
+        name: "keyPassphrase",
+        aliases: ["passphrase", "kp"],
         description: "Private key password, which unlocks the private key.",
         type: "string",
         group: SshSession.SSH_CONNECTION_OPTION_GROUP,
@@ -118,7 +118,7 @@ export class SshSession {
         SshSession.SSH_OPTION_USER,
         SshSession.SSH_OPTION_PASSWORD,
         SshSession.SSH_OPTION_PRIVATEKEY,
-        SshSession.SSH_OPTION_KEYPASSWORD
+        SshSession.SSH_OPTION_KEYPASSPHRASE
     ];
 
     /**
@@ -135,7 +135,7 @@ export class SshSession {
             user: profile.user,
             password: profile.password,
             privateKey: profile.privateKey,
-            keyPassword: profile.keyPassword
+            keyPassphrase: profile.keyPassphrase
         });
     }
 
@@ -153,7 +153,7 @@ export class SshSession {
             user: args.user,
             password: args.password,
             privateKey: args.privateKey,
-            keyPassword: args.keyPassword
+            keyPassphrase: args.keyPassphrase
         });
     }
 

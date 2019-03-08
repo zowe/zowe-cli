@@ -42,7 +42,7 @@ export class Shell {
             username: session.ISshSession.user,
             password: session.ISshSession.password,
             privateKey: privateKeyPath,
-            passphrase: session.ISshSession.keyPassword
+            passphrase: session.ISshSession.keyPassphrase
         });
         conn.on("error", (err) => {
             process.stderr.write(err +
@@ -52,7 +52,7 @@ export class Shell {
                 "\n\tusername: " + session.ISshSession.user +
                 "\n\tpassword: " + session.ISshSession.password +
                 "\n\tprivateKey: " + session.ISshSession.privateKey +
-                "\n\tpassphrase: " + session.ISshSession.keyPassword +
+                "\n\tpassphrase: " + session.ISshSession.keyPassphrase +
                 "\n"
             );
         });
