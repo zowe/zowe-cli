@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "ls",
   ],
-  "description": "List workflow instance(s) in z/OSMF",
+  "description": "List the z/OSMF workflows for a system or a sysplex with filter options.",
   "name": "list",
   "type": "group",
 }
