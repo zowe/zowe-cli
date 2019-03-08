@@ -321,7 +321,9 @@ export default {
                     PATH: "The directory containing the files and directories to be listed"
                 },
                 EXAMPLES: {
-                    EX1: `Show the files and directories in path "/u/ibmuser"`,
+                    EX1: `Show the files and directories in path '/u/ibmuser'`,
+                    EX2: "Show the files and directories in path '/u/ibmuser " +
+                    "displaying only the file or directory name: $ zowe zos-files list uss-files /u/ibmuser --rff name",
                 }
             }
         },
