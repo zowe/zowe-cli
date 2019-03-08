@@ -43,6 +43,8 @@ systems:
         password: my-password
         host: ssh-host
         port: ssh-port
+        privateKey: ssh-private-key
+        keyPassword: ssh-private-key-password
     #-------------------------------------------------------------------------#
     #  Console API Tests parameters                                           #
     #-------------------------------------------------------------------------#
