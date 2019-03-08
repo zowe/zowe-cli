@@ -1,3 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Create workflow common handler process method should create a workflow using a dataset 1`] = `
+Object {
+  "fields": Array [
+    "workflowKey",
+    "workflowDescription",
+  ],
+  "format": "object",
+  "output": Object {
+    "commandResponse": "deleted",
+    "success": true,
+  },
+}
+`;
+
+exports[`Create workflow common handler process method should create a workflow using a uss file 1`] = `
+Object {
+  "fields": Array [
+    "workflowKey",
+    "workflowDescription",
+  ],
+  "format": "object",
+  "output": Object {
+    "commandResponse": "deleted",
+    "success": true,
+  },
+}
+`;
+
 exports[`Create workflow common handler process method should fail if definition file is not a uss file or dataset 1`] = `[Error: Internal create error: Unable to determine the source of the definition file. Please contact support.]`;
