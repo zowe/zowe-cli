@@ -44,7 +44,7 @@ systems:
         host: ssh-host
         port: ssh-port
         privateKey: ssh-private-key
-        keyPassword: ssh-private-key-password
+        keyPassphrase: ssh-private-key-passphrase
     #-------------------------------------------------------------------------#
     #  Console API Tests parameters                                           #
     #-------------------------------------------------------------------------#

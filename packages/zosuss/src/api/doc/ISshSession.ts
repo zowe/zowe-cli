@@ -57,6 +57,6 @@ export interface ISshSession {
      * @type {string}
      * @memberof ISession
      */
-    keyPassword?: string;
+    keyPassphrase?: string;
 
 }
