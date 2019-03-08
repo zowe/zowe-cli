@@ -16,7 +16,7 @@ Array [
 exports[`zos-files list uss command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Show the files and directories in path \\"/u/ibmuser\\"",
+    "description": "Show the files and directories in path '/u/ibmuser'",
     "options": "\\"/u/ibmuser\\"",
   },
 ]
