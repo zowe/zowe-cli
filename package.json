@@ -51,7 +51,6 @@
     "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.integration\\.(spec|test)\\.ts\" --coverage false",
     "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.system\\.(spec|test)\\.ts\" --coverage false",
     "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.unit\\.(spec|test)\\.ts\" --coverage",
-    "test:uss": "cross-env FORCE_COLOR=1 jest \".*zosuss.*\\.*__tests__.*\\.(spec|test)\\.ts\" --coverage",
     "watch": "tsc --pretty --watch",
     "watch:test": "jest --watch",
     "typedoc": "typedoc --options ./typedoc.json ./packages/",
@@ -61,10 +60,9 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@brightside/imperative": "^2.1.0",
+    "@brightside/imperative": ">=2.0.0-0",
     "@types/ssh2": "^0.5.38",
     "js-yaml": "3.9.0",
-    "popper.js": "^1.14.7",
     "ssh2": "^0.8.2",
     "string-width": "2.1.1"
   },
@@ -73,7 +71,7 @@
     "@types/chai-string": "^1.1.30",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
-    "@types/lodash": "^4.14.121",
+    "@types/lodash": "^4.14.106",
     "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
     "@types/yargs": "8.0.2",
