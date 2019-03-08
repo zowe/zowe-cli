@@ -273,9 +273,6 @@ export const wrongString: IMessageDefinition = {
 export const noOwner: IMessageDefinition = {
     message: apiErrorHeader + `No owner parameter was supplied.`
 };
-export const wrongPath: IMessageDefinition = {
-    message: apiErrorHeader + `Wrong format of USS path or DSNAME supplied.`
-};
 export const wrongOwner: IMessageDefinition = {
     message: apiErrorHeader + `Wrong format of user ID supplied.`
 };
