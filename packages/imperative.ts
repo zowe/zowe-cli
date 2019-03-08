@@ -178,12 +178,18 @@ const config: IImperativeConfig = {
             createProfileExamples: [
                 {
                     options: "ssh111 --host sshhost --user ibmuser --password myp4ss",
-                    description: "Create a zos ssh profile called 'ssh111' to connect to z/OS SSH server at host zos123 and default port 22"
+                    description: "Create a ssh profile called 'ssh111' to connect to z/OS SSH server at host 'zos123' and default port 22"
                 },
                 {
                     options: "ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss",
-                    description: "Create a zos ssh profile called 'ssh222' to connect to z/OS SSH server at host zos123 and port 13022"
-                }
+                    description: "Create a ssh profile called 'ssh222' to connect to z/OS SSH server at host 'zos123' and port 13022"
+                },
+                {
+                    options: "ssh333 --host sshhost --user ibmuser --priavetKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
+                    description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
+                                 "using a privatekey '/path/to/privatkey' and its decryption passphrase 'privateKeyPassphrase' " +
+                                 "for privatekey authentication"
+                },
             ]
         },
 
