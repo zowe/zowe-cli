@@ -20,7 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../zosconsole";
 import { ZosmfRestClient } from "../../rest";
-import { Headers, Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { noConsoleInput, noConsoleName, noSession, noZosmfInput } from "../src/api/ConsoleConstants";
 

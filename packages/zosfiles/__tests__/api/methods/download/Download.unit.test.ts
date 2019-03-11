@@ -9,7 +9,7 @@
 *
 */
 
-import { IO, Session } from "@brightside/imperative";
+import { IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { Download } from "../../../../src/api/methods/download/Download";

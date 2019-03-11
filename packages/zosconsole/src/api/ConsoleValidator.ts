@@ -10,7 +10,7 @@
 */
 
 import { ICollectParms, IIssueParms, IZosmfIssueParms } from "../../../zosconsole";
-import { AbstractSession, ImperativeExpect, TextUtils } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
 import { noCollectParameters, noCommandKey, noConsoleInput, noConsoleName, noSession, noZosmfInput } from "./ConsoleConstants";
 
 /**

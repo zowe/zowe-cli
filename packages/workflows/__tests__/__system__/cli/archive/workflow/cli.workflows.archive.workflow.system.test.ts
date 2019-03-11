@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../../../../rest";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";

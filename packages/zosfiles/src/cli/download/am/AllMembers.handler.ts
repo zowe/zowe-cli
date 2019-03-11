@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Download } from "../../../api/methods/download";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";

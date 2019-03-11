@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { explainPublishedTemplateInfoFull, explainPublishedTemplateInfoSummary, ListTemplateInfo } from "../../../../";
 import { IPublishedTemplateInfo, ProvisioningConstants } from "../../../../index";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";

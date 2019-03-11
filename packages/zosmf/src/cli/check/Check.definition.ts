@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { StatusDefinition } from "./status/Status.definition";
 
 export const CheckCommand: ICommandDefinition = {

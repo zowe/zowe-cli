@@ -10,7 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload } from "../../../../../";
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";

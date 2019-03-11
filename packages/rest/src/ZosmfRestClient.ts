@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeError, Logger, RestClient, TextUtils } from "@brightside/imperative";
+import { IImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 

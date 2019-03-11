@@ -13,7 +13,7 @@ import { ListRegistryInstances } from "../../../../index";
 
 jest.mock("../../../../src/api/ListInstanceVariables");
 import { ListInstanceVariables } from "../../../../../provisioning";
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../src/cli/list/instanceVariables/InstanceVariables.handler";
 import { instanceVariables } from "../../../../src/cli/list/instanceVariables/InstanceVariables.definition";
 import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";

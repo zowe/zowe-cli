@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { StopTso } from "../../../../../zostso";
 import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 

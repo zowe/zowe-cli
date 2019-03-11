@@ -12,7 +12,7 @@
 import { ITestSystemSchema } from "./ITestSystemSchema";
 import { ITestPropertiesSchema } from "./ITestPropertiesSchema";
 import { isNullOrUndefined } from "util";
-import { Logger } from "@brightside/imperative";
+import { Logger } from "@zowe/imperative";
 
 export class TestProperties {
 

@@ -21,7 +21,7 @@ import {
     noZosmfResponse,
     TsoValidator
 } from "../../../zostso";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 
 const PRETEND_SESSION = new Session({
     user: "usr",

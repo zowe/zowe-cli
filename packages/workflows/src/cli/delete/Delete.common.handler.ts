@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { DeleteWorkflow } from "../../api/Delete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 

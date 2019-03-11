@@ -12,7 +12,7 @@
 import { IGulpError, ITaskFunction } from "./GulpHelpers";
 import { SpawnSyncReturns } from "child_process";
 import * as util from "util";
-import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@brightside/imperative";
+import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@zowe/imperative";
 
 // "npx" command allows us to issue CLIs from node_modules dependencies
 // without globally installing.

@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { IJob } from "../../../api/doc/response/IJob";
 import { GetJobs } from "../../../api/GetJobs";
 import { JobsConstants } from "../../../..";

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@brightside/imperative";
+import { AbstractSession } from "@zowe/imperative";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { noAccountNumber, noCommandInput } from "./TsoConstants";
 import { SendTso } from "./SendTso";

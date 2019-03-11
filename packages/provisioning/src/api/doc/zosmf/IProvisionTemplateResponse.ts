@@ -9,7 +9,7 @@
 *
 */
 
-import { IExplanationMap } from "@brightside/imperative";
+import { IExplanationMap } from "@zowe/imperative";
 import { explainTemplateRegistryInfoResponse, ITemplateRegistryInfo } from "./ITemplateRegistryInfo";
 import { explainTemplateWorkflowInfoResponse, ITemplateWorkflowInfo } from "./ITemplateWorkflowInfo";
 

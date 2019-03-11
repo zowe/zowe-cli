@@ -10,7 +10,7 @@
 */
 
 import { IZosmfIssueResponse } from "./zosmf/IZosmfIssueResponse";
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError } from "@zowe/imperative";
 
 /**
  * The Console API response.

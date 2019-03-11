@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { Imperative, Session, TextUtils } from "@brightside/imperative";
+import { Imperative, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

@@ -9,7 +9,7 @@
 *
 */
 
-import { TextUtils } from "@brightside/imperative";
+import { TextUtils } from "@zowe/imperative";
 import { Constants } from "../../../../Constants";
 
 export default {

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandResponse } from "@brightside/imperative";
+import { ICommandResponse } from "@zowe/imperative";
 import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";

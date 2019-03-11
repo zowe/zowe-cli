@@ -10,7 +10,7 @@
 */
 
 import { ConsoleValidator, ICollectParms, IIssueParms, IZosmfIssueParms } from "../../zosconsole";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 
 const CONSOLE_NAME: string = "CN12345";
 const RESPONSE_KEY: string = "C9876543";

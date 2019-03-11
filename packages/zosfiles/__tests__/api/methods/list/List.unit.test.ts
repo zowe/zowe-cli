@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@brightside/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../../rest";
 import { List } from "../../../../src/api/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";

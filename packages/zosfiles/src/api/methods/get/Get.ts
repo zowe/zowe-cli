@@ -10,7 +10,7 @@
 */
 
 import { posix } from "path";
-import { AbstractSession, ImperativeError, ImperativeExpect } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";

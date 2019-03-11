@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 
 import { posix } from "path";
 

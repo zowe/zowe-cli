@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-workflows delete active-workflow definition", () => {
     it ("should not have changed", () => {
