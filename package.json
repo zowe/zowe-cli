@@ -59,7 +59,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
-  "dependencies":   {
+  "dependencies": {
     "@brightside/imperative": "^2.1.0",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
@@ -128,9 +128,7 @@
     "modulePathIgnorePatterns": [
       "__tests__/__snapshots__/"
     ],
-    "setupTestFrameworkScriptFile":
-      "./__tests__/beforeTests.js"
-    ,
+    "setupTestFrameworkScriptFile": "./__tests__/beforeTests.js",
     "testResultsProcessor": "jest-stare",
     "transform": {
       ".(ts)": "ts-jest"
