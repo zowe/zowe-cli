@@ -20,7 +20,7 @@ Array [
     "options": "\\"/u/ibmuser\\"",
   },
   Object {
-    "description": "Show the files and directories in path '/u/ibmuser displaying only the file or directory name:",
+    "description": "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
     "options": "\\"/u/ibmuser --rff name\\"",
   },
   Object {
