@@ -47,6 +47,14 @@ export const USSFileDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX1,
             options: `"/u/ibmuser"`
+        },
+        {
+            description: strings.EXAMPLES.EX2,
+            options: `"/u/ibmuser --rff name"`
+        },
+        {
+            description: strings.EXAMPLES.EX3,
+            options: `"/u/ibmuser --rfh"`
         }
     ]
 };
