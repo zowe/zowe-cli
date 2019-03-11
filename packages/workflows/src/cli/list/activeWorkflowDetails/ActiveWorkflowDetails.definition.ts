@@ -37,7 +37,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
     examples: [
         {
             description: "To list the details of an active workflow with key \"7c62c790-0340-86b2-61ce618d8f8c\" including its steps and variables",
-            options: "--by-workflow-key \"7c62c790-0340-86b2-61ce618d8f8c\" --list-steps --list-variables"
+            options: "--workflow-key \"7c62c790-0340-86b2-61ce618d8f8c\" --list-steps --list-variables"
         }
     ],
 };

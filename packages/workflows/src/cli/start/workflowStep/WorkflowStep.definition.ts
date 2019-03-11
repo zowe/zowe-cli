@@ -47,16 +47,16 @@ export const WorkflowStep: ICommandDefinition = {
     examples: [
         {
             description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
-            options: "\"Step1\" --with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
+            options: "\"Step1\" --workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
         },
         {
             description: "To start a workflow instance in z/OSMF from step \"Step1\" with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
-            options: "\"Step1\" --with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --perform-following-steps"
+            options: "\"Step1\" --workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --perform-following-steps"
         },
         {
             description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"" +
                 "and if there is a conflict in variable's value use the value that is in output file",
-            options: "\"Step1\" --with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
+            options: "\"Step1\" --workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
         }
     ],
 };

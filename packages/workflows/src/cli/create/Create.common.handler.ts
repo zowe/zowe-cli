@@ -57,7 +57,13 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
                 break;
 
             case "uss-file":
@@ -70,7 +76,13 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
                 break;
 
             default:
