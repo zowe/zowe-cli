@@ -322,10 +322,8 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Show the files and directories in path '/u/ibmuser'`,
-                    EX2: "Show the files and directories in path '/u/ibmuser " +
-                    "displaying only the file or directory name: $ zowe zos-files list uss-files /u/ibmuser --rff name",
-                    EX3: "Show the files and directories in path '/u/ibmuser' " +
-                    "displaying the headers associated with the file detail: $ zowe zos-files list uss-files /u/ibmuser --rfh"
+                    EX2: "Show the files and directories in path '/u/ibmuser displaying only the file or directory name:",
+                    EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
                 }
             }
         },
