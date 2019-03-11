@@ -21,7 +21,6 @@ describe("List Dataset handler", () => {
             const dataSetName = "testing";
 
             // Vars populated by the mocked function
-            let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
@@ -51,47 +50,42 @@ describe("List Dataset handler", () => {
                 };
             });
 
-            try {
-                // Invoke the handler with a full set of mocked arguments and response functions
-                await handler.process({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"],
-                        dataSetName,
-                        ...UNIT_TEST_ZOSMF_PROF_OPTS
+            // Invoke the handler with a full set of mocked arguments and response functions
+            await handler.process({
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"],
+                    dataSetName,
+                    ...UNIT_TEST_ZOSMF_PROF_OPTS
+                },
+                response: {
+                    data: {
+                        setMessage: jest.fn((setMsgArgs) => {
+                            apiMessage = setMsgArgs;
+                        }),
+                        setObj: jest.fn((setObjArgs) => {
+                            jsonObj = setObjArgs;
+                        })
                     },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        },
-                        progress: {
-                            startBar: jest.fn((parms) => {
-                                // do nothing
-                            }),
-                            endBar: jest.fn(() => {
-                                // do nothing
-                            })
-                        }
+                    console: {
+                        log: jest.fn((logArgs) => {
+                            logMessage += "\n" + logArgs;
+                        })
                     },
-                    profiles: {
-                        get: profFunc
+                    progress: {
+                        startBar: jest.fn((parms) => {
+                            // do nothing
+                        }),
+                        endBar: jest.fn(() => {
+                            // do nothing
+                        })
                     }
-                } as any);
-            } catch (e) {
-                error = e;
-            }
+                },
+                profiles: {
+                    get: profFunc
+                }
+            } as any);
 
-            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.dataSet).toHaveBeenCalledTimes(1);
             expect(List.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {});
