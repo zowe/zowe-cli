@@ -90,7 +90,7 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
                     }
                     await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey, this.arguments.resolveConflict);
                 } catch (err){
-                    error = "Archive workflow: " + err;
+                    error = "Start workflow: " + err;
                     throw error;
                 }
                 if (this.arguments.wait){

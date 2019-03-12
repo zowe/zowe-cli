@@ -66,9 +66,10 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                             additionalDetails: JSON.stringify(params)
                         });
                     }
-                    await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict);
+                    await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict,
+                        this.arguments.stepName, this.arguments.performFollowingSteps);
                 } catch (err){
-                    error = "Archive workflow: " + err;
+                    error = "Start workflow: " + err;
                     throw error;
                 }
                 params.response.data.setObj("Started.");
