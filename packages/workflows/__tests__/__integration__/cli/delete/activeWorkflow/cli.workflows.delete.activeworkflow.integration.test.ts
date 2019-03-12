@@ -41,6 +41,18 @@ describe("Delete active workflow integration test", () => {
         expect(response.stderr.toString()).toContain("The following options conflict");
     });
 
+    it("Should throw error if wfKey is empty.", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_missing_key.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("No value specified for option");
+    });
+
+    it("Should throw error if wfName is empty.", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_missing_name.sh", TEST_ENVIRONMENT);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("No value specified for option:");
+    });
+
     it("should display delete workflow help", async () => {
         const response = runCliScript(__dirname + "/__scripts__/delete_active_workflow_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
