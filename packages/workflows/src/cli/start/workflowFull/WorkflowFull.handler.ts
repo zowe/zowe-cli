@@ -12,7 +12,7 @@
 import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { isNullOrUndefined } from "util";
-import { PropertiesWorkflow, StartWorkflow } from "../../../..";
+import { PropertiesWorkflow, StartWorkflow, ListWorkflows } from "../../../..";
 import { IWorkflowInfo } from "../../../api/doc/IWorkflowInfo";
 
 
@@ -37,36 +37,92 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
+        let getWfKey;
         this.arguments = params.arguments;
-        // TODO after list is done: if workflow name is passed, get key
-        try{
-            await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict);
-        } catch (err){
-            error = "Start workflow: " + err;
-            throw error;
+
+        let sourceType: string;
+        if (this.arguments.workflowKey) {
+            sourceType = "workflowKey";
+        } else if (this.arguments.workflowName) {
+            sourceType = "workflowName";
         }
-        if (this.arguments.wait){
-            let response: IWorkflowInfo;
-            let flag = false;
-            while(!flag) {
-                response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
-                if (response.automationStatus && response.statusName !== "automation-in-progress") {
-                    flag = true;
-                    if (response.statusName === "complete") {
-                        params.response.data.setObj("Complete.");
-                        params.response.console.log("Workflow completed successfully.");
+
+        switch (sourceType) {
+            case "workflowKey":
+                try{
+                    await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict);
+                } catch (err){
+                    error = "Start workflow: " + err;
+                    throw error;
+                }
+                if (this.arguments.wait){
+                    let response: IWorkflowInfo;
+                    let flag = false;
+                    while(!flag) {
+                        response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
+                        if (response.automationStatus && response.statusName !== "automation-in-progress") {
+                            flag = true;
+                            if (response.statusName === "complete") {
+                                params.response.data.setObj("Complete.");
+                                params.response.console.log("Workflow completed successfully.");
+                            }
+                            else {
+                                throw new ImperativeError({
+                                    msg: `Workflow failed or was cancelled or there is manual step.`,
+                                    additionalDetails: JSON.stringify(response)
+                                });
+                            }
+                        }
                     }
-                    else {
+                } else {
+                    params.response.data.setObj("Started.");
+                    params.response.console.log("Workflow started.");
+                }
+                break;
+            case "workflowName":
+                try{
+                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    if (getWfKey === null) {
                         throw new ImperativeError({
-                            msg: `Workflow failed or was cancelled or there is manual step.`,
-                            additionalDetails: JSON.stringify(response)
+                            msg: `No workflows match the provided workflow name.`,
+                            additionalDetails: JSON.stringify(params)
                         });
                     }
+                    await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey, this.arguments.resolveConflict);
+                } catch (err){
+                    error = "Archive workflow: " + err;
+                    throw error;
                 }
-            }
-        } else {
-            params.response.data.setObj("Started.");
-            params.response.console.log("Workflow started.");
+                if (this.arguments.wait){
+                    let response: IWorkflowInfo;
+                    let flag = false;
+                    while(!flag) {
+                        response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
+                        if (response.automationStatus && response.statusName !== "automation-in-progress") {
+                            flag = true;
+                            if (response.statusName === "complete") {
+                                params.response.data.setObj("Complete.");
+                                params.response.console.log("Workflow completed successfully.");
+                            }
+                            else {
+                                throw new ImperativeError({
+                                    msg: `Workflow failed or was cancelled or there is manual step.`,
+                                    additionalDetails: JSON.stringify(response)
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    params.response.data.setObj("Started.");
+                    params.response.console.log("Workflow started.");
+                }
+                break;
+            default:
+            throw new ImperativeError({
+                msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
+                    `Please contact support.`,
+                additionalDetails: JSON.stringify(params)
+                });
         }
     }
 }

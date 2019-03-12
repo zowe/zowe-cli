@@ -39,10 +39,10 @@ export const WorkflowStep: ICommandDefinition = {
     ],
     options: ([
         StartCommonOptions.workflowKey,
-        // StartCommonOptions.workflowName,
+        StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
         StartCommonOptions.performFollowingSteps,
-        // StartCommonOptions.zosmfVersion
+        // StartCommonOptions.zosmfVersion,
     ]),
     examples: [
         {

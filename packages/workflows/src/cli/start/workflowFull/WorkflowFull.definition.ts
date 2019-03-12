@@ -31,10 +31,10 @@ export const WorkflowFull: ICommandDefinition = {
     },
     options: ([
         StartCommonOptions.workflowKey,
-        // StartCommonOptions.workflowName,
+        StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
         StartCommonOptions.wait,
-        // StartCommonOptions.zosmfVersion
+        // StartCommonOptions.zosmfVersion,
     ]),
     examples: [
         {
