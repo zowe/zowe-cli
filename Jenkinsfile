@@ -519,7 +519,7 @@ pipeline {
                         return currentBuild.resultIsBetterOrEqualTo(BUILD_SUCCESS)
                     }
                     expression {
-                        return BRANCH_NAME.equals(DEV_BRANCH.master) || BRANCH_NAME.equals(DEV_BRANCH.beta)
+                        return BRANCH_NAME.equals(DEV_BRANCH.master) || BRANCH_NAME.equals(DEV_BRANCH.beta) || BRANCH_NAME.equals(DEV_BRANCH.stable)
                     }
                 }
             }
@@ -558,6 +558,9 @@ pipeline {
                             def baseVersion = sh returnStdout: true, script: 'node -e "console.log(require(\'./package.json\').version.split(\'-\')[0])"'
                             def preReleaseVersion = baseVersion.trim() + "-beta." + new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("UTC")) 
                             sh "npm version ${preReleaseVersion} -m \"Bumped pre-release version to ${preReleaseVersion} [ci skip]\""
+                        }
+                        else if (BRANCH_NAME.equals(DEV_BRANCH.stable)) {
+                            sh "npm version patch -m \"Upgrade to %s [ci skip]\""
                         }
                     }
 
