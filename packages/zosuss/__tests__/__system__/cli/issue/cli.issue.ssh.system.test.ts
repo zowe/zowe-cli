@@ -151,14 +151,8 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         // upload required test files
         const shellScript = path.join(__dirname, "__scripts__", "command_upload_ftu.sh");
-        let localFileName = path.join(__dirname, "__data__", "sleepFor5mins.txt");
-        ussname = `${defaultSystem.unix.testdir}/sleepFor5mins.sh`;
-        // Imperative.console.info("Using ussfile:" + ussname);
-        // Imperative.console.info("Using localfile:" + localFileName);
-        let response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        // Imperative.console.info("Response:" + response.stdout.toString());
-        expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
+        let localFileName: string;
+        let response: any;
 
         ussname = `${defaultSystem.unix.testdir}/exit64.sh`;
         // Imperative.console.info("Using ussfile:" + ussname);
@@ -197,17 +191,8 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        let response;
+        let response: any;
         // delete uploaded test bash scripts
-        ussname = `${defaultSystem.unix.testdir}/sleepFor5mins.sh`;
-        const sleep10: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-        try {
-            response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, sleep10);
-            // Imperative.console.info("Deleted :" + ussname);
-        } catch (err) {
-            Imperative.console.error(err);
-        }
         ussname = `${defaultSystem.unix.testdir}/exit64.sh`;
         const exit64: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
