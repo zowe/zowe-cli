@@ -26,13 +26,22 @@ describe("Delete active workflow integration test", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
-    it("Should throw error if workflowKey is empty string.", async () => {
+    it("Should throw error if no option is chosen.", async () => {
         const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toContain("No value specified for option");
+        expect(response.stderr.toString()).toContain("You must specify one of these options");
     });
 
-    it("should display delete workflow-key help", async () => {
+    it("Should throw error if both options are chosen chosen.", async () => {
+        const wfKey = "fake-key";
+        const wfName = "fake-name";
+        const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_conflict.sh",
+                                    TEST_ENVIRONMENT, [wfKey, wfName]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("The following options conflict");
+    });
+
+    it("should display delete workflow help", async () => {
         const response = runCliScript(__dirname + "/__scripts__/delete_active_workflow_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
