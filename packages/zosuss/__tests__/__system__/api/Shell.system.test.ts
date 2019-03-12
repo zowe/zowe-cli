@@ -20,6 +20,7 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 let SSH_SESSION: SshSession;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
+const TIME_OUT = 10000;
 
 describe("zowe uss issue ssh api call test", () => {
 
@@ -51,7 +52,7 @@ describe("zowe uss issue ssh api call test", () => {
                 done();
             });
         });
-    });
+    }, TIME_OUT);
 
     it ("should resolve cwd option", (done) => {
         const command = "pwd";
@@ -68,6 +69,6 @@ describe("zowe uss issue ssh api call test", () => {
                 done();
             });
         });
-    });
+    }, TIME_OUT);
 
 });
