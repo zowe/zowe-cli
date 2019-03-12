@@ -261,18 +261,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
         expect(response.stdout.toString()).not.toContain("About to exit64");
     });
 
-    /*
-    it("script sleeps for 5 mins", async () => {
-        const directory = `${defaultSystem.unix.testdir}`;
-        const commandName = "cd " + directory + " && chmod 777 sleepFor5mins.sh && sleepFor5mins.sh";
-        // Imperative.console.info("Sleep command:" + commandName);
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-
-        checkResponse(response);
-        expect(response.stdout.toString()).toContain("FINISHED");
-    });
-    */
-
     it("script asks for input", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = " cd " + directory + " && chmod 777 askForName.sh && askForName.sh < tester.txt";
