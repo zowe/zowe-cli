@@ -26,9 +26,9 @@ const PRETEND_SESSION = new Session({
 });
 
 const ZOSMF_ISSUE_PARAMETERS: IZosmfIssueParms = {
-    cmd: "command",
-    solKey: "solkey",
-    system: "sys1",
+    "cmd": "command",
+    "sol-key": "solkey",
+    "system": "sys1",
 };
 
 const ISSUE_PARAMETERS: IIssueParms = {
@@ -48,8 +48,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCommonParms(PRETEND_SESSION, CONSOLE_NAME, ZOSMF_ISSUE_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -59,8 +58,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCommonParms(undefined, CONSOLE_NAME, ZOSMF_ISSUE_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -71,8 +69,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCommonParms(PRETEND_SESSION, undefined, ZOSMF_ISSUE_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -83,8 +80,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCommonParms(PRETEND_SESSION, CONSOLE_NAME, undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -97,8 +93,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueParms(PRETEND_SESSION, ISSUE_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -108,8 +103,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueParms(undefined, ISSUE_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -120,8 +114,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueParms(PRETEND_SESSION, undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -134,8 +127,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueSimpleParms(PRETEND_SESSION, IPLINFO);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -145,8 +137,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueSimpleParms(undefined, IPLINFO);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -157,8 +148,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueSimpleParms(PRETEND_SESSION, undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -171,8 +161,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectParm(COLLECT_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -182,8 +171,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectParm(undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -196,8 +184,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueParm(ISSUE_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -207,8 +194,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateIssueParm(undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -221,8 +207,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectCommonParms(PRETEND_SESSION, CONSOLE_NAME, RESPONSE_KEY);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -232,8 +217,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectCommonParms(undefined, CONSOLE_NAME, RESPONSE_KEY);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -244,8 +228,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectCommonParms(PRETEND_SESSION, undefined, RESPONSE_KEY);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -256,8 +239,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectCommonParms(PRETEND_SESSION, CONSOLE_NAME, undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -270,8 +252,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectParms(PRETEND_SESSION, COLLECT_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeUndefined();
@@ -281,8 +262,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectParms(undefined, COLLECT_PARAMETERS);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
@@ -293,8 +273,7 @@ describe("ConsoleValidator", () => {
             let error;
             try {
                 ConsoleValidator.validateCollectParms(PRETEND_SESSION, undefined);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();
