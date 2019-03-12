@@ -60,7 +60,7 @@ export const WorkflowStep: ICommandDefinition = {
         },
         {
             description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow name \"testWorkflow\"",
-            options: "\"Step1\" --workflow-key \"testWorkflow\""
+            options: "\"Step1\" --workflow-name \"testWorkflow\""
         },
     ],
 };
