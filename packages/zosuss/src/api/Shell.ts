@@ -9,12 +9,25 @@
 *
 */
 
-import { Logger, ImperativeError, Imperative } from "@brightside/imperative";
-import { Client, ClientChannel } from "ssh2";
+import { Logger, Session } from "@brightside/imperative";
+import { ClientChannel } from "ssh2";
 import { SshSession } from "../SshSession";
+const Client = require("ssh2");
+
+// These are needed for authenticationHandler
+let authPos = 0;
+const authsAllowed = ["none"];
 
 export class Shell {
     public static executeSsh(session: SshSession, command: string, callback: any): void {
+        // These are needed for authenticationHandler
+        // The order is critical as this is the order of authentication that will be used.
+        if(session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
+            authsAllowed.push("publickey");
+        }
+        if(session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
+            authsAllowed.push("password");
+        }
         const conn = new Client();
 
         conn.on("ready", () => {
@@ -37,8 +50,9 @@ export class Shell {
             privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
                         require("fs").readFileSync(session.ISshSession.privateKey) : "",
             passphrase: session.ISshSession.keyPassphrase,
+            authHandler: Shell.authenticationHandler
         });
-        conn.on("error", (err) => {
+        conn.on("error", (err: any) => {
             process.stderr.write(err +
                 ". Check Zowe ssh-profile:" +
                 "\n\thost: " + session.ISshSession.hostname +
@@ -63,5 +77,13 @@ export class Shell {
      */
     private static get log(): Logger {
         return Logger.getAppLogger();
+    }
+
+    private static authenticationHandler(methodsLeft: string[], partialSuccess: boolean, callback: any) {
+        partialSuccess = true;
+        if (authPos === authsAllowed.length) {
+            return false;
+        }
+        return authsAllowed[authPos++];
     }
 }
