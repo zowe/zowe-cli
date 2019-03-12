@@ -11,16 +11,35 @@ Object {
       "description": "To list the details of an active workflow with key \\"7c62c790-0340-86b2-61ce618d8f8c\\" including its steps and variables",
       "options": "--workflow-key \\"7c62c790-0340-86b2-61ce618d8f8c\\" --list-steps --list-variables",
     },
+    Object {
+      "description": "To list the details of an active workflow with name \\"testWorkflow\\" including its steps and variables",
+      "options": "--workflow-key \\"testWorkflow\\" --list-steps --list-variables",
+    },
   ],
   "name": "active-workflow-details",
   "options": Array [
+    Object {
+      "absenceImplications": Array [
+        "workflow-key",
+      ],
+      "aliases": Array [
+        "wn",
+      ],
+      "conflictsWith": Array [
+        "workflow-key",
+      ],
+      "description": "List active workflow details by specified workflow name.",
+      "name": "workflow-name",
+      "required": false,
+      "type": "string",
+    },
     Object {
       "aliases": Array [
         "wk",
       ],
       "description": "List active workflow details by specified workflow key.",
       "name": "workflow-key",
-      "required": true,
+      "required": false,
       "type": "string",
     },
     Object {
