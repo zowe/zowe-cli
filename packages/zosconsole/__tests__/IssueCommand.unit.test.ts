@@ -34,7 +34,7 @@ const PRETEND_SESSION = new Session({
 });
 
 const COMMAND_NAME: string = "cmd";
-const SOL_KEY_NAME: string = "solKey";
+const SOL_KEY_NAME: string = "sol-key";
 const SYSTEM_NAME: string = "system";
 
 const COMMAND_RESPONSE_KEY: string = "C1046283";

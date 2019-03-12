@@ -27,7 +27,7 @@ export interface IZosmfIssueParms {
      * @type {string}
      * @memberof IZosmfIssueParms
      */
-    solKey?: string;
+    "sol-key"?: string;
 
     /**
      * The system in the sysplex to route the command.
