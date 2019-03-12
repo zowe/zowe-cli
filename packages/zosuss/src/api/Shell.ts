@@ -9,19 +9,13 @@
 *
 */
 
-import { Logger } from "@brightside/imperative";
+import { Logger, ImperativeError, Imperative } from "@brightside/imperative";
 import { Client, ClientChannel } from "ssh2";
 import { SshSession } from "../SshSession";
 
 export class Shell {
     public static executeSsh(session: SshSession, command: string, callback: any): void {
         const conn = new Client();
-        let privateKeyPath;
-        try {
-            privateKeyPath = require("fs").readFileSync(session.ISshSession.privateKey);
-        } catch (err) {
-            privateKeyPath = "";
-        }
 
         conn.on("ready", () => {
             conn.shell((err: any, stream: ClientChannel) => {
@@ -29,7 +23,6 @@ export class Shell {
 
                 stream.on("close", () => {
                     conn.end();
-                    process.stdout.write("Closed connection\n");
                 });
                 // exit multiple times in case of nested shells
                 stream.end(command + "\nexit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n");
@@ -41,8 +34,9 @@ export class Shell {
             port: session.ISshSession.port,
             username: session.ISshSession.user,
             password: session.ISshSession.password,
-            privateKey: privateKeyPath,
-            passphrase: session.ISshSession.keyPassphrase
+            privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
+                        require("fs").readFileSync(session.ISshSession.privateKey) : "",
+            passphrase: session.ISshSession.keyPassphrase,
         });
         conn.on("error", (err) => {
             process.stderr.write(err +
