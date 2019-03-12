@@ -29,7 +29,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
         optional: ["zosmf"],
     },
     options: ([
-        // ActiveWorkflowDetailsCommonOptions.byName,
+        ActiveWorkflowDetailsCommonOptions.workflowName,
         ActiveWorkflowDetailsCommonOptions.workflowKey,
         ActiveWorkflowDetailsCommonOptions.listSteps,
         ActiveWorkflowDetailsCommonOptions.listVariables,
@@ -38,6 +38,10 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
         {
             description: "To list the details of an active workflow with key \"7c62c790-0340-86b2-61ce618d8f8c\" including its steps and variables",
             options: "--workflow-key \"7c62c790-0340-86b2-61ce618d8f8c\" --list-steps --list-variables"
+        },
+        {
+            description: "To list the details of an active workflow with name \"testWorkflow\" including its steps and variables",
+            options: "--workflow-key \"testWorkflow\" --list-steps --list-variables"
         }
     ],
 };
