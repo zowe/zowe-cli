@@ -31,7 +31,7 @@ node('ca-jenkins-agent') {
     pipeline.protectedBranches.addMap([
         [name: "master", tag: "daily", prerelease: "alpha", dependencies: ["@zowe/imperative": "daily"]],
         [name: "beta", tag: "beta", prerelease: "beta", dependencies: ["@zowe/imperative": "beta"]],
-        [name: "latest", tag: "latest", dependencies: ["@brightside/imperative": "latest"]],
+        [name: "latest", tag: "latest", dependencies: ["@zowe/imperative": "latest"]],
         [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.MINOR, dependencies: ["@brightside/imperative": "lts-incremental"]],
         [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]]
     ])
