@@ -24,7 +24,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         name: "data-set",
         aliases: ["ds"],
         type: "string",
-        description: "Data set containing workflow definiton.",
+        description: "Data set that contains a workflow definiton.",
         required: true,
     },
 
@@ -36,7 +36,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         name: "uss-file",
         aliases: ["uf"],
         type: "string",
-        description: "Uss file containing workflow definiton.",
+        description: "Uss file that contains workflow definiton.",
         required: true,
     },
 
@@ -47,7 +47,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     systemName: {
         name: "system-name",
         aliases: ["sn"],
-        description: "System where the workflow will run.",
+        description: "z/OS system to execute the workflow.",
         type: "string",
         required: true
     },
@@ -84,7 +84,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     variables: {
         name: "variables",
         aliases: ["vs"],
-        description: "A list of one or more variables for the workflow. " +
+        description: "Includes a list of variables for the workflow. " +
         "The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
         type: "string",
         required: false
@@ -125,11 +125,22 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     deleteCompleted: {
         name: "delete-completed",
         aliases: ["dc"],
-        description: "Whether the successfully completed jobs to  be deleted from the JES spool.",
+        description: "Whether the successfully completed jobs to be deleted from the JES spool.",
         type: "boolean",
         required: false
     },
 
+    /**
+     * Specifies whether delete workflow with the same name if it already exists.
+     * @type {ICommandOptionDefinition}
+     */
+    overwrite: {
+        name: "overwrite",
+        aliases: ["ov"],
+        description: "Specifies whether the workflow with the same name should be deleted if it already exists.",
+        type: "boolean",
+        required: false
+    },
     /**
      * Identifies the version of the zOSMF workflow service.
      * @type {ICommandOptionDefinition}

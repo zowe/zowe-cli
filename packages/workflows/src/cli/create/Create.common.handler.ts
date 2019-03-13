@@ -12,6 +12,7 @@
 import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { CreateWorkflow } from "../../api/Create";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { ListWorkflows, DeleteWorkflow } from "../../..";
 
 /**
  * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.
@@ -43,9 +44,19 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
             sourceType = "uss-file";
         }
 
+        let wfKey: string;
         let resp;
         let error;
-
+        if (this.arguments.overwrite) {
+            wfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName);
+            if (wfKey) {
+                try{
+                    resp = await DeleteWorkflow.deleteWorkflow(this.mSession, wfKey);
+                } catch (err) {
+                    error = "Deleting z/OSMF workflow with workflow name " + this.arguments.workflowName + " failed. More details: \n" + err;
+                }
+            }
+        }
         switch (sourceType) {
             case "dataset":
                 try{
@@ -53,11 +64,17 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
-                    error = "Register workflow: " + err;
+                    error = "Creating zOS/MF workflow with data set: " + this.arguments.dataSet + " failed. More details: \n" + err;
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
                 break;
 
             case "uss-file":
@@ -66,11 +83,17 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
-                    error = "Register workflow: " + err;
+                    error = "Creating zOS/MF workflow with uss file: " + this.arguments.ussFile + " failed. More details: \n" + err;
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
                 break;
 
             default:
