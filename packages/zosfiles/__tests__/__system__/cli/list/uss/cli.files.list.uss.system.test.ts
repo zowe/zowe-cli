@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
 import { inspect } from "util";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
