@@ -41,7 +41,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
         },
         {
             description: "To list the details of an active workflow with name \"testWorkflow\" including its steps and variables",
-            options: "--workflow-key \"testWorkflow\" --list-steps --list-variables"
+            options: "--workflow-name \"testWorkflow\" --list-steps --list-variables"
         }
     ],
 };
