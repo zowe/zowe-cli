@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "pv",
   ],
-  "description": "Perform z/OSMF provisioning tasks on Published Templates in the Service Catalog and Provisioned Instances in the Service Registry.",
+  "description": "Perform z/OSMF provisioning tasks",
   "name": "provisioning",
   "passOn": Array [
     Object {
