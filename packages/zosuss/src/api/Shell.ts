@@ -9,14 +9,17 @@
 *
 */
 
-import { Logger, Session } from "@brightside/imperative";
+import { Logger, ImperativeError } from "@brightside/imperative";
 import { ClientChannel } from "ssh2";
 import { SshSession } from "../SshSession";
+import { ZosUssMessages } from "../api/constants/ZosUss.messages";
+import { Stream } from "stream";
 const Client = require("ssh2");
 
 // These are needed for authenticationHandler
 let authPos = 0;
 const authsAllowed = ["none"];
+let hasAuthFailed = false;
 
 export class Shell {
     public static executeSsh(session: SshSession, command: string, callback: any): void {
@@ -50,19 +53,32 @@ export class Shell {
             privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
                         require("fs").readFileSync(session.ISshSession.privateKey) : "",
             passphrase: session.ISshSession.keyPassphrase,
-            authHandler: Shell.authenticationHandler
+            authHandler: Shell.authenticationHandler,
+            readyTimeout: 2000
         });
-        conn.on("error", (err: any) => {
-            process.stderr.write(err +
-                ". Check Zowe ssh-profile:" +
-                "\n\thost: " + session.ISshSession.hostname +
-                "\n\tport: " + session.ISshSession.port +
-                "\n\tusername: " + session.ISshSession.user +
-                "\n\tpassword: " + session.ISshSession.password +
-                "\n\tprivateKey: " + session.ISshSession.privateKey +
-                "\n\tpassphrase: " + session.ISshSession.keyPassphrase +
-                "\n"
-            );
+        conn.on("error", (err: Error) => {
+            if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
+                hasAuthFailed = true;
+                throw new ImperativeError({
+                    msg: ZosUssMessages.allAuthMethodsFailed.message,
+                });
+            }
+            // throw error only when authentication didn't fail.
+            else if( !hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
+                throw new ImperativeError({
+                    msg: ZosUssMessages.handshakeTimeout.message,
+                });
+            }
+            // process.stderr.write(err +
+            //     ". Check Zowe ssh-profile:" +
+            //     "\n\thost: " + session.ISshSession.hostname +
+            //     "\n\tport: " + session.ISshSession.port +
+            //     "\n\tusername: " + session.ISshSession.user +
+            //     "\n\tpassword: " + session.ISshSession.password +
+            //     "\n\tprivateKey: " + session.ISshSession.privateKey +
+            //     "\n\tpassphrase: " + session.ISshSession.keyPassphrase +
+            //     "\n"
+            // );
         });
     }
 
