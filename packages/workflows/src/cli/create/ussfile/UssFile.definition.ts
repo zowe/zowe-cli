@@ -57,7 +57,7 @@ export const UssFile: ICommandDefinition = {
         },
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
-            "on system \"TESTM1\" with owner \"MYSYSID\" and delete succesfully completed jobs",
+            "on system \"TESTM1\" with owner \"MYSYSID\" and delete successfully completed jobs",
             options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"MYSYSID\" --delete-completed"
         },
         {

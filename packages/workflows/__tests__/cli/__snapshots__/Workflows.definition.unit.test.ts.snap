@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "wf",
   ],
-  "description": "Manage z/OSMF workflows, create workflow instances, and more",
+  "description": "Create and manage z/OSMF workflows on a z/OS system",
   "name": "zos-workflows",
   "passOn": Array [
     Object {
@@ -80,7 +80,6 @@ Object {
       ],
     },
   ],
-  "summary": "Manage z/OSMF workflows",
   "type": "group",
 }
 `;

@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { isNullOrUndefined } from "util";
 import { PropertiesWorkflow, StartWorkflow } from "../../../..";
@@ -51,15 +51,16 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
             while(!flag) {
                 response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
                 if (response.automationStatus && response.statusName !== "automation-in-progress") {
+                    flag = true;
                     if (response.statusName === "complete") {
                         params.response.data.setObj("Complete.");
                         params.response.console.log("Workflow completed successfully.");
-                        flag = true;
                     }
                     else {
-                        params.response.data.setObj("Fail.");
-                        params.response.console.log("Workflow failed or was cancelled or there is manual step.");
-                        flag = true;
+                        throw new ImperativeError({
+                            msg: `Workflow failed or was cancelled or there is manual step.`,
+                            additionalDetails: JSON.stringify(response)
+                        });
                     }
                 }
             }
