@@ -36,9 +36,9 @@ export default class Handler extends SshBaseHandler {
 
     public async processCmd(commandParameters: IHandlerParameters) {
         if (commandParameters.arguments.cwd) {
-            Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd, this.streamCallBack);
+           await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd, this.streamCallBack);
         } else {
-            Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.streamCallBack);
+           await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.streamCallBack);
         }
     }
 }
