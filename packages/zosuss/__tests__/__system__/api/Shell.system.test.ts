@@ -38,37 +38,32 @@ describe("zowe uss issue ssh api call test", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it ("should execute uname command on the remote system by ssh and return operating system name", (done) => {
+    it ("should execute uname command on the remote system by ssh and return operating system name", async () => {
         const command = "uname";
-        Shell.executeSsh(SSH_SESSION, command, (stream: ClientChannel) => {
-            let stdoutData: string;
+        let stdoutData: string;
+        await Shell.executeSsh(SSH_SESSION, command, (stream: ClientChannel) => {
             stream.on("data", (data: string) => {
                 if (!data.includes("exit")) {
                     stdoutData += data;
                 }
             });
-            stream.on("close", () => {
-                expect(stdoutData).toMatch("OS/390");
-                done();
-            });
         });
+        expect(stdoutData).toMatch("OS/390");
+
     }, TIME_OUT);
 
-    it ("should resolve cwd option", (done) => {
+    it ("should resolve cwd option", async () => {
         const command = "pwd";
         const cwd =  `${defaultSystem.unix.testdir}/`;
-        Shell.executeSshCwd(SSH_SESSION, command, cwd, (stream: ClientChannel) => {
-            let stdoutData: string;
+        let stdoutData: string;
+        await Shell.executeSshCwd(SSH_SESSION, command, cwd, (stream: ClientChannel) => {
             stream.on("data", (data: string) => {
                 if (!data.includes("exit")) {
                     stdoutData += data;
                 }
             });
-            stream.on("close", () => {
-                expect(stdoutData).toMatch(new RegExp("\\" + cwd + "\\s"));
-                done();
-            });
         });
+        expect(stdoutData).toMatch(new RegExp("\\" + cwd + "\\s"));
     }, TIME_OUT);
 
 });

@@ -121,7 +121,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
 
         });
 
-        it.skip("should write a long directory", async () => {
+        it("should write a long directory", async () => {
             const j = 200;
             const randomDir = generateRandomString(j);
             const directory = `${defaultSystem.unix.testdir}/`;
