@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { AllMembersDefinition } from "./am/AllMembers.definition";
 import { DataSetDefinition } from "./ds/DataSet.definition";
+import { USSFileDefinition } from "./uss/UssFile.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -30,6 +31,7 @@ export const ListDefinition: ICommandDefinition = {
     description: strings.DESCRIPTION,
     children: [
         AllMembersDefinition,
-        DataSetDefinition
+        DataSetDefinition,
+        USSFileDefinition
     ],
 };

@@ -147,7 +147,7 @@ export class IssueCommand {
 
         const zosmfParms: IZosmfIssueParms = {cmd: parms.command};
         if (!isNullOrUndefined(parms.solicitedKeyword)) {
-            zosmfParms.solKey = parms.solicitedKeyword;
+            zosmfParms["sol-key"] = parms.solicitedKeyword;
         }
         if (!isNullOrUndefined(parms.sysplexSystem)) {
             zosmfParms.system = parms.sysplexSystem;

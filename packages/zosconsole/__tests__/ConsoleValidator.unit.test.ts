@@ -26,9 +26,9 @@ const PRETEND_SESSION = new Session({
 });
 
 const ZOSMF_ISSUE_PARAMETERS: IZosmfIssueParms = {
-    cmd: "command",
-    solKey: "solkey",
-    system: "sys1",
+    "cmd": "command",
+    "sol-key": "solkey",
+    "system": "sys1",
 };
 
 const ISSUE_PARAMETERS: IIssueParms = {

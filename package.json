@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "3.4.2-alpha.201903081611",
+  "version": "3.5.1-alpha.201903111615",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
