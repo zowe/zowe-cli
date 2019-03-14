@@ -807,15 +807,10 @@ describe("z/OS Files - Upload", () => {
             const testPath = "test/path";
             isDirSpy.mockReturnValue(true);
             isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
-            createUssDirSpy.mockImplementation(()=>{
-                return Promise.resolve();
-            });
+            createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
             // tslint:disable-next-line:max-line-length
             getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
-            createUssDirSpy.mockImplementation(()=>{
-                return Promise.resolve();
-            });
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             fileToUSSFileSpy.mockReturnValue({});
             try {
@@ -827,7 +822,7 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
             expect(USSresponse.success).toBeTruthy();
-            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
+            expect(createUssDirSpy).toHaveBeenCalledTimes(2);
         });
 
         it("should throw an error if local directory is not specified", async () => {
@@ -892,45 +887,18 @@ describe("z/OS Files - Upload", () => {
             expect(error.message).toContain(ZosFilesMessages.missingUSSDirectoryName.message);
         });
 
-        // it("should return with proper response", async () => {
-        //     const testReturn = {};
-        //     const testPath = "test/path";
-        //     isDirSpy.mockReturnValueOnce(true);
-        //     isDirectoryExistsSpy.mockReturnValueOnce(true);
-        //     getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
-        //     filterDirectoriesSpy.mockReturnValueOnce([]);
-        //     getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-        //     fileToUSSFileSpy.mockReturnValue(testReturn);
-        //     fileToUSSFileSpy.mockReturnValue(testReturn);
-        //     promiseSpy.mockReturnValueOnce({});
-
-        //     try {
-        //         USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
-        //     } catch (err) {
-        //         error = err;
-        //     }
-
-        //     expect(error).toBeUndefined();
-        //     expect(USSresponse).toBeDefined();
-        //     expect(USSresponse.success).toBeTruthy();
-        // });
-
         it("should return with proper response", async () => {
             const testReturn = {};
             const testPath = "test/path";
-            isDirSpy.mockReturnValue(true);
-            isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
-            createUssDirSpy.mockImplementation(()=>{
-                return Promise.resolve();
-            });
-            // tslint:disable-next-line:max-line-length
-            getFileListWithFsSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
-            filterDirectoriesSpy.mockReturnValueOnce([]).mockReturnValueOnce([]);
-            createUssDirSpy.mockImplementation(()=>{
-                return Promise.resolve();
-            });
-            getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
-            fileToUSSFileSpy.mockReturnValue({});
+            isDirSpy.mockReturnValueOnce(true);
+            isDirectoryExistsSpy.mockReturnValueOnce(true);
+            getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
+            filterDirectoriesSpy.mockReturnValueOnce([]);
+            getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
+            fileToUSSFileSpy.mockReturnValue(testReturn);
+            fileToUSSFileSpy.mockReturnValue(testReturn);
+            promiseSpy.mockReturnValueOnce({});
+
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
             } catch (err) {
@@ -940,7 +908,6 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
             expect(USSresponse.success).toBeTruthy();
-            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
         });
     });
 

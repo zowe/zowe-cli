@@ -25,9 +25,4 @@ export interface IUploadDir {
      * full path specification (on local host)
      */
     fullPath: string;
-
-    /**
-     * list of files contained in the directory
-     */
-    fileArray?: IUploadFile[];
 }
