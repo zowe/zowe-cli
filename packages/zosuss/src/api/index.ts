@@ -10,3 +10,5 @@
 */
 
 export * from "./Shell";
+
+export * from "./constants/ZosUss.messages";
