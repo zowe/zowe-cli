@@ -53,11 +53,17 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
-                    error = "Register workflow: " + err;
+                    error = "Creating zOS/MF workflow instance with data set: " + this.arguments.dataSet + " failed. More details: \n" + err;
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
                 break;
 
             case "uss-file":
@@ -66,11 +72,17 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
-                    error = "Register workflow: " + err;
+                    error = "Creating zOS/MF workflow instance with uss file: " + this.arguments.ussFile + " failed. More details: \n" + err;
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow created with workflow-key " + resp.workflowKey);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
                 break;
 
             default:

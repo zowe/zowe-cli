@@ -5,10 +5,10 @@ Object {
   "aliases": Array [
     "wfds",
   ],
-  "description": "Create a workflow instance in z/OSMF using a Data set",
+  "description": "Create a z/OSMF workflow on a z/OS system using a Data set",
   "examples": Array [
     Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using data set \\"TESTID.WKFLOW\\" containing workflow definition xml, on system \\"TESTM1\\"",
+      "description": "Create a workflow with name \\"testworkflow\\" using the data set \\"TESTID.WKFLOW\\" that contains the workflow definition xml on the system \\"TESTM1\\"",
       "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\"",
     },
     Object {
@@ -20,7 +20,7 @@ Object {
       "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\" --variables-input-file TESTID.DATA(PROPERTIES)",
     },
     Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using data set \\"TESTID.WKFLOW\\" containing workflow definition xml, on system \\"TESTM1\\" with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
+      "description": "Create a workflow with name \\"testworkflow\\" using the data set \\"TESTID.WKFLOW\\" that contains a workflow definition xml, on a system \\"TESTM1\\" with the variable name DUMMYVAR and the value DUMMYVAL. Assign it to the owner",
       "options": "\\"testworkflow\\" --data-set \\"TESTID.WKFLOW\\" --system-name \\"TESTM1\\" --variables DUMMYVAR=DUMMYVAL --assign-to-owner",
     },
   ],
@@ -30,7 +30,7 @@ Object {
       "aliases": Array [
         "ds",
       ],
-      "description": "Data set containing workflow definiton.",
+      "description": "Data set that contains a workflow definiton.",
       "name": "data-set",
       "required": true,
       "type": "string",
@@ -39,7 +39,7 @@ Object {
       "aliases": Array [
         "sn",
       ],
-      "description": "System where the workflow will run.",
+      "description": "z/OS system to execute the workflow.",
       "name": "system-name",
       "required": true,
       "type": "string",
@@ -66,7 +66,7 @@ Object {
       "aliases": Array [
         "vs",
       ],
-      "description": "A list of one or more variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
+      "description": "Includes a list of variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
       "name": "variables",
       "required": false,
       "type": "string",
@@ -110,7 +110,7 @@ Object {
   "outputFormatOptions": true,
   "positionals": Array [
     Object {
-      "description": "Name of the workflow instance to create",
+      "description": "Name of the workflow",
       "name": "workflowName",
       "required": true,
       "type": "string",

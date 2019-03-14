@@ -35,6 +35,14 @@ export class WorkflowConstants {
     public static readonly WORKFLOW_RESOURCE: string = "workflows";
 
     /**
+     * URI base for workflows API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly ARCH_WORKFLOW_RESOURCE: string = "archivedworkflows";
+
+    /**
      * URI base for starting workflow API.
      * @static
      * @type {string}
@@ -43,7 +51,16 @@ export class WorkflowConstants {
     public static readonly START_WORKFLOW: string = "operations/start";
 
     /**
+     * URI base for archiving workflow API
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly ARCHIVE_WORKFLOW: string = "operations/archive";
+
+    /**
      * URI base for canceling workflow API.
+     *
      * @static
      * @type {string}
      * @memberof WorkflowConstants
@@ -255,9 +272,6 @@ export const wrongString: IMessageDefinition = {
  */
 export const noOwner: IMessageDefinition = {
     message: apiErrorHeader + `No owner parameter was supplied.`
-};
-export const wrongPath: IMessageDefinition = {
-    message: apiErrorHeader + `Wrong format of USS path or DSNAME supplied.`
 };
 export const wrongOwner: IMessageDefinition = {
     message: apiErrorHeader + `Wrong format of user ID supplied.`
