@@ -9,9 +9,9 @@
 *
 */
 
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session, IO } from "@brightside/imperative";
 import * as path from "path";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript , stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
@@ -19,12 +19,20 @@ import { ITestSystemSchema } from "../../../../../../__tests__/__src__/propertie
 import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../rest";
 
+
 // Test environment will be populated in the "beforeAll"
 let TEST_ENVIRONMENT: ITestEnvironment;
 let REAL_SESSION: Session;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 let ussname: string;
+
+let host: string;
+let port: number;
+let user: string;
+let password: string;
+let privateKey: string;
+let keyPassphrase: string;
 
 function checkResponse(response: any) {
     expect(response.stderr.toString()).toBe("");
@@ -266,4 +274,115 @@ describe("zowe uss issue ssh running bash scripts", () => {
         expect(response.stdout.toString()).not.toContain("Ended");
     });
 
+});
+describe.only("zowe uss issue ssh passwords and passkeys", () => {
+
+    // Create the unique test environment
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            testName: "issue_ssh",
+            tempProfileTypes: ["ssh"]
+        });
+
+        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
+        host = systemProps.getDefaultSystem().ssh.host;
+        port = systemProps.getDefaultSystem().ssh.port;
+        user = systemProps.getDefaultSystem().ssh.user;
+        password = systemProps.getDefaultSystem().ssh.password;
+        privateKey = systemProps.getDefaultSystem().ssh.privateKey;
+        keyPassphrase = systemProps.getDefaultSystem().ssh.keyPassphrase;
+        defaultSystem = systemProps.getDefaultSystem();
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    it("uses only user and password", async () => {
+
+        // create a temporary zowe profile with an invalid port
+        let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_withoutprivateKey";
+        let command = "zowe profiles create ssh-profile " + host + "onlypassword --host " + host  + " --port " + port
+                        + " --user " + user + " --password " + password;
+        Imperative.console.info("create zoweProfile:_withouthprivateKey" + command);
+        await IO.writeFileAsync(scriptPath, command);
+        let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
+        Imperative.console.info("Response from create profile withoutprivatekey:" + resp.stdout.toString());
+        expect(resp.status).toBe(0);
+        // default to the temporary profile
+        command = "zowe profiles set  ssh " + host + "onlypassword";
+        scriptPath = TEST_ENVIRONMENT.workingDir + "_set_profile_withoutprivateKey";
+        Imperative.console.info("Set zoweProfile_withoutprivatekey:" + command);
+        await IO.writeFileAsync(scriptPath, command);
+        resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
+        Imperative.console.info("Response from set profile withoutprivatekey:" + resp.stdout.toString());
+        expect(resp.status).toBe(0);
+        // now check the command can run
+        command = "uname";
+        Imperative.console.info("Return OS command:" + command);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
+        checkResponse(response);
+        Imperative.console.info("Response from command withoutprivatekey:" + response.stdout.toString());
+        expect(response.stdout.toString()).toMatch("OS/390");
+
+
+    });
+
+    it("use invalid passphrase", async () => {
+        // create a temporary zowe profile with an invalid passphrase
+        const bogusKeyPassword = "bogusKeyPassword";
+        let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_invalid_passphrase";
+        let command = "zowe profiles create ssh-profile " + host + "invalidpassphrase --host " + host  + " --port " + port
+                        + " --user " + user + " --password " + password + " --privateKey " +  privateKey
+                        + " --keyPassphrase " + bogusKeyPassword;
+
+        Imperative.console.info("create zoweProfile:_with_invalid_passphrase" + command);
+        await IO.writeFileAsync(scriptPath, command);
+        let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
+        Imperative.console.info("Response from create profile with_invalid_passphrase:" + resp.stdout.toString());
+        expect(resp.status).toBe(0);
+        // default to the temporary profile
+        command = "zowe profiles set  ssh " + host + "invalidpassphrase";
+        scriptPath = TEST_ENVIRONMENT.workingDir + "_set_profile_with_invalid_passphrase";
+        Imperative.console.info("Set zoweProfile_with_invalid_passphrase:" + command);
+        await IO.writeFileAsync(scriptPath, command);
+        resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
+        Imperative.console.info("Response from set profile with_invalid_passphrase:" + resp.stdout.toString());
+        expect(resp.status).toBe(0);
+        // now check the command can run
+        command = "uname";
+        Imperative.console.info("Return OS command:" + command);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
+        Imperative.console.info("Response from command with_invalid_passphrase:" + response.stdout.toString());
+        expect(response.stderr.toString()).toContain("Bad passphrase");
+    });
+
+    it("use invalid privateKey", async () => {
+        // create a temporary zowe profile with an invalid passkey
+        const bogusPrivateKey = "bogusKey";
+        let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_invalid_privatekey";
+        let command = "zowe profiles create ssh-profile " + host + "invalidprivatekey --host " + host  + " --port " + port
+                        + " --user " + user + " --password " + password + " --privateKey " +  bogusPrivateKey
+                        + " --keyPassphrase " + keyPassphrase;
+
+        Imperative.console.info("create zoweProfile:_with_invalid_privateKey" + command);
+        await IO.writeFileAsync(scriptPath, command);
+        let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
+        Imperative.console.info("Response from create profile with_invalid_privateKey:" + resp.stdout.toString());
+        expect(resp.status).toBe(0);
+        // default to the temporary profile
+        command = "zowe profiles set  ssh " + host + "invalidprivatekey";
+        scriptPath = TEST_ENVIRONMENT.workingDir + "_set_profile_with_invalid_privateKey";
+        Imperative.console.info("Set zoweProfile_with_invalid_privateKey:" + command);
+        await IO.writeFileAsync(scriptPath, command);
+        resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
+        Imperative.console.info("Response from set profile with_invalid_privateKey:" + resp.stdout.toString());
+        expect(resp.status).toBe(0);
+        // now check the command can run
+        command = "uname";
+        Imperative.console.info("Return OS command:" + command);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
+        Imperative.console.info("Response from command with_invalid_privateKey:" + response.stderr.toString());
+        expect(response.stderr.toString()).toMatch("no such file or directory, open 'bogusKey'");
+    });
 });
