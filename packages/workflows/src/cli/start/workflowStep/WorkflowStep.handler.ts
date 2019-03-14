@@ -9,8 +9,8 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
-import { StartWorkflow } from "../../../../";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { StartWorkflow, ListWorkflows } from "../../../../";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 
@@ -35,16 +35,52 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
+        let getWfKey;
         this.arguments = params.arguments;
-        // TODO after list is done: if workflow name is passed, get key
-        try{
-            await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict,
-                this.arguments.stepName, this.arguments.performFollowingSteps);
-        } catch (err){
-            error = "Start workflow: " + err;
-            throw error;
+
+        let sourceType: string;
+        if (this.arguments.workflowKey) {
+            sourceType = "workflowKey";
+        } else if (this.arguments.workflowName) {
+            sourceType = "workflowName";
         }
-        params.response.data.setObj("Started.");
-        params.response.console.log("Workflow step started.");
+
+        switch (sourceType) {
+            case "workflowKey":
+                try{
+                    await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict,
+                        this.arguments.stepName, this.arguments.performFollowingSteps);
+                } catch (err){
+                    error = "Start workflow: " + err;
+                    throw error;
+                }
+                params.response.data.setObj("Started.");
+                params.response.console.log("Workflow step started.");
+                break;
+            case "workflowName":
+                try{
+                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    if (getWfKey === null) {
+                        throw new ImperativeError({
+                            msg: `No workflows match the provided workflow name.`,
+                            additionalDetails: JSON.stringify(params)
+                        });
+                    }
+                    await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict,
+                        this.arguments.stepName, this.arguments.performFollowingSteps);
+                } catch (err){
+                    error = "Start workflow: " + err;
+                    throw error;
+                }
+                params.response.data.setObj("Started.");
+                params.response.console.log("Workflow step started.");
+                break;
+            default:
+            throw new ImperativeError({
+                msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
+                    `Please contact support.`,
+                additionalDetails: JSON.stringify(params)
+                });
+        }
     }
 }

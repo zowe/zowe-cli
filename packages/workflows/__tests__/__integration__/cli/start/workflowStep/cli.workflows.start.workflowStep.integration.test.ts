@@ -34,7 +34,31 @@ describe("Create workflow cli system tests", () => {
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("stepName");
                 expect(response.stderr.toString()).toContain("Missing Positional Argument");
-        });
+            });
+
+            it("Should throw error if workflow key is missing.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_step.sh", TEST_ENVIRONMENT, ["step1"]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("No value specified for option");
+            });
+
+            it("Should throw error if workflow name is missing.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_name_step.sh", TEST_ENVIRONMENT, ["step1"]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("No value specified for option");
+            });
+
+            it("Should throw error if workflow key option or workflow name option is not specified.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_empty.sh", TEST_ENVIRONMENT, ["step1"]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("You must specify one of these option");
+            });
+
+            it("Should throw error if both workflow key option and workflow name option are specified.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_both.sh", TEST_ENVIRONMENT, ["step1"]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("The following options conflict");
+            });
         });
         describe("Display Help", () => {
             it("should display start workflow-step help", async () => {

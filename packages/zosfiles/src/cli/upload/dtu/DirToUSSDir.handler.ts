@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, TextUtils, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Upload } from "../../../api/methods/upload";
 import { IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -25,9 +25,15 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
+        const status: ITaskWithStatus = {
+            statusMessage: "Uploading all files",
+            percentComplete: 0,
+            stageName: TaskStage.IN_PROGRESS
+        };
+
         let inputDir: string;
 
-        // resolving to full path if passed path is not absolute
+        // resolving to full path if local path passed is not absolute
         if (path.isAbsolute(commandParameters.arguments.inputDir)) {
             inputDir = commandParameters.arguments.inputDir;
         } else {
@@ -35,24 +41,45 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         }
 
         // build filesMap argument
-        let filesMap: IUploadMap = null;
+        let fileMap: IUploadMap = null;
 
         // checking if binary-files or ascii-files are used, and update filesMap argument
         if(commandParameters.arguments.binaryFiles) {
-            filesMap = {
+            fileMap = {
                 binary : true,
                 fileNames : commandParameters.arguments.binaryFiles.split(",").map((fileName: string) => fileName.trim()),
             };
         }
         if(commandParameters.arguments.asciiFiles) {
-            filesMap = {
+            fileMap = {
                 binary : false,
                 fileNames : commandParameters.arguments.asciiFiles.split(",").map((fileName: string) => fileName.trim()),
             };
         }
 
-        const response = await Upload.dirToUSSDir(session, inputDir, commandParameters.arguments.USSDir,
-            commandParameters.arguments.binary, commandParameters.arguments.recursive, filesMap);
+        commandParameters.response.progress.startBar({task: status});
+
+        let response: IZosFilesResponse;
+        if(commandParameters.arguments.recursive) {
+            response = await Upload.dirToUSSDirRecursive(session,
+                inputDir,
+                commandParameters.arguments.USSDir, {
+                    binary: commandParameters.arguments.binary,
+                    filesMap: fileMap,
+                    maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+                    task: status
+                });
+        } else {
+            response = await Upload.dirToUSSDir(session,
+                inputDir,
+                commandParameters.arguments.USSDir, {
+                    binary: commandParameters.arguments.binary,
+                    filesMap: fileMap,
+                    maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+                    task: status
+                });
+        }
+
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;

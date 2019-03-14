@@ -30,10 +30,28 @@ describe("Create workflow cli system tests", () => {
     describe("Start workflow", () => {
         describe("Failure Scenarios", () => {
             it("Should throw error if workflow key is missing.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_full.sh", TEST_ENVIRONMENT);
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_full.sh", TEST_ENVIRONMENT);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("workflow-key");
-        });
+            });
+
+            it("Should throw error if workflow name is missing.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_name_full.sh", TEST_ENVIRONMENT);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("workflow-name");
+            });
+
+            it("Should throw error if workflow key option or workflow name option is not specified.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_empty.sh", TEST_ENVIRONMENT);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("You must specify one of these option");
+            });
+
+            it("Should throw error if both workflow key option and workflow name option are specified.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_both.sh", TEST_ENVIRONMENT);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("The following options conflict");
+            });
         });
         describe("Display Help", () => {
             it("should display start workflow-full help", async () => {

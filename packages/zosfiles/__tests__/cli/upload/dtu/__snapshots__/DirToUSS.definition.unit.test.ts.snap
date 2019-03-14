@@ -40,13 +40,27 @@ Array [
     "name": "ascii-files",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "mcr",
+    ],
+    "defaultValue": 1,
+    "description": "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files. Increasing the value results in faster uploads. However, increasing the value increases resource consumption on z/OS and can be prone to errors caused by making too many concurrent requests. If the upload process encounters an error, the following message displays:
+The maximum number of TSO address spaces have been created. When you specify 0, Zowe CLI attempts to upload all members at once without a maximum number of concurrent requests. ",
+    "name": "max-concurrent-requests",
+    "numericValueRange": Array [
+      0,
+      99999,
+    ],
+    "type": "number",
+  },
 ]
 `;
 
 exports[`zos-files upload dtu command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory:\\"",
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory:\\"",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\"",
   },
   Object {

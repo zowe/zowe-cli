@@ -140,6 +140,8 @@ export class Delete {
 
         // Format the endpoint to send the request to
         let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES);
+
+        fileName = encodeURIComponent(fileName);
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

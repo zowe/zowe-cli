@@ -9,9 +9,10 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { DeleteWorkflow } from "../../api/Delete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { ListWorkflows } from "../../..";
 
 
 /**
@@ -35,14 +36,53 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
+        let resp;
+        let getWfKey;
         this.arguments = params.arguments;
-        try{
-            await DeleteWorkflow.deleteWorkflow(this.mSession, this.arguments.workflowKey);
-        } catch (err){
-            error = "Delete workflow: " + err;
-            throw error;
+
+        let sourceType: string;
+        if (this.arguments.workflowKey) {
+            sourceType = "workflowKey";
+        } else if (this.arguments.workflowName) {
+            sourceType = "workflowName";
         }
-        params.response.data.setObj("Deleted.");
-        params.response.console.log("Workflow deleted.");
+
+        switch (sourceType) {
+            case "workflowKey":
+                try{
+                    await DeleteWorkflow.deleteWorkflow(this.mSession, this.arguments.workflowKey);
+                } catch (err){
+                    error = "Delete workflow: " + err;
+                    throw error;
+                }
+                params.response.data.setObj("Deleted.");
+                params.response.console.log("Workflow deleted.");
+                break;
+
+            case "workflowName":
+                try{
+                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    if (getWfKey === null) {
+                        throw new ImperativeError({
+                            msg: `No workflows match the provided workflow name.`,
+                            additionalDetails: JSON.stringify(params)
+                        });
+                    }
+                    resp = await DeleteWorkflow.deleteWorkflow(this.mSession, getWfKey);
+                } catch (err){
+                    error = "Delete workflow: " + err;
+                    throw error;
+                }
+                params.response.data.setObj("Deleted.");
+                params.response.console.log("Workflow deleted.");
+                break;
+
+            default:
+            throw new ImperativeError({
+                msg: `Internal create error: Unable to determine the the criteria by which to run delete workflow action. ` +
+                    `Please contact support.`,
+                additionalDetails: JSON.stringify(params)
+                });
+        }
     }
 }

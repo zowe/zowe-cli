@@ -46,10 +46,9 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["wk"],
         type: "string",
         description: "Workflow key of workflow instance to be started",
-        // TODO after introducing workflow name delete required
-        required: true
-        // absenceImplications: ["with-workflow-name"],
-        // conflictsWith: ["with-workflow-name"]
+        required: false,
+        absenceImplications: ["workflow-name"],
+        conflictsWith: ["workflow-name"]
     },
 
     /**
