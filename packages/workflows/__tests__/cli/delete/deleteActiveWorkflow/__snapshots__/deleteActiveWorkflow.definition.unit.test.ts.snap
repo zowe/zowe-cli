@@ -11,6 +11,10 @@ Object {
       "description": "To delete a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
       "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
     },
+    Object {
+      "description": "To delete a workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
+      "options": "--workflow-name \\"testWorkflow\\"",
+    },
   ],
   "name": "active-workflow",
   "options": Array [
@@ -20,7 +24,22 @@ Object {
       ],
       "description": "Delete active workflow by specified workflow key",
       "name": "workflow-key",
-      "required": true,
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "absenceImplications": Array [
+        "workflow-key",
+      ],
+      "aliases": Array [
+        "wn",
+      ],
+      "conflictsWith": Array [
+        "workflow-key",
+      ],
+      "description": "Delete active workflow by specified workflow name",
+      "name": "workflow-name",
+      "required": false,
       "type": "string",
     },
   ],
