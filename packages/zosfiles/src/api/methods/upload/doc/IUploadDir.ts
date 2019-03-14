@@ -1,3 +1,5 @@
+import { IUploadFile } from "./IUploadFile";
+
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -13,14 +15,19 @@
 /**
  * This interface defines the map option that can be sent into the upload uss directory function
  */
-export interface IUploadFile {
+export interface IUploadDir {
     /**
-     * The indicator to upload the data set in binary mode
+     * directory name
      */
-    binary: boolean;
+    dirName: string;
 
     /**
-     * File name to be uploaded in binary or ascii
+     * full path specification (on local host)
      */
-    fileName: string;
+    fullPath: string;
+
+    /**
+     * list of files contained in the directory
+     */
+    fileArray?: IUploadFile[];
 }
