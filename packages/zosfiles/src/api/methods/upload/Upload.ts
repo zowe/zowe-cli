@@ -24,6 +24,7 @@ import { IUploadOptions } from "./doc/IUploadOptions";
 import { IUploadResult } from "./doc/IUploadResult";
 import { Create } from "../create";
 import { IUploadFile } from "./doc/IUploadFile";
+import { IUploadDir } from "./doc/IUploadDir";
 import { asyncPool } from "../../../../../utils";
 
 export class Upload {
@@ -472,61 +473,48 @@ export class Upload {
         // Set default values for options
         options.binary = options.binary == null ? false : options.binary;
         options.recursive = options.recursive == null ? false : options.recursive;
-        // Set maxConcurrentRequests default value to 1
         const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
-
-        // Check if inputDirectory is directory
-        if(!IO.isDir(inputDirectory)) {
-            throw new ImperativeError({
-                msg: ZosFilesMessages.missingInputDirectory.message
-            });
-        }
-
-        // Check if provided unix directory exists
-        const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-        if(!isDirectoryExist) {
-            await Create.uss(session, ussname, "directory");
-        }
-
         try {
+            // Check if inputDirectory is directory
+            if(!IO.isDir(inputDirectory)) {
+                throw new ImperativeError({
+                    msg: ZosFilesMessages.missingInputDirectory.message
+                });
+            }
+
+            // Check if provided unix directory exists
+            const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+            if(!isDirectoryExist) {
+                await Create.uss(session, ussname, "directory");
+            }
+
             // initialize array for the files to be uploaded
             const filesArray: IUploadFile[] = [];
 
-            // initialize the counter for uploaded files (used in progress bar)
-            let uploadsInitiated = 0;
-
-            if(options.recursive === false) {
-                // getting list of files from directory
-                const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
-                // building list of files with full path and transfer mode
-                files.forEach((file) => {
-                    let tempBinary = options.binary;
-                    // check if filesMap is specified, and verify if file is in the list
-                    if(options.filesMap) {
-                        if(options.filesMap.fileNames.indexOf(file) > -1) {
-                            // if file is in list, assign binary mode from mapping
-                            tempBinary = options.filesMap.binary;
-                        }
+            // getting list of files from directory
+            const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+            // building list of files with full path and transfer mode
+            files.forEach((file) => {
+                let tempBinary = options.binary;
+                // check if filesMap is specified, and verify if file is in the list
+                if(options.filesMap) {
+                    if(options.filesMap.fileNames.indexOf(file) > -1) {
+                        // if file is in list, assign binary mode from mapping
+                        tempBinary = options.filesMap.binary;
                     }
-                    // update the array
-                    filesArray.push({
-                        binary: tempBinary,
-                        fileName: file}
-                        );
-                });
-            } else {
-                await this.dirToUSSDirRecursive(session,
-                    inputDirectory,
-                    ussname,
-                    {binary: options.binary,
-                     filesMap: options.filesMap,
-                     task: options.task,
-                     maxConcurrentRequests});
-            }
+                }
+                // update the array
+                filesArray.push({
+                    binary: tempBinary,
+                    fileName: file}
+                    );
+            });
 
-            const createUploadPromise = (file: IUploadFile) => {
+            let uploadsInitiated = 0;
+            const createFileUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
                 if (options.task != null) {
+                    options.task.statusMessage = "Uploading ..." + this.formatStringForDisplay(file.fileName);
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / filesArray.length));
                     uploadsInitiated++;
@@ -534,13 +522,12 @@ export class Upload {
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
                 return this.fileToUSSFile(session, fileName, ussFilePath, file.binary);
-
             };
 
             if (maxConcurrentRequests === 0) {
-                await Promise.all(filesArray.map(createUploadPromise));
+                await Promise.all(filesArray.map(createFileUploadPromise));
             } else {
-                await asyncPool(maxConcurrentRequests, filesArray, createUploadPromise);
+                await asyncPool(maxConcurrentRequests, filesArray, createFileUploadPromise);
             }
 
             const result: IUploadResult = {
@@ -594,52 +581,90 @@ export class Upload {
     public static async dirToUSSDirRecursive(session: AbstractSession,
                                              inputDirectory: string,
                                              ussname: string,
-                                             options: IUploadOptions = {}) {
-        // initialize array for the files to be uploaded
-        const filesArray: IUploadFile[] = [];
+                                             options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeEqual(inputDirectory,"", ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
+        ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
 
-        // getting list of files and directories from directory
-        const files = fs.readdirSync(inputDirectory);
-        // building list of files with full path and transfer mode
+        // Set default values
+        options.binary = options.binary == null ? false : options.binary;
+        const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+
+        // initialize arrays for the files and directories to be uploaded
+        const filesArray: IUploadFile[] = [];
+        let directoriesArray: IUploadDir[] = [];
+
+        // Check if inputDirectory is directory
+        if(!IO.isDir(inputDirectory)) {
+            throw new ImperativeError({
+                msg: ZosFilesMessages.missingInputDirectory.message
+            });
+        }
+
+        // Check if provided unix directory exists
+        const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+        if(!isDirectoryExist) {
+            await Create.uss(session, ussname, "directory");
+        }
+
+        // getting list of files and sub-directories
+        directoriesArray = Upload.getDirs(inputDirectory);
+
+        const files = ZosFilesUtils.getFileListFromPath(inputDirectory, false);
+
         files.forEach(async (file) => {
-            // generate the full file specification
-            const filePath = path.normalize(path.join(inputDirectory, file));
-            if(!IO.isDir(filePath)) {
-                let tempBinary = options.binary;
-                // check if filesMap is specified, and verify if file is in the list
-                if(options.filesMap) {
-                    if(options.filesMap.fileNames.indexOf(file) > -1) {
-                        // if file is in list, assign binary mode from mapping
-                        tempBinary = options.filesMap.binary;
-                    }
+            let tempBinary = options.binary;
+            // check if filesMap is specified, and verify if file is in the list
+            if(options.filesMap) {
+                if(options.filesMap.fileNames.indexOf(file) > -1) {
+                    // if file is in list, assign binary mode from mapping
+                    tempBinary = options.filesMap.binary;
                 }
-                // update the array
-                filesArray.push({
-                    binary: tempBinary,
-                    fileName: file}
-                    );
-            } else {
-                const tempUssPath = path.posix.join(ussname, file);
-                // Check if provided unix directory exists
-                const isDirectoryExist = await this.isDirectoryExist(session, tempUssPath);
-                if(!isDirectoryExist) {
-                    await Create.uss(session, tempUssPath, "directory");
-                }
-                await this.dirToUSSDirRecursive(session,
-                    filePath,
-                    tempUssPath,
-                    {binary: options.binary,
-                     filesMap: options.filesMap,
-                     maxConcurrentRequests: options.maxConcurrentRequests});
             }
+            // update the array
+            filesArray.push({
+                binary: tempBinary,
+                fileName: file}
+                );
         });
 
-        // skip if processing an empty directory
+        // create the directories
+        if(directoriesArray.length > 0) {
+            const createDirUploadPromise = async (dir: IUploadDir) => {
+                    const tempUssname = path.posix.join(ussname, dir.dirName);
+                    const isDirectoryExists = await this.isDirectoryExist(session, tempUssname);
+                    if(!isDirectoryExists) {
+                        return Create.uss(session, tempUssname, "directory");
+                    }
+            };
+
+            if (maxConcurrentRequests === 0) {
+                await Promise.all(directoriesArray.map(createDirUploadPromise));
+            } else {
+                await asyncPool(maxConcurrentRequests, directoriesArray, createDirUploadPromise);
+            }
+        }
+
+        directoriesArray.forEach(async (elem) => {
+            try {
+                await this.dirToUSSDirRecursive(session,
+                    elem.fullPath,
+                    path.posix.join(ussname,elem.dirName),
+                    options);
+            } catch (error) {
+                throw error;
+            }
+
+        });
+
+        // upload the files
         if(filesArray.length > 0) {
             let uploadsInitiated = 0;
             const createUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
                 if (options.task != null) {
+                    options.task.statusMessage = "Uploading ..." + this.formatStringForDisplay(file.fileName);
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (uploadsInitiated / filesArray.length));
                     uploadsInitiated++;
@@ -647,15 +672,25 @@ export class Upload {
                 const filePath = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
                 return this.fileToUSSFile(session, filePath, ussFilePath, file.binary);
-
             };
-
-            if (options.maxConcurrentRequests === 0) {
-                await Promise.all(filesArray.map(createUploadPromise));
+            if (maxConcurrentRequests === 0) {
+                    await Promise.all(filesArray.map(createUploadPromise));
             } else {
-                await asyncPool(options.maxConcurrentRequests, filesArray, createUploadPromise);
+                await asyncPool(maxConcurrentRequests, filesArray, createUploadPromise);
             }
         }
+
+        const result: IUploadResult = {
+            success: true,
+            from: inputDirectory,
+            to: ussname
+        };
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.ussDirUploadedSuccessfully.message,
+            apiResponse: result
+        };
     }
 
     /**
@@ -677,6 +712,62 @@ export class Upload {
             usspath = usspath.substring(1);
         }
         return usspath;
+    }
+
+    /**
+     * Checks if a given directory has sub-directories or not
+     * @param {string} dirPath full-path for the directory to check
+     */
+    private static hasDirs(dirPath: string): boolean {
+        const directories = fs.readdirSync(dirPath).filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
+        // directories = directories.filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
+        if (directories.length === 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Returns an array of sub-directories objects, containing directory name, and full path specification
+     * @param dirPath full-path for the directory to check
+     */
+    private static getDirs(dirPath: string): IUploadDir[] {
+        const response: IUploadDir[] = [];
+        if (Upload.hasDirs(dirPath)) {
+            const directories = fs.readdirSync(dirPath).filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
+            // directories = directories.filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
+            // tslint:disable-next-line:prefer-for-of
+            for (let index = 0; index < directories.length; index++) {
+                const dirFullPath = path.normalize(path.join(dirPath,directories[index]));
+                response.push({
+                    dirName: directories[index],
+                    fullPath: dirFullPath});
+            }
+        }
+        return response;
+    }
+
+    /**
+     * helper function to prepare file names for display on progress bar
+     * @param stringInput string input to be formated
+     */
+    private static formatStringForDisplay(stringInput: string): string {
+        const LAST_FIFTEEN_CHARS = -15;
+        const  stringToDisplay: string = stringInput.split(path.sep).splice(-1,1).toString().slice(LAST_FIFTEEN_CHARS);
+        const result: string = stringToDisplay === "" ? "all files" : stringToDisplay;
+
+        return result;
+    }
+
+    /**
+     * 
+     * @param inputPath full path for directory
+     */
+    private static getDirMap(inputPath: string): string[] {
+        const dirMap: string[] = [];
+
+        return dirMap;
     }
 
 }
