@@ -1,6 +1,6 @@
 {
   "name": "@brightside/core",
-  "version": "2.10.0",
+  "version": "3.5.2-alpha.201903141307",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -50,19 +50,21 @@
     "watch": "tsc --pretty --watch",
     "watch:test": "jest --watch",
     "typedoc": "typedoc --options ./typedoc.json ./packages/",
-    "doc:generate": "npm run doc:clean && npm run typedoc && gulp doc",
-    "doc:clean": "gulp cleanTypedoc && rimraf docs/CLIReadme.md",
+    "doc:generate": "npm run doc:clean && gulp doc",
+    "doc:clean": "rimraf docs/CLIReadme.md",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies":   {
-    "@brightside/imperative": "^2.1.0",
+    "@brightside/imperative": "^3.1.0-alpha.201902272042",
+    "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
   },
   "devDependencies":   {
     "@types/chai": "^4.0.1",
     "@types/chai-string": "^1.1.30",
+    "@types/fs-extra": "^5.0.5",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
     "@types/node": "8.0.28",
@@ -102,8 +104,7 @@
     "ts-jest": "^23.10.5",
     "ts-node": "^3.3.0",
     "tslint": "5.10.0",
-    "typedoc": "^0.11.1",
-    "typescript": "^2.6.2",
+    "typescript": "3.2.2",
     "uuid": "^3.3.2"
   },
   "resolutions": {"cpx/chokidar": "^2.1.1"},
@@ -112,7 +113,7 @@
     "globals": {"ts-jest": {"disableSourceMapSupport": true}},
     "watchPathIgnorePatterns": [".*jest-stare.*\\.js"],
     "modulePathIgnorePatterns": ["__tests__/__snapshots__/"],
-    "setupTestFrameworkScriptFile": "./__tests__/beforeTests.js",
+    "setupFilesAfterEnv": ["./__tests__/beforeTests.js"],
     "testResultsProcessor": "jest-stare",
     "transform": {".(ts)": "ts-jest"},
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
