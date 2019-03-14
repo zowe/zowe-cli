@@ -646,17 +646,12 @@ export class Upload {
             }
         }
 
-        directoriesArray.forEach(async (elem) => {
-            try {
-                await this.dirToUSSDirRecursive(session,
-                    elem.fullPath,
-                    path.posix.join(ussname,elem.dirName),
-                    options);
-            } catch (error) {
-                throw error;
-            }
-
-        });
+        for (const elem of directoriesArray) {
+            await this.dirToUSSDirRecursive(session,
+                elem.fullPath,
+                path.posix.join(ussname,elem.dirName),
+                options);
+        }
 
         // upload the files
         if(filesArray.length > 0) {
@@ -674,7 +669,7 @@ export class Upload {
                 return this.fileToUSSFile(session, filePath, ussFilePath, file.binary);
             };
             if (maxConcurrentRequests === 0) {
-                    await Promise.all(filesArray.map(createUploadPromise));
+                await Promise.all(filesArray.map(createUploadPromise));
             } else {
                 await asyncPool(maxConcurrentRequests, filesArray, createUploadPromise);
             }
@@ -759,15 +754,4 @@ export class Upload {
 
         return result;
     }
-
-    /**
-     * 
-     * @param inputPath full path for directory
-     */
-    private static getDirMap(inputPath: string): string[] {
-        const dirMap: string[] = [];
-
-        return dirMap;
-    }
-
 }

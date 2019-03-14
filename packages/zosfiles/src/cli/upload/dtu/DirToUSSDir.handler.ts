@@ -60,27 +60,24 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         commandParameters.response.progress.startBar({task: status});
 
         let response: IZosFilesResponse;
-
-        if(commandParameters.arguments.recursive != null) {
+        if(commandParameters.arguments.recursive) {
             response = await Upload.dirToUSSDirRecursive(session,
                 inputDir,
                 commandParameters.arguments.USSDir, {
-                binary: commandParameters.arguments.binary,
-                // recursive: commandParameters.arguments.recursive,
-                filesMap: fileMap,
-                maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                task: status
-            });
+                    binary: commandParameters.arguments.binary,
+                    filesMap: fileMap,
+                    maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+                    task: status
+                });
         } else {
             response = await Upload.dirToUSSDir(session,
                 inputDir,
                 commandParameters.arguments.USSDir, {
-                binary: commandParameters.arguments.binary,
-                // recursive: commandParameters.arguments.recursive,
-                filesMap: fileMap,
-                maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                task: status
-            });
+                    binary: commandParameters.arguments.binary,
+                    filesMap: fileMap,
+                    maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
+                    task: status
+                });
         }
 
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
