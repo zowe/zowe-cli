@@ -39,10 +39,10 @@ export const WorkflowStep: ICommandDefinition = {
     ],
     options: ([
         StartCommonOptions.workflowKey,
-        // StartCommonOptions.workflowName,
+        StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
         StartCommonOptions.performFollowingSteps,
-        // StartCommonOptions.zosmfVersion
+        // StartCommonOptions.zosmfVersion,
     ]),
     examples: [
         {
@@ -57,6 +57,10 @@ export const WorkflowStep: ICommandDefinition = {
             description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"" +
                 "and if there is a conflict in variable's value use the value that is in output file",
             options: "\"Step1\" --workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
-        }
+        },
+        {
+            description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow name \"testWorkflow\"",
+            options: "\"Step1\" --workflow-name \"testWorkflow\""
+        },
     ],
 };

@@ -12,6 +12,7 @@
 import { AbstractSession } from "@brightside/imperative";
 import { startT } from "../../../../src/api/doc/IStartWorkflow";
 import { PropertiesWorkflow, StartWorkflow } from "../../../..";
+import { ListWorkflows } from "../../../../src/api/ListWorkflows";
 
 
 describe("Start workflow common handler", () => {
@@ -86,6 +87,77 @@ describe("Start workflow common handler", () => {
             expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined, undefined, undefined);
 
         });
+
+        it("should start a workflow using workflow name", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/cli/start/workflowStep/WorkflowStep.handler");
+            const handler = new handlerReq.default();
+            const workflowKey = "fake-workflow-key";
+            const workflowName = "fake-workflow-name";
+
+            // Mock the start function
+            StartWorkflow.startWorkflow = jest.fn((session) => {
+                fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "Started."
+                };
+            });
+
+            ListWorkflows.getWfKey = jest.fn((session) => {
+                fakeSession = session;
+                return workflowKey;
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowName
+                    },
+                    response: {
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(StartWorkflow.startWorkflow).toHaveBeenCalledTimes(1);
+            expect(StartWorkflow.startWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey, undefined, undefined, undefined);
+
+        });
+
         it("should start a workflow using workflow key and optional arguments", async () => {
             const stepName = "fake";
             const performFollowingSteps = true;
