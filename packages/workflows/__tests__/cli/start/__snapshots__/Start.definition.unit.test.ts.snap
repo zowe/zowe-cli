@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "sta",
   ],
-  "description": "Start workflow instance in z/OSMF",
+  "description": "Start a z/OSMF workflow on a z/OS system.",
   "name": "start",
   "type": "group",
 }

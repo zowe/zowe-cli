@@ -313,6 +313,18 @@ export default {
                     EX4: `Show attributes of all data sets of the user "ibmuser"`,
                     EX5: `Show the first 5 data sets of the user "ibmuser"`
                 }
+            },
+            USS_FILE: {
+                SUMMARY: "List USS files",
+                DESCRIPTION: "List USS files and directories in a UNIX file path",
+                POSITIONALS: {
+                    PATH: "The directory containing the files and directories to be listed"
+                },
+                EXAMPLES: {
+                    EX1: `Show the files and directories in path '/u/ibmuser'`,
+                    EX2: "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
+                    EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
+                }
             }
         },
         OPTIONS: {
