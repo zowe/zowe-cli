@@ -100,7 +100,7 @@ describe("Create workflow cli system tests", () => {
             });
             it("Should start full workflow in zOSMF.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_full.sh",
-                testEnvironment, [wfKey, resolveConflict, "--wait"]);
+                testEnvironment, [wfKey, resolveConflict]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow");

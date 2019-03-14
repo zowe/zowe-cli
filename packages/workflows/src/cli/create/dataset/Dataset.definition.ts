@@ -23,7 +23,7 @@ import { join } from "path";
 export const DataSet: ICommandDefinition = {
     name: "workflow-from-data-set",
     aliases: ["wfds"],
-    description: "Create a workflow instance in z/OSMF using a Data set",
+    description: "Create a z/OSMF workflow on a z/OS system using a Data set",
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {
@@ -33,7 +33,7 @@ export const DataSet: ICommandDefinition = {
         {
             name: "workflowName",
             type: "string",
-            description: "Name of the workflow instance to create",
+            description: "Name of the workflow",
             required: true,
         },
     ],
@@ -51,8 +51,8 @@ export const DataSet: ICommandDefinition = {
     outputFormatOptions: true,
     examples: [
         {
-            description: "Create a workflow with name \"testworkflow\" using data set \"TESTID.WKFLOW\" containing workflow definition xml, " +
-            "on system \"TESTM1\"",
+            description: "Create a workflow with name \"testworkflow\" using the data set \"TESTID.WKFLOW\" that contains the workflow " +
+            "definition xml on the system \"TESTM1\"",
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\""
         },
         {
@@ -66,8 +66,8 @@ export const DataSet: ICommandDefinition = {
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --variables-input-file TESTID.DATA(PROPERTIES)"
         },
         {
-            description: "Create a workflow with name \"testworkflow\" using data set \"TESTID.WKFLOW\" containing workflow definition xml, " +
-            "on system \"TESTM1\" with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
+            description: "Create a workflow with name \"testworkflow\" using the data set \"TESTID.WKFLOW\" that contains a workflow definition xml" +
+            ", on a system \"TESTM1\" with the variable name DUMMYVAR and the value DUMMYVAL. Assign it to the owner",
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --variables DUMMYVAR=DUMMYVAL --assign-to-owner"
         }
     ],

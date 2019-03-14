@@ -35,7 +35,7 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    zos-files | files     Manage z/OS data sets                                   
    zos-jobs | jobs       Manage z/OS jobs                                        
    zos-tso | tso         Issue TSO commands and interact with TSO address spaces 
-   zos-workflows | wf    Manage z/OSMF workflows                                 
+   zos-workflows | wf    Create and manage z/OSMF workflows on a z/OS system     
    zosmf                 Interact with z/OSMF                                    
 
  OPTIONS
