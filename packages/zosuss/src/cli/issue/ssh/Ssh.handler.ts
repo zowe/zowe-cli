@@ -32,8 +32,6 @@ export default class Handler extends SshBaseHandler {
     }
 
     private stdoutHandler(data: string) {
-        if (!data.includes("exit")) {
-            process.stdout.write(data);
-        }
+        process.stdout.write(data);
     }
 }
