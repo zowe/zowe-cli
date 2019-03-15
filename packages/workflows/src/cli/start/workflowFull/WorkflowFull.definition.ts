@@ -31,25 +31,29 @@ export const WorkflowFull: ICommandDefinition = {
     },
     options: ([
         StartCommonOptions.workflowKey,
-        // StartCommonOptions.workflowName,
+        StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
         StartCommonOptions.wait,
-        // StartCommonOptions.zosmfVersion
+        // StartCommonOptions.zosmfVersion,
     ]),
     examples: [
         {
             description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",
-            options: "--with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
+            options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
         },
         {
             description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" and wait for" +
                 "it to be finished",
-            options: "--with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --wait"
+            options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --wait"
         },
         {
             description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"" +
                 "and if there is a conflict in variable's value use the value that is in output file",
-            options: "--with-workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
-        }
+            options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
+        },
+        {
+            description: "To start a workflow instance in z/OSMF with workflow name \"testWorkflow\"",
+            options: "--workflow-name \"testWorkflow\""
+        },
     ],
 };

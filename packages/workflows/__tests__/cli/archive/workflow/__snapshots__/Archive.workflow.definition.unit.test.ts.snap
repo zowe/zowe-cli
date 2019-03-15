@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows list active workflows definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "aw",
+  ],
+  "description": "Archive an active workflow instance in z/OSMF.",
+  "examples": Array [
+    Object {
+      "description": "Archive a workflow with workflow name \\"testworkflow\\"",
+      "options": "--wn \\"testworkflow\\" ",
+    },
+    Object {
+      "description": "Archive a workflow with workflow key \\"123-456-abv-xyz\\"",
+      "options": "--wk \\"123-456-abv-xyz\\" ",
+    },
+  ],
+  "name": "active-workflow",
+  "options": Array [
+    Object {
+      "absenceImplications": Array [
+        "workflow-key",
+      ],
+      "aliases": Array [
+        "wn",
+      ],
+      "conflictsWith": Array [
+        "workflow-key",
+      ],
+      "description": "The name of the workflow to be archived.",
+      "name": "workflow-name",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "wk",
+      ],
+      "description": "The workflow key of the workflow to be archived.",
+      "name": "workflow-key",
+      "required": false,
+      "type": "string",
+    },
+  ],
+  "outputFormatOptions": true,
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;

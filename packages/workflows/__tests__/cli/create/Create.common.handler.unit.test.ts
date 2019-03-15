@@ -99,6 +99,11 @@ describe("Create workflow common handler", () => {
                             log: jest.fn((logArgs) => {
                                 logMessage += "\n" + logArgs;
                             })
+                        },
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
                         }
                     },
                     profiles: {
@@ -184,6 +189,11 @@ describe("Create workflow common handler", () => {
                         console: {
                             log: jest.fn((logArgs) => {
                                 logMessage += "\n" + logArgs;
+                            })
+                        },
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
                             })
                         }
                     },
