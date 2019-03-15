@@ -32,6 +32,14 @@ export class WorkflowConstants {
      * @type {string}
      * @memberof WorkflowConstants
      */
+    public static readonly WORKFLOW_DEFINITION: string = "workflowDefinition";
+
+    /**
+     * URI base for workflows API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly WORKFLOW_RESOURCE: string = "workflows";
 
     /**
@@ -162,6 +170,14 @@ export class WorkflowConstants {
      * @memberof WorkflowConstants
      */
     public static readonly variables: string = "variables";
+
+    /**
+     * URI base for filePath for workflow definition.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly filePath: string = "definitionFilePath";
 
 }
 
