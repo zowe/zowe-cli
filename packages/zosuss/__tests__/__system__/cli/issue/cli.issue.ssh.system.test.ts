@@ -275,7 +275,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
     });
 
 });
-describe.only("zowe uss issue ssh passwords and passkeys", () => {
+describe("zowe uss issue ssh passwords and passkeys", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
