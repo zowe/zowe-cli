@@ -27,12 +27,12 @@ const mockConnect = jest.fn().mockImplementation(() => {
     mockClient.emit("ready");
 });
 const mockStreamEnd = jest.fn();
-const mockStream = {
-    end: mockStreamEnd,
-    on: jest.fn()
-};
+const mockStream: any = new EventEmitter();
+mockStream.end = mockStreamEnd;
+
 const mockShell = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
+    mockStream.emit("data", "stdout data");
 });
 
 (Client as any).mockImplementation(() => {
@@ -41,22 +41,25 @@ const mockShell = jest.fn().mockImplementation((callback) => {
     return mockClient;
 });
 
+const stdoutHandler = jest.fn();
+
 const mockExecuteSshCallback = jest.fn();
 
 function checkMockFunctionsWithCommand(command: string) {
     expect(mockConnect).toBeCalled();
     expect(mockShell).toBeCalled();
-    expect(mockExecuteSshCallback).toBeCalled();
 
     // Check the stream.end() fucntion is called with an argument containing the SSH command
     expect(mockStreamEnd.mock.calls[0][0]).toMatch(command);
+
+    expect(stdoutHandler).toHaveBeenCalledWith("stdout data");
 }
 
 describe("Shell", () => {
 
     it("Should execute ssh command", async () => {
         const command = "commandtest";
-        Shell.executeSsh(fakeSshSession, command, mockExecuteSshCallback);
+        Shell.executeSsh(fakeSshSession, command, stdoutHandler);
 
         checkMockFunctionsWithCommand(command);
     });
@@ -64,7 +67,7 @@ describe("Shell", () => {
     it("Should execute ssh command with cwd option", async () => {
         const cwd = "/";
         const command = "commandtest";
-        Shell.executeSshCwd(fakeSshSession, command, cwd, mockExecuteSshCallback);
+        Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler);
 
         checkMockFunctionsWithCommand(command);
     });

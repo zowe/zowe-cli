@@ -22,23 +22,16 @@ import { SshBaseHandler } from "../../../SshBaseHandler";
  */
 export default class Handler extends SshBaseHandler {
 
-    public streamCallBack(stream: ClientChannel) {
-        stream.on("data", (data: string) => {
-            if (!data.includes("exit")) {
-                process.stdout.write(data);
-            }
-        }).stderr.on("data", (data: string) => {
-            if (!data.includes("exit")) {
-                process.stderr.write(data);
-            }
-        });
-    }
 
     public async processCmd(commandParameters: IHandlerParameters) {
         if (commandParameters.arguments.cwd) {
-           await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd, this.streamCallBack);
+            await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd, this.stdoutHandler);
         } else {
-           await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.streamCallBack);
+            await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.stdoutHandler);
         }
+    }
+
+    private stdoutHandler(data: string) {
+        process.stdout.write(data);
     }
 }
