@@ -54,9 +54,7 @@ describe("zowe uss issue ssh api call test", () => {
         const cwd =  `${defaultSystem.unix.testdir}/`;
         let stdoutData: string;
         await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
-            if (!data.includes("exit")) {
-                stdoutData += data;
-            }
+            stdoutData += data;
         });
         expect(stdoutData).toMatch(new RegExp("\\" + cwd + "\\s"));
     }, TIME_OUT);
