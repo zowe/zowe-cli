@@ -14,3 +14,18 @@ Object {
   },
 }
 `;
+
+exports[`List workflow details handler process method should list workflow details using wf name 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+    "automationStatus",
+  ],
+  "format": "object",
+  "output": Object {
+    "commandResponse": "Some list details of WF",
+    "success": true,
+  },
+}
+`;

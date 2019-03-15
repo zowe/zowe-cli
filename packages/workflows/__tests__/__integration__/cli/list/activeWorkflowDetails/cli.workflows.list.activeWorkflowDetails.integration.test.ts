@@ -37,10 +37,31 @@ describe("List Active Workflow Details", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("Should throw error if a positional parameter is empty string.", async () => {
+    it("Should throw error if the parameter workflow-key is empty string.", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_no_wk.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, []);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("No value specified for option");
+    });
+
+    it("Should throw error if the parameter workflow-name is empty string.", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_no_wn.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, []);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("No value specified for option");
+    });
+
+    it("Should throw error no option is specified.", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_no_option.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toContain("Missing Required Option");
+        expect(response.stderr.toString()).toContain("You must specify one of these options");
+    });
+
+    it("Should throw error both options is specified.", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_conflict.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["fakeKey", "fakeName"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("The following options conflict");
     });
 });

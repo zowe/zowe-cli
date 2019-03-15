@@ -249,7 +249,7 @@ export default {
                 "However, increasing the value increases resource consumption on z/OS and can be prone " +
                 "to errors caused by making too many concurrent requests. If the download process encounters an error, " +
                 "the following message displays:\n" +
-                "The maximum number of TSO address spaces were created. When you specify 0, " +
+                "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
                 " without a maximum number of concurrent requests. "
         }
@@ -390,7 +390,7 @@ export default {
                     USSDIR: "The name of the USS directory to which you want to upload the local directory"
                 },
                 EXAMPLES: {
-                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
+                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
                     EX2: `Upload all files from the "local_dir" directory and all its sub-directories, `+
                     `to the "/a/ibmuser/my_dir" USS directory:`,
                     EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
@@ -415,7 +415,15 @@ export default {
             ASCII_FILES: "Comma separated list of file names to be uploaded in ASCII mode. " +
             "Use this option when you upload a directory with --binary/-b flag, " +
             "but you want to specify certain files to be uploaded in ASCII mode. "  +
-            "All files matching specified file names will be uploaded in ASCII mode."
+            "All files matching specified file names will be uploaded in ASCII mode.",
+            MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files." +
+            " Increasing the value results in faster uploads. " +
+            "However, increasing the value increases resource consumption on z/OS and can be prone " +
+            "to errors caused by making too many concurrent requests. If the upload process encounters an error, " +
+            "the following message displays:\n" +
+            "The maximum number of TSO address spaces have been created. When you specify 0, " +
+            Constants.DISPLAY_NAME + " attempts to upload all members at once" +
+            " without a maximum number of concurrent requests. "
         }
     }
 };

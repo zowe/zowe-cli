@@ -10,6 +10,7 @@
 */
 
 import { ITaskWithStatus } from "@brightside/imperative";
+import { IUploadMap } from "./IUploadMap";
 
 /**
  * This interface defines the options that can be sent into the upload data set function
@@ -53,4 +54,18 @@ export interface IUploadOptions {
      * The list of files to be uploaded in ASCII mode
      */
     ascii_files?: string;
+
+    /**
+     * The map of files and their upload mode to be used for binary_files and ascii_files
+     */
+    filesMap?: IUploadMap;
+
+    /**
+     * The maximum REST requests to perform at once
+     * Increasing this value results in faster uploads but increases resource consumption
+     * on z/OS and risks encountering an error caused
+     * by making too many requests at once.
+     * Default: 1
+     */
+    maxConcurrentRequests?: number;
 }
