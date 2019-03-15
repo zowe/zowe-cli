@@ -9,7 +9,7 @@
 *
 */
 
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import * as path from "path";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";

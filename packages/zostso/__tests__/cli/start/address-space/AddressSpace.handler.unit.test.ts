@@ -12,7 +12,7 @@
 jest.mock("../../../../src/api/StartTso");
 import { IStartTsoParms, StartTso } from "../../../../../zostso";
 import { StartTsoData } from "../../../__resources__/api/StartTsoData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../src/cli/start/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../src/cli/start/address-space/AddressSpace.definition";
 

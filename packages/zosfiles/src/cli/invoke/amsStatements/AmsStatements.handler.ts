@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { ZosFilesConstants } from "../../../api/constants/ZosFiles.constants";
 import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
 import { Invoke } from "../../../api/methods/invoke";

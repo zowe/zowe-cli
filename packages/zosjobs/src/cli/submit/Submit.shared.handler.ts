@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
 import { SubmitJobs } from "../../../src/api/SubmitJobs";
 import { IJob } from "../../api/doc/response/IJob";
 import { isNullOrUndefined } from "util";

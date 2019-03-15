@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../../../zosconsole";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 

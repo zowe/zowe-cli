@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import { Create } from "../../../../..";
 import { inspect } from "util";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";

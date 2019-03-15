@@ -11,7 +11,7 @@
 
 import { inspect } from "util";
 import { ZosmfRestClient } from "../../../rest";
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../provisioning";
 
 const type: string = "DB2";

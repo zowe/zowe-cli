@@ -14,7 +14,7 @@ import { TestEnvironment } from "./../../../../../../__tests__/__src__/environme
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { Session, TextUtils } from "@brightside/imperative";
+import { Session, TextUtils } from "@zowe/imperative";
 import { IJob, SubmitJobs } from "../../../..";
 import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
 import { join } from "path";

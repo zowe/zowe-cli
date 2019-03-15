@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { ZosmfSession } from "../../../../../zosmf";
 
 export const JobDefinition: ICommandDefinition = {

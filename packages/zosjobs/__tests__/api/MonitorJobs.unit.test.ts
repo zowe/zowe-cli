@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { GetJobs, JOB_STATUS } from "../..";
 import { sleep } from "../../../utils";
 import { IMonitorJobWaitForParms } from "../../src/api/doc/input/IMonitorJobWaitForParms";

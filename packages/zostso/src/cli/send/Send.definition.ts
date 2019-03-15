@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import {
     SendToAddressSpaceCommandDefinition
 } from "./address_space/SendToAddressSpace.definition";

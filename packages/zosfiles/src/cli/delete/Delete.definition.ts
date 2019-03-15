@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../-strings-/en";
 import { DsDefinition } from "./ds/Ds.definition";
 import { VsamDefinition } from "./vsam/Vsam.definition";

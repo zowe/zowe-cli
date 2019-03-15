@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { CreateCommonOptions } from "../Create.common.options";
 import { join } from "path";
 

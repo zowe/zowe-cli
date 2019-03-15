@@ -10,7 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, ZosFilesConstants, List, } from "../../../../../";
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";

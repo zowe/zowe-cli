@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, TextUtils, ImperativeExpect, ImperativeError } from "@brightside/imperative";
+import { AbstractSession, TextUtils, ImperativeExpect, ImperativeError } from "@zowe/imperative";
 import { noSession } from "./WorkflowConstants";
 
 /**

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
+import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import { IJob, ISubmitJclNotifyParm, ISubmitJclParms, ISubmitJobNotifyParm, ISubmitJobParms, JOB_STATUS } from "../../../zosjobs";
 import { JobsConstants } from "./JobsConstants";
 import { ZosJobsMessages } from "./JobsMessages";

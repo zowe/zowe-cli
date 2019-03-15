@@ -16,7 +16,7 @@ const timingApi = PerfTiming.api;
 
 timingApi.mark("PRE_IMPORT_IMPERATIVE");
 
-import { IImperativeConfig, Imperative } from "@brightside/imperative";
+import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
 

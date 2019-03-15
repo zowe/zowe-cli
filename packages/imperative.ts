@@ -10,7 +10,7 @@
 */
 
 // WIP Imperative version of Brightside
-import { IImperativeConfig } from "@brightside/imperative";
+import { IImperativeConfig } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { ZosmfSession } from "./zosmf";
 import {

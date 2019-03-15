@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { AbstractSession, Headers } from "@brightside/imperative";
+import { AbstractSession, Headers } from "@zowe/imperative";
 import { WorkflowConstants, noWorkflowKey, nozOSMFVersion } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IArchivedWorkflow } from "./doc/IArchivedWorkflow";

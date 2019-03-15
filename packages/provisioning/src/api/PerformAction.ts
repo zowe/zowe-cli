@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { AbstractSession, Headers } from "@brightside/imperative";
+import { AbstractSession, Headers } from "@zowe/imperative";
 import { ProvisioningValidator } from "./ProvisioningValidator";
 import { noActionName, noInstanceId, nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
 import { IPerformActionResponse } from "./doc/zosmf/IPerformActionResponse";

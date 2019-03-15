@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { CollectCommand } from "./collect/Collect.definition";
 import { IssueCommand } from "./issue/Issue.definition";
 import { ZosmfSession } from "../../../zosmf";

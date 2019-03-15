@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { JobStatusByJobidDefinition } from "./job-status-by-jobid/JobStatusByJobid.definition";
 import { SpoolFileByIdDefinition } from "./spool-file-by-id/SpoolFileById.definition";
 

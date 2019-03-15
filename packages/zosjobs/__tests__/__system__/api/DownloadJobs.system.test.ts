@@ -10,7 +10,7 @@
 */
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../../";
-import { ImperativeError, IO, Session } from "@brightside/imperative";
+import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, Imperative } from "@brightside/imperative";
+import { Session, Imperative } from "@zowe/imperative";
 import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../..";
 import { WorkflowConstants } from "../../src/api/WorkflowConstants";
