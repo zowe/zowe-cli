@@ -105,11 +105,6 @@ describe("Create workflow common handler", () => {
 //                        overwrite
                     },
                     response: {
-                        format: {
-output: jest.fn((parms) => {
-expect(parms).toMatchSnapshot();
-})
-},
                         data: {
                             setMessage: jest.fn((setMsgArgs) => {
                                 apiMessage = setMsgArgs;
@@ -121,6 +116,11 @@ expect(parms).toMatchSnapshot();
                         console: {
                             log: jest.fn((logArgs) => {
                                 logMessage += "\n" + logArgs;
+                            })
+                        },
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
                             })
                         }
                     },
@@ -196,11 +196,6 @@ expect(parms).toMatchSnapshot();
                         deleteCompleted,
                     },
                     response: {
-                        format: {
-output: jest.fn((parms) => {
-expect(parms).toMatchSnapshot();
-})
-},
                         data: {
                             setMessage: jest.fn((setMsgArgs) => {
                                 apiMessage = setMsgArgs;
@@ -212,6 +207,11 @@ expect(parms).toMatchSnapshot();
                         console: {
                             log: jest.fn((logArgs) => {
                                 logMessage += "\n" + logArgs;
+                            })
+                        },
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
                             })
                         }
                     },

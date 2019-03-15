@@ -26,8 +26,7 @@ import {
     noSession,
     noSystemName,
     noWorkflowDefinitionFile,
-    noWorkflowName, nozOSMFVersion, wrongOwner,
-    wrongPath
+    noWorkflowName, nozOSMFVersion, wrongOwner
 } from "../../../src/api/WorkflowConstants";
 
 let REAL_SESSION: Session;
@@ -44,6 +43,8 @@ let inputFile: string;
 const workflow = __dirname + "/../testfiles/demo.xml";
 const vars = __dirname + "/../testfiles/vars.properties";
 const propertiesText = "WRONG_VAR";
+const wrongPath = 400;
+const notFound = 404;
 
 function expectZosmfResponseSucceeded(response: ICreatedWorkflow, error: ImperativeError) {
     expect(error).not.toBeDefined();
@@ -235,7 +236,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with undefined system name.", async () => {
             let error: ImperativeError;
@@ -344,7 +345,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of variable input file. Wrong member name.", async () => {
             let error: ImperativeError;
@@ -356,7 +357,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of variable input file. Path not from root.", async () => {
             //
@@ -369,7 +370,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of variable input file. Qualifier is longer than 8 characters.", async () => {
             let error: ImperativeError;
@@ -381,7 +382,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of variable input file. More than 44 characters for DSNAME alone.", async () => {
             let error: ImperativeError;
@@ -394,7 +395,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of variable input file. Name containing two successive periods.", async () => {
             let error: ImperativeError;
@@ -406,7 +407,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong path. Name that contains a qualifier that starts with non-alphabetic or non-special character", async () => {
             let error: ImperativeError;
@@ -418,7 +419,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of workflow definition file. Name that ends with a period.", async () => {
             let error: ImperativeError;
@@ -430,7 +431,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Wrong member name.", async () => {
             let error: ImperativeError;
@@ -442,7 +443,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Path not from root.", async () => {
             //
@@ -455,7 +456,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Qualifier is longer than 8 characters.", async () => {
             let error: ImperativeError;
@@ -467,7 +468,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. More than 44 characters for DSNAME alone.", async () => {
             let error: ImperativeError;
@@ -480,7 +481,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Name containing two successive periods.", async () => {
             let error: ImperativeError;
@@ -492,7 +493,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of definition file. Name contains a qualifier that starts with numeric character", async () => {
             let error: ImperativeError;
@@ -504,7 +505,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Member name is too long.", async () => {
             let error: ImperativeError;
@@ -516,7 +517,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Member doesn't end with `)`.", async () => {
             let error: ImperativeError;
@@ -528,7 +529,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
         it("Throws an error with wrong format of workflow definition file. Name contains non-allowed character.", async () => {
             let error: ImperativeError;
@@ -540,7 +541,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
+            expect(error.errorCode).toEqual(wrongPath);
         });
     });
 });

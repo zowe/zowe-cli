@@ -12,6 +12,7 @@
 import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { PropertiesWorkflow } from "../../../api/Properties";
+import { ListWorkflows } from "../../../..";
 
 /**
  * A Handler for listing details of a workflow instance in z/OSMF in zosworkflows package.
@@ -40,12 +41,13 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         if (this.arguments.workflowKey) {
             sourceType = "workfowKey";
         }
-        // else if (this.arguments.byName) {
-        //     sourceType = "workfowName";
-        // }
+        else if (this.arguments.workflowName) {
+            sourceType = "workflowName";
+        }
 
         let resp;
         let error;
+        let getWfKey;
 
         switch (sourceType) {
             case "workfowKey":
@@ -88,9 +90,51 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                 }
                 break;
 
-            // TO DO:
-            // case "workfowName":
-            //     break;
+            case "workflowName":
+                try{
+                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    if (getWfKey === null) {
+                        throw new ImperativeError({
+                            msg: `No workflows match the provided workflow name.`,
+                            additionalDetails: JSON.stringify(params)
+                        });
+                    }
+                    resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey,
+                                                                        undefined, this.arguments.listSteps, this.arguments.listVariables);
+                } catch (err){
+                    error = "List workflow details error: " + err;
+                    throw error;
+                }
+                params.response.data.setObj(resp);
+
+                params.response.console.log("\nWorkflow Details: ");
+                params.response.format.output({
+                    fields: ["workflowName", "workflowKey",
+                        resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
+                    output: resp,
+                    format: "object",
+                });
+
+                if(this.arguments.listSteps && resp.steps){
+                    params.response.console.log("\nWorkflow Steps: ");
+                    params.response.format.output({
+                        fields: ["name", "state", "stepNumber"],
+                        output: resp.steps,
+                        format: "table",
+                        header: true
+                    });
+                }
+
+                if(this.arguments.listVariables && resp.variables){
+                    params.response.console.log("\nWorkflow Variables: ");
+                    params.response.format.output({
+                        fields: ["name", "value", "type"],
+                        output: resp.variables,
+                        format: "table",
+                        header: true
+                    });
+                }
+                break;
 
             default:
                 throw new ImperativeError({

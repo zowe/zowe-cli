@@ -83,7 +83,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
-                    error = "Creating zOS/MF workflow with uss file: " + this.arguments.ussFile + " failed. More details: \n" + err;
+                    error = "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed. More details: \n" + err;
                     throw error;
                 }
                 params.response.data.setObj(resp);

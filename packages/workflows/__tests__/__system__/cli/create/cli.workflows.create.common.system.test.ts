@@ -95,7 +95,7 @@ describe("Create workflow cli system tests", () => {
                 testEnvironment, [wfName, definitionFile, system, owner]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Workflow created with workflow-key");
+                expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
@@ -105,26 +105,22 @@ describe("Create workflow cli system tests", () => {
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("already exists.");
             });
+            it("Should not throw error if workflow with the same name already exists and there is overwrite", async () => {
+                const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
+                testEnvironment, [wfName, definitionFile, system, owner]);
+                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
+                testEnvironment, [wfName, definitionFile, system, owner, "--overwrite"]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("workflowKey");
+            });
         });
         describe("Failure Scenarios", () => {
-            it("Should throw error if a positional parameter is empty string.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss_empty.sh", testEnvironment);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            });
             it("Should throw error if the uss file does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
                 testEnvironment, [wfName, fakeDefFile, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("was either not found or cannot be accessed");
-            });
-        });
-        describe("Display Help", () => {
-            it("should display create workflow-from-uss-file help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/create_workflow_uss_help.sh", testEnvironment);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
             });
         });
     });
@@ -176,7 +172,7 @@ describe("Create workflow cli system tests", () => {
                 testEnvironment, [wfName, definitionDs, system, owner]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Workflow created with workflow-key");
+                expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
@@ -186,26 +182,22 @@ describe("Create workflow cli system tests", () => {
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("already exists.");
             });
+            it("Should not throw error if workflow with the same name already exists and there is overwrite", async () => {
+                const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
+                testEnvironment, [wfName, definitionDs, system, owner]);
+                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
+                testEnvironment, [wfName, definitionDs, system, owner, "--overwrite"]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("workflowKey");
+            });
         });
         describe("Failure Scenarios", () => {
-            it("Should throw error if a positional parameter is empty string.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds_empty.sh", testEnvironment);
-                expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            });
             it("Should throw error if the dataset does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
                 testEnvironment, [wfName, fakeDefFile, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("was either not found or cannot be accessed");
-            });
-        });
-        describe("Display Help", () => {
-            it("should display create workflow-from-data-set help", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/create_workflow_ds_help.sh", testEnvironment);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
             });
         });
     });

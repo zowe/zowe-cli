@@ -95,9 +95,17 @@ describe("List active workflow details cli system tests", () => {
             });
         });
         describe("Success Scenarios", () => {
-            it("Should list active workflow details.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_details.sh",
+            it("Should list active workflow details using wf key.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_key_details.sh",
                 testEnvironment, [wfKey]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Workflow Details");
+            });
+
+            it("Should list active workflow details using wf name.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_name_details.sh",
+                testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow Details");
@@ -105,10 +113,17 @@ describe("List active workflow details cli system tests", () => {
         });
         describe("Failure Scenarios", () => {
             it("Should throw error if the workflow does not exist", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_details.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_key_details.sh",
                 testEnvironment, [ fakeDefFile ]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("does not exist.");
+            });
+
+            it("Should throw error if the workflow name does not exist", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_name_details.sh",
+                testEnvironment, [ fakeDefFile ]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("No workflows match the provided workflow name.");
             });
         });
     });

@@ -10,6 +10,7 @@
 */
 
 import { IGulpError, ITaskFunction } from "./GulpHelpers";
+import { Constants } from "../packages/Constants";
 import { SpawnSyncReturns } from "child_process";
 import * as util from "util";
 import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@brightside/imperative";
@@ -122,10 +123,10 @@ const doc: ITaskFunction = async () => {
     await Imperative.init(myConfig.loadedConfig);
     const loadedDefinitions = Imperative.fullCommandTree;
 
-    clearRequire.all(); // in case the code has changed, reload any zowe code
+    clearRequire.all(); // in case the code has changed, reload any code
 
     let totalCommands = 0;
-    let markdownContent = "# Zowe CLI Help\n\n";
+    let markdownContent = "# " + Constants.DISPLAY_NAME + " Help\n\n";
     markdownContent += "\n" + loadedDefinitions.description + "\n\n";
 
     markdownContent += "{{tableOfContents}}\n\n";
@@ -168,7 +169,7 @@ const doc: ITaskFunction = async () => {
 
             const helpGen = new DefaultHelpGenerator({
                 produceMarkdown: true,
-                rootCommandName: "zowe" + oldCommandName
+                rootCommandName: Constants.BINARY_NAME + oldCommandName
             } as any, {
                 commandDefinition: child,
                 fullCommandTree: definition

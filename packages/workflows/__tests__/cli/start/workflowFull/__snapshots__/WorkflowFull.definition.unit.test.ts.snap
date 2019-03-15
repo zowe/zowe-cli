@@ -9,26 +9,44 @@ Object {
   "examples": Array [
     Object {
       "description": "To start a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
-      "options": "--with-workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
     },
     Object {
       "description": "To start a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" and wait forit to be finished",
-      "options": "--with-workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --wait",
+      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --wait",
     },
     Object {
       "description": "To start a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"and if there is a conflict in variable's value use the value that is in output file",
-      "options": "--with-workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --resolve-conflict-by \\"outputFileValue\\"",
+      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\" --resolve-conflict-by \\"outputFileValue\\"",
+    },
+    Object {
+      "description": "To start a workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
+      "options": "--workflow-name \\"testWorkflow\\"",
     },
   ],
   "name": "workflow-full",
   "options": Array [
     Object {
+      "absenceImplications": Array [
+        "workflow-name",
+      ],
       "aliases": Array [
         "wk",
       ],
+      "conflictsWith": Array [
+        "workflow-name",
+      ],
       "description": "Workflow key of workflow instance to be started",
       "name": "workflow-key",
-      "required": true,
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "wn",
+      ],
+      "description": "Workflow name of workflow instance to be started",
+      "name": "workflow-name",
       "type": "string",
     },
     Object {
