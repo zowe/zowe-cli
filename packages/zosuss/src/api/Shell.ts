@@ -23,7 +23,9 @@ let hasAuthFailed = false;
 
 export class Shell {
 
-    public static executeSsh(session: SshSession, command: string, callback: any): Promise<any> {
+    public static executeSsh(session: SshSession,
+                             command: string,
+                             stdoutHandler: (data: string) => void): Promise<any> {
         const promise = new Promise<any>((resolve,reject) => {
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
@@ -43,9 +45,12 @@ export class Shell {
                         conn.end();
                         resolve();
                     });
+                    stream.on("data", (data: string) => {
+                        stdoutHandler(data);
+                    });
+
                     // exit multiple times in case of nested shells
                     stream.end(command + "\nexit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n");
-                    callback(stream);
                 });
             });
             conn.connect({
@@ -79,9 +84,12 @@ export class Shell {
         return promise;
     }
 
-    public static async executeSshCwd(session: SshSession, command: string, cwd: string, callback: any): Promise<any> {
+    public static async executeSshCwd(session: SshSession,
+                                      command: string,
+                                      cwd: string,
+                                      stdoutHandler: (data: string) => void): Promise<any> {
         const cwdCommand = `cd ${cwd} && ${command}`;
-        await this.executeSsh(session, cwdCommand, callback);
+        await this.executeSsh(session, cwdCommand, stdoutHandler);
     }
 
     /**
