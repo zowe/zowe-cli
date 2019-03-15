@@ -12,7 +12,6 @@
 import { Shell, SshSession } from "../../../index";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ClientChannel } from "ssh2";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
@@ -41,12 +40,10 @@ describe("zowe uss issue ssh api call test", () => {
     it ("should execute uname command on the remote system by ssh and return operating system name", async () => {
         const command = "uname";
         let stdoutData: string;
-        await Shell.executeSsh(SSH_SESSION, command, (stream: ClientChannel) => {
-            stream.on("data", (data: string) => {
-                if (!data.includes("exit")) {
-                    stdoutData += data;
-                }
-            });
+        await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
+            if (!data.includes("exit")) {
+                stdoutData += data;
+            }
         });
         expect(stdoutData).toMatch("OS/390");
 
@@ -56,12 +53,10 @@ describe("zowe uss issue ssh api call test", () => {
         const command = "pwd";
         const cwd =  `${defaultSystem.unix.testdir}/`;
         let stdoutData: string;
-        await Shell.executeSshCwd(SSH_SESSION, command, cwd, (stream: ClientChannel) => {
-            stream.on("data", (data: string) => {
-                if (!data.includes("exit")) {
-                    stdoutData += data;
-                }
-            });
+        await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
+            if (!data.includes("exit")) {
+                stdoutData += data;
+            }
         });
         expect(stdoutData).toMatch(new RegExp("\\" + cwd + "\\s"));
     }, TIME_OUT);
