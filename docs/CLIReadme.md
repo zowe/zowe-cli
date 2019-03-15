@@ -787,7 +787,7 @@ will be loaded instead.
 * `          $  zowe profiles set-default tso-profile profilename`
 
 # provisioning | pv<a name="module-provisioning"></a>
-Perform z/OSMF provisioning tasks
+Perform z/OSMF provisioning tasks on Published Templates in the Service Catalog and Provisioned Instances in the Service Registry.
 ## list | ls<a name="module-list"></a>
 Lists z/OSMF provisioning information such as the provisioned instances from the registry, the provisioned instance details, the available provisioning templates and provisioning template details.
 ### template-info<a name="command-template-info"></a>
