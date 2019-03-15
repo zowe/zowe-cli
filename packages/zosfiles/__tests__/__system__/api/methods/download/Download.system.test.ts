@@ -19,7 +19,7 @@ import {
     ZosFilesConstants,
     ZosFilesMessages
 } from "../../../../../";
-import { Imperative, Session, IO } from "@brightside/imperative";
+import { Imperative, Session, IO } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { Session, ImperativeError, Imperative, Headers } from "@brightside/imperative";
+import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { IPerformActionResponse, noActionName, noInstanceId, noSessionProvisioning,
         nozOSMFVersion, PerformAction, ProvisioningConstants } from "../../../provisioning";
 

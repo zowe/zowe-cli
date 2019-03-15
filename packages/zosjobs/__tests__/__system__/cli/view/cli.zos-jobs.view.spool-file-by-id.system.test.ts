@@ -12,7 +12,7 @@
 import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
-import { Session, TextUtils } from "@brightside/imperative";
+import { Session, TextUtils } from "@zowe/imperative";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import * as fs from "fs";
 import { IJob } from "../../../../src/api/doc/response/IJob";

@@ -10,7 +10,7 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { IProvisionedInstance, ListRegistryInstances, DeleteInstance, ProvisioningConstants } from "../../../../../provisioning";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 

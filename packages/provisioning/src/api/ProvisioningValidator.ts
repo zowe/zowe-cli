@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, TextUtils, ImperativeExpect } from "@brightside/imperative";
+import { AbstractSession, TextUtils, ImperativeExpect } from "@zowe/imperative";
 import { noSessionProvisioning } from "./ProvisioningConstants";
 
 /**

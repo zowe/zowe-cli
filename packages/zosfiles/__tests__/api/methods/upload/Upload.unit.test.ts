@@ -14,7 +14,7 @@ jest.mock("fs");
 import * as path from "path";
 import * as fs from "fs";
 
-import { ImperativeError, IO, Session } from "@brightside/imperative";
+import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { IZosFilesResponse } from "../../../../../zosfiles";

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandOptionDefinition } from "@zowe/imperative";
 
 export const TSO_OPTION_GROUP: string = "TSO ADDRESS SPACE OPTIONS";
 

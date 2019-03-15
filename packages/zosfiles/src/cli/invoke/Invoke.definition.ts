@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { AmsStatementsDefinition } from "./amsStatements/AmsStatements.definition";
 import { AmsFileDefinition } from "./amsFile/AmsFile.definition";
 

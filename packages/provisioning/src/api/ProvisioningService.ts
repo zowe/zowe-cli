@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import * as readYaml from "js-yaml";
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { IPropertiesInput, IProvisionOptionals } from "../../../provisioning";
 
 /**

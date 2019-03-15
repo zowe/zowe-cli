@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { ListWorkflows } from "../../../api/ListWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { IActiveWorkflows } from "../../../api/doc/IActiveWorkflows";

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../rest";
-import { IImperativeError, Session } from "@brightside/imperative";
+import { IImperativeError, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
     it("should append the cmrf header to all requests", () => {

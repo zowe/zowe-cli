@@ -20,7 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../../../zosconsole";
 import * as fs from "fs";
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";

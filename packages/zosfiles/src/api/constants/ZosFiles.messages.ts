@@ -11,7 +11,7 @@
 
 import { getErrorContext } from "../../../../utils/src/CoreUtils";
 import { ZosFilesConstants } from "./ZosFiles.constants";
-import { IMessageDefinition } from "@brightside/imperative";
+import { IMessageDefinition } from "@zowe/imperative";
 
 /**
  * Messages to be used as command responses for different scenarios

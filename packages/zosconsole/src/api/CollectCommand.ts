@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Logger, TextUtils } from "@brightside/imperative";
+import { AbstractSession, Logger, TextUtils } from "@zowe/imperative";
 
 import { ZosmfRestClient } from "../../../rest";
 import { isNullOrUndefined } from "util";

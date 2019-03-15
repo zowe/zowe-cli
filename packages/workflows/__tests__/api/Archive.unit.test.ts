@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Session, Imperative, Headers, ImperativeError } from "@brightside/imperative";
+import { AbstractSession, Session, Imperative, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../../";

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { AddressSpaceDefinition } from "./address-space/AddressSpace.definition";
 
 export const StartCommand: ICommandDefinition = {

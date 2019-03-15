@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Logger, TextUtils } from "@brightside/imperative";
+import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
 import { inspect, isNullOrUndefined } from "util";
 import { IZosmfIssueResponse } from "./doc/zosmf/IZosmfIssueResponse";
 import { IConsoleResponse } from "./doc/IConsoleResponse";

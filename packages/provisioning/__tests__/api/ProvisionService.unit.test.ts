@@ -10,7 +10,7 @@
 */
 
 import * as Path from "path";
-import { Imperative, ImperativeError } from "@brightside/imperative";
+import { Imperative, ImperativeError } from "@zowe/imperative";
 import { IPropertiesInput, ProvisioningService, IProvisionOptionals } from "../../../provisioning";
 
 

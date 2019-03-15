@@ -10,7 +10,7 @@
 */
 
 import { ListRegistryInstances } from "../../../../../provisioning";
-import { CommandProfiles, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, IProfile } from "@zowe/imperative";
 import * as Handler from "../../../../src/cli/list/registry/RegistryInstances.handler";
 import { registryInstances } from "../../../../src/cli/list/registry/RegistryInstances.definition";
 

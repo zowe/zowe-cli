@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { CreateDefaults } from "../../../api/methods/create";
 import { VsamCreateOptions } from "./vsam.options";
 import { ZosFilesConstants } from "../../../api";

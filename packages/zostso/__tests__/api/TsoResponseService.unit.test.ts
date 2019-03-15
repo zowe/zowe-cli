@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { IPingResponse, IStartStopResponse, IZosmfPingResponse, IZosmfTsoResponse, noZosmfResponse, TsoResponseService } from "../../../zostso";
 
 const PRETEND_ZOSMF_RESPONSE: IZosmfTsoResponse = {

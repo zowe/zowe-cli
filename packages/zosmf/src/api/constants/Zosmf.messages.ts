@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition } from "@brightside/imperative";
+import { IMessageDefinition } from "@zowe/imperative";
 
 /**
  * Messages to be used as detail display error message when gathering z/OSMF information

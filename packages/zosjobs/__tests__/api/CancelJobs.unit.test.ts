@@ -10,7 +10,7 @@
 */
 
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { CancelJobs, IJob } from "../../";
 
 jest.mock("../../../rest/src/ZosmfRestClient");
