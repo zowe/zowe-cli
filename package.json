@@ -63,6 +63,7 @@
   "devDependencies":   {
     "@types/chai": "^4.0.1",
     "@types/chai-string": "^1.1.30",
+    "@types/fs-extra": "^5.0.5",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
     "@types/node": "8.0.28",
