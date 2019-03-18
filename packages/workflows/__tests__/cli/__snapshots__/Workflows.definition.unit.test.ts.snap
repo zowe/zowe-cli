@@ -80,6 +80,7 @@ Object {
       ],
     },
   ],
+  "summary": "Create and manage z/OSMF workflows",
   "type": "group",
 }
 `;
