@@ -57,6 +57,18 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
     },
 
     /**
+     * Optional parameter for listing steps summary only
+     * @type {ICommandOptionDefinition}
+     */
+    stepsSummaryOnly: {
+        name: "steps-summary-only",
+        aliases: ["sso"],
+        description: "Optional parameter for listing steps summary only.",
+        type: "boolean",
+        required: false
+    },
+
+    /**
      * Optional parameter for listing variables properties.
      * @type {ICommandOptionDefinition}
      */
