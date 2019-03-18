@@ -20,7 +20,7 @@
 *
 */
 
-import { CreateWorkflow } from "../../../src/api/Create";
+import {  CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../..";
 
 
 describe("Create workflow common handler", () => {
@@ -36,6 +36,7 @@ describe("Create workflow common handler", () => {
         const assignToOwner = true;
         const accessType = "Public";
         const deleteCompleted = true;
+        const overwrite = true;
         it("should create a workflow using a dataset", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../src/cli/create/Create.common.handler");
@@ -55,6 +56,22 @@ describe("Create workflow common handler", () => {
                 return {
                     success: true,
                     commandResponse: "deleted"
+                };
+            });
+
+            // Mock the get key function
+            ListWorkflows.getWfKey = jest.fn((session) => {
+                fakeSession = session;
+                return {
+                    workflowKey: "fake-workflow-key",
+                };
+            });
+
+            // Mock the create function
+            DeleteWorkflow.deleteWorkflow = jest.fn((session) => {
+                fakeSession = session;
+                return {
+                    success: true
                 };
             });
 
@@ -85,6 +102,7 @@ describe("Create workflow common handler", () => {
                         assignToOwner,
                         accessType,
                         deleteCompleted,
+//                        overwrite
                     },
                     response: {
                         data: {
