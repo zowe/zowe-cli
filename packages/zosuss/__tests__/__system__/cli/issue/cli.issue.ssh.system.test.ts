@@ -244,7 +244,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
     });
 
-    it.only("script issues exit64", async () => {
+    it("script issues exit64", async () => {
         const directory = `${defaultSystem.unix.testdir}`;
         const commandName = "cd " + directory + " && chmod 777 exit64.sh && exit64.sh";
         // Imperative.console.info("Exit command:" + commandName);
