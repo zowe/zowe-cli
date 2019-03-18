@@ -560,7 +560,15 @@ describe("Upload a local directory to USS directory", () => {
         });
 
         afterAll(async () => {
+            let error;
             await TestEnvironment.cleanUp(testEnvironment);
+            try {
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION,
+                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname + encodeURIComponent(" space dir"),
+                    [{"X-IBM-Option": "recursive"}]);
+            } catch (err) {
+                error = err;
+            }
         });
 
         afterEach(async () => {
@@ -595,13 +603,14 @@ describe("Upload a local directory to USS directory", () => {
 
         it("should upload local directory (with space in name) to USS", async () => {
             let error;
+            let tempUssname;
             let uploadResponse: IZosFilesResponse;
             let isDirectoryExist: boolean;
             try {
-                ussname = ussname + " space dir";
-                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDirWithSpaces, ussname);
-                Imperative.console.info(`THIS IS USS ${ussname} space dir`);
-                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
+                tempUssname = ussname + " space dir";
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDirWithSpaces, tempUssname);
+                Imperative.console.info(`THIS IS USS ${tempUssname}`);
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, tempUssname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
