@@ -25,5 +25,6 @@ export * from "./src/api/Start";
 export * from "./src/api/Properties";
 export * from "./src/api/ListWorkflows";
 export * from "./src/api/Cancel";
+export * from "./src/api/Definition";
 export * from "./src/api/ArchivedDelete";
 export * from "./src/api/ArchiveWorkflow";

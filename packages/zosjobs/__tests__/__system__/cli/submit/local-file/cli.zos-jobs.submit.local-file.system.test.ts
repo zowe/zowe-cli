@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { IO, Session } from "@brightside/imperative";
+import { IO, Session } from "@zowe/imperative";
 
 
 process.env.FORCE_COLOR = "0";

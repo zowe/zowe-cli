@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } from "@brightside/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { posix } from "path";
 import * as util from "util";
 

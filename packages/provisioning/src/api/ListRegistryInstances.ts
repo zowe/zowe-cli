@@ -11,7 +11,7 @@
 
 import { isNullOrUndefined } from "util";
 import { ZosmfRestClient } from "../../../rest";
-import { AbstractSession } from "@brightside/imperative";
+import { AbstractSession } from "@zowe/imperative";
 import { ProvisioningValidator } from "./ProvisioningValidator";
 import { nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
 import { IProvisionedInstances } from "./doc/zosmf/IProvisionedInstances";

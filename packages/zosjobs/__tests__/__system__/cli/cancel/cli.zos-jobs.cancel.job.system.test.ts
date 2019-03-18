@@ -15,7 +15,7 @@ import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { JobTestsUtils } from "../../api/JobTestsUtils";
-import { IO } from "@brightside/imperative";
+import { IO } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { StartCommand } from "./start/Start.definition";
 import { SendCommand } from "./send/Send.definition";
 import { StopCommand } from "./stop/Stop.definition";

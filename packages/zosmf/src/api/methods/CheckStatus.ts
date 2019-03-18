@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { posix } from "path";
 import { ZosmfConstants } from "../constants/Zosmf.constants";
 import { ZosmfMessages } from "../constants/Zosmf.messages";

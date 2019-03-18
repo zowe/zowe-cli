@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { IO } from "@brightside/imperative";
+import { IO } from "@zowe/imperative";
 
 let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;

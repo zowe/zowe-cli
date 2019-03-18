@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { IPingResponse, noPingInput, PingTso, StopTso } from "../../../../zostso";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

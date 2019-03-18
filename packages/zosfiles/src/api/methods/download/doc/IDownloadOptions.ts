@@ -9,7 +9,7 @@
 *
 */
 
-import { ITaskWithStatus } from "@brightside/imperative";
+import { ITaskWithStatus } from "@zowe/imperative";
 
 /**
  * This interface defines the options that can be sent into the download data set function

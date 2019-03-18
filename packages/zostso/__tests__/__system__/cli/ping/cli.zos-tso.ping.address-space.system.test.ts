@@ -15,7 +15,7 @@ import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { StartTso, StopTso } from "../../../../index";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 
 // Test Environment populated in the beforeAll();

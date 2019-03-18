@@ -14,7 +14,7 @@
  * Use proper credentials in case you want to use different.
  */
 import { IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, noAccountNumber, noSessionTso, StartTso, StopTso } from "../../../../zostso";
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";

@@ -13,7 +13,7 @@ import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environm
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
 // TODO: Add cleanup once commands become available

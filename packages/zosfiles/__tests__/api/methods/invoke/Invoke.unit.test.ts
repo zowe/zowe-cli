@@ -12,7 +12,7 @@
 jest.mock("fs");
 jest.mock("../../../../../utils");
 
-import { Headers, Session } from "@brightside/imperative";
+import { Headers, Session } from "@zowe/imperative";
 import { posix } from "path";
 import { IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers } from "@brightside/imperative";
+import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { noInstanceId, nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
 import { ProvisioningValidator } from "./ProvisioningValidator";

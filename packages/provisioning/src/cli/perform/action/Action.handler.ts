@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { explainActionResponse, PerformAction, ProvisioningConstants } from "../../../../";
 import { IProvisionedInstance, ListRegistryInstances } from "../../../../index";
 import { isNullOrUndefined } from "util";

@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition } from "@brightside/imperative";
+import { IMessageDefinition } from "@zowe/imperative";
 
 /**
  * Messages displayed by the zosmf check status command

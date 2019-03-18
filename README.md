@@ -41,7 +41,7 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 The first time that you download Zowe CLI from the GitHub repository, issue the following commands to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm config set @brightside:registry https://api.bintray.com/npm/ca/brightside
+npm config set @zowe:registry https://api.bintray.com/npm/ca/brightside
 npm install --registry https://registry.npmjs.org
 ```
 
@@ -90,7 +90,7 @@ npm install -g
 ## Uninstall Zowe CLI
 From your local copy of this repository, issue the following command to uninstall Zowe CLI:
 ```
-npm uninstall --global @brightside/core
+npm uninstall --global @zowe/cli
 ```
 
 ## Configure Zowe CLI
@@ -141,6 +141,6 @@ If the `custom_properties.yaml` file cannot be found or loaded, an error with re
 
 You can install the CLI as root so that all users can access the CLI without installing it individually on their user account. As the root user on Mac/Linux, issue the following command: 
 
-```npm i -g @brightside/core@latest --ignore-scripts```
+```npm i -g @zowe/cli@latest --ignore-scripts```
 
 **Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.

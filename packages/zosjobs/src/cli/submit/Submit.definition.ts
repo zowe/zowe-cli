@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { DataSetDefinition } from "./data-set/DataSet.definition";
 import { LocalFileDefinition } from "../../../../zosjobs/src/cli/submit/local-file/localFile.definition";
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { StartTso } from "../../../../../zostso";
 import { ZosTsoBaseHandler } from "../../../ZosTsoBaseHandler";
 

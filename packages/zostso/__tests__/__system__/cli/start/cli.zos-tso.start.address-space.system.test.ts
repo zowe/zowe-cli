@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { StopTso } from "../../../../";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";

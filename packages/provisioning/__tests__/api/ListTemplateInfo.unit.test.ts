@@ -11,7 +11,7 @@
 
 import { inspect } from "util";
 import { ZosmfRestClient } from "../../../rest";
-import { Session, Imperative, ImperativeError } from "@brightside/imperative";
+import { Session, Imperative, ImperativeError } from "@zowe/imperative";
 import { ListTemplateInfo, noSessionProvisioning,
         noTemplateName, nozOSMFVersion, ProvisioningConstants } from "../../../provisioning";
 

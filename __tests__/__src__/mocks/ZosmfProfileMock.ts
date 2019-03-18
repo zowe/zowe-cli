@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfile, CommandProfiles, IHandlerResponseApi } from "@brightside/imperative";
+import { IProfile, CommandProfiles, IHandlerResponseApi } from "@zowe/imperative";
 // Some test constants that are needed by multiple packages for unit tests
 
 // Mocked profile options to be added to args

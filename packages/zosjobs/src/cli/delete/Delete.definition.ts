@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { JobDefinition } from "./job/Job.definition";
 
 export const DeleteDefinition: ICommandDefinition = {

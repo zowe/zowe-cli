@@ -9,7 +9,7 @@
 *
 */
 
-import { IExplanationMap } from "@brightside/imperative";
+import { IExplanationMap } from "@zowe/imperative";
 import { explainPublishedTemplateFull, explainPublishedTemplateSummary, IPublishedTemplate } from "./IPublishedTemplate";
 
 /**

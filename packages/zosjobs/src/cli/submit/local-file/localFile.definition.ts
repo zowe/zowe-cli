@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { ZosmfSession } from "../../../../../zosmf";
 
 export const LocalFileDefinition: ICommandDefinition = {
