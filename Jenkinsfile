@@ -29,9 +29,9 @@ node('ca-jenkins-agent') {
 
     // Protected branch property definitions
     pipeline.protectedBranches.addMap([
-        [name: "master", tag: "daily", prerelease: "alpha", dependencies: ["@brightside/imperative": "daily"]],
-        [name: "beta", tag: "beta", prerelease: "beta", dependencies: ["@brightside/imperative": "beta"]],
-        [name: "latest", tag: "latest", dependencies: ["@brightside/imperative": "latest"]],
+        [name: "master", tag: "daily", prerelease: "alpha", dependencies: ["@zowe/imperative": "daily"]],
+        [name: "beta", tag: "beta", prerelease: "beta", dependencies: ["@zowe/imperative": "beta"]],
+        [name: "latest", tag: "latest", dependencies: ["@zowe/imperative": "latest"]],
         [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.MINOR, dependencies: ["@brightside/imperative": "lts-incremental"]],
         [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]]
     ])
@@ -46,7 +46,7 @@ node('ca-jenkins-agent') {
     pipeline.publishConfig = [
         email: pipeline.gitConfig.email,
         credentialsId: 'GizaArtifactory',
-        scope: '@brightside'
+        scope: '@zowe'
     ]
 
     pipeline.registryConfig = [

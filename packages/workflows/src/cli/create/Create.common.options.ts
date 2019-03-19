@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandOptionDefinition } from "@zowe/imperative";
 
 /**
  * Object containing all extra options to be used by the create workflow commands.
@@ -125,11 +125,22 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     deleteCompleted: {
         name: "delete-completed",
         aliases: ["dc"],
-        description: "Whether the successfully completed jobs to  be deleted from the JES spool.",
+        description: "Whether the successfully completed jobs to be deleted from the JES spool.",
         type: "boolean",
         required: false
     },
 
+    /**
+     * Specifies whether delete workflow with the same name if it already exists.
+     * @type {ICommandOptionDefinition}
+     */
+    overwrite: {
+        name: "overwrite",
+        aliases: ["ov"],
+        description: "Specifies whether the workflow with the same name should be deleted if it already exists.",
+        type: "boolean",
+        required: false
+    },
     /**
      * Identifies the version of the zOSMF workflow service.
      * @type {ICommandOptionDefinition}

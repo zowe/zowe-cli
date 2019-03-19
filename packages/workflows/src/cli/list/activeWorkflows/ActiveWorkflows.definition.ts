@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { ListActiveWorkflowsOptions } from "./ActiveWorkflows.options";
 import { join } from "path";
 

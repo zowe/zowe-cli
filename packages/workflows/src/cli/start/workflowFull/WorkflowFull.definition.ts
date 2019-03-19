@@ -10,7 +10,7 @@
 */
 
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { join } from "path";
 import { StartCommonOptions } from "../Start.common.options";
 

@@ -10,7 +10,7 @@
 */
 
 import { ICreateDataSetOptions, ZosFilesConstants } from "../../../../../index";
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import * as http from "http";
 import { inspect } from "util";
 

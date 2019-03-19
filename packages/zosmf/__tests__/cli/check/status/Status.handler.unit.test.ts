@@ -10,7 +10,7 @@
 */
 
 import { CheckStatus } from "../../../../../zosmf";
-import { ICommandHandler, IHandlerParameters } from "@brightside/imperative";
+import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../src/cli/check/status/Status.handler";
 import * as cmdDef from "../../../../src/cli/check/status/Status.definition";
 import { getMockedResponse, UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";

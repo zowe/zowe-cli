@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { Session, ImperativeError, Imperative, Headers } from "@brightside/imperative";
+import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { CreateWorkflow } from "../../../workflows";
 import {
     WorkflowConstants,

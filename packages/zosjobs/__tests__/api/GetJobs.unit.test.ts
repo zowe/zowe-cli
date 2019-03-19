@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { AbstractSession, ImperativeError, ProcessUtils, Session } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ProcessUtils, Session } from "@zowe/imperative";
 import { GetJobs } from "../../../zosjobs";
 import { GetJobsData } from "../__resources__/api/GetJobsData";
 

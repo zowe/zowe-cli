@@ -12,7 +12,7 @@
 import { IMonitorJobWaitForParms } from "../../src/api/doc/input/IMonitorJobWaitForParms";
 import { MonitorJobs } from "../../src/api/MonitorJobs";
 import { IJob } from "../../src/api/doc/response/IJob";
-import { ImperativeError, Session } from "@brightside/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { GetJobs } from "../..";
 
 jest.mock("../../src/api/GetJobs");

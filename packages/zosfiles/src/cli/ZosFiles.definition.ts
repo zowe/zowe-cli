@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { CreateDefinition } from "./create/Create.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { InvokeDefinition } from "./invoke/Invoke.definition";

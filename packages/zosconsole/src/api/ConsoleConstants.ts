@@ -9,7 +9,7 @@
 *
 */
 
-import { apiErrorHeader, IMessageDefinition } from "@brightside/imperative";
+import { apiErrorHeader, IMessageDefinition } from "@zowe/imperative";
 
 export class ConsoleConstants {
     public static readonly CLASS: string = "Consoles";

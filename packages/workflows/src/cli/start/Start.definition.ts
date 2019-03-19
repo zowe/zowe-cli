@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { WorkflowStep } from "./workflowStep/WorkflowStep.definition";
 import { WorkflowFull } from "./workflowFull/WorkflowFull.definition";
 

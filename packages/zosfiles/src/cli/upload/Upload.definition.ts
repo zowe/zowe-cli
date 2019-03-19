@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { FileToDataSetDefinition } from "./ftds/FileToDataSet.definition";
 import { StdinToDataSetDefinition } from "./stds/StdinToDataSet.definition";
 import { DirToPdsDefinition } from "./dtp/DirToPds.definition";

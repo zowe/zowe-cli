@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile } from "@zowe/imperative";
 import { IZosFilesResponse } from "../api/doc/IZosFilesResponse";
 import { ZosmfSession } from "../../../zosmf";
 

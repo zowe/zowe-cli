@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO } from "@brightside/imperative";
+import { IO } from "@zowe/imperative";
 import { ZosFilesUtils } from "../../../src/api/utils/ZosFilesUtils";
 
 jest.mock("fs");

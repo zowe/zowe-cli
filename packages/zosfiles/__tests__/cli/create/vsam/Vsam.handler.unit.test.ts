@@ -10,7 +10,7 @@
 */
 
 import { Create } from "../../../../src/api/methods/create/Create";
-import { ImperativeError } from "@brightside/imperative";
+import { ImperativeError } from "@zowe/imperative";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const message: string = "Dummy error message";

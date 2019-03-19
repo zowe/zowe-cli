@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { templateInfo } from "./templateInfo/TemplateInfo.definition";
 import { catalogTemplates } from "./catalogTemplates/CatalogTemplates.definition";
 import { instanceInfo } from "./instanceInfo/InstanceInfo.definition";

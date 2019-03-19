@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition, apiErrorHeader } from "@brightside/imperative";
+import { IMessageDefinition, apiErrorHeader } from "@zowe/imperative";
 
 /**
  * Constants for workflow related APIs.
@@ -25,6 +25,14 @@ export class WorkflowConstants {
      * @memberof WorkflowConstants
      */
     public static readonly RESOURCE: string = "/zosmf/workflow/rest";
+
+    /**
+     * URI base for workflows API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly WORKFLOW_DEFINITION: string = "workflowDefinition";
 
     /**
      * URI base for workflows API.
@@ -162,6 +170,14 @@ export class WorkflowConstants {
      * @memberof WorkflowConstants
      */
     public static readonly variables: string = "variables";
+
+    /**
+     * URI base for filePath for workflow definition.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly filePath: string = "definitionFilePath";
 
 }
 

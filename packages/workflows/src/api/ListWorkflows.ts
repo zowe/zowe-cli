@@ -11,7 +11,7 @@
 
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { AbstractSession, ImperativeError } from "@brightside/imperative";
+import { AbstractSession, ImperativeError } from "@zowe/imperative";
 import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "./WorkflowConstants";
 import { IActiveWorkflows } from "./doc/IActiveWorkflows";
 

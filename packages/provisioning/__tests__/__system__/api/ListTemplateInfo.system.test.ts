@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, ImperativeError, Imperative } from "@brightside/imperative";
+import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import {
