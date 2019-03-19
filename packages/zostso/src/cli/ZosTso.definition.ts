@@ -21,6 +21,7 @@ export const definition: ICommandDefinition = {
     name: "zos-tso",
     aliases: ["tso"],
     type: "group",
+    summary: "Interact with TSO",
     description: "Issue TSO commands and interact with TSO address spaces",
     children: [
         SendCommand, StartCommand, PingCommand, StopCommand, IssueCommand
