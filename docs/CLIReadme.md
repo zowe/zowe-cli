@@ -2408,8 +2408,6 @@ delimiters are added between records.
 
 * `          $  zowe zos-files upload file-to-uss "file.txt" "/a/ibmuser/my_text.txt"`
 
-<<<<<<< HEAD
-=======
 ### dir-to-uss<a name="command-dir-to-uss"></a>
 Upload a local directory to a USS directory
 
@@ -2528,7 +2526,6 @@ specify this option if you are not using an API mediation layer.
 
 * `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --binary --ascii-files "myFile1.txt,myFile2.txt,myFile3.txt"`
 
->>>>>>> d04e3fc... Update CLIReadme.md
 # zos-jobs | jobs<a name="module-zos-jobs"></a>
 Manage z/OS jobs.
 ## submit | sub<a name="module-submit"></a>
