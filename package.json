@@ -4,15 +4,15 @@
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
-  "repository":   {
+  "repository": {
     "type": "git",
     "url": "https://github.com/zowe/zowe-cli.git"
   },
-  "bin":   {
+  "bin": {
     "bright": "./lib/main.js",
     "zowe": "./lib/main.js"
   },
-  "keywords":   [
+  "keywords": [
     "zosmf",
     "mainframe",
     "CLI",
@@ -23,16 +23,20 @@
     "z/OS",
     "zowe"
   ],
-  "files":   [
+  "files": [
     "lib",
     "docs",
     "scripts"
   ],
-  "publishConfig": {"registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"},
-  "imperative": {"configurationModule": "lib/imperative.js"},
+  "publishConfig": {
+    "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
+  },
+  "imperative": {
+    "configurationModule": "lib/imperative.js"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
-  "scripts":   {
+  "scripts": {
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
     "build": "gulp updateLicense && tsc --pretty && npm run lint && npm run checkTestsCompile && madge -c lib",
     "installWithBuild": "npm install && npm run build",
@@ -55,13 +59,13 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
-  "dependencies":   {
-    "@zowe/imperative": "^3.0.1-alpha.201903181722",
+  "dependencies": {
+    "@zowe/imperative": "^3.0.1",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.9.0",
     "string-width": "2.1.1"
   },
-  "devDependencies":   {
+  "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/chai-string": "^1.1.30",
     "@types/fs-extra": "^5.0.5",
@@ -107,29 +111,45 @@
     "typescript": "3.2.2",
     "uuid": "^3.3.2"
   },
-  "resolutions": {"cpx/chokidar": "^2.1.1"},
-  "engines": {"node": ">=6.0.0"},
-  "jest":   {
-    "globals": {"ts-jest": {"disableSourceMapSupport": true}},
-    "watchPathIgnorePatterns": [".*jest-stare.*\\.js"],
-    "modulePathIgnorePatterns": ["__tests__/__snapshots__/"],
-    "setupFilesAfterEnv": ["./__tests__/beforeTests.js"],
+  "resolutions": {
+    "cpx/chokidar": "^2.1.1"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "disableSourceMapSupport": true
+      }
+    },
+    "watchPathIgnorePatterns": [
+      ".*jest-stare.*\\.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "__tests__/__snapshots__/"
+    ],
+    "setupFilesAfterEnv": [
+      "./__tests__/beforeTests.js"
+    ],
     "testResultsProcessor": "jest-stare",
-    "transform": {".(ts)": "ts-jest"},
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
-    "moduleFileExtensions":     [
+    "moduleFileExtensions": [
       "ts",
       "js"
     ],
     "testEnvironment": "node",
-    "collectCoverageFrom":     [
+    "collectCoverageFrom": [
       "packages/**/*.ts",
       "!**/__tests__/**",
       "!packages/**/doc/I*.ts",
       "!**/main.ts"
     ],
     "collectCoverage": false,
-    "coverageReporters":     [
+    "coverageReporters": [
       "json",
       "lcov",
       "text",
@@ -137,14 +157,18 @@
     ],
     "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
   },
-  "jestSonar": {"reportPath": "__tests__/__results__/jest-sonar"},
-  "jest-stare":   {
+  "jestSonar": {
+    "reportPath": "__tests__/__results__/jest-sonar"
+  },
+  "jest-stare": {
     "resultDir": "__tests__/__results__/jest-stare",
     "coverageLink": "../unit/coverage/lcov-report/index.html",
-    "additionalResultsProcessors":     [
+    "additionalResultsProcessors": [
       "jest-junit",
       "jest-sonar-reporter"
     ]
   },
-  "jest-junit": {"output": "__tests__/__results__/junit.xml"}
+  "jest-junit": {
+    "output": "__tests__/__results__/junit.xml"
+  }
 }
