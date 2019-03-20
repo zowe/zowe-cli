@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`List workflows handler process method should get workflow definition 1`] = `
+exports[`List workflow definition file details handler process method should get workflow definition 1`] = `
 Object {
   "fields": Array [
     "workflowDefaultName",

@@ -17,11 +17,11 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("List Active Workflow Details", () => {
+describe("List Workflow Definition FIle Details", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_active_workflow_details"
+            testName: "list_workflow_definition_file_details"
         });
     });
 
@@ -37,7 +37,7 @@ describe("List Active Workflow Details", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("Should throw error if positional argumnent.", async () => {
+    it("Should throw error if positional argumnent is missing.", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command", "list_workflow_definition_missing_argument.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, [null]);
         expect(response.status).toBe(1);

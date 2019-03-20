@@ -22,14 +22,9 @@
 
 import { DefinitionWorkflow } from "../../../../src/api/Definition";
 
-describe("List workflows handler", () => {
+describe("List workflow definition file details handler", () => {
     describe("process method", () => {
         const definitionFilePath = "fake/Path";
-        const category = "Category";
-        const system = "TESTSYS";
-        const owner = "FAKEUID";
-        const vendor = "IBM";
-        const statusName = "canceled";
         it("should get workflow definition", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/list/retreiveWorkflowDefinition/RetreiveWorkflowDefinition.handler");

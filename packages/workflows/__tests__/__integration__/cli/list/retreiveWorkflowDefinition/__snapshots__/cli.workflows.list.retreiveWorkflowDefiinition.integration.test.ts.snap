@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`List Active Workflow Details should display the help 1`] = `
+exports[`List Workflow Definition FIle Details should display the help 1`] = `
 "================Z/OS WORKFLOWS LIST DEFINITION-FILE-DETAILS HELP===============
 
  COMMAND NAME
