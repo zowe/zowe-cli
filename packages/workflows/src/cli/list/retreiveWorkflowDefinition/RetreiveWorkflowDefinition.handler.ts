@@ -61,7 +61,7 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         if(this.arguments.listSteps && response.steps){
             commandParameters.response.console.log("\nWorkflow Steps: ");
             commandParameters.response.format.output({
-                fields: ["name", "state", "stepNumber"],
+                fields: ["name", "title", "description"],
                 output: response.steps,
                 format: "table",
                 header: true
@@ -71,7 +71,7 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         if(this.arguments.listVariables && response.variables){
             commandParameters.response.console.log("\nWorkflow Variables: ");
             commandParameters.response.format.output({
-                fields: ["name", "value", "type"],
+                fields: ["name", "description", "type"],
                 output: response.variables,
                 format: "table",
                 header: true
