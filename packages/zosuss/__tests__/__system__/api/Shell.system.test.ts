@@ -41,9 +41,7 @@ describe("zowe uss issue ssh api call test", () => {
         const command = "uname";
         let stdoutData: string;
         await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
-            if (!data.includes("exit")) {
-                stdoutData += data;
-            }
+            stdoutData += data;
         });
         expect(stdoutData).toMatch("OS/390");
 

@@ -46,9 +46,7 @@ export class Shell {
                         resolve();
                     });
                     stream.on("data", (data: string) => {
-                        if (!data.includes("exit")) {
-                            stdoutHandler(data);
-                        }
+                        stdoutHandler(data);
                     });
 
                     // exit multiple times in case of nested shells
