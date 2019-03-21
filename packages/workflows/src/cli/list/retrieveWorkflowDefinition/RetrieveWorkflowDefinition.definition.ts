@@ -10,21 +10,21 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { RetreiveWorkflowDefinitionCommonOptions } from "./RetreiveWorkflowDefinition.options";
+import { RetrieveWorkflowDefinitionCommonOptions } from "./RetrieveWorkflowDefinition.options";
 import { join } from "path";
 
 /**
- * This object defines the command for retreaving workflow contents of zosworkflow definition.
+ * This object defines the command for retrieving workflow contents of zosworkflow definition.
  * This is not something that is intended to be used outside of this npm package.
  *
  * @private
  */
-export const RetreiveWorkflowDefinition: ICommandDefinition = {
+export const RetrieveWorkflowDefinition: ICommandDefinition = {
     name: "definition-file-details",
     aliases: ["dfd"],
     description: "Retrieve the contents of a z/OSMF workflow definition from a z/OS system.",
     type: "command",
-    handler: join(__dirname, "./RetreiveWorkflowDefinition.handler"),
+    handler: join(__dirname, "./RetrieveWorkflowDefinition.handler"),
     profile: {
         optional: ["zosmf"],
     },
@@ -38,8 +38,8 @@ export const RetreiveWorkflowDefinition: ICommandDefinition = {
         }
     ],
     options: ([
-        RetreiveWorkflowDefinitionCommonOptions.listSteps,
-        RetreiveWorkflowDefinitionCommonOptions.listVariables,
+        RetrieveWorkflowDefinitionCommonOptions.listSteps,
+        RetrieveWorkflowDefinitionCommonOptions.listVariables,
     ]),
     examples: [
         {

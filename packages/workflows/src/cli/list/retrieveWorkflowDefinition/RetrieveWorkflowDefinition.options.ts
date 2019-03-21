@@ -12,9 +12,9 @@
 import { ICommandOptionDefinition } from "@brightside/imperative";
 
 /**
- * Object containing all extra options to be used by the retreive workflow definition commands.
+ * Object containing all extra options to be used by the retrieve workflow definition commands.
  */
-export const RetreiveWorkflowDefinitionCommonOptions: { [key: string]: ICommandOptionDefinition } = {
+export const RetrieveWorkflowDefinitionCommonOptions: { [key: string]: ICommandOptionDefinition } = {
 
     /**
      * Parameter to list workflow details by workflow name

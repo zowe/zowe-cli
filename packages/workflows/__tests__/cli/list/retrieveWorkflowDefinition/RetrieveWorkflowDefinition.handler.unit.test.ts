@@ -27,7 +27,7 @@ describe("List workflow definition file details handler", () => {
         const definitionFilePath = "fake/Path";
         it("should get workflow definition", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/retreiveWorkflowDefinition/RetreiveWorkflowDefinition.handler");
+            const handlerReq = require("../../../../src/cli/list/retrieveWorkflowDefinition/RetrieveWorkflowDefinition.handler");
             const handler = new handlerReq.default();
 
 
