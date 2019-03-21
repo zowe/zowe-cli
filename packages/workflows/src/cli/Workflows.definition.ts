@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { CreateDefinition } from "./create/Create.definition";
 import { StartDefinition } from "./start/Start.definition";
@@ -28,6 +28,7 @@ const definition: ICommandDefinition = {
     name: "zos-workflows",
     aliases: ["wf"],
     type: "group",
+    summary: "Create and manage z/OSMF workflows",
     description: "Create and manage z/OSMF workflows on a z/OS system",
     children: [
         CreateDefinition,

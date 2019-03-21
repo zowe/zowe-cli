@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../../rest";
-import { Session, ImperativeError, Imperative } from "@brightside/imperative";
+import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { noSession, noWorkflowKey, nozOSMFVersion } from "../../../src/api/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";

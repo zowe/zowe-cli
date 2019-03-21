@@ -11,7 +11,7 @@
 
 import { TEST_REGEX_DIR, TEST_RESOURCES_DIR } from "./../../__src__/ZosJobsTestConstants";
 import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "./../../../index";
-import { ImperativeError, Session, TextUtils } from "@brightside/imperative";
+import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "../../../../rest";

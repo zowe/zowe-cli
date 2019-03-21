@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { TSO_PROFILE_OPTIONS } from "../../constants/ZosTso.constants";
 
 export const AddressSpaceDefinition: ICommandDefinition = {

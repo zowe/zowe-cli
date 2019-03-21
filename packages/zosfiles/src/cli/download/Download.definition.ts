@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { DatasetDefinition } from "./ds/Dataset.definition";
 import { AllMembersDefinition } from "./am/AllMembers.definition";
 

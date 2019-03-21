@@ -11,7 +11,7 @@
 
 import { isNullOrUndefined } from "util";
 import { ListInstanceVariables } from "../../../api/ListInstanceVariables";
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { IProvisionedInstance, IProvisionedInstanceVariable, ListRegistryInstances, ProvisioningConstants } from "../../../../../provisioning";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 

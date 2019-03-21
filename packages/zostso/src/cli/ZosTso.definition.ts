@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { StartCommand } from "./start/Start.definition";
 import { SendCommand } from "./send/Send.definition";
 import { StopCommand } from "./stop/Stop.definition";
@@ -21,6 +21,7 @@ export const definition: ICommandDefinition = {
     name: "zos-tso",
     aliases: ["tso"],
     type: "group",
+    summary: "Interact with TSO",
     description: "Issue TSO commands and interact with TSO address spaces",
     children: [
         SendCommand, StartCommand, PingCommand, StopCommand, IssueCommand

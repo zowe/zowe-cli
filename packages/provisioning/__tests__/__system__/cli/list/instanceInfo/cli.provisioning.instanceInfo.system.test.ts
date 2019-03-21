@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ListRegistryInstances } from "../../../../../";
 import { ProvisioningConstants } from "../../../../../index";

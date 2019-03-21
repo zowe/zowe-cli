@@ -9,7 +9,7 @@
 *
 */
 
-import { ITaskWithStatus } from "@brightside/imperative";
+import { ITaskWithStatus } from "@zowe/imperative";
 import { IUploadMap } from "./IUploadMap";
 
 /**

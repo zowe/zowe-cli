@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 import { inspect } from "util";
 import { GetJobs } from "./GetJobs";
 import { JOB_STATUS, JOB_STATUS_ORDER } from "./types/JobStatus";

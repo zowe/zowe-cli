@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition, apiErrorHeader } from "@brightside/imperative";
+import { IMessageDefinition, apiErrorHeader } from "@zowe/imperative";
 
 /**
  * Constants for workflow related APIs.

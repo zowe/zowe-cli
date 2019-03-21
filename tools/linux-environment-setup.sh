@@ -166,8 +166,8 @@ echo
 touch DEFAULT_PROFILE
 
 # Eyecatchers that we can use to properly keep the profile clean
-SECTION_START="####################BRIGHTSIDE SETUP START#####################"
-SECTION_END="####################BRIGHTSIDE SETUP END#######################"
+SECTION_START="####################ZOWE CLI SETUP START#####################"
+SECTION_END="####################ZOWE CLI SETUP END#######################"
 
 # This is the bin directory specified by npm
 NPM_BIN="bin"
@@ -193,7 +193,7 @@ echo "$PROFILE_CONTENTS" >> $DEFAULT_PROFILE
 source ~/.profile
 
 echo "Environment successfully updated. $PRODUCT_NAME should now be installable using the following command."
-echo -e "${LPURPLE}npm install -g @brightside/core${NC}"
+echo -e "${LPURPLE}npm install -g @zowe/cli${NC}"
 echo
 echo -e "You should see it installed to: ${CYAN}${NEW_INSTALL_DIRECTORY}${NC}."
 echo

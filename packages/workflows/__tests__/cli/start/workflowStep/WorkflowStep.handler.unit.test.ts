@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@brightside/imperative";
+import { AbstractSession } from "@zowe/imperative";
 import { startT } from "../../../../src/api/doc/IStartWorkflow";
 import { PropertiesWorkflow, StartWorkflow } from "../../../..";
 import { ListWorkflows } from "../../../../src/api/ListWorkflows";

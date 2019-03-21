@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@brightside/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { IIssueResponse, IIssueTsoParms, IssueTso, IStartTsoParms } from "../../../../zostso";
 import * as fs from "fs";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";

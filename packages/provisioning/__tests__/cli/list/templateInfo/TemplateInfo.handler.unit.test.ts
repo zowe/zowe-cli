@@ -13,7 +13,7 @@ import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningLi
 
 jest.mock("../../../../src/api/ListTemplateInfo");
 import { ListTemplateInfo } from "../../../../../provisioning";
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../src/cli/list/templateInfo/TemplateInfo.handler";
 import { templateInfo } from "../../../../src/cli/list/templateInfo/TemplateInfo.definition";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";

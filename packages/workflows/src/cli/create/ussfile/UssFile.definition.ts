@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { CreateCommonOptions } from "../Create.common.options";
 import { join } from "path";
 
@@ -46,14 +46,15 @@ export const UssFile: ICommandDefinition = {
         CreateCommonOptions.assignToOwner,
         CreateCommonOptions.accessType,
         CreateCommonOptions.deleteCompleted,
+        CreateCommonOptions.overwrite,
         // CreateCommonOptions.zosmfVersion
     ]),
     outputFormatOptions: true,
     examples: [
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
-            "on system \"TESTM1\"",
-            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\""
+            "on system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite"
         },
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
@@ -62,13 +63,15 @@ export const UssFile: ICommandDefinition = {
         },
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
-            "on system \"TESTM1\" with variable values in the member PROPERTIES of data set TESTID.DATA",
-            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --variables-input-file TESTID.DATA(PROPERTIES)"
+            "on system \"TESTM1\" with owner \"MYSYSID\" and with variable values in the member PROPERTIES of data set TESTID.DATA",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"MYSYSID\" " +
+                "--variables-input-file TESTID.DATA(PROPERTIES)"
         },
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
-            "on system \"TESTM1\" with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
-            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --variables DUMMYVAR=DUMMYVAL --assign-to-owner"
+            "on system \"TESTM1\" with owner \"MYSYSID\" and with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --variables DUMMYVAR=DUMMYVAL " +
+                "--owner \"MYSYSID\" --assign-to-owner"
         }
     ],
 };

@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import {
     IStartStopResponse,
     IStopTsoParms,

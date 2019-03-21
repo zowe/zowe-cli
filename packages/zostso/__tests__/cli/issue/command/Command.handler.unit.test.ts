@@ -13,7 +13,7 @@ import { PingTsoData } from "../../../__resources__/api/PingTsoData";
 
 jest.mock("../../../../src/api/PingTso");
 import { IssueTso } from "../../../../../zostso";
-import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as Command from "../../../../src/cli/issue/command/Command.handler";
 import { CommandDefinition } from "../../../../src/cli/issue/command/Command.definition";
 import { StartTsoData } from "../../../__resources__/api/StartTsoData";

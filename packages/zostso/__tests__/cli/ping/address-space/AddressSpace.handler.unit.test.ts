@@ -13,7 +13,7 @@ import { PingTsoData } from "../../../__resources__/api/PingTsoData";
 
 jest.mock("../../../../src/api/PingTso");
 import { PingTso } from "../../../../../zostso";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as PingAddressSpaceHandler from "../../../../src/cli/ping/address_space/PingAddressSpace.handler";
 import { PingAddressSpaceCommandDefinition } from "../../../../src/cli/ping/address_space/PingAddressSpace.definition";
 
