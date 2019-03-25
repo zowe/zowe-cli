@@ -108,7 +108,7 @@ export class PropertiesWorkflow {
             } else if(step.template) {
                 miscValue = "TSO";
             } else if(step.isRestStep) {
-                miscValue = step.actualStatusCode;
+                miscValue = `HTTP ${step.actualStatusCode}`;
             }
             const stepSummary: IStepSummary = {
                 stepNumber: step.stepNumber,

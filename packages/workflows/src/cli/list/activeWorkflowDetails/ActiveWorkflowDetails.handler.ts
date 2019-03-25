@@ -37,21 +37,30 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
 
-        let sourceType: string;
+        let workflowKey: string;
         if (this.arguments.workflowKey) {
-            sourceType = "workfowKey";
-        }
-        else if (this.arguments.workflowName) {
-            sourceType = "workflowName";
+            workflowKey = this.arguments.workflowKey;
+        } else if (this.arguments.workflowName) {
+            workflowKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+            if(!workflowKey) {
+                throw new ImperativeError({
+                    msg: `No workflows match the provided workflow name.`,
+                    additionalDetails: JSON.stringify(params)
+                });
+            }
+        } else {
+            throw new ImperativeError({
+                msg: `Neither workflow key nor workflow name provided.`,
+                additionalDetails: JSON.stringify(params)
+            });
         }
 
         let resp;
         let error;
-        let getWfKey;
 
         if(this.arguments.stepsSummaryOnly) {
             try {
-                resp = await PropertiesWorkflow.getSummaryOnly(this.mSession, this.arguments.workflowKey);
+                resp = await PropertiesWorkflow.getSummaryOnly(this.mSession, workflowKey);
             } catch(err) {
                 error = "List step summary error: " + err;
                 throw err;
@@ -66,28 +75,24 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                 header: true
             });
         } else {
+            try{
+                resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey,
+                                                                      undefined, this.arguments.listSteps, this.arguments.listVariables);
+            } catch (err){
+                error = "List workflow details error: " + err;
+                throw error;
+            }
+            params.response.data.setObj(resp);
 
-            switch (sourceType) {
-                case "workfowKey":
-
-                    try{
-                        resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey,
-                                                                                undefined, this.arguments.listSteps, this.arguments.listVariables);
-                    } catch (err){
-                        error = "List workflow details error: " + err;
-                        throw error;
-                    }
-                    params.response.data.setObj(resp);
-
-                    params.response.console.log("\nWorkflow Details: ");
-                    params.response.format.output({
+            params.response.console.log("\nWorkflow Details: ");
+            params.response.format.output({
                         fields: ["workflowName", "workflowKey",
                             resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
                         output: resp,
                         format: "object",
                     });
 
-                    if(this.arguments.listSteps && resp.steps){
+            if(this.arguments.listSteps && resp.steps){
                         params.response.console.log("\nWorkflow Steps: ");
                         params.response.format.output({
                             fields: ["name", "state", "stepNumber"],
@@ -97,78 +102,14 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                         });
                     }
 
-                    if(this.arguments.listVariables && resp.variables){
-                        params.response.console.log("\nWorkflow Variables: ");
-                        params.response.format.output({
-                            fields: ["name", "value", "type"],
-                            output: resp.variables,
-                            format: "table",
-                            header: true
-                        });
-                    }
-                    break;
-
-                case "workflowName":
-                    try{
-                        getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                        if (getWfKey === null) {
-                            throw new ImperativeError({
-                                msg: `No workflows match the provided workflow name.`,
-                                additionalDetails: JSON.stringify(params)
-                            });
-                        }
-                        resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey,
-                                                                            undefined, this.arguments.listSteps, this.arguments.listVariables);
-                    } catch (err){
-                        error = "List workflow details error: " + err;
-                        throw error;
-                    }
-                    params.response.data.setObj(resp);
-
-                    params.response.console.log("\nWorkflow Details: ");
-                    params.response.format.output({
-                        fields: ["workflowName", "workflowKey",
-                            resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
-                        output: resp,
-                        format: "object",
-                    });
-
-                    if(this.arguments.listSteps && resp.steps){
-                        params.response.console.log("\nWorkflow Steps: ");
-                        params.response.format.output({
-                            fields: ["name", "state", "stepNumber"],
-                            output: resp.steps,
-                            format: "table",
-                            header: true
-                        });
-                    }
-
-                    if(this.arguments.stepsSummaryOnly && resp.steps) {
-                        params.response.console.log("\nWorkflow Steps Summary: ");
-                        params.response.format.output({
-                            format: "table",
-                            header: true,
-                            output: resp.steps
-                        });
-                    }
-
-                    if(this.arguments.listVariables && resp.variables){
-                        params.response.console.log("\nWorkflow Variables: ");
-                        params.response.format.output({
-                            fields: ["name", "value", "type"],
-                            output: resp.variables,
-                            format: "table",
-                            header: true
-                        });
-                    }
-                    break;
-
-                default:
-                    throw new ImperativeError({
-                        msg: `Internal create error: Unable to determine the the criteria by which to list workflow details. ` +
-                            `Please contact support.`,
-                        additionalDetails: JSON.stringify(params)
-                    });
+            if(this.arguments.listVariables && resp.variables){
+                params.response.console.log("\nWorkflow Variables: ");
+                params.response.format.output({
+                    fields: ["name", "value", "type"],
+                    output: resp.variables,
+                    format: "table",
+                    header: true
+                });
             }
         }
     }
