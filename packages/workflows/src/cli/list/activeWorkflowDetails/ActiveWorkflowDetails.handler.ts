@@ -60,7 +60,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
 
             params.response.console.log("\nStep Summary Details: ");
             params.response.format.output({
-                fields: ["id", "name", "state", "misc"],
+                fields: ["stepNumber", "name", "state", "misc"],
                 output: resp,
                 format: "table",
                 header: true

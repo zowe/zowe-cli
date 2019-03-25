@@ -111,7 +111,7 @@ export class PropertiesWorkflow {
                 miscValue = step.actualStatusCode;
             }
             const stepSummary: IStepSummary = {
-                id: step.stepNumber,
+                stepNumber: step.stepNumber,
                 name: step.name,
                 state: step.state,
                 misc: miscValue

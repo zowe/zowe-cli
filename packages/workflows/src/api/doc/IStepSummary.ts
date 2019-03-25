@@ -22,7 +22,7 @@ export interface IStepSummary {
      * @type {string}
      * @memberof IStepSummary
      */
-    id: string;
+    stepNumber: string;
     /**
      * Step name
      *
