@@ -13,9 +13,8 @@
 import { AbstractSession, Headers } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowConstants, nozOSMFVersion,
-        noOwner, noWorkflowKey } from "./WorkflowConstants";
+         noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { isNullOrUndefined } from "util";
 import { IWorkflowInfo } from "./doc/IWorkflowInfo";
 import { IStepSummary } from "./doc/IStepSummary";
 import { IStepInfo } from "./doc/IStepInfo";
