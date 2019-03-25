@@ -19,10 +19,10 @@ export interface IStepSummary {
     /**
      * ID of the step
      *
-     * @type {number}
+     * @type {string}
      * @memberof IStepSummary
      */
-    id: number;
+    id: string;
     /**
      * Step name
      *
