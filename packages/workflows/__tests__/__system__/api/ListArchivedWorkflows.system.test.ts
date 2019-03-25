@@ -10,7 +10,7 @@
 */
 
 import { CreateWorkflow } from "../../../src/api/Create";
-import { DeleteWorkflow } from "../../../src/api/Delete";
+import { ArchivedDeleteWorkflow } from "../../../src/api/ArchivedDelete";
 import { ListArchivedWorkflows } from "../../../src/api/ListArchivedWorkflows";
 import { ArchiveWorkflow } from "../../../src/api/ArchiveWorkflow";
 import { Imperative, ImperativeError, Session } from "@brightside/imperative";
@@ -105,7 +105,7 @@ describe("List archived workflows", () => {
         });
         afterEach(async () => {
             // deleting archived workflow
-            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+            await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey);
         });
         it("List all archived workflows - without any optional parameters.", async () => {
             let error;
