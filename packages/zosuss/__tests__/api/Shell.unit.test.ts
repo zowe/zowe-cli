@@ -9,7 +9,7 @@
 *
 */
 
-import { Shell } from "../../src/api/Shell";
+import { Shell, startCmdFlag } from "../../src/api/Shell";
 import { Client } from "ssh2";
 import { SshSession } from "../../index";
 import { EventEmitter } from "events";
@@ -32,7 +32,7 @@ mockStream.end = mockStreamEnd;
 
 const mockShell = jest.fn().mockImplementation((callback) => {
     callback(null, mockStream);
-    mockStream.emit("data", "stdout data");
+    mockStream.emit("data", `\n${startCmdFlag}stdout data\n\r`);
 });
 
 (Client as any).mockImplementation(() => {
@@ -52,7 +52,7 @@ function checkMockFunctionsWithCommand(command: string) {
     // Check the stream.end() fucntion is called with an argument containing the SSH command
     expect(mockStreamEnd.mock.calls[0][0]).toMatch(command);
 
-    expect(stdoutHandler).toHaveBeenCalledWith("stdout data");
+    expect(stdoutHandler).toHaveBeenCalledWith("stdout data\n\r");
 }
 
 describe("Shell", () => {
