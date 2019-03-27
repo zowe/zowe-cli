@@ -13,7 +13,7 @@ import { ZosmfRestClient } from "../../../rest";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession, ImperativeError } from "@brightside/imperative";
 import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "./WorkflowConstants";
-import { IActiveWorkflows } from "./doc/IActiveWorkflows";
+import { IArchivedWorkflows } from "./doc/IArchivedWorkflows";
 
 /**
  * Get list of archived workflows from registry.
@@ -37,7 +37,7 @@ export class ListArchivedWorkflows {
      */
     public static async listArchivedWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                               workflowName?: string, category?: string, system?: string,
-                                              owner?: string, vendor?: string, statusName?: string ) {
+                                              owner?: string, vendor?: string, statusName?: string ): Promise<IArchivedWorkflows> {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListArchivedWorkflows.getResourcesQuery(zOSMFVersion,
@@ -60,7 +60,7 @@ export class ListArchivedWorkflows {
      * @returns {string} URI path for the REST call.
      * @memberof LisArchivedWorkflows
      */
-    public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>) {
+    public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>): string {
         let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
         let sign = "?";
         params.forEach((element) => {
@@ -90,14 +90,14 @@ export class ListArchivedWorkflows {
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(workflowName, noWorkflowName.message);
 
-        const result: IActiveWorkflows = await this.listArchivedWorkflows(session, zOSMFVersion, workflowName);
+        const result: IArchivedWorkflows = await this.listArchivedWorkflows(session, zOSMFVersion, workflowName);
 
         // Check if there was more than one workflows found
-        if (result.workflows.length > 1){
+        if (result.archivedWorkflows.length > 1){
             throw new ImperativeError({
                 msg: `More than one workflows found with name ` + workflowName,
             });
         }
-        return result.workflows.length !== 0 ? result.workflows[0].workflowKey : null;
+        return result.archivedWorkflows.length !== 0 ? result.archivedWorkflows[0].workflowKey : null;
     }
 }

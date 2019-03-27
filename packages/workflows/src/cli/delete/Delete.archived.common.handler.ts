@@ -13,6 +13,8 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ArchivedDeleteWorkflow } from "../../api/ArchivedDelete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListArchivedWorkflows } from "../../api/ListArchivedWorkflows";
+import { IArchivedWorkflows } from "../../../src/api/doc/IArchivedWorkflows";
+import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "../../../src/api/WorkflowConstants";
 
 /**
  * Common handler to delete a workflow instance in z/OSMF.
@@ -34,9 +36,9 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
      * @memberof DeleteArchivedCommonHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
-        let error;
-        let resp;
-        let getWfKey;
+        let error: string;
+        let resp: string;
+        let getWfKey: string;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -60,7 +62,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
 
             case "workflowName":
                 try{
-                    getWfKey = await ListArchivedWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    getWfKey = await ListArchivedWorkflows.getWfKey(this.mSession, this.arguments.workflowName, WorkflowConstants.ZOSMF_VERSION);
                     if (getWfKey === null) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,

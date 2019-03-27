@@ -30,6 +30,7 @@ import {
     wrongString
 } from "../../../src/api/WorkflowConstants";
 import { IWorkflowsInfo } from "../../../src/api/doc/IWorkflowsInfo";
+import { IArchivedWorkflows } from "../../../src/api/doc/IArchivedWorkflows";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -49,7 +50,7 @@ const badString1 = "Ba&d";
 const workflow = __dirname + "/../testfiles/demo.xml";
 
 
-function expectZosmfResponseSucceeded(response: IWorkflowsInfo, error: ImperativeError) {
+function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
     expect(error).not.toBeDefined();
     expect(response).toBeDefined();
 }

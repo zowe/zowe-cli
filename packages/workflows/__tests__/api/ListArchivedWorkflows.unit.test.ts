@@ -14,7 +14,7 @@ import { Session, ImperativeError, Imperative } from "@brightside/imperative";
 import { ListArchivedWorkflows } from "../../src/api/ListArchivedWorkflows";
 import { WorkflowConstants, wrongString, noSession, noWorkflowName } from "../../src/api/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
-import { IActiveWorkflows } from "../../src/api/doc/IActiveWorkflows";
+import { IArchivedWorkflows } from "../../src/api/doc/IArchivedWorkflows";
 
 const system = "SYS1";
 const category = "Provisioning";
@@ -42,34 +42,20 @@ const PRETEND_ZOSMF_RESPONSE: IWorkflowsInfo = {
     system: "SYS1"
 };
 
-const PRETEND_ZOSMF_RESPONSE_MULTIPLE_WF: IActiveWorkflows = {
-    workflows: [
+const PRETEND_ZOSMF_RESPONSE_MULTIPLE_WF: IArchivedWorkflows = {
+    archivedWorkflows: [
         {
             workflowKey: "73c81ef4-eccc-47ce-8f08-8a5c97e753f1",
             workflowName: "workflow1",
-            workflowDescription: "Workflow test",
-            workflowID: "Workflow test",
-            workflowVersion: "1.0",
-            vendor: "IBM",
-            owner: "owner1",
-            category: "Provisioning",
-            statusName: "complete",
-            system: "SYS1"
+            archivedInstanceURI: "\/zosmf\/workflow\/rest\/1.0\/archivedworkflows\/73c81ef4-eccc-47ce-8f08-8a5c97e753f1"
         },
         {
             workflowKey: "73c81ef4-eccc-47ce-8f08-8a5c97e753f2",
             workflowName: "workflow2",
-            workflowDescription: "Workflow test",
-            workflowID: "Workflow test",
-            workflowVersion: "1.0",
-            vendor: "IBM",
-            owner: "owner1",
-            category: "Provisioning",
-            statusName: "complete",
-            system: "SYS1"
+            archivedInstanceURI: "\/zosmf\/workflow\/rest\/1.0\/archivedworkflows\/73c81ef4-eccc-47ce-8f08-8a5c97e753f2"
         }
     ]
-} ;
+};
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -176,7 +162,7 @@ describe("List archived workflows", () => {
 describe("Get workflow key by name", () => {
     describe("Success scenarios", () => {
         it("Returns wf key if only one wf with requested name was found", async () => {
-            const apiResponse = {workflows: [PRETEND_ZOSMF_RESPONSE]};
+            const apiResponse = {archivedWorkflows: [PRETEND_ZOSMF_RESPONSE]};
             (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
@@ -193,7 +179,7 @@ describe("Get workflow key by name", () => {
               error = thrownError;
               Imperative.console.info(`Error ${error}`);
             }
-            expect(response).toBe(apiResponse.workflows[0].workflowKey);
+            expect(response).toBe(apiResponse.archivedWorkflows[0].workflowKey);
             expect(error).toBe(undefined);
         });
 
@@ -201,7 +187,7 @@ describe("Get workflow key by name", () => {
             (ZosmfRestClient.getExpectJSON as any) = jest.fn<string>(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
-                        resolve({workflows: []});
+                        resolve({archivedWorkflows: []});
                     });
                 });
             });
