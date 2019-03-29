@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { DeleteActiveWorkflow } from "./deleteActiveWorkflow/DeleteActiveWorkflow.definition";
+import { DeleteArchivedWorkflow } from "./deleteArchivedWorkflow/DeleteArchivedWorkflow.definition";
 
 
 /**
@@ -23,8 +24,9 @@ export const DeleteDefinition: ICommandDefinition = {
     name: "delete",
     aliases: ["del"],
     type: "group",
-    description: "Delete a z/OSMF workflow from a z/OS system.",
+    description: "Delete an active workflow instance or an archived workflow instance in z/OSMF.",
     children: [
-        DeleteActiveWorkflow
+        DeleteActiveWorkflow,
+        DeleteArchivedWorkflow
     ]
 };
