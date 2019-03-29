@@ -77,7 +77,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                     throw error;
                 }
                 params.response.data.setObj(resp);
-                params.response.console.log("Workflow archived with workflow-name " + resp.workflowKey);
+                params.response.console.log("Workflow archived with workflow-name " + this.arguments.workflowName);
                 break;
 
             default:
