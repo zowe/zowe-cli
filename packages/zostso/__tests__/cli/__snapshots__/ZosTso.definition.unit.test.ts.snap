@@ -80,6 +80,7 @@ Object {
       ],
     },
   ],
+  "summary": "Interact with TSO",
   "type": "group",
 }
 `;

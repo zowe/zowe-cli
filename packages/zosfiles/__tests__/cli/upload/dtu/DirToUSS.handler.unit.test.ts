@@ -102,7 +102,15 @@ describe("Upload dir-to-uss handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
-            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, undefined, undefined, null);
+            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, {
+                binary: undefined,
+                filesMap: null,
+                maxConcurrentRequests: undefined,
+                recursive: undefined,
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Uploading all files"}});
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

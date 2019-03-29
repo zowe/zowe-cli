@@ -20,6 +20,7 @@ const definition: ICommandDefinition = {
     name: "provisioning",
     aliases: ["pv"],
     type: "group",
+    summary: "Perform z/OSMF provisioning tasks",
     description: "Perform z/OSMF provisioning tasks on Published Templates in the Service Catalog " +
     "and Provisioned Instances in the Service Registry.",
     children: [
