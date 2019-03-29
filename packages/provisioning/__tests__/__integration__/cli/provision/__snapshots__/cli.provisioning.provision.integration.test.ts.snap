@@ -32,6 +32,7 @@ exports[`provisioning provision should display the help 1`] = `
 
 {
   \\"success\\": true,
+  \\"exitCode\\": 0,
   \\"message\\": \\"The help was constructed for command: provision.\\",
   \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Using z/OSMF cloud provisioning services provision available templates.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe provisioning provision <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   template | tem Provision a published software service template.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
