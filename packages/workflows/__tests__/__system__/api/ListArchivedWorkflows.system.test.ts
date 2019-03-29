@@ -13,7 +13,7 @@ import { CreateWorkflow } from "../../../src/api/Create";
 import { ArchivedDeleteWorkflow } from "../../../src/api/ArchivedDelete";
 import { ListArchivedWorkflows } from "../../../src/api/ListArchivedWorkflows";
 import { ArchiveWorkflow } from "../../../src/api/ArchiveWorkflow";
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";

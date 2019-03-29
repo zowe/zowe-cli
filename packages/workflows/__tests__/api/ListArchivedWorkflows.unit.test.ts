@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { Session, ImperativeError, Imperative } from "@brightside/imperative";
+import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { ListArchivedWorkflows } from "../../src/api/ListArchivedWorkflows";
 import { WorkflowConstants, wrongString, noSession, noWorkflowName } from "../../src/api/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
