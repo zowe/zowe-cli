@@ -11,12 +11,12 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 
-describe("zos-workflows list definition", () => {
+describe("zos-workflows list definition-file-details", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListDefinition;
+        const definition: ICommandDefinition
+            = require("../../../../src/cli/list/retrieveWorkflowDefinition/RetrieveWorkflowDefinition.definition").RetrieveWorkflowDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2+1);
-        delete definition.children;
+        delete definition.handler;
         expect(definition).toMatchSnapshot();
     });
 });
