@@ -5,14 +5,14 @@ Object {
   "aliases": Array [
     "aw",
   ],
-  "description": "Delete an archived workflow instance in z/OSMF",
+  "description": "Delete an archived workflow from z/OSMF",
   "examples": Array [
     Object {
-      "description": "To delete an archived workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+      "description": "To delete an archived workflow from z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
       "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
     },
     Object {
-      "description": "To delete an archived workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
+      "description": "To delete an archived workflow from z/OSMF with workflow name \\"testWorkflow\\"",
       "options": "--workflow-name \\"testWorkflow\\"",
     },
   ],
@@ -57,14 +57,14 @@ Object {
   "aliases": Array [
     "arw",
   ],
-  "description": "Delete an archived workflow instance in z/OSMF",
+  "description": "Delete an archived workflow from z/OSMF",
   "examples": Array [
     Object {
-      "description": "To delete an archived workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+      "description": "To delete an archived workflow from z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
       "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
     },
     Object {
-      "description": "To delete an archived workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
+      "description": "To delete an archived workflow from z/OSMF with workflow name \\"testWorkflow\\"",
       "options": "--workflow-name \\"testWorkflow\\"",
     },
   ],

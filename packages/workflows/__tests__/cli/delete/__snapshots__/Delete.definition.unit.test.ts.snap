@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "del",
   ],
-  "description": "Delete an active workflow instance or an archived workflow instance in z/OSMF.",
+  "description": "Delete an active workflow or an archived workflow from z/OSMF.",
   "name": "delete",
   "type": "group",
 }
