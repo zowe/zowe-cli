@@ -80,6 +80,7 @@ Object {
       ],
     },
   ],
+  "summary": "Perform z/OSMF provisioning tasks",
   "type": "group",
 }
 `;

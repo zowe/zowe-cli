@@ -50,7 +50,8 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {
