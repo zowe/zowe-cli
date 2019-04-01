@@ -29,8 +29,7 @@ import {
     nozOSMFVersion,
     wrongString
 } from "../../../src/api/WorkflowConstants";
-import { IWorkflowsInfo } from "../../../src/api/doc/IWorkflowsInfo";
-import { IArchivedWorkflows } from "../../../src/api/doc/IArchivedWorkflows";
+
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
