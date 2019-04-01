@@ -53,7 +53,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["ls"],
         description: "Optional parameter for listing steps and their properties.",
         type: "boolean",
-        required: false
+        required: false,
     },
 
     /**
@@ -65,7 +65,8 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["sso"],
         description: "Optional parameter for listing steps summary only.",
         type: "boolean",
-        required: false
+        required: false,
+        conflictsWith: ["list-steps"],
     },
 
     /**
@@ -77,6 +78,6 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["lv"],
         description: "Optional parameter for listing variables and their properties.",
         type: "boolean",
-        required: false
+        required: false,
     },
 };

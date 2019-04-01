@@ -58,34 +58,6 @@ export class PropertiesWorkflow {
     }
 
     /**
-     * Returns the summary of the steps only
-     *
-     * @static
-     * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} workflowKey - Key of workflow.
-     * @param {string} [zOSMFVersion=WorkflowConstants.ZOSMF_VERSION] - the URI path that identifies the version of the provisioning service.
-     * @returns {Promise<IStepSummary[]>} z/OSMF response object
-     * @memberof PropertiesWorkflow
-     */
-    public static async getSummaryOnly(session: AbstractSession, workflowKey: string,
-                                       zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<IStepSummary[]> {
-        WorkflowValidator.validateSession(session);
-        WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
-
-        let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
-        resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${workflowKey}`;
-        resourcesQuery += `?${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
-
-        const response: IWorkflowInfo = await ZosmfRestClient.getExpectJSON(session, resourcesQuery, [Headers.APPLICATION_JSON]);
-        const steps: IStepInfo[] = response.steps;
-        let stepSummaries: IStepSummary[] = [];
-
-        stepSummaries = await PropertiesWorkflow.processStepSummaries(steps);
-
-        return stepSummaries;
-    }
-
-    /**
      * Processes the z/OSMF workflow step info
      * in a recursive manner.
      *
@@ -95,10 +67,11 @@ export class PropertiesWorkflow {
      * @returns {Promise<IStepSummary[]>} Array of z/OSMF step summary objects
      * @memberof PropertiesWorkflow
      */
-    protected static async processStepSummaries(steps: IStepInfo[]): Promise<IStepSummary[]> {
+    public static async processStepSummaries(steps: IStepInfo[]): Promise<IStepSummary[]> {
         let stepSummaries: IStepSummary[] = [];
+        let step: IStepSummary;
 
-        for(const step of steps) {
+        for(step of steps) {
             let miscValue: string = "N/A";
             if(step.submitAs && step.submitAs.match(/.*JCL/)) {
                 if(step.jobInfo && step.jobInfo.jobstatus) {
@@ -109,14 +82,9 @@ export class PropertiesWorkflow {
             } else if(step.isRestStep) {
                 miscValue = `HTTP ${step.actualStatusCode}`;
             }
-            const stepSummary: IStepSummary = {
-                stepNumber: step.stepNumber,
-                name: step.name,
-                state: step.state,
-                misc: miscValue
-            };
+            step.misc = miscValue;
 
-            stepSummaries.push(stepSummary);
+            stepSummaries.push(step);
             if(step.steps) {
                 const subSteps = await PropertiesWorkflow.processStepSummaries(step.steps);
                 stepSummaries = stepSummaries.concat(subSteps);

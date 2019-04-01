@@ -9,13 +9,15 @@
 *
 */
 
+import { IStepInfo } from "./IStepInfo";
+
 /**
  * Interface for the step summary
  *
  * @export
  * @interface IStepSummary
  */
-export interface IStepSummary {
+export interface IStepSummary extends IStepInfo {
     /**
      * ID of the step
      *
@@ -44,5 +46,5 @@ export interface IStepSummary {
      * @type {string}
      * @memberof IStepSummary
      */
-    misc: string;
+    misc?: string;
 }

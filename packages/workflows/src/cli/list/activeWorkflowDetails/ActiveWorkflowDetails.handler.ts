@@ -13,6 +13,7 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { PropertiesWorkflow } from "../../../api/Properties";
 import { ListWorkflows } from "../../../..";
+import { IWorkflowInfo } from "../../../api/doc/IWorkflowInfo";
 
 /**
  * A Handler for listing details of a workflow instance in z/OSMF in zosworkflows package.
@@ -48,19 +49,19 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                     additionalDetails: JSON.stringify(params)
                 });
             }
-        } else {
-            throw new ImperativeError({
-                msg: `Neither workflow key nor workflow name provided.`,
-                additionalDetails: JSON.stringify(params)
-            });
         }
 
         let resp;
         let error;
+        let getSteps;
+        let stepsSummary;
+        let variables;
 
         if(this.arguments.stepsSummaryOnly) {
             try {
-                resp = await PropertiesWorkflow.getSummaryOnly(this.mSession, workflowKey);
+                getSteps = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey, undefined, true, this.arguments.listVariables);
+                variables = getSteps.variables;
+                stepsSummary = await PropertiesWorkflow.processStepSummaries(getSteps.steps);
             } catch(err) {
                 error = "List step summary error: " + err;
                 throw err;
@@ -70,7 +71,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             params.response.console.log("\nStep Summary Details: ");
             params.response.format.output({
                 fields: ["stepNumber", "name", "state", "misc"],
-                output: resp,
+                output: stepsSummary,
                 format: "table",
                 header: true
             });
@@ -78,6 +79,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             try{
                 resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey,
                                                                       undefined, this.arguments.listSteps, this.arguments.listVariables);
+                variables = resp.variables;
             } catch (err){
                 error = "List workflow details error: " + err;
                 throw error;
@@ -86,31 +88,31 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
 
             params.response.console.log("\nWorkflow Details: ");
             params.response.format.output({
-                        fields: ["workflowName", "workflowKey",
-                            resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
-                        output: resp,
-                        format: "object",
-                    });
+                fields: ["workflowName", "workflowKey",
+                        resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
+                output: resp,
+                format: "object",
+            });
 
             if(this.arguments.listSteps && resp.steps){
-                        params.response.console.log("\nWorkflow Steps: ");
-                        params.response.format.output({
-                            fields: ["name", "state", "stepNumber"],
-                            output: resp.steps,
-                            format: "table",
-                            header: true
-                        });
-                    }
-
-            if(this.arguments.listVariables && resp.variables){
-                params.response.console.log("\nWorkflow Variables: ");
+                params.response.console.log("\nWorkflow Steps: ");
                 params.response.format.output({
-                    fields: ["name", "value", "type"],
-                    output: resp.variables,
+                    fields: ["name", "state", "stepNumber"],
+                    output: resp.steps,
                     format: "table",
                     header: true
                 });
             }
+        }
+
+        if(this.arguments.listVariables && variables){
+            params.response.console.log("\nWorkflow Variables: ");
+            params.response.format.output({
+                fields: ["name", "value", "type"],
+                output: variables,
+                format: "table",
+                header: true
+            });
         }
     }
 }
