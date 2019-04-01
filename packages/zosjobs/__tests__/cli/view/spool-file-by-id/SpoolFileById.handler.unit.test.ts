@@ -36,7 +36,8 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect((Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs)).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {
