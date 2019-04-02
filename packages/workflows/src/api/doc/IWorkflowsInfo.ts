@@ -86,5 +86,12 @@ export interface IWorkflowsInfo {
      * @memberof IWorkflowsInfo
      */
     statusName?: string;
+
+    /**
+     * Indicates the URI of archived workflow.
+     * @type {string}
+     * @memberof IWorkflowsInfo
+     */
+    archivedInstanceURI?: string;
 }
 
