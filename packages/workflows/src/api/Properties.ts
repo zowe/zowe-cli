@@ -68,7 +68,7 @@ export class PropertiesWorkflow {
      * @memberof PropertiesWorkflow
      */
     public static async processStepSummaries(steps: IStepInfo[]): Promise<IStepSummary[]> {
-        let stepSummaries: IStepSummary[] = [];
+        const stepSummaries: IStepSummary[] = [];
         let step: IStepSummary;
 
         for(step of steps) {
@@ -85,10 +85,11 @@ export class PropertiesWorkflow {
             step.misc = miscValue;
 
             stepSummaries.push(step);
-            if(step.steps) {
-                const subSteps = await PropertiesWorkflow.processStepSummaries(step.steps);
-                stepSummaries = stepSummaries.concat(subSteps);
-            }
+            // TO DO: Add recursive function to list substeps.
+            // if(step.steps) {
+            //     const subSteps = await PropertiesWorkflow.processStepSummaries(step.steps);
+            //     stepSummaries = steps.concat(subSteps);
+            // }
         }
 
         return stepSummaries;

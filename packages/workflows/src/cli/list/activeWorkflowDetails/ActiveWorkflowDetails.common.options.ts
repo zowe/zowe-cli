@@ -70,6 +70,20 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
     },
 
     /**
+     * Optional parameter for listing steps summary only
+     * @type {ICommandOptionDefinition}
+     */
+    skipWotkflowSummary: {
+        name: "skip-workflow-summary",
+        aliases: ["sws"],
+        description: "Optional parameter for skipping default workflow summary.",
+        type: "boolean",
+        required: false,
+        impliesOneOf: ["steps-summary-only", "list-steps", "list-variables"],
+    },
+
+
+    /**
      * Optional parameter for listing variables properties.
      * @type {ICommandOptionDefinition}
      */
