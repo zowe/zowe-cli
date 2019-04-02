@@ -28,3 +28,4 @@ export * from "./src/api/Cancel";
 export * from "./src/api/Definition";
 export * from "./src/api/ArchivedDelete";
 export * from "./src/api/ArchiveWorkflow";
+export * from "./src/api/ListArchivedWorkflows";
