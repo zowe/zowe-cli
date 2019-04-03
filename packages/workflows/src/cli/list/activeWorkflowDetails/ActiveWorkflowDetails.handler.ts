@@ -88,7 +88,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         }
         params.response.data.setObj(response);
 
-        if (!this.arguments.skipWorkflowSummary) {
+        if (!this.arguments.skipWorkflowSummary && !this.arguments.stepsSummaryOnly) {
             params.response.console.log("\nWorkflow Details: ");
             params.response.format.output({
                 fields: ["workflowName", "workflowKey",
