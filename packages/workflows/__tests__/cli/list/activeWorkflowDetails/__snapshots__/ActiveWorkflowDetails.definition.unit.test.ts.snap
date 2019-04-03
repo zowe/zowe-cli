@@ -53,10 +53,36 @@ Object {
     },
     Object {
       "aliases": Array [
+        "sso",
+      ],
+      "conflictsWith": Array [
+        "list-steps",
+      ],
+      "description": "Optional parameter for listing steps summary only.",
+      "name": "steps-summary-only",
+      "required": false,
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
         "lv",
       ],
       "description": "Optional parameter for listing variables and their properties.",
       "name": "list-variables",
+      "required": false,
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "sws",
+      ],
+      "description": "Optional parameter for skipping default workflow summary.",
+      "impliesOneOf": Array [
+        "steps-summary-only",
+        "list-steps",
+        "list-variables",
+      ],
+      "name": "skip-workflow-summary",
       "required": false,
       "type": "boolean",
     },
