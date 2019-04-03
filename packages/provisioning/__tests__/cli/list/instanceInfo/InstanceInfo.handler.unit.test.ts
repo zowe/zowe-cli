@@ -13,7 +13,7 @@ import { ListRegistryInstances } from "../../../../index";
 
 jest.mock("../../../../src/api/ListInstanceInfo");
 import { ListInstanceInfo } from "../../../../../provisioning";
-import { CommandProfiles, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, IProfile } from "@zowe/imperative";
 import * as Handler from "../../../../src/cli/list/instanceInfo/InstanceInfo.handler";
 import { instanceInfo } from "../../../../src/cli/list/instanceInfo/InstanceInfo.definition";
 import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";

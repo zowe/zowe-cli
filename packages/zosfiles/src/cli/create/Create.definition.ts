@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { BinaryPDSDefinition } from "./binaryPds/BinaryPDS.definition";
 import { ClassicPDSDefinition } from "./classicPds/ClassicPDS.definition";
 import { CPDSDefinition } from "./cPds/CPDS.definition";

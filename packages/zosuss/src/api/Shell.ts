@@ -9,7 +9,7 @@
 *
 */
 
-import { Logger, ImperativeError } from "@brightside/imperative";
+import { Logger, ImperativeError } from "@zowe/imperative";
 import { ClientChannel } from "ssh2";
 import { SshSession } from "../SshSession";
 import { ZosUssMessages } from "../api/constants/ZosUss.messages";

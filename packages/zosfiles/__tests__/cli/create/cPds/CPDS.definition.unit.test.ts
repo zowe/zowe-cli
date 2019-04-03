@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create dsc command definition", () => {
     it("should not have changed", () => {

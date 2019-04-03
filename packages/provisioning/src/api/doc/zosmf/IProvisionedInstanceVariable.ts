@@ -9,7 +9,7 @@
 *
 */
 
-import { IExplanationMap } from "@brightside/imperative";
+import { IExplanationMap } from "@zowe/imperative";
 
 /**
  * Interface for provisioned instance variables.

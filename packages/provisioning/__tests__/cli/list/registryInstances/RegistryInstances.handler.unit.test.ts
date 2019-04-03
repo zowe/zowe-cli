@@ -10,7 +10,7 @@
 */
 
 import { ListRegistryInstances } from "../../../../../provisioning";
-import { CommandProfiles, IHandlerParameters, IProfile } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, IProfile } from "@zowe/imperative";
 import * as Handler from "../../../../src/cli/list/registry/RegistryInstances.handler";
 import { registryInstances } from "../../../../src/cli/list/registry/RegistryInstances.definition";
 
@@ -47,7 +47,8 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {

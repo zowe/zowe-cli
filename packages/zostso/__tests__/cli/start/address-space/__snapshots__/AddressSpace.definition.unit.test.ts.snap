@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "as",
   ],
-  "description": "Start a TSO address space, from which you will receive a token (a.k.a 'servelet-key') for further address space interaction (e.g. termination).",
+  "description": "Start a TSO address space, from which you will receive a token (a.k.a 'servlet-key') for further address space interaction (e.g. termination).",
   "examples": Array [
     Object {
       "description": "Start TSO/E address space",
@@ -14,6 +14,10 @@ Object {
     Object {
       "description": "Start TSO/E address space, and receive response in JSON format",
       "options": "--rfj",
+    },
+    Object {
+      "description": "Start TSO/E address space, and print only the servlet key",
+      "options": "--sko",
     },
   ],
   "name": "address-space",
@@ -84,6 +88,14 @@ Object {
       "group": "TSO ADDRESS SPACE OPTIONS",
       "name": "rows",
       "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "sko",
+      ],
+      "description": "Specify this option to print only the servlet key",
+      "name": "servlet-key-only",
+      "type": "boolean",
     },
   ],
   "profile": Object {

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers } from "@brightside/imperative";
+import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { TsoValidator } from "./TsoValidator";
 import { noPingInput, TsoConstants } from "./TsoConstants";

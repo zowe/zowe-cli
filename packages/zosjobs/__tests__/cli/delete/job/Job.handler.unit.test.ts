@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
 import { GetJobs, DeleteJobs } from "../../../../";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import * as JobHandler from "../../../../src/cli/delete/job/Job.handler";

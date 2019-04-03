@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../../provisioning";

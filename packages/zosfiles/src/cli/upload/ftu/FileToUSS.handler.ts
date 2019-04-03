@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { Upload } from "../../../api/methods/upload";
 import { IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -18,7 +18,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to upload content from a local file to a USS file
  * @export
  */
-export default class FileToDataSetHandler extends ZosFilesBaseHandler {
+export default class FileToUSSHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 

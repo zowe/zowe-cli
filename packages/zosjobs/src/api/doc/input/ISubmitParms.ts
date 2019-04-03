@@ -9,7 +9,7 @@
 *
 */
 
-import { ITaskWithStatus } from "@brightside/imperative";
+import { ITaskWithStatus } from "@zowe/imperative";
 
 /**
  * Interface for submit job API

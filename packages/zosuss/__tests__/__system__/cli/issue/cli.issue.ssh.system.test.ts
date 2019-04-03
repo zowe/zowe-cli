@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session, IO } from "@brightside/imperative";
+import { Imperative, Session, IO } from "@zowe/imperative";
 import * as path from "path";
 import { runCliScript , stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

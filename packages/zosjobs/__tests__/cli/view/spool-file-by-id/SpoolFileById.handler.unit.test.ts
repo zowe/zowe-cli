@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { IHandlerParameters, ImperativeError, Session } from "@brightside/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
 import { GetJobs } from "../../../../src/api/GetJobs";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
@@ -36,7 +36,8 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect((Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs)).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {

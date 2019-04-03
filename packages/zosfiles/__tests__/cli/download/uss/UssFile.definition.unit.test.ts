@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files download uss-file command definition", () => {
     it ("should not have changed", () => {

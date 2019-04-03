@@ -9,7 +9,7 @@
 *
 */
 
-import { TextUtils } from "@brightside/imperative";
+import { TextUtils } from "@zowe/imperative";
 import { Constants } from "../../../../Constants";
 
 export default {
@@ -110,7 +110,7 @@ export default {
         },
     },
     DELETE: {
-        DESCRIPTION: "Delete a data set",
+        DESCRIPTION: "Delete a data set or Unix System Services file",
         ACTIONS: {
             DATA_SET: {
                 DESCRIPTION: "Delete a data set permanently",
@@ -142,6 +142,21 @@ export default {
                     EX2: "Delete all expired VSAM data sets that match 'ibmuser.AAA.**.FFF'",
                     EX3: "Delete a non-expired VSAM data set named 'ibmuser.cntl.vsam'",
                     EX4: "Delete an expired VSAM data set named 'ibmuser.cntl.vsam' by overwriting the components with zeros"
+                }
+            },
+            USS: {
+                DESCRIPTION: "Delete a Unix Systems Services (USS) File or directory permanently",
+                POSITIONALS: {
+                    FILENAME: "The name of the file or directory that you want to delete"
+                },
+                OPTIONS: {
+                    FOR_SURE: "Specify this option to confirm that you want to delete the file or directory permanently.",
+                    RECURSIVE: "Delete directories recursively.",
+                },
+                EXAMPLES: {
+                    EX1: "Delete the empty directory '/u/ibmuser/testcases'",
+                    EX2: "Delete the file named '/a/ibmuser/my_text.txt'",
+                    EX3: "Recursively delete the directory named '/u/ibmuser/testcases'"
                 }
             }
         }
@@ -234,7 +249,7 @@ export default {
                 "However, increasing the value increases resource consumption on z/OS and can be prone " +
                 "to errors caused by making too many concurrent requests. If the download process encounters an error, " +
                 "the following message displays:\n" +
-                "The maximum number of TSO address spaces were created. When you specify 0, " +
+                "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
                 " without a maximum number of concurrent requests. "
         }
@@ -298,6 +313,18 @@ export default {
                     EX4: `Show attributes of all data sets of the user "ibmuser"`,
                     EX5: `Show the first 5 data sets of the user "ibmuser"`
                 }
+            },
+            USS_FILE: {
+                SUMMARY: "List USS files",
+                DESCRIPTION: "List USS files and directories in a UNIX file path",
+                POSITIONALS: {
+                    PATH: "The directory containing the files and directories to be listed"
+                },
+                EXAMPLES: {
+                    EX1: `Show the files and directories in path '/u/ibmuser'`,
+                    EX2: "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
+                    EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
+                }
             }
         },
         OPTIONS: {
@@ -313,7 +340,7 @@ export default {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {
             DIR_TO_PDS: {
-                DESCRIPTION: "Upload files from a directory to a partioned data set (PDS)",
+                DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",
                 POSITIONALS: {
                     INPUTDIR: "The path for a local directory that you want to upload to a PDS",
                     DATASETNAME: "The name of the partitioned data set to which you want to upload the files"
@@ -356,6 +383,22 @@ export default {
                     EX1: `Upload to the USS file "/a/ibmuser/my_text.txt" from the file "file.txt"`
                 }
             },
+            DIR_TO_USS: {
+                DESCRIPTION: "Upload a local directory to a USS directory",
+                POSITIONALS: {
+                    INPUTDIR: "The local directory path that you want to upload to a USS directory",
+                    USSDIR: "The name of the USS directory to which you want to upload the local directory"
+                },
+                EXAMPLES: {
+                    EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
+                    EX2: `Upload all files from the "local_dir" directory and all its sub-directories, `+
+                    `to the "/a/ibmuser/my_dir" USS directory:`,
+                    EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
+                    `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
+                    EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
+                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`
+                }
+            },
         },
         OPTIONS: {
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
@@ -363,7 +406,24 @@ export default {
             BINARY: "Data content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each record as-is, without translation. No delimiters are added between records.",
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
-                "specify the following values: wait, nowait, error"
+                "specify the following values: wait, nowait, error",
+            RECURSIVE: "Upload all directories recursively.",
+            BINARY_FILES: "Comma separated list of file names to be uploaded in binary mode. " +
+            "Use this option when you upload a directory in default ASCII mode, " +
+            "but you want to specify certain files to be uploaded in binary mode. " +
+            "All files matching specified file names will be uploaded in binary mode.",
+            ASCII_FILES: "Comma separated list of file names to be uploaded in ASCII mode. " +
+            "Use this option when you upload a directory with --binary/-b flag, " +
+            "but you want to specify certain files to be uploaded in ASCII mode. "  +
+            "All files matching specified file names will be uploaded in ASCII mode.",
+            MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files." +
+            " Increasing the value results in faster uploads. " +
+            "However, increasing the value increases resource consumption on z/OS and can be prone " +
+            "to errors caused by making too many concurrent requests. If the upload process encounters an error, " +
+            "the following message displays:\n" +
+            "The maximum number of TSO address spaces have been created. When you specify 0, " +
+            Constants.DISPLAY_NAME + " attempts to upload all members at once" +
+            " without a maximum number of concurrent requests. "
         }
     }
 };

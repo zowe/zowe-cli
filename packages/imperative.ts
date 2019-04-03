@@ -10,7 +10,7 @@
 */
 
 // WIP Imperative version of Brightside
-import { IImperativeConfig } from "@brightside/imperative";
+import { IImperativeConfig } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { ZosmfSession } from "./zosmf";
 import {
@@ -87,6 +87,12 @@ const config: IImperativeConfig = {
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
                 }
+            ],
+            updateProfileExamples: [
+                {
+                    options: "zos123 --user newuser --password newp4ss",
+                    description: "Update a zosmf profile named 'zos123' with a new username and password"
+                }
             ]
         },
         {
@@ -136,6 +142,12 @@ const config: IImperativeConfig = {
                     description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
                         "JES accounting information of '1234'",
                     options: "largeregion -a 1234 --rs 8192"
+                }
+            ],
+            updateProfileExamples: [
+                {
+                    description: "Update a tso profile called myprof with new JES accounting information",
+                    options: "myprof -a NEWACCT"
                 }
             ]
         },

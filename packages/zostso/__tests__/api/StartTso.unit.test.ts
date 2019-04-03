@@ -19,7 +19,7 @@ import {
     StartTso,
     TsoConstants
 } from "../../../zostso";
-import { Headers, Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { inspect } from "util";
 import { SendTso } from "../../src/api/SendTso";

@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../../src/api/GetJobs");
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
 import { GetJobs } from "../../../../src/api/GetJobs";
 import { GetJobsData } from "../../../__resources__/api/GetJobsData";
 import * as JobsHandler from "../../../../src/cli/list/jobs/Jobs.handler";
@@ -48,7 +48,8 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {

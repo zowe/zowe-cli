@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
 import { ICreateVsamOptions } from "../../../api/methods/create/doc/ICreateVsamOptions";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";

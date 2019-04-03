@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { IssueCommand } from "./issue/Issue.definition";
 import { SshSession } from "../SshSession";
 

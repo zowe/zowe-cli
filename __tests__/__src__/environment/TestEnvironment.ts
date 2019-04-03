@@ -10,7 +10,7 @@
 */
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, Session, TextUtils } from "@brightside/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger, Session, TextUtils } from "@zowe/imperative";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirpSync } from "fs-extra";

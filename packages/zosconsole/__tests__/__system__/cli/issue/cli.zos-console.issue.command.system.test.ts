@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandResponse } from "@brightside/imperative";
+import { ICommandResponse } from "@zowe/imperative";
 import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
@@ -67,6 +67,13 @@ describe("zos-console issue command", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+    });
+
+    it("should accept solicited keyword", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_solkey.sh", TEST_ENVIRONMENT);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("SYSTEM");
     });
 
     it("should accept console name and return a valid JSON response", async () => {

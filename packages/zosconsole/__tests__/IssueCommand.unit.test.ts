@@ -20,7 +20,7 @@ import {
     IZosmfIssueResponse
 } from "../../zosconsole";
 import { ZosmfRestClient } from "../../rest";
-import { Headers, Imperative, ImperativeError, Session } from "@brightside/imperative";
+import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { noConsoleInput, noConsoleName, noSession, noZosmfInput } from "../src/api/ConsoleConstants";
 
@@ -34,7 +34,7 @@ const PRETEND_SESSION = new Session({
 });
 
 const COMMAND_NAME: string = "cmd";
-const SOL_KEY_NAME: string = "solKey";
+const SOL_KEY_NAME: string = "sol-key";
 const SYSTEM_NAME: string = "system";
 
 const COMMAND_RESPONSE_KEY: string = "C1046283";

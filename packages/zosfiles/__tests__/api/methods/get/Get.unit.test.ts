@@ -10,7 +10,7 @@
 */
 
 import { posix } from "path";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { Get, IGetOptions } from "../../../../src/api/methods/get";

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { ListCommand } from "./list/List.definition";
 import { ProvisionCommand } from "./provision/Provision.definition";
 import { PerformCommand } from "./perform/Perform.definition";
@@ -20,6 +20,7 @@ const definition: ICommandDefinition = {
     name: "provisioning",
     aliases: ["pv"],
     type: "group",
+    summary: "Perform z/OSMF provisioning tasks",
     description: "Perform z/OSMF provisioning tasks on Published Templates in the Service Catalog " +
     "and Provisioned Instances in the Service Registry.",
     children: [

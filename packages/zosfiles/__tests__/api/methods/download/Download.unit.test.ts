@@ -9,7 +9,7 @@
 *
 */
 
-import { IO, Session } from "@brightside/imperative";
+import { IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { Download } from "../../../../src/api/methods/download/Download";
@@ -584,7 +584,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -613,7 +613,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -642,7 +642,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({

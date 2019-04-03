@@ -10,7 +10,7 @@
 */
 
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { AbstractSession, IHandlerParameters } from "@brightside/imperative";
+import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Download } from "../../../api/methods/download";
 

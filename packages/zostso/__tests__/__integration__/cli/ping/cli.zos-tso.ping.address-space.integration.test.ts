@@ -10,7 +10,7 @@
 */
 
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Imperative } from "@brightside/imperative";
+import { Imperative } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

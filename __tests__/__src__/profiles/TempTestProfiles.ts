@@ -13,7 +13,7 @@
  * Test utility for creating and deleting
  */
 import { ITestEnvironment } from "../environment/doc/response/ITestEnvironment";
-import { ImperativeError, IO } from "@brightside/imperative";
+import { ImperativeError, IO } from "@zowe/imperative";
 import { runCliScript } from "../TestUtils";
 import { Constants } from "../../../packages/Constants";
 import * as fs from "fs";

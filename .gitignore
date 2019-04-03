@@ -1,6 +1,5 @@
 coverage/
 node_modules/
-package-lock.json # currently causes an issue installing dependencies for users without giza artifactory access
 npm-debug.log
 local.json
 output/
@@ -9,6 +8,9 @@ CCS141/
 .vscode
 .idea
 src/brightside.iml
+
+# currently causes an issue installing dependencies for users without giza artifactory access
+package-lock.json
 
 # Sonar Files
 .sonar_lock

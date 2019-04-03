@@ -21,7 +21,7 @@ import {
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError
-} from "@brightside/imperative";
+} from "@zowe/imperative";
 import { SshSession } from "../index";
 
 /**

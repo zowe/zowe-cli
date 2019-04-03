@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { Shell } from "../../../api/Shell";
 import { ClientChannel } from "ssh2";
 import { SshBaseHandler } from "../../../SshBaseHandler";

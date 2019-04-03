@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 import { StopTso } from "../../../../";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
@@ -63,6 +63,14 @@ describe("zos-tso start address-space", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain(fakeProc);
+    });
+
+    it("should be able to successfully start an address space using --servlet-key-only", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_sko.sh", TEST_ENVIRONMENT);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        const key = response.stdout.toString().trim();
+        StopTso.stop(REAL_SESSION, key);
     });
 
     describe("without profiles", () => {

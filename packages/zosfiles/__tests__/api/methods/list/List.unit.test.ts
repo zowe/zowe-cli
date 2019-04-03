@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Session } from "@brightside/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../../rest";
 import { List } from "../../../../src/api/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
@@ -20,6 +20,7 @@ import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
     const dsname = "USER.DATA.SET";
+    const path = "/u/myuser";
     const listApiResponse = {
         items: [
             {member: "m1"},
@@ -306,5 +307,175 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
+    });
+
+    describe("fileList", () => {
+        beforeEach(() => {
+            expectJsonSpy.mockClear();
+            expectJsonSpy.mockImplementation(() => listApiResponse);
+        });
+
+        it("should throw error when path name is not specified", async () => {
+            let response;
+            let error;
+
+            try {
+                response = await List.fileList(dummySession, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeFalsy();
+            expect(error).toBeTruthy();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+
+        it("should throw error when file name is empty", async () => {
+            let response;
+            let error;
+
+            try {
+                response = await List.fileList(dummySession, "");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeFalsy();
+            expect(error).toBeTruthy();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+
+        it("should throw error when zosmfRestClient.getExpectJSON error", async () => {
+            let response;
+            let error;
+            const testError = new ImperativeError({
+                msg: "test error"
+            });
+
+            expectJsonSpy.mockRejectedValueOnce(testError);
+
+            try {
+                response = await List.fileList(dummySession, path);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeFalsy();
+            expect(error).toBeTruthy();
+            expect(error).toBe(testError);
+        });
+
+        it("should indicate that the path was not found", async () => {
+            let response;
+            let error;
+            const testApiResponse: any = {
+                items: []
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                response = await List.fileList(dummySession, path);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should return with files when input path name is valid", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                        },
+                        {
+                            name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                        },
+                        {
+                            name: ".profile", mode: "-rwxrwxrwx", size: 849, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2013-02-13T12:08:29"
+                        },
+                        {
+                            name: ".sh_history", mode: "-rw-------", size: 4662, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2013-06-06T18:09:28"
+                        },
+                        {
+                            name: "myFile.txt", mode: "-rw-r--r--", size: 20, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                        },
+                        {
+                            name: "profile.add", mode: "-rwxrwxrwx", size: 888, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2013-05-07T11:23:08"
+                        }
+                ],  returnedRows: 6, totalRows: 6, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.fileList(dummySession, path);
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should return with files when input path name is valid and max items set", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                        },
+                        {
+                            name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                        }
+                ],  returnedRows: 2, totalRows: 6, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.fileList(dummySession, path, { maxLength: 2 });
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+        });
+
     });
 });

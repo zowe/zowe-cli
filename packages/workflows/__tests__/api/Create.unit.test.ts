@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "../../../rest";
-import { Session, ImperativeError, Imperative, Headers } from "@brightside/imperative";
+import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { CreateWorkflow } from "../../../workflows";
 import {
     WorkflowConstants,
@@ -20,7 +20,6 @@ import {
     noSystemName,
     noOwner,
     nozOSMFVersion,
-    wrongPath,
     wrongOwner
 } from "../../src/api/WorkflowConstants";
 import { ICreatedWorkflow } from "../../src/api/doc/ICreatedWorkflow";
@@ -334,18 +333,6 @@ describe("Create workflow", () => {
             }
             expectZosmfResponseFailed(response, error, noWorkflowDefinitionFile.message);
         });
-        it("Throws an error with wrong format of workflow definition file.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "wrongPath", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
         it("Throws an error with undefined system name.", async () => {
             let error: ImperativeError;
             let response: any;
@@ -442,214 +429,6 @@ describe("Create workflow", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noOwner.message);
-        });
-        it("Throws an error with wrong format of variable input file. Name that ends with a period.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, "DS.NAME.");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of variable input file. Wrong member name.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, "DS.NAME(0)");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of variable input file. Path not from root.", async () => {
-            //
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, "home/file");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of variable input file. Qualifier is longer than 8 characters.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, "DS.NAME.LONGFIELD");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of variable input file. More than 44 characters for DSNAME alone.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,
-                    "DS.NAME.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of variable input file. Name containing two successive periods.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,"DS..NAME");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong path. Name that contains a qualifier that starts with non-alphabetic or non-special character", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,"DS.123.NAME");
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Name that ends with a period.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.NAME.", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Wrong member name.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.NAME(0)", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Path not from root.", async () => {
-            //
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "home/file", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Qualifier is longer than 8 characters.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.NAME.LONGFIELD", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. More than 44 characters for DSNAME alone.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            const longDSN = "DS.NAME.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF.STUFF";
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, longDSN, systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Name containing two successive periods.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS..NAME", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of definition file. Name contains a qualifier that starts with numeric character", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.123.NAME", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Member name is too long.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.NAME(MEMBER123)", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Member doesn't end with `)`.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.NAME(MEMBER", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
-        });
-        it("Throws an error with wrong format of workflow definition file. Name contains non-allowed character.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, "DS.NAME%", systemName, wfOwner);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongPath.message);
         });
     });
 });

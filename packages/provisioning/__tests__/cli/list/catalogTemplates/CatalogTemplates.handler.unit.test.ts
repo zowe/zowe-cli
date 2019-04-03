@@ -11,7 +11,7 @@
 
 import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
 import { ListCatalogTemplates } from "../../../../../provisioning";
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../src/cli/list/catalogTemplates/CatalogTemplates.handler";
 import { catalogTemplates } from "../../../../src/cli/list/catalogTemplates/CatalogTemplates.definition";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";

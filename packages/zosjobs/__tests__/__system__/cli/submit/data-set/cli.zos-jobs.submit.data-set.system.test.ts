@@ -15,7 +15,7 @@ import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { List } from "../../../../../../zosfiles/src/api/methods/list";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 
 process.env.FORCE_COLOR = "0";
 

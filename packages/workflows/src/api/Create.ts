@@ -10,7 +10,7 @@
 */
 
 
-import { AbstractSession, Headers, ImperativeError } from "@brightside/imperative";
+import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import {
     WorkflowConstants,
@@ -19,7 +19,7 @@ import {
     noWorkflowDefinitionFile,
     noSystemName,
     noOwner,
-    wrongOwner, wrongPath
+    wrongOwner
 } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { isNullOrUndefined } from "util";
@@ -56,7 +56,7 @@ export class CreateWorkflow{
      * Create a zOSMF workflow instance
      * @param {AbstractSession} session                     - z/OSMF connection info
      * @param {string} WorkflowName                         - Name of the workflow that will be created
-     * @param {string} WorkflowDefinitionFile               - Full path to USS file or DATASET/MEMBER with zml
+     * @param {string} WorkflowDefinitionFile               - Full path to USS file or DATASET/MEMBER with xml
      * @param {string} systemName                           - System where the workflow will run
      * @param {string} Owner                                - User ID of the workflow owner.
      * @param {string} VariableInputFile                    - Properties file with pre-specify values for workflow variables
@@ -73,15 +73,17 @@ export class CreateWorkflow{
                                  zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                     // add job statement, account info, comments and resolveGlobalConflictByUsing,
                                     ): Promise<ICreatedWorkflow> {
-
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
         WorkflowValidator.validateNotEmptyString(WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
-        WorkflowValidator.validatePath(WorkflowDefinitionFile, wrongPath.message);
         WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
         WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
         WorkflowValidator.validateOwner(Owner, wrongOwner.message);
+
+        if (WorkflowDefinitionFile.charAt(0) === "/" && WorkflowDefinitionFile.charAt(1) === "/") {
+            WorkflowDefinitionFile = WorkflowDefinitionFile.substring(1);
+        }
 
         const data: ICreateWorkflow = {
             workflowName: WorkflowName,
@@ -93,7 +95,6 @@ export class CreateWorkflow{
             deleteCompletedJobs: DeleteCompletedJobs,
         };
         if (!isNullOrUndefined(VariableInputFile)){
-            WorkflowValidator.validatePath(VariableInputFile, wrongPath.message);
             data.variableInputFile = VariableInputFile;
         }
         if (!isNullOrUndefined(Variables)){

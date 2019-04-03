@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger } from "@brightside/imperative";
+import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger } from "@zowe/imperative";
 import { ISshSession } from "./api/doc/ISshSession";
 import { isNullOrUndefined } from "util";
 

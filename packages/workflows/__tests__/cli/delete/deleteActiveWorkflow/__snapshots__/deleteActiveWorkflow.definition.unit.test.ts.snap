@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows delete active-workflow definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "aw",
+  ],
+  "description": "Delete an active workflow instance in z/OSMF",
+  "examples": Array [
+    Object {
+      "description": "To delete a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+      "options": "--workflow-key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
+    },
+    Object {
+      "description": "To delete a workflow instance in z/OSMF with workflow name \\"testWorkflow\\"",
+      "options": "--workflow-name \\"testWorkflow\\"",
+    },
+  ],
+  "name": "active-workflow",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "wk",
+      ],
+      "description": "Delete active workflow by specified workflow key",
+      "name": "workflow-key",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "absenceImplications": Array [
+        "workflow-key",
+      ],
+      "aliases": Array [
+        "wn",
+      ],
+      "conflictsWith": Array [
+        "workflow-key",
+      ],
+      "description": "Delete active workflow by specified workflow name",
+      "name": "workflow-name",
+      "required": false,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;

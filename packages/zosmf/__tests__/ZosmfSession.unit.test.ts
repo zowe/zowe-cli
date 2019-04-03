@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../src/ZosmfSession";
-import { Session } from "@brightside/imperative";
+import { Session } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
     it("should create a session object", () => {

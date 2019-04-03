@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadSpoolContentParms, IJobFile } from "../../../zosjobs";
 import { ZosmfRestClient } from "../../../rest";

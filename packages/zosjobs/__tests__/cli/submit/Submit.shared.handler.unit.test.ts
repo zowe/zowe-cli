@@ -10,7 +10,7 @@
 */
 
 jest.mock("../../../src/api/SubmitJobs");
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@zowe/imperative";
 import { SubmitJobs } from "../../../src/api/SubmitJobs";
 import * as SubmitDefinition from "../../../src/cli/submit/Submit.definition";
 import { ISubmitParms } from "../../../src/api/doc/input/ISubmitParms";
@@ -47,7 +47,8 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {

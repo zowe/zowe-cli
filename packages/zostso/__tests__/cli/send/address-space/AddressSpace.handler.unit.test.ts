@@ -13,7 +13,7 @@ import { PingTsoData } from "../../../__resources__/api/PingTsoData";
 
 jest.mock("../../../../src/api/PingTso");
 import { SendTso } from "../../../../../zostso";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@brightside/imperative";
+import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as SendToAddressSpace from "../../../../src/cli/send/address_space/SendToAddressSpace.handler";
 import { SendToAddressSpaceCommandDefinition } from "../../../../src/cli/send/address_space/SendToAddressSpace.definition";
 
@@ -46,7 +46,8 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
             }),
             setObj: jest.fn((setObjArgs) => {
                 expect(setObjArgs).toMatchSnapshot();
-            })
+            }),
+            setExitCode: jest.fn()
         },
         console: {
             log: jest.fn((logs) => {

@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils, ImperativeError } from "@zowe/imperative";
 import { CheckStatus, IZosmfInfoResponse } from "../../../..";
 import { CheckStatusMessages } from "../../constants/CheckStatus.messages";
 import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
