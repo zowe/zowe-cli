@@ -14,7 +14,7 @@ import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { PropertiesWorkflow } from "../../../api/Properties";
 import { ListWorkflows } from "../../../..";
 import { IWorkflowInfo } from "../../../api/doc/IWorkflowInfo";
-import { IStepInfo } from "../../../api/doc/IStepInfo";
+import { IStepSummary } from "../../../api/doc/IStepSummary";
 
 /**
  * A Handler for listing details of a workflow instance in z/OSMF in zosworkflows package.
@@ -42,7 +42,8 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         let workflowKey: string;
         let response: IWorkflowInfo;
         let requireSteps: boolean;
-        let stepsSummary: any;
+        let stepSummaries: IStepSummary[] = [];
+        let step: IStepSummary;
         let error: any;
 
         if (this.arguments.workflowKey) {
@@ -62,9 +63,24 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         try {
             response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey, undefined,
                                                                       requireSteps, this.arguments.listVariables);
-            stepsSummary = response.steps;
             if(this.arguments.stepsSummaryOnly && response.steps) {
-                stepsSummary = await PropertiesWorkflow.processStepSummaries(response.steps);
+                for(step of response.steps) {
+                    let miscValue: string = "N/A";
+                    if(step.submitAs && step.submitAs.match(/.*JCL/)) {
+                        if(step.jobInfo && step.jobInfo.jobstatus) {
+                            miscValue = step.jobInfo.jobstatus.jobid;
+                        }
+                    } else if(step.template) {
+                        miscValue = "TSO";
+                    } else if(step.isRestStep) {
+                        miscValue = `HTTP ${step.actualStatusCode}`;
+                    }
+                    step.misc = miscValue;
+
+                    stepSummaries.push(step);
+                }
+            } else {
+                stepSummaries = response.steps;
             }
         } catch(err){
             error = "List workflow details error: " + err;
@@ -87,7 +103,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             params.response.format.output({
                 fields: ["name", "state", "stepNumber",
                         this.arguments.stepsSummaryOnly ? "misc" : ""],
-                output: stepsSummary,
+                output: stepSummaries,
                 format: "table",
                 header: true
             });

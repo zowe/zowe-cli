@@ -16,8 +16,6 @@ import { WorkflowConstants, nozOSMFVersion,
          noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IWorkflowInfo } from "./doc/IWorkflowInfo";
-import { IStepSummary } from "./doc/IStepSummary";
-import { IStepInfo } from "./doc/IStepInfo";
 
 export class PropertiesWorkflow {
     /**
@@ -55,44 +53,6 @@ export class PropertiesWorkflow {
         }
 
         return ZosmfRestClient.getExpectJSON<IWorkflowInfo>(session, resourcesQuery, [Headers.APPLICATION_JSON]);
-    }
-
-    /**
-     * Processes the z/OSMF workflow step info
-     * in a recursive manner.
-     *
-     * @protected
-     * @static
-     * @param {IStepInfo[]} steps z/OSMF steps to be processed
-     * @returns {Promise<IStepSummary[]>} Array of z/OSMF step summary objects
-     * @memberof PropertiesWorkflow
-     */
-    public static async processStepSummaries(steps: IStepInfo[]): Promise<IStepSummary[]> {
-        const stepSummaries: IStepSummary[] = [];
-        let step: IStepSummary;
-
-        for(step of steps) {
-            let miscValue: string = "N/A";
-            if(step.submitAs && step.submitAs.match(/.*JCL/)) {
-                if(step.jobInfo && step.jobInfo.jobstatus) {
-                    miscValue = step.jobInfo.jobstatus.jobid;
-                }
-            } else if(step.template) {
-                miscValue = "TSO";
-            } else if(step.isRestStep) {
-                miscValue = `HTTP ${step.actualStatusCode}`;
-            }
-            step.misc = miscValue;
-
-            stepSummaries.push(step);
-            // TO DO: Add recursive function to list substeps.
-            // if(step.steps) {
-            //     const subSteps = await PropertiesWorkflow.processStepSummaries(step.steps);
-            //     stepSummaries = steps.concat(subSteps);
-            // }
-        }
-
-        return stepSummaries;
     }
 }
 
