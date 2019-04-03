@@ -65,7 +65,7 @@ describe("List active workflow details cli system tests", () => {
                 error = err;
             }
 
-            // Create a workflow instance in zOS/MF to list
+            // Create a workflow instance in z/OSMF to list
             response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
         });

@@ -15,7 +15,7 @@ describe("zos-workflows list definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2);
+        expect(definition.children.length).toBe(2+1);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });

@@ -119,7 +119,7 @@ describe("List workflow cli system tests", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain(`${thisWorkflowKey}`);
             });
-            it("Should return wf key if wf was archived using wf name.", async () => {
+            it("Should return wf name if wf was archived using wf name.", async () => {
                 let thisWorkflowKey;
                 const actualWfKey =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION,
                                                                                     "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
@@ -132,7 +132,7 @@ describe("List workflow cli system tests", () => {
                 testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(`${thisWorkflowKey}`);
+                expect(response.stdout.toString()).toContain(`${wfName}`);
             });
         });
         describe("Fail Scenarions", () => {
