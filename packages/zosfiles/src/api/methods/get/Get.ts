@@ -17,6 +17,7 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
+import { Writable } from "stream";
 
 
 /**
@@ -89,5 +90,39 @@ export class Get {
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 
         return content;
+    }
+
+    /**
+     * Retrieve USS file content
+     *
+     * @param {AbstractSession}  session      - z/OSMF connection info
+     * @param {string}           USSFileName  - contains the data set name
+     * @param {IViewOptions} [options={}] - contains the options to be sent
+     *
+     * @param responseStream
+     * @returns {Promise<Buffer>} Promise that resolves to the content of the uss file
+     *
+     * @throws {ImperativeError}
+     */
+    public static async USSFileStreamed(session: AbstractSession, USSFileName: string,
+                                        options: IGetOptions = {}, responseStream: Writable): Promise<string> {
+        ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
+        USSFileName = posix.normalize(USSFileName);
+        // Get a proper destination for the file to be downloaded
+        // If the "file" is not provided, we create a folder structure similar to the uss file structure
+        if (USSFileName.substr(0, 1) === "/") {
+            USSFileName = USSFileName.substr(1);
+        }
+
+        USSFileName = encodeURIComponent(USSFileName);
+        const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
+
+        let reqHeaders: IHeaderContent[] = [];
+        if (options.binary) {
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+        }
+
+        return ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, responseStream);
     }
 }

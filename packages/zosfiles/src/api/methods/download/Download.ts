@@ -81,7 +81,7 @@ export class Download {
             }
 
             // Get contents of the data set
-            let content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
+
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
                 extension = options.extension;
@@ -95,16 +95,12 @@ export class Download {
 
             IO.createDirsSyncFromFilePath(destination);
 
-            if ((!options.binary) && (content.byteLength > 0)) {
-                content = Buffer.from(IO.processNewlines(content.toString()));
-            }
-
-            IO.writeFile(destination, Buffer.from(content));
-
+            const writeStream = IO.createWriteStream(destination);
+            await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream);
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: content
+                apiResponse: {}
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -222,7 +218,6 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         try {
-            let fileContent = await Get.USSFile(session, ussFileName, {binary: options.binary});
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
@@ -234,15 +229,12 @@ export class Download {
             const destination = options.file || posix.normalize(posix.basename(ussFileName));
             IO.createDirsSyncFromFilePath(destination);
 
-            if ((!options.binary) && (fileContent.toString().length > 0)) {
-                fileContent = Buffer.from(IO.processNewlines(fileContent.toString()));
-            }
-            IO.writeFile(destination, Buffer.from(fileContent));
-
+            const writeStream = IO.createWriteStream(destination);
+            await Get.USSFileStreamed(session, ussFileName, options, writeStream);
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
-                apiResponse: fileContent
+                apiResponse: {}
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
