@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@brightside/imperative";
+import { IHandlerParameters, IHandlerResponseConsoleApi } from "@zowe/imperative";
 import { Shell } from "../../../api/Shell";
 import { ClientChannel } from "ssh2";
 import { SshBaseHandler } from "../../../SshBaseHandler";
@@ -22,16 +22,19 @@ import { SshBaseHandler } from "../../../SshBaseHandler";
  */
 export default class Handler extends SshBaseHandler {
 
+    private parameters: IHandlerParameters;
 
     public async processCmd(commandParameters: IHandlerParameters) {
+        this.parameters = commandParameters;
         if (commandParameters.arguments.cwd) {
-            await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd, this.stdoutHandler);
+            await Shell.executeSshCwd(this.mSession, commandParameters.arguments.command, commandParameters.arguments.cwd,
+                this.handleStdout.bind(this));
         } else {
-            await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.stdoutHandler);
+            await Shell.executeSsh(this.mSession, commandParameters.arguments.command, this.handleStdout.bind(this));
         }
     }
 
-    private stdoutHandler(data: string) {
-        process.stdout.write(data);
+    public handleStdout(data: string) {
+        this.parameters.response.console.log(data);
     }
 }
