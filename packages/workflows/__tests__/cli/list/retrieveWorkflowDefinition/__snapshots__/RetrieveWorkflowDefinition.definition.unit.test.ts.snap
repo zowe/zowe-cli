@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows list definition-file-details should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "dfd",
+  ],
+  "description": "Retrieve the contents of a z/OSMF workflow definition from a z/OS system.",
+  "examples": Array [
+    Object {
+      "description": "To list the contents of a workflow definition stored in the UNIX file \\"/user/dir/workflow.xml\\" including its steps and variables",
+      "options": "\\"/user/dir/workflow.xml\\" --list-steps --list-variables",
+    },
+    Object {
+      "description": "To list the contents of a workflow definition stored in the z/OS data set \\"USER.DATA.SET.XML\\" including its steps and variables",
+      "options": "--workflow-name \\"testWorkflow\\" --list-steps --list-variables",
+    },
+  ],
+  "name": "definition-file-details",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "ls",
+      ],
+      "description": "Optional parameter for listing steps and their properties.",
+      "name": "list-steps",
+      "required": false,
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "lv",
+      ],
+      "description": "Optional parameter for listing variables and their properties.",
+      "name": "list-variables",
+      "required": false,
+      "type": "boolean",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
+      "name": "definitionFilePath",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;

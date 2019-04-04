@@ -10,33 +10,35 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
-import { ArchiveWorkflow } from "../../api/ArchiveWorkflow";
+import { ArchivedDeleteWorkflow } from "../../api/ArchivedDelete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
-import { noWorkflowName } from "../../api/WorkflowConstants";
-import { ListWorkflows } from "../../..";
-
+import { ListArchivedWorkflows } from "../../api/ListArchivedWorkflows";
+import { IArchivedWorkflows } from "../../../src/api/doc/IArchivedWorkflows";
+import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "../../../src/api/WorkflowConstants";
 
 /**
- * Common Handler for archiving workflow instance in z/OSMF in zosworkflows package.
+ * Common handler to delete a workflow instance in z/OSMF.
  * This is not something that is intended to be used outside of this npm package.
  */
-
-export default class ArchiveHandler extends ZosmfBaseHandler {
+export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
      * @private
      * @type {*}
-     * @memberof ArchiveHandler
+     * @memberof DeleteArchivedCommonHandler
      */
     private arguments: any;
 
     /**
-     * Command handler process - invoked by the command processor to handle the "zos-workflows archive"
+     * Command handler process - invoked by the command processor to handle the "zos-workflows delete"
      * @param {IHandlerParameters} params - Command handler parameters
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
-     * @memberof ArchiveHandler
+     * @memberof DeleteArchivedCommonHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
+        let error: string;
+        let resp: string;
+        let getWfKey: string;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -46,43 +48,39 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
             sourceType = "workflowName";
         }
 
-        let resp;
-        let getWfKey;
-        let error;
-
         switch (sourceType) {
             case "workflowKey":
                 try{
-                    resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, this.arguments.workflowKey, undefined);
+                    await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession, this.arguments.workflowKey);
                 } catch (err){
-                    error = "Archive workflow: " + err;
+                    error = "Delete workflow: " + err;
                     throw error;
                 }
-                params.response.data.setObj(resp);
-                params.response.console.log("Workflow archived with workflow-key " + resp.workflowKey);
+                params.response.data.setObj("Deleted.");
+                params.response.console.log("Workflow deleted.");
                 break;
 
             case "workflowName":
                 try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    getWfKey = await ListArchivedWorkflows.getWfKey(this.mSession, this.arguments.workflowName, WorkflowConstants.ZOSMF_VERSION);
                     if (getWfKey === null) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
                             additionalDetails: JSON.stringify(params)
                         });
                     }
-                    resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, getWfKey, undefined);
+                    resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession, getWfKey);
                 } catch (err){
-                    error = "Archive workflow: " + err;
+                    error = "Delete workflow: " + err;
                     throw error;
                 }
-                params.response.data.setObj(resp);
-                params.response.console.log("Workflow archived with workflow-name " + this.arguments.workflowName);
+                params.response.data.setObj("Deleted.");
+                params.response.console.log("Workflow deleted.");
                 break;
 
             default:
             throw new ImperativeError({
-                msg: `Internal create error: Unable to determine the the criteria by which to run workflow archive action. ` +
+                msg: `Internal create error: Unable to determine the the criteria by which to run delete workflow action. ` +
                     `Please contact support.`,
                 additionalDetails: JSON.stringify(params)
                 });
