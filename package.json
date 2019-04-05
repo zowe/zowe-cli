@@ -59,6 +59,8 @@
     "@zowe/imperative": "^3.1.0-alpha.201903281852",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.13.0",
+    "minimatch": "^3.0.4",
+    "@types/minimatch": "^3.0.3",
     "string-width": "2.1.1"
   },
   "devDependencies":   {
