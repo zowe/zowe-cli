@@ -9,13 +9,16 @@
 *
 */
 
-import { Imperative, Session } from "@brightside/imperative";
+import { Imperative, Session, ImperativeError, Headers } from "@brightside/imperative";
+
 import * as path from "path";
+import * as fs from "fs";
+import * as buffer from "buffer";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ZosFilesConstants } from "../../../../../index";
+import { Get, ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 
 let REAL_SESSION: Session;
@@ -270,4 +273,111 @@ describe("Upload directory to USS", () => {
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
         });
     });
+
+    describe ("Scenarios using the .zosattributes file", () => {
+        it("should ignore files marked with a -", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_ignored_files");
+            testSuccessfulUpload(localDirName);
+
+            try {
+                await Get.USSFile(REAL_SESSION, path.join(ussname,"foo.ignoreme"));
+                fail("USS file foo.stuff should not have been transferred");
+            } catch (err) {
+                expect(err).toBeDefined();
+            }
+        });
+
+        it("should ignore nested directories as specified", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_ignored_dir");
+
+            testSuccessfulUpload(localDirName, ["--recursive"]);
+
+            let error: Error;
+            try {
+                await Get.USSFile(REAL_SESSION, path.join(ussname,"uploaded_dir/ignored_dir/ignored_file"));
+                fail("USS file ignored_file should not have been transferred");
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+
+            const ussResponse = await Get.USSFile(REAL_SESSION, path.join(ussname,"uploaded_dir/uploaded_file"));
+            expect(ussResponse).toBeInstanceOf(Buffer);
+        });
+
+        it("should upload files in binary or text as indicated", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_mixed_files");
+
+            testSuccessfulUpload(localDirName);
+
+            const remoteTextFileBuffer = await Get.USSFile(REAL_SESSION, path.join(ussname,"foo.text"));
+            const localTextFileBuffer = fs.readFileSync(path.join(localDirName,"foo.text"));
+            expect(remoteTextFileBuffer.equals(localTextFileBuffer)).toBeTruthy();
+
+            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, path.join(ussname,"bar.binary"),{binary: true});
+            const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName,"bar.binary"));
+            expect(remoteBinaryFileBuffer.equals(localBinaryFileBuffer)).toBeTruthy();
+        });
+        it("should tag uploaded files according to remote encoding", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_mixed_files");
+
+            testSuccessfulUpload(localDirName);
+
+            let tag = await getTag(ussname + "/baz.asciitext");
+            expect(tag).toMatch("t ISO8859-1");
+
+            tag = await getTag(ussname + "/foo.text");
+            expect(tag).toMatch("t IBM-1047");
+
+            tag = await getTag(ussname + "/bar.binary");
+            expect(tag).toMatch("b binary");
+        });
+
+        async function getTag(ussPath: string) {
+            const request: object = {request:"chtag",
+                                     action: "list"};
+            const url = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES
+                        + "/" + ussPath;
+            Imperative.console.info("z/OSMF URL: "  + url);
+            const response = await ZosmfRestClient.putExpectJSON<any>(REAL_SESSION,
+                                           url,
+                                           [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH] : JSON.stringify(request).length.toString() }],
+                                           request);
+            return response.stdout[0];
+        }
+
+        it("should accept zosattributes path as an argument", async () => {
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
+
+            const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/external.attributes");
+            testSuccessfulUpload(localDirName, ["--attributes",attributesPath]);
+
+            let error: Error;
+            try {
+                await Get.USSFile(REAL_SESSION, path.join(ussname,"subdir_ascii_file1.txt"));
+                fail("USS file subddir_ascii_file1.txt should not have been transferred");
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeDefined();
+        });
+    });
 });
+
+function testSuccessfulUpload(localDirName: string, additionalParameters?: string[]) {
+    const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
+    let parms: string[] = [
+        localDirName,
+        ussname
+    ];
+    if (additionalParameters) {
+        parms = parms.concat(additionalParameters);
+    }
+
+    const response = runCliScript(shellScript, TEST_ENVIRONMENT, parms);
+    expect(response.stderr.toString()).toBe("");
+    expect(response.status).toBe(0);
+    const stdoutText = response.stdout.toString();
+    expect(stdoutText).toContain("Directory uploaded successfully.");
+}
+

@@ -396,7 +396,9 @@ export default {
                     EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
                     `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`
+                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`,
+                    EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
+                    `specifying files to ignore and file encodings in the local file my_global_attributes:`
                 }
             },
         },
@@ -416,6 +418,7 @@ export default {
             "Use this option when you upload a directory with --binary/-b flag, " +
             "but you want to specify certain files to be uploaded in ASCII mode. "  +
             "All files matching specified file names will be uploaded in ASCII mode.",
+            ATTRIBUTES: "Path of an attributes file to control how files are uploaded",
             MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files." +
             " Increasing the value results in faster uploads. " +
             "However, increasing the value increases resource consumption on z/OS and can be prone " +
