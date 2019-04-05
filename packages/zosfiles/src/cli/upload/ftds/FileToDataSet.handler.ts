@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Upload } from "../../../api/methods/upload";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -23,10 +23,17 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Uploading to data set",
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task});
         const response = await Upload.fileToDataset(session, commandParameters.arguments.inputfile, commandParameters.arguments.dataSetName, {
-            volume: commandParameters.arguments.volumeSerial,
-            binary: commandParameters.arguments.binary
-        });
+                volume: commandParameters.arguments.volumeSerial,
+                binary: commandParameters.arguments.binary
+            },
+            task);
 
         if (response.apiResponse) {
             let skipCount: number = 0;
@@ -36,14 +43,14 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
                 if (element.success === true) {
                     const formatMessage = TextUtils.prettyJson(element);
                     commandParameters.response.console.log(formatMessage);
-                    successCount ++;
-                } else if(element.success === false) {
+                    successCount++;
+                } else if (element.success === false) {
 
                     const formatMessage = TextUtils.prettyJson(element);
                     commandParameters.response.console.error(TextUtils.chalk.red(formatMessage));
-                    errorCount ++;
+                    errorCount++;
                 } else {
-                    skipCount ++;
+                    skipCount++;
                 }
             });
 
