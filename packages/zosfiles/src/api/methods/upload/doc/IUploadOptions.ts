@@ -11,6 +11,7 @@
 
 import { ITaskWithStatus } from "@zowe/imperative";
 import { IUploadMap } from "./IUploadMap";
+import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 
 /**
  * This interface defines the options that can be sent into the upload data set function
@@ -59,6 +60,11 @@ export interface IUploadOptions {
      * The map of files and their upload mode to be used for binary_files and ascii_files
      */
     filesMap?: IUploadMap;
+
+    /**
+     * The ZosFilesAttributes instance describe upload attributes for the files and directories
+     */
+    attributes?: ZosFilesAttributes;
 
     /**
      * The maximum REST requests to perform at once
