@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -36,6 +36,8 @@ export class Upload {
      * @param {string}          inputFile    - path to a file
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
+     * @param {ITaskWithStatus} task - a task used to update progress bars or other user feedback mechanisms
+     *                                 will be automatically updated during upload
      *
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
@@ -45,7 +47,8 @@ export class Upload {
     public static async fileToDataset(session: AbstractSession,
                                       inputFile: string,
                                       dataSetName: string,
-                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+                                      options: IUploadOptions = {},
+                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
         this.log.info(`Uploading file ${inputFile} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
@@ -76,7 +79,7 @@ export class Upload {
 
         await promise;
 
-        return this.pathToDataSet(session, inputFile, dataSetName, options);
+        return this.pathToDataSet(session, inputFile, dataSetName, options, task);
     }
 
     /**
@@ -86,6 +89,8 @@ export class Upload {
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
      *
+     * @param {ITaskWithStatus} task - a task used to update progress bars or other user feedback mechanisms
+     *                                 will be automatically updated during upload
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
      * @throws {ImperativeError} When encounter error scenarios.
@@ -94,7 +99,8 @@ export class Upload {
     public static async dirToPds(session: AbstractSession,
                                  inputDir: string,
                                  dataSetName: string,
-                                 options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+                                 options: IUploadOptions = {},
+                                 task?: ITaskWithStatus): Promise<IZosFilesResponse> {
         this.log.info(`Uploading directory ${inputDir} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputDir, ZosFilesMessages.missingInputDir.message);
@@ -131,7 +137,7 @@ export class Upload {
             });
         }
 
-        return this.pathToDataSet(session, inputDir, dataSetName, options);
+        return this.pathToDataSet(session, inputDir, dataSetName, options, task);
     }
 
     /**
@@ -270,6 +276,7 @@ export class Upload {
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
      *
+     * @param task - use this to be updated on the current status of the upload operation
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
      * @throws {ImperativeError} When encounter error scenarios.
@@ -287,14 +294,14 @@ export class Upload {
     public static async pathToDataSet(session: AbstractSession,
                                       inputPath: string,
                                       dataSetName: string,
-                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+                                      options: IUploadOptions = {},
+                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
 
         this.log.info(`Uploading path ${inputPath} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        let payload;
         let memberName: string = "";
         let uploadingFile: string = "";
         let uploadingDsn: string = "";
@@ -395,6 +402,20 @@ export class Upload {
                     try {
                         // read payload from file
                         const uploadStream = IO.createReadStream(uploadingFile);
+
+                        const totalSize = fs.statSync(uploadingFile).size;
+                        let bytesRead = 0;
+
+                        if (task != null && uploadFileList.length === 1) {
+                            uploadStream.on("data", (dataChunk: Buffer) => {
+                                // we can register an onData method in addition to the one used by the
+                                // rest client to upload to update the progress bar task
+                                bytesRead += dataChunk.byteLength;
+                                task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (bytesRead / totalSize));
+                                task.statusMessage = TextUtils.formatMessage("Uploading %d of %d B", bytesRead, totalSize);
+                            });
+                        }
+
                         const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, options);
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({

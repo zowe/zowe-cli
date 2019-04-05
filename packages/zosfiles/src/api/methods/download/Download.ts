@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -38,6 +38,7 @@ export class Download {
      * @param {string}           dataSetName  - contains the data set name
      * @param {IDownloadOptions} [options={}] - contains the options to be sent
      *
+     * @param {ITaskWithStatus} task - task that will be automatically uploaded with bytes transferred so far
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
      * @throws {ImperativeError} data set name must be set
@@ -58,7 +59,8 @@ export class Download {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_GetReadDataSet.htm
      */
-    public static async dataSet(session: AbstractSession, dataSetName: string, options: IDownloadOptions = {}): Promise<IZosFilesResponse> {
+    public static async dataSet(session: AbstractSession, dataSetName: string, options: IDownloadOptions = {},
+                                task?: ITaskWithStatus): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -96,7 +98,7 @@ export class Download {
             IO.createDirsSyncFromFilePath(destination);
 
             const writeStream = IO.createWriteStream(destination);
-            await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream);
+            await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, task);
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
