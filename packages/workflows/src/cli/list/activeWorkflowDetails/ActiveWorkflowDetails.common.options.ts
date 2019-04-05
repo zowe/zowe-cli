@@ -63,7 +63,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
     stepsSummaryOnly: {
         name: "steps-summary-only",
         aliases: ["sso"],
-        description: "Optional parameter for listing steps summary only.",
+        description: "Optional parameter that lists only the steps summary.",
         type: "boolean",
         required: false,
         conflictsWith: ["list-steps"],
@@ -90,7 +90,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
     listVariables: {
         name: "list-variables",
         aliases: ["lv"],
-        description: "Optional parameter for listing variables and their properties.",
+        description: "Optional parameter that skips the default workflow summary.",
         type: "boolean",
         required: false,
     },
