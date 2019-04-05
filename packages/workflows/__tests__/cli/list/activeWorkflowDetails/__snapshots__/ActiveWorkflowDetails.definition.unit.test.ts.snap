@@ -58,7 +58,7 @@ Object {
       "conflictsWith": Array [
         "list-steps",
       ],
-      "description": "Optional parameter that lists only the steps summary.",
+      "description": "Optional parameter that lists steps summary only.",
       "name": "steps-summary-only",
       "required": false,
       "type": "boolean",
@@ -67,7 +67,7 @@ Object {
       "aliases": Array [
         "lv",
       ],
-      "description": "Optional parameter that skips the default workflow summary.",
+      "description": "Optional parameter for listing variables and their properties.",
       "name": "list-variables",
       "required": false,
       "type": "boolean",
@@ -76,7 +76,7 @@ Object {
       "aliases": Array [
         "sws",
       ],
-      "description": "Optional parameter for skipping default workflow summary.",
+      "description": "Optional parameter that skips the default workflow summary.",
       "impliesOneOf": Array [
         "steps-summary-only",
         "list-steps",
