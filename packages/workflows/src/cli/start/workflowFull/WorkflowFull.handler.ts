@@ -60,11 +60,11 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
 
         if (this.arguments.wait){
             let response: IWorkflowInfo;
-            let flag = false;
-            while(!flag) {
+            let workflowComplete = false;
+            while(!workflowComplete) {
                 response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey);
                 if (response.automationStatus && response.statusName !== "automation-in-progress") {
-                    flag = true;
+                    workflowComplete = true;
                     if (response.statusName === "complete") {
                         params.response.data.setObj("Complete.");
                         params.response.console.log("Workflow completed successfully.");
