@@ -34,7 +34,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
         ActiveWorkflowDetailsCommonOptions.listSteps,
         ActiveWorkflowDetailsCommonOptions.stepsSummaryOnly,
         ActiveWorkflowDetailsCommonOptions.listVariables,
-        ActiveWorkflowDetailsCommonOptions.skipWotkflowSummary,
+        ActiveWorkflowDetailsCommonOptions.skipWorkflowSummary,
     ]),
     examples: [
         {
