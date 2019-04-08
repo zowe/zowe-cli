@@ -25,7 +25,6 @@ let defaultSystem: ITestSystemSchema;
 describe("List Defined Systems Api", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "list_zosmf_def"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
@@ -124,31 +123,6 @@ describe("List Defined Systems Api", () => {
             expect(response).toBeFalsy();
             expect(error.message).toContain(`Error: connect ECONNREFUSED`);
             expect(error.message).toContain(badPort);
-        });
-
-        it("should return with proper message for rejectUnauthorized = true", async () => {
-            const badSession = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: true,
-            });
-
-            let error;
-            let response;
-
-            try {
-                response = await ListDefinedSystems.listDefinedSystems(badSession);
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
-            }
-
-            expect(error).toBeTruthy();
-            expect(response).toBeFalsy();
-            expect(error.message).toContain("Error: unable to verify the first certificate");
         });
     });
 });
