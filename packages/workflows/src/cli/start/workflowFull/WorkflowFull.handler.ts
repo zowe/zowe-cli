@@ -37,92 +37,48 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
-        let getWfKey;
         this.arguments = params.arguments;
+        let workflowKey: string;
 
-        let sourceType: string;
         if (this.arguments.workflowKey) {
-            sourceType = "workflowKey";
+            workflowKey = this.arguments.workflowKey;
         } else if (this.arguments.workflowName) {
-            sourceType = "workflowName";
+            workflowKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+            if(!workflowKey) {
+                throw new ImperativeError({
+                    msg: `No workflows match the provided workflow name.`,
+                });
+            }
         }
 
-        switch (sourceType) {
-            case "workflowKey":
-                try{
-                    await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict);
-                } catch (err){
-                    error = "Start workflow: " + err;
-                    throw error;
-                }
-                if (this.arguments.wait){
-                    let response: IWorkflowInfo;
-                    let flag = false;
-                    while(!flag) {
-                        response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey);
-                        if (response.automationStatus && response.statusName !== "automation-in-progress") {
-                            flag = true;
-                            if (response.statusName === "complete") {
-                                params.response.data.setObj("Complete.");
-                                params.response.console.log("Workflow completed successfully.");
-                            }
-                            else {
-                                throw new ImperativeError({
-                                    msg: `Workflow failed or was cancelled or there is manual step.`,
-                                    additionalDetails: JSON.stringify(response)
-                                });
-                            }
-                        }
-                    }
-                } else {
-                    params.response.data.setObj("Started.");
-                    params.response.console.log("Workflow started.");
-                }
-                break;
-            case "workflowName":
-                try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                    if (getWfKey === null) {
+        try{
+            await StartWorkflow.startWorkflow(this.mSession, workflowKey, this.arguments.resolveConflict);
+        } catch (err) {
+            error = "Start workflow: " + err;
+            throw error;
+        }
+
+        if (this.arguments.wait){
+            let response: IWorkflowInfo;
+            let flag = false;
+            while(!flag) {
+                response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey);
+                if (response.automationStatus && response.statusName !== "automation-in-progress") {
+                    flag = true;
+                    if (response.statusName === "complete") {
+                        params.response.data.setObj("Complete.");
+                        params.response.console.log("Workflow completed successfully.");
+                    } else {
                         throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
-                        });
+                            msg: `Workflow failed or was cancelled or there is manual step.`,
+                            additionalDetails: JSON.stringify(response)
+                       });
                     }
-                    await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey, this.arguments.resolveConflict);
-                } catch (err){
-                    error = "Start workflow: " + err;
-                    throw error;
                 }
-                if (this.arguments.wait){
-                    let response: IWorkflowInfo;
-                    let flag = false;
-                    while(!flag) {
-                        response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey);
-                        if (response.automationStatus && response.statusName !== "automation-in-progress") {
-                            flag = true;
-                            if (response.statusName === "complete") {
-                                params.response.data.setObj("Complete.");
-                                params.response.console.log("Workflow completed successfully.");
-                            }
-                            else {
-                                throw new ImperativeError({
-                                    msg: `Workflow failed or was cancelled or there is manual step.`,
-                                    additionalDetails: JSON.stringify(response)
-                                });
-                            }
-                        }
-                    }
-                } else {
-                    params.response.data.setObj("Started.");
-                    params.response.console.log("Workflow started.");
-                }
-                break;
-            default:
-            throw new ImperativeError({
-                msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
-                    `Please contact support.`,
-                additionalDetails: JSON.stringify(params)
-                });
+            }
+        } else {
+            params.response.data.setObj("Started.");
+            params.response.console.log("Workflow started.");
         }
     }
 }
