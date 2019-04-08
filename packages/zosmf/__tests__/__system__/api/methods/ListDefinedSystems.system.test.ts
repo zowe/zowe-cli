@@ -10,7 +10,7 @@
 */
 
 import { ListDefinedSystems, ZosmfMessages } from "../../../../../zosmf";
-import { Session, Imperative } from "@brightside/imperative";
+import { Session, Imperative } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
