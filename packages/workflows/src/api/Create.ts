@@ -10,7 +10,7 @@
 */
 
 
-import { AbstractSession, Headers, ImperativeError } from "@brightside/imperative";
+import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import {
     WorkflowConstants,
