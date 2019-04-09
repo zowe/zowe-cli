@@ -49,7 +49,7 @@ describe("zowe uss issue ssh api call test", () => {
 
     it ("should resolve cwd option", async () => {
         const command = "pwd";
-        const cwd =  `${defaultSystem.unix.testdir}/`;
+        const cwd =  `${defaultSystem.unix.testdir}`;
         let stdoutData = "";
         await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
             stdoutData += data;
