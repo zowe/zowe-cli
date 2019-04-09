@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition } from "@brightside/imperative";
 
 /**
  * Object containing all extra options to be used by the create workflow commands.
@@ -137,7 +137,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     overwrite: {
         name: "overwrite",
         aliases: ["ov"],
-        description: "Specifies whether the workflow with the same name should be deleted if it already exists.",
+        description: "Replaces an existing workflow with a new workflow. ",
         type: "boolean",
         required: false
     },
