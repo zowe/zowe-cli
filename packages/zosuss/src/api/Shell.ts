@@ -47,10 +47,12 @@ export class Shell {
                     let isCommandOutput = false;
 
                     stream.on("close", () => {
+                        Logger.getAppLogger().debug("SSH connection closed");
                         conn.end();
                         resolve();
                     });
                     stream.on("data", (data: string) => {
+                        Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
                         dataBuffer += data;
                         // if(dataBuffer.includes("\n")) {
                         if(dataBuffer.includes("\r")) {
