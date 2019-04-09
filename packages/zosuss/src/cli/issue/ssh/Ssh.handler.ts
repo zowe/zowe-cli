@@ -35,6 +35,6 @@ export default class Handler extends SshBaseHandler {
     }
 
     public handleStdout(data: string) {
-        this.parameters.response.console.log(data);
+        this.parameters.response.console.log(Buffer.from(data));
     }
 }
