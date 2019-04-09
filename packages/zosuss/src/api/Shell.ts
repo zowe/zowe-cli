@@ -66,6 +66,12 @@ export class Shell {
                             if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`))) {
                                 dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
                                 isCommandOutput = true;
+                            } else if(dataToPrint.match(new RegExp("$ " + startCmdFlag))) {
+                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
+                                isCommandOutput = true;
+                            } else if(dataToPrint.match(new RegExp(">" + startCmdFlag))) {
+                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
+                                isCommandOutput = true;
                             }
 
                             // check endCmdFlag: end printing out data
