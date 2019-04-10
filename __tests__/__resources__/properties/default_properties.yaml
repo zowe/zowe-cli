@@ -45,6 +45,7 @@ systems:
         port: ssh-port
         privateKey: ssh-private-key
         keyPassphrase: ssh-private-key-passphrase
+        handshakeTimeout: ssh-handshake-timeout
     #-------------------------------------------------------------------------#
     #  Console API Tests parameters                                           #
     #-------------------------------------------------------------------------#

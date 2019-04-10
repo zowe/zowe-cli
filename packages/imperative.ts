@@ -184,6 +184,10 @@ const config: IImperativeConfig = {
                         secure: true,
                         optionDefinition: SshSession.SSH_OPTION_KEYPASSPHRASE,
                     },
+                    handshakeTimeout: {
+                        type: "number",
+                        optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT,
+                    },
                 },
                 required: ["host", "user"],
             },

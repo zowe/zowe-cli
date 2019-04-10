@@ -176,6 +176,9 @@ export class TempTestProfiles {
         if (sshProperties.keyPassphrase) {
             createProfileScript += ` --keyPassphrase ${sshProperties.keyPassphrase}`;
         }
+        if (sshProperties.handshakeTimeout) {
+            createProfileScript += ` --handshakeTimeout ${sshProperties.handshakeTimeout}`;
+        }
 
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);

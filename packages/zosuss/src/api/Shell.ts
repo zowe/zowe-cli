@@ -105,10 +105,11 @@ export class Shell {
                 username: session.ISshSession.user,
                 password: session.ISshSession.password,
                 privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
-                require("fs").readFileSync(session.ISshSession.privateKey) : "",
+                    require("fs").readFileSync(session.ISshSession.privateKey) : "",
                 passphrase: session.ISshSession.keyPassphrase,
                 authHandler: Shell.authenticationHandler,
-                readyTimeout: 2000
+                readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
+                    session.ISshSession.handshakeTimeout : 0
             });
             conn.on("error", (err: Error) => {
                 if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {

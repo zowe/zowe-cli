@@ -59,4 +59,11 @@ export interface ISshSession {
      */
     keyPassphrase?: string;
 
+    /**
+     * password to unlock the private key.
+     * @type {string}
+     * @memberof ISession
+     */
+    handshakeTimeout?: number;
+
 }
