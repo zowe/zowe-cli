@@ -13,6 +13,8 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { PropertiesWorkflow } from "../../../api/Properties";
 import { ListWorkflows } from "../../../..";
+import { IWorkflowInfo } from "../../../api/doc/IWorkflowInfo";
+import { IStepSummary } from "../../../api/doc/IStepSummary";
 
 /**
  * A Handler for listing details of a workflow instance in z/OSMF in zosworkflows package.
@@ -37,111 +39,84 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         this.arguments = params.arguments;
 
-        let sourceType: string;
+        let workflowKey: string;
+        let response: IWorkflowInfo;
+        let requireSteps: boolean;
+        let stepSummaries: IStepSummary[] = [];
+        let step: IStepSummary;
+        let error: any;
+
         if (this.arguments.workflowKey) {
-            sourceType = "workfowKey";
-        }
-        else if (this.arguments.workflowName) {
-            sourceType = "workflowName";
-        }
-
-        let resp;
-        let error;
-        let getWfKey;
-
-        switch (sourceType) {
-            case "workfowKey":
-
-                try{
-                    resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, this.arguments.workflowKey,
-                                                                             undefined, this.arguments.listSteps, this.arguments.listVariables);
-                } catch (err){
-                    error = "List workflow details error: " + err;
-                    throw error;
-                }
-                params.response.data.setObj(resp);
-
-                params.response.console.log("\nWorkflow Details: ");
-                params.response.format.output({
-                    fields: ["workflowName", "workflowKey",
-                        resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
-                    output: resp,
-                    format: "object",
-                });
-
-                if(this.arguments.listSteps && resp.steps){
-                    params.response.console.log("\nWorkflow Steps: ");
-                    params.response.format.output({
-                        fields: ["name", "state", "stepNumber"],
-                        output: resp.steps,
-                        format: "table",
-                        header: true
-                    });
-                }
-
-                if(this.arguments.listVariables && resp.variables){
-                    params.response.console.log("\nWorkflow Variables: ");
-                    params.response.format.output({
-                        fields: ["name", "value", "type"],
-                        output: resp.variables,
-                        format: "table",
-                        header: true
-                    });
-                }
-                break;
-
-            case "workflowName":
-                try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                    if (getWfKey === null) {
-                        throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
-                        });
-                    }
-                    resp = await PropertiesWorkflow.getWorkflowProperties(this.mSession, getWfKey,
-                                                                        undefined, this.arguments.listSteps, this.arguments.listVariables);
-                } catch (err){
-                    error = "List workflow details error: " + err;
-                    throw error;
-                }
-                params.response.data.setObj(resp);
-
-                params.response.console.log("\nWorkflow Details: ");
-                params.response.format.output({
-                    fields: ["workflowName", "workflowKey",
-                        resp.automationStatus? "automationStatus.messageText" : "automationStatus"],
-                    output: resp,
-                    format: "object",
-                });
-
-                if(this.arguments.listSteps && resp.steps){
-                    params.response.console.log("\nWorkflow Steps: ");
-                    params.response.format.output({
-                        fields: ["name", "state", "stepNumber"],
-                        output: resp.steps,
-                        format: "table",
-                        header: true
-                    });
-                }
-
-                if(this.arguments.listVariables && resp.variables){
-                    params.response.console.log("\nWorkflow Variables: ");
-                    params.response.format.output({
-                        fields: ["name", "value", "type"],
-                        output: resp.variables,
-                        format: "table",
-                        header: true
-                    });
-                }
-                break;
-
-            default:
+            workflowKey = this.arguments.workflowKey;
+        } else if (this.arguments.workflowName) {
+            workflowKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+            if(!workflowKey) {
                 throw new ImperativeError({
-                    msg: `Internal create error: Unable to determine the the criteria by which to list workflow details. ` +
-                        `Please contact support.`,
+                    msg: `No workflows match the provided workflow name.`,
                     additionalDetails: JSON.stringify(params)
                 });
+            }
+        }
+
+        this.arguments.listSteps || this.arguments.stepsSummaryOnly ? requireSteps = true : requireSteps = false;
+
+        try {
+            response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey, undefined,
+                                                                      requireSteps, this.arguments.listVariables);
+            if(this.arguments.stepsSummaryOnly && response.steps) {
+                for(step of response.steps) {
+                    let miscValue: string = "N/A";
+                    if(step.submitAs && step.submitAs.match(/.*JCL/)) {
+                        if(step.jobInfo && step.jobInfo.jobstatus) {
+                            miscValue = step.jobInfo.jobstatus.jobid;
+                        }
+                    } else if(step.template) {
+                        miscValue = "TSO";
+                    } else if(step.isRestStep) {
+                        miscValue = `HTTP ${step.actualStatusCode}`;
+                    }
+                    step.misc = miscValue;
+
+                    stepSummaries.push(step);
+                }
+            } else {
+                stepSummaries = response.steps;
+            }
+        } catch(err){
+            error = "List workflow details error: " + err;
+            throw error;
+        }
+        params.response.data.setObj(response);
+
+        if (!this.arguments.skipWorkflowSummary && !this.arguments.stepsSummaryOnly) {
+            params.response.console.log("\nWorkflow Details: ");
+            params.response.format.output({
+                fields: ["workflowName", "workflowKey",
+                        response.automationStatus? "automationStatus.messageText" : "automationStatus"],
+                output: response,
+                format: "object",
+            });
+        }
+
+        if(response.steps){
+            params.response.console.log("\nWorkflow Steps: ");
+            params.response.format.output({
+                fields: ["name", "state", "stepNumber",
+                        this.arguments.stepsSummaryOnly ? "misc" : ""],
+                output: stepSummaries,
+                format: "table",
+                header: true
+            });
+        }
+
+        if(this.arguments.listVariables && response.variables){
+            params.response.console.log("\nWorkflow Variables: ");
+            params.response.format.output({
+                fields: ["name", "value", "type"],
+                output: response.variables,
+                format: "table",
+                header: true
+            });
         }
     }
 }
