@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -36,8 +36,6 @@ export class Upload {
      * @param {string}          inputFile    - path to a file
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
-     * @param {ITaskWithStatus} task - a task used to update progress bars or other user feedback mechanisms
-     *                                 will be automatically updated during upload
      *
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
@@ -47,8 +45,7 @@ export class Upload {
     public static async fileToDataset(session: AbstractSession,
                                       inputFile: string,
                                       dataSetName: string,
-                                      options: IUploadOptions = {},
-                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
+                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         this.log.info(`Uploading file ${inputFile} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
@@ -79,7 +76,7 @@ export class Upload {
 
         await promise;
 
-        return this.pathToDataSet(session, inputFile, dataSetName, options, task);
+        return this.pathToDataSet(session, inputFile, dataSetName, options);
     }
 
     /**
@@ -89,8 +86,6 @@ export class Upload {
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
      *
-     * @param {ITaskWithStatus} task - a task used to update progress bars or other user feedback mechanisms
-     *                                 will be automatically updated during upload
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
      * @throws {ImperativeError} When encounter error scenarios.
@@ -99,8 +94,7 @@ export class Upload {
     public static async dirToPds(session: AbstractSession,
                                  inputDir: string,
                                  dataSetName: string,
-                                 options: IUploadOptions = {},
-                                 task?: ITaskWithStatus): Promise<IZosFilesResponse> {
+                                 options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         this.log.info(`Uploading directory ${inputDir} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputDir, ZosFilesMessages.missingInputDir.message);
@@ -137,7 +131,7 @@ export class Upload {
             });
         }
 
-        return this.pathToDataSet(session, inputDir, dataSetName, options, task);
+        return this.pathToDataSet(session, inputDir, dataSetName, options);
     }
 
     /**
@@ -258,7 +252,8 @@ export class Upload {
 
 
             await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeader, fileStream,
-                !options.binary /* only normalize newlines if we are not uploading in binary*/);
+                !options.binary /* only normalize newlines if we are not uploading in binary*/,
+                options.task);
 
             return {
                 success: true,
@@ -294,8 +289,7 @@ export class Upload {
     public static async pathToDataSet(session: AbstractSession,
                                       inputPath: string,
                                       dataSetName: string,
-                                      options: IUploadOptions = {},
-                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
+                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
 
         this.log.info(`Uploading path ${inputPath} to ${dataSetName}`);
 
@@ -403,20 +397,13 @@ export class Upload {
                         // read payload from file
                         const uploadStream = IO.createReadStream(uploadingFile);
 
-                        const totalSize = fs.statSync(uploadingFile).size;
-                        let bytesRead = 0;
-
-                        if (task != null && uploadFileList.length === 1) {
-                            uploadStream.on("data", (dataChunk: Buffer) => {
-                                // we can register an onData method in addition to the one used by the
-                                // rest client to upload to update the progress bar task
-                                bytesRead += dataChunk.byteLength;
-                                task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (bytesRead / totalSize));
-                                task.statusMessage = TextUtils.formatMessage("Uploading %d of %d B", bytesRead, totalSize);
-                            });
+                        const streamUploadOptions = JSON.parse(JSON.stringify(options)); // copy the options
+                        if (uploadFileList.length > 1) {
+                            // don't update the progress bar in the streamToDataSet function if we
+                            // are uploading more than one file because we already update it  with the member name
+                            delete streamUploadOptions.task;
                         }
-
-                        const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, options);
+                        const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, streamUploadOptions);
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
                             success: result.success,
@@ -499,7 +486,8 @@ export class Upload {
     public static async streamToUSSFile(session: AbstractSession,
                                         ussname: string,
                                         uploadStream: Readable,
-                                        binary: boolean = false) {
+                                        binary: boolean = false,
+                                        task?: ITaskWithStatus) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = path.posix.normalize(ussname);
         ussname = Upload.formatUnixFilepath(ussname);
@@ -513,14 +501,16 @@ export class Upload {
             headers.push(ZosmfHeaders.TEXT_PLAIN);
         }
 
-        return ZosmfRestClient.putStreamedRequestOnly(session, ZosFilesConstants.RESOURCE + parameters, headers, uploadStream,
-            !binary /* only normalize newlines if we are not in binary mode*/);
+        await ZosmfRestClient.putStreamedRequestOnly(session, ZosFilesConstants.RESOURCE + parameters, headers, uploadStream,
+            !binary /* only normalize newlines if we are not in binary mode*/,
+            task);
     }
 
     public static async fileToUSSFile(session: AbstractSession,
                                       inputFile: string,
                                       ussname: string,
-                                      binary: boolean = false): Promise<IZosFilesResponse> {
+                                      binary: boolean = false,
+                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
@@ -552,7 +542,7 @@ export class Upload {
         let result: IUploadResult;
         // read payload from file
         const uploadStream = IO.createReadStream(inputFile);
-        await this.streamToUSSFile(session, ussname, uploadStream, binary);
+        await this.streamToUSSFile(session, ussname, uploadStream, binary, task);
         result = {
             success: true,
             from: inputFile,

@@ -30,8 +30,8 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                 volume: commandParameters.arguments.volumeSerial,
                 binary: commandParameters.arguments.binary,
                 file: commandParameters.arguments.file,
-                extension: commandParameters.arguments.extension
-            },
-            task);
+                extension: commandParameters.arguments.extension,
+                task
+            });
     }
 }

@@ -29,11 +29,13 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
         commandParameters.response.progress.startBar({task});
-        const response = await Upload.fileToDataset(session, commandParameters.arguments.inputfile, commandParameters.arguments.dataSetName, {
+        const response = await Upload.fileToDataset(session, commandParameters.arguments.inputfile,
+            commandParameters.arguments.dataSetName,
+            {
                 volume: commandParameters.arguments.volumeSerial,
-                binary: commandParameters.arguments.binary
-            },
-            task);
+                binary: commandParameters.arguments.binary,
+                task
+            });
 
         if (response.apiResponse) {
             let skipCount: number = 0;
