@@ -31,6 +31,10 @@ describe("DownloadJobs", () => {
     IO.createFileSync = jest.fn((directory: string) => {
         // do nothing;
     });
+
+    IO.createWriteStream = jest.fn((file: string) => {
+        // do nothing;
+    });
     const expectedMockSpoolContent = "Hello! This is my spool content.";
 
     const fakeSession: any = {};
