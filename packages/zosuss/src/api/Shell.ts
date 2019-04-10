@@ -66,10 +66,7 @@ export class Shell {
                             if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`))) {
                                 dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
                                 isCommandOutput = true;
-                            } else if(dataToPrint.match(new RegExp("$ " + startCmdFlag))) {
-                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
-                                isCommandOutput = true;
-                            } else if(dataToPrint.match(new RegExp(">" + startCmdFlag))) {
+                            } else if(dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
                                 dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
                                 isCommandOutput = true;
                             }
@@ -98,7 +95,8 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.end(`echo ${startCmdFlag}\n${command}\necho ${endCmdFlag}\nexit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n`);
+                    stream.end(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag}\n` +
+                    `exit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n`);
                 });
             });
             conn.connect({
