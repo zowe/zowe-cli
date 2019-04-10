@@ -82,7 +82,7 @@ export class DownloadJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IDownloadSpoolContentParms} parms - parm object (see IDownloadSpoolContentParms interface for details)
-     * @returns {Promise<string>} - promise that resolves to a string of content downloaded
+     * @returns {Promise<void>} - promise that resolves when the file is downloaded
      * @memberof DownloadJobs
      */
     public static async downloadSpoolContentCommon(session: AbstractSession, parms: IDownloadSpoolContentParms): Promise<void> {
