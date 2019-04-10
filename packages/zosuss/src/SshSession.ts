@@ -109,6 +109,17 @@ export class SshSession {
     };
 
     /**
+     * Option used in profile creation and commands for passphrase for private key
+     */
+    public static SSH_OPTION_HANDSHAKETIMEOUT: ICommandOptionDefinition = {
+        name: "handshakeTimeout",
+        aliases: ["timeout", "to"],
+        description: "How long in milliseconds to wait for the SSH handshake to complete.",
+        type: "number",
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
+    };
+
+    /**
      * Options related to connecting to z/OS SSH
      * These options can be filled in if the user creates a profile
      */
@@ -118,7 +129,8 @@ export class SshSession {
         SshSession.SSH_OPTION_USER,
         SshSession.SSH_OPTION_PASSWORD,
         SshSession.SSH_OPTION_PRIVATEKEY,
-        SshSession.SSH_OPTION_KEYPASSPHRASE
+        SshSession.SSH_OPTION_KEYPASSPHRASE,
+        SshSession.SSH_OPTION_HANDSHAKETIMEOUT
     ];
 
     /**
@@ -135,7 +147,8 @@ export class SshSession {
             user: profile.user,
             password: profile.password,
             privateKey: profile.privateKey,
-            keyPassphrase: profile.keyPassphrase
+            keyPassphrase: profile.keyPassphrase,
+            handshakeTimeout: profile.handshakeTimeout
         });
     }
 
@@ -153,7 +166,8 @@ export class SshSession {
             user: args.user,
             password: args.password,
             privateKey: args.privateKey,
-            keyPassphrase: args.keyPassphrase
+            keyPassphrase: args.keyPassphrase,
+            handshakeTimeout: args.handshakeTimeout
         });
     }
 
