@@ -41,6 +41,18 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     },
 
     /**
+     * Local file containing workflow definiton option.
+     * @type {ICommandOptionDefinition}
+     */
+    localWorkflowFile: {
+        name: "input-file",
+        aliases: ["if"],
+        type: "string",
+        description: "Local file that contains workflow definiton.",
+        required: true,
+    },
+
+    /**
      * System where the workflow will run.
      * @type {ICommandOptionDefinition}
      */
@@ -141,6 +153,31 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         type: "boolean",
         required: false
     },
+
+    /**
+     * The remote uss directory where the files are to be uploaded.
+     * @type {ICommandOptionDefinition}
+     */
+    remoteDirectory: {
+        name: "remote-directory",
+        aliases: ["rd"],
+        description: "The remote uss directory where the files are to be uploaded. The directory has to exist",
+        type: "string",
+        required: false
+    },
+
+    /**
+     * Avoid deletion the uploaded files after successful execution.
+     * @type {ICommandOptionDefinition}
+     */
+    keepFiles: {
+        name: "keep",
+        aliases: ["k"],
+        description: "Avoid deletion the uploaded files in /tmp or another specified directory after successful execution.",
+        type: "boolean",
+        required: false
+    },
+
     /**
      * Identifies the version of the zOSMF workflow service.
      * @type {ICommandOptionDefinition}

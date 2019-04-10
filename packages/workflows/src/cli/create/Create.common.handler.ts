@@ -13,6 +13,7 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { CreateWorkflow } from "../../api/Create";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListWorkflows, DeleteWorkflow } from "../../..";
+import { basename } from "path";
 
 /**
  * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.
@@ -42,6 +43,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
             sourceType = "dataset";
         } else if (this.arguments.ussFile) {
             sourceType = "uss-file";
+        } else if (this.arguments.localFile) {
+            sourceType = "local-file";
         }
 
         let wfKey: string;
@@ -84,6 +87,26 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted);
                 } catch (err){
                     error = "Creating z/OSMF workflow with uss file: " + this.arguments.ussFile + " failed. More details: \n" + err;
+                    throw error;
+                }
+                params.response.data.setObj(resp);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
+                break;
+
+            case "local-file":
+                try{
+                    resp = await CreateWorkflow.createWorkflowLocal(this.mSession, this.arguments.workflowName, this.arguments.localFile,
+                        this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
+                        this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted, this.arguments.remoteDirectory,
+                        this.arguments.keepFiles);
+                } catch (err){
+                    error = "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed. More details: \n" + err;
                     throw error;
                 }
                 params.response.data.setObj(resp);
