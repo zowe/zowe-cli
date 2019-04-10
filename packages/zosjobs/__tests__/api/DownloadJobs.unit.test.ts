@@ -88,7 +88,7 @@ describe("DownloadJobs", () => {
 
         it("should allow users to call downloadSpoolContentCommon with correct parameters " +
             "(jobFile with no procstep - procstep should be omitted from the download directory)", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
                 return expectedMockSpoolContent;
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
@@ -97,34 +97,32 @@ describe("DownloadJobs", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
             delete jobFile.procstep;
             const outDir = "./myDir";
-            const content = await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
+            await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
                 outDir,
                 jobFile
             });
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFile, false, outDir);
-            expect(content).toEqual(expectedMockSpoolContent);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
         it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory)", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
-                return expectedMockSpoolContent;
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+                // do nothing;
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
                 // do nothing;
             });
 
-            const content = await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
+            await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
                 jobFile: jobFiles[0]
             });
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(content).toEqual(expectedMockSpoolContent);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
 
 
         it("should allow users to call downloadSpoolContentCommon with correct parameters (omitting job ID in the resulting directory)", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
-                return expectedMockSpoolContent;
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+                // do nothing
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
                 // do nothing;
@@ -136,13 +134,12 @@ describe("DownloadJobs", () => {
                 omitJobidDirectory: true
             });
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0], true, outDir);
-            expect(content).toEqual(expectedMockSpoolContent);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
     });
     describe("Error catching - async/ await", () => {
         it("should be able to catch errors thrown by ZosmfRestClient in downloadAllSpoolContentCommon with async/await syntax", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(throwError);
+            ZosmfRestClient.getStreamed = jest.fn(throwError);
             let err: Error | ImperativeError;
             try {
                 await DownloadJobs.downloadAllSpoolContentCommon(fakeSession, {
@@ -158,7 +155,7 @@ describe("DownloadJobs", () => {
         });
 
         it("should be able to catch errors thrown by ZosmfRestClient in downloadSpoolContentCommon with async/await syntax", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(throwError);
+            ZosmfRestClient.getStreamed = jest.fn(throwError);
             let err: Error | ImperativeError;
             try {
                 await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
@@ -173,7 +170,7 @@ describe("DownloadJobs", () => {
         });
 
         it("should be able to catch errors thrown by ZosmfRestClient in downloadSpoolContent with async/await syntax", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(throwError);
+            ZosmfRestClient.getStreamed = jest.fn(throwError);
             let err: Error | ImperativeError;
             try {
                 await DownloadJobs.downloadSpoolContent(fakeSession,
@@ -219,7 +216,7 @@ describe("DownloadJobs", () => {
         });
 
         it("should be able to catch errors thrown by ZosmfRestClient in downloadSpoolContent with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.getExpectString = jest.fn(throwError);
+            ZosmfRestClient.getStreamed = jest.fn(throwError);
             DownloadJobs.downloadSpoolContent(fakeSession,
                 jobFiles[0]
             ).then(() => {
