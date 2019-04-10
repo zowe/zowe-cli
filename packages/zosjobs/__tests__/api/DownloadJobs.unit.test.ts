@@ -59,17 +59,15 @@ describe("DownloadJobs", () => {
     describe("Positive tests", () => {
 
         it("should allow users to call downloadSpoolContent with correct parameters", async () => {
-            ZosmfRestClient.getExpectString = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
-                return expectedMockSpoolContent;
+            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
+                // do nothing
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
                 // do nothing;
             });
-            const outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
-            const content = await DownloadJobs.downloadSpoolContent(fakeSession, jobFiles[0]
+            await DownloadJobs.downloadSpoolContent(fakeSession, jobFiles[0]
             );
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
-            expect(content).toEqual(expectedMockSpoolContent);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
 
@@ -77,7 +75,6 @@ describe("DownloadJobs", () => {
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
                 // do nothing;
             });
-            const outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
             await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
                 {jobname: "MYJOB", jobid: "JOB0001"}
             );
@@ -89,7 +86,7 @@ describe("DownloadJobs", () => {
         it("should allow users to call downloadSpoolContentCommon with correct parameters " +
             "(jobFile with no procstep - procstep should be omitted from the download directory)", async () => {
             ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
-                return expectedMockSpoolContent;
+                // do nothing
             });
             IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
                 // do nothing;
