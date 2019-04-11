@@ -83,7 +83,7 @@ describe("Download USS File", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should download data set", async () => {
+        it("should download uss file", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file_fully_qualified.sh");
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";

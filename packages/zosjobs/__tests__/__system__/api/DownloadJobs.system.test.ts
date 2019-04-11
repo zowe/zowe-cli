@@ -59,8 +59,10 @@ describe("Download Jobs - System tests", () => {
         }
     });
 
-    afterEach(() => {
-        require("rimraf").sync(outputDirectory);
+    afterEach((done: any) => {
+        require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
+            done(err);
+        });
     });
 
     afterAll(async () => {
@@ -71,11 +73,10 @@ describe("Download Jobs - System tests", () => {
 
         it("should be able to download a single DD from job output", async () => {
             const downloadDir = outputDirectory + "/downloadsingle/";
-            const content = await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
+            await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,
                 jobFile: jesJCLJobFile
             });
-            expect(content).toContain("EXEC PGM=IEFBR14");
             expect(IO.existsSync(downloadDir)).toEqual(true);
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
             expect(IO.existsSync(expectedFile)).toEqual(true);
@@ -84,10 +85,9 @@ describe("Download Jobs - System tests", () => {
 
         it("should be able to download a single DD from job output", async () => {
 
-            const content = await DownloadJobs.downloadSpoolContent(REAL_SESSION,
+            await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile,
             );
-            expect(content).toContain("EXEC PGM=IEFBR14");
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
