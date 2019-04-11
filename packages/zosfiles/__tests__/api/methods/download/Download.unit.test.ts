@@ -37,19 +37,23 @@ describe("z/OS Files - Download", () => {
     });
 
     describe("dataset", () => {
-        const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+        const zosmfStreamSpy = jest.spyOn(ZosmfRestClient, "getStreamed");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
-
+        const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
+        const fakeWriteStream: any = {fakeWriteStream: true};
         beforeEach(() => {
-            zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => dsContent);
+            zosmfStreamSpy.mockClear();
+            zosmfStreamSpy.mockImplementation(() => null);
 
             ioCreateDirSpy.mockClear();
             ioCreateDirSpy.mockImplementation(() => null);
 
             ioWriteFileSpy.mockClear();
             ioWriteFileSpy.mockImplementation(() => null);
+
+            ioWriteStreamSpy.mockClear();
+            ioWriteStreamSpy.mockImplementation(() => fakeWriteStream);
         });
 
         it("should throw and error if the data set name is not specified", async () => {
@@ -106,23 +110,22 @@ describe("z/OS Files - Download", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
-            const newDsContent = IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: Buffer.from(newDsContent)
+                apiResponse: {}
             });
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeWriteStream, true, undefined);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(newDsContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should download a data set specifying \"\" as extension", async () => {
@@ -145,17 +148,16 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: Buffer.from(newDsContent)
+                apiResponse: {}
             });
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeWriteStream, true, undefined);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(newDsContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should download a data set in binary mode and default extension", async () => {
@@ -176,17 +178,18 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: dsContent
+                apiResponse: {}
             });
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeWriteStream,
+                false /* don't normalize newlines, binary mode*/,
+                undefined /* no progress task */);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(dsContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should download a data set to the given file in binary mode", async () => {
@@ -207,17 +210,19 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, file),
-                apiResponse: dsContent
+                apiResponse: {}
             });
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeWriteStream,
+                false, /* no normalizing new lines, binary mode*/
+                undefined /*no progress task*/);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(file, Buffer.from(dsContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
 
         it("should handle a z/OS MF error", async () => {
@@ -225,7 +230,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const dummyError = new Error("test");
-            zosmfExpectSpy.mockImplementation(() => {
+            zosmfStreamSpy.mockImplementation(() => {
                 throw dummyError;
             });
 
@@ -240,11 +245,9 @@ describe("z/OS Files - Download", () => {
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeWriteStream, true, undefined /*no progress task*/);
 
-            expect(ioCreateDirSpy).not.toHaveBeenCalled();
-            expect(ioWriteFileSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -519,7 +522,7 @@ describe("z/OS Files - Download", () => {
         const zosmfExpectBufferSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
-
+        const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
         beforeEach(() => {
             zosmfExpectSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => ussFileContent);
@@ -532,6 +535,9 @@ describe("z/OS Files - Download", () => {
 
             ioWriteFileSpy.mockClear();
             ioWriteFileSpy.mockImplementation(() => null);
+
+            ioWriteStreamSpy.mockClear();
+            ioWriteStreamSpy.mockImplementation(() => null);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
