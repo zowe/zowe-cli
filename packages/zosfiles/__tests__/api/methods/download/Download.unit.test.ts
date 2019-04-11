@@ -518,14 +518,15 @@ describe("z/OS Files - Download", () => {
     });
 
     describe("USS File", () => {
-        const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectString");
+        const zosmfStreamSpy = jest.spyOn(ZosmfRestClient, "getStreamed");
         const zosmfExpectBufferSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
-        const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
+        const fakeStream: any = {fakeStream: true};
+
         beforeEach(() => {
-            zosmfExpectSpy.mockClear();
-            zosmfExpectSpy.mockImplementation(() => ussFileContent);
+            zosmfStreamSpy.mockClear();
+            zosmfStreamSpy.mockImplementation(() => ussFileContent);
 
             zosmfExpectBufferSpy.mockClear();
             zosmfExpectBufferSpy.mockImplementation(() => ussFileContent);
@@ -533,11 +534,8 @@ describe("z/OS Files - Download", () => {
             ioCreateDirSpy.mockClear();
             ioCreateDirSpy.mockImplementation(() => null);
 
-            ioWriteFileSpy.mockClear();
-            ioWriteFileSpy.mockImplementation(() => null);
-
             ioWriteStreamSpy.mockClear();
-            ioWriteStreamSpy.mockImplementation(() => null);
+            ioWriteStreamSpy.mockImplementation(() => fakeStream);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -596,17 +594,17 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
-                apiResponse: Buffer.from(ussFileContent)
+                apiResponse: {}
             });
 
-            expect(zosmfExpectBufferSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectBufferSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeStream, true, undefined);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(ussFileContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
         });
 
         it("should download uss file in binary mode", async () => {
@@ -625,17 +623,19 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
-                apiResponse: ussFileContent
+                apiResponse: {}
             });
 
-            expect(zosmfExpectBufferSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectBufferSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeStream,
+                false, /* don't normalize new lines in binary*/
+                undefined /* no progress task */);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(ussFileContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
         });
 
         it("should download uss file content to a local file in binary mode", async () => {
@@ -654,17 +654,20 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, file),
-                apiResponse: ussFileContent
+                apiResponse: {}
             });
 
-            expect(zosmfExpectBufferSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectBufferSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY],
+                fakeStream,
+                false, /* don't normalize new lines in binary */
+                undefined /* no progress task */);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
 
-            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteFileSpy).toHaveBeenCalledWith(file, Buffer.from(ussFileContent));
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
     });
 });
