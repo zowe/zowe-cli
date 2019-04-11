@@ -27,7 +27,7 @@ import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
 import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
 import { IVariable } from "./doc/IVariables";
-import { Upload, ZosFilesConstants } from "../../../zosfiles/src/api";
+import { Upload, ZosFilesConstants, Delete } from "../../../zosfiles/src/api";
 import { basename } from "path";
 
 /**
@@ -210,7 +210,7 @@ export class CreateWorkflow{
      */
     public static async deleteTempFile(session: AbstractSession, ussFileName: string): Promise<string>{
         try{
-            await ZosmfRestClient.deleteExpectString(session, ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussFileName);
+            await Delete.ussFile(session, ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussFileName);
         } catch (error){
             return ussFileName;
         }
