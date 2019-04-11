@@ -179,6 +179,14 @@ export class WorkflowConstants {
      */
     public static readonly filePath: string = "definitionFilePath";
 
+    /**
+     * Default path for uploading temporary files
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly tempPath: string = "/tmp";
+
 }
 
 /**
