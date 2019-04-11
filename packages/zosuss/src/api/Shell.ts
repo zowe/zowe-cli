@@ -63,10 +63,7 @@ export class Shell {
                             dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r") + 1);
 
                             // check startCmdFlag: start printing out data
-                            if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`))) {
-                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
-                                isCommandOutput = true;
-                            } else if(dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
+                            if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
                                 dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
                                 isCommandOutput = true;
                             }
