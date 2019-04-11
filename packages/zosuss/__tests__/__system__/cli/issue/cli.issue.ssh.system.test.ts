@@ -78,7 +78,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
 
     it("should resolve --cwd option", async () => {
         const commandName = "pwd";
-        const cwd =  `${defaultSystem.unix.testdir}/`;
+        const cwd =  `${defaultSystem.unix.testdir}`;
         // Imperative.console.info("Resolve --cwd Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
@@ -112,7 +112,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
             defaultSystem = systemProps.getDefaultSystem();
             const directory = `${defaultSystem.unix.testdir}/`;
             // create a directory that the random dir will be created in
-            const commandName = "mkdir " + directory + "usstest";
+            const commandName = `mkdir ${directory}/usstest && cd ${directory}/usstest && pwd`;
             // Imperative.console.info("Make test directory cmd:" + commandName);
             const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
             checkResponse(response);
@@ -170,22 +170,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
         // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
 
-        ussname = `${defaultSystem.unix.testdir}/askForName.sh`;
-        // Imperative.console.info("Using ussfile:" + ussname);
-        localFileName = path.join(__dirname, "__data__", "askForName.txt");
-        response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        // Imperative.console.info("Response:" + response.stdout.toString());
-        expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
-
-        ussname = `${defaultSystem.unix.testdir}/tester.txt`;
-        // Imperative.console.info("Using ussfile:" + ussname);
-        localFileName = path.join(__dirname, "__data__", "tester.txt");
-        response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
-        // Imperative.console.info("Response:" + response.stdout.toString());
-        expect(response.stdout.toString()).toContain("USS file uploaded successfully");
-        // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
-
         ussname = `${defaultSystem.unix.testdir}/killItself.sh`;
         // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "killItself.txt");
@@ -206,26 +190,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         try {
             response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, exit64);
-            // Imperative.console.info("Deleted :" + ussname);
-        } catch (err) {
-            Imperative.console.error(err);
-        }
-
-        ussname = `${defaultSystem.unix.testdir}/askForName.sh`;
-        const askForName: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-        try {
-            response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, askForName);
-            // Imperative.console.info("Deleted :" + ussname);
-        } catch (err) {
-            Imperative.console.error(err);
-        }
-
-        ussname = `${defaultSystem.unix.testdir}/tester.txt`;
-        const tester: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-        try {
-            response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, tester);
             // Imperative.console.info("Deleted :" + ussname);
         } catch (err) {
             Imperative.console.error(err);
@@ -252,16 +216,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         checkResponse(response);
         expect(response.stdout.toString()).not.toContain("About to exit64");
-    });
-
-    it("script asks for input", async () => {
-        const directory = `${defaultSystem.unix.testdir}`;
-        const commandName = " cd " + directory + " && chmod 777 askForName.sh && askForName.sh < tester.txt";
-        // Imperative.console.info("Script for input command:" + commandName);
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-
-        checkResponse(response);
-        expect(response.stdout.toString()).toContain("Welcome Tester!");
     });
 
     it("script kills itself", async () => {

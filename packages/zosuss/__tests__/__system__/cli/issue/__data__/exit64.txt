@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo About to exit64
 exit 64
 echo worked!
