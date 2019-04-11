@@ -103,8 +103,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                 try{
                     resp = await CreateWorkflow.createWorkflowLocal(this.mSession, this.arguments.workflowName, this.arguments.localFile,
                         this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
-                        this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted, this.arguments.remoteDirectory,
-                        this.arguments.keepFiles);
+                        this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted,
+                        this.arguments.keepFiles, this.arguments.remoteDirectory);
                 } catch (err){
                     error = "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed. More details: \n" + err;
                     throw error;
