@@ -10,8 +10,7 @@
 */
 
 import { CheckStatus, ZosmfMessages } from "../../../../../zosmf";
-import { ConsoleValidator } from "../../../../../zosconsole";
-import { Session, Imperative } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
@@ -125,31 +124,6 @@ describe("Check Status Api", () => {
             expect(response).toBeFalsy();
             expect(error.message).toContain(`Error: connect ECONNREFUSED`);
             expect(error.message).toContain(badPort);
-        });
-
-        it("should return with proper message for rejectUnauthorized = true", async () => {
-            const badSession = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: true,
-            });
-
-            let error;
-            let response;
-
-            try {
-                response = await CheckStatus.getZosmfInfo(badSession);
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
-            }
-
-            expect(error).toBeTruthy();
-            expect(response).toBeFalsy();
-            expect(error.message).toContain("Error: unable to verify the first certificate");
         });
     });
 });
