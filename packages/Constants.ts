@@ -63,9 +63,9 @@ export class Constants {
 
 ${Constants.DISPLAY_NAME} is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
 
-For additional ${Constants.DISPLAY_NAME} documentation, visit ${Constants.DOCUMENTATION_LINK}.
+For additional ${Constants.DISPLAY_NAME} documentation, visit ${Constants.DOCUMENTATION_LINK}
 
-For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}.
+For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
 `;
 
     /**

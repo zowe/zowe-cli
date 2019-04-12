@@ -5,9 +5,9 @@ Welcome to Zowe CLI!
 
 Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
 
-For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site.
+For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site
 
-For Zowe CLI support, visit https://zowe.org.
+For Zowe CLI support, visit https://zowe.org
 
 
 ### Table of Contents
