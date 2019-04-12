@@ -66,10 +66,16 @@ describe("USS utiliites", () => {
                                          {request: "chtag", action: "set", type: "text", codeset: "ISO8859-1"});
         });
 
-        interface IChtagArgs {
-            type: Tag;
-            codeset?: string;
-        }
+        it("should URI-encoded the path", async () => {
+            const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue({});
+
+            response = await Utilities.chtag(dummySession,"/test file",Tag.TEXT,"ISO8859-1");
+
+            expect(response.success).toBeTruthy();
+            const expectedUrl = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/test%20file";
+            expect(restClientSpy).toHaveBeenCalledWith(dummySession, expectedUrl, expect.anything(),
+                expect.anything());
+        });
 
         async function testChtagExpectPayload(args: IChtagArgs, expectedPayload: any) {
             const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue({});
@@ -84,3 +90,7 @@ describe("USS utiliites", () => {
         }
     });
 });
+interface IChtagArgs {
+    type: Tag;
+    codeset?: string;
+}

@@ -15,6 +15,8 @@ import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
+import * as path from "path";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 export class Utilities {
     public static async chtag(session: AbstractSession, ussFileName: string, type: Tag, codeset?: string): Promise<IZosFilesResponse> {
@@ -23,8 +25,9 @@ export class Utilities {
         if (type === Tag.BINARY) {
             ImperativeExpect.toBeEqual(codeset,undefined,"A codeset cannot be specified for a binary file.");
         }
+        const sanitizedPath = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
 
-        const url = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussFileName;
+        const url = path.posix.join(ZosFilesConstants.RESOURCE,ZosFilesConstants.RES_USS_FILES,sanitizedPath);
         const payload = { request: "chtag", action: "set", type: type.valueOf()} as any;
         if (codeset) {
             payload.codeset = codeset;
