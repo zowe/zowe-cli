@@ -152,5 +152,14 @@ export class ZosFilesUtils {
     public static normalizeNewline(buffer: Buffer): Buffer {
         return Buffer.from(buffer.toString().replace(new RegExp("\r\n", "g"), "\n"));
     }
+
+    public static sanitizeUssPathForRestCall(ussPath: string): string {
+        let sanitizedPath = path.posix.normalize(ussPath);
+        if (sanitizedPath.charAt(0) === "/") {
+            // trim leading slash from unix files - API doesn't like it
+            sanitizedPath = sanitizedPath.substring(1);
+        }
+        return encodeURIComponent(sanitizedPath);
+    }
 }
 
