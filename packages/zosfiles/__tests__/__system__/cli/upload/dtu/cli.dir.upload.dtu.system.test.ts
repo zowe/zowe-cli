@@ -577,5 +577,3 @@ function testSuccessfulUpload(localDirName: string, additionalParameters?: strin
     const stdoutText = response.stdout.toString();
     expect(stdoutText).toContain("Directory uploaded successfully.");
 }
-
-

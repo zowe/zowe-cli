@@ -390,9 +390,7 @@ export class Upload {
                                         binary: boolean = false,
                                         localEncoding?: string) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
-        ussname = path.posix.normalize(ussname);
-        ussname = Upload.formatUnixFilepath(ussname);
-        ussname = encodeURIComponent(ussname);
+        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const headers: any[] = [];
         if (binary) {
