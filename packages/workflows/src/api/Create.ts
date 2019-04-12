@@ -98,6 +98,9 @@ export class CreateWorkflow{
             deleteCompletedJobs: DeleteCompletedJobs,
         };
         if (!isNullOrUndefined(VariableInputFile)){
+            if (VariableInputFile.charAt(0) === "/" && VariableInputFile.charAt(1) === "/") {
+            VariableInputFile = VariableInputFile.substring(1);
+        }
             data.variableInputFile = VariableInputFile;
         }
         if (!isNullOrUndefined(Variables)){
