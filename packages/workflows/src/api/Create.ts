@@ -119,7 +119,7 @@ export class CreateWorkflow{
     }
 
     /**
-     * Create a zOSMF workflow instance using a local file
+     * Create a zOSMF workflow instance using local files
      * @param {AbstractSession} session                     - z/OSMF connection info
      * @param {string} WorkflowName                         - Name of the workflow that will be created
      * @param {string} WorkflowDefinitionFile               - Local workflow definition file
