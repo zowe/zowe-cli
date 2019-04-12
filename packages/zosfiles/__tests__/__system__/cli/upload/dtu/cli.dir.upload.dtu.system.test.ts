@@ -287,7 +287,7 @@ describe("Upload directory to USS", () => {
             }
         });
 
-        it.skip("should upload files with spaces", async () => {
+        it("should upload files with spaces", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_spacetest");
             testSuccessfulUpload(localDirName, ["--recursive"]);
 
@@ -298,8 +298,11 @@ describe("Upload directory to USS", () => {
                 expect(err).toBeDefined();
             }
 
-            const tag = await getTag(ussname + "/file withSpaceinName.txt");
-            expect(tag).toMatch("t ISO8859-1");
+            let tag = await getTag(ussname + "/I%20have%20a%20space.txt");
+            expect(tag).toMatch("t IBM-1140");
+
+            tag = await getTag(ussname + "/dir_with%20spaces/file%20withSpaceinName.txt");
+            expect(tag).toMatch("t IBM-1140");
         });
 
 
