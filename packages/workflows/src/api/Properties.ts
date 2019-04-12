@@ -13,9 +13,8 @@
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowConstants, nozOSMFVersion,
-        noOwner, noWorkflowKey } from "./WorkflowConstants";
+        noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { isNullOrUndefined } from "util";
 import { IWorkflowInfo } from "./doc/IWorkflowInfo";
 
 export class PropertiesWorkflow {
@@ -56,6 +55,5 @@ export class PropertiesWorkflow {
 
         return ZosmfRestClient.getExpectJSON<IWorkflowInfo>(session, resourcesQuery, [Headers.APPLICATION_JSON]);
     }
-
 }
 
