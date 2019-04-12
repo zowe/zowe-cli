@@ -13,7 +13,7 @@ import {
     Create,
     CreateDataSetTypeEnum,
     Delete,
-    Download,
+    Download, Get,
     IDownloadOptions,
     IZosFilesResponse,
     ZosFilesConstants,
@@ -502,6 +502,7 @@ describe("Download Data Set", () => {
                 // Delete created local file
                 IO.deleteFile("test1.txt");
             });
+
         });
 
         describe("Failure scenarios", () => {

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -25,6 +25,8 @@ import { List } from "../list/List";
 import { IDownloadOptions } from "./doc/IDownloadOptions";
 import { Get } from "../get/Get";
 import { asyncPool } from "../../../../../utils";
+import { IGetOptions } from "../get";
+import { Writable } from "stream";
 
 
 /**
@@ -230,7 +232,22 @@ export class Download {
             IO.createDirsSyncFromFilePath(destination);
 
             const writeStream = IO.createWriteStream(destination);
-            await Get.USSFileStreamed(session, ussFileName, options, writeStream);
+            ussFileName = posix.normalize(ussFileName);
+            // Get a proper destination for the file to be downloaded
+            // If the "file" is not provided, we create a folder structure similar to the uss file structure
+            if (ussFileName.substr(0, 1) === "/") {
+                ussFileName = ussFileName.substr(1);
+            }
+
+            ussFileName = encodeURIComponent(ussFileName);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
+
+            let reqHeaders: IHeaderContent[] = [];
+            if (options.binary) {
+                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+            }
+
+            await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, options.task);
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
@@ -241,5 +258,6 @@ export class Download {
             throw error;
         }
     }
+
 }
 
