@@ -9,15 +9,12 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, IJob, SubmitJobs } from "../../../index";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ZosFilesConstants } from "../../../../zosfiles";
-import { ZosmfRestClient } from "../../../../rest";
-import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../../src/api/JobsMessages";
 // tslint:disable-next-line:no-implicit-dependencies
@@ -178,19 +175,19 @@ describe("Submit Jobs - System Tests", () => {
         });
 
         it("should return the job info of a submitted JCL string", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",{jclSource: "stdin"});
+            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {jclSource: "stdin"});
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
         });
 
         it("should return an array of spool content", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",{jclSource: "stdin", viewAllSpoolContent: true});
+            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {jclSource: "stdin", viewAllSpoolContent: true});
             expect(job.constructor === Array).toBe(true);
             expect(job[0].data.toString()).toContain("J E S 2  J O B  L O G");
         });
 
-        it("should download spool content to a local directory", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION,"//JOBNAME1 JOB",
+        it("should download spool content to a local directory", async (done: any) => {
+            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",
                 {
                     jclSource: "stdin",
                     viewAllSpoolContent: false,
@@ -200,7 +197,11 @@ describe("Submit Jobs - System Tests", () => {
             expect(existsSync(`${job.jobid}/JES2`)).toBeTruthy();
 
             // delete locally created directory
-            rimraf(`${job.jobid}`);
+
+            require("rimraf")(job.jobid, {maxBusyTries: 10}, (err?: Error) => {
+                done(err);
+            });
+
         });
     });
 
@@ -358,7 +359,7 @@ describe("Submit Jobs - System Tests", () => {
         it("should throw an error if the JCL string is null", async () => {
             let err: Error | ImperativeError;
             try {
-                await SubmitJobs.submitJclString(REAL_SESSION, null,{jclSource: "stdoin"});
+                await SubmitJobs.submitJclString(REAL_SESSION, null, {jclSource: "stdoin"});
             } catch (e) {
                 err = e;
             }
@@ -370,7 +371,7 @@ describe("Submit Jobs - System Tests", () => {
         it("should throw an error if the JCL is an empty string", async () => {
             let err: Error | ImperativeError;
             try {
-                await SubmitJobs.submitJclString(REAL_SESSION, "",{jclSource: "stdoin"});
+                await SubmitJobs.submitJclString(REAL_SESSION, "", {jclSource: "stdoin"});
             } catch (e) {
                 err = e;
             }

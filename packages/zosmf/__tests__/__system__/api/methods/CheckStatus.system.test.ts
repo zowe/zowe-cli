@@ -100,7 +100,7 @@ describe("Check Status Api", () => {
         });
 
         it("should return with proper message for invalid port", async () => {
-            const badPort = 9999;
+            const badPort = 51342;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.pass,
