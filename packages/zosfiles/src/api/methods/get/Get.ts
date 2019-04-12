@@ -59,36 +59,6 @@ export class Get {
     }
 
     /**
-     * Retrieve data sets content
-     *
-     * @param {AbstractSession}  session      - z/OSMF connection info
-     * @param {string}           dataSetName  - contains the data set name
-     * @param {IViewOptions} [options={}] - contains the options to be sent
-     *
-     * @param {Writable} writeStream - the stream to write data set content to
-     * @returns {Promise<Buffer>} Promise that resolves to the content of the data set
-     *
-     * @throws {ImperativeError}
-     */
-    public static async dataSetStreamed(session: AbstractSession, dataSetName: string, options: IGetOptions = {},
-                                        writeStream: Writable): Promise<void> {
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
-
-        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
-
-        let reqHeaders: IHeaderContent[] = [];
-        if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        }
-
-        if (options.volume) {
-            endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
-        }
-        await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, options.task);
-    }
-
-    /**
      * Retrieve USS file content
      *
      * @param {AbstractSession}  session      - z/OSMF connection info
@@ -122,37 +92,4 @@ export class Get {
         return content;
     }
 
-    /**
-     * Retrieve USS file content
-     *
-     * @param {AbstractSession}  session      - z/OSMF connection info
-     * @param {string}           USSFileName  - contains the data set name
-     * @param {IGetOptions} [options={}] - contains the options to be sent
-     *
-     * @param responseStream
-     * @returns {Promise<Buffer>} Promise that resolves to the content of the uss file
-     *
-     * @throws {ImperativeError}
-     */
-    public static async USSFileStreamed(session: AbstractSession, USSFileName: string,
-                                        options: IGetOptions = {}, responseStream: Writable): Promise<string> {
-        ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
-        ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
-        USSFileName = posix.normalize(USSFileName);
-        // Get a proper destination for the file to be downloaded
-        // If the "file" is not provided, we create a folder structure similar to the uss file structure
-        if (USSFileName.substr(0, 1) === "/") {
-            USSFileName = USSFileName.substr(1);
-        }
-
-        USSFileName = encodeURIComponent(USSFileName);
-        const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
-
-        let reqHeaders: IHeaderContent[] = [];
-        if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        }
-
-        return ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, responseStream, !options.binary, options.task);
-    }
 }
