@@ -9,7 +9,9 @@
 *
 */
 
-import { ITestSystemsGroupSchema } from "./ITestSystemsGroupSchema";
+import { ITestZosmfSchema } from "./ITestZosmfSchema";
+import { ITestConsoleSchema } from "./ITestConsoleSchema";
+import { ITestTsoSchema } from "./ITestTsoSchema";
 
 /**
  * Interface representing the values in the custom_properties.yaml file
@@ -17,7 +19,7 @@ import { ITestSystemsGroupSchema } from "./ITestSystemsGroupSchema";
  */
 export interface ITestPropertiesSchema {
 
-    systems: ITestSystemsGroupSchema;
+    zosmf: ITestZosmfSchema;
 
     zosjobs: {
         iefbr14Member: string,
@@ -30,6 +32,10 @@ export interface ITestPropertiesSchema {
         templateName: string,
         instanceName: string
     };
+
+    tso: ITestTsoSchema;
+    
+    console: ITestConsoleSchema;
 
     workflows: {
         system: string

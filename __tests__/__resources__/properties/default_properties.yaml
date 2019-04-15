@@ -14,54 +14,41 @@
 #-- Note: If you add or rename any fields of this default template,         --#
 #-- please also update the ITestPropertiesSchema interface so that          --#
 #-- developers can use auto-complete when using the properties in test code --#
-systems:
-  common:
-    #-------------------------------------------------------------------------#
-    #  Connection details/credentials for z/OSMF                              #
-    #-------------------------------------------------------------------------#
-    zosmf:
-      user: &zosmfuser my-user-name
-      pass: &zosmfpass my-password
-      host: &zosmfhost zosmf-host
-      port: &zosmfport zosmf-port
-      rejectUnauthorized: &zosmfreject false
-      # base path if any to be prepended to all z/OSMF resources
-      # such as a base path exposed from a gateway/ API mediation layer
-      basePath: null
-    #-------------------------------------------------------------------------#
-    #  TSO testing properties                                                 #
-    #-------------------------------------------------------------------------#
-    tso:
-        name: my-user-name
-        password: my-password
-        account: &tsoaccount my-jes-account
-    #-------------------------------------------------------------------------#
-    #  Console API Tests parameters                                           #
-    #-------------------------------------------------------------------------#
-    unix:
-      testdir: /a/my-user-name
-    #-------------------------------------------------------------------------#
-    #  Dataset tests                                                          #
-    #-------------------------------------------------------------------------#
-    datasets:		
-      hlq: &dshlq my-user-name.PUBLIC		
-      list:		
-        - dataset: &staticds my-user-name.PUBLIC.BRGTSIDE.AUTOTEST		
-          vol: TSU		
-          membersdir: ./__tests__/__resources__/content/members		
-      statictestds: *staticds
-    #-------------------------------------------------------------------------#
-    #  Console API Tests parameters                                           #
-    #-------------------------------------------------------------------------#
-    console:
-      sysplexsystem: SYS0
-  specific:
-    - name: SYS1
-      zosmf:
-        host: &zosmfhost zosmf-host
-      console:
-        sysplexsystem: PLEX1
-  primary: SYS1
+
+#-------------------------------------------------------------------------#
+#  Connection details/credentials for z/OSMF                              #
+#-------------------------------------------------------------------------#
+zosmf:
+  user: &zosmfuser my-user-name
+  pass: &zosmfpass my-password
+  host: &zosmfhost zosmf-host
+  port: &zosmfport zosmf-port
+  rejectUnauthorized: &zosmfreject false
+  # base path if any to be prepended to all z/OSMF resources
+  # such as a base path exposed from a gateway/ API mediation layer
+  basePath: null
+#-------------------------------------------------------------------------#
+#  TSO testing properties                                                 #
+#-------------------------------------------------------------------------#
+tso:
+  account: &tsoaccount my-jes-account
+#-------------------------------------------------------------------------#
+#  Console API Tests parameters                                           #
+#-------------------------------------------------------------------------#
+unix:
+  testdir: /a/my-user-name
+#-------------------------------------------------------------------------#
+#  Dataset tests                                                          #
+#-------------------------------------------------------------------------#
+datasets:
+  # volume serial used to create data sets
+  vol: TSU
+
+#-------------------------------------------------------------------------#
+#  Console API Tests parameters                                           #
+#-------------------------------------------------------------------------#
+console:
+  sysplexsystem: SYS0
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing jobs                                         #
 #-----------------------------------------------------------------------------#
