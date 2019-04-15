@@ -2,9 +2,20 @@
 This document is a living summary of conventions and best practices for development within Zowe CLI or development of Zowe CLI plug-ins. 
 
 ## Contents
-- [Contribution Guidelines](#contribution-guidelines)
   - [Project Layout, Packages, and Plug-ins](#project-layout-packages-and-plug-ins)
-  - [Code Standards](#code-standards)
+  - [Pull Requests](#pull-requests)
+  - [Contributing to Core Functionality](#contributing-to-zowe-cli-core-functionality)
+  - [General Guidelines](#general-guidelines)
+  - [Code Guidelines](#code-guidelines)
+  - [Programattic API Guidelines](#programmatic-api-guidelines)
+  - [File Naming Guidelines](#file-naming-guidelines)
+  - [Command Format Guidelines](#command-format-guidelines)
+  - [Versioning Guidelines](#versioning-guidelines)
+  - [Testing Guidelines](#testing-guidelines)
+  - [Profile Guidelines](#profile-guidelines)
+  - [Build Process Guidelines](#build-process-guidelines)
+  - [Documentation Guidelines](#documentation-guidelines)
+  - [More Information](#more-information)
 
 ## Project Layout, Packages, and Plug-ins
 
@@ -21,7 +32,8 @@ For more information and guidelines for setting up your project, see [Packages a
 - Anyone can comment on a pull request to request delay on merging or to get questions answered.
 - Pull request reviewer should close pull request after 24 hours or by close of business next business day (accounting for weekends and holidays) if no requested changes or requests for delays are indicated.
 
-## Contributing to Zowe CLI Core Functionality
+## Contributing to Core Functionality
+
 The following list summarizes conventions and best practices for contributing core functionality to Zowe CLI. For example, general infrastructure such as utilities, command processing and definition enhancements.
 
 - Determine if the infrastructure enhancement applies to Zowe CLI or Imperative CLI Framework. 
@@ -98,27 +110,25 @@ For information about testing rules and procedures, see [Testing Guidelines](./d
 
 For information setting up and configuring profiles, see [Profile Guidelines](./docs/ProfileGuidelines.md).
 
-## Build Process
-**TODO:** Do we need this section here? We have some of this covered in the README I think?
+## Build Process Guidelines
 
-We use [gulp](https://gulpjs.com/) for build tasks, and to invoke the linter, generate documentation, and check for circular dependencies 
+We use [gulp](https://gulpjs.com/) for build tasks, to invoke the linter, generate documentation, and check for circular dependencies 
 
-- Use build tasks to enforce rules where possible (because it's easy to ignore this document)
+Use build tasks to enforce rules where possible.
 
-### Documentation Guidelines
+## Documentation Guidelines
 
 When contributing **a plug-in for Zowe CLI**, provide the following: 
-- Documentation for end-users on the Zowe Doc Site. Use existing plug-in doc pages as a starting point. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
-- A readme.md file within the plug-in repository that contains information for developers (overview, build from source, and run tests at minimum). See [this plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics) for an example. 
-- a CONTRIBUTING.md file within the plug-in repository that details specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines][https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md].
+- End-user documentation on the Zowe Doc Site. Use existing plug-in topics as a model. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
+- A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [this plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics).
+- a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines][https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md].
 
 
-When contributing **code/functionality to the core CLI**, provide the following: 
+When contributing **code/functionality to the core CLI**, provide the following:
 - A Release Notes entry in Zowe Docs site to announce your change to end users. 
-- Documentation for how to use your feature, command, etc... Open an issue in 
- Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
+- Documentation for how to use your feature, command, etc... Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
 
- In addition to external documentation, please thoroughly comment your code for future developers who want to understand, use, and enhance your plug-in/feature.
+In addition to external documentation, please thoroughly comment your code for future developers who want to understand, use, and enhance your plug-in/feature.
 
  ### JS Documentation
 
