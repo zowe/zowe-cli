@@ -23,7 +23,6 @@ export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
-        // const payload: Buffer = await readStdin();
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Uploading stdin to data set",
