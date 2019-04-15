@@ -276,29 +276,6 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
 
     });
 
-    it("use invalid passphrase", async () => {
-        // create a temporary zowe profile with an invalid passphrase
-        const bogusKeyPassword = "bogusKeyPassword";
-        let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_invalid_passphrase";
-        let command = "zowe profiles create ssh-profile " + host + "invalidpassphrase --host " + host  + " --port " + port
-                        + " --user " + user + " --password " + password + " --privateKey " +  privateKey
-                        + " --keyPassphrase " + bogusKeyPassword;
-
-        await IO.writeFileAsync(scriptPath, command);
-        let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
-        expect(resp.status).toBe(0);
-        // default to the temporary profile
-        command = "zowe profiles set  ssh " + host + "invalidpassphrase";
-        scriptPath = TEST_ENVIRONMENT.workingDir + "_set_profile_with_invalid_passphrase";
-        await IO.writeFileAsync(scriptPath, command);
-        resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
-        expect(resp.status).toBe(0);
-        // now check the command can run
-        command = "uname";
-        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
-        expect(response.stderr.toString()).toContain("Bad passphrase");
-    });
-
     it("use invalid privateKey", async () => {
         // create a temporary zowe profile with an invalid passkey
         const bogusPrivateKey = "bogusKey";
