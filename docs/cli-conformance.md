@@ -1,5 +1,7 @@
 # Zowe CLI Conformance Checklist
 
+
+
 ## Developing a Conformant Zowe CLI Plug-in 
 
 An CLI plug-in is Zowe conformant if it follows these criteria: 
