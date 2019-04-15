@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-uss issue ssh command should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   ssh | ssh
+
+ DESCRIPTION
+ -----------
+
+   Issue a z/OS USS command
+
+ USAGE
+ -----
+
+   zowe zos-uss issue ssh <command> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   command		 (string)
+
+      z/OS USS command to issue
+
+ OPTIONS
+ -------
+
+   --cwd  (string)
+
+      Working directory in which to execute the command
+
+ Z/OS SSH CONNECTION OPTIONS
+ ---------------------------
+
+   --host  | -H (string)
+
+      The z/OS SSH server host name.
+
+   --port  | -P (number)
+
+      The z/OS SSH server port.
+
+      Default value: 22
+
+   --user  | -u (string)
+
+      Mainframe user name, which can be the same as your TSO login.
+
+   --password  | --pass | --pw (string)
+
+      Mainframe password, which can be the same as your TSO password.
+
+   --privateKey  | --key | --pk (string)
+
+      Path to a file containing your private key, that must match a public key stored
+      in the server for authentication
+
+   --keyPassphrase  | --passphrase | --kp (string)
+
+      Private key passphrase, which unlocks the private key.
+
+   --handshakeTimeout  | --timeout | --to (number)
+
+      How long in milliseconds to wait for the SSH handshake to complete.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --ssh-profile  | --ssh-p (string)
+
+      The name of a (ssh) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+
+ EXAMPLES
+ --------
+
+   - Issue a simple command, giving the working directory:
+
+      $ zowe zos-uss issue ssh \\"npm install express\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp 
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: ssh.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   ssh | ssh\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue a z/OS USS command\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-uss issue ssh <command> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   command\\\\t\\\\t (string)\\\\n\\\\n      z/OS USS command to issue\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --cwd  (string)\\\\n\\\\n      Working directory in which to execute the command\\\\n\\\\n Z/OS SSH CONNECTION OPTIONS\\\\n ---------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OS SSH server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OS SSH server port.\\\\n\\\\n      Default value: 22\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe password, which can be the same as your TSO password.\\\\n\\\\n   --privateKey  | --key | --pk (string)\\\\n\\\\n      Path to a file containing your private key, that must match a public key stored\\\\n      in the server for authentication\\\\n\\\\n   --keyPassphrase  | --passphrase | --kp (string)\\\\n\\\\n      Private key passphrase, which unlocks the private key.\\\\n\\\\n   --handshakeTimeout  | --timeout | --to (number)\\\\n\\\\n      How long in milliseconds to wait for the SSH handshake to complete.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --ssh-profile  | --ssh-p (string)\\\\n\\\\n      The name of a (ssh) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Issue a simple command, giving the working directory:\\\\n\\\\n      $ zowe zos-uss issue ssh \\\\\\"npm install express\\\\\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp \\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   ssh | ssh\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue a z/OS USS command\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-uss issue ssh <command> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   command\\\\t\\\\t (string)\\\\n\\\\n      z/OS USS command to issue\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --cwd  (string)\\\\n\\\\n      Working directory in which to execute the command\\\\n\\\\n Z/OS SSH CONNECTION OPTIONS\\\\n ---------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OS SSH server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OS SSH server port.\\\\n\\\\n      Default value: 22\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe password, which can be the same as your TSO password.\\\\n\\\\n   --privateKey  | --key | --pk (string)\\\\n\\\\n      Path to a file containing your private key, that must match a public key stored\\\\n      in the server for authentication\\\\n\\\\n   --keyPassphrase  | --passphrase | --kp (string)\\\\n\\\\n      Private key passphrase, which unlocks the private key.\\\\n\\\\n   --handshakeTimeout  | --timeout | --to (number)\\\\n\\\\n      How long in milliseconds to wait for the SSH handshake to complete.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --ssh-profile  | --ssh-p (string)\\\\n\\\\n      The name of a (ssh) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Issue a simple command, giving the working directory:\\\\n\\\\n      $ zowe zos-uss issue ssh \\\\\\"npm install express\\\\\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp \\\\n\\\\n\\"
+}"
+`;
+
+exports[`zos-uss issue ssh command should fail due to invalid ssh command 1`] = `
+"Command Error:
+Unknown argument: ss
+Command failed due to improper syntax
+Command entered: \\"zowe zos-uss issue ss\\"
+Available commands are \\"ssh\\".
+Use \\"zowe zos-uss issue --help\\" to view groups, commands, and options.
+Error Details:
+Unknown argument: ss
+"
+`;

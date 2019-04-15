@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-uss issue group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "iss",
+  ],
+  "children": Array [
+    Object {
+      "aliases": Array [
+        "ssh",
+      ],
+      "description": "Issue a z/OS USS command",
+      "examples": Array [
+        Object {
+          "description": "Issue a simple command, giving the working directory",
+          "options": "\\"npm install express\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp ",
+        },
+      ],
+      "handler": "/Users/jeonghyukpark/Documents/dev/cics/zowe-cli/packages/zosuss/src/cli/issue/ssh/Ssh.handler",
+      "name": "ssh",
+      "options": Array [
+        Object {
+          "description": "Working directory in which to execute the command",
+          "name": "cwd",
+          "type": "string",
+        },
+      ],
+      "positionals": Array [
+        Object {
+          "description": "z/OS USS command to issue",
+          "name": "command",
+          "required": true,
+          "type": "string",
+        },
+      ],
+      "profile": Object {
+        "required": Array [
+          "ssh",
+        ],
+      },
+      "type": "command",
+    },
+  ],
+  "description": "Issue a z/OS USS command",
+  "name": "issue",
+  "summary": "Issue a command",
+  "type": "group",
+}
+`;
