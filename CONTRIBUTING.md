@@ -27,6 +27,8 @@ For more information and guidelines for setting up your project, see [Packages a
 
 ## Pull Requests
 
+Consider the following when you interact with pull requests:
+
 - Pull request reviewers should be assigned to a same-team member.
 - Pull requests should remain open for 24 hours or until close of business next business day (accounting for weekends and holidays).
 - Anyone can comment on a pull request to request delay on merging or to get questions answered.
@@ -34,10 +36,9 @@ For more information and guidelines for setting up your project, see [Packages a
 
 ## Contributing to Core Functionality
 
-The following list summarizes conventions and best practices for contributing core functionality to Zowe CLI. For example, general infrastructure such as utilities, command processing and definition enhancements.
+Determine if the infrastructure enhancement applies to Zowe CLI or Imperative CLI Framework, or if it is best suited as a plug-in to the core.
 
-- Determine if the infrastructure enhancement applies to Zowe CLI or Imperative CLI Framework. 
-- Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/imperative/wiki). Most Zowe CLI core functionality is contained within the framework. Therefore, send us your recommendations on the Imperative CLI Framework repo when you want to enhance the following core functionalities:  
+Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/imperative/wiki). Most Zowe CLI core functionality is contained within the framework. Work in, or submit issues to, the Imperative CLI Framework repository when you want to enhance the following core functionalities:  
 
   - REST client
   - Logging
@@ -51,16 +52,16 @@ The following list summarizes conventions and best practices for contributing co
 The following list describes general conventions for contributing to Zowe CLI:
 
 - Communicate frequently (before pull request) with cross-team member representatives (in informal & small meetings) for new design features.
-- Require/import dependencies at the top of a file (for the purpose of identifying load failures / missing files as soon as possible).
-- Before implementing new functionality, evaluate packages that may already achieve intended functionality.
-- Zowe CLI and its plug-ins should be `scoped` under `@zowe`.
+- Require/import dependencies at the top of a file to identify load failures/missing files as soon as possible.
+- Before implementing new functionality, evaluate if existing packages already achieve intended functionality.
+- Zowe CLI and plug-ins should be `scoped` under `@zowe`.
 - Throw ImperativeError (or perhaps a wrapping of these) instead of throwing Error objects for automatic logging and node-report captures.
 - Provide adequate logging to diagnose problems that happen at external customer sites.
 - External messages should be defined externally, for localization.
-- Avoid using/referencing to `zowe` or `Zowe CLI` within help, source file names, and errors - this name is subject to change, for example use `core` instead.
+- Avoid using/referencing to `zowe` or `Zowe CLI` within help, source file names, and errors - this name is subject to change. For example use `core` instead.
 - Keep "packages" small and independent without cross dependencies (e.g. `zosjobs` logically should not depend on `zosfiles` package)
   - When a package is dependent on another package, import the through the dependent package's interface (`index.ts`) 
-  e.g. `packages/zosjobs/src/GetJobs.ts` may will import the `rest` package via via
+  e.g. `packages/zosjobs/src/GetJobs.ts` will import the `rest` package via:
     ```typescript
        import { ZosmfRestClient } from "../../../rest";
     ```
@@ -75,7 +76,7 @@ The following list describes general conventions for contributing to Zowe CLI:
 
 ## Code Guidelines
 
-Code is indented using 4 spaces. This is also documented via .editorconfig which can be used to automatically format the code if you use an [EditorConfig](http://editorconfig.org/) extension for your editor of choice.
+Indent code with 4 spaces. This is also documented via `.editorconfig`, which can be used to automatically format the code if you use an [EditorConfig](http://editorconfig.org/) extension for your editor of choice.
 
 Lint rules are enforced through our [build process](#build-process).
 
@@ -83,20 +84,20 @@ Lint rules are enforced through our [build process](#build-process).
 
 The following list describes conventions for contributing to Zowe CLI APIs:
 
-- When developing programmatic asynchronous APIs, return promises instead of using call-backs
+- When developing programmatic asynchronous APIs, return promises instead of using call-backs.
 - Use ImperativeExpect to perform minimum parameter validation for API methods (e.g. verify parms exist `ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix", "prefix is required");)
 
 ## File Naming Guidelines
 
 The following list describes the conventions for naming the source files:
 
-- Class names should match file names (e.g. `class SubmitJobs` would be found in a file `SubmitJobs.ts`)
-- Interface names should match file names and should start with the capital letter `I`, (e.g. `interface ISubmitJobsParms` would be found in `ISubmitJobsParms.ts`)
-- Interfaces should be separate files and should be in a `doc` folder (e.g. `../doc/input/ISubmitJobsParms`)
+- Class names should match file names (e.g. `class SubmitJobs` would be found in a file `SubmitJobs.ts`). 
+- Interface names should match file names and should start with the capital letter `I`, (e.g. `interface ISubmitJobsParms` would be found in `ISubmitJobsParms.ts`).
+- Interfaces should be separate files and should be in a `doc` folder (e.g. `../doc/input/ISubmitJobsParms`).
 
 ## Command Format Guidelines
 
-For information about naming your CLI commands and developing the syntax, see [Command Format Standards](https://github.com/zowe/zowe-cli/blob/conformance/docs/CommandFormatStandards.md).
+For information about naming CLI commands and developing the syntax, see [Command Format Standards](https://github.com/zowe/zowe-cli/blob/conformance/docs/CommandFormatStandards.md).
 
 ## Versioning Guidelines 
 
@@ -108,7 +109,7 @@ For information about testing rules and procedures, see [Testing Guidelines](./d
 
 ## Profile Guidelines
 
-For information setting up and configuring profiles, see [Profile Guidelines](./docs/ProfileGuidelines.md).
+For information about implementing user profiles, see [Profile Guidelines](./docs/ProfileGuidelines.md).
 
 ## Build Process Guidelines
 
@@ -118,11 +119,12 @@ Use build tasks to enforce rules where possible.
 
 ## Documentation Guidelines
 
-When contributing **a plug-in for Zowe CLI**, provide the following: 
+For all contributions, ensure that you document third-party software that your component uses in the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html).
+
+When contributing **a plug-in for Zowe CLI**, provide the following:
 - End-user documentation on the Zowe Doc Site. Use existing plug-in topics as a model. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
 - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [this plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics).
 - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines][https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md].
-
 
 When contributing **code/functionality to the core CLI**, provide the following:
 - A Release Notes entry in Zowe Docs site to announce your change to end users. 
