@@ -1,13 +1,12 @@
 # Package and Plug-in Guidelines
-This document is intended to be a living summary document of conventions and best practices for creating packages and plug-ins for Zowe CLI.
+This document is a living summary of conventions for developing packages and plug-ins for Zowe CLI.
 
-Packages are contributions bundled directly with the base Zowe CLI. It is the core set of commands and API functionality. 
+Packages are contributions bundled directly with the base Zowe CLI. They are the core set of commands and API functionality. 
 
-Plug-ins are essentially identical to packages. However, you create and maintain plug-ins outside of the Zowe CLI code base and install them using the plug-in manager.
+Plug-ins are similar to packages, however, you create and maintain plug-ins outside of the Zowe CLI code base and install them using the plug-in manager.
 
 Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zowe/zowe-cli-sample-plugin) as a code base.
 
-## Contents
 - [Plug-in Repositories](#plug-in-repositories)
 - [Directories](#directories)
 - [Directory Structure](#directory-structure)
@@ -18,11 +17,9 @@ Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zo
 
 ## Plug-in Repositories
 
-Name plug-in repositories according to the `[group]` name , where `[group]` is your Zowe CLI `[group]` name. 
+Name plug-in repositories according to the `[group]` name , where `[group]` is your Zowe CLI `[group]` name. For example, the `endevor` plug-in repository name is `endevor`.
 
 **Note:** For more information, see [Command Format Standards](CommandFormatStandards.md) for details on `[group]`.
-
-For example, the `endevor` plug-in repository name is `endevor`.
 
 ## Directories
 Packages and plug-ins require the following directories and files:

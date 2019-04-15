@@ -1,8 +1,9 @@
 # Command Format Standards
 This article is a living summary of conventions and best practices for command and option descriptions (help text) in Zowe CLI and plug-ins. 
 
-- [Command Naming Guidelines](#command-naming-guidelines)
-- [Command Description and Help Text Guidelines](#command-description-and-help-text-guidelines)
+- [Zowe CLI Command Structure](#zowe-cli-command-structure)
+- [Command Definition Documents](#command-definition-documents)
+- [Syntax/Naming Conventions](#syntax-naming-conventions)
 
 ## Zowe CLI Command Structure
 All `zowe` commands adhere to the following consistent structure:
@@ -20,7 +21,7 @@ Segment | Definition Type | Description
 **Example Command:**
 `zowe zos-files download data-set "HLQ.LLQ"`
 
-## Command Definition Document
+## Command Definition Documents
 
 You create "Definition Documents" to define the syntax/help text for commands:
 
@@ -28,7 +29,7 @@ For detailed information about defining & creating commands see the [Imperative 
 
 For the definition interface, see[`ICommandDefinition` interface within the Imperative CLI Framework](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/ICommandDefinition.ts).
 
-## General Naming Conventions
+## Syntax/Naming Conventions
 
 - Keep `[options]` (flags, switches, positional parms) to a minimum. Split into multiple commands (`[object]`) if the options become cumbersome. 
 - Keep option syntax "logic" (only specify one, mutually exclusive parameters, etc.) to a minimum.

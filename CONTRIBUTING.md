@@ -1,7 +1,6 @@
 # Contribution Guidelines
 This document is a living summary of conventions and best practices for development within Zowe CLI or development of Zowe CLI plug-ins. 
 
-## Contents
   - [Project Layout, Packages, and Plug-ins](#project-layout-packages-and-plug-ins)
   - [Pull Requests](#pull-requests)
   - [Contributing to Core Functionality](#contributing-to-zowe-cli-core-functionality)
