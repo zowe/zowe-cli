@@ -9,7 +9,7 @@ A plug-in must follow meet the following requirements to align with the Zowe Con
 - The plug-in is compatible with `@latest` and `@lts-incremental` versions of the core CLI, at minimum. For more information about the symantic versioning that CLI uses, see [Maintainer Versioning](https://github.com/zowe/zowe-cli/blob/master/docs/MaintainerVersioning.md).
 - The plug-in generally adheres to the CLI [Package and Plug-in Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PackagesAndPluginGuidelines.md).
 - The plug-in is integrated into Zowe automated testing/delivery pipelines.
-- The tests for you plug-in generally adhere to the guidelines listed in [Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/TESTING.md) and [Plug-in Testing Guidelines].(https://github.com/zowe/zowe-cli/blob/master/docs/PluginTESTINGGuidelines.md).
+- The tests for you plug-in generally adhere to the guidelines listed in [Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/TESTING.md) and [Plug-in Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PluginTESTINGGuidelines.md).
 - The plug-in command/help syntax adheres to the [Command Format Standards](https://github.com/zowe/zowe-cli/blob/master/docs/CommandFormatStandards.md).
 - Provide external (user guide, readme) and internal (jsdoc) documentation for the plug-in. For more information, see [Documentation Guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md#documentation-guidelines).
 - Name your plug-in to be consistent with other CLI plug-ins. For example, "Zowe CLI Plug-in for Abc".
