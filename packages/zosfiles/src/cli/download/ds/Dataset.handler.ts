@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Download } from "../../../api/methods/download";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -20,11 +20,18 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DatasetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Downloading data set",
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task});
         return Download.dataSet(session, commandParameters.arguments.dataSetName, {
-            volume: commandParameters.arguments.volumeSerial,
-            binary: commandParameters.arguments.binary,
-            file: commandParameters.arguments.file,
-            extension: commandParameters.arguments.extension
-        });
+                volume: commandParameters.arguments.volumeSerial,
+                binary: commandParameters.arguments.binary,
+                file: commandParameters.arguments.file,
+                extension: commandParameters.arguments.extension,
+                task
+            });
     }
 }

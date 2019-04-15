@@ -83,7 +83,7 @@ describe("Download USS File", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should download data set", async () => {
+        it("should download uss file", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file_fully_qualified.sh");
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -102,8 +102,8 @@ describe("Download USS File", () => {
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.pass]);
             expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+            expect(response.status).toBe(0);
         });
     });
 
@@ -140,8 +140,8 @@ describe("Download USS File", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), "--rfj"]);
             expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+            expect(response.status).toBe(0);
         });
 
         it("should download uss file to a specified file name", async () => {
@@ -149,9 +149,9 @@ describe("Download USS File", () => {
             const fileName = "testFile.txt";
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), `-f ${fileName}`, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
             expect(response.stdout.toString()).toContain(fileName);
+            expect(response.status).toBe(0);
         });
     });
 

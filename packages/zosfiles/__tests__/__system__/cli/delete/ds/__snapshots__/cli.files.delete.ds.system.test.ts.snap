@@ -10,6 +10,7 @@ exports[`Delete Data Set Success scenarios should delete a partitioned data set 
 "================Z/OS FILES DELETE DATA SET===============
 {
   \\"success\\": true,
+  \\"exitCode\\": 0,
   \\"message\\": \\"\\",
   \\"stdout\\": \\"Data set deleted successfully.\\\\n\\",
   \\"stderr\\": \\"\\",

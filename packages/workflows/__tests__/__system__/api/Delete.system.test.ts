@@ -56,7 +56,7 @@ describe("Delete workflow", () => {
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
-        definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
+        definitionFile = `${defaultSystem.unix.testdir.replace(/\/{2,}/g, "/")}/${getUniqueDatasetName(owner)}.xml`;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });

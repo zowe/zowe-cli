@@ -10,7 +10,7 @@
 */
 
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Download } from "../../../api/methods/download";
 
@@ -21,9 +21,16 @@ import { Download } from "../../../api/methods/download";
  */
 export default class UssFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Downloading USS file",
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task});
         return Download.ussFile(session, commandParameters.arguments.ussFileName, {
             binary: commandParameters.arguments.binary,
-            file: commandParameters.arguments.file
+            file: commandParameters.arguments.file,
+            task
         });
     }
 }
