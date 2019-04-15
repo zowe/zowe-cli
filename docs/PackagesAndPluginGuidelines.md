@@ -40,10 +40,12 @@ Packages and plug-ins require the following directories and files:
 ### Package Directories
 
 In addition to the requirements that are described in [Directories](#directories), packages require the following directories and files:
+- A `packages` folder (built in contributions to Zowe CLI)
 - `__tests__` directory for test code. Each package has a `__tests__` directory.
   - `__tests__` contains the unit tests (the structure maps exactly to the `src/` directory structure - this is a requirement for Jest and manual mocking).
   - `__tests__/__system__` for system tests (See [System Test Layout](TESTING.md#system-test-layout) for more details)
 - The imperative configuration document has a command module glob that will automatically recognize a file in this directory (`"**/cli/*.definition!(.d).*s"`)
+
 
 ### Plug-in Directories
 In addition to the requirements that are described in [Directories](#directories), packages plug-ins require the following directories and files:
