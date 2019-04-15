@@ -502,7 +502,7 @@ describe("Create workflow from local file", () => {
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
                 systemName, wfOwner, PRETEND_INPUT_PARMS.workflowDefinitionFile, variables, assign, access, deleteJobs,
                 WorkflowConstants.ZOSMF_VERSION);
-            expect(response.filesKept).toBeDefined;
+            expect(response.filesKept).toBeDefined();
             expect(response.filesKept).toContain(PRETEND_INPUT_PARMS.workflowDefinitionFile);
         });
     });
