@@ -3,8 +3,7 @@ This document is intended to be a living summary of conventions and best practic
 
 ## Contents
 - [Contribution Guidelines](#contribution-guidelines)
-  - [Contents](#contents)
-  - [More Resources](#more-resources)
+  - [Guidelines](#guidelines)
   - [Project Layout](#project-layout)
   - [Packages](#packages)
   - [Plug-ins](#plug-ins)
@@ -20,7 +19,7 @@ This document is intended to be a living summary of conventions and best practic
   - [Zowe CLI Conventions](#zowe-cli-conventions)
   - [Build Process](#build-process)
 
-## More Resources
+## Guidelines
 | For more information about ... | See: |
 | ------------------------------ | ----- |
 | General guidelines that apply to contributing to Zowe CLI and Plug-ins | [Contributor Guidelines](./CONTRIBUTING.md) |
@@ -134,3 +133,18 @@ For information setting up and configuring profiles, see [Profile Guidelines](./
 We use [gulp](https://gulpjs.com/) for build tasks, and to invoke the linter, generate documentation, and check for circular dependencies 
 
 - Use build tasks to enforce rules where possible (because it's easy to ignore this document)
+
+### Documentation 
+
+When contributing **a plug-in for Zowe CLI**, provide the following: 
+- Documentation for end-users published to Zowe Doc Site, mirroring other like the Zowe CLI Plug-in for CICS topic. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
+- A readme.md file within the plug-in repository that contains information for developers (overview, build from source, and run tests at minimum). See [this plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics) for an example. 
+- a CONTRIBUTING.md file within the plug-in repository that details any specific considerations for contributing code to your plug-in, and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines][https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md].
+
+
+When contributing **code/functionality to the core CLI**, provide the following: 
+- A Release Notes entry in Zowe Docs site to announce your change to end users. 
+- Documentation for how to use your feature, command, etc... Open an issue in 
+ Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
+
+ In addition to external documentation, please thoroughly comment your code for future developers who want to understand, use, and enhance your plug-in/feature.
