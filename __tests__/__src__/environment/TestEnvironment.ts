@@ -19,7 +19,6 @@ import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import * as fs from "fs";
 import { Constants } from "../../../packages/Constants";
 import { TempTestProfiles } from "../profiles/TempTestProfiles";
-import { TestProperties } from "../properties/TestProperties";
 
 const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
@@ -114,16 +113,15 @@ export class TestEnvironment {
      * @param testEnvironment - your test environment with system test properties populated
      */
     public static createZosmfSession(testEnvironment: ITestEnvironment): AbstractSession {
-        const SYSTEM_PROPS = new TestProperties(testEnvironment.systemTestProperties);
-        const defaultSystem = SYSTEM_PROPS.getDefaultSystem();
+        const SYSTEM_PROPS = testEnvironment.systemTestProperties;
         return new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
+            user: SYSTEM_PROPS.zosmf.user,
+            password: SYSTEM_PROPS.zosmf.pass,
+            hostname: SYSTEM_PROPS.zosmf.host,
+            port: SYSTEM_PROPS.zosmf.port,
             type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
-            basePath: defaultSystem.zosmf.basePath
+            rejectUnauthorized: SYSTEM_PROPS.zosmf.rejectUnauthorized,
+            basePath: SYSTEM_PROPS.zosmf.basePath
         });
     }
 

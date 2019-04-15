@@ -22,7 +22,6 @@ import {
 } from "../../../../zostso";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { inspect } from "util";
 
@@ -32,11 +31,10 @@ import { inspect } from "util";
  */
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProps: ITestSystemSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;
-const STOP_PARMS: IStopTsoParms = { servletKey: undefined };
+const STOP_PARMS: IStopTsoParms = {servletKey: undefined};
 const ZOSMF_ERROR_MESSAGE: string = 'IZUG1126E: z/OSMF cannot correlate the request for key "ZOSMFAD-SYS2-55-aaakaaac"' +
     " with an active z/OS application session.";
 
@@ -46,13 +44,12 @@ describe("StopCommand (integration)", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-                        testName: "zos_tso_stop"
+            testName: "zos_tso_stop"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        ACCOUNT_NUMBER = defaultSystem.tso.account;
+        ACCOUNT_NUMBER = systemProps.tso.account;
     });
 
 
@@ -112,7 +109,7 @@ describe("StopCommand (integration)", () => {
         let response: IZosmfTsoResponse;
         let error: ImperativeError;
         try {
-            response = await StopTso.stopCommon(REAL_SESSION, { servletKey: undefined });
+            response = await StopTso.stopCommon(REAL_SESSION, {servletKey: undefined});
             Imperative.console.info(`Response ${response.servletKey}`);
         } catch (thrownError) {
             error = thrownError;
