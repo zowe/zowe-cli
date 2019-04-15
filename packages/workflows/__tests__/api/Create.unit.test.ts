@@ -640,5 +640,33 @@ describe("Create workflow from local file", () => {
             }
             expectZosmfResponseFailed(response, error, noOwner.message);
         });
+        it("Throws an error if uss files were not uploaded successfully", async () => {
+            let error: ImperativeError;
+            let response: any;
+            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+                return new Promise((resolve, reject) => {
+                    process.nextTick(() => {
+                        reject(new ImperativeError({msg : "failed"}));
+                    });
+                });
+            });
+            (CreateWorkflow.createWorkflow as any) = jest.fn<string>(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(PRETEND_ZOSMF_RESPONSE);
+                    });
+                });
+            });
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner, varInputFile,
+                    variables, assign, access, deleteJobs);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledTimes(0);
+            expectZosmfResponseFailed(response, error, "Failed to create temporary uss file");
+        });
     });
 });
