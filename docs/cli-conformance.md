@@ -1,8 +1,6 @@
 # Zowe CLI Conformance Checklist
 
-A plug-in must follow meet the following requirements to align with the Zowe Conformance Program.
-
-**Note:** This list contains the absolute requirements for the Zowe Conformance program, but we also recommend that you reference the [Zowe CLI Contribution Guidelines](https://github.com/zowe/zowe-cli/blob/conformance/CONTRIBUTING.md) as you develop so that you can onboard your contribution quickly and efficiently.
+A plug-in must follow meet the following requirements to align with the Zowe Conformance Program:
 
 - The plug-in is constructed on Imperative CLI Framework.
 - The plug-in is installable to Zowe CLI (cannot run as a standalone CLI).
@@ -16,6 +14,7 @@ A plug-in must follow meet the following requirements to align with the Zowe Con
 - Provide external (user guide, readme) and internal (jsdoc) documentation for the plug-in. For more information, see [Documentation Guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md#documentation-guidelines).
 - Name your plug-in to be consistent with other CLI plug-ins. For example, "Zowe CLI Plug-in for Abc".
 
+**Note:** This list contains the absolute requirements for the Zowe Conformance program, but we also recommend that you reference the [Zowe CLI Contribution Guidelines](https://github.com/zowe/zowe-cli/blob/conformance/CONTRIBUTING.md) as you develop so that you can onboard your contribution quickly and efficiently.
 
 ## Developing a Conformant Zowe CLI Plug-in 
 
