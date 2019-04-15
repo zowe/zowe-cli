@@ -35,7 +35,7 @@ describe("Upload file-to-data-set handler", () => {
                     success: true,
                     commandResponse: "uploaded",
                     apiResponse: [
-                        { success: true, from: inputfile, to: dataSetName }
+                        {success: true, from: inputfile, to: dataSetName}
                     ]
                 };
             });
@@ -96,7 +96,13 @@ describe("Upload file-to-data-set handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
-            expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {});
+            expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Uploading to data set",
+                }
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
@@ -122,7 +128,7 @@ describe("Upload file-to-data-set handler", () => {
                     success: true,
                     commandResponse: "uploaded",
                     apiResponse: [
-                        { success: false, from: inputfile, to: dataSetName }
+                        {success: false, from: inputfile, to: dataSetName}
                     ]
                 };
             });
@@ -161,7 +167,14 @@ describe("Upload file-to-data-set handler", () => {
                         console: {
                             log: jest.fn((logArgs) => {
                                 logMessage += "\n" + logArgs;
+                            }),
+                            error: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
                             })
+                        },
+                        progress: {
+                            startBar: jest.fn(),
+                            endBar: jest.fn()
                         }
                     },
                     profiles: {
@@ -172,10 +185,18 @@ describe("Upload file-to-data-set handler", () => {
                 error = e;
             }
 
-            expect(error).toBeDefined();
+            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
-            expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {});
+            expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {
+                binary: undefined,
+                volume: undefined,
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Uploading to data set",
+                },
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

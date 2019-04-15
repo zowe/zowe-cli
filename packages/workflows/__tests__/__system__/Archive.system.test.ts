@@ -35,7 +35,7 @@ async function setup() {
     });
     sysProperties = new TestProperties(testEnvironment.systemTestProperties);
     session = TestEnvironment.createZosmfSession(testEnvironment);
-    remoteWorkflowPath=`${sysProperties.getDefaultSystem().unix.testdir}/wf${Date.now()}.xml`;
+    remoteWorkflowPath=`${sysProperties.getDefaultSystem().unix.testdir.replace(/\/{2,}/g, "/")}/wf${Date.now()}.xml`;
 }
 
 async function cleanup() {

@@ -11,7 +11,7 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
@@ -135,10 +135,10 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
-            [
-                localDirName,
-                ussname,
-            ]);
+                [
+                    localDirName,
+                    ussname,
+                ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
@@ -226,9 +226,9 @@ describe("Upload directory to USS", () => {
                 [
                     localDirName,
                     ussname,
-    ]);
-            expect(response.status).toBe(1);
+                ]);
             expect(response.stderr.toString()).toContain("Rest API failure with HTTP(S) status 500");
+            expect(response.status).toBe(1);
         });
 
         it("should upload local directory to USS directory with response-format-json flag", async () => {
@@ -252,11 +252,11 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
-            [
-                localDirName,
-                ussname,
-                "--mcr 2"
-            ]);
+                [
+                    localDirName,
+                    ussname,
+                    "--mcr 2"
+                ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
@@ -266,11 +266,11 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
-            [
-                localDirName,
-                ussname,
-                "--mcr 0"
-            ]);
+                [
+                    localDirName,
+                    ussname,
+                    "--mcr 0"
+                ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");

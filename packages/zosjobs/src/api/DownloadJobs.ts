@@ -82,10 +82,10 @@ export class DownloadJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IDownloadSpoolContentParms} parms - parm object (see IDownloadSpoolContentParms interface for details)
-     * @returns {Promise<string>} - promise that resolves to a string of content downloaded
+     * @returns {Promise<void>} - promise that resolves when the file is downloaded
      * @memberof DownloadJobs
      */
-    public static async downloadSpoolContentCommon(session: AbstractSession, parms: IDownloadSpoolContentParms): Promise<string> {
+    public static async downloadSpoolContentCommon(session: AbstractSession, parms: IDownloadSpoolContentParms): Promise<void> {
         this.log.trace("Entering downloadSpoolContentCommon with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
@@ -104,9 +104,10 @@ export class DownloadJobs {
         const parameters: string = "/" + parms.jobFile.jobname + "/" + parms.jobFile.jobid +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + parms.jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT;
 
-        const content = await ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters);
-        await IO.writeFileAsync(file, content);
-        return content;
+
+        const writeStream = IO.createWriteStream(file);
+        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, undefined, writeStream,
+                                          true);
     }
 
     /**

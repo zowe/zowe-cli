@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -26,6 +26,7 @@ import { Create } from "../create";
 import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
 import { asyncPool } from "../../../../../utils";
+import { Readable } from "stream";
 
 export class Upload {
 
@@ -198,12 +199,79 @@ export class Upload {
     }
 
     /**
+     * Writting data buffer to a data set.
+     * @param {AbstractSession} session      - z/OS connection info
+     * @param {Buffer}          fileBuffer   - Data buffer to be written
+     * @param {string}          dataSetName  - Name of the data set to write to
+     * @param {IUploadOptions}  [options={}] - Uploading options
+     *
+     * @return {Promise<IZosFilesResponse>} A response indicating the out come
+     *
+     * @throws {ImperativeError} When encounter error scenarios.
+     */
+    public static async streamToDataSet(session: AbstractSession,
+                                        fileStream: Readable,
+                                        dataSetName: string,
+                                        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+
+        try {
+            // Construct zOSMF REST endpoint.
+            let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+            if (options.volume) {
+                endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+            }
+            endpoint = path.posix.join(endpoint, dataSetName);
+
+            // Construct request header parameters
+            const reqHeader: IHeaderContent[] = [];
+            if (options.binary) {
+                reqHeader.push(ZosmfHeaders.X_IBM_BINARY);
+            } else {
+                reqHeader.push(ZosmfHeaders.X_IBM_TEXT);
+            }
+
+            // Migrated recall options
+            if (options.recall) {
+                switch (options.recall.toLowerCase()) {
+                    case "wait":
+                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                        break;
+                    case "nowait":
+                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        break;
+                    case "error":
+                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                        break;
+                    default:
+                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        break;
+                }
+            }
+
+
+            await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeader, fileStream,
+                !options.binary /* only normalize newlines if we are not uploading in binary*/,
+                options.task);
+
+            return {
+                success: true,
+                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
      * Upload content from input path to dataSet or PDS members
      * @param {AbstractSession} session      - z/OS connection info
      * @param {string}          inputPath    - User input path to file or directory
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
      *
+     * @param task - use this to be updated on the current status of the upload operation
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
      * @throws {ImperativeError} When encounter error scenarios.
@@ -228,7 +296,6 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        let payload;
         let memberName: string = "";
         let uploadingFile: string = "";
         let uploadingDsn: string = "";
@@ -328,9 +395,15 @@ export class Upload {
                 if (uploadError === undefined) {
                     try {
                         // read payload from file
-                        payload = fs.readFileSync(uploadingFile);
+                        const uploadStream = IO.createReadStream(uploadingFile);
 
-                        const result = await this.bufferToDataSet(session, payload, uploadingDsn, options);
+                        const streamUploadOptions = JSON.parse(JSON.stringify(options)); // copy the options
+                        if (uploadFileList.length > 1) {
+                            // don't update the progress bar in the streamToDataSet function if we
+                            // are uploading more than one file because we already update it  with the member name
+                            delete streamUploadOptions.task;
+                        }
+                        const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, streamUploadOptions);
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
                             success: result.success,
@@ -402,10 +475,42 @@ export class Upload {
         return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
     }
 
+    /**
+     * Upload content to USS file
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} ussname          - Name of the USS file to write to
+     * @param {Buffer} uploadStream          - Data to be written
+     * @param {boolean} binary          - The indicator to upload the file in binary mode
+     * @returns {Promise<object>}
+     */
+    public static async streamToUSSFile(session: AbstractSession,
+                                        ussname: string,
+                                        uploadStream: Readable,
+                                        binary: boolean = false,
+                                        task?: ITaskWithStatus) {
+        ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
+        ussname = path.posix.normalize(ussname);
+        ussname = Upload.formatUnixFilepath(ussname);
+        ussname = encodeURIComponent(ussname);
+        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
+        const headers: any[] = [];
+        if (binary) {
+            headers.push(ZosmfHeaders.OCTET_STREAM);
+            headers.push(ZosmfHeaders.X_IBM_BINARY);
+        } else {
+            headers.push(ZosmfHeaders.TEXT_PLAIN);
+        }
+
+        await ZosmfRestClient.putStreamedRequestOnly(session, ZosFilesConstants.RESOURCE + parameters, headers, uploadStream,
+            !binary /* only normalize newlines if we are not in binary mode*/,
+            task);
+    }
+
     public static async fileToUSSFile(session: AbstractSession,
                                       inputFile: string,
                                       ussname: string,
-                                      binary: boolean = false): Promise<IZosFilesResponse> {
+                                      binary: boolean = false,
+                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
@@ -434,13 +539,10 @@ export class Upload {
 
         await promise;
 
-        let payload;
         let result: IUploadResult;
-
         // read payload from file
-        payload = fs.readFileSync(inputFile);
-
-        await this.bufferToUSSFile(session, ussname, payload, binary);
+        const uploadStream = IO.createReadStream(inputFile);
+        await this.streamToUSSFile(session, ussname, uploadStream, binary, task);
         result = {
             success: true,
             from: inputFile,
@@ -466,7 +568,7 @@ export class Upload {
                                     ussname: string,
                                     options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
-        ImperativeExpect.toNotBeEqual(inputDirectory,"", ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeEqual(inputDirectory, "", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
 
@@ -476,7 +578,7 @@ export class Upload {
         const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
         try {
             // Check if inputDirectory is directory
-            if(!IO.isDir(inputDirectory)) {
+            if (!IO.isDir(inputDirectory)) {
                 throw new ImperativeError({
                     msg: ZosFilesMessages.missingInputDirectory.message
                 });
@@ -484,7 +586,7 @@ export class Upload {
 
             // Check if provided unix directory exists
             const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-            if(!isDirectoryExist) {
+            if (!isDirectoryExist) {
                 await Create.uss(session, ussname, "directory");
             }
 
@@ -497,17 +599,18 @@ export class Upload {
             files.forEach((file) => {
                 let tempBinary = options.binary;
                 // check if filesMap is specified, and verify if file is in the list
-                if(options.filesMap) {
-                    if(options.filesMap.fileNames.indexOf(file) > -1) {
+                if (options.filesMap) {
+                    if (options.filesMap.fileNames.indexOf(file) > -1) {
                         // if file is in list, assign binary mode from mapping
                         tempBinary = options.filesMap.binary;
                     }
                 }
                 // update the array
                 filesArray.push({
-                    binary: tempBinary,
-                    fileName: file}
-                    );
+                        binary: tempBinary,
+                        fileName: file
+                    }
+                );
             });
 
             let uploadsInitiated = 0;
@@ -559,7 +662,7 @@ export class Upload {
         const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);
-            if(response.items) {
+            if (response.items) {
                 return true;
             }
         } catch (err) {
@@ -583,7 +686,7 @@ export class Upload {
                                              ussname: string,
                                              options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
-        ImperativeExpect.toNotBeEqual(inputDirectory,"", ZosFilesMessages.missingInputDirectory.message);
+        ImperativeExpect.toNotBeEqual(inputDirectory, "", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
 
@@ -596,7 +699,7 @@ export class Upload {
         let directoriesArray: IUploadDir[] = [];
 
         // Check if inputDirectory is directory
-        if(!IO.isDir(inputDirectory)) {
+        if (!IO.isDir(inputDirectory)) {
             throw new ImperativeError({
                 msg: ZosFilesMessages.missingInputDirectory.message
             });
@@ -604,7 +707,7 @@ export class Upload {
 
         // Check if provided unix directory exists
         const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-        if(!isDirectoryExist) {
+        if (!isDirectoryExist) {
             await Create.uss(session, ussname, "directory");
         }
 
@@ -616,27 +719,28 @@ export class Upload {
         files.forEach(async (file) => {
             let tempBinary = options.binary;
             // check if filesMap is specified, and verify if file is in the list
-            if(options.filesMap) {
-                if(options.filesMap.fileNames.indexOf(file) > -1) {
+            if (options.filesMap) {
+                if (options.filesMap.fileNames.indexOf(file) > -1) {
                     // if file is in list, assign binary mode from mapping
                     tempBinary = options.filesMap.binary;
                 }
             }
             // update the array
             filesArray.push({
-                binary: tempBinary,
-                fileName: file}
-                );
+                    binary: tempBinary,
+                    fileName: file
+                }
+            );
         });
 
         // create the directories
-        if(directoriesArray.length > 0) {
+        if (directoriesArray.length > 0) {
             const createDirUploadPromise = async (dir: IUploadDir) => {
-                    const tempUssname = path.posix.join(ussname, dir.dirName);
-                    const isDirectoryExists = await this.isDirectoryExist(session, tempUssname);
-                    if(!isDirectoryExists) {
-                        return Create.uss(session, tempUssname, "directory");
-                    }
+                const tempUssname = path.posix.join(ussname, dir.dirName);
+                const isDirectoryExists = await this.isDirectoryExist(session, tempUssname);
+                if (!isDirectoryExists) {
+                    return Create.uss(session, tempUssname, "directory");
+                }
             };
 
             if (maxConcurrentRequests === 0) {
@@ -649,12 +753,12 @@ export class Upload {
         for (const elem of directoriesArray) {
             await this.dirToUSSDirRecursive(session,
                 elem.fullPath,
-                path.posix.join(ussname,elem.dirName),
+                path.posix.join(ussname, elem.dirName),
                 options);
         }
 
         // upload the files
-        if(filesArray.length > 0) {
+        if (filesArray.length > 0) {
             let uploadsInitiated = 0;
             const createUploadPromise = (file: IUploadFile) => {
                 // update the progress bar if any
@@ -734,10 +838,11 @@ export class Upload {
             // directories = directories.filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
             // tslint:disable-next-line:prefer-for-of
             for (let index = 0; index < directories.length; index++) {
-                const dirFullPath = path.normalize(path.join(dirPath,directories[index]));
+                const dirFullPath = path.normalize(path.join(dirPath, directories[index]));
                 response.push({
                     dirName: directories[index],
-                    fullPath: dirFullPath});
+                    fullPath: dirFullPath
+                });
             }
         }
         return response;
@@ -749,7 +854,7 @@ export class Upload {
      */
     private static formatStringForDisplay(stringInput: string): string {
         const LAST_FIFTEEN_CHARS = -15;
-        const  stringToDisplay: string = stringInput.split(path.sep).splice(-1,1).toString().slice(LAST_FIFTEEN_CHARS);
+        const stringToDisplay: string = stringInput.split(path.sep).splice(-1, 1).toString().slice(LAST_FIFTEEN_CHARS);
         const result: string = stringToDisplay === "" ? "all files" : stringToDisplay;
 
         return result;
