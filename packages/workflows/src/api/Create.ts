@@ -10,7 +10,7 @@
 */
 
 
-import { AbstractSession, Headers, ImperativeError, RestClient, Imperative } from "@brightside/imperative";
+import { AbstractSession, Headers, ImperativeError } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import {
     WorkflowConstants,
@@ -143,6 +143,14 @@ export class CreateWorkflow{
                                             AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
                                             keepFiles?: boolean, customDir?: string,
                                             zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<ICreatedWorkflowLocal> {
+
+        WorkflowValidator.validateSession(session);
+        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+        WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
+        WorkflowValidator.validateNotEmptyString(WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
+        WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
+        WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
+        WorkflowValidator.validateOwner(Owner, wrongOwner.message);
 
         const tempDefinitionFile: string = CreateWorkflow.getTempFile(session.ISession.user, WorkflowDefinitionFile, customDir);
         await CreateWorkflow.uploadTempFile(session, WorkflowDefinitionFile, tempDefinitionFile);
