@@ -17,7 +17,6 @@ import { ITestUnixSchema } from "./ITestUnixSchema";
 import { ITestConsoleSchema } from "./ITestConsoleSchema";
 
 export interface ITestSystemSchema {
-    name?: string;
     zosmf?: ITestZosmfSchema;
     tso?: ITestTsoSchema;
     ssh?: ITestSshSchema;

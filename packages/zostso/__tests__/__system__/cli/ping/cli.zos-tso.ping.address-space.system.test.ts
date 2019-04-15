@@ -13,15 +13,13 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import * as fs from "fs";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { StartTso, StopTso } from "../../../../index";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProps: ITestSystemSchema;
 let REAL_SESSION: Session;
 let acc: string;
 
@@ -34,11 +32,10 @@ describe("zos-tso ping address-space", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        acc = defaultSystem.tso.account;
+        acc = systemProps.tso.account;
     });
 
     afterAll(async () => {
@@ -73,8 +70,7 @@ describe("zos-tso ping address-space", () => {
                 testName: "zos_tso_ping_as_without_profiles"
             });
 
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {
