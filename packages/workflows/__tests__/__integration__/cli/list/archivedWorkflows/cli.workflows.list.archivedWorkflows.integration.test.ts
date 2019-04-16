@@ -17,11 +17,11 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("List Active Workflows", () => {
+describe("List Archived Workflows", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_active_workflows"
+            testName: "list_archived_workflows"
         });
     });
 
