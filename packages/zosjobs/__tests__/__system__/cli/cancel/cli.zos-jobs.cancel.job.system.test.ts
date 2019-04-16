@@ -12,15 +12,13 @@
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "../../api/JobTestsUtils";
 import { IO } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 const LOCAL_JCL_FILE: string = __dirname + "/" + "testFileOfLocalJCL.txt";
-let systemProps: TestProperties;
 
 describe("zos-jobs cancel job command", () => {
     // Create the unique test environment
@@ -29,10 +27,9 @@ describe("zos-jobs cancel job command", () => {
             testName: "zos_jobs_cancel_job_command",
             tempProfileTypes: ["zosmf"]
         });
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        const defaultSystem = systemProps.getDefaultSystem();
+        const systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
-        const jcl = JobTestsUtils.getIefbr14JCL(defaultSystem.zosmf.user, defaultSystem.tso.account);
+        const jcl = JobTestsUtils.getIefbr14JCL(systemProps.zosmf.user, systemProps.tso.account);
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(LOCAL_JCL_FILE);
         IO.writeFile(LOCAL_JCL_FILE, bufferJCL);
@@ -67,15 +64,14 @@ describe("zos-jobs cancel job command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_cancel_job_without_profiles"
                 });
 
-                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
-
+                DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {

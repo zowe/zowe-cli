@@ -16,12 +16,12 @@
 import { IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, noAccountNumber, noSessionTso, StartTso, StopTso } from "../../../../zostso";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
 
 let testEnvironment: ITestEnvironment;
-let systemProps: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;
 

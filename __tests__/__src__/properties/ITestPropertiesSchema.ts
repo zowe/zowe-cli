@@ -12,6 +12,11 @@
 import { ITestZosmfSchema } from "./ITestZosmfSchema";
 import { ITestConsoleSchema } from "./ITestConsoleSchema";
 import { ITestTsoSchema } from "./ITestTsoSchema";
+import { ITestZosJobsSchema } from "./ITestZosJobsSchema";
+import { ITestProvisioningSchema } from "./ITestProvisioningSchema";
+import { ITestWorkflowsSchema } from "./ITestWorkflowsSchema";
+import { ITestUnixSchema } from "./ITestUnixSchema";
+import { ITestDatasetSchema } from "./ITestDatasetSchema";
 
 /**
  * Interface representing the values in the custom_properties.yaml file
@@ -20,24 +25,11 @@ import { ITestTsoSchema } from "./ITestTsoSchema";
 export interface ITestPropertiesSchema {
 
     zosmf: ITestZosmfSchema;
-
-    zosjobs: {
-        iefbr14Member: string,
-        iefbr14PSDataSet: string,
-        jobclass: string;
-        sysaff: string;
-    };
-
-    provisioning: {
-        templateName: string,
-        instanceName: string
-    };
-
+    datasets: ITestDatasetSchema;
+    zosjobs: ITestZosJobsSchema;
+    provisioning: ITestProvisioningSchema;
     tso: ITestTsoSchema;
-    
     console: ITestConsoleSchema;
-
-    workflows: {
-        system: string
-    };
+    workflows: ITestWorkflowsSchema;
+    unix: ITestUnixSchema;
 }

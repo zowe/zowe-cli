@@ -16,25 +16,19 @@ import { ArchiveWorkflow } from "../../../src/api/ArchiveWorkflow";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { Upload } from "../../../../zosfiles/src/api/methods/upload";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
-import {
-    noSession,
-    nozOSMFVersion,
-    wrongString
-} from "../../../src/api/WorkflowConstants";
+import { noSession, nozOSMFVersion, wrongString } from "../../../src/api/WorkflowConstants";
 
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;
 let system: string;
@@ -63,11 +57,9 @@ function expectZosmfResponseFailed(response: ICreatedWorkflow, error: Imperative
 describe("List archived workflows", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            // tempProfileTypes: ["zosmf"],
             testName: "create_workflow"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
@@ -97,7 +89,7 @@ describe("List archived workflows", () => {
                 error = err;
             }
         });
-        beforeEach(async () =>{
+        beforeEach(async () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
             // Archive workflow
@@ -119,14 +111,14 @@ describe("List archived workflows", () => {
                 Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
-         });
+        });
         it("List archived workflow that match all optional parameters", async () => {
             let error;
             let response;
 
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, undefined,
-                                                                             wfName, category, system, owner, vendor, statusName);
+                    wfName, category, system, owner, vendor, statusName);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -146,7 +138,7 @@ describe("List archived workflows", () => {
                 Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
-         });
+        });
     });
     describe("Failure scenarios", () => {
         it("Throws an error with undefined session.", async () => {
@@ -156,8 +148,8 @@ describe("List archived workflows", () => {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(undefined);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
-              error = thrownError;
-              Imperative.console.info(`Error ${error}`);
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });

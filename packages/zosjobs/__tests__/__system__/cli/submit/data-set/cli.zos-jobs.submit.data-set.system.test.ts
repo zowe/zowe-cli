@@ -12,7 +12,7 @@
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { List } from "../../../../../../zosfiles/src/api/methods/list";
 import { Session } from "@zowe/imperative";
 
@@ -119,7 +119,7 @@ describe("zos-jobs submit data-set command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let SYSTEM_PROPS: ITestSystemSchema;
+            let SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({

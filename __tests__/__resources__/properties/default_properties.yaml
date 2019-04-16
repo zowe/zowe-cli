@@ -1,15 +1,24 @@
 #-----------------------------------------------------------------------------#
+#-------              ZOWE CLI EXAMPLE PROPERTIES FILE                --------#
+#  This file is used to parameterize runs of system tests with the relevant   #
+#  connection details for your z/OS system.                                   #
+#-----------------------------------------------------------------------------#
 #  find and replace the following:                                            #
 #                                                                             #
 #  my-user-name    - This is your TSO user  ID                                #
 #  my-password     - This is your TSO password                                #
 #  my-jes-account  - This is your JES Account number for batch jobs           #
+#  my-uss-dir      - A directory on USS in which files and                    #
+#                    directories can be created                               #
 #  sysaff-system   - System Affinity for some batch jobs, use the system that #
 #                    you are running the tests on                             #
 #  ds-iefbr14-pds  - PDS qualified by an IEFBR14 member JCL to submit         #
 #  ds-iefbr14-ps   - PS with an IEFBR14 JCL to submit                         #
 #  zosmf-host      - The host name for the LPAR with z/OSMF                   #
 #  zosmf-port      - The z/OSMF port                                          #
+#  my-sysplex-system - system name of a system in your sysplex to which       #
+#                      console commands can be routed                         #
+#  my-volume-serial - volume serial used to create data sets                  #
 #-----------------------------------------------------------------------------#
 #-- Note: If you add or rename any fields of this default template,         --#
 #-- please also update the ITestPropertiesSchema interface so that          --#
@@ -19,10 +28,15 @@
 #  Connection details/credentials for z/OSMF                              #
 #-------------------------------------------------------------------------#
 zosmf:
+  # your z/OSMF User ID
   user: &zosmfuser my-user-name
+  # your z/OSMF password
   pass: &zosmfpass my-password
+  # host for your instance of z/OSMF
   host: &zosmfhost zosmf-host
+  # port for your instance of z/OSMF
   port: &zosmfport zosmf-port
+  # false to allow self signed certificates when connecting
   rejectUnauthorized: &zosmfreject false
   # base path if any to be prepended to all z/OSMF resources
   # such as a base path exposed from a gateway/ API mediation layer
@@ -36,32 +50,34 @@ tso:
 #  Console API Tests parameters                                           #
 #-------------------------------------------------------------------------#
 unix:
-  testdir: /a/my-user-name
+  # A directory on USS in which files and directories can be created
+  testdir: my-uss-dir
 #-------------------------------------------------------------------------#
 #  Dataset tests                                                          #
 #-------------------------------------------------------------------------#
 datasets:
   # volume serial used to create data sets
-  vol: TSU
-
+  vol: my-volume-serial
 #-------------------------------------------------------------------------#
 #  Console API Tests parameters                                           #
 #-------------------------------------------------------------------------#
 console:
-  sysplexsystem: SYS0
+  # system name of a system in your sysplex to which
+  # console commands can be routed
+  sysplexsystem: my-sysplex-system
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing jobs                                         #
 #-----------------------------------------------------------------------------#
 zosjobs:
   # a PDS member containing IEFBR14 JCL that your user ID can submit
   iefbr14Member: ds-iefbr14-pds
-  # a physical sequential data set containing IEFBR14 JCL that your user ID can submit
+  # a physical sequential data set containing IEFBR14 JCL
+  # that your user ID can submit
   iefbr14PSDataSet: ds-iefbr14-ps
   # The jobclass for a non-held, etc jobclass
   jobclass: A
   # System affinity 
   sysaff: sysaff-system
-
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing provisioning                                 #
 #-----------------------------------------------------------------------------#
@@ -70,11 +86,11 @@ provisioning:
   templateName: template-name
   # The name of instance created after provisioning the template
   instanceName: instance-name
-
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing workflows                                    #
 #-----------------------------------------------------------------------------#
 workflows:
-  # The system where you want to run your workflow (must exist and be active within your zOSMF)
+  # The system where you want to run your workflow
+  # (must exist and be active within your zOSMF)
   system: system
 
