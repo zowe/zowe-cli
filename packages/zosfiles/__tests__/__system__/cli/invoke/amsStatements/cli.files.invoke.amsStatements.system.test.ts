@@ -12,8 +12,7 @@
 import { Session } from "@brightside/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
 
@@ -21,8 +20,7 @@ let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let user: string;
 let volume: string;
 
@@ -35,13 +33,12 @@ describe("Invoke AMS CLI", () => {
             testName: "zos_invoke_ams"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        volume = defaultSystem.datasets.list[0].vol;
+        volume = defaultSystem.datasets.vol;
 
     });
 
@@ -50,8 +47,7 @@ describe("Invoke AMS CLI", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -59,11 +55,10 @@ describe("Invoke AMS CLI", () => {
                 testName: "zos_files_invoke_ams_statement_without_profile"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
             user = defaultSys.zosmf.user.trim().toUpperCase();
-            volume = defaultSys.datasets.list[0].vol;
+            volume = defaultSys.datasets.vol;
         });
 
         afterAll(async () => {
@@ -87,7 +82,7 @@ describe("Invoke AMS CLI", () => {
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.pass,
-                    defaultSystem.datasets.list[0].vol]);
+                    defaultSystem.datasets.vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
@@ -111,7 +106,7 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using control statements", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
-                TEST_ENVIRONMENT, [user, defaultSystem.datasets.list[0].vol]);
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());
@@ -127,7 +122,7 @@ describe("Invoke AMS CLI", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using a control statement and print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_rfj.sh",
-                TEST_ENVIRONMENT, [user, defaultSystem.datasets.list[0].vol]);
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.vol]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             let testOutput = stripNewLines(response.stdout.toString());

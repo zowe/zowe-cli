@@ -13,8 +13,7 @@ import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, ZosFilesConsta
 import { Imperative, Session } from "@brightside/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
@@ -23,8 +22,7 @@ import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZos
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 
@@ -35,8 +33,7 @@ describe("Get", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_file_view"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

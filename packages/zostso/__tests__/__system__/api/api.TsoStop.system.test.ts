@@ -21,7 +21,7 @@ import {
     StopTso
 } from "../../../../zostso";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { inspect } from "util";
 
@@ -31,7 +31,7 @@ import { inspect } from "util";
  */
 
 let testEnvironment: ITestEnvironment;
-let systemProps: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;
 const STOP_PARMS: IStopTsoParms = {servletKey: undefined};

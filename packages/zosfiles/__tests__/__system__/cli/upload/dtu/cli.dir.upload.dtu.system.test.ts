@@ -14,8 +14,7 @@ import * as path from "path";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 
@@ -23,8 +22,7 @@ let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
 let binaryFiles: string;
 let binaryFile: string;
@@ -41,9 +39,7 @@ describe("Upload directory to USS", () => {
             testName: "zos_files_upload_directory_to_uss_with_profile"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
@@ -61,8 +57,7 @@ describe("Upload directory to USS", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -70,8 +65,7 @@ describe("Upload directory to USS", () => {
                 testName: "upload_dir_to_uss"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
             Imperative.console.info("Using ussDir:" + ussname);
         });

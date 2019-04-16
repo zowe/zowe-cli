@@ -13,9 +13,8 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { Session } from "@brightside/imperative";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ListRegistryInstances } from "../../../../../";
 import { ProvisioningConstants } from "../../../../../index";
 
@@ -48,15 +47,14 @@ describe("provisioning list instance-info", () => {
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "provisioning_catalog_templates_without_profiles"
             });
 
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {

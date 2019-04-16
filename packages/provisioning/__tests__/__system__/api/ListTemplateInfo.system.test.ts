@@ -9,8 +9,7 @@
 *
 */
 
-import { Session, ImperativeError, Imperative } from "@brightside/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
+import { Imperative, ImperativeError, Session } from "@brightside/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import {
     IPublishedTemplateInfo,
@@ -21,14 +20,13 @@ import {
     nozOSMFVersion,
     ProvisioningConstants
 } from "../../../../provisioning";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 
 let TEMPLATE_NAME: string;
 let REAL_SESSION: Session;
@@ -50,8 +48,7 @@ describe("ListTemplateInfo (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_template-info"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 

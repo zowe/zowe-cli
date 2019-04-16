@@ -15,11 +15,11 @@ import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Session } from "@brightside/imperative";
 import { StopTso } from "../../../../";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let systemProps: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 const seven = 7;
 describe("zos-tso start address-space", () => {
@@ -73,7 +73,7 @@ describe("zos-tso start address-space", () => {
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let SYSTEM_PROPS: ITestSystemSchema;
+        let SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({

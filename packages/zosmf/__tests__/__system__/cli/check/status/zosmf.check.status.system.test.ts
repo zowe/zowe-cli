@@ -12,17 +12,15 @@
 import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO } from "@brightside/imperative";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 let host: string;
 let port: number;
 let user: string;
 let pass: string;
-
+let systemProps: ITestPropertiesSchema;
 
 describe("zosmf check status", () => {
 
@@ -33,11 +31,11 @@ describe("zosmf check status", () => {
             testName: "zos_check_status"
         });
 
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        host = systemProps.getDefaultSystem().zosmf.host;
-        port = systemProps.getDefaultSystem().zosmf.port;
-        user = systemProps.getDefaultSystem().zosmf.user;
-        pass = systemProps.getDefaultSystem().zosmf.pass;
+        systemProps = testEnvironment.systemTestProperties;
+        host = systemProps.zosmf.host;
+        port = systemProps.zosmf.port;
+        user = systemProps.zosmf.user;
+        pass = systemProps.zosmf.pass;
     });
 
     afterAll(async () => {
@@ -48,15 +46,14 @@ describe("zosmf check status", () => {
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "zos_check_status_command_without_profiles"
             });
 
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {
@@ -65,16 +62,16 @@ describe("zosmf check status", () => {
 
         it("should successfully check status with options only on the command line", async () => {
             const opts = [
-                "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
-                "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
-                "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
-                "--password", DEFAULT_SYSTEM_PROPS.zosmf.pass,
-                "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
+                "--host", SYSTEM_PROPS.zosmf.host,
+                "--port", SYSTEM_PROPS.zosmf.port,
+                "--user", SYSTEM_PROPS.zosmf.user,
+                "--password", SYSTEM_PROPS.zosmf.pass,
+                "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 
-            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+            if (SYSTEM_PROPS.zosmf.basePath != null) {
                 opts.push("--base-path");
-                opts.push(DEFAULT_SYSTEM_PROPS.zosmf.basePath);
+                opts.push(SYSTEM_PROPS.zosmf.basePath);
             }
 
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status_use_cli_opts.sh",
@@ -83,7 +80,7 @@ describe("zosmf check status", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
-                "The user '" + DEFAULT_SYSTEM_PROPS.zosmf.user +
+                "The user '" + SYSTEM_PROPS.zosmf.user +
                 "' successfully connected to z/OSMF"
             );
         });
