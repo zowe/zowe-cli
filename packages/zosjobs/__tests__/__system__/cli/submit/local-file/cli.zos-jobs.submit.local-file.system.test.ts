@@ -12,8 +12,7 @@
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
 
 
@@ -22,8 +21,7 @@ process.env.FORCE_COLOR = "0";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let REAL_SESSION: Session;
-let defaultSystem: ITestSystemSchema;
-let systemProps: TestProperties;
+let systemProps: ITestPropertiesSchema;
 let account: string;
 let jcl: string;
 describe("zos-jobs submit local-file command", () => {
@@ -34,14 +32,13 @@ describe("zos-jobs submit local-file command", () => {
             tempProfileTypes: ["zosmf"]
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        account = defaultSystem.tso.account;
+        account = systemProps.tso.account;
         const maxJobNamePrefixLength = 5;
         // JCL to submit
-        jcl = "//" + defaultSystem.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
+        jcl = "//" + systemProps.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
             ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
             "//EXEC PGM=IEFBR14";
 
@@ -94,15 +91,14 @@ describe("zos-jobs submit local-file command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_local_file_without_profiles"
                 });
 
-                const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-                DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+                DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {

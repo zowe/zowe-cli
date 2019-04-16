@@ -15,9 +15,8 @@ import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../.
 import * as  fs from "fs";
 import { TEST_RESOURCES_DIR } from "../../__src__/ZosJobsTestConstants";
 import { join } from "path";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 /**********************************************************************************/
@@ -54,9 +53,8 @@ const waitThreeSeconds = () => {
     );
 };
 
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 
 // Utility function to cleanup
 async function cleanTestJobs(prefix: string) {
@@ -81,8 +79,7 @@ describe("Get Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_get_jobs"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
