@@ -44,9 +44,9 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
      * Local file containing workflow definiton option.
      * @type {ICommandOptionDefinition}
      */
-    localWorkflowFile: {
-        name: "input-file",
-        aliases: ["if"],
+    localFile: {
+        name: "local-file",
+        aliases: ["lf"],
         type: "string",
         description: "Local file that contains workflow definiton.",
         required: true,

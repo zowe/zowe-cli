@@ -13,7 +13,6 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { CreateWorkflow } from "../../api/Create";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListWorkflows, DeleteWorkflow } from "../../..";
-import { basename } from "path";
 
 /**
  * Common Handler for creating workflow instance in z/OSMF in zosworkflows package.

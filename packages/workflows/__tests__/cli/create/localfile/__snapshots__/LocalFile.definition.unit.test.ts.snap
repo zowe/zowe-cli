@@ -16,10 +16,10 @@ Object {
   "options": Array [
     Object {
       "aliases": Array [
-        "if",
+        "lf",
       ],
       "description": "Local file that contains workflow definiton.",
-      "name": "input-file",
+      "name": "local-file",
       "required": true,
       "type": "string",
     },
@@ -98,7 +98,7 @@ Object {
       "aliases": Array [
         "ov",
       ],
-      "description": "Specifies whether the workflow with the same name should be deleted if it already exists.",
+      "description": "Replaces an existing workflow with a new workflow. ",
       "name": "overwrite",
       "required": false,
       "type": "boolean",

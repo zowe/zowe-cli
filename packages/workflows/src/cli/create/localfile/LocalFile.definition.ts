@@ -38,7 +38,7 @@ export const LocalFile: ICommandDefinition = {
         },
     ],
     options: ([
-        CreateCommonOptions.localWorkflowFile,
+        CreateCommonOptions.localFile,
         CreateCommonOptions.systemName,
         CreateCommonOptions.owner,
         CreateCommonOptions.inputFile,
