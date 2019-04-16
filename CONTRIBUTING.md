@@ -6,7 +6,7 @@ This document is a living summary of conventions and best practices for developm
   - [Contributing to Core Functionality](#contributing-to-zowe-cli-core-functionality)
   - [General Guidelines](#general-guidelines)
   - [Code Guidelines](#code-guidelines)
-  - [Programattic API Guidelines](#programmatic-api-guidelines)
+  - [Programmatic API Guidelines](#programmatic-api-guidelines)
   - [File Naming Guidelines](#file-naming-guidelines)
   - [Command Format Guidelines](#command-format-guidelines)
   - [Versioning Guidelines](#versioning-guidelines)
