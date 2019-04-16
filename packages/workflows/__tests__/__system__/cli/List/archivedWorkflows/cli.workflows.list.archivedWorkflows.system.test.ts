@@ -14,7 +14,7 @@ import { Session } from "@brightside/imperative";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { DeleteWorkflow, CreateWorkflow } from "../../../../..";
+import { ArchivedDeleteWorkflow, CreateWorkflow, ArchiveWorkflow } from "../../../../..";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
@@ -31,9 +31,10 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
+const fakeName: string = "FAKENAME";
 const workflow = join(__dirname, "../../../testfiles/demo.xml");
 
-describe("List workflow cli system tests", () => {
+describe("List archived workflow cli system tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
@@ -45,20 +46,39 @@ describe("List workflow cli system tests", () => {
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
         definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
+
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
     afterAll(async () => {
-        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
-        await TestEnvironment.cleanUp(testEnvironment);
+        let error;
+        let response;
+
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
+        // deleting uploaded workflow file
+        try {
+            const wfEndpoint = endpoint + definitionFile;
+            response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
+        } catch (err) {
+            error = err;
+        }
+        const URI = "/zosmf/workflow/rest/1.0/archivedworkflows?workflowName=" + wfName;
+        response =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION, URI);
+        response.workflows.forEach(async (element: any) => {
+            if(element.workflowName===wfName){
+                wfKey = element.workflowKey;
+                try {
+                    await ArchivedDeleteWorkflow.archivedDeleteWorkflow(REAL_SESSION, wfKey);
+                } catch (err) {
+                    error = err;
+                }
+            }
+        });
     });
-    describe("List all workflows", () => {
+    describe("Success Scenarios", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
-
-            // Create a workflow to list
-            await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
         });
         afterAll(async () => {
             let error;
@@ -72,34 +92,28 @@ describe("List workflow cli system tests", () => {
             } catch (err) {
                 error = err;
             }
-
-            response =  await ZosmfRestClient.getExpectJSON<IWorkflows>(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
-            response.workflows.forEach(async (element: any) => {
-                if(element.workflowName===wfName){
-                    wfKey = element.workflowKey;
-                    try {
-                        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
-                    } catch (err) {
-                        error = err;
-                    }
-                }
-            });
         });
-        describe("Success Scenarios", () => {
-            it("Should return list of workflows in zOSMF.", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
-                testEnvironment, [wfName]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain(`${wfName}`);
-            });
-            it("Should return a message if search does not match any existing workflows", async () => {
-                const fakeName = `${wfName}${wfName}${wfName}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
-                testEnvironment, [fakeName]);
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("No workflows match the requested querry");
-            });
+        beforeEach(async () =>{
+            const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
+            wfKey = response.workflowKey;
+             // Archive workflow
+            await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
+        });
+        it("Should delete workflow in zOSMF by name.", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
+            testEnvironment, [wfName]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`${wfName}`);
+        });
+    });
+    describe("Failure Scenarios", () => {
+        it("Should throw error if no workflow with this wf name was found", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
+            testEnvironment, [wfName + fakeName]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("No workflows match the provided workflow name");
         });
     });
 });
+

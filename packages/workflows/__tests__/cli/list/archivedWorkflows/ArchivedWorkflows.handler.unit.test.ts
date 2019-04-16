@@ -14,7 +14,11 @@ import { ListArchivedWorkflows } from "../../../../src/api/ListArchivedWorkflows
 describe("List workflows handler", () => {
     describe("process method", () => {
         const workflowName = "fakeWorkflow";
+        const category = "Category";
+        const system = "TESTSYS";
         const owner = "FAKEUID";
+        const vendor = "IBM";
+        const statusName = "canceled";
         it("should list all archived workflows", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/list/archivedWorkflows/ArchivedWorkflows.handler");
