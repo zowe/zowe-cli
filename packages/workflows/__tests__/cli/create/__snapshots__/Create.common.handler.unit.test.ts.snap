@@ -14,6 +14,20 @@ Object {
 }
 `;
 
+exports[`Create workflow common handler process method should create a workflow using a local file 1`] = `
+Object {
+  "fields": Array [
+    "workflowKey",
+    "workflowDescription",
+  ],
+  "format": "object",
+  "output": Object {
+    "commandResponse": "deleted",
+    "success": true,
+  },
+}
+`;
+
 exports[`Create workflow common handler process method should create a workflow using a uss file 1`] = `
 Object {
   "fields": Array [

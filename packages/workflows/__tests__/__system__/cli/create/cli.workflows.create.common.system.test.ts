@@ -124,6 +124,69 @@ describe("Create workflow cli system tests", () => {
             });
         });
     });
+    describe("Create workflow using local file", () => {
+        afterAll(async () => {
+            let error;
+            let response;
+
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
+            // deleting uploaded workflow file
+            try {
+                const wfEndpoint = endpoint + definitionFile;
+                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
+            } catch (err) {
+                error = err;
+            }
+        });
+        describe("Success Scenarios", () => {
+            afterEach(async () =>{
+                let error;
+                const response: any =  await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
+                response.workflows.forEach(async (element: any) => {
+                    if(element.workflowName===wfName){
+                        wfKey = element.workflowKey;
+                        try {
+                            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+                        } catch (err) {
+                            error = err;
+                        }
+                    }
+                });
+            });
+            it("Should create workflow in zOSMF.", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("workflowKey");
+            });
+            it("Should throw error if workflow with the same name already exists", async () => {
+                const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("already exists.");
+            });
+            it("Should not throw error if workflow with the same name already exists and there is overwrite", async () => {
+                const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner, "--overwrite"]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("workflowKey");
+            });
+        });
+        describe("Failure Scenarios", () => {
+            it("Should throw error if the local file does not exist", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, fakeDefFile, system, owner]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("no such file or directory");
+            });
+        });
+    });
     describe("Create workflow using dataset", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
