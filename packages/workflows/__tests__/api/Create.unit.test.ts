@@ -499,6 +499,7 @@ describe("Create workflow from local file", () => {
             }
             expect((Upload.fileToUSSFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledTimes(1);
+            expect((CreateWorkflow.getTempFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
                 systemName, wfOwner, PRETEND_INPUT_PARMS.workflowDefinitionFile, variables, assign, access, deleteJobs,
                 WorkflowConstants.ZOSMF_VERSION);
