@@ -20,7 +20,8 @@ describe("List data set", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_data_set_integration"
+            testName: "list_data_set_integration",
+            skipProperties: true
         });
     });
 

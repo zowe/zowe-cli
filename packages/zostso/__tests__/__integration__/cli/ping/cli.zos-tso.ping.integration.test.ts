@@ -21,7 +21,8 @@ describe("zos-tso ping", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_tso_ping_integration"
+            testName: "zos_tso_ping_integration",
+            skipProperties: true
         });
     });
 

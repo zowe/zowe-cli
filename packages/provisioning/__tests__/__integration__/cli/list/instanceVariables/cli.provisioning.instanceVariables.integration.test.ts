@@ -15,7 +15,6 @@ import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Session } from "@zowe/imperative";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
-let REAL_SESSION: Session;
 const TIMEOUT = 30000;
 
 describe("provisioning list instance-variables", () => {
@@ -23,9 +22,9 @@ describe("provisioning list instance-variables", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance-info"
+            testName: "provisioning_list_instance-info",
+            skipProperties: true
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
     it("should display the help", async () => {

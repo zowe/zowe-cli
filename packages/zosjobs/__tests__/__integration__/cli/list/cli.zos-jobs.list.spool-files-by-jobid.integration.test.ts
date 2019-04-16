@@ -20,7 +20,8 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_list_spool_files_by_jobid_command"
+            testName: "zos_jobs_list_spool_files_by_jobid_command",
+            skipProperties: true
         });
     });
 
