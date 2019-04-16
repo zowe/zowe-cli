@@ -20,7 +20,8 @@ describe("Upload uss file", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "upload_uss_file"
+            testName: "upload_uss_file",
+            skipProperties: true
         });
 
     });

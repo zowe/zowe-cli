@@ -22,7 +22,8 @@ describe("List all members of data set", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_data_set"
+            testName: "list_data_set",
+            skipProperties: true
         });
     });
 

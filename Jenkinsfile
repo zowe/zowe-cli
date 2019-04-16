@@ -132,10 +132,6 @@ node('ca-jenkins-agent') {
     pipeline.test(
         name: "Integration",
         operation: {
-            // Create the custom properties file so the tests can run, however the values inside
-            // are not necessary for integration tests
-            sh "cp __tests__/__resources__/properties/default_properties.yaml __tests__/__resources__/properties/custom_properties.yaml"
-           
             sh "npm run test:integration"
         },
         timeout: [time: 30, unit: 'MINUTES'],
