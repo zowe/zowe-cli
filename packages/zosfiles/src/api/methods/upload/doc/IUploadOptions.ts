@@ -36,7 +36,6 @@ export interface IUploadOptions {
 
     /**
      * Task status object used by CLI handlers to create progress bars
-     * for certain upload requests such as directory to PDS
      * Optional
      */
     task?: ITaskWithStatus;

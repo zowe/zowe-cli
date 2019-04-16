@@ -9,8 +9,8 @@
 *
 */
 
-import { CheckStatus, ZosmfMessages } from "../../../../../zosmf";
-import { Imperative, Session } from "@zowe/imperative";
+import { ListDefinedSystems, ZosmfMessages } from "../../../../../zosmf";
+import { Session, Imperative } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
@@ -22,11 +22,10 @@ let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 
-describe("Check Status Api", () => {
+describe("List Defined Systems Api", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
-            testName: "get_zosmf_info"
+            testName: "list_zosmf_def"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
@@ -44,7 +43,7 @@ describe("Check Status Api", () => {
             let response;
 
             try {
-                response = await CheckStatus.getZosmfInfo(REAL_SESSION);
+                response = await ListDefinedSystems.listDefinedSystems(REAL_SESSION);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -52,7 +51,7 @@ describe("Check Status Api", () => {
 
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
-            expect(JSON.stringify(response)).toContain("zosmf_version");
+            expect(JSON.stringify(response)).toContain("items");
         });
     });
 
@@ -62,7 +61,7 @@ describe("Check Status Api", () => {
             let response;
 
             try {
-                response = await CheckStatus.getZosmfInfo(undefined);
+                response = await ListDefinedSystems.listDefinedSystems(undefined);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -88,7 +87,7 @@ describe("Check Status Api", () => {
             let response;
 
             try {
-                response = await CheckStatus.getZosmfInfo(badSession);
+                response = await ListDefinedSystems.listDefinedSystems(badSession);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -100,7 +99,7 @@ describe("Check Status Api", () => {
         });
 
         it("should return with proper message for invalid port", async () => {
-            const badPort = 51342;
+            const badPort = 9999;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.pass,
@@ -114,7 +113,7 @@ describe("Check Status Api", () => {
             let response;
 
             try {
-                response = await CheckStatus.getZosmfInfo(badSession);
+                response = await ListDefinedSystems.listDefinedSystems(badSession);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { Upload } from "../../../api/methods/upload";
 import { IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
@@ -21,9 +21,15 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class FileToUSSHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Uploading USS file",
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task});
 
         const response = await Upload.fileToUSSFile(session, commandParameters.arguments.inputfile,
-            commandParameters.arguments.USSFileName, commandParameters.arguments.binary);
+            commandParameters.arguments.USSFileName, commandParameters.arguments.binary, undefined, task);
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;

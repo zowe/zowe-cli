@@ -53,7 +53,33 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["ls"],
         description: "Optional parameter for listing steps and their properties.",
         type: "boolean",
-        required: false
+        required: false,
+    },
+
+    /**
+     * Optional parameter for listing steps summary only
+     * @type {ICommandOptionDefinition}
+     */
+    stepsSummaryOnly: {
+        name: "steps-summary-only",
+        aliases: ["sso"],
+        description: "Optional parameter that lists steps summary only.",
+        type: "boolean",
+        required: false,
+        conflictsWith: ["list-steps"],
+    },
+
+    /**
+     * Optional parameter for listing steps summary only
+     * @type {ICommandOptionDefinition}
+     */
+    skipWorkflowSummary: {
+        name: "skip-workflow-summary",
+        aliases: ["sws"],
+        description: "Optional parameter that skips the default workflow summary.",
+        type: "boolean",
+        required: false,
+        impliesOneOf: ["steps-summary-only", "list-steps", "list-variables"],
     },
 
     /**
@@ -65,6 +91,6 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["lv"],
         description: "Optional parameter for listing variables and their properties.",
         type: "boolean",
-        required: false
+        required: false,
     },
 };

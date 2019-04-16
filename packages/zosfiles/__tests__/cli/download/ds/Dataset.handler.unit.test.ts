@@ -91,7 +91,13 @@ describe("Download data set handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.dataSet).toHaveBeenCalledTimes(1);
-            expect(Download.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {});
+            expect(Download.dataSet).toHaveBeenCalledWith(fakeSession, dataSetName, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Downloading data set",
+                },
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

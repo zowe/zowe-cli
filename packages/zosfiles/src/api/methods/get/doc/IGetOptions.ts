@@ -9,6 +9,8 @@
 *
 */
 
+import { ITaskWithStatus } from "@zowe/imperative";
+
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
  * @export
@@ -26,4 +28,11 @@ export interface IGetOptions {
      * @type {string}
      */
     volume?: string;
+
+    /**
+     * Task status object used by CLI handlers to create progress bars
+     * Optional
+     * @type {ITaskWithStatus}
+     */
+    task?: ITaskWithStatus;
 }
