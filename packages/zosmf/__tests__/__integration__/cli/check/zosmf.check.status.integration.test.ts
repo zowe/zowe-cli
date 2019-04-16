@@ -20,7 +20,8 @@ describe("zosmf check status", () => {
     // Create the unique test environment
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_check_status_integration"
+            testName: "zos_check_status_integration",
+            skipProperties: true
         });
     });
 

@@ -21,7 +21,8 @@ describe("zos-console issue", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_console_issue"
+            testName: "zos_console_issue",
+            skipProperties: true
         });
     });
 

@@ -21,7 +21,8 @@ describe("zos-console collect response", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_console_collect_response"
+            testName: "zos_console_collect_response",
+            skipProperties: true
         });
     });
 

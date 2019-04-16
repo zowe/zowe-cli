@@ -54,8 +54,10 @@ export class TestEnvironment {
         // Get a unique test data area
         const testDirectory: string = TestEnvironment.createUniqueTestDataDir(params.testName);
 
-        const systemProps = TestEnvironment.loadSystemTestProperties(undefined, testDirectory);
-
+        let systemProps;
+        if (!params.skipProperties) {
+            systemProps = TestEnvironment.loadSystemTestProperties(undefined, testDirectory);
+        }
         // set the env variables to be used for executing
         // scripts in the test environment
         const env: { [key: string]: string } = {};

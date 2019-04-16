@@ -21,7 +21,8 @@ describe("zos-tso issue", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                        testName: "zos_tso_execute"
+            testName: "zos_tso_execute",
+            skipProperties: true
         });
     });
 

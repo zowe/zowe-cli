@@ -51,7 +51,7 @@ describe("provisioning list instance-info", () => {
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_catalog_templates_without_profiles"
+                testName: "provisioning_catalog_templates_without_profiles",
             });
 
             DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
