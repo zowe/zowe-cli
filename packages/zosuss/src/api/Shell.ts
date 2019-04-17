@@ -44,12 +44,13 @@ export class Shell {
                     if (err) { throw err; }
                     let dataBuffer = "";
                     let dataToPrint = "";
-                    let isCommandOutput = false;
+                    let isUserCommand = false;
+                    let rc: number;
 
                     stream.on("close", () => {
                         Logger.getAppLogger().debug("SSH connection closed");
                         conn.end();
-                        resolve();
+                        resolve(rc);
                     });
                     stream.on("data", (data: string) => {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
@@ -65,26 +66,33 @@ export class Shell {
                             // check startCmdFlag: start printing out data
                             if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
                                 dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
-                                isCommandOutput = true;
+                                isUserCommand = true;
                             }
 
                             // check endCmdFlag: end printing out data
-                            if(isCommandOutput && dataToPrint.match(new RegExp(`echo ${endCmdFlag}`))) {
+                            // bash and sh are treated differently because bash prints out the command itself before the command result
+                            // whereas sh prints out only the result.
+                            if(isUserCommand && dataToPrint.match(new RegExp(`echo ${endCmdFlag}`))) {
+                                // for bash
                                 // cut out flag and print out the leftover
-                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`echo ${endCmdFlag}`));
+                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ echo ${endCmdFlag}`));
                                 stdoutHandler(`${dataToPrint}\n`);
+                                isUserCommand = false;
+                            } else if(dataToPrint.match(new RegExp(`${endCmdFlag} [0-9]+`))) { // for sh
+                                // get the return code of the command
+                                rc = parseInt(dataToPrint.slice(dataToPrint.lastIndexOf(" ") + 1), 10);
 
-                                isCommandOutput = false;
-                            } else if(isCommandOutput && dataToPrint.match(new RegExp(`${endCmdFlag}`))) {
+                                // for sh
                                 // cut out flag and print out the leftover
-                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`${endCmdFlag}`));
-                                stdoutHandler(`${dataToPrint}\n`);
-
-                                isCommandOutput = false;
+                                if (isUserCommand) {
+                                    dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ ${endCmdFlag}`));
+                                    stdoutHandler(`${dataToPrint}\n`);
+                                    isUserCommand = false;
+                                }
                             }
 
-                            // print out
-                            if (isCommandOutput) {
+                            // print out the user command result
+                            if (isUserCommand) {
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                             }
@@ -92,7 +100,7 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag}\n` +
+                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag} $?\n` +
                     `exit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n`);
                     stream.end();
                 });
