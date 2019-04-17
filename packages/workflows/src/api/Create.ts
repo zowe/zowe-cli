@@ -221,7 +221,9 @@ export class CreateWorkflow{
      */
     public static async deleteTempFile(session: AbstractSession, ussFileName: string): Promise<string>{
         try{
-            await Delete.ussFile(session, ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussFileName);
+            let deletableLocation: string;
+            ussFileName.startsWith("/") ? deletableLocation = ussFileName.slice(1) : deletableLocation = ussFileName;
+            await Delete.ussFile(session, deletableLocation);
         } catch (error){
             return ussFileName;
         }

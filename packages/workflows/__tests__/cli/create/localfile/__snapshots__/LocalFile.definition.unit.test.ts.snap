@@ -114,10 +114,11 @@ Object {
     },
     Object {
       "aliases": Array [
-        "k",
+        "kf",
       ],
+      "defaultValue": false,
       "description": "Avoid deletion the uploaded files in /tmp or another specified directory after successful execution.",
-      "name": "keep",
+      "name": "keep-files",
       "required": false,
       "type": "boolean",
     },

@@ -33,6 +33,7 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
+let fakeLocalFile: string;
 const workflow = join(__dirname, "../../testfiles/demo.xml");
 const workflowDs = join(__dirname, "../../testfiles/demods.xml");
 
@@ -50,7 +51,7 @@ describe("Create workflow cli system tests", () => {
         definitionDs = `${getUniqueDatasetName("PUBLIC")}`;
         definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
         fakeDefFile = definitionFile + "FAKEFILE";
-
+        fakeLocalFile = "qwerty.xml";
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
@@ -125,19 +126,6 @@ describe("Create workflow cli system tests", () => {
         });
     });
     describe("Create workflow using local file", () => {
-        afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
-        });
         describe("Success Scenarios", () => {
             afterEach(async () =>{
                 let error;
@@ -181,7 +169,7 @@ describe("Create workflow cli system tests", () => {
         describe("Failure Scenarios", () => {
             it("Should throw error if the local file does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
-                testEnvironment, [wfName, fakeDefFile, system, owner]);
+                testEnvironment, [wfName, fakeLocalFile, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("no such file or directory");
             });

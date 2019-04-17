@@ -171,10 +171,11 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
      * @type {ICommandOptionDefinition}
      */
     keepFiles: {
-        name: "keep",
-        aliases: ["k"],
+        name: "keep-files",
+        aliases: ["kf"],
         description: "Avoid deletion the uploaded files in /tmp or another specified directory after successful execution.",
         type: "boolean",
+        defaultValue: false,
         required: false
     },
 
