@@ -7,7 +7,7 @@ A plug-in must follow meet the following requirements to align with the Zowe Con
 - Users of the plug-in can store mainframe connection information in user profiles.
 - Users can override profiles using options on the command line and/or environment variables.
 - The plug-in generally adheres to the CLI [Package and Plug-in Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PackagesAndPluginGuidelines.md).
-- The tests for you plug-in generally adhere to the guidelines listed in [Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/TESTING.md) and [Plugin Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PluginTESTINGGuidelines.md). 
+- The tests for your plug-in generally adhere to the guidelines listed in [Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/TESTING.md) and [Plugin Testing Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PluginTESTINGGuidelines.md). 
 - The plug-in command/help syntax adheres to the [Command Format Standards](https://github.com/zowe/zowe-cli/blob/master/docs/CommandFormatStandards.md).
 - Provide external (user guide, readme) documentation for the plug-in. For guidance, see [Documentation Guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md#documentation-guidelines).
 - Brand the plug-in (in documentation, for example) to be consistent with other CLI plug-ins. For example, "Zowe CLI Plug-in for Abc". 
