@@ -3,7 +3,7 @@
 A plug-in must follow meet the following requirements to align with the Zowe Conformance Program:
 
 - The plug-in is constructed on [Imperative CLI Framework](https://github.com/zowe/imperative).
-- The `@lts-incremental` version of your plug-in is installable into the `@lts-incremental` version of the core Zowe CLI, at minimum.(cannot run as a standalone CLI). For more information about the semantic versioning that CLI uses, see [Maintainer Versioning](https://github.com/zowe/zowe-cli/blob/master/docs/MaintainerVersioning.md).
+- The `@lts-incremental` version of your plug-in is installable into the `@lts-incremental` version of the core Zowe CLI, at minimum (cannot run as a standalone CLI). For more information about the semantic versioning that CLI uses, see [Maintainer Versioning](https://github.com/zowe/zowe-cli/blob/master/docs/MaintainerVersioning.md).
 - Users of the plug-in can store mainframe connection information in user profiles.
 - Users can override profiles using options on the command line and/or environment variables.
 - The plug-in generally adheres to the CLI [Package and Plug-in Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PackagesAndPluginGuidelines.md).
