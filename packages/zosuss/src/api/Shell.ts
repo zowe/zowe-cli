@@ -92,8 +92,9 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.end(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag}\n` +
+                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag}\n` +
                     `exit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n`);
+                    stream.end();
                 });
             });
             conn.connect({
