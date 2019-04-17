@@ -13,6 +13,6 @@ A plug-in must follow meet the following requirements to align with the Zowe Con
 - Brand the plug-in (in documentation, for example) to be consistent with other CLI plug-ins. For example, "Zowe CLI Plug-in for Abc". 
 - All commands in the plug-in should only write to `stdout` or `stderr` via Imperative Framework's `response.console` APIs. This ensures that your commands function with the `--response-format-json` flag. 
 
-**Note:** This list contains the absolute requirements for the Zowe Conformance program, but we also recommend that you reference the [Zowe CLI Contribution Guidelines](https://github.com/zowe/zowe-cli/blob/conformance/CONTRIBUTING.md) as you develop so that you can onboard your contribution quickly and efficiently.
+**Note:** You can also reference the [Zowe CLI Contribution Guidelines](https://github.com/zowe/zowe-cli/blob/conformance/CONTRIBUTING.md) to help you develop a plug-in efficiently. 
 
 If you are new to the project, start creating your plug-in by cloning our sample plug-in. See [Zowe CLI Development Tutorials](https://zowe.github.io/docs-site/latest/extend/extend-cli/cli-devTutorials.html#getting-started) to learn more. 
