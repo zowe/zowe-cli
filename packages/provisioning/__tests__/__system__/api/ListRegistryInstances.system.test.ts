@@ -9,14 +9,34 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../../provisioning";
+import {
+    DeleteInstance,
+    IProvisionedInstances,
+    IProvisionTemplateResponse,
+    ListRegistryInstances,
+    noSessionProvisioning,
+    nozOSMFVersion,
+    ProvisioningConstants,
+    ProvisionPublishedTemplate
+} from "../../../";
+import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ZosmfRestClient } from "../../../../rest";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
+const TYPE: string = "CICS";
 
 let testEnvironment: ITestEnvironment;
+let systemProps: TestProperties;
+let defaultSystem: ITestSystemSchema;
+
+let templateName: string;
+let instanceName: string;
+let instanceID: string;
+let accountNumber: string;
 
 let REAL_SESSION: Session;
 
@@ -36,12 +56,43 @@ describe("ListRegistryInstances (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_registry"
         });
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
+        accountNumber = defaultSystem.tso.account;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        // provision a published template to have an instance
+        let instance;
+        try {
+            instance = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+                templateName, accountNumber);
+            instanceName = instance["registry-info"]["external-name"];
+            instanceID = instance["registry-info"]["object-id"];
+            Imperative.console.info(`Provisioned template: ${instanceName}`);
+        } catch (thrownError) {
+            Imperative.console.info(`Error ${thrownError}`);
+        }
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
+        // delete provisioned instance
+        try {
+            let resourcesQuery = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/`;
+            resourcesQuery += `${ProvisioningConstants.INSTANCES_RESOURCE}/${instanceID}`;
+            // Change state to 'deprovisioned' so it can be removed
+            await (ZosmfRestClient.putExpectJSON<IProvisionTemplateResponse>(REAL_SESSION,
+                resourcesQuery, [Headers.APPLICATION_JSON], {state: "deprovisioned"}));
+            Imperative.console.info(`${instanceName} state was changed to 'deprovisioned'`);
+            // Delete deprovisioned instance
+            await DeleteInstance.deleteDeprovisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+            Imperative.console.info(`${instanceName} was removed`);
+        } catch (thrownError) {
+            Imperative.console.info(`Error ${thrownError}`);
+        }
     });
 
     it("listRegistryCommon should succeed and return list of provisioned instances", async () => {
@@ -56,7 +107,7 @@ describe("ListRegistryInstances (system)", () => {
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseSucceeded(response, error);
-        expect(response["scr-list"].length).toBeGreaterThan(0);
+        expect(response["scr-list"]).toBeDefined();
     }, MAX_TIMEOUT_NUMBER);
 
     it("listRegistryCommon should succeed and return instances filtered by 'CICS' type", async () => {
@@ -72,18 +123,15 @@ describe("ListRegistryInstances (system)", () => {
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseSucceeded(response, error);
-        expect(response["scr-list"][0].type).toEqual("CICS");
+        expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
 
     it("listRegistryCommon should succeed and return instances filtered by 'external-name'", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-        let externalName: string;
         try {
-            externalName = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION,
-                ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0]["external-name"];
-            Imperative.console.info(`External name ${externalName}`);
-            const cicsFilter = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, undefined, externalName);
+            Imperative.console.info(`External name ${instanceName}`);
+            const cicsFilter = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, undefined, instanceName);
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, cicsFilter);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
@@ -91,23 +139,16 @@ describe("ListRegistryInstances (system)", () => {
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseSucceeded(response, error);
-        expect(response["scr-list"][0]["external-name"]).toEqual(externalName);
+        expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
     }, MAX_TIMEOUT_NUMBER);
 
-    it("listRegistryCommon should succeed and return instances filtered by 'external-name' and 'type'", async () => {
+    it("listRegistryCommon should succeed and return instances filtered by 'external-name' and CICS 'type'", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-        let instance: any;
-        let externalName: string;
-        let type: string;
         try {
-            instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0];
-            Imperative.console.info(`Instance ${instance}`);
-            externalName = instance["external-name"];
-            Imperative.console.info(`External name ${externalName}`);
-            type = instance.type;
-            Imperative.console.info(`Type ${type}`);
-            const filteredInstance = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, type, externalName);
+            Imperative.console.info(`External name ${instanceName}`);
+            Imperative.console.info(`Type ${TYPE}`);
+            const filteredInstance = ListRegistryInstances.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, TYPE, instanceName);
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, filteredInstance);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
@@ -115,14 +156,13 @@ describe("ListRegistryInstances (system)", () => {
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseSucceeded(response, error);
-        expect(response["scr-list"][0]["external-name"]).toEqual(externalName);
-        expect(response["scr-list"][0].type).toEqual(type);
+        expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
+        expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
 
     it("listRegistryCommon should fail and throw an error if the session parameter is undefined", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-
         try {
             response = await ListRegistryInstances.listRegistryCommon(undefined, ProvisioningConstants.ZOSMF_VERSION);
             Imperative.console.info(`Response ${response["scr-list"]}`);
@@ -136,7 +176,6 @@ describe("ListRegistryInstances (system)", () => {
     it("listRegistryCommon should fail and throw an error if the z/OSMF version is an empty string", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-
         try {
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, "");
             Imperative.console.info(`Response ${response["scr-list"]}`);
@@ -150,7 +189,6 @@ describe("ListRegistryInstances (system)", () => {
     it("listRegistryCommon should fail and throw an error if the z/OSMF version is undefined", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-
         try {
             response = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, undefined);
             Imperative.console.info(`Response ${response["scr-list"]}`);
@@ -161,13 +199,12 @@ describe("ListRegistryInstances (system)", () => {
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
-    it("listFilteredRegistry should succeed and return a list of instances filtered by 'type'", async () => {
+    it("listFilteredRegistry should succeed and return a list of instances filtered by CICS 'type'", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-
         try {
             response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION,
-                ProvisioningConstants.ZOSMF_VERSION, "CICS", undefined);
+                ProvisioningConstants.ZOSMF_VERSION, TYPE, undefined);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
@@ -175,59 +212,48 @@ describe("ListRegistryInstances (system)", () => {
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
-        expect(response["scr-list"][0].type).toEqual("CICS");
+        expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
 
     it("listFilteredRegistry should succeed and return a list of instances filtered by 'external-name'", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-        let externalName: string;
-
         try {
-            externalName = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION,
-                ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0]["external-name"];
-            Imperative.console.info(`External name ${externalName}`);
-            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined, externalName);
-            Imperative.console.info(`Response ${response["scr-list"]}`);
+            Imperative.console.info(`External name ${instanceName}`);
+            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+                undefined, instanceName);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
-        expect(response["scr-list"][0]["external-name"]).toEqual(externalName);
     }, MAX_TIMEOUT_NUMBER);
 
-    it("listFilteredRegistry should succeed and return instances filtered by 'external-name' and 'type'", async () => {
+    it("listFilteredRegistry should succeed and return instances filtered by 'external-name' and CICS 'type'", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-        let instance: any;
-        let externalName: string;
-        let type: string;
         try {
-            instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0];
-            Imperative.console.info(`Instance ${instance}`);
-            externalName = instance["external-name"];
-            Imperative.console.info(`External name ${externalName}`);
-            type = instance.type;
-            Imperative.console.info(`Type ${type}`);
-            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, type, externalName);
+            Imperative.console.info(`External name ${instanceName}`);
+            Imperative.console.info(`Type ${TYPE}`);
+            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+                TYPE, instanceName);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
         expectZosmfResponseSucceeded(response, error);
-        expect(response["scr-list"][0]["external-name"]).toEqual(externalName);
-        expect(response["scr-list"][0].type).toEqual(type);
+        expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
+        expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
 
     it("listFilteredRegistry should fail and throw an error if the session parameter is undefined", async () => {
         let response: IProvisionedInstances;
         let error: ImperativeError;
-
         try {
-            response = await ListRegistryInstances.listFilteredRegistry(undefined, ProvisioningConstants.ZOSMF_VERSION, undefined, undefined);
+            response = await ListRegistryInstances.listFilteredRegistry(undefined, ProvisioningConstants.ZOSMF_VERSION,
+                undefined, undefined);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
@@ -241,7 +267,8 @@ describe("ListRegistryInstances (system)", () => {
         let error: ImperativeError;
 
         try {
-            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, undefined, undefined, undefined);
+            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, undefined, undefined,
+                undefined);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
@@ -255,7 +282,8 @@ describe("ListRegistryInstances (system)", () => {
         let error: ImperativeError;
 
         try {
-            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, "", undefined, undefined);
+            response = await ListRegistryInstances.listFilteredRegistry(REAL_SESSION, "", undefined,
+                undefined);
             Imperative.console.info(`Response ${response["scr-list"]}`);
         } catch (thrownError) {
             error = thrownError;
