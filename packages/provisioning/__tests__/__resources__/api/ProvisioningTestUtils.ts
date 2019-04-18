@@ -13,7 +13,6 @@ import { AbstractSession, Imperative } from "@zowe/imperative";
 import {
     DeleteInstance,
     IProvisionedInstance,
-    IProvisionTemplateResponse,
     ListInstanceInfo,
     PerformAction,
     ProvisioningConstants,
@@ -21,7 +20,7 @@ import {
 } from "../../..";
 
 /**
- * System preparation functions before and after running tests
+ * System preparation functions before and after running tests.
  * @class ProvisioningTestUtils
  */
 export class ProvisioningTestUtils {
@@ -32,7 +31,7 @@ export class ProvisioningTestUtils {
     }
 
     /**
-     * The functions provisions a template and waits until its state is provisioned
+     * The functions provisions a template and waits until its state is provisioned.
      * @param session
      * @param zOSMFVersion
      * @param templateName
@@ -57,6 +56,12 @@ export class ProvisioningTestUtils {
         }
     }
 
+    /**
+     * The function deprovisions an instance and removes it.
+     * @param session
+     * @param zOSMFVersion
+     * @param instanceID
+     */
     public static async removeProvisionedInstance(session: AbstractSession, zOSMFVersion: string,
                                                   instanceID: string) {
         let instance;
