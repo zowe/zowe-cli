@@ -174,7 +174,10 @@ export class CreateWorkflow{
                     resp.failedToDelete = resp.failedToDelete + " and " + await CreateWorkflow.deleteTempFile(session, tempVariableInputFile);
             }
         } else {
-            resp.filesKept = [tempDefinitionFile, VariableInputFile? tempVariableInputFile : ""];
+            resp.filesKept = [tempDefinitionFile];
+            if(VariableInputFile){
+                resp.filesKept.push(tempVariableInputFile);
+            }
         }
 
         return resp;

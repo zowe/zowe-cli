@@ -111,7 +111,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                 params.response.data.setObj(resp);
 
                 params.response.format.output({
-                    fields: ["workflowKey", "workflowDescription"],
+                    fields: ["workflowKey", "workflowDescription",
+                            resp.filesKept ? "filesKept" : resp.failedToDelete ? "failedToDelete" : ""],
                     output: resp,
                     format: "object"
                 });
