@@ -62,5 +62,5 @@ export interface ICreatedWorkflowLocal {
      * @type {string}
      * @memberof ICreatedWorkflowLocal
      */
-    filesKept?: string;
+    filesKept?: string[];
 }
