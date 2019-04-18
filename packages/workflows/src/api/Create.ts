@@ -174,11 +174,7 @@ export class CreateWorkflow{
                     resp.failedToDelete = resp.failedToDelete + " and " + await CreateWorkflow.deleteTempFile(session, tempVariableInputFile);
             }
         } else {
-<<<<<<< HEAD
-            resp.filesKept =  [`${tempDefinitionFile}`, VariableInputFile? `${tempVariableInputFile}` : ""];
-=======
             resp.filesKept = [tempDefinitionFile, VariableInputFile? tempVariableInputFile : ""];
->>>>>>> api-wf-from-local
         }
 
         return resp;
