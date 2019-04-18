@@ -82,7 +82,6 @@ describe("ListInstanceVariables (system)", () => {
         }
         expectZosmfResponseSucceeded(response, error);
         expect(response.variables).toBeDefined();
-        expect(response.variables.length).toBeGreaterThan(0);
     }, MAX_TIMEOUT_NUMBER);
 
     it("listVariablesCommon should fail and throw an error if the session parameter is undefined", async () => {
