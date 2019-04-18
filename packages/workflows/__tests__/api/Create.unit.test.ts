@@ -453,6 +453,13 @@ describe("Create workflow from local file", () => {
                     });
                 });
             });
+            (Delete.ussFile as any) = jest.fn<string>(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
             let error: ImperativeError;
             let response: any;
             try {
@@ -465,9 +472,11 @@ describe("Create workflow from local file", () => {
             }
             expect((Upload.fileToUSSFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledTimes(1);
+            expect((Delete.ussFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
                 systemName, wfOwner, PRETEND_INPUT_PARMS.workflowDefinitionFile, variables, assign, access, deleteJobs,
                 WorkflowConstants.ZOSMF_VERSION);
+            expect((Delete.ussFile as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_INPUT_PARMS.workflowDefinitionFile.slice(1));
         });
         it("Should succeed and keep files", async () => {
             (Upload.fileToUSSFile as any) = jest.fn<string>(() => {

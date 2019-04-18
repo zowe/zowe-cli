@@ -174,7 +174,7 @@ export class CreateWorkflow{
                     resp.failedToDelete = resp.failedToDelete + " and " + await CreateWorkflow.deleteTempFile(session, tempVariableInputFile);
             }
         } else {
-            resp.filesKept = tempDefinitionFile + VariableInputFile? " and " + tempVariableInputFile : "";
+            resp.filesKept = [tempDefinitionFile, VariableInputFile? tempVariableInputFile : ""];
         }
 
         return resp;
@@ -221,7 +221,9 @@ export class CreateWorkflow{
      */
     public static async deleteTempFile(session: AbstractSession, ussFileName: string): Promise<string>{
         try{
-            await Delete.ussFile(session, ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussFileName);
+            let deletableLocation: string;
+            ussFileName.startsWith("/") ? deletableLocation = ussFileName.slice(1) : deletableLocation = ussFileName;
+            await Delete.ussFile(session, deletableLocation);
         } catch (error){
             return ussFileName;
         }
