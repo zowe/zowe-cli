@@ -14,19 +14,25 @@ import { Imperative, ImperativeError, Session } from "@brightside/imperative";
 import {
     IProvisionedInstance,
     ListInstanceInfo,
-    ListRegistryInstances,
     noInstanceId,
     noSessionProvisioning,
     nozOSMFVersion,
     ProvisioningConstants
-} from "../../../../provisioning";
+} from "../../../";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
+let systemProps: TestProperties;
+let defaultSystem: ITestSystemSchema;
+
+let templateName: string;
+let instanceName: string;
+let instanceID: string;
 
 let REAL_SESSION: Session;
 
@@ -44,24 +50,31 @@ function expectZosmfResponseFailed(response: IProvisionedInstance, error: Impera
 describe("ListInstanceInfo.listInstanceCommon", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance-info"
+            testName: "provisioning_list_registry"
         });
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        let instance: IProvisionedInstance;
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        instanceName = instance["external-name"];
+        instanceID = instance["object-id"];
+        Imperative.console.info(`Provisioned instance: ${instanceName}`);
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
+        await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
     it("should succeed and return instance details", async () => {
         let error: ImperativeError;
         let response: IProvisionedInstance;
-        let instanceId: any;
         try {
-            instanceId = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION,
-                ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0]["object-id"];
-            Imperative.console.info(`Instance id ${instanceId}`);
-            response = await ListInstanceInfo.listInstanceCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
+            Imperative.console.info(`Instance id ${instanceID}`);
+            response = await ListInstanceInfo.listInstanceCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
@@ -69,7 +82,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
         }
 
         expectZosmfResponseSucceeded(response, error);
-        expect(response["object-id"]).toEqual(instanceId);
+        expect(response["object-id"]).toEqual(instanceID);
     }, MAX_TIMEOUT_NUMBER);
 
     it("should fail and throw an error if the session parameter is undefined", async () => {
@@ -82,7 +95,6 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-
         expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
@@ -96,7 +108,6 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
@@ -110,7 +121,6 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-
         expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
@@ -124,7 +134,6 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
@@ -138,7 +147,6 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-
         expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 });
