@@ -37,7 +37,6 @@ describe("ListCatalogTemplates", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_catalog"
         });
-
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 

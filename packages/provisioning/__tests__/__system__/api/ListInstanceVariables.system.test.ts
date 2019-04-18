@@ -16,16 +16,22 @@ import {
     IProvisionedInstance,
     IProvisionedInstanceVariables,
     ListInstanceVariables,
-    ListRegistryInstances,
     noInstanceId,
     noSessionProvisioning,
     nozOSMFVersion,
     ProvisioningConstants
-} from "../../../../provisioning";
+} from "../../../";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
+let systemProps: TestProperties;
+let defaultSystem: ITestSystemSchema;
+
+let templateName: string;
+let instanceName: string;
+let instanceID: string;
 
 let REAL_SESSION: Session;
 
@@ -43,25 +49,30 @@ function expectZosmfResponseFailed(response: IProvisionedInstanceVariables, erro
 describe("ListInstanceVariables (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance_variables"
+            testName: "provisioning_list_registry"
         });
-
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
+        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        let instance: IProvisionedInstance;
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        instanceName = instance["external-name"];
+        instanceID = instance["object-id"];
+        Imperative.console.info(`Provisioned instance: ${instanceName}`);
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
+        await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
     it("listVariablesCommon should succeed and return a list of variables of the provisioned instance", async () => {
         let response: IProvisionedInstanceVariables;
         let error: ImperativeError;
-        let instance: IProvisionedInstance;
-        let instanceId: string;
         try {
-            instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0];
-            instanceId = instance["object-id"];
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
+            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
