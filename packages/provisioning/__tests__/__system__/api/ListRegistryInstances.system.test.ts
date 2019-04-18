@@ -14,17 +14,18 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
+    IProvisionedInstance,
     IProvisionedInstances,
     IProvisionTemplateResponse,
     ListRegistryInstances,
     noSessionProvisioning,
     nozOSMFVersion,
     ProvisioningConstants,
-    ProvisionPublishedTemplate
 } from "../../../";
+import { ZosmfRestClient } from "../../../../rest";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ZosmfRestClient } from "../../../../rest";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 const TYPE: string = "CICS";
@@ -36,7 +37,6 @@ let defaultSystem: ITestSystemSchema;
 let templateName: string;
 let instanceName: string;
 let instanceID: string;
-let accountNumber: string;
 
 let REAL_SESSION: Session;
 
@@ -58,41 +58,19 @@ describe("ListRegistryInstances (system)", () => {
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
-        accountNumber = defaultSystem.tso.account;
-
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        // provision a published template to have an instance
-        let instance;
-        try {
-            instance = await ProvisionPublishedTemplate.provisionTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                templateName, accountNumber);
-            instanceName = instance["registry-info"]["external-name"];
-            instanceID = instance["registry-info"]["object-id"];
-            Imperative.console.info(`Provisioned template: ${instanceName}`);
-        } catch (thrownError) {
-            Imperative.console.info(`Error ${thrownError}`);
-        }
+        let instance: IProvisionedInstance;
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        instanceName = instance["external-name"];
+        instanceID = instance["object-id"];
+        Imperative.console.info(`Provisioned instance: ${instanceName}`);
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
-        // delete provisioned instance
-        try {
-            let resourcesQuery = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/`;
-            resourcesQuery += `${ProvisioningConstants.INSTANCES_RESOURCE}/${instanceID}`;
-            // Change state to 'deprovisioned' so it can be removed
-            await (ZosmfRestClient.putExpectJSON<IProvisionTemplateResponse>(REAL_SESSION,
-                resourcesQuery, [Headers.APPLICATION_JSON], {state: "deprovisioned"}));
-            Imperative.console.info(`${instanceName} state was changed to 'deprovisioned'`);
-            // Delete deprovisioned instance
-            await DeleteInstance.deleteDeprovisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-            Imperative.console.info(`${instanceName} was removed`);
-        } catch (thrownError) {
-            Imperative.console.info(`Error ${thrownError}`);
-        }
+        await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
     it("listRegistryCommon should succeed and return list of provisioned instances", async () => {
