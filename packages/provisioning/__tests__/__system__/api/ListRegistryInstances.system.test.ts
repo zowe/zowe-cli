@@ -9,20 +9,17 @@
 *
 */
 
-import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
-    DeleteInstance,
     IProvisionedInstance,
     IProvisionedInstances,
-    IProvisionTemplateResponse,
     ListRegistryInstances,
     noSessionProvisioning,
     nozOSMFVersion,
     ProvisioningConstants,
 } from "../../../";
-import { ZosmfRestClient } from "../../../../rest";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
