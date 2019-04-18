@@ -48,7 +48,10 @@ describe("ListTemplateInfo (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_template-info"
         });
-        defaultSystem = testEnvironment.systemTestProperties;
+        TEMPLATE_NAME = testEnvironment.systemTestProperties.provisioning.templateName;
+        Imperative.console.info(`Template name: ${TEMPLATE_NAME}`);
+        systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
@@ -61,8 +64,6 @@ describe("ListTemplateInfo (system)", () => {
         let error: ImperativeError;
 
         try {
-            TEMPLATE_NAME = (await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["psc-list"][0].name;
-            Imperative.console.info(`Template name ${TEMPLATE_NAME}`);
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, TEMPLATE_NAME);
             Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
@@ -77,7 +78,6 @@ describe("ListTemplateInfo (system)", () => {
     it("should fail if the session is undefined", async () => {
         let response: IPublishedTemplateInfo;
         let error: ImperativeError;
-
         try {
             response = await ListTemplateInfo.listTemplateCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, TEMPLATE_NAME);
             Imperative.console.info(`Response ${response.name}`);
@@ -91,7 +91,6 @@ describe("ListTemplateInfo (system)", () => {
     it("should fail and thrown an error if the zosmf version is undefined", async () => {
         let response: IPublishedTemplateInfo;
         let error: ImperativeError;
-
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, undefined, TEMPLATE_NAME);
             Imperative.console.info(`Response ${response.name}`);
@@ -105,7 +104,6 @@ describe("ListTemplateInfo (system)", () => {
     it("should fail and throw an error if the z/OSMF version is an empty string", async () => {
         let response: IPublishedTemplateInfo;
         let error: ImperativeError;
-
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, "", TEMPLATE_NAME);
             Imperative.console.info(`Response ${response.name}`);
@@ -119,7 +117,6 @@ describe("ListTemplateInfo (system)", () => {
     it("should fail and throw an error if the template name is undefined", async () => {
         let response: IPublishedTemplateInfo;
         let error: ImperativeError;
-
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
             Imperative.console.info(`Response ${response.name}`);
@@ -133,7 +130,6 @@ describe("ListTemplateInfo (system)", () => {
     it("should fail and throw an error if the template name is an empty string", async () => {
         let response: IPublishedTemplateInfo;
         let error: ImperativeError;
-
         try {
             response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
             Imperative.console.info(`Response ${response.name}`);
@@ -143,5 +139,4 @@ describe("ListTemplateInfo (system)", () => {
         }
         expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
-
 });
