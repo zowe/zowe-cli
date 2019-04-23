@@ -84,7 +84,7 @@ zosjobs:
   iefbr14PSDataSet: ds-iefbr14-ps
   # The jobclass for a non-held, etc jobclass
   jobclass: A
-  # System affinity 
+  # System affinity
   sysaff: sysaff-system
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing provisioning                                 #
@@ -92,8 +92,6 @@ zosjobs:
 provisioning:
   # The name of published software service template
   templateName: template-name
-  # The name of instance created after provisioning the template
-  instanceName: instance-name
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing workflows                                    #
 #-----------------------------------------------------------------------------#
