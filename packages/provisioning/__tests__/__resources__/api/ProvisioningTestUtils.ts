@@ -20,21 +20,36 @@ import {
 } from "../../..";
 
 /**
- * System preparation functions before and after running tests.
+ * Class for provisioning test utils.
  * @class ProvisioningTestUtils
  */
 export class ProvisioningTestUtils {
     public static readonly SLEEP_TIME: number = 2000;
 
+    /**
+     * The function calls timeout and stops execution for specified time.
+     * @param time - time to sleep in ms.
+     */
     public static async sleep(time: number) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }
 
+    /**
+     * The function tests if response passed from REST call is successful.
+     * @param response - response from REST call.
+     * @param error - z/OSMF error.
+     */
     public static expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
     }
 
+    /**
+     * The function tests if REST call is failed.
+     * @param response - response from REST call.
+     * @param error - z/OSMF error.
+     * @param msg - error message to compare with z/OSMF error.
+     */
     public static expectZosmfResponseFailed(response: any, error: ImperativeError, msg: string) {
         expect(response).not.toBeDefined();
         expect(error).toBeDefined();
@@ -43,9 +58,9 @@ export class ProvisioningTestUtils {
 
     /**
      * The functions provisions a template and waits until its state is provisioned.
-     * @param session
-     * @param zOSMFVersion
-     * @param templateName
+     * @param session - z/OSMF connection info.
+     * @param zOSMFVersion - the URI path variable that identifies the version of the z/OSMF software services template service.
+     * @param templateName - name of the published template.
      */
     public static async getProvisionedInstance(session: AbstractSession, zOSMFVersion: string,
                                                templateName: string): Promise<IProvisionedInstance> {
@@ -69,9 +84,9 @@ export class ProvisioningTestUtils {
 
     /**
      * The function deprovisions an instance and removes it.
-     * @param session
-     * @param zOSMFVersion
-     * @param instanceID
+     * @param session - z/OSMF connection info.
+     * @param zOSMFVersion - the URI path variable that identifies the version of the z/OSMF software services template service.
+     * @param instanceID - ID of the provisioned instance.
      */
     public static async removeProvisionedInstance(session: AbstractSession, zOSMFVersion: string,
                                                   instanceID: string) {
