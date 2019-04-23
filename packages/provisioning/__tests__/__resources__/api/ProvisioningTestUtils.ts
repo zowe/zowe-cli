@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Imperative } from "@zowe/imperative";
+import { AbstractSession, Imperative, ImperativeError } from "@zowe/imperative";
 import {
     DeleteInstance,
     IProvisionedInstance,
@@ -28,6 +28,17 @@ export class ProvisioningTestUtils {
 
     public static async sleep(time: number) {
         return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    public static expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
+        expect(error).not.toBeDefined();
+        expect(response).toBeDefined();
+    }
+
+    public static expectZosmfResponseFailed(response: any, error: ImperativeError, msg: string) {
+        expect(response).not.toBeDefined();
+        expect(error).toBeDefined();
+        expect(error.details.msg).toContain(msg);
     }
 
     /**

@@ -27,7 +27,8 @@ import {
     PerformAction,
     ProvisioningConstants,
     ProvisionPublishedTemplate
-} from "../../../../provisioning";
+} from "../../../";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
@@ -43,19 +44,7 @@ let RESPONSE_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningCons
 
 let REAL_SESSION: Session;
 
-
-function expectZosmfResponseSucceeded(response: IPerformActionResponse, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: IPerformActionResponse, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
-async function findInstanceId(state: string) {
+async function findInstanceID(state: string) {
     let instanceId: string;
     let instances: IProvisionedInstances;
     let error: ImperativeError;
@@ -92,7 +81,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         let error: ImperativeError;
         try {
             await sleep(SLEEP_TIME);
-            instanceId = await findInstanceId("provisioned");
+            instanceId = await findInstanceID("provisioned");
             Imperative.console.info(`Instance id of provisioned instance ${instanceId}`);
             if (isNullOrUndefined(instanceId)) {
                 await ProvisionPublishedTemplate.provisionTemplateCommon(
@@ -103,7 +92,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
                 );
                 while (isNullOrUndefined(instanceId)) {
                     await sleep(SLEEP_TIME);
-                    instanceId = await findInstanceId("provisioned");
+                    instanceId = await findInstanceID("provisioned");
                 }
                 Imperative.console.info(`Instance id of provisioned instance ${instanceId}`);
             }
@@ -138,7 +127,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["action-id"]).toBeDefined();
         expect(response["action-uri"]).toBeDefined();
         expect(response["action-uri"]).toEqual(RESPONSE_URI);
@@ -154,7 +143,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -167,7 +156,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -180,7 +169,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("throw an error if the instance-id parameter is undefined", async () => {
@@ -193,7 +182,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
     it("should throw an error if the instance-id parameter is an empty string", async () => {
@@ -206,7 +195,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
     it("should throw an error if the action name parameter is undefined", async () => {
@@ -219,7 +208,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noActionName.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noActionName.message);
     });
 
     it("should throw an error if the action name parameter is undefined", async () => {
@@ -232,7 +221,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noActionName.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noActionName.message);
     });
 
 });
