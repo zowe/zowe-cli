@@ -69,7 +69,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 Imperative.console.info(`Response ${response}`);
                 OBJECT_URI_RESPONSE = OBJECT_URI + instanceID;
                 // Delete the provisioned instance
-                await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+                await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             } catch (thrownError) {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
@@ -260,7 +260,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 Imperative.console.info(`Response ${response}`);
                 OBJECT_URI_RESPONSE = OBJECT_URI + instanceID;
                 // Delete the provisioned instance
-                await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+                await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             } catch (thrownError) {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
