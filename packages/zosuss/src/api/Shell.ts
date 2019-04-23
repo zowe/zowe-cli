@@ -55,13 +55,12 @@ export class Shell {
                     stream.on("data", (data: string) => {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
                         dataBuffer += data;
-                        // if(dataBuffer.includes("\n")) {
                         if(dataBuffer.includes("\r")) {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
                             // rather than print it out right away
-                            dataToPrint = dataBuffer.slice(0, dataBuffer.lastIndexOf("\r") + 1);
-                            dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r") + 1);
+                            dataToPrint = dataBuffer.slice(0, dataBuffer.lastIndexOf("\r"));
+                            dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
                             // check startCmdFlag: start printing out data
                             if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
@@ -72,22 +71,28 @@ export class Shell {
                             // check endCmdFlag: end printing out data
                             // bash and sh are treated differently because bash prints out the command itself before the command result
                             // whereas sh prints out only the result.
-                            if(isUserCommand && dataToPrint.match(new RegExp(`echo ${endCmdFlag}`))) {
+                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ echo " + endCmdFlag))) {
                                 // for bash
                                 // cut out flag and print out the leftover
-                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ echo ${endCmdFlag}`));
+                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ echo " + endCmdFlag));
                                 stdoutHandler(`${dataToPrint}\n`);
                                 isUserCommand = false;
-                            } else if(dataToPrint.match(new RegExp(`${endCmdFlag} [0-9]+`))) { // for sh
+                            } else if(dataToPrint.match(new RegExp(`${endCmdFlag} [0-9]+`))) {
                                 // get the return code of the command
                                 rc = parseInt(dataToPrint.slice(dataToPrint.lastIndexOf(" ") + 1), 10);
 
                                 // for sh
                                 // cut out flag and print out the leftover
                                 if (isUserCommand) {
-                                    dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ ${endCmdFlag}`));
+                                    if(dataToPrint.match(new RegExp("\\$ " + endCmdFlag))) {
+                                        dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ ${endCmdFlag}`));
+                                        isUserCommand = false;
+                                    }
+                                    else if(isUserCommand && dataToPrint.match(new RegExp(endCmdFlag))) {
+                                        dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`${endCmdFlag}`));
+                                    }
                                     stdoutHandler(`${dataToPrint}\n`);
-                                    isUserCommand = false;
+                                    dataToPrint = "";
                                 }
                             }
 
