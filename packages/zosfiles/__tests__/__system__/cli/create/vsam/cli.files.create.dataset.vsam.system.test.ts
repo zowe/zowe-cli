@@ -115,7 +115,7 @@ describe("Create VSAM Data Set", () => {
 
         it("should create a VSAM data set specifying 'retain-to'", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
-                TEST_ENVIRONMENT, [dsname, `-v ${volume} --rt 2018360`]);
+                TEST_ENVIRONMENT, [dsname, `-v ${volume} --rt ${new Date().getFullYear()+1}360`]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });

@@ -10,6 +10,7 @@ exports[`Create Partitioned Data Set Success scenarios should create a partition
 "================Z/OS FILES CREATE PDS===============
 {
   \\"success\\": true,
+  \\"exitCode\\": 0,
   \\"message\\": \\"\\",
   \\"stdout\\": \\"Data set created successfully.\\\\n\\",
   \\"stderr\\": \\"\\",

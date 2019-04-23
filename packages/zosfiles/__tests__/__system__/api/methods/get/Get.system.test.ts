@@ -9,8 +9,8 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, ZosFilesConstants, List, } from "../../../../../";
-import { Imperative, Session } from "@zowe/imperative";
+import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants, } from "../../../../../";
+import { Imperative, IO, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
@@ -32,7 +32,6 @@ describe("Get", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_view"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
@@ -96,6 +95,7 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.toString()).toEqual(data);
             });
+
 
             it("should get data set content with volume option", async () => {
                 let error;

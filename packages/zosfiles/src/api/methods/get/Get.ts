@@ -17,6 +17,7 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
+import { Writable } from "stream";
 
 
 /**
@@ -90,4 +91,5 @@ export class Get {
 
         return content;
     }
+
 }

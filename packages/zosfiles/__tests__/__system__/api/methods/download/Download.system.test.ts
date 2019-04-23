@@ -13,7 +13,7 @@ import {
     Create,
     CreateDataSetTypeEnum,
     Delete,
-    Download,
+    Download, Get,
     IDownloadOptions,
     IZosFilesResponse,
     ZosFilesConstants,
@@ -443,7 +443,6 @@ describe("Download Data Set", () => {
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
-                expect(response.apiResponse).toEqual(Buffer.from(data));
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
@@ -471,7 +470,6 @@ describe("Download Data Set", () => {
 
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
-                expect(response.apiResponse).toEqual(Buffer.from(data));
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
@@ -496,7 +494,6 @@ describe("Download Data Set", () => {
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
-                expect(response.apiResponse).toEqual(Buffer.from(data));
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`test1.txt`).toString());
@@ -505,6 +502,7 @@ describe("Download Data Set", () => {
                 // Delete created local file
                 IO.deleteFile("test1.txt");
             });
+
         });
 
         describe("Failure scenarios", () => {

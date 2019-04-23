@@ -10,6 +10,7 @@ exports[`Create Physical Sequential Data Set Success scenarios should create a p
 "================Z/OS FILES CREATE DATA-SET-SEQUENTIAL ===============
 {
   \\"success\\": true,
+  \\"exitCode\\": 0,
   \\"message\\": \\"\\",
   \\"stdout\\": \\"Data set created successfully.\\\\n\\",
   \\"stderr\\": \\"\\",

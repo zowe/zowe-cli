@@ -77,7 +77,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("should throw error if invalid file path is specified", async () => {
             lsStatSpy.mockImplementationOnce((somePath, callback) => {
-                callback(null, { isFile: () => false });
+                callback(null, {isFile: () => false});
             });
             const testPath = "non-existing-path";
             try {
@@ -120,7 +120,7 @@ describe("z/OS Files - Upload", () => {
             const testReturn = {};
             const testPath = "test/path";
             lsStatSpy.mockImplementationOnce((somePath, callback) => {
-                callback(null, { isFile: () => true });
+                callback(null, {isFile: () => true});
             });
 
             dataSetSpy.mockReturnValueOnce(testReturn);
@@ -204,7 +204,7 @@ describe("z/OS Files - Upload", () => {
 
         it("return with proper message when path is pointing to a file", async () => {
             lsStatSpy.mockImplementationOnce((somePath, callback) => {
-                callback(null, { isFile: () => false });
+                callback(null, {isFile: () => false});
             });
             isDirSpy.mockReturnValueOnce(false);
             const testPath = "test/path";
@@ -225,7 +225,7 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             dataSetSpy.mockReturnValueOnce(testReturn);
             lsStatSpy.mockImplementationOnce((somePath, callback) => {
-                callback(null, { isFile: () => false });
+                callback(null, {isFile: () => false});
             });
 
             try {
@@ -430,8 +430,10 @@ describe("z/OS Files - Upload", () => {
         const listDatasetSpy = jest.spyOn(List, "dataSet");
         const getFileListSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const readFileSpy = jest.spyOn(fs, "readFileSync");
-        const writeZosmfDatasetSpy = jest.spyOn(Upload, "bufferToDataSet");
+        const writeZosmfDatasetSpy = jest.spyOn(Upload, "streamToDataSet");
         const isDirSpy = jest.spyOn(IO, "isDir");
+        IO.createReadStream = jest.fn();
+        ZosmfRestClient.putStreamedRequestOnly = jest.fn();
 
         beforeEach(() => {
             response = undefined;
@@ -710,7 +712,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if USS file name is not specified", async () => {
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, undefined,  Buffer.from("testing"));
+                USSresponse = await Upload.bufferToUSSFile(dummySession, undefined, Buffer.from("testing"));
             } catch (err) {
                 error = err;
             }
@@ -827,7 +829,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if local directory is not specified", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, undefined,  dsName);
+                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, undefined, dsName);
             } catch (err) {
                 error = err;
             }
@@ -839,7 +841,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if local directory is empty string", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, "",  dsName);
+                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, "", dsName);
             } catch (err) {
                 error = err;
             }
@@ -865,7 +867,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if USS directory is not specified", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, "some/path",  undefined);
+                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, "some/path", undefined);
             } catch (err) {
                 error = err;
             }
@@ -877,7 +879,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if USS path is empty string", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, "some/path",  "");
+                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, "some/path", "");
             } catch (err) {
                 error = err;
             }
@@ -943,7 +945,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if local directory is not specified", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDir(dummySession, undefined,  dsName);
+                USSresponse = await Upload.dirToUSSDir(dummySession, undefined, dsName);
             } catch (err) {
                 error = err;
             }
@@ -955,7 +957,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if local directory is empty string", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDir(dummySession, "",  dsName);
+                USSresponse = await Upload.dirToUSSDir(dummySession, "", dsName);
             } catch (err) {
                 error = err;
             }
@@ -981,7 +983,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if USS directory is not specified", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDir(dummySession, "some/path",  undefined);
+                USSresponse = await Upload.dirToUSSDir(dummySession, "some/path", undefined);
             } catch (err) {
                 error = err;
             }
@@ -993,7 +995,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if USS path is empty string", async () => {
             try {
-                USSresponse = await Upload.dirToUSSDir(dummySession, "some/path",  "");
+                USSresponse = await Upload.dirToUSSDir(dummySession, "some/path", "");
             } catch (err) {
                 error = err;
             }
