@@ -56,7 +56,7 @@ describe("ListRegistryInstances (system)", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
-        await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
     it("listRegistryCommon should succeed and return list of provisioned instances", async () => {

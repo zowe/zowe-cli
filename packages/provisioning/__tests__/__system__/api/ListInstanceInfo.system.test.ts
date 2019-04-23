@@ -56,7 +56,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
-        await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
     it("should succeed and return instance details", async () => {

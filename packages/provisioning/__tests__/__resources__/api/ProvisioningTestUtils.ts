@@ -83,28 +83,68 @@ export class ProvisioningTestUtils {
     }
 
     /**
-     * The function deprovisions an instance and removes it.
+     * The function removes an instance despite of its state.
      * @param session - z/OSMF connection info.
      * @param zOSMFVersion - the URI path variable that identifies the version of the z/OSMF software services template service.
      * @param instanceID - ID of the provisioned instance.
      */
-    public static async removeProvisionedInstance(session: AbstractSession, zOSMFVersion: string,
-                                                  instanceID: string) {
+    public static async removeRegistryInstance(session: AbstractSession, zOSMFVersion: string,
+                                               instanceID: string) {
         let instance;
+        let instanceState: string;
         try {
-            instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
-                instanceID, "deprovision");
-            Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
-            instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
-            Imperative.console.info(`Instance state: ${instance.state}`);
-            while(instance.state !== "deprovisioned") {
-                instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
-                Imperative.console.info(`Instance state: ${instance.state}`);
-                await this.sleep(this.SLEEP_TIME);
+            instanceState = (await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID)).state;
+            if (instanceState === "being-deprovisioned") {
+                // Wait until instance state is 'deprovisioned'
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "deprovisioned");
+            } else if (instanceState === "provisioned") {
+                // Deprovision an instance in 'provisioned' state
+                instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
+                    instanceID, "deprovision");
+                Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+                // Wait until instance state is 'deprovisioned'
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "deprovisioned");
+            } else if (instanceState === "being-initialized" || instanceState === "being-provisioned") {
+                // Wait until instance state is 'provisioned'
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "provisioned");
+                // Deprovision an instance in 'provisioned' state
+                instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
+                    instanceID, "deprovision");
+                Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+                // Wait until instance state is 'deprovisioned'
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "deprovisioned");
             }
             // Delete deprovisioned instance
             await DeleteInstance.deleteDeprovisionedInstance(session, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             Imperative.console.info(`Instance ${instance["external-name"]} was removed`);
+        } catch (thrownError) {
+            Imperative.console.info(`Error ${thrownError}`);
+            throw thrownError;
+        }
+    }
+
+    /**
+     * The function will wait until an instance is not with desired state.
+     * @param session - z/OSMF connection info.
+     * @param zOSMFVersion - the URI path variable that identifies the version of the z/OSMF software services template service.
+     * @param instanceID - ID of the provisioned instance.
+     * @param state - desired state value.
+     */
+    public static async waitInstanceState(session: AbstractSession, zOSMFVersion: string,
+                                          instanceID: string, state: string) {
+        let instance;
+        try {
+            // Get the instance
+            instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
+            // Check if the instance state is equal to desired state
+            if (instance.state !== state) {
+                while(instance.state !== state) {
+                    instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
+                    Imperative.console.info(`Instance state: ${instance.state}`);
+                    await this.sleep(this.SLEEP_TIME);
+                }
+            }
+            return instance;
         } catch (thrownError) {
             Imperative.console.info(`Error ${thrownError}`);
             throw thrownError;
