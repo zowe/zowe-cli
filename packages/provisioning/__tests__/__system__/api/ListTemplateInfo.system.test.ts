@@ -9,20 +9,19 @@
 *
 */
 
-import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
-    IProvisionedInstance,
-    IProvisionedInstanceVariables,
-    ListInstanceVariables,
-    noInstanceId,
+    IPublishedTemplateInfo,
+    ListTemplateInfo,
     noSessionProvisioning,
+    noTemplateName,
     nozOSMFVersion,
     ProvisioningConstants
-} from "../../../";
+} from "../../../../provisioning";
+import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
@@ -31,121 +30,103 @@ let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 
-let templateName: string;
-let instanceName: string;
-let instanceID: string;
-
+let TEMPLATE_NAME: string;
 let REAL_SESSION: Session;
 
-function expectZosmfResponseSucceeded(response: IProvisionedInstanceVariables, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: IProvisionedInstanceVariables, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
-describe("ListInstanceVariables (system)", () => {
+describe("ListTemplateInfo (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_registry"
+            testName: "provisioning_list_template-info"
         });
+        TEMPLATE_NAME = testEnvironment.systemTestProperties.provisioning.templateName;
+        Imperative.console.info(`Template name: ${TEMPLATE_NAME}`);
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
-        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
-        let instance: IProvisionedInstance;
-        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-        instanceName = instance["external-name"];
-        instanceID = instance["object-id"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
-        await ProvisioningTestUtils.removeProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
-    it("listVariablesCommon should succeed and return a list of variables of the provisioned instance", async () => {
-        let response: IProvisionedInstanceVariables;
+    it("should succeed with correct parameters and return a response from z/OSMF", async () => {
+        let response: IPublishedTemplateInfo;
         let error: ImperativeError;
+
         try {
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-            Imperative.console.info(`Response ${response}`);
+            response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, TEMPLATE_NAME);
+            Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
-        expect(response.variables).toBeDefined();
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
+        expect(response.name).toEqual(TEMPLATE_NAME);
+        expect(response.state).toEqual("published");
     }, MAX_TIMEOUT_NUMBER);
 
-    it("listVariablesCommon should fail and throw an error if the session parameter is undefined", async () => {
-        let response: IProvisionedInstanceVariables;
+    it("should fail if the session is undefined", async () => {
+        let response: IPublishedTemplateInfo;
         let error: ImperativeError;
         try {
-            response = await ListInstanceVariables.listVariablesCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, "12345");
-            Imperative.console.info(`Response ${response}`);
+            response = await ListTemplateInfo.listTemplateCommon(undefined, ProvisioningConstants.ZOSMF_VERSION, TEMPLATE_NAME);
+            Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
-    it("listVariables should fail and throw an error if the z/OSMF version parameter is undefined", async () => {
-        let response: IProvisionedInstanceVariables;
+    it("should fail and thrown an error if the zosmf version is undefined", async () => {
+        let response: IPublishedTemplateInfo;
         let error: ImperativeError;
         try {
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, undefined, "12345");
-            Imperative.console.info(`Response ${response}`);
+            response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, undefined, TEMPLATE_NAME);
+            Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
-    it("listVariables should fail and throw an error if the z/OSMF version parameter is an empty string", async () => {
-        let response: IProvisionedInstanceVariables;
+    it("should fail and throw an error if the z/OSMF version is an empty string", async () => {
+        let response: IPublishedTemplateInfo;
         let error: ImperativeError;
         try {
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, "", "12345");
-            Imperative.console.info(`Response ${response}`);
+            response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, "", TEMPLATE_NAME);
+            Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
-    it("listVariables should fail and throw an error if the instance id parameter is undefined", async () => {
-        let response: IProvisionedInstanceVariables;
+    it("should fail and throw an error if the template name is undefined", async () => {
+        let response: IPublishedTemplateInfo;
         let error: ImperativeError;
         try {
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
-            Imperative.console.info(`Response ${response}`);
+            response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, undefined);
+            Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
 
-    it("listVariables should fail and throw an error if the instance id parameter is an empty string", async () => {
-        let response: IProvisionedInstanceVariables;
+    it("should fail and throw an error if the template name is an empty string", async () => {
+        let response: IPublishedTemplateInfo;
         let error: ImperativeError;
         try {
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
-            Imperative.console.info(`Response ${response}`);
+            response = await ListTemplateInfo.listTemplateCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, "");
+            Imperative.console.info(`Response ${response.name}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
 });

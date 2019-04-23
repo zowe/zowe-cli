@@ -40,18 +40,6 @@ let instanceName: string;
 
 const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/${ProvisioningConstants.INSTANCES_RESOURCE}/`;
 
-
-function expectZosmfResponseSucceeded(response: IProvisionTemplateResponse, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: IProvisionTemplateResponse, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
 describe("ProvisionPublishedTemplate (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
@@ -86,7 +74,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseSucceeded(response, error);
+            ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response["registry-info"]["object-uri"]).toEqual(OBJECT_URI_RESPONSE);
         }, MAX_TIMEOUT_TIME);
 
@@ -101,7 +89,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
         });
 
         it("should throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -115,7 +103,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
 
         it("should throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -129,7 +117,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
 
         it("should throw an error if the template-name parameter is undefined", async () => {
@@ -143,7 +131,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noTemplateName.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
 
         it("should throw an error if the template-name parameter is an empty string", async () => {
@@ -157,7 +145,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noTemplateName.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
 
         it("should throw an error if the account-info parameter is undefined", async () => {
@@ -171,7 +159,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noAccountInfo.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noAccountInfo.message);
         });
 
         it("should throw an error if the account-info parameter is an empty string", async () => {
@@ -185,7 +173,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noAccountInfo.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noAccountInfo.message);
         });
 
     });
@@ -205,7 +193,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
         });
 
         it("should throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -218,7 +206,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
 
         it("should throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -231,7 +219,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
         });
 
         it("should throw an error if the template-name parameter is undefined", async () => {
@@ -244,7 +232,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noTemplateName.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
 
         it("should throw an error if the template-name parameter is an empty string", async () => {
@@ -257,7 +245,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseFailed(response, error, noTemplateName.message);
+            ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
         });
 
         it("should succeed with no optional parameters", async () => {
@@ -277,7 +265,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expectZosmfResponseSucceeded(response, error);
+            ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response["registry-info"]["object-uri"]).toEqual(OBJECT_URI_RESPONSE);
         }, MAX_TIMEOUT_TIME);
     });

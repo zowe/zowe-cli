@@ -37,17 +37,6 @@ let instanceID: string;
 
 let REAL_SESSION: Session;
 
-function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
 describe("ListRegistryInstances (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
@@ -81,7 +70,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"]).toBeDefined();
     }, MAX_TIMEOUT_NUMBER);
 
@@ -97,7 +86,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
 
@@ -113,7 +102,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
     }, MAX_TIMEOUT_NUMBER);
 
@@ -130,7 +119,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
         expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
@@ -145,7 +134,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("listRegistryCommon should fail and throw an error if the z/OSMF version is an empty string", async () => {
@@ -158,7 +147,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("listRegistryCommon should fail and throw an error if the z/OSMF version is undefined", async () => {
@@ -171,7 +160,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("listFilteredRegistry should succeed and return a list of instances filtered by CICS 'type'", async () => {
@@ -185,7 +174,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
         expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
@@ -201,7 +190,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
     }, MAX_TIMEOUT_NUMBER);
 
@@ -218,7 +207,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
         expect(response["scr-list"][0].type).toEqual(TYPE);
     }, MAX_TIMEOUT_NUMBER);
@@ -234,7 +223,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("listFilteredRegistry should fail and throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -249,7 +238,7 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("listFilteredRegistry should fail and throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -264,6 +253,6 @@ describe("ListRegistryInstances (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 });
