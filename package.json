@@ -128,7 +128,7 @@
     "modulePathIgnorePatterns": [
       "__tests__/__snapshots__/"
     ],
-    "setupTestFrameworkScriptFile": "./__tests__/beforeTests.js",
+    "setupFilesAfterEnv": ["./__tests__/beforeTests.js"],
     "testResultsProcessor": "jest-stare",
     "transform": {
       ".(ts)": "ts-jest"
