@@ -14,7 +14,6 @@ import { TestProperties } from "../../../../../__tests__/__src__/properties/Test
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import {
     IPublishedTemplateInfo,
-    ListCatalogTemplates,
     ListTemplateInfo,
     noSessionProvisioning,
     noTemplateName,
@@ -23,6 +22,7 @@ import {
 } from "../../../../provisioning";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
@@ -32,18 +32,6 @@ let defaultSystem: ITestSystemSchema;
 
 let TEMPLATE_NAME: string;
 let REAL_SESSION: Session;
-
-
-function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: any, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
 
 describe("ListTemplateInfo (system)", () => {
     beforeAll(async () => {
@@ -72,7 +60,7 @@ describe("ListTemplateInfo (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response.name).toEqual(TEMPLATE_NAME);
         expect(response.state).toEqual("published");
     }, MAX_TIMEOUT_NUMBER);
@@ -87,7 +75,7 @@ describe("ListTemplateInfo (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("should fail and thrown an error if the zosmf version is undefined", async () => {
@@ -100,7 +88,7 @@ describe("ListTemplateInfo (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should fail and throw an error if the z/OSMF version is an empty string", async () => {
@@ -113,7 +101,7 @@ describe("ListTemplateInfo (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should fail and throw an error if the template name is undefined", async () => {
@@ -126,7 +114,7 @@ describe("ListTemplateInfo (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noTemplateName.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
 
     it("should fail and throw an error if the template name is an empty string", async () => {
@@ -139,6 +127,6 @@ describe("ListTemplateInfo (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noTemplateName.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noTemplateName.message);
     });
 });

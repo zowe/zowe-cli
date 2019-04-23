@@ -37,17 +37,6 @@ let instanceID: string;
 
 let REAL_SESSION: Session;
 
-function expectZosmfResponseSucceeded(response: IProvisionedInstance, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: IProvisionedInstance, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
 describe("ListInstanceInfo.listInstanceCommon", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
@@ -82,7 +71,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             Imperative.console.info(`Error ${inspect(error)}`);
         }
 
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["object-id"]).toEqual(instanceID);
     }, MAX_TIMEOUT_NUMBER);
 
@@ -96,7 +85,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("should fail and throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -109,7 +98,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should fail and throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -122,7 +111,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should fail and throw an error if the instance-id parameter is undefined", async () => {
@@ -135,7 +124,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
     it("should fail and throw an error if the instance-id parameter is an empty string", async () => {
@@ -148,6 +137,6 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 });

@@ -17,7 +17,6 @@ import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/I
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
-    IPerformActionResponse,
     IProvisionedInstances,
     ListRegistryInstances,
     noInstanceId,
@@ -27,6 +26,7 @@ import {
     ProvisioningConstants,
     ProvisionPublishedTemplate
 } from "../../../../provisioning";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
@@ -40,13 +40,6 @@ let templateName: string;
 let instanceName: string;
 
 let REAL_SESSION: Session;
-
-
-function expectZosmfResponseFailed(response: IPerformActionResponse, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
 
 async function findInstanceId(state: string) {
     let instanceId: string;
@@ -151,7 +144,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -164,7 +157,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -177,7 +170,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should throw an error if the instance-id parameter is undefined", async () => {
@@ -190,7 +183,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
     it("should throw an error if the instance-id parameter is an empty string", async () => {
@@ -203,6 +196,6 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 });

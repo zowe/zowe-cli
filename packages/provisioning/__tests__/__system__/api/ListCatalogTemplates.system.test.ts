@@ -14,23 +14,12 @@ import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { IPublishedTemplates, ListCatalogTemplates, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../../provisioning";
+import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
 let REAL_SESSION: Session;
-
-function expectZosmfResponseSucceeded(response: IPublishedTemplates, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: IPublishedTemplates, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
 
 describe("ListCatalogTemplates", () => {
     beforeAll(async () => {
@@ -54,7 +43,7 @@ describe("ListCatalogTemplates", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["psc-list"]).toBeDefined();
         expect(response["psc-list"].length).toBeGreaterThan(0);
     }, MAX_TIMEOUT_NUMBER);
@@ -69,7 +58,7 @@ describe("ListCatalogTemplates", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -82,7 +71,7 @@ describe("ListCatalogTemplates", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -95,7 +84,7 @@ describe("ListCatalogTemplates", () => {
             error = thrownError;
             Imperative.console.info(`Error ${inspect(error)}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
 });
