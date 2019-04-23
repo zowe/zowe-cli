@@ -29,7 +29,8 @@ export default class Handler extends ZosmfBaseHandler {
         commandParameters.response.format.output({
             fields: ["systemNickName", "systemName", "url", ],
             output: zosResponse.items,
-            format: "object"
+            format: "table",
+            header: true,
         });
 
         // Return the original zosResponse when using --response-format-json
