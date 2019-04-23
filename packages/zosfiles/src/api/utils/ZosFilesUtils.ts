@@ -153,13 +153,16 @@ export class ZosFilesUtils {
         return Buffer.from(buffer.toString().replace(new RegExp("\r\n", "g"), "\n"));
     }
 
-    public static sanitizeUssPathForRestCall(ussPath: string): string {
-        let sanitizedPath = path.posix.normalize(ussPath);
-        if (sanitizedPath.charAt(0) === "/") {
+    /**
+     * Format USS filepaths in the way that the APIs expect (no leading /)
+     * @param {string} usspath - the path to format
+     */
+    public static formatUnixFilepath(usspath: string) {
+        if (usspath.charAt(0) === "/") {
             // trim leading slash from unix files - API doesn't like it
-            sanitizedPath = sanitizedPath.substring(1);
+            usspath = usspath.substring(1);
         }
-        return encodeURIComponent(sanitizedPath);
+        return usspath;
     }
 }
 

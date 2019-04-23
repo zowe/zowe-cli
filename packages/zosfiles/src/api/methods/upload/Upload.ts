@@ -462,7 +462,9 @@ export class Upload {
                                         binary: boolean = false,
                                         localEncoding?: string) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        ussname = path.posix.normalize(ussname);
+        ussname = ZosFilesUtils.formatUnixFilepath(ussname);
+        ussname = encodeURIComponent(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const headers: any[] = [];
         if (binary) {
@@ -493,7 +495,7 @@ export class Upload {
                                         task?: ITaskWithStatus) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = path.posix.normalize(ussname);
-        ussname = Upload.formatUnixFilepath(ussname);
+        ussname = ZosFilesUtils.formatUnixFilepath(ussname);
         ussname = encodeURIComponent(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const headers: any[] = [];
@@ -856,17 +858,6 @@ export class Upload {
         // return Logger.getConsoleLogger();
     }
 
-    /**
-     * Format USS filepaths in the way that the APIs expect (no leading /)
-     * @param {string} usspath - the path to format
-     */
-    private static formatUnixFilepath(usspath: string) {
-        if (usspath.charAt(0) === "/") {
-            // trim leading slash from unix files - API doesn't like it
-            usspath = usspath.substring(1);
-        }
-        return usspath;
-    }
 
     /**
      * Checks if a given directory has sub-directories or not
