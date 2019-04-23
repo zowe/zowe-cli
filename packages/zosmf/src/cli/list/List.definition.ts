@@ -10,18 +10,13 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { CheckCommand } from "./check/Check.definition";
-import { ListCommand } from "./list/List.definition";
+import { SystemsDefinition } from "./systems/Systems.definition";
 
-const definition: ICommandDefinition = {
-    name: "zosmf",
+export const ListCommand: ICommandDefinition = {
+    name: "list",
     type: "group",
-    summary: "Interact with z/OSMF",
-    description: "Retrieve and show the properties of a z/OSMF web server",
+    description: "Obtain a list of the systems that are defined to a z/OSMF instance.",
     children: [
-        CheckCommand,
-        ListCommand,
+        SystemsDefinition
     ]
 };
-
-export = definition;
