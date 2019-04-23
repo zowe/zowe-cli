@@ -55,7 +55,7 @@ export interface ICreatedWorkflowLocal {
      * @type {string}
      * @memberof ICreatedWorkflowLocal
      */
-    failedToDelete?: string;
+    failedToDelete?: string[];
 
     /**
      * Files that were kept

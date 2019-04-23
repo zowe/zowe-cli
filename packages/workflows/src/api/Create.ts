@@ -167,11 +167,11 @@ export class CreateWorkflow{
                                                AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
 
         if (!keepFiles){
-            resp.failedToDelete = await CreateWorkflow.deleteTempFile(session, tempDefinitionFile);
+            resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];
             if (VariableInputFile){
-                !resp.failedToDelete?
-                    resp.failedToDelete = await CreateWorkflow.deleteTempFile(session, tempVariableInputFile) :
-                    resp.failedToDelete = resp.failedToDelete + " and " + await CreateWorkflow.deleteTempFile(session, tempVariableInputFile);
+                !resp.failedToDelete[0]?
+                    resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempVariableInputFile)]:
+                    resp.failedToDelete.push(await CreateWorkflow.deleteTempFile(session, tempVariableInputFile));
             }
         } else {
             resp.filesKept = [tempDefinitionFile];
