@@ -24,7 +24,6 @@ import { TestProperties } from "../../../../../__tests__/__src__/properties/Test
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
-const MAX_TIMEOUT_NUMBER: number = 3600000;
 const TYPE: string = "CICS";
 
 let testEnvironment: ITestEnvironment;
@@ -72,7 +71,7 @@ describe("ListRegistryInstances (system)", () => {
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"]).toBeDefined();
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listRegistryCommon should succeed and return instances filtered by 'CICS' type", async () => {
         let response: IProvisionedInstances;
@@ -88,7 +87,7 @@ describe("ListRegistryInstances (system)", () => {
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0].type).toEqual(TYPE);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listRegistryCommon should succeed and return instances filtered by 'external-name'", async () => {
         let response: IProvisionedInstances;
@@ -104,7 +103,7 @@ describe("ListRegistryInstances (system)", () => {
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listRegistryCommon should succeed and return instances filtered by 'external-name' and CICS 'type'", async () => {
         let response: IProvisionedInstances;
@@ -122,7 +121,7 @@ describe("ListRegistryInstances (system)", () => {
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
         expect(response["scr-list"][0].type).toEqual(TYPE);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listRegistryCommon should fail and throw an error if the session parameter is undefined", async () => {
         let response: IProvisionedInstances;
@@ -177,7 +176,7 @@ describe("ListRegistryInstances (system)", () => {
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
         expect(response["scr-list"][0].type).toEqual(TYPE);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listFilteredRegistry should succeed and return a list of instances filtered by 'external-name'", async () => {
         let response: IProvisionedInstances;
@@ -192,7 +191,7 @@ describe("ListRegistryInstances (system)", () => {
         }
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"].length).toBeGreaterThan(0);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listFilteredRegistry should succeed and return instances filtered by 'external-name' and CICS 'type'", async () => {
         let response: IProvisionedInstances;
@@ -210,7 +209,7 @@ describe("ListRegistryInstances (system)", () => {
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["scr-list"][0]["external-name"]).toEqual(instanceName);
         expect(response["scr-list"][0].type).toEqual(TYPE);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listFilteredRegistry should fail and throw an error if the session parameter is undefined", async () => {
         let response: IProvisionedInstances;

@@ -26,6 +26,15 @@ import {
 export class ProvisioningTestUtils {
     public static readonly SLEEP_TIME: number = 2000;
 
+    public static MAX_TIMEOUT_TIME: number = 600000;
+
+    public static readonly STATE_DEPROV = "deprovisioned";
+    public static readonly STATE_BEING_DEPROV = "being-deprovisioned";
+    public static readonly STATE_PROV = "provisioned";
+    public static readonly STATE_BEING_PROV = "being-provisioned";
+    public static readonly STATE_BEING_INIT = "being-initialized";
+    public static readonly ACTION_DEPROV = "deprovision";
+
     /**
      * The function calls timeout and stops execution for specified time.
      * @param time - time to sleep in ms.
@@ -70,7 +79,7 @@ export class ProvisioningTestUtils {
             Imperative.console.info(`Provisioned template: ${instance}`);
             const instanceID = instance["registry-info"]["object-id"];
             instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
-            while(instance.state !== "provisioned") {
+            while(instance.state !== this.STATE_PROV) {
                 instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
                 Imperative.console.info(`Instance state: ${instance.state}`);
                 await this.sleep(this.SLEEP_TIME);
@@ -91,32 +100,39 @@ export class ProvisioningTestUtils {
     public static async removeRegistryInstance(session: AbstractSession, zOSMFVersion: string,
                                                instanceID: string) {
         let instance;
-        let instanceState: string;
         try {
-            instanceState = (await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID)).state;
-            if (instanceState === "being-deprovisioned") {
+            const instanceState = (await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID)).state;
+
+            if (instanceState === this.STATE_BEING_DEPROV) {
                 // Wait until instance state is 'deprovisioned'
-                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "deprovisioned");
-            } else if (instanceState === "provisioned") {
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_DEPROV);
+
+            } else if (instanceState === this.STATE_PROV) {
                 // Deprovision an instance in 'provisioned' state
                 instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
-                    instanceID, "deprovision");
+                    instanceID, this.ACTION_DEPROV);
+
                 Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
                 // Wait until instance state is 'deprovisioned'
-                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "deprovisioned");
-            } else if (instanceState === "being-initialized" || instanceState === "being-provisioned") {
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_DEPROV);
+
+            } else if (instanceState === this.STATE_BEING_INIT || instanceState === this.STATE_BEING_PROV) {
                 // Wait until instance state is 'provisioned'
-                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "provisioned");
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_PROV);
+
                 // Deprovision an instance in 'provisioned' state
                 instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,
-                    instanceID, "deprovision");
+                    instanceID, this.ACTION_DEPROV);
                 Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+
                 // Wait until instance state is 'deprovisioned'
-                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, "deprovisioned");
+                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_DEPROV);
             }
+
             // Delete deprovisioned instance
             await DeleteInstance.deleteDeprovisionedInstance(session, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             Imperative.console.info(`Instance ${instance["external-name"]} was removed`);
+
         } catch (thrownError) {
             Imperative.console.info(`Error ${thrownError}`);
             throw thrownError;

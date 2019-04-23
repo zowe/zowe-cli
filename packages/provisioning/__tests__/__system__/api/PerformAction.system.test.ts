@@ -25,15 +25,11 @@ import {
 } from "../../../";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
-const actionName: string = "deprovision";
-const MAX_TIMEOUT_NUMBER: number = 3600000;
-
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 
 let templateName: string;
-let instanceName: string;
 let instanceID: string;
 let RESPONSE_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/`;
 RESPONSE_URI +=`${ProvisioningConstants.INSTANCES_RESOURCE}/`;
@@ -50,9 +46,8 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
 
         let instance: IProvisionedInstance;
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-        instanceName = instance["external-name"];
         instanceID = instance["object-id"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
     });
 
     afterAll(async () => {
@@ -66,7 +61,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         let error: ImperativeError;
         try {
             response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                instanceID, actionName);
+                instanceID, ProvisioningTestUtils.ACTION_DEPROV);
             Imperative.console.info(`Response ${response["action-uri"]}`);
             RESPONSE_URI += `${instanceID}/${ProvisioningConstants.ACTIONS_RESOURCES}/${response["action-id"]}`;
         } catch (thrownError) {
@@ -77,14 +72,14 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         expect(response["action-id"]).toBeDefined();
         expect(response["action-uri"]).toBeDefined();
         expect(response["action-uri"]).toEqual(RESPONSE_URI);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should throw an error if the session parameter is undefined", async () => {
         let error: ImperativeError;
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(undefined, ProvisioningConstants.ZOSMF_VERSION,
-                "1234", actionName);
+                "1234", ProvisioningTestUtils.ACTION_DEPROV);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -97,7 +92,8 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         let error: ImperativeError;
         let response: IPerformActionResponse;
         try {
-            response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, undefined, "1234", actionName);
+            response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, undefined,
+                "1234", ProvisioningTestUtils.ACTION_DEPROV);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -110,7 +106,8 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         let error: ImperativeError;
         let response: IPerformActionResponse;
         try {
-            response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, "", "1234", actionName);
+            response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, "",
+                "1234", ProvisioningTestUtils.ACTION_DEPROV);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -124,7 +121,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                undefined, actionName);
+                undefined, ProvisioningTestUtils.ACTION_DEPROV);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -138,7 +135,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         let response: IPerformActionResponse;
         try {
             response = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                "", actionName);
+                "", ProvisioningTestUtils.ACTION_DEPROV);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -174,5 +171,4 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         }
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noActionName.message);
     });
-
 });

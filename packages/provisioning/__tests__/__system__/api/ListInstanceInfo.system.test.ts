@@ -24,14 +24,11 @@ import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properti
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
-const MAX_TIMEOUT_NUMBER: number = 3600000;
-
 let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
 
 let templateName: string;
-let instanceName: string;
 let instanceID: string;
 
 let REAL_SESSION: Session;
@@ -48,9 +45,8 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
 
         let instance: IProvisionedInstance;
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
-        instanceName = instance["external-name"];
         instanceID = instance["object-id"];
-        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
     });
 
     afterAll(async () => {
@@ -72,7 +68,7 @@ describe("ListInstanceInfo.listInstanceCommon", () => {
 
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["object-id"]).toEqual(instanceID);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should fail and throw an error if the session parameter is undefined", async () => {
         let error: ImperativeError;
