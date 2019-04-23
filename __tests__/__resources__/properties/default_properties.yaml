@@ -81,8 +81,6 @@ zosjobs:
 provisioning:
   # The name of published software service template
   templateName: template-name
-  # The name of instance created after provisioning the template
-  instanceName: instance-name
 
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing workflows                                    #

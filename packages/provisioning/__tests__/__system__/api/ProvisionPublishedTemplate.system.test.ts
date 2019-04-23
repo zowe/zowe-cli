@@ -25,7 +25,7 @@ import {
 } from "../../../";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
 
-const MAX_TIMEOUT_TIME: number = 3600000;
+const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/${ProvisioningConstants.INSTANCES_RESOURCE}/`;
 
 // If you have a published template which requires account-info, change it here
 // in most cases account-info is optional
@@ -34,13 +34,8 @@ const ACCOUNT_NUMBER: string = "1111111111";
 let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
 let defaultSystem: ITestSystemSchema;
-
 let REAL_SESSION: Session;
-
 let templateName: string;
-let instanceName: string;
-
-const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/${ProvisioningConstants.INSTANCES_RESOURCE}/`;
 
 describe("ProvisionPublishedTemplate (system)", () => {
     beforeAll(async () => {
@@ -50,9 +45,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
-        instanceName = testEnvironment.systemTestProperties.provisioning.instanceName;
     });
 
     describe("ProvisionPublishedTemplate.provisionTemplateCommon", () => {
@@ -79,7 +72,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
             }
             ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response["registry-info"]["object-uri"]).toEqual(OBJECT_URI_RESPONSE);
-        }, MAX_TIMEOUT_TIME);
+        }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
         it("should throw an error if the session parameter is undefined", async () => {
             let response: IProvisionTemplateResponse;
@@ -270,7 +263,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
             }
             ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
             expect(response["registry-info"]["object-uri"]).toEqual(OBJECT_URI_RESPONSE);
-        }, MAX_TIMEOUT_TIME);
+        }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
     });
 });
 

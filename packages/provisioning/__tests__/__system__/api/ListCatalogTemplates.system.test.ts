@@ -13,10 +13,14 @@ import { inspect } from "util";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { IPublishedTemplates, ListCatalogTemplates, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../../provisioning";
+import {
+    IPublishedTemplates,
+    ListCatalogTemplates,
+    noSessionProvisioning,
+    nozOSMFVersion,
+    ProvisioningConstants
+} from "../../../";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
-
-const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
 let REAL_SESSION: Session;
@@ -46,7 +50,7 @@ describe("ListCatalogTemplates", () => {
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response["psc-list"]).toBeDefined();
         expect(response["psc-list"].length).toBeGreaterThan(0);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should throw an error if the session parameter is undefined", async () => {
         let response: IPublishedTemplates;

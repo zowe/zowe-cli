@@ -27,8 +27,7 @@ export interface ITestPropertiesSchema {
     };
 
     provisioning: {
-        templateName: string,
-        instanceName: string
+        templateName: string
     };
 
     workflows: {

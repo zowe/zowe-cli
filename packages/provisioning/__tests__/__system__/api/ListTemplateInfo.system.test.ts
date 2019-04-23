@@ -19,12 +19,10 @@ import {
     noTemplateName,
     nozOSMFVersion,
     ProvisioningConstants
-} from "../../../../provisioning";
+} from "../../../";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
-
-const MAX_TIMEOUT_NUMBER: number = 3600000;
 
 let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
@@ -63,7 +61,7 @@ describe("ListTemplateInfo (system)", () => {
         ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response.name).toEqual(TEMPLATE_NAME);
         expect(response.state).toEqual("published");
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should fail if the session is undefined", async () => {
         let response: IPublishedTemplateInfo;
