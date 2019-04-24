@@ -61,7 +61,10 @@
   },
   "dependencies": {
     "@brightside/imperative": "^2.0.0",
+    "@types/ssh2": "^0.5.38",
+    "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.9.0",
+    "ssh2": "^0.8.2",
     "string-width": "2.1.1"
   },
   "devDependencies": {

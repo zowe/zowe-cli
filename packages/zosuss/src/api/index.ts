@@ -9,14 +9,6 @@
 *
 */
 
-export { Constants } from "./Constants";
-export * from "./rest";
-export * from "./utils";
-export * from "./zosconsole";
-export * from "./zosfiles";
-export * from "./zosjobs";
-export * from "./zostso";
-export * from "./zosuss";
-export * from "./zosmf";
-export * from "./provisioning";
+export * from "./Shell";
 
+export * from "./constants/ZosUss.messages";
