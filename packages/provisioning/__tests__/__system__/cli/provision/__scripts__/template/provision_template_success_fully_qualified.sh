@@ -2,11 +2,10 @@
 set -e
 
 TEMPLATE=$1
-ACCOUNT=$2
-HOST=$3
-PORT=$4
-USER=$5
-PASSWORD=$6
+HOST=$2
+PORT=$3
+USER=$4
+PASSWORD=$5
 
-zowe provisioning prov template $TEMPLATE --ai $ACCOUNT --host $HOST --port $PORT --password $PASSWORD --user $USER --ru=false
+zowe provisioning prov template $TEMPLATE --host $HOST --port $PORT --password $PASSWORD --user $USER --ru=false
 exit $?
