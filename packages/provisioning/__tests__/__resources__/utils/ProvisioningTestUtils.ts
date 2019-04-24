@@ -26,7 +26,9 @@ import {
 export class ProvisioningTestUtils {
     public static readonly SLEEP_TIME: number = 2000;
 
-    public static MAX_TIMEOUT_TIME: number = 600000;
+    // Max timeout time for Jest
+    public static MAX_TIMEOUT_TIME: number = 240000;
+    public static MAX_CLI_TIMEOUT: number = 60000;
 
     public static readonly STATE_DEPROV = "deprovisioned";
     public static readonly STATE_BEING_DEPROV = "being-deprovisioned";

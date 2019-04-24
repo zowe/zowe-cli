@@ -1,1 +1,1 @@
-[\s\S]*Service Registry[\s\S]*System.[\s\S]*Sysplex.[\s\S]*Type[\s\S]*Version[\s\S]*Owner[\s\S]*Description[\s\S]*State:[\s\S]*
+\b(Service Registry)\b
