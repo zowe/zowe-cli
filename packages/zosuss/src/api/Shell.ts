@@ -49,6 +49,7 @@ export class Shell {
 
                     stream.on("close", () => {
                         Logger.getAppLogger().debug("SSH connection closed");
+                        stdoutHandler("\n");
                         conn.end();
                         resolve(rc);
                     });
@@ -76,6 +77,7 @@ export class Shell {
                                 // cut out flag and print out the leftover
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ echo " + endCmdFlag));
                                 stdoutHandler(`${dataToPrint}\n`);
+                                dataToPrint = "";
                                 isUserCommand = false;
                             } else if(dataToPrint.match(new RegExp(`${endCmdFlag} [0-9]+`))) {
                                 // get the return code of the command
@@ -86,13 +88,13 @@ export class Shell {
                                 if (isUserCommand) {
                                     if(dataToPrint.match(new RegExp("\\$ " + endCmdFlag))) {
                                         dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ ${endCmdFlag}`));
-                                        isUserCommand = false;
                                     }
-                                    else if(isUserCommand && dataToPrint.match(new RegExp(endCmdFlag))) {
+                                    if(dataToPrint.match(new RegExp(endCmdFlag))) {
                                         dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`${endCmdFlag}`));
                                     }
                                     stdoutHandler(`${dataToPrint}\n`);
                                     dataToPrint = "";
+                                    isUserCommand = false;
                                 }
                             }
 
