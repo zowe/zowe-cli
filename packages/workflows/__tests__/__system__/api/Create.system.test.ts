@@ -14,7 +14,7 @@ import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src/api/methods/upload";
+import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
