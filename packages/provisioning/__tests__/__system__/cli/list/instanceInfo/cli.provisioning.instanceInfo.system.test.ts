@@ -13,14 +13,16 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { Session } from "@brightside/imperative";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ListRegistryInstances } from "../../../../../";
-import { ProvisioningConstants } from "../../../../../index";
+import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
+import { Imperative, Session } from "@brightside/imperative";
+import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { IProvisionedInstance, ListRegistryInstances, ProvisioningConstants } from "../../../../../";
+import { ProvisioningTestUtils } from "../../../../__resources__/utils/ProvisioningTestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let REAL_SESSION: Session;
-const TIMEOUT = 30000;
+let templateName: string;
+let instanceID: string;
 
 describe("provisioning list instance-info", () => {
 
@@ -31,39 +33,48 @@ describe("provisioning list instance-info", () => {
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-    });
+        templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
+        let instance: IProvisionedInstance;
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        instanceID = instance["object-id"];
+        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should display instance info", async () => {
         const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
             .pop()["external-name"];
+        Imperative.console.info(`Instance name: ${instance}`);
         const regex = fs.readFileSync(__dirname + "/__regex__/instance_info_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/instanceInfo.sh", TEST_ENVIRONMENT, [instance]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    }, TIMEOUT);
+    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
+        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_catalog_templates_without_profiles",
+                testName: "provisioning_catalog_templates_without_profiles"
             });
 
-            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
+            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
+            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
         });
 
         afterAll(async () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
         });
 
         it("should display instance info", async () => {
             const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
                 .pop()["external-name"];
+            Imperative.console.info(`Instance name: ${instance}`);
             const regex = fs.readFileSync(__dirname + "/__regex__/instance_info_response.regex").toString();
             const response = runCliScript(__dirname + "/__scripts__/instanceInfo_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
@@ -77,6 +88,6 @@ describe("provisioning list instance-info", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-        }, TIMEOUT);
+        }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
     });
 });

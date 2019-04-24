@@ -22,7 +22,7 @@ import {
 } from "../../../";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
+import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 const TYPE: string = "CICS";
 

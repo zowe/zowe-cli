@@ -22,7 +22,7 @@ import {
 } from "../../../";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
+import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
 let systemProps: TestProperties;
