@@ -15,13 +15,12 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Session } from "@zowe/imperative";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ListCatalogTemplates } from "../../../../../";
-import { ProvisioningConstants } from "../../../../../index";
+import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ProvisioningTestUtils } from "../../../../__resources__/utils/ProvisioningTestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let REAL_SESSION: Session;
-const TIMEOUT = 30000;
+let TEMPLATE_NAME: string;
 
 describe("provisioning list template-info", () => {
 
@@ -31,6 +30,7 @@ describe("provisioning list template-info", () => {
             testName: "provisioning_list_template-info",
             tempProfileTypes: ["zosmf"]
         });
+        TEMPLATE_NAME = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
@@ -39,13 +39,12 @@ describe("provisioning list template-info", () => {
     });
 
     it("should display template info", async () => {
-        const template = (await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["psc-list"].pop().name;
         const regex = fs.readFileSync(__dirname + "/__regex__/template_info_response.regex").toString();
-        const response = runCliScript(__dirname + "/__scripts__/templateInfo.sh", TEST_ENVIRONMENT, [template]);
+        const response = runCliScript(__dirname + "/__scripts__/templateInfo.sh", TEST_ENVIRONMENT, [TEMPLATE_NAME]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    }, TIMEOUT);
+    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
     describe("without profiles", () => {
 
@@ -57,6 +56,7 @@ describe("provisioning list template-info", () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "provisioning_list_template_info_without_profiles"
             });
+            TEMPLATE_NAME = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.provisioning.templateName;
 
             DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
@@ -66,12 +66,11 @@ describe("provisioning list template-info", () => {
         });
 
         it("should display template info", async () => {
-            const template = (await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["psc-list"].pop().name;
             const regex = fs.readFileSync(__dirname + "/__regex__/template_info_response.regex").toString();
             const response = runCliScript(__dirname + "/__scripts__/templateInfo_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
-                    template,
+                    TEMPLATE_NAME,
                     DEFAULT_SYSTEM_PROPS.zosmf.host,
                     DEFAULT_SYSTEM_PROPS.zosmf.port,
                     DEFAULT_SYSTEM_PROPS.zosmf.user,
@@ -80,6 +79,6 @@ describe("provisioning list template-info", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-        }, TIMEOUT);
+        }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
     });
 });

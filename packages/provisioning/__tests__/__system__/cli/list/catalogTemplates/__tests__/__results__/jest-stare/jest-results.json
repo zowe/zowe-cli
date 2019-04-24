@@ -1,0 +1,83 @@
+{
+  "numFailedTestSuites": 0,
+  "numFailedTests": 0,
+  "numPassedTestSuites": 1,
+  "numPassedTests": 2,
+  "numPendingTestSuites": 0,
+  "numPendingTests": 0,
+  "numRuntimeErrorTestSuites": 0,
+  "numTodoTests": 0,
+  "numTotalTestSuites": 1,
+  "numTotalTests": 2,
+  "openHandles": [],
+  "snapshot": {
+    "added": 0,
+    "didUpdate": false,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0
+  },
+  "startTime": 1556087595253,
+  "success": true,
+  "testResults": [
+    {
+      "failureMessage": null,
+      "numFailingTests": 0,
+      "numPassingTests": 2,
+      "numPendingTests": 0,
+      "numTodoTests": 0,
+      "perfStats": {
+        "end": 1556087608745,
+        "start": 1556087595298
+      },
+      "snapshot": {
+        "added": 0,
+        "fileDeleted": false,
+        "matched": 0,
+        "unchecked": 0,
+        "unmatched": 0,
+        "updated": 0,
+        "uncheckedKeys": []
+      },
+      "testFilePath": "C:\\Users\\nurra01\\work-dev\\zowe-cli\\packages\\provisioning\\__tests__\\__system__\\cli\\list\\catalogTemplates\\cli.provisioning.catalogTemplates.system.test.ts",
+      "testResults": [
+        {
+          "ancestorTitles": [
+            "provisioning list catalog-templates"
+          ],
+          "duration": 4603,
+          "failureMessages": [],
+          "fullName": "provisioning list catalog-templates should display template catalog",
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "should display template catalog"
+        },
+        {
+          "ancestorTitles": [
+            "provisioning list catalog-templates",
+            "without profiles"
+          ],
+          "duration": 4741,
+          "failureMessages": [],
+          "fullName": "provisioning list catalog-templates without profiles should display template catalog",
+          "location": null,
+          "numPassingAsserts": 0,
+          "status": "passed",
+          "title": "should display template catalog"
+        }
+      ],
+      "skipped": false,
+      "leaks": false
+    }
+  ],
+  "wasInterrupted": false
+}

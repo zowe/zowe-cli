@@ -21,7 +21,7 @@ import {
     PerformAction,
     ProvisioningConstants,
 } from "../../../";
-import { ProvisioningTestUtils } from "../../__resources__/api/ProvisioningTestUtils";
+import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
