@@ -42,20 +42,18 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
         const width = 42;
         try {
             response = await ListArchivedWorkflows.listArchivedWorkflows(
-                this.mSession, undefined, this.arguments.workflowName, this.arguments.owner, this.arguments.asc, this.arguments.desc);
+                this.mSession, undefined, this.arguments.workflowName, this.arguments.owner, this.arguments.orderBy);
         } catch (err) {
             error = "List workflow(s) " + err;
             throw error;
         }
 
         commandParameters.response.data.setObj(response);
-
         response.archivedWorkflows.forEach((workflow: IWorkflowsInfo) => {
             workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
             workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
             workflow.archivedInstanceURI = TextUtils.wordWrap(`${workflow.archivedInstanceURI}`, width);
         });
-
         // Format & print the response
         if (response.archivedWorkflows.length) {
             commandParameters.response.format.output({

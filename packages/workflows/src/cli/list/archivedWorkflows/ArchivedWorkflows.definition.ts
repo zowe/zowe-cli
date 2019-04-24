@@ -26,7 +26,7 @@ export const ArchivedWorkflows: ICommandDefinition = {
     summary: "List the archived workflows for a system.",
     description: "List the archived workflows for a system.\n" +
     "Multiple filters can be used together.\n" +
-    "Omitting all options will list all workflows on the sysplex",
+    "Omitting all options will list all archived workflows on the sysplex",
     type: "command",
     handler: join(__dirname, "ArchivedWorkflows.handler"),
     profile: {
@@ -35,8 +35,7 @@ export const ArchivedWorkflows: ICommandDefinition = {
     options: ([
         ListArchivedWorkflowsOptions.workflowName,
         ListArchivedWorkflowsOptions.owner,
-        ListArchivedWorkflowsOptions.desc,
-        ListArchivedWorkflowsOptions.asc,
+        ListArchivedWorkflowsOptions.orderBy,
     ]),
     outputFormatOptions: true,
     examples: [
