@@ -10,9 +10,9 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    Zowe CLI is a command line interface (CLI) that provides a simple and
    streamlined way to interact with IBM z/OS.
 
-   For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site.
+   For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site
 
-   For Zowe CLI support, visit https://zowe.org.
+   For Zowe CLI support, visit https://zowe.org
 
 
  USAGE
@@ -25,17 +25,16 @@ exports[`Root level help tests top level help should contain support link 1`] = 
  GROUPS
  ------
 
-   config                Manage configuration and overrides                      
-   plugins               Install and manage plug-ins                             
-   profiles              Create and manage configuration profiles                
-   provisioning | pv     Perform z/OSMF provisioning tasks on Published Templates
-                         in the Service Catalog and Provisioned Instances in the 
-                         Service Registry.                                       
-   zos-console | console Issue z/OS console commands and collect responses       
-   zos-files | files     Manage z/OS data sets                                   
-   zos-jobs | jobs       Manage z/OS jobs                                        
-   zos-tso | tso         Issue TSO commands and interact with TSO address spaces 
-   zosmf                 Interact with z/OSMF                                    
+   config                Manage configuration and overrides               
+   plugins               Install and manage plug-ins                      
+   profiles              Create and manage configuration profiles         
+   provisioning | pv     Perform z/OSMF provisioning tasks                
+   zos-console | console Issue z/OS console commands and collect responses
+   zos-files | files     Manage z/OS data sets                            
+   zos-jobs | jobs       Manage z/OS jobs                                 
+   zos-tso | tso         Interact with TSO                                
+   zos-workflows | wf    Create and manage z/OSMF workflows               
+   zosmf                 Interact with z/OSMF                             
 
  OPTIONS
  -------

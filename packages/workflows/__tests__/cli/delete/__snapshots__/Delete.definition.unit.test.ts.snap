@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows delete definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "del",
+  ],
+  "description": "Delete an active workflow or an archived workflow from z/OSMF.",
+  "name": "delete",
+  "type": "group",
+}
+`;

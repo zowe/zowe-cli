@@ -19,4 +19,5 @@ export * from "./zostso";
 export * from "./zosuss";
 export * from "./zosmf";
 export * from "./provisioning";
+export * from "./workflows";
 

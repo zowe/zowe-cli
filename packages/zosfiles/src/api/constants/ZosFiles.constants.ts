@@ -45,6 +45,12 @@ export const ZosFilesConstants: { [key: string]: any } = {
      */
     RES_AMS: "/ams",
 
+    /**
+     * Indicator of a USS File request
+     * @type {string}
+     * @memberOf ZosFilesConstants
+     */
+    RES_PATH: "path",
 
     /**
      * Indicator the query parameters used to qualify the request

@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-workflows start definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "sta",
+  ],
+  "description": "Start a z/OSMF workflow on a z/OS system.",
+  "name": "start",
+  "type": "group",
+}
+`;

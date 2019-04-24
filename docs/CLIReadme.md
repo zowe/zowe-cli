@@ -5,9 +5,9 @@ Welcome to Zowe CLI!
 
 Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
 
-For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site.
+For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site
 
-For Zowe CLI support, visit https://zowe.org.
+For Zowe CLI support, visit https://zowe.org
 
 
 ### Table of Contents
@@ -62,6 +62,7 @@ For Zowe CLI support, visit https://zowe.org.
 	* [delete | del](#module-delete)
 		* [data-set](#command-data-set)
 		* [data-set-vsam](#command-data-set-vsam)
+		* [uss-file](#command-uss-file)
 	* [invoke | call](#module-invoke)
 		* [ams-statements](#command-ams-statements)
 		* [ams-file](#command-ams-file)
@@ -1803,6 +1804,53 @@ permanently.
 
 * `          $  zowe zos-files delete data-set-vsam "ibmuser.cntl.vsam" -f --erase`
 
+### uss-file<a name="command-uss-file"></a>
+Delete a Unix System Services (USS) file or directory
+
+#### Usage
+
+   zowe zos-files delete uss-file <fileName> [options]
+
+#### Positional Arguments
+
+*   `fileName`		 *(string)*
+
+	* The full path of the file that you want to delete
+
+#### Options
+
+*   `--recursive`  | `-r` *(boolean)*
+
+	* Specify this option to delete a directory that has children. Default 
+behavior is to reject a directory delete command if it has children. 
+
+#### Required Options
+
+*   `--for-sure`  | `-f` *(boolean)*
+
+	* Specify this option to confirm that you want to delete the file
+permanently.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Delete the USS file set named '/u/ibmuser/myFile.txt':
+
+* `          $  zowe zos-files delete uss-file "/u/ibmuser/myFile.txt" -f`
+
+   *-  Delete the empty USS directory '/u/ibmuser/testDir':
+
+* `          $  zowe zos-files delete uss-file "/u/ibmuser/testDir" -f`
+
+   *-  Recursively Delete a populated USS directory '/u/ibmuser/testDir':
+
+* `          $  zowe zos-files delete udd-files "/u/ibmuser/testDir" -rf`
+
 ## invoke | call<a name="module-invoke"></a>
 Invoke z/OS utilities such as Access Method Services (AMS)
 ### ams-statements<a name="command-ams-statements"></a>
@@ -1961,7 +2009,7 @@ members. Increasing the value results in faster downloads. However, increasing
 the value increases resource consumption on z/OS and can be prone to errors
 caused by making too many concurrent requests. If the download process
 encounters an error, the following message displays:
-The maximum number of TSO address spaces were created. When you specify 0, Zowe
+The maximum number of TSO address spaces have been created. When you specify 0, Zowe
 CLI attempts to download all members at once without a maximum number of
 concurrent requests.
 
@@ -2359,6 +2407,124 @@ delimiters are added between records.
    file "file.txt":
 
 * `          $  zowe zos-files upload file-to-uss "file.txt" "/a/ibmuser/my_text.txt"`
+
+### dir-to-uss<a name="command-dir-to-uss"></a>
+Upload a local directory to a USS directory
+
+#### Usage
+
+   zowe zos-files upload dir-to-uss <inputDir> <USSDir> [options]
+
+#### Positional Arguments
+
+*   `inputDir`		 *(string)*
+
+	* The local directory path that you want to upload to a USS directory
+
+*   `USSDir`		 *(string)*
+
+	* The name of the USS directory to which you want to upload the local directory
+
+#### Options
+
+*   `--binary`  | `-b` *(boolean)*
+
+	* Data content in binary mode, which means that no data conversion is performed.
+The data transfer process returns each record as-is, without translation. No
+delimiters are added between records.
+
+*   `--recursive`  | `-r` *(boolean)*
+
+	* Upload all directories recursively.
+
+*   `--binary-files`  | `--bf` *(string)*
+
+	* Comma separated list of file names to be uploaded in binary mode. Use this
+option when you upload a directory in default ASCII mode, but you want to
+specify certain files to be uploaded in binary mode. All files matching
+specified file names will be uploaded in binary mode.
+
+*   `--ascii-files`  | `--af` *(string)*
+
+	* Comma separated list of file names to be uploaded in ASCII mode. Use this option
+when you upload a directory with --binary/-b flag, but you want to specify
+certain files to be uploaded in ASCII mode. All files matching specified file
+names will be uploaded in ASCII mode.
+
+*   `--max-concurrent-requests`  | `--mcr` *(number)*
+
+	* Specifies the maximum number of concurrent z/OSMF REST API requests to upload
+files. Increasing the value results in faster uploads. However, increasing the
+value increases resource consumption on z/OS and can be prone to errors caused
+by making too many concurrent requests. If the upload process encounters an
+error, the following message displays:
+The maximum number of TSO address spaces have been created. When you specify 0, Zowe
+CLI attempts to upload all members at once without a maximum number of
+concurrent requests.
+
+Default value: 1
+
+#### Zosmf Connection Options
+
+*   `--host`  | `-H` *(string)*
+
+	* The z/OSMF server host name.
+
+*   `--port`  | `-P` *(number)*
+
+	* The z/OSMF server port.
+
+Default value: 443
+
+*   `--user`  | `-u` *(string)*
+
+	* Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+*   `--password`  | `--pass` | `--pw` *(string)*
+
+	* Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+*   `--reject-unauthorized`  | `--ru` *(boolean)*
+
+	* Reject self-signed certificates.
+
+Default value: true
+
+*   `--base-path`  | `--bp` *(string)*
+
+	* The base path for your API mediation layer instance. Specify this option to
+prepend the base path to all z/OSMF resources when making REST requests. Do not
+specify this option if you are not using an API mediation layer.
+
+#### Profile Options
+
+*   `--zosmf-profile`  | `--zosmf-p` *(string)*
+
+	* The name of a (zosmf) profile to load for this command execution.
+
+### Examples
+
+   *-  Upload all files from the "local_dir" directory to the
+   "/a/ibmuser/my_dir" USS directory:":
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir"`
+
+   *-  Upload all files from the "local_dir" directory and all its
+   sub-directories, to the "/a/ibmuser/my_dir" USS directory::
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --recursive`
+
+   *-  Upload all files from the "local_dir" directory to the
+   "/a/ibmuser/my_dir" USS directory in default ASCII mode, while specifying a list
+   of file names (without path) to be uploaded in binary mode::
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --binary-files "myFile1.exe,myFile2.exe,myFile3.exe"`
+
+   *-  Upload all files from the "local_dir" directory to the
+   "/a/ibmuser/my_dir" USS directory in binary mode, while specifying a list of
+   file names (without path) to be uploaded in ASCII mode::
+
+* `          $  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --binary --ascii-files "myFile1.txt,myFile2.txt,myFile3.txt"`
 
 # zos-jobs | jobs<a name="module-zos-jobs"></a>
 Manage z/OS jobs.
