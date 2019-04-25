@@ -47,6 +47,10 @@ export class Shell {
                     let isUserCommand = false;
                     let rc: number;
 
+                    stream.on("exit", (exitcode) => {
+                        Logger.getAppLogger().debug("Return Code: " + exitcode);
+                        rc = exitcode;
+                    });
                     stream.on("close", () => {
                         Logger.getAppLogger().debug("SSH connection closed");
                         stdoutHandler("\n");
@@ -65,41 +69,18 @@ export class Shell {
 
                             // check startCmdFlag: start printing out data
                             if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
-                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
+                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(startCmdFlag)+startCmdFlag.length);
                                 isUserCommand = true;
                             }
 
-                            // check endCmdFlag: end printing out data
-                            // bash and sh are treated differently because bash prints out the command itself before the command result
-                            // whereas sh prints out only the result.
-                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ echo " + endCmdFlag))) {
-                                // for bash
-                                // cut out flag and print out the leftover
-                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ echo " + endCmdFlag));
-                                stdoutHandler(`${dataToPrint}\n`);
+                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ exit"))) {
+                                // if exit found, print out stuff before exit, then stop printing out.
+                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
+                                stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                                 isUserCommand = false;
-                            } else if(dataToPrint.match(new RegExp(`${endCmdFlag} [0-9]+`))) {
-                                // get the return code of the command
-                                rc = parseInt(dataToPrint.slice(dataToPrint.lastIndexOf(" ") + 1), 10);
-
-                                // for sh
-                                // cut out flag and print out the leftover
-                                if (isUserCommand) {
-                                    if(dataToPrint.match(new RegExp("\\$ " + endCmdFlag))) {
-                                        dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`$ ${endCmdFlag}`));
-                                    }
-                                    if(dataToPrint.match(new RegExp(endCmdFlag))) {
-                                        dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`${endCmdFlag}`));
-                                    }
-                                    stdoutHandler(`${dataToPrint}\n`);
-                                    dataToPrint = "";
-                                    isUserCommand = false;
-                                }
-                            }
-
-                            // print out the user command result
-                            if (isUserCommand) {
+                            } else if (isUserCommand) {
+                                // print out the user command result
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                             }
@@ -107,8 +88,8 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag} $?\n` +
-                    `exit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n`);
+                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\n` +
+                    `exit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\n`);
                     stream.end();
                 });
             });
