@@ -11,12 +11,12 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 
-describe("zos-workflows create definition", () => {
+describe("zos-workflows create local-file definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/create/Create.definition").CreateDefinition;
+        const definition: ICommandDefinition
+            = require("../../../../src/cli/create/localfile/LocalFile.definition").LocalFile;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2+1);
-        delete definition.children;
+        delete definition.handler;
         expect(definition).toMatchSnapshot();
     });
 });

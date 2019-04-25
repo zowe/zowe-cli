@@ -14,10 +14,9 @@ import { Imperative, ImperativeError, Session } from "@brightside/imperative";
 import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { Upload } from "../../../../zosfiles/src/api/methods/upload";
+import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
@@ -28,6 +27,7 @@ import {
     noWorkflowDefinitionFile,
     noWorkflowName, nozOSMFVersion, wrongOwner
 } from "../../../src/api/WorkflowConstants";
+import { ICreatedWorkflowLocal } from "../../../src/api/doc/ICreatedWorkflowLocal";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -39,6 +39,8 @@ let system: string;
 let owner: string;
 let wfName: string;
 let inputFile: string;
+let tempDefFile: string;
+let tempVarFile: string;
 
 const workflow = __dirname + "/../testfiles/demo.xml";
 const vars = __dirname + "/../testfiles/vars.properties";
@@ -135,8 +137,6 @@ describe("Create workflow", () => {
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
-            // TODO: after properties API is created check also if variable has the right value, something like that:
-            // expect(propResponse.variables.value).toContain("Hello world");
             wfKey = response.workflowKey;
             });
         it("Should create workflow in zOSMF with variable.", async () => {
@@ -542,6 +542,54 @@ describe("Create workflow", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expect(error.errorCode).toEqual(wrongPath);
+        });
+    });
+    describe("Success Scenarios create from local file", () => {
+        afterEach(async () => {
+            // deleting workflow
+            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+            try {
+                await Delete.ussFile(REAL_SESSION, tempDefFile.slice(1));
+                await Delete.ussFile(REAL_SESSION, tempVarFile.slice(1));
+            } catch (err) {
+                Imperative.console.info("Error: " + inspect(err));
+            }
+        });
+        it("Should create workflow in zOSMF with variable input file.", async () => {
+            let error;
+            let response: ICreatedWorkflow;
+
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expectZosmfResponseSucceeded(response, error);
+            expect(response.workflowKey).toBeDefined();
+            wfKey = response.workflowKey;
+        });
+        it("Should create workflow in zOSMF with variable input file and keep the files", async () => {
+            let error;
+            let response: ICreatedWorkflowLocal;
+
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars, null, false, null,
+                                                                    false, true);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+            expect(response.workflowKey).toBeDefined();
+            expect(response.filesKept).toBeDefined();
+            expect(response.filesKept).toHaveLength(2);
+            wfKey = response.workflowKey;
+            tempDefFile = response.filesKept[0];
+            tempVarFile = response.filesKept[1];
         });
     });
 });
