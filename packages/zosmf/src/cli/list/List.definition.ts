@@ -17,6 +17,6 @@ export const ListCommand: ICommandDefinition = {
     type: "group",
     description: "Obtain a list of the systems that are defined to a z/OSMF instance.",
     children: [
-        SystemsDefinition
+        SystemsDefinition,
     ]
 };
