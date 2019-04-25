@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@brightside/imperative";
 import { DataSet } from "./dataset/Dataset.definition";
 import { UssFile } from "./ussfile/UssFile.definition";
+import { LocalFile } from "./localfile/LocalFile.definition";
 
 
 /**
@@ -27,6 +28,7 @@ export const CreateDefinition: ICommandDefinition = {
     description: "Create a z/OSMF workflow on a z/OS system.",
     children: [
         DataSet,
-        UssFile
+        UssFile,
+        LocalFile,
     ]
 };

@@ -19,7 +19,7 @@ import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import * as fs from "fs";
 import { Constants } from "../../../packages/Constants";
 import { TempTestProfiles } from "../profiles/TempTestProfiles";
-
+import { SshSession } from "../../../packages/zosuss";
 const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
 
@@ -124,6 +124,24 @@ export class TestEnvironment {
             type: "basic",
             rejectUnauthorized: SYSTEM_PROPS.zosmf.rejectUnauthorized,
             basePath: SYSTEM_PROPS.zosmf.basePath
+        });
+    }
+
+    /**
+     * Create a SSH session from properties present in your test environment
+     * @param testEnvironment - your test environment with system test properties populated
+     */
+    public static createSshSession(testEnvironment: ITestEnvironment): SshSession {
+        const SYSTEM_PROPS = new TestProperties(testEnvironment.systemTestProperties);
+        const defaultSystem = SYSTEM_PROPS.getDefaultSystem();
+        return new SshSession({
+            user: defaultSystem.ssh.user,
+            password: defaultSystem.ssh.password,
+            hostname: defaultSystem.ssh.host,
+            port: defaultSystem.ssh.port,
+            privateKey: defaultSystem.ssh.privateKey,
+            keyPassphrase: defaultSystem.ssh.keyPassphrase,
+            handshakeTimeout: defaultSystem.ssh.handshakeTimeout
         });
     }
 

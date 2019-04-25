@@ -93,4 +93,14 @@ workflows:
   # The system where you want to run your workflow
   # (must exist and be active within your zOSMF)
   system: system
-
+    #-------------------------------------------------------------------------#
+    #  SSH testing properties                                                 #
+  #-------------------------------------------------------------------------#
+ssh:
+  user: my-user-name
+  password: my-password
+  host: ssh-host
+  port: ssh-port
+  privateKey: ssh-private-key
+  keyPassphrase: ssh-private-key-passphrase
+  handshakeTimeout: ssh-handshake-timeout
