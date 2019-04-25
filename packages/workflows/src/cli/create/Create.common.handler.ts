@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, Imperative } from "@zowe/imperative";
 import { CreateWorkflow } from "../../api/Create";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListWorkflows, DeleteWorkflow } from "../../..";
@@ -42,6 +42,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
             sourceType = "dataset";
         } else if (this.arguments.ussFile) {
             sourceType = "uss-file";
+        } else if (this.arguments.localFile) {
+            sourceType = "local-file";
         }
 
         let wfKey: string;
@@ -90,6 +92,27 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
 
                 params.response.format.output({
                     fields: ["workflowKey", "workflowDescription"],
+                    output: resp,
+                    format: "object"
+                });
+
+                break;
+
+            case "local-file":
+                try{
+                    resp = await CreateWorkflow.createWorkflowLocal(this.mSession, this.arguments.workflowName, this.arguments.localFile,
+                        this.arguments.systemName, this.arguments.owner, this.arguments.variablesInputFile, this.arguments.variables,
+                        this.arguments.assignToOwner, this.arguments.accessType, this.arguments.deleteCompleted,
+                        this.arguments.keepFiles, this.arguments.remoteDirectory);
+                } catch (err){
+                    error = "Creating z/OSMF workflow with local file: " + this.arguments.localFile + " failed. More details: \n" + err;
+                    throw error;
+                }
+                params.response.data.setObj(resp);
+
+                params.response.format.output({
+                    fields: ["workflowKey", "workflowDescription",
+                            resp.filesKept ? "filesKept" : resp.failedToDelete ? "failedToDelete" : ""],
                     output: resp,
                     format: "object"
                 });

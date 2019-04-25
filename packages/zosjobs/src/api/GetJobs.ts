@@ -13,6 +13,7 @@ import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, Re
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "../../../rest";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "../../../zosjobs";
+import { Writable } from "stream";
 
 /**
  * Class to handle obtaining of z/OS batch job information

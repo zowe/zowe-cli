@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api";
 import { Upload } from "../../../api/methods/upload";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { readStdin } from "../../../../../utils";
+import { Readable } from "stream";
 
 /**
  * Handler to stream data from stdin to a data set
@@ -23,11 +23,24 @@ export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
                                     session: AbstractSession): Promise<IZosFilesResponse> {
 
-        const payload: Buffer = await readStdin();
-        const result = await Upload.bufferToDataSet(session, Buffer.from(payload), commandParameters.arguments.dataSetName, {
-            volume: commandParameters.arguments.volumeSerial,
-            binary: commandParameters.arguments.binary
-        });
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Uploading stdin to data set",
+            stageName: TaskStage.IN_PROGRESS
+        };
+        commandParameters.response.progress.startBar({task});
+
+        const result = await Upload.streamToDataSet(session,
+            process.stdin as unknown as Readable,
+            /* process.stdin has all the functions/properties we need to treat it as a Readable stream
+            *  from the rest client,
+            *  such as .on("data"), and .on("error")
+            */
+            commandParameters.arguments.dataSetName, {
+                volume: commandParameters.arguments.volumeSerial,
+                binary: commandParameters.arguments.binary,
+                task
+            });
 
         if (result.success) {
             const formatMessage = TextUtils.prettyJson({

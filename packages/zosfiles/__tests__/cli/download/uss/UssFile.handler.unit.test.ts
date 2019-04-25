@@ -91,7 +91,13 @@ describe("Download uss file handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Download.ussFile).toHaveBeenCalledTimes(1);
-            expect(Download.ussFile).toHaveBeenCalledWith(fakeSession, ussFileName, {});
+            expect(Download.ussFile).toHaveBeenCalledWith(fakeSession, ussFileName, {
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Downloading USS file",
+                },
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
