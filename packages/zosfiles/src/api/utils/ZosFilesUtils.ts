@@ -152,5 +152,17 @@ export class ZosFilesUtils {
     public static normalizeNewline(buffer: Buffer): Buffer {
         return Buffer.from(buffer.toString().replace(new RegExp("\r\n", "g"), "\n"));
     }
+
+    /**
+     * Format USS filepaths in the way that the APIs expect (no leading /)
+     * @param {string} usspath - the path to format
+     */
+    public static formatUnixFilepath(usspath: string) {
+        if (usspath.charAt(0) === "/") {
+            // trim leading slash from unix files - API doesn't like it
+            usspath = usspath.substring(1);
+        }
+        return usspath;
+    }
 }
 
