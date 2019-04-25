@@ -28,6 +28,7 @@ describe("Create workflow common handler", () => {
         const workflowName = "fakeWorkflow";
         const dataSet = "TEST.DATASET";
         const ussFile = "/fake/ussfile";
+        const localFile = "/fake/localFile.xml";
         const wrongFile = "file";
         const systemName = "FAKESYS1";
         const owner = "FAKEUID";
@@ -36,6 +37,8 @@ describe("Create workflow common handler", () => {
         const assignToOwner = true;
         const accessType = "Public";
         const deleteCompleted = true;
+        const remoteDirectory = "/fake/dir";
+        const keepFiles = true;
         const overwrite = true;
         it("should create a workflow using a dataset", async () => {
             // Require the handler and create a new instance
@@ -235,6 +238,101 @@ describe("Create workflow common handler", () => {
                                                                         assignToOwner,
                                                                         accessType,
                                                                         deleteCompleted,);
+        });
+        it("should create a workflow using a local file", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../src/cli/create/Create.common.handler");
+            const handler = new handlerReq.default();
+
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            // Mock the create function
+            CreateWorkflow.createWorkflowLocal = jest.fn((session) => {
+                fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "deleted"
+                };
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowName,
+                        localFile,
+                        systemName,
+                        owner,
+                        variablesInputFile,
+                        variables,
+                        assignToOwner,
+                        accessType,
+                        deleteCompleted,
+                        keepFiles,
+                        remoteDirectory,
+                    },
+                    response: {
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        },
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(CreateWorkflow.createWorkflowLocal).toHaveBeenCalledTimes(1);
+            expect(CreateWorkflow.createWorkflowLocal).toHaveBeenCalledWith(fakeSession,
+                                                                        workflowName,
+                                                                        localFile,
+                                                                        systemName,
+                                                                        owner,
+                                                                        variablesInputFile,
+                                                                        variables,
+                                                                        assignToOwner,
+                                                                        accessType,
+                                                                        deleteCompleted,
+                                                                        keepFiles,
+                                                                        remoteDirectory,);
         });
         it("should fail if definition file is not a uss file or dataset", async () => {
             // Require the handler and create a new instance
