@@ -23,6 +23,7 @@ describe("zos-uss issue group definition", () => {
 
         // Should have children since this is a group
         expect(definition.children).toBeDefined();
+        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });
