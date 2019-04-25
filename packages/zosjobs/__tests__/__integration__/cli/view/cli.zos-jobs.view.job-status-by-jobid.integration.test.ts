@@ -12,8 +12,6 @@
 import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -22,7 +20,8 @@ describe("zos-jobs view job-status-by-jobid command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_view_job_status_by_jobid_command"
+            testName: "zos_jobs_view_job_status_by_jobid_command",
+            skipProperties: true
         });
     });
 

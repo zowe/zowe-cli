@@ -19,7 +19,8 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 describe("Upload file to data set", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "upload_data_set_integration"
+            testName: "upload_data_set_integration",
+            skipProperties: true
         });
     });
 

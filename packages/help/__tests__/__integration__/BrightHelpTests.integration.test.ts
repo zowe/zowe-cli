@@ -21,6 +21,7 @@ describe("Root level help tests", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zowe_help_test",
+            skipProperties: true
         });
     });
 

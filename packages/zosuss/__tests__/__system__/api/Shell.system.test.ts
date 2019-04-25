@@ -12,25 +12,21 @@
 import { Shell, SshSession } from "../../../index";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let SSH_SESSION: SshSession;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-const TIME_OUT = 10000;
+let defaultSystem: ITestPropertiesSchema;
+const TIME_OUT = 50000;
 
 describe("zowe uss issue ssh api call test", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "issue_ssh_system_api",
-            tempProfileTypes: ["ssh"]
         });
         SSH_SESSION = TestEnvironment.createSshSession(TEST_ENVIRONMENT);
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
     });
 
     afterAll(async () => {

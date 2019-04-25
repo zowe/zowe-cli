@@ -10,9 +10,8 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
@@ -34,8 +33,7 @@ const MAX_TIMEOUT_NUMBER: number = 3600000;
 const SLEEP_TIME: number = 10000;
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 
 let REAL_SESSION: Session;
 
@@ -121,8 +119,7 @@ describe("ProvisionPublishedTemplate (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_provision_template"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;

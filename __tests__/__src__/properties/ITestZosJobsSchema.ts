@@ -9,14 +9,9 @@
 *
 */
 
-import { ITestSystemSchema } from "./ITestSystemSchema";
-
-export interface ITestSystemsGroupSchema {
-
-    common: ITestSystemSchema;
-    specific: [
-        ITestSystemSchema
-        ];
-    primary: string;
-
+export interface ITestZosJobsSchema {
+    iefbr14Member: string;
+    iefbr14PSDataSet: string;
+    jobclass: string;
+    sysaff: string;
 }

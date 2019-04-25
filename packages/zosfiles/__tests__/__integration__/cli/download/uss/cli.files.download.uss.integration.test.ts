@@ -21,7 +21,8 @@ describe("Download USS File", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "download_uss_file"
+            testName: "download_uss_file",
+            skipProperties: true
         });
     });
 

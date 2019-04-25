@@ -21,7 +21,8 @@ describe("Delete USS File", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_delete_file"
+            testName: "zos_delete_file",
+            skipProperties: true
         });
     });
 

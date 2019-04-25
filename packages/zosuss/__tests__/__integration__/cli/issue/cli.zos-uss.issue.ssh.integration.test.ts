@@ -11,9 +11,7 @@
 
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript, stripNewLines  } from "../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -22,7 +20,8 @@ describe("zos-uss issue ssh command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_uss_issue_ssh_command"
+            testName: "zos_uss_issue_ssh_command",
+            skipProperties: true
         });
     });
 
