@@ -11,6 +11,7 @@
 
 import { ITestZosmfSchema } from "./ITestZosmfSchema";
 import { ITestTsoSchema } from "./ITestTsoSchema";
+import { ITestSshSchema } from "./ITestSshSchema";
 import { ITestDatasetSchema } from "./ITestDatasetSchema";
 import { ITestUnixSchema } from "./ITestUnixSchema";
 import { ITestConsoleSchema } from "./ITestConsoleSchema";
@@ -19,6 +20,7 @@ export interface ITestSystemSchema {
     name?: string;
     zosmf?: ITestZosmfSchema;
     tso?: ITestTsoSchema;
+    ssh?: ITestSshSchema;
     datasets?: ITestDatasetSchema;
     unix?: ITestUnixSchema;
     console?: ITestConsoleSchema;
