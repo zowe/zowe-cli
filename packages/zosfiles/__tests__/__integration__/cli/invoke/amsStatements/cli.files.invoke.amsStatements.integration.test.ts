@@ -20,7 +20,8 @@ describe("Invoke AMS CLI", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_invoke_ams_integration"
+            testName: "zos_invoke_ams_integration",
+            skipProperties: true
         });
     });
 

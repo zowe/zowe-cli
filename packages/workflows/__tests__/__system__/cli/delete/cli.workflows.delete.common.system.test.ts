@@ -11,11 +11,10 @@
 
 import { ZosmfRestClient } from "../../../../../rest";
 import { Session } from "@brightside/imperative";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { CreateWorkflow } from "../../../..";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
@@ -23,8 +22,7 @@ import { join } from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;
 let system: string;
@@ -41,8 +39,7 @@ describe("Delete workflow cli system tests", () => {
             tempProfileTypes: ["zosmf"],
             testName: "delete_workflow_cli"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
@@ -72,13 +69,13 @@ describe("Delete workflow cli system tests", () => {
                 error = err;
             }
         });
-        beforeEach(async () =>{
+        beforeEach(async () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
         });
         it("Should delete workflow in zOSMF.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh",
-            testEnvironment, [wfKey]);
+                testEnvironment, [wfKey]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Workflow deleted");
@@ -86,7 +83,7 @@ describe("Delete workflow cli system tests", () => {
 
         it("Should delete workflow in zOSMF.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",
-            testEnvironment, [wfName]);
+                testEnvironment, [wfName]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Workflow deleted");
@@ -95,13 +92,13 @@ describe("Delete workflow cli system tests", () => {
     describe("Failure Scenarios", () => {
         it("Should throw error if no workflow with this wf key was found", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh",
-            testEnvironment, [wfKey + fakewfkey]);
+                testEnvironment, [wfKey + fakewfkey]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("was not found");
         });
         it("Should throw error if no workflow with this wf name was found", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",
-            testEnvironment, [wfName + fakeName]);
+                testEnvironment, [wfName + fakeName]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("No workflows match the provided workflow name");
         });

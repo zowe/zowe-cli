@@ -1,91 +1,91 @@
 #-----------------------------------------------------------------------------#
+#-------              ZOWE CLI EXAMPLE PROPERTIES FILE                --------#
+#  This file is used to parameterize runs of system tests with the relevant   #
+#  connection details for your z/OS system.                                   #
+#-----------------------------------------------------------------------------#
 #  find and replace the following:                                            #
 #                                                                             #
 #  my-user-name    - This is your TSO user  ID                                #
 #  my-password     - This is your TSO password                                #
 #  my-jes-account  - This is your JES Account number for batch jobs           #
+#  my-uss-dir      - A directory on USS in which files and                    #
+#                    directories can be created                               #
 #  sysaff-system   - System Affinity for some batch jobs, use the system that #
 #                    you are running the tests on                             #
 #  ds-iefbr14-pds  - PDS qualified by an IEFBR14 member JCL to submit         #
 #  ds-iefbr14-ps   - PS with an IEFBR14 JCL to submit                         #
 #  zosmf-host      - The host name for the LPAR with z/OSMF                   #
 #  zosmf-port      - The z/OSMF port                                          #
+#  my-sysplex-system - system name of a system in your sysplex to which       #
+#                      console commands can be routed                         #
+#  my-volume-serial - volume serial used to create data sets                  #
+# ssh-host          - host to connect to ssh on z/OS                          #
+# ssh-port          - port to connect to ssh on z/OS - default is 22          #
+# ssh-private-key   -private key for SSH. specify null if no key              #
+
+keyPassphrase: ssh-private-key-passphrase passphrase for private key.
+  specify null if none
+# timeout for SSH connection. Specify null to use the default or 0 for no timeout
+handshakeTimeout: ssh-handshake-timeout
 #-----------------------------------------------------------------------------#
 #-- Note: If you add or rename any fields of this default template,         --#
 #-- please also update the ITestPropertiesSchema interface so that          --#
 #-- developers can use auto-complete when using the properties in test code --#
-systems:
-  common:
-    #-------------------------------------------------------------------------#
-    #  Connection details/credentials for z/OSMF                              #
-    #-------------------------------------------------------------------------#
-    zosmf:
-      user: &zosmfuser my-user-name
-      pass: &zosmfpass my-password
-      host: &zosmfhost zosmf-host
-      port: &zosmfport zosmf-port
-      rejectUnauthorized: &zosmfreject false
-      # base path if any to be prepended to all z/OSMF resources
-      # such as a base path exposed from a gateway/ API mediation layer
-      basePath: null
-    #-------------------------------------------------------------------------#
-    #  TSO testing properties                                                 #
-    #-------------------------------------------------------------------------#
-    tso:
-        name: my-user-name
-        password: my-password
-        account: &tsoaccount my-jes-account
-    #-------------------------------------------------------------------------#
-    #  SSH testing properties                                                 #
-    #-------------------------------------------------------------------------#
-    ssh:
-        user: my-user-name
-        password: my-password
-        host: ssh-host
-        port: ssh-port
-        privateKey: ssh-private-key
-        keyPassphrase: ssh-private-key-passphrase
-        handshakeTimeout: ssh-handshake-timeout
-    #-------------------------------------------------------------------------#
-    #  Console API Tests parameters                                           #
-    #-------------------------------------------------------------------------#
-    unix:
-      testdir: /a/my-user-name
-    #-------------------------------------------------------------------------#
-    #  Dataset tests                                                          #
-    #-------------------------------------------------------------------------#
-    datasets:		
-      hlq: &dshlq my-user-name.PUBLIC		
-      list:		
-        - dataset: &staticds my-user-name.PUBLIC.BRGTSIDE.AUTOTEST		
-          vol: TSU		
-          membersdir: ./__tests__/__resources__/content/members		
-      statictestds: *staticds
-    #-------------------------------------------------------------------------#
-    #  Console API Tests parameters                                           #
-    #-------------------------------------------------------------------------#
-    console:
-      sysplexsystem: SYS0
-  specific:
-    - name: SYS1
-      zosmf:
-        host: &zosmfhost zosmf-host
-      console:
-        sysplexsystem: PLEX1
-  primary: SYS1
+
+#-------------------------------------------------------------------------#
+#  Connection details/credentials for z/OSMF                              #
+#-------------------------------------------------------------------------#
+zosmf:
+  # your z/OSMF User ID
+  user: &zosmfuser my-user-name
+  # your z/OSMF password
+  pass: &zosmfpass my-password
+  # host for your instance of z/OSMF
+  host: &zosmfhost zosmf-host
+  # port for your instance of z/OSMF
+  port: &zosmfport zosmf-port
+  # false to allow self signed certificates when connecting
+  rejectUnauthorized: &zosmfreject false
+  # base path if any to be prepended to all z/OSMF resources
+  # such as a base path exposed from a gateway/ API mediation layer
+  basePath: null
+#-------------------------------------------------------------------------#
+#  TSO testing properties                                                 #
+#-------------------------------------------------------------------------#
+tso:
+  account: &tsoaccount my-jes-account
+#-------------------------------------------------------------------------#
+#  Console API Tests parameters                                           #
+#-------------------------------------------------------------------------#
+unix:
+  # A directory on USS in which files and directories can be created
+  testdir: my-uss-dir
+#-------------------------------------------------------------------------#
+#  Dataset tests                                                          #
+#-------------------------------------------------------------------------#
+datasets:
+  # volume serial used to create data sets
+  vol: my-volume-serial
+#-------------------------------------------------------------------------#
+#  Console API Tests parameters                                           #
+#-------------------------------------------------------------------------#
+console:
+  # system name of a system in your sysplex to which
+  # console commands can be routed
+  sysplexsystem: my-sysplex-system
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing jobs                                         #
 #-----------------------------------------------------------------------------#
 zosjobs:
   # a PDS member containing IEFBR14 JCL that your user ID can submit
   iefbr14Member: ds-iefbr14-pds
-  # a physical sequential data set containing IEFBR14 JCL that your user ID can submit
+  # a physical sequential data set containing IEFBR14 JCL
+  # that your user ID can submit
   iefbr14PSDataSet: ds-iefbr14-ps
   # The jobclass for a non-held, etc jobclass
   jobclass: A
   # System affinity 
   sysaff: sysaff-system
-
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing provisioning                                 #
 #-----------------------------------------------------------------------------#
@@ -94,11 +94,28 @@ provisioning:
   templateName: template-name
   # The name of instance created after provisioning the template
   instanceName: instance-name
-
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing workflows                                    #
 #-----------------------------------------------------------------------------#
 workflows:
-  # The system where you want to run your workflow (must exist and be active within your zOSMF)
+  # The system where you want to run your workflow
+  # (must exist and be active within your zOSMF)
   system: system
-
+    #-------------------------------------------------------------------------#
+    #  SSH testing properties                                                 #
+  #-------------------------------------------------------------------------#
+ssh:
+  # user name to connect to ssh on z/OS
+  user: my-user-name
+  # password to connect to ssh on z/OS
+  password: my-password
+  # host to connect to ssh on z/OS
+  host: ssh-host
+  # port to connect to ssh on z/OS
+  port: ssh-port # default is 22
+  # private key for SSH. specify null if no key
+  privateKey: ssh-private-key
+  # passphrase for private key. specify null if none
+  keyPassphrase: ssh-private-key-passphrase
+  # timeout for SSH connection. Specify null to use the default or 0 for no timeout
+  handshakeTimeout: ssh-handshake-timeout

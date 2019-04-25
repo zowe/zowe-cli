@@ -19,7 +19,8 @@ describe("Create Classic Data Set", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_create_classic_dataset"
+            testName: "zos_create_classic_dataset",
+            skipProperties: true
         });
     });
 

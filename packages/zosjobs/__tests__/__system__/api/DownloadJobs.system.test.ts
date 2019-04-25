@@ -11,18 +11,16 @@
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../../";
 import { ImperativeError, IO, Session } from "@brightside/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "../../../../zosfiles/src/api/methods/get";
 
 let outputDirectory: string;
 let REAL_SESSION: Session;
 let account: string;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 
 describe("Download Jobs - System tests", () => {
     let jobid: string;
@@ -34,8 +32,7 @@ describe("Download Jobs - System tests", () => {
             testName: "zos_download_jobs"
         });
         outputDirectory = testEnvironment.workingDir + "/output";
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

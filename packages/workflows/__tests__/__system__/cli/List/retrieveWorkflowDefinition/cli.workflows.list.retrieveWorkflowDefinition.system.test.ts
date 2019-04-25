@@ -11,21 +11,17 @@
 
 import { ZosmfRestClient } from "../../../../../../rest";
 import { Session } from "@brightside/imperative";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { DeleteWorkflow, CreateWorkflow } from "../../../../..";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../../zosfiles/src/api";
 import { join } from "path";
-import { IWorkflows } from "../../../../../src/api/doc/IWorkflows";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let system: string;
 let owner: string;
@@ -39,8 +35,7 @@ describe("Retrieve workflow definition cli system tests", () => {
             tempProfileTypes: ["zosmf"],
             testName: "workflow_definition_cli"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
@@ -72,14 +67,14 @@ describe("Retrieve workflow definition cli system tests", () => {
         describe("Success Scenarios", () => {
             it("Should return the details of a workflow definition file.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
-                testEnvironment, [`/${defaultSystem.unix.testdir.toLocaleLowerCase()}/${uniqueFileName}.xml`]);
+                    testEnvironment, [`/${defaultSystem.unix.testdir.toLocaleLowerCase()}/${uniqueFileName}.xml`]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain(`success": true`);
             });
             it("Should return a message if search does not match any existing files", async () => {
                 const response = await runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
-                testEnvironment, [`/${defaultSystem.unix.testdir.toLocaleLowerCase()}/${uniqueFileName}`]);
+                    testEnvironment, [`/${defaultSystem.unix.testdir.toLocaleLowerCase()}/${uniqueFileName}`]);
                 expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toContain("not found or cannot be accessed.");
             });
@@ -87,7 +82,7 @@ describe("Retrieve workflow definition cli system tests", () => {
             it("Should return a message if search is for a diectory", async () => {
                 const fakeName = `/${defaultSystem.unix.testdir.toLocaleLowerCase()}`;
                 const response = await runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
-                testEnvironment, [fakeName]);
+                    testEnvironment, [fakeName]);
                 expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toContain("is not a UNIX file");
             });

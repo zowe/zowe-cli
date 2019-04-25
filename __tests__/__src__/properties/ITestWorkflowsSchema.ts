@@ -9,9 +9,10 @@
 *
 */
 
-export interface ITestConsoleSchema {
+export interface ITestWorkflowsSchema {
     /**
-     * Another system ID in the sysplex to route a console command to
+     * The system where you want to run your workflow
+     * (must exist and be active within your zOSMF)
      */
-    sysplexsystem: string;
+    system: string;
 }

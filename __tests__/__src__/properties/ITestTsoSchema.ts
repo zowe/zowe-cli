@@ -10,7 +10,8 @@
 */
 
 export interface ITestTsoSchema {
-    name: string;
-    password: string;
+    /**
+     * Accounting number used when creating TSO address spaces
+     */
     account: string;
 }

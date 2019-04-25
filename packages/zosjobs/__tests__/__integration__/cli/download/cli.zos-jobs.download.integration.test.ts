@@ -20,7 +20,8 @@ describe("zos-jobs download command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_download_command"
+            testName: "zos_jobs_download_command",
+            skipProperties: true
         });
     });
 

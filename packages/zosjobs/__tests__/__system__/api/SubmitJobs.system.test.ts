@@ -13,8 +13,7 @@ import { Imperative, ImperativeError, Session } from "@brightside/imperative";
 import { DeleteJobs, IJob, SubmitJobs } from "../../../index";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "../../../../zosfiles";
 import { ZosmfRestClient } from "../../../../rest";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
@@ -25,8 +24,7 @@ const rimraf = require("rimraf").sync;
 
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let account: string;
 let jobDataSet: string;
@@ -52,14 +50,13 @@ describe("Submit Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_submit_jobs"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        account = defaultSystem.tso.account;
+        account = systemProps.tso.account;
         jobDataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14PSDataSet;
         const maxJobNamePrefixLength = 5;
-        iefbr14JCL = "//" + defaultSystem.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
+        iefbr14JCL = "//" + systemProps.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
             ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
             "//EXEC PGM=IEFBR14";
     });

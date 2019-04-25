@@ -21,6 +21,7 @@ describe("zos-jobs submit local-file command", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_submit_local_file_command",
+            skipProperties: true
         });
     });
 

@@ -9,9 +9,14 @@
 *
 */
 
-export interface ITestConsoleSchema {
+export interface ITestProvisioningSchema {
     /**
-     * Another system ID in the sysplex to route a console command to
+     * The name of a template that can be provisioned
      */
-    sysplexsystem: string;
+    templateName: string;
+    /**
+     * The name of an instance of a provisioned template
+     */
+    instanceName: string;
 }
+

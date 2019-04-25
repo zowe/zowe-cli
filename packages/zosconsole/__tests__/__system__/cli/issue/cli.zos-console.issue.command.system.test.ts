@@ -14,8 +14,7 @@ import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environm
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 const MAX_CN_LENGTH: number = 10;
 
@@ -158,7 +157,7 @@ describe("zos-console issue command", () => {
     });
 
     describe("without profiles", () => {
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 
         // Create the unique test environment
@@ -167,8 +166,7 @@ describe("zos-console issue command", () => {
                 testName: "zos_console_issue_command_without_profiles"
             });
 
-            const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {

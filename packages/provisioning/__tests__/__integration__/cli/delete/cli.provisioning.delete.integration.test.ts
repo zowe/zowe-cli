@@ -21,7 +21,8 @@ describe("provisioning delete", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_delete"
+            testName: "provisioning_delete",
+            skipProperties: true
         });
     });
 
