@@ -59,7 +59,9 @@
     "@zowe/imperative": "^4.1.0-alpha.201904121852",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.13.0",
-    "string-width": "2.1.1"
+    "string-width": "2.1.1",
+    "@types/ssh2": "^0.5.38",
+    "ssh2": "^0.8.2"
   },
   "devDependencies":   {
     "@types/chai": "^4.0.1",
