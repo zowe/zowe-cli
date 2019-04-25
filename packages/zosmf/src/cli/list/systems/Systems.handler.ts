@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters } from "@brightside/imperative";
 import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "../../../..";
 import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
 
