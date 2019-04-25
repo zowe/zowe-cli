@@ -132,8 +132,7 @@ export class TestEnvironment {
      * @param testEnvironment - your test environment with system test properties populated
      */
     public static createSshSession(testEnvironment: ITestEnvironment): SshSession {
-        const SYSTEM_PROPS = new TestProperties(testEnvironment.systemTestProperties);
-        const defaultSystem = SYSTEM_PROPS.getDefaultSystem();
+        const defaultSystem = testEnvironment.systemTestProperties;
         return new SshSession({
             user: defaultSystem.ssh.user,
             password: defaultSystem.ssh.password,

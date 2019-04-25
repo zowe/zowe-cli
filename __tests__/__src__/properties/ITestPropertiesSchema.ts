@@ -17,6 +17,7 @@ import { ITestProvisioningSchema } from "./ITestProvisioningSchema";
 import { ITestWorkflowsSchema } from "./ITestWorkflowsSchema";
 import { ITestUnixSchema } from "./ITestUnixSchema";
 import { ITestDatasetSchema } from "./ITestDatasetSchema";
+import { ITestSshSchema } from "./ITestSshSchema";
 
 /**
  * Interface representing the values in the custom_properties.yaml file
@@ -32,4 +33,5 @@ export interface ITestPropertiesSchema {
     console: ITestConsoleSchema;
     workflows: ITestWorkflowsSchema;
     unix: ITestUnixSchema;
+    ssh: ITestSshSchema;
 }

@@ -19,6 +19,14 @@
 #  my-sysplex-system - system name of a system in your sysplex to which       #
 #                      console commands can be routed                         #
 #  my-volume-serial - volume serial used to create data sets                  #
+# ssh-host          - host to connect to ssh on z/OS                          #
+# ssh-port          - port to connect to ssh on z/OS - default is 22          #
+# ssh-private-key   -private key for SSH. specify null if no key              #
+
+keyPassphrase: ssh-private-key-passphrase passphrase for private key.
+  specify null if none
+# timeout for SSH connection. Specify null to use the default or 0 for no timeout
+handshakeTimeout: ssh-handshake-timeout
 #-----------------------------------------------------------------------------#
 #-- Note: If you add or rename any fields of this default template,         --#
 #-- please also update the ITestPropertiesSchema interface so that          --#
@@ -97,10 +105,17 @@ workflows:
     #  SSH testing properties                                                 #
   #-------------------------------------------------------------------------#
 ssh:
+  # user name to connect to ssh on z/OS
   user: my-user-name
+  # password to connect to ssh on z/OS
   password: my-password
+  # host to connect to ssh on z/OS
   host: ssh-host
-  port: ssh-port
+  # port to connect to ssh on z/OS
+  port: ssh-port # default is 22
+  # private key for SSH. specify null if no key
   privateKey: ssh-private-key
+  # passphrase for private key. specify null if none
   keyPassphrase: ssh-private-key-passphrase
+  # timeout for SSH connection. Specify null to use the default or 0 for no timeout
   handshakeTimeout: ssh-handshake-timeout

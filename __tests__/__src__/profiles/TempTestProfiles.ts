@@ -166,7 +166,7 @@ export class TempTestProfiles {
      */
     private static async createSshProfile(testEnvironment: ITestEnvironment): Promise<string> {
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_ssh";
-        const sshProperties = testEnvironment.systemTestProperties.systems.common.ssh;
+        const sshProperties = testEnvironment.systemTestProperties.ssh;
         let createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create ssh ${profileName} --user ${sshProperties.user} --pass ` +
             `${sshProperties.password} --host ${sshProperties.host} --port ${sshProperties.port}`;
