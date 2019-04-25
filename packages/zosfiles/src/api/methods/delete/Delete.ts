@@ -22,6 +22,7 @@ import { Invoke } from "../invoke";
 import { IDeleteDatasetOptions } from "./doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "./doc/IDeleteVsamOptions";
 import { IDeleteVsamResponse } from "./doc/IDeleteVsamResponse";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to delete files through the
@@ -141,6 +142,8 @@ export class Delete {
         // Format the endpoint to send the request to
         let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES);
 
+        fileName = posix.normalize(fileName);
+        fileName = ZosFilesUtils.formatUnixFilepath(fileName);
         fileName = encodeURIComponent(fileName);
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
