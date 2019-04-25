@@ -72,6 +72,24 @@ describe("Delete a USS File", () => {
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
         });
+
+        it("should delete a uss file", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.ussFile(REAL_SESSION, "//"+filename);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
+        });
     });
 
     describe("Failure scenarios", () => {
