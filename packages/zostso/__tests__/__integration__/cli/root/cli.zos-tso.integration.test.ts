@@ -21,7 +21,8 @@ describe("zos-tso", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_tso_root_integration"
+            testName: "zos_tso_root_integration",
+            skipProperties: true
         });
     });
 

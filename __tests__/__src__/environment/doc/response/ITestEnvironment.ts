@@ -30,6 +30,7 @@ export interface ITestEnvironment {
      * The system test properties configured and loaded as part of the test lifecyle. This field may be null
      * in the case that no system test properties were configured or could be loaded.
      *
+     * Not present if skipProperties is specified on ISetupEnvironmentParms
      * @type {ITestPropertiesSchema}
      * @memberof ITestEnvironment
      */

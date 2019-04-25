@@ -21,7 +21,8 @@ describe("Download All Member", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "download_all_data_set_member"
+            testName: "download_all_data_set_member",
+            skipProperties: true
         });
     });
 

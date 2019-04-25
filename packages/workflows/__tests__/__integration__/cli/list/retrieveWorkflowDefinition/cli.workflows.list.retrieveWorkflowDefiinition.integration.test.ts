@@ -21,7 +21,8 @@ describe("List Workflow Definition FIle Details", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_workflow_definition_file_details"
+            testName: "list_workflow_definition_file_details",
+            skipProperties: true
         });
     });
 

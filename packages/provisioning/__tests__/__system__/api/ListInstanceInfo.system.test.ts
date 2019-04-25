@@ -11,7 +11,6 @@
 
 import { inspect } from "util";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import {
     IProvisionedInstance,
     ListInstanceInfo,
@@ -22,7 +21,7 @@ import {
     ProvisioningConstants
 } from "../../../../provisioning";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;

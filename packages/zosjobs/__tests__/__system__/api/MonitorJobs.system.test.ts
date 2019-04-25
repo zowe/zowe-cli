@@ -16,9 +16,8 @@ import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // long running test timeout
 const LONG_TIMEOUT = 100000;
@@ -58,9 +57,8 @@ async function cleanTestJobs() {
     }
 }
 
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 
 const trimMessage = (message: string) => {
     // don't use more than one space or tab when checking error details
@@ -74,8 +72,7 @@ describe("System Tests - Monitor Jobs", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_monitor_jobs"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

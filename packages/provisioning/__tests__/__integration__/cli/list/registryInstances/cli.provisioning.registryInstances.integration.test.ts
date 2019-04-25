@@ -21,7 +21,8 @@ describe("provisioning list registry_instances", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_registry_instances"
+            testName: "provisioning_list_registry_instances",
+            skipProperties: true
         });
     });
 

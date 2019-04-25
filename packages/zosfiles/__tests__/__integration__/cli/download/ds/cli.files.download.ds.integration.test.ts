@@ -21,7 +21,8 @@ describe("Download Data Set", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "download_data_set"
+            testName: "download_data_set",
+            skipProperties: true
         });
     });
 

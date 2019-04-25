@@ -107,7 +107,7 @@ export class TempTestProfiles {
      */
     private static async createZosmfProfile(testEnvironment: ITestEnvironment): Promise<string> {
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_zosmf";
-        const zosmfProperties = testEnvironment.systemTestProperties.systems.common.zosmf;
+        const zosmfProperties = testEnvironment.systemTestProperties.zosmf;
         let createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create zosmf ${profileName} --user ${zosmfProperties.user} --pw ` +
             `${zosmfProperties.pass} --ru ${zosmfProperties.rejectUnauthorized}` +
@@ -140,7 +140,7 @@ export class TempTestProfiles {
      */
     private static async createTsoProfile(testEnvironment: ITestEnvironment): Promise<string> {
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_tso";
-        const tsoProperties = testEnvironment.systemTestProperties.systems.common.tso;
+        const tsoProperties = testEnvironment.systemTestProperties.tso;
         const createProfileScript = this.SHEBANG + `${Constants.BINARY_NAME} profiles create tso ${profileName} -a ${tsoProperties.account}`;
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
@@ -166,7 +166,7 @@ export class TempTestProfiles {
      */
     private static async createSshProfile(testEnvironment: ITestEnvironment): Promise<string> {
         const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_ssh";
-        const sshProperties = testEnvironment.systemTestProperties.systems.common.ssh;
+        const sshProperties = testEnvironment.systemTestProperties.ssh;
         let createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create ssh ${profileName} --user ${sshProperties.user} --pass ` +
             `${sshProperties.password} --host ${sshProperties.host} --port ${sshProperties.port}`;
@@ -204,7 +204,6 @@ export class TempTestProfiles {
      * @throws errors if the profile delete fails
      */
     private static async deleteProfile(testEnvironment: ITestEnvironment, profileType: string, profileName: string): Promise<string> {
-        const tsoProperties = testEnvironment.systemTestProperties.systems.common.tso;
         const deleteProfileScript = this.SHEBANG + `${Constants.BINARY_NAME} profiles delete ${profileType} ${profileName} --force`;
         const scriptPath = testEnvironment.workingDir + "_delete_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, deleteProfileScript);

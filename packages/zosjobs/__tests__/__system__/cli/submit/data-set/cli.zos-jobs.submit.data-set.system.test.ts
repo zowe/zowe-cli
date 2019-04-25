@@ -12,8 +12,7 @@
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { List } from "../../../../../../zosfiles/src/api/methods/list";
 import { Session } from "@zowe/imperative";
 
@@ -23,8 +22,6 @@ process.env.FORCE_COLOR = "0";
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 let account: string;
-let defaultSystem: ITestSystemSchema;
-let systemProps: TestProperties;
 let jclMember: string;
 let psJclDataSet: string;
 let REAL_SESSION: Session;
@@ -36,11 +33,8 @@ describe("zos-jobs submit data-set command", () => {
             tempProfileTypes: ["zosmf"]
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        account = defaultSystem.tso.account;
+        account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
     });
@@ -125,15 +119,14 @@ describe("zos-jobs submit data-set command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            let SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_data_set_without_profiles"
                 });
 
-                const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-                DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+                SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {
@@ -145,18 +138,18 @@ describe("zos-jobs submit data-set command", () => {
 
                 // if API Mediation layer is being used (basePath has a value) then
                 // set an ENVIRONMENT variable to be used by zowe.
-                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
-                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                if (SYSTEM_PROPS.zosmf.basePath != null) {
+                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = SYSTEM_PROPS.zosmf.basePath;
                 }
 
                 const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
                         TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
-                        DEFAULT_SYSTEM_PROPS.zosmf.host,
-                        DEFAULT_SYSTEM_PROPS.zosmf.port,
-                        DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                        SYSTEM_PROPS.zosmf.host,
+                        SYSTEM_PROPS.zosmf.port,
+                        SYSTEM_PROPS.zosmf.user,
+                        SYSTEM_PROPS.zosmf.pass
                     ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);

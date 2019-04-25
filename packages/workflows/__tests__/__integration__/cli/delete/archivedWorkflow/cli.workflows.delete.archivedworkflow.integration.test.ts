@@ -19,7 +19,8 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 describe("Delete archived workflow integration test", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_archived_workflow_details"
+            testName: "list_archived_workflow_details",
+            skipProperties: true
         });
     });
 
