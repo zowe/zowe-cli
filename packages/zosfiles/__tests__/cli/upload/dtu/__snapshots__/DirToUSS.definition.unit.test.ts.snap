@@ -25,7 +25,7 @@ Array [
     "conflictsWith": Array [
       "ascii-files",
     ],
-    "description": "Comma separated list of file names to be uploaded in binary mode. Use this option when you upload a directory in default ASCII mode, but you want to specify certain files to be uploaded in binary mode. All files matching specified file names will be uploaded in binary mode.",
+    "description": "Comma separated list of file names to be uploaded in binary mode. Use this option when you upload a directory in default ASCII mode, but you want to specify certain files to be uploaded in binary mode. All files matching specified file names will be uploaded in binary mode. If a .zosattributes file (or equivalent file specified via --attributes) is present, --binary-files will be ignored.",
     "name": "binary-files",
     "type": "string",
   },
@@ -36,7 +36,7 @@ Array [
     "conflictsWith": Array [
       "binary-files",
     ],
-    "description": "Comma separated list of file names to be uploaded in ASCII mode. Use this option when you upload a directory with --binary/-b flag, but you want to specify certain files to be uploaded in ASCII mode. All files matching specified file names will be uploaded in ASCII mode.",
+    "description": "Comma separated list of file names to be uploaded in ASCII mode. Use this option when you upload a directory with --binary/-b flag, but you want to specify certain files to be uploaded in ASCII mode. All files matching specified file names will be uploaded in ASCII mode. If a .zosattributes file (or equivalent file specified via --attributes) is present, --ascii-files will be ignored.",
     "name": "ascii-files",
     "type": "string",
   },
