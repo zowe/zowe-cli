@@ -9,22 +9,20 @@
 *
 */
 
-import { Imperative, Session, IO } from "@brightside/imperative";
+import { Imperative, IO, Session } from "@zowe/imperative";
 import * as path from "path";
-import { runCliScript , stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../rest";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 
 // Test environment will be populated in the "beforeAll"
 let TEST_ENVIRONMENT: ITestEnvironment;
 let REAL_SESSION: Session;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
 
 let host: string;
@@ -43,8 +41,8 @@ function generateRandomString(j: number) {
     let text = "";
 
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (let i = 0; i < j ; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    for (let i = 0; i < j; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
     return text;
@@ -59,8 +57,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
             tempProfileTypes: ["ssh"]
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
     });
 
     afterAll(async () => {
@@ -78,7 +75,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
 
     it("should resolve --cwd option", async () => {
         const commandName = "pwd";
-        const cwd =  `${defaultSystem.unix.testdir}`;
+        const cwd = `${defaultSystem.unix.testdir}`;
         // Imperative.console.info("Resolve --cwd Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
@@ -101,47 +98,46 @@ describe("zowe uss issue ssh without running bash scripts", () => {
 
 describe("Use a test directory to do stuff in that creates files", () => {
 
-        // Create the unique test environment
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                testName: "issue_ssh",
-                tempProfileTypes: ["ssh"]
-            });
-
-            systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
-            const directory = `${defaultSystem.unix.testdir}/`;
-            // create a directory that the random dir will be created in
-            const commandName = `mkdir ${directory}/usstest && cd ${directory}/usstest && pwd`;
-            // Imperative.console.info("Make test directory cmd:" + commandName);
-            const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-            checkResponse(response);
-            expect(response.stdout.toString()).toContain(directory + "usstest");
-        });
-        afterAll(async () => {
-            // delete the test directory
-            const directory = `${defaultSystem.unix.testdir}/`;
-            const commandName = "rm -rf " + directory + "usstest";
-            // Imperative.console.info("Remove test directory cmd:" + commandName);
-            const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-            // Imperative.console.info("Remove Response:" + response.stdout.toString());
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-
+    // Create the unique test environment
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            testName: "issue_ssh",
+            tempProfileTypes: ["ssh"]
         });
 
-        it("should write a long directory", async () => {
-            const j = 200;
-            const randomDir = generateRandomString(j);
-            const directory = `${defaultSystem.unix.testdir}/`;
-            const testdir = directory + "test/";
-            const commandName = "mkdir " + testdir + "usstest/" + randomDir;
-            // Imperative.console.info("Long Dir Command:" + commandName);
-            const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-
-            checkResponse(response);
-            expect(response.stdout.toString()).toContain(randomDir);
-        });
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        const directory = `${defaultSystem.unix.testdir}/`;
+        // create a directory that the random dir will be created in
+        const commandName = `mkdir ${directory}/usstest && cd ${directory}/usstest && pwd`;
+        // Imperative.console.info("Make test directory cmd:" + commandName);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
+        checkResponse(response);
+        expect(response.stdout.toString()).toContain(directory + "usstest");
     });
+    afterAll(async () => {
+        // delete the test directory
+        const directory = `${defaultSystem.unix.testdir}/`;
+        const commandName = "rm -rf " + directory + "usstest";
+        // Imperative.console.info("Remove test directory cmd:" + commandName);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
+        // Imperative.console.info("Remove Response:" + response.stdout.toString());
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+
+    });
+
+    it("should write a long directory", async () => {
+        const j = 200;
+        const randomDir = generateRandomString(j);
+        const directory = `${defaultSystem.unix.testdir}/`;
+        const testdir = directory + "test/";
+        const commandName = "mkdir " + testdir + "usstest/" + randomDir;
+        // Imperative.console.info("Long Dir Command:" + commandName);
+        const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
+
+        checkResponse(response);
+        expect(response.stdout.toString()).toContain(randomDir);
+    });
+});
 
 describe("zowe uss issue ssh running bash scripts", () => {
 
@@ -149,11 +145,10 @@ describe("zowe uss issue ssh running bash scripts", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "issue_ssh",
-            tempProfileTypes: ["ssh","zosmf"]
+            tempProfileTypes: ["ssh", "zosmf"]
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
@@ -238,14 +233,14 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
             tempProfileTypes: ["ssh"]
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        host = systemProps.getDefaultSystem().ssh.host;
-        port = systemProps.getDefaultSystem().ssh.port;
-        user = systemProps.getDefaultSystem().ssh.user;
-        password = systemProps.getDefaultSystem().ssh.password;
-        privateKey = systemProps.getDefaultSystem().ssh.privateKey;
-        keyPassphrase = systemProps.getDefaultSystem().ssh.keyPassphrase;
-        defaultSystem = systemProps.getDefaultSystem();
+
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        host = defaultSystem.ssh.host;
+        port = defaultSystem.ssh.port;
+        user = defaultSystem.ssh.user;
+        password = defaultSystem.ssh.password;
+        privateKey = defaultSystem.ssh.privateKey;
+        keyPassphrase = defaultSystem.ssh.keyPassphrase;
     });
 
     afterAll(async () => {
@@ -256,8 +251,8 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
 
         // create a temporary zowe profile with an invalid port
         let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_withoutprivateKey";
-        let command = "zowe profiles create ssh-profile " + host + "onlypassword --host " + host  + " --port " + port
-                        + " --user " + user + " --password " + password;
+        let command = "zowe profiles create ssh-profile " + host + "onlypassword --host " + host + " --port " + port
+            + " --user " + user + " --password " + password;
         await IO.writeFileAsync(scriptPath, command);
         let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
         expect(resp.status).toBe(0);
@@ -280,9 +275,9 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
         // create a temporary zowe profile with an invalid passkey
         const bogusPrivateKey = "bogusKey";
         let scriptPath = TEST_ENVIRONMENT.workingDir + "_create_profile_invalid_privatekey";
-        let command = "zowe profiles create ssh-profile " + host + "invalidprivatekey --host " + host  + " --port " + port
-                        + " --user " + user + " --password " + password + " --privateKey " +  bogusPrivateKey
-                        + " --keyPassphrase " + keyPassphrase;
+        let command = "zowe profiles create ssh-profile " + host + "invalidprivatekey --host " + host + " --port " + port
+            + " --user " + user + " --password " + password + " --privateKey " + bogusPrivateKey
+            + " --keyPassphrase " + keyPassphrase;
 
         await IO.writeFileAsync(scriptPath, command);
         let resp = runCliScript(scriptPath, TEST_ENVIRONMENT);
