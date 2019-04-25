@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 
-describe("zossmf check status definition", () => {
+describe("zosmf check status definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../src/cli/check/status/Status.definition").StatusDefinition;
         delete definition.handler;
