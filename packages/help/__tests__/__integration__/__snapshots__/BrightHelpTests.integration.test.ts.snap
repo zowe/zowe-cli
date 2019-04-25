@@ -32,7 +32,7 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    zos-console | console Issue z/OS console commands and collect responses
    zos-files | files     Manage z/OS data sets                            
    zos-jobs | jobs       Manage z/OS jobs                                 
-   zos-tso | tso         Interact with TSO                                   
+   zos-tso | tso         Interact with TSO                                
    zos-workflows | wf    Create and manage z/OSMF workflows               
    zosmf                 Interact with z/OSMF                             
 
