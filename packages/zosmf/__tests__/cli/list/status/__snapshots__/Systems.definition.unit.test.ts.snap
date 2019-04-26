@@ -2,18 +2,18 @@
 
 exports[`zosmf list systems definition should not have changed 1`] = `
 Object {
-  "description": "Obtain a list of the systems that are defined to a z/OSMF instance.",
+  "description": "Obtain a list of systems that are defined to a z/OSMF instance.",
   "examples": Array [
     Object {
-      "description": "Obtain a list of the systems defined to a z/OSMF instance in your default z/OSMF profile",
+      "description": "Obtain a list of systems defined to a z/OSMF instance with your default z/OSMF profile",
       "options": "",
     },
     Object {
-      "description": "Obtain a list of the systems defined to a z/OSMF instance in a supplied z/OSMF profile",
+      "description": "Obtain a list of systems defined to a z/OSMF instance for the specified z/OSMF profile",
       "options": "--zosmf-profile SomeZosmfProfileName",
     },
     Object {
-      "description": "Obtain a list of the systems defined to a z/OSMF instance that you specified manually via command line",
+      "description": "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
       "options": "--host myhost --port 443 --user myuser --password mypass",
     },
   ],
