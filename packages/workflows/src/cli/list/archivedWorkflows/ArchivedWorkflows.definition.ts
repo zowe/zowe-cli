@@ -35,7 +35,8 @@ export const ArchivedWorkflows: ICommandDefinition = {
     options: ([
         ListArchivedWorkflowsOptions.workflowName,
         ListArchivedWorkflowsOptions.owner,
-        ListArchivedWorkflowsOptions.orderBy,
+        ListArchivedWorkflowsOptions.asc,
+        ListArchivedWorkflowsOptions.desc,
     ]),
     outputFormatOptions: true,
     examples: [

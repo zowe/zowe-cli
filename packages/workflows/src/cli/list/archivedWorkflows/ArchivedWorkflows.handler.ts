@@ -42,7 +42,7 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
         const width = 42;
         try {
             response = await ListArchivedWorkflows.listArchivedWorkflows(
-                this.mSession, undefined, this.arguments.workflowName, this.arguments.owner, this.arguments.orderBy);
+                this.mSession, undefined, this.arguments.workflowName, this.arguments.owner);
         } catch (err) {
             error = "List workflow(s) " + err;
             throw error;

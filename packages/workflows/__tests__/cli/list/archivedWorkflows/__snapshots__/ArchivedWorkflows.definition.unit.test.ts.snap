@@ -7,7 +7,7 @@ Object {
   ],
   "description": "List the archived workflows for a system.
 Multiple filters can be used together.
-Omitting all options will list all workflows on the sysplex",
+Omitting all options will list all archived workflows on the sysplex",
   "examples": Array [
     Object {
       "description": "List the archived workflow with name \\"testworkflow\\"",
@@ -44,19 +44,19 @@ Omitting all options will list all workflows on the sysplex",
     },
     Object {
       "aliases": Array [
-        "desc",
+        "asc",
       ],
-      "description": "Optional parameter for listing workflows from the newest to the oldest.",
-      "name": "desc",
+      "description": "Optional parameter for listing workflows from the oldest to the newest.",
+      "name": "asc",
       "required": false,
       "type": "boolean",
     },
     Object {
       "aliases": Array [
-        "asc",
+        "desc",
       ],
-      "description": "Optional parameter for listing workflows from the oldest to the newest.",
-      "name": "asc",
+      "description": "Optional parameter for listing workflows from the newest to the oldest.",
+      "name": "desc",
       "required": false,
       "type": "boolean",
     },

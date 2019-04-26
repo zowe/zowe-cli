@@ -65,7 +65,7 @@ export const ListArchivedWorkflowsOptions: { [key: string]: ICommandOptionDefini
     },
 
     /**
-     * Optional parameter for listing variables properties.
+     * Optional parameter for sorting workflows by date.
      * @type {ICommandOptionDefinition}
      */
     desc: {
