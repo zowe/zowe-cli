@@ -15,7 +15,7 @@ import { SystemsDefinition } from "./systems/Systems.definition";
 export const ListCommand: ICommandDefinition = {
     name: "list",
     type: "group",
-    description: "Obtain a list of the systems that are defined to a z/OSMF instance.",
+    description: "Obtain a list of systems that are defined to a z/OSMF instance.",
     children: [
         SystemsDefinition,
     ]

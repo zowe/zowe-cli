@@ -14,7 +14,7 @@ import { ZosmfSession } from "../../../ZosmfSession";
 
 export const SystemsDefinition: ICommandDefinition = {
     name: "systems",
-    description: "Obtain a list of the systems that are defined to a z/OSMF instance.",
+    description: "Obtain a list of systems that are defined to a z/OSMF instance.",
     type: "command",
     handler: __dirname + "/Systems.handler",
     profile: {
@@ -23,17 +23,17 @@ export const SystemsDefinition: ICommandDefinition = {
     options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
         {
-            description: "Obtain a list of the systems defined to a z/OSMF instance " +
-                "in your default z/OSMF profile",
+            description: "Obtain a list of systems defined to a z/OSMF instance " +
+                "with your default z/OSMF profile",
             options: ""
         },
         {
-            description: "Obtain a list of the systems defined to a z/OSMF instance " +
-                "in a supplied z/OSMF profile",
+            description: "Obtain a list of systems defined to a z/OSMF instance " +
+                "for the specified z/OSMF profile",
             options: "--zosmf-profile SomeZosmfProfileName"
         },
         {
-            description: "Obtain a list of the systems defined to a z/OSMF instance that you specified manually via command line",
+            description: "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
             options: "--host myhost --port 443 --user myuser --password mypass"
         },
     ]
