@@ -23,8 +23,6 @@ import * as fs from "fs";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 /**
@@ -67,7 +65,7 @@ describe("IssueCommand (integration)", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_submit_jobs"
+            testName: "zos_console_issue_command_api"
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });

@@ -22,7 +22,8 @@ describe("zos-jobs submit data-set command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_submit_command_integration"
+            testName: "zos_jobs_submit_command_integration",
+            skipProperties: true
         });
     });
 

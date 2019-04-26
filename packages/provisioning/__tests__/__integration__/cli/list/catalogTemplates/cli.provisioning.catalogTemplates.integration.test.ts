@@ -21,7 +21,8 @@ describe("provisioning list catalog-templates", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_catalog-templates"
+            testName: "provisioning_list_catalog-templates",
+            skipProperties: true
         });
     });
 

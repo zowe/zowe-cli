@@ -20,7 +20,8 @@ describe("zos-jobs list command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_list_command"
+            testName: "zos_jobs_list_command",
+            skipProperties: true
         });
     });
 
