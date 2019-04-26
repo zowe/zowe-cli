@@ -20,7 +20,8 @@ describe("Create Binary Data Set", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_create_binary_data_set"
+            testName: "zos_create_binary_data_set",
+            skipProperties: true
         });
     });
 

@@ -14,15 +14,13 @@ import * as path from "path";
 import { getRandomBytes, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Create, CreateDataSetTypeEnum, Delete, Get } from "../../../../../../zosfiles";
 
 let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProperties: ITestPropertiesSchema;
 let dsname: string;
 
 describe("Upload Data Set", () => {
@@ -33,12 +31,11 @@ describe("Upload Data Set", () => {
             testName: "upload_data_set"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProperties = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(systemProperties.zosmf.user);
     });
 
     afterAll(async () => {
@@ -46,8 +43,7 @@ describe("Upload Data Set", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+        let systemProps: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -55,8 +51,7 @@ describe("Upload Data Set", () => {
                 testName: "zos_files_upload_stdin_without_profile"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            systemProps = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         beforeEach(async () => {
@@ -82,16 +77,16 @@ describe("Upload Data Set", () => {
 
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
-            if (defaultSys.zosmf.basePath != null) {
-                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            if (systemProps.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = systemProps.zosmf.basePath;
             }
 
             const response = runCliScript(shellScript, TEST_ENVIRONMENT_NO_PROF,
                 [dsname,
-                    defaultSys.zosmf.host,
-                    defaultSys.zosmf.port,
-                    defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass
+                    systemProps.zosmf.host,
+                    systemProps.zosmf.port,
+                    systemProps.zosmf.user,
+                    systemProps.zosmf.pass
                     ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

@@ -21,6 +21,7 @@ describe("zos-tso send", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_tso_send",
+            skipProperties: true
         });
     });
 

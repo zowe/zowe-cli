@@ -20,7 +20,8 @@ describe("Upload Data Set", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "upload_data_set"
+            testName: "upload_data_set",
+            skipProperties: true
         });
     });
 

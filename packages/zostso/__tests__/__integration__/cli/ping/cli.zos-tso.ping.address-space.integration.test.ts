@@ -24,6 +24,7 @@ describe("zos-tso ping address-space", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_tso_start_as",
+            skipProperties: true
         });
     });
 

@@ -15,15 +15,13 @@ import { inspect } from "util";
 
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
 import { Invoke } from "../../../../../src/api/methods/invoke/Invoke";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let dsname: string;
 let volume: string;
@@ -35,13 +33,12 @@ describe("Invoke AMS", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_VSAM_dataset"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VSAM`);
-        volume = defaultSystem.datasets.list[0].vol.toUpperCase();
+        dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.VSAM`);
+        volume = systemProps.datasets.vol.toUpperCase();
     });
 
     afterAll(async () => {

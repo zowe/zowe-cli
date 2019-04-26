@@ -10,13 +10,8 @@
 */
 
 export interface ITestDatasetSchema {
-    hlq: string;
-    list: [
-        {
-            dataset: string;
-            vol: string;
-            membersdir: string;
-        }
-        ];
-    statictestds: string;
+    /**
+     * Volume serial used to create data sets
+     */
+    vol: string;
 }

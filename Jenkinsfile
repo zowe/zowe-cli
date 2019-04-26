@@ -73,14 +73,6 @@ node('ca-jenkins-agent') {
         unit: 'MINUTES'
     ])
 
-    // Check for vulnerabilities
-    pipeline.createStage(
-        name: "Check for Vulnerabilities",
-        stage: {
-            sh 'npm run audit:public'
-        }
-    )
-
     def TEST_ROOT = "__tests__/__results__/ci"
     def UNIT_TEST_ROOT = "$TEST_ROOT/unit"
     def UNIT_JUNIT_OUTPUT = "$UNIT_TEST_ROOT/junit.xml"
@@ -127,10 +119,6 @@ node('ca-jenkins-agent') {
     pipeline.test(
         name: "Integration",
         operation: {
-            // Create the custom properties file so the tests can run, however the values inside
-            // are not necessary for integration tests
-            sh "cp __tests__/__resources__/properties/default_properties.yaml __tests__/__resources__/properties/custom_properties.yaml"
-           
             sh "npm run test:integration"
         },
         timeout: [time: 30, unit: 'MINUTES'],
@@ -146,6 +134,14 @@ node('ca-jenkins-agent') {
         ],
         testResults: [dir: "$INTEGRATION_TEST_ROOT/jest-stare", files: "index.html", name: "$PRODUCT_NAME - Integration Test Report"],
         junitOutput: INTEGRATION_JUNIT_OUTPUT
+    )
+
+    // Check for vulnerabilities
+    pipeline.createStage(
+        name: "Check for Vulnerabilities",
+        stage: {
+            sh 'npm run audit:public'
+        }
     )
 
     // Perform sonar qube operations

@@ -15,15 +15,14 @@ import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let IEFBR14_JCL: string;
 
 describe("zos-jobs delete job command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_delete_job_command_integration"
+            testName: "zos_jobs_delete_job_command_integration",
+            skipProperties: true
         });
-        IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
     });
 
     afterAll(async () => {

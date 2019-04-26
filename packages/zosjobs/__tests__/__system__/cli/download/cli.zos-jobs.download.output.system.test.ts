@@ -13,8 +13,7 @@ import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environm
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -58,15 +57,14 @@ describe("zos-jobs download output command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_download_output_without_profiles"
                 });
 
-                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+                DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {
@@ -84,7 +82,7 @@ describe("zos-jobs download output command", () => {
                 }
 
                 const response = runCliScript(__dirname + "/__scripts__/download-output/download_fully_qualified.sh",
-                TEST_ENVIRONMENT_NO_PROF,
+                    TEST_ENVIRONMENT_NO_PROF,
                     [
                         IEFBR14_JCL,
                         DEFAULT_SYSTEM_PROPS.zosmf.host,
