@@ -12,9 +12,8 @@
 import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { IO } from "@brightside/imperative";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let testEnvironment: ITestEnvironment;
 let host: string;
@@ -46,15 +45,14 @@ describe("zosmf list systems", () => {
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "zos_list_systems_command_without_profiles"
             });
 
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {
@@ -63,16 +61,16 @@ describe("zosmf list systems", () => {
 
         it("should successfully list systems with options only on the command line", async () => {
             const opts = [
-                "--host", DEFAULT_SYSTEM_PROPS.zosmf.host,
-                "--port", DEFAULT_SYSTEM_PROPS.zosmf.port,
-                "--user", DEFAULT_SYSTEM_PROPS.zosmf.user,
-                "--password", DEFAULT_SYSTEM_PROPS.zosmf.pass,
-                "--reject-unauthorized", DEFAULT_SYSTEM_PROPS.zosmf.rejectUnauthorized
+                "--host", SYSTEM_PROPS.zosmf.host,
+                "--port", SYSTEM_PROPS.zosmf.port,
+                "--user", SYSTEM_PROPS.zosmf.user,
+                "--password", SYSTEM_PROPS.zosmf.pass,
+                "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 
-            if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+            if (SYSTEM_PROPS.zosmf.basePath != null) {
                 opts.push("--base-path");
-                opts.push(DEFAULT_SYSTEM_PROPS.zosmf.basePath);
+                opts.push(SYSTEM_PROPS.zosmf.basePath);
             }
 
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_list_systems_use_cli_opts.sh",
