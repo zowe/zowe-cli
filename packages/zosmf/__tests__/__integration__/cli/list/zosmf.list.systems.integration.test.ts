@@ -20,7 +20,8 @@ describe("zosmf list systems", () => {
     // Create the unique test environment
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_list_systems_integration"
+            testName: "zos_list_systems_integration",
+            skipProperties: true,
         });
     });
 

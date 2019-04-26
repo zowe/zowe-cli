@@ -17,7 +17,6 @@ import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/proper
 import { IO } from "@brightside/imperative";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 let host: string;
 let port: number;
 let user: string;
@@ -33,11 +32,10 @@ describe("zosmf list systems", () => {
             testName: "zos_list_systems"
         });
 
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        host = systemProps.getDefaultSystem().zosmf.host;
-        port = systemProps.getDefaultSystem().zosmf.port;
-        user = systemProps.getDefaultSystem().zosmf.user;
-        pass = systemProps.getDefaultSystem().zosmf.pass;
+        host = testEnvironment.systemTestProperties.zosmf.host;
+        port = testEnvironment.systemTestProperties.zosmf.port;
+        user = testEnvironment.systemTestProperties.zosmf.user;
+        pass = testEnvironment.systemTestProperties.zosmf.pass;
     });
 
     afterAll(async () => {
