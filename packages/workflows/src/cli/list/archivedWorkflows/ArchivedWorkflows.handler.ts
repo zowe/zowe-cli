@@ -25,15 +25,15 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
      * Command line arguments passed
      * @private
      * @type {*}
-     * @memberof ListHandler
+     * @memberof ListArchivedWorkflowsHandler
      */
     private arguments: any;
 
     /**
-     * Handler process - invoked by the command processor to handle the "zos-workflows list"
+     * Handler process - invoked by the command processor to handle the "zos-workflows archived list"
      * @param {IHandlerParameters} params - Command handler parameters
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
-     * @memberof ListHandler
+     * @memberof ListArchivedWorkflowsHandler
      */
     public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
         this.arguments = commandParameters.arguments;
@@ -48,22 +48,67 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
             throw error;
         }
 
-        commandParameters.response.data.setObj(response);
-        response.archivedWorkflows.forEach((workflow: IWorkflowsInfo) => {
-            workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
-            workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
-            workflow.archivedInstanceURI = TextUtils.wordWrap(`${workflow.archivedInstanceURI}`, width);
-        });
-        // Format & print the response
-        if (response.archivedWorkflows.length) {
-            commandParameters.response.format.output({
-                fields: ["workflowName", "workflowKey", "archivedInstanceURI"],
-                output: response.archivedWorkflows,
-                format: "table",
-                header: true,
+        let orderBy: string;
+        if (this.arguments.asc) {
+            orderBy = "asc";
+        } else  {
+            orderBy = "desc";
+        }
+
+        switch (orderBy){
+            case "asc":
+            try {
+                response = await ListArchivedWorkflows.listArchivedWorkflows(
+                    this.mSession, undefined, this.arguments.workflowName, this.arguments.owner);
+            } catch (err) {
+                error = "List workflow(s) " + err;
+                throw error;
+            }
+            commandParameters.response.data.setObj(response);
+            response.archivedWorkflows.forEach((workflow: IWorkflowsInfo) => {
+                workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
+                workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
+                workflow.archivedInstanceURI = TextUtils.wordWrap(`${workflow.archivedInstanceURI}`, width);
             });
-        } else {
-            commandParameters.response.console.log("No workflows match the requested query");
+            // Format & print the response
+            if (response.archivedWorkflows.length) {
+                commandParameters.response.format.output({
+                    fields: ["workflowName", "workflowKey", "archivedInstanceURI"],
+                    output: response.archivedWorkflows,
+                    format: "table",
+                    header: true,
+                });
+                }
+
+            break;
+
+            case "desc":
+            try {
+                response = await ListArchivedWorkflows.listArchivedWorkflows(
+                    this.mSession, undefined, this.arguments.workflowName, this.arguments.owner);
+            } catch (err) {
+                error = "List workflow(s) " + err;
+                throw error;
+            }
+            commandParameters.response.data.setObj(response);
+            response.archivedWorkflows.forEach((workflow: IWorkflowsInfo) => {
+                workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
+                workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
+                workflow.archivedInstanceURI = TextUtils.wordWrap(`${workflow.archivedInstanceURI}`, width);
+            });
+            // Format & print the response
+            if (response.archivedWorkflows.length) {
+                commandParameters.response.format.output({
+                    fields: ["workflowName", "workflowKey", "archivedInstanceURI"],
+                    output: response.archivedWorkflows,
+                    format: "table",
+                    header: true,
+                });
+
+                break;
+            } else {
+        commandParameters.response.console.log("No workflows match the requested query");
+                }
         }
     }
-}
+ }

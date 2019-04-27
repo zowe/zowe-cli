@@ -99,7 +99,7 @@ describe("List archived workflow cli system tests", () => {
              // Archive workflow
             await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
         });
-        it("Should delete workflow in zOSMF by name.", async () => {
+        it("Should list workflows in zOSMF by name.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
             testEnvironment, [wfName]);
             expect(response.stderr.toString()).toBe("");
