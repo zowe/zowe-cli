@@ -1,0 +1,9 @@
+piccpy*.* binary binary
+Piccpy*.* -
+*copyMe*.* ISO8857 IBM-1047
+*CopyMe*.* binary binary
+*copyme*.* -
+*NoTag*.* binary binary
+*ignore*.* -
+*copyAndMe* ISO8857 IBM-1140
+*.js UTF-8 UTF-8

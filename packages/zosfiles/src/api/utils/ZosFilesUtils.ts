@@ -154,6 +154,19 @@ export class ZosFilesUtils {
     }
 
     /**
+     * Normanize and URL-encode a USS path to be passed to z/OSMF
+     * @param ussPath path to sanitize
+     */
+    public static sanitizeUssPathForRestCall(ussPath: string): string {
+        let sanitizedPath = path.posix.normalize(ussPath);
+        if (sanitizedPath.charAt(0) === "/") {
+            // trim leading slash from unix files - API doesn't like it
+            sanitizedPath = sanitizedPath.substring(1);
+        }
+        return encodeURIComponent(sanitizedPath);
+    }
+
+    /**
      * Format USS filepaths in the way that the APIs expect (no leading /)
      * @param {string} usspath - the path to format
      */
