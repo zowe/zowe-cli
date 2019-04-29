@@ -87,13 +87,13 @@ describe("provisioning delete instance", () => {
                 instanceID, ProvisioningTestUtils.STATE_DEPROV);
             instanceName = instance["external-name"];
             Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
-        });
+        }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
         it("should successfully delete an instance without profile", async () => {
             const response = runCliScript(__dirname + "/__scripts__/instance/delete_instance_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
-                    instance,
+                    instanceName,
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
