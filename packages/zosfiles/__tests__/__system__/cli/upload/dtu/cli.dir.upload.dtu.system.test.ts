@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session, ImperativeError, Headers } from "@brightside/imperative";
+import { Headers, Imperative, Session } from "@brightside/imperative";
 
 import * as path from "path";
 import * as fs from "fs";
@@ -18,7 +18,7 @@ import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Get, ZosFilesConstants } from "../../../../../index";
+import { Get, ZosFilesConstants, ZosFilesUtils } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 
 let REAL_SESSION: Session;
@@ -274,7 +274,7 @@ describe("Upload directory to USS", () => {
         });
     });
 
-    describe ("Scenarios using the .zosattributes file", () => {
+    describe("Scenarios using the .zosattributes file", () => {
         it("should ignore files marked with a -", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_ignored_files");
             testSuccessfulUpload(localDirName);
@@ -311,13 +311,14 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName);
 
-            const remoteTextFileBuffer = await Get.USSFile(REAL_SESSION, ussname +"/foo.text");
-            const localTextFileBuffer = fs.readFileSync(path.join(localDirName,"foo.text"));
-            expect(remoteTextFileBuffer.equals(localTextFileBuffer)).toBeTruthy();
+            const remoteTextFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/foo.text");
+            const localTextFileBuffer = fs.readFileSync(path.join(localDirName, "foo.text"));
 
-            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname +"/bar.binary",{binary: true});
-            const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName,"bar.binary"));
-            expect(remoteBinaryFileBuffer.equals(localBinaryFileBuffer)).toBeTruthy();
+            expect(ZosFilesUtils.normalizeNewline(remoteTextFileBuffer)).toEqual(ZosFilesUtils.normalizeNewline(localTextFileBuffer));
+
+            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/bar.binary", {binary: true});
+            const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName, "bar.binary"));
+            expect(remoteBinaryFileBuffer).toEqual(localBinaryFileBuffer);
         });
 
         it("should tag uploaded files according to remote encoding", async () => {
@@ -352,11 +353,11 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
 
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/external.attributes");
-            testSuccessfulUpload(localDirName, ["--attributes",attributesPath]);
+            testSuccessfulUpload(localDirName, ["--attributes", attributesPath]);
 
             let error: Error;
             try {
-                await Get.USSFile(REAL_SESSION, path.join(ussname,"subdir_ascii_file1.txt"));
+                await Get.USSFile(REAL_SESSION, path.join(ussname, "subdir_ascii_file1.txt"));
                 fail("USS file subddir_ascii_file1.txt should not have been transferred");
             } catch (err) {
                 error = err;
@@ -387,13 +388,14 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName);
 
-            const remoteTextFileBuffer = await Get.USSFile(REAL_SESSION, ussname +"/foo.text");
-            const localTextFileBuffer = fs.readFileSync(path.join(localDirName,"foo.text"));
-            expect(remoteTextFileBuffer.equals(localTextFileBuffer)).toBeTruthy();
+            const remoteTextFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/foo.text");
+            const localTextFileBuffer = fs.readFileSync(path.join(localDirName, "foo.text"));
+            expect(ZosFilesUtils.normalizeNewline(remoteTextFileBuffer)).toEqual(ZosFilesUtils.normalizeNewline(localTextFileBuffer));
 
-            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname +"/bar.binary",{binary: true});
-            const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName,"bar.binary"));
-            expect(remoteBinaryFileBuffer.equals(localBinaryFileBuffer)).toBeTruthy();
+
+            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/bar.binary", {binary: true});
+            const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName, "bar.binary"));
+            expect(remoteBinaryFileBuffer).toEqual(localBinaryFileBuffer);
         });
 
         it("should tag uploaded files according to remote encoding", async () => {
@@ -446,7 +448,7 @@ describe("Upload directory to USS", () => {
 
             let error: Error;
             try {
-                await Get.USSFile(REAL_SESSION,ussname + "/copymeNot.txt");
+                await Get.USSFile(REAL_SESSION, ussname + "/copymeNot.txt");
                 fail("USS file copymeNot.txt should not have been transferred");
             } catch (err) {
                 error = err;
@@ -454,7 +456,7 @@ describe("Upload directory to USS", () => {
             expect(error).toBeDefined();
 
             try {
-                await Get.USSFile(REAL_SESSION,ussname + "/ignore.txt");
+                await Get.USSFile(REAL_SESSION, ussname + "/ignore.txt");
                 fail("USS file ignore.txt should not have been transferred");
             } catch (err) {
                 error = err;
@@ -462,7 +464,7 @@ describe("Upload directory to USS", () => {
             expect(error).toBeDefined();
 
             try {
-                await Get.USSFile(REAL_SESSION,ussname + "/picignoreMe.png");
+                await Get.USSFile(REAL_SESSION, ussname + "/picignoreMe.png");
                 fail("USS file picignoreMe.png should not have been transferred");
             } catch (err) {
                 error = err;
@@ -470,7 +472,7 @@ describe("Upload directory to USS", () => {
             expect(error).toBeDefined();
 
             try {
-                await Get.USSFile(REAL_SESSION,ussname + "/PiccpyCapt.png");
+                await Get.USSFile(REAL_SESSION, ussname + "/PiccpyCapt.png");
                 fail("USS file PiccpyCapt.png should not have been transferred");
             } catch (err) {
                 error = err;
@@ -485,7 +487,7 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile");
 // tslint:disable-next-line: max-line-length
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
-            testSuccessfulUpload(localDirName, ["--r --attributes",attributesPath]);
+            testSuccessfulUpload(localDirName, ["--r --attributes", attributesPath]);
 
             let tag = await getTag(ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
@@ -503,7 +505,7 @@ describe("Upload directory to USS", () => {
 
             let error: Error;
             try {
-                await Get.USSFile(REAL_SESSION,ussname + "/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
+                await Get.USSFile(REAL_SESSION, ussname + "/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
                 fail("USS file .attributes should not have been transferred");
             } catch (err) {
                 error = err;
@@ -533,11 +535,11 @@ describe("Upload directory to USS", () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
 
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/external.attributes");
-            testSuccessfulUpload(localDirName, ["--attributes",attributesPath]);
+            testSuccessfulUpload(localDirName, ["--attributes", attributesPath]);
 
             let error: Error;
             try {
-                await Get.USSFile(REAL_SESSION,ussname + "/subdir_ascii_file1.txt");
+                await Get.USSFile(REAL_SESSION, ussname + "/subdir_ascii_file1.txt");
                 fail("USS file subddir_ascii_file1.txt should not have been transferred");
             } catch (err) {
                 error = err;
@@ -548,16 +550,18 @@ describe("Upload directory to USS", () => {
 });
 
 async function getTag(ussPath: string) {
-            const request: object = {request:"chtag",
-                                     action: "list"};
-            const url = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES
-                        + "/" + ussPath;
-            Imperative.console.info("z/OSMF URL: "  + url);
-            const response = await ZosmfRestClient.putExpectJSON<any>(REAL_SESSION,
-                                           url,
-                                           [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH] : JSON.stringify(request).length.toString() }],
-                                           request);
-            return response.stdout[0];
+    const request: object = {
+        request: "chtag",
+        action: "list"
+    };
+    const url = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES
+        + "/" + ussPath;
+    Imperative.console.info("z/OSMF URL: " + url);
+    const response = await ZosmfRestClient.putExpectJSON<any>(REAL_SESSION,
+        url,
+        [Headers.APPLICATION_JSON, {[Headers.CONTENT_LENGTH]: JSON.stringify(request).length.toString()}],
+        request);
+    return response.stdout[0];
 }
 
 function testSuccessfulUpload(localDirName: string, additionalParameters?: string[]) {
