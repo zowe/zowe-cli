@@ -11,6 +11,7 @@ Object {
     "systemNickName",
     "systemName",
     "url",
+    "jesMemberName",
   ],
   "format": "table",
   "header": true,

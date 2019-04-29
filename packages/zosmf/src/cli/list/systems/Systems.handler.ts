@@ -27,7 +27,7 @@ export default class Handler extends ZosmfBaseHandler {
 
         commandParameters.response.console.log("Number of retreived system definitions: " + zosResponse.numRows + "\n");
         commandParameters.response.format.output({
-            fields: ["systemNickName", "systemName", "url" ],
+            fields: ["systemNickName", "systemName", "url", "jesMemberName" ],
             output: zosResponse.items,
             format: "table",
             header: true,
