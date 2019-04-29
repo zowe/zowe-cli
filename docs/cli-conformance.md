@@ -11,7 +11,7 @@ A plug-in must follow meet the following requirements to be conformant under the
 - Plug-in users must be able to override profiles using options on the command line and/or environment variables.
 - The plug-in must adhere to the CLI [Package and Plug-in Guidelines](https://github.com/zowe/zowe-cli/blob/master/docs/PackagesAndPluginGuidelines.md).
 - The plug-in command/help syntax must adhere to the [Command Format Standards](https://github.com/zowe/zowe-cli/blob/master/docs/CommandFormatStandards.md).
-- Provide external (user guide, readme) documentation for the plug-in. For guidance, see [Documentation Guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md#documentation-guidelines).
+- The plug-in have documentation that adheres to the [Documentation Guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md#documentation-guidelines). 
 - Brand the plug-in (in documentation, for example) to be consistent with other CLI plug-ins. For example, "Zowe CLI Plug-in for IBM Db2". 
 - All commands in the plug-in must only write to `stdout` or `stderr` via Imperative Framework's `response.console` APIs. This ensures that commands function with the `--response-format-json` flag.
 
