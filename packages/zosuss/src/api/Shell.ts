@@ -21,7 +21,6 @@ let authPos = 0;
 const authsAllowed = ["none"];
 let hasAuthFailed = false;
 export const startCmdFlag = "@@START OF COMMAND@@";
-export const endCmdFlag = "@@END OF COMMAND@@";
 
 export class Shell {
 
