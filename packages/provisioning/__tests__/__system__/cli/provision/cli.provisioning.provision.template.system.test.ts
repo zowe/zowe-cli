@@ -21,6 +21,7 @@ import { ProvisioningConstants } from "../../../..";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let defaultSystem: ITestPropertiesSchema;
 let templateName: string;
@@ -40,10 +41,6 @@ describe("provisioning provision template", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
     it("should successfully issue the command", async () => {
         const regex = fs.readFileSync(__dirname + "/../provision/__regex__/provision_template_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/template/provision_template_success.sh", TEST_ENVIRONMENT,
@@ -60,22 +57,15 @@ describe("provisioning provision template", () => {
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
+    // Create a separate test environment for no profiles
     describe("without profiles", () => {
-
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
+        let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_template_info_without_profiles"
+                testName: "provisioning_prov_template_no_profile"
             });
-
-            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should successfully issue the command", async () => {
@@ -100,5 +90,10 @@ describe("provisioning provision template", () => {
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 });

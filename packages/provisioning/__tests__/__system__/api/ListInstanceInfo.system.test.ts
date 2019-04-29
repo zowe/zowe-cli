@@ -36,7 +36,7 @@ let REAL_SESSION: Session;
 describe("ListInstanceInfo.listInstanceCommon", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_registry"
+            testName: "provisioning_list_instance"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();

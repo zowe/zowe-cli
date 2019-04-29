@@ -20,6 +20,7 @@ import { IProvisionedInstance, ListRegistryInstances, ProvisioningConstants } fr
 import { ProvisioningTestUtils } from "../../../../__resources__/utils/ProvisioningTestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let templateName: string;
 let instanceID: string;
@@ -29,7 +30,7 @@ describe("provisioning list instance-info", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance-info",
+            testName: "provisioning_list_instance_info",
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
@@ -52,22 +53,14 @@ describe("provisioning list instance-info", () => {
     }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
     describe("without profiles", () => {
+        let zOSMF: ITestZosmfSchema;
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
-
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_catalog_templates_without_profiles",
+                testName: "provisioning_list_instance_info_no_profile",
             });
-
-            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
-            await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should display instance info", async () => {
@@ -88,5 +81,11 @@ describe("provisioning list instance-info", () => {
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 });

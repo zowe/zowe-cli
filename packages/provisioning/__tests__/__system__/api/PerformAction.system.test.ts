@@ -37,7 +37,7 @@ RESPONSE_URI +=`${ProvisioningConstants.INSTANCES_RESOURCE}/`;
 describe("PerformAction.doProvisioningActionCommon (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_registry"
+            testName: "provisioning_perform_action"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();

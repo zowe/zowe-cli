@@ -17,13 +17,15 @@ import { ITestSystemSchema } from "../../../../../../__tests__/__src__/propertie
 import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { PerformAction, ProvisioningConstants } from "../../../../";
 import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
+import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let defaultSystem: ITestPropertiesSchema;
 let templateName: string;
-let instance;
+let instance: any;
 let instanceID: string;
 let instanceName: string;
 
@@ -40,6 +42,7 @@ describe("provisioning delete instance", () => {
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
+        // Provision the template to have an instance to delete
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
         Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
         instanceID = instance["object-id"];
@@ -55,10 +58,6 @@ describe("provisioning delete instance", () => {
         Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
     it("should successfully issue the command", async () => {
         const response = runCliScript(__dirname + "/__scripts__/instance/delete_instance_success.sh", TEST_ENVIRONMENT,
             [instanceName]);
@@ -66,4 +65,51 @@ describe("provisioning delete instance", () => {
         expect(response.status).toBe(0);
         expect(response.stdout).toMatchSnapshot();
     }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+
+
+    describe("without profiles", () => {
+        let zOSMF: ITestZosmfSchema;
+
+        // Create a separate test environment for no profiles
+        beforeAll(async () => {
+            TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
+                testName: "provisioning_delete_instance_no_profile",
+            });
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
+
+            // Provision the template to have an instance to delete
+            instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+            Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+            instanceID = instance["object-id"];
+
+            // Deprovision the instance
+            instance = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+                instanceID, ProvisioningTestUtils.ACTION_DEPROV);
+            Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+            // Wait until instance state is 'deprovisioned'
+            instance = await ProvisioningTestUtils.waitInstanceState(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+                instanceID, ProvisioningTestUtils.STATE_DEPROV);
+            instanceName = instance["external-name"];
+            Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
+        });
+
+        it("should successfully delete an instance without profile", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/instance/delete_instance_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    instance,
+                    zOSMF.host,
+                    zOSMF.port,
+                    zOSMF.user,
+                    zOSMF.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout).toMatchSnapshot();
+        }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    });
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+    });
 });

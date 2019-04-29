@@ -11,7 +11,6 @@
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
@@ -35,7 +34,7 @@ describe("DeleteInstance (system)", () => {
         let instance;
 
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_registry"
+            testName: "provisioning_delete_instance"
         });
         systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = systemProps.getDefaultSystem();
