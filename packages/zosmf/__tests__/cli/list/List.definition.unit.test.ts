@@ -11,11 +11,11 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zosmf group definition", () => {
+describe("zosmf list group definition", () => {
     it("should have the right command content", () => {
-        const definition: ICommandDefinition = require("../../src/cli/Zosmf.definition");
+        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListCommand;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2);
+        expect(definition.children.length).toBe(1);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });
