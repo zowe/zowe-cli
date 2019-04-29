@@ -16,7 +16,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../rest";
-import { startCmdFlag, endCmdFlag } from "../../../../src/api/Shell";
+import { startCmdFlag } from "../../../../src/api/Shell";
 
 
 // Test environment will be populated in the "beforeAll"
@@ -36,7 +36,6 @@ function checkResponse(response: any, expectStatus: number) {
     expect(response.stderr.toString()).toBe("");
     expect(response.status).toBe(expectStatus);
     expect(response.stdout.toString()).not.toMatch(startCmdFlag);
-    expect(response.stdout.toString()).not.toMatch(endCmdFlag);
 }
 
 function generateRandomString(j: number) {
