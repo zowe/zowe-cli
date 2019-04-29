@@ -21,7 +21,8 @@ describe("Create Physical Sequential Data Set", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_create_binary_dataset"
+            testName: "zos_create_binary_dataset",
+            skipProperties: true
         });
     });
 

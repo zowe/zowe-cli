@@ -72,6 +72,7 @@ typings/
 /config/
 /docs/typedoc/
 __tests__/__results__/
+packages/zosunix/__tests__/__results__/
 /__tests__/tmpproj/
 /__tests__/src/locales
 /.nyc_output
@@ -89,3 +90,6 @@ __tests__/__system__/util/Zosmf.info.ts
 
 audit.txt
 imperative_debug.log
+
+#MacOS fs
+.DS_Store

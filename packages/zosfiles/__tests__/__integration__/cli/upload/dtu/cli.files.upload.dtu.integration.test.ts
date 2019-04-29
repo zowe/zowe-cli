@@ -20,7 +20,8 @@ describe("Upload local dir to uss dir", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "upload_local_dir_to_uss_dir"
+            testName: "upload_local_dir_to_uss_dir",
+            skipProperties: true
         });
 
     });

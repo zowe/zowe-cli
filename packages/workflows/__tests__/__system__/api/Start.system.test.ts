@@ -10,24 +10,22 @@
 */
 
 import { ZosmfRestClient } from "../../../../rest";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noSession, noWorkflowKey, nozOSMFVersion, WorkflowConstants } from "../../../src/api/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { CreateWorkflow, DeleteWorkflow, PropertiesWorkflow, StartWorkflow } from "../../..";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../zosfiles/src/api";
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import { IWorkflowInfo } from "../../../src/api/doc/IWorkflowInfo";
 import { IStepInfo } from "../../../src/api/doc/IStepInfo";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;
 let system: string;
@@ -50,11 +48,9 @@ function expectZosmfResponseFailed(response: string, error: ImperativeError, msg
 describe("Start workflow", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            // tempProfileTypes: ["zosmf"],
             testName: "create_workflow"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
@@ -92,7 +88,7 @@ describe("Start workflow", () => {
                 error = err;
             }
         });
-        beforeEach(async () =>{
+        beforeEach(async () => {
             let error;
             let response;
             try {
@@ -107,7 +103,7 @@ describe("Start workflow", () => {
         afterEach(async () => {
             let response: IWorkflowInfo;
             let flag = false;
-            while(!flag) {
+            while (!flag) {
                 response = await PropertiesWorkflow.getWorkflowProperties(REAL_SESSION, wfKey, WorkflowConstants.ZOSMF_VERSION, true);
                 response.steps.forEach((step: IStepInfo) => {
                     if (step.state === "Complete" && response.statusName !== "automation-in-progress") {
@@ -204,7 +200,7 @@ describe("Start workflow", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, null, null, null,"");
+                response = await StartWorkflow.startWorkflow(REAL_SESSION, wfKey, null, null, null, "");
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

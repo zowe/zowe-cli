@@ -9,8 +9,7 @@
 *
 */
 
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
+import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import {
     IPublishedTemplateInfo,
@@ -20,14 +19,10 @@ import {
     nozOSMFVersion,
     ProvisioningConstants
 } from "../../../";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 let TEMPLATE_NAME: string;
 let REAL_SESSION: Session;
 
@@ -38,8 +33,6 @@ describe("ListTemplateInfo (system)", () => {
         });
         TEMPLATE_NAME = testEnvironment.systemTestProperties.provisioning.templateName;
         Imperative.console.info(`Template name: ${TEMPLATE_NAME}`);
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 

@@ -10,9 +10,7 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     IProvisionedInstance,
@@ -26,9 +24,6 @@ import {
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 let templateName: string;
 let instanceID: string;
 
@@ -39,8 +34,6 @@ describe("ListInstanceVariables (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_registry"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

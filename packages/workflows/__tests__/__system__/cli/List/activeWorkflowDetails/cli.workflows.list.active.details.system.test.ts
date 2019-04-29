@@ -11,11 +11,10 @@
 
 import { ZosmfRestClient } from "../../../../../../rest";
 import { Session } from "@zowe/imperative";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { CreateWorkflow, DeleteWorkflow } from "../../../../..";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../../zosfiles/src/api";
@@ -23,8 +22,7 @@ import { join } from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let fakeDefFile: string;
 let wfKey: string;
@@ -39,8 +37,7 @@ describe("List active workflow details cli system tests", () => {
             tempProfileTypes: ["zosmf"],
             testName: "create_workflow_cli"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
@@ -60,7 +57,7 @@ describe("List active workflow details cli system tests", () => {
 
             // Upload files only for successful scenarios
             try {
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+                await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
             } catch (err) {
                 error = err;
             }
@@ -82,9 +79,9 @@ describe("List active workflow details cli system tests", () => {
             }
 
             // deleting wf instance
-            const response: any =  await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
+            const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
             response.workflows.forEach(async (element: any) => {
-                if(element.workflowName===wfName){
+                if (element.workflowName === wfName) {
                     wfKey = element.workflowKey;
                     try {
                         await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
@@ -97,7 +94,7 @@ describe("List active workflow details cli system tests", () => {
         describe("Success Scenarios", () => {
             it("Should list active workflow details using wf key.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_key_details.sh",
-                testEnvironment, [wfKey]);
+                    testEnvironment, [wfKey]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow Details");
@@ -105,7 +102,7 @@ describe("List active workflow details cli system tests", () => {
 
             it("Should list active workflow details using wf name.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_name_details.sh",
-                testEnvironment, [wfName]);
+                    testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow Details");
@@ -114,14 +111,14 @@ describe("List active workflow details cli system tests", () => {
         describe("Failure Scenarios", () => {
             it("Should throw error if the workflow does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_key_details.sh",
-                testEnvironment, [ fakeDefFile ]);
+                    testEnvironment, [fakeDefFile]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("does not exist.");
             });
 
             it("Should throw error if the workflow name does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_name_details.sh",
-                testEnvironment, [ fakeDefFile ]);
+                    testEnvironment, [fakeDefFile]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("No workflows match the provided workflow name.");
             });

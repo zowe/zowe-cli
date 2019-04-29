@@ -10,9 +10,7 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     IProvisionTemplateResponse,
@@ -32,8 +30,6 @@ const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningCons
 const ACCOUNT_NUMBER: string = "1111111111";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
 let REAL_SESSION: Session;
 let templateName: string;
 
@@ -42,8 +38,6 @@ describe("ProvisionPublishedTemplate (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_provision_template"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
     });

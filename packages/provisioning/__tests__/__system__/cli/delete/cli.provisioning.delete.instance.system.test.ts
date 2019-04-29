@@ -13,16 +13,12 @@ import { Imperative, Session } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { PerformAction, ProvisioningConstants } from "../../../../";
 import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let SYSTEM_PROPS: TestProperties;
 let REAL_SESSION: Session;
-let defaultSystem: ITestSystemSchema;
 let templateName: string;
 let instance;
 let instanceID: string;
@@ -37,8 +33,6 @@ describe("provisioning delete instance", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        SYSTEM_PROPS = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = SYSTEM_PROPS.getDefaultSystem();
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 

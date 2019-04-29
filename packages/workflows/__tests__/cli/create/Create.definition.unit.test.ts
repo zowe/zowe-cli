@@ -15,7 +15,7 @@ describe("zos-workflows create definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../src/cli/create/Create.definition").CreateDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2);
+        expect(definition.children.length).toBe(2+1);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });

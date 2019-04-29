@@ -16,6 +16,7 @@ export * from "./zosconsole";
 export * from "./zosfiles";
 export * from "./zosjobs";
 export * from "./zostso";
+export * from "./zosuss";
 export * from "./zosmf";
 export * from "./provisioning";
 export * from "./workflows";

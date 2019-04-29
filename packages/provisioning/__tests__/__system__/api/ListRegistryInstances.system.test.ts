@@ -20,29 +20,20 @@ import {
     nozOSMFVersion,
     ProvisioningConstants,
 } from "../../../";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 const TYPE: string = "CICS";
-
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
+let REAL_SESSION: Session;
 let templateName: string;
 let instanceName: string;
 let instanceID: string;
-
-let REAL_SESSION: Session;
 
 describe("ListRegistryInstances (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_registry"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

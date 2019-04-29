@@ -10,9 +10,8 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
@@ -25,9 +24,6 @@ import {
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 let templateName: string;
 let instanceID: string;
 let REAL_SESSION: Session;
@@ -39,10 +35,8 @@ describe("DeleteInstance (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_registry"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
 
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
         Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);

@@ -14,16 +14,13 @@ import { Imperative, Session } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
 import { ProvisioningConstants } from "../../../..";
+import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let SYSTEM_PROPS: TestProperties;
 let REAL_SESSION: Session;
-let defaultSystem: ITestSystemSchema;
 let templateName: string;
 let instanceID: string;
 
@@ -36,8 +33,6 @@ describe("provisioning provision template", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        SYSTEM_PROPS = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = SYSTEM_PROPS.getDefaultSystem();
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
@@ -63,18 +58,26 @@ describe("provisioning provision template", () => {
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     describe("without profiles", () => {
+        const zOSMF: ITestZosmfSchema = {
+            host: null,
+            port: null,
+            user: null,
+            pass: null,
+            rejectUnauthorized: false
+        };
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "provisioning_list_template_info_without_profiles"
             });
 
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            zOSMF.host = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.host;
+            zOSMF.port = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.port;
+            zOSMF.user = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.user;
+            zOSMF.pass = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.pass;
         });
 
         afterAll(async () => {
@@ -87,10 +90,10 @@ describe("provisioning provision template", () => {
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     templateName,
-                    DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    zOSMF.host,
+                    zOSMF.port,
+                    zOSMF.user,
+                    zOSMF.pass
                 ]);
 
             // Get instanceID later delete that instance
