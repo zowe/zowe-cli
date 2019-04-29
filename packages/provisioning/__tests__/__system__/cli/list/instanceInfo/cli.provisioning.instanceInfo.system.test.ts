@@ -87,5 +87,5 @@ describe("provisioning list instance-info", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-    });
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 });
