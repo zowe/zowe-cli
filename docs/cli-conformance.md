@@ -4,7 +4,7 @@ A plug-in must follow meet the following requirements to be conformant under the
 
 - The plug-in must be constructed on [Imperative CLI Framework](https://github.com/zowe/imperative).
 - The `@lts-incremental` version of your plug-in must be installable into the `@lts-incremental` version of the core Zowe CLI, at minimum. For more information about the semantic versioning scheme that CLI uses, see [Maintainer Versioning](https://github.com/zowe/zowe-cli/blob/master/docs/MaintainerVersioning.md).
-- The plug-in cannot run as a standalone CLI. 
+- The plug-in must not run as a standalone CLI. 
 - When a new major version of Zowe and Zowe CLI is released, conformant plug-ins must update to function properly with the new core version within 30 days.
 - The plug-in must be available to users via all current installation methods. The current methods are listed [here](https://zowe.github.io/docs-site/latest/user-guide/cli-installcli.html#methods-to-install-zowe-cli).
 - The plug-in must be support user profiles that let users store mainframe connection information.
