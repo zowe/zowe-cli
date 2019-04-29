@@ -118,6 +118,8 @@ Use build tasks to enforce rules where possible.
 
 ## Documentation Guidelines
 
+The following guidelines apply to plug-ins and/or core contributions:
+
 - For all contributions, ensure that you document third-party software that your component uses in the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html).
 
 - When contributing **a plug-in for Zowe CLI**, provide the following:
@@ -129,8 +131,10 @@ Use build tasks to enforce rules where possible.
   - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines](https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md).
 
 - When contributing **code/functionality to the core CLI**, provide the following:
-- A Release Notes entry in Zowe Docs site to announce your change to end users. 
-- Documentation for how to use your feature, command, etc... Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
+
+  - A Release Notes entry in Zowe Docs site to announce your change to end users. 
+  
+  - Documentation for how to use your feature, command, etc... Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
 
 In addition to external documentation, please thoroughly comment your code for future developers who want to understand, use, and enhance your plug-in/feature.
 
