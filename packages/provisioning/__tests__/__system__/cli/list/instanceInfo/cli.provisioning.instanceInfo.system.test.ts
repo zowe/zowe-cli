@@ -19,6 +19,7 @@ import { ProvisioningTestUtils } from "../../../../__resources__/utils/Provision
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let templateName: string;
 let instanceID: string;
@@ -28,7 +29,7 @@ describe("provisioning list instance-info", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance-info",
+            testName: "provisioning_list_instance_info",
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
@@ -51,30 +52,14 @@ describe("provisioning list instance-info", () => {
     }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
     describe("without profiles", () => {
-        const zOSMF: ITestZosmfSchema = {
-            host: null,
-            port: null,
-            user: null,
-            pass: null,
-            rejectUnauthorized: false
-        };
+        let zOSMF: ITestZosmfSchema;
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_catalog_templates_without_profiles",
+                testName: "provisioning_list_instance_info_no_profile",
             });
-
-            zOSMF.host = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.host;
-            zOSMF.port = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.port;
-            zOSMF.user = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.user;
-            zOSMF.pass = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.pass;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
-            await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should display instance info", async () => {
@@ -95,5 +80,11 @@ describe("provisioning list instance-info", () => {
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 });

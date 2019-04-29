@@ -20,6 +20,7 @@ import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let templateName: string;
 let instanceID: string;
@@ -35,10 +36,6 @@ describe("provisioning provision template", () => {
 
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
     it("should successfully issue the command", async () => {
@@ -57,31 +54,15 @@ describe("provisioning provision template", () => {
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
+    // Create a separate test environment for no profiles
     describe("without profiles", () => {
-        const zOSMF: ITestZosmfSchema = {
-            host: null,
-            port: null,
-            user: null,
-            pass: null,
-            rejectUnauthorized: false
-        };
-
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_template_info_without_profiles"
+                testName: "provisioning_prov_template_no_profile"
             });
-
-            zOSMF.host = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.host;
-            zOSMF.port = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.port;
-            zOSMF.user = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.user;
-            zOSMF.pass = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf.pass;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should successfully issue the command", async () => {
@@ -106,5 +87,10 @@ describe("provisioning provision template", () => {
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 });

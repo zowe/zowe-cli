@@ -14,20 +14,20 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Session } from "@brightside/imperative";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ListRegistryInstances } from "../../../../../";
-import { ProvisioningConstants } from "../../../../../index";
+import { ListRegistryInstances, ProvisioningConstants } from "../../../../../";
+import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
+import { ProvisioningTestUtils } from "../../../../__resources__/utils/ProvisioningTestUtils";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
-const TIMEOUT = 30000;
 
 describe("provisioning list instance-variables", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance-info",
+            testName: "provisioning_list_instance_vars",
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
@@ -41,24 +41,18 @@ describe("provisioning list instance-variables", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    }, TIMEOUT);
+    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
+        let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_instance_variables_without_profiles"
+                testName: "provisioning_list_instance_vars_no_profile"
             });
-
-            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should display instance info (expects first instance in registry to have variables)", async () => {
@@ -69,14 +63,19 @@ describe("provisioning list instance-variables", () => {
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     instance,
-                    DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    zOSMF.host,
+                    zOSMF.port,
+                    zOSMF.user,
+                    zOSMF.pass
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-        }, TIMEOUT);
+        }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 });

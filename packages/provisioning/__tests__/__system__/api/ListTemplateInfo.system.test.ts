@@ -29,7 +29,7 @@ let REAL_SESSION: Session;
 describe("ListTemplateInfo (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_template-info"
+            testName: "provisioning_list_template_info"
         });
         TEMPLATE_NAME = testEnvironment.systemTestProperties.provisioning.templateName;
         Imperative.console.info(`Template name: ${TEMPLATE_NAME}`);

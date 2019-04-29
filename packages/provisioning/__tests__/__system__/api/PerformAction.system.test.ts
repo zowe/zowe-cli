@@ -34,7 +34,7 @@ RESPONSE_URI +=`${ProvisioningConstants.INSTANCES_RESOURCE}/`;
 describe("PerformAction.doProvisioningActionCommon (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_registry"
+            testName: "provisioning_perform_action"
         });
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
