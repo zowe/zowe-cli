@@ -45,10 +45,9 @@ describe("provisioning delete instance", () => {
         Imperative.console.info(`Provisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
-    // system test for perform action
     it("should successfully perform checkStatus action", async () => {
-        const regex = fs.readFileSync(__dirname + "/../perform/__regex__/perform_action_response.regex").toString();
-        const response = runCliScript(__dirname + "/__scripts__/instance/perform_checkStatus_action_success.sh", TEST_ENVIRONMENT,
+        const regex = fs.readFileSync(__dirname + "/__regex__/perform_action_response.regex").toString();
+        const response = runCliScript(__dirname + "/__scripts__/action/perform_checkStatus_action_success.sh", TEST_ENVIRONMENT,
             [instanceName]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -68,8 +67,8 @@ describe("provisioning delete instance", () => {
 
         // system test for perform action
         it("should successfully perform deprovision action", async () => {
-            const regex = fs.readFileSync(__dirname + "/../perform/__regex__/perform_action_response.regex").toString();
-            const response = runCliScript(__dirname + "/__scripts__/instance/perform_deprovision_fully_qualified.sh",
+            const regex = fs.readFileSync(__dirname + "/__regex__/perform_action_response.regex").toString();
+            const response = runCliScript(__dirname + "/__scripts__/action/perform_deprovision_fully_qualified.sh",
                 TEST_ENVIRONMENT, [
                     instanceName,
                     zOSMF.host,
