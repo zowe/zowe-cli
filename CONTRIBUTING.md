@@ -123,7 +123,7 @@ For all contributions, ensure that you document third-party software that your c
 When contributing **a plug-in for Zowe CLI**, provide the following:
 - End-user documentation on the Zowe Doc Site. Use existing plug-in topics as a model. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
 - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [this plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics).
-- a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines][https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md].
+- a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines](https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md).
 
 When contributing **code/functionality to the core CLI**, provide the following:
 - A Release Notes entry in Zowe Docs site to announce your change to end users. 
