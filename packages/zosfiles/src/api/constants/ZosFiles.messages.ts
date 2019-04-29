@@ -381,6 +381,34 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     nodeJsFsError: {
         message: "Node.js File System API error"
+    },
+
+    /**
+     * Messaging indicating invalid syntax in .zosattributes file
+     */
+    invalidAttributesSyntax: {
+        message: "Syntax error on line {{lineNumber}} - expected <pattern> <local encoding> <remote encoding>."
+    },
+
+    /**
+     * Messaging indicating an attributes file was not found
+     */
+    attributesFileNotFound: {
+        message: "Attributes file {{file}} does not exist"
+    },
+
+    /**
+     * Message indicating an error reading an attributes file
+     */
+    errorReadingAttributesFile: {
+        message: "Could not read attributes file {{file}}: {{message}}"
+    },
+
+    /**
+     * Message indicating an error parsing an attributes file
+     */
+    errorParsingAttributesFile: {
+        message: "Error parsing attributes file {{file}}: {{message}}"
     }
 };
 

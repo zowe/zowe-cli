@@ -22,9 +22,12 @@ import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.consta
 import { IUploadOptions } from "../../../../src/api/methods/upload/doc/IUploadOptions";
 import { Upload } from "../../../../src/api/methods/upload/Upload";
 import { List } from "../../../../src/api/methods/list/List";
+import { Utilities } from "../../../../src/api/methods/utilities/Utilities";
+
 import { ZosFilesUtils } from "../../../../src/api/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/api/methods/create";
+import { ZosFilesAttributes, TransferMode, Tag } from "../../../../src/api";
 
 describe("z/OS Files - Upload", () => {
 
@@ -772,6 +775,24 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
         });
+
+        it("should set local encoding if specified", async () => {
+            const data: Buffer = Buffer.from("testing");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const headers = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT];
+
+            try {
+                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, "UCS-2");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
+        });
     });
 
     describe("dirToUSSDirRecursive", () => {
@@ -787,6 +808,8 @@ describe("z/OS Files - Upload", () => {
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
         const promiseSpy = jest.spyOn(Promise, "all");
+        const testReturn = {};
+        const testPath = "test/path";
 
         beforeEach(() => {
             USSresponse = undefined;
@@ -805,8 +828,6 @@ describe("z/OS Files - Upload", () => {
         });
 
         it("should upload recursively if option is specified", async () => {
-            const testReturn = {};
-            const testPath = "test/path";
             isDirSpy.mockReturnValue(true);
             isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
             createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
@@ -890,8 +911,6 @@ describe("z/OS Files - Upload", () => {
         });
 
         it("should return with proper response", async () => {
-            const testReturn = {};
-            const testPath = "test/path";
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
@@ -926,6 +945,8 @@ describe("z/OS Files - Upload", () => {
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const promiseSpy = jest.spyOn(Promise, "all");
         const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
+        const testReturn = {};
+        const testPath = "test/path";
 
         beforeEach(() => {
             USSresponse = undefined;
@@ -1006,8 +1027,6 @@ describe("z/OS Files - Upload", () => {
         });
 
         it("should return with proper response", async () => {
-            const testReturn = {};
-            const testPath = "test/path";
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
@@ -1024,6 +1043,153 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
             expect(USSresponse.success).toBeTruthy();
+        });
+        describe("scenarios with .zosattributes file", () => {
+
+            const MockZosAttributes = jest.fn<ZosFilesAttributes>();
+            const attributesMock = new MockZosAttributes();
+            const chtagSpy = jest.spyOn(Utilities,"chtag");
+
+            beforeEach(() => {
+                pathNormalizeSpy.mockRestore();
+                promiseSpy.mockRestore();
+                chtagSpy.mockReset();
+                chtagSpy.mockReturnValue(testReturn);
+                isDirSpy.mockReturnValueOnce(true)
+                .mockReturnValue(false);
+                isDirectoryExistsSpy.mockReturnValue(true);
+                fileToUSSFileSpy.mockReturnValue(testReturn);
+
+                attributesMock.getFileTransferMode = jest.fn((filePath: string) => {
+                    if (filePath.endsWith("textfile")) {
+                        return TransferMode.TEXT;
+                    } else {
+                        return TransferMode.BINARY;
+                    }
+                });
+                attributesMock.getRemoteEncoding = jest.fn((filePath: string) => {
+                    if (filePath.endsWith("textfile") || filePath.endsWith("asciifile")) {
+                        return "ISO8859-1";
+                    } else {
+                        return "binary";
+                    }
+                });
+                attributesMock.getLocalEncoding = jest.fn((filePath: string) => {
+                    if (filePath.endsWith("textfile") || filePath.endsWith("asciifile")) {
+                        return "ISO8859-1";
+                    } else {
+                        return "binary";
+                    }
+                });
+            });
+
+            it("should upload files unless they are ignored by attributes", async () => {
+                getFileListFromPathSpy.mockReturnValue(["uploadme", "ignoreme"]);
+                attributesMock.fileShouldBeUploaded = jest.fn((filePath: string) => {
+                    return filePath.endsWith("uploadme");
+                });
+
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {attributes: attributesMock});
+
+                expect(USSresponse).toBeDefined();
+                expect(USSresponse.success).toBeTruthy();
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledTimes(2);
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/uploadme");
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/ignoreme");
+
+                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
+                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/uploadme`)}`, `${dsName}/uploadme`, true);
+            });
+
+            it("should not upload ignored directories", async () => {
+                // This test simulates trying to upload the following structure:
+                //   uploaddir
+                //      uploadedfile
+                //   ignoredir
+                //      ignoredfile
+
+                isDirSpy.mockImplementation((dirPath: string) => {
+                    return (dirPath.endsWith("dir"));
+                });
+                getFileListWithFsSpy.mockImplementation((dirPath: string) => {
+                    if (dirPath.endsWith("uploaddir")) {
+                        return ["uploadedfile"];
+                    } else if (dirPath.endsWith("ignoredir")) {
+                        return ["ignoredfile"];
+                    } else {
+                        return ["uploaddir", "ignoredir"];
+                    }
+                });
+                getFileListFromPathSpy.mockImplementation((dirPath: string) => {
+                    if (dirPath.endsWith("uploaddir")) {
+                        return ["uploadedfile"];
+                    } else if (dirPath.endsWith("ignoredir")) {
+                        return ["ignoredfile"];
+                    } else {
+                        return [];
+                    }
+                });
+                attributesMock.fileShouldBeUploaded = jest.fn((ignorePath: string) => {
+                    if (ignorePath.endsWith("ignoredir")) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+
+                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName, {attributes: attributesMock});
+
+                expect(USSresponse).toBeDefined();
+                expect(USSresponse.success).toBeTruthy();
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/uploaddir");
+                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
+                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                    `${path.normalize(`${testPath}/uploaddir/uploadedfile`)}`,
+                    `${dsName}/uploaddir/uploadedfile`,
+                     true);
+            });
+            it("should upload files in text or binary according to attributes", async () => {
+                getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
+                attributesMock.fileShouldBeUploaded = jest.fn(() => true);
+
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {attributes: attributesMock});
+
+                expect(USSresponse).toBeDefined();
+                expect(USSresponse.success).toBeTruthy();
+                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
+                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                                                             `${path.normalize(`${testPath}/textfile`)}`,
+                                                             `${dsName}/textfile`,
+                                                              false,
+                                                              "ISO8859-1");
+                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                                                             `${path.normalize(`${testPath}/binaryfile`)}`,
+                                                             `${dsName}/binaryfile`, true);
+            });
+
+            it("should call API to tag files accord to remote encoding", async () => {
+                getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
+                attributesMock.fileShouldBeUploaded = jest.fn(() => true);
+
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {attributes: attributesMock});
+
+                expect(USSresponse).toBeDefined();
+                expect(USSresponse.success).toBeTruthy();
+                expect(chtagSpy).toHaveBeenCalledTimes(2);
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${dsName}/textfile`)}`, Tag.TEXT, "ISO8859-1");
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${dsName}/binaryfile`)}`, Tag.BINARY);
+            });
+
+            it("should call API to tag a file as text that was uploaded in binary mode", async () => {
+                getFileListFromPathSpy.mockReturnValue(["asciifile"]);
+                attributesMock.fileShouldBeUploaded = jest.fn(() => true);
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {attributes: attributesMock});
+
+                expect(USSresponse).toBeDefined();
+                expect(USSresponse.success).toBeTruthy();
+                expect(chtagSpy).toHaveBeenCalledTimes(1);
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${dsName}/asciifile`)}`, Tag.TEXT, "ISO8859-1");
+            });
         });
     });
 });
