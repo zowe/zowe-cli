@@ -118,11 +118,9 @@ Use build tasks to enforce rules where possible.
 
 ## Documentation Guidelines
 
-The following guidelines apply to plug-ins and/or core contributions:
+- For **all contributions**, ensure that you document third-party software that your component uses in the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html).
 
-- For all contributions, ensure that you document third-party software that your component uses in the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html).
-
-- When contributing **a plug-in for Zowe CLI**, provide the following:
+- When contributing **a plug-in**, provide the following:
 
   - End-user documentation on the Zowe Doc Site. Use existing plug-in topics as a model. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
   
