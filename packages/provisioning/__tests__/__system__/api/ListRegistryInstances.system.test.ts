@@ -42,12 +42,12 @@ describe("ListRegistryInstances (system)", () => {
         instanceName = instance["external-name"];
         instanceID = instance["object-id"];
         Imperative.console.info(`Provisioned instance: ${instanceName}`);
-    });
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
         await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-    });
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listRegistryCommon should succeed and return list of provisioned instances", async () => {
         let response: IProvisionedInstances;

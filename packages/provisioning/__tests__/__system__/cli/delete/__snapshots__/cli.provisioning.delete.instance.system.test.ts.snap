@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`provisioning delete instance should successfully issue the command 1`] = `
+exports[`with profile should successfully issue the command 1`] = `
 Object {
   "data": Array [
     84,
@@ -46,7 +46,7 @@ Object {
 }
 `;
 
-exports[`provisioning delete instance without profiles should successfully delete an instance without profile 1`] = `
+exports[`without profiles should successfully delete an instance without profile 1`] = `
 Object {
   "data": Array [
     84,
