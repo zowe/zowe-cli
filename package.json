@@ -120,9 +120,11 @@
     "modulePathIgnorePatterns": ["__tests__/__snapshots__/"],
     "setupFilesAfterEnv": ["./__tests__/beforeTests.js"],
     "testResultsProcessor": "jest-stare",
-    "transform": {".(ts)": "ts-jest"},
-    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
-    "moduleFileExtensions":     [
+    "transform": {
+      ".(ts)": "ts-jest"
+    },
+    "testRegex": "provisioning\\__tests__.*\\.(spec|test)\\.ts$",
+    "moduleFileExtensions": [
       "ts",
       "js"
     ],
