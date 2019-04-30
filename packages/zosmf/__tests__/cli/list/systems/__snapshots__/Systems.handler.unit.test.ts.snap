@@ -1,11 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`check status behavior should display system properties 1`] = `
-"Number of retreived system definitions: 1
-"
-`;
-
-exports[`check status behavior should display system properties 2`] = `
 Object {
   "fields": Array [
     "systemNickName",
@@ -25,7 +20,7 @@ Object {
 }
 `;
 
-exports[`check status behavior should display system properties 3`] = `
+exports[`check status behavior should display system properties 2`] = `
 Object {
   "items": Array [
     Object {
