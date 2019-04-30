@@ -78,7 +78,7 @@ describe("zosmf list systems", () => {
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Number of retreived system definitions");
+            expect(response.stdout.toString()).toContain("systemNickName");
         });
     });
 
@@ -87,13 +87,13 @@ describe("zosmf list systems", () => {
         it("should display number of defined z/OSMF systems", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_list_systems.sh", testEnvironment);
             expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("Number of retreived system definitions");
+            expect(response.stdout.toString()).toContain("systemNickName");
         });
 
         it("should display number of defined z/OSMF systems and print attributes", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_list_systems.sh", testEnvironment, ["--rfj"]);
             expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("Number of retreived system definitions");
+            expect(response.stdout.toString()).toContain("systemNickName");
         });
     });
 

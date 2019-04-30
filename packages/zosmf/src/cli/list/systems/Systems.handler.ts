@@ -25,7 +25,6 @@ export default class Handler extends ZosmfBaseHandler {
 
         const zosResponse: IZosmfListDefinedSystemsResponse = await ListDefinedSystems.listDefinedSystems(this.mSession);
 
-        commandParameters.response.console.log("Number of retreived system definitions: " + zosResponse.numRows + "\n");
         commandParameters.response.format.output({
             fields: ["systemNickName", "systemName", "url", "jesMemberName" ],
             output: zosResponse.items,
