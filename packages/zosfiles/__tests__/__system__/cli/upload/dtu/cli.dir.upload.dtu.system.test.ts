@@ -13,7 +13,7 @@ import { Headers, Imperative, Session } from "@zowe/imperative";
 
 import * as path from "path";
 import * as fs from "fs";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript, getTag } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -297,10 +297,10 @@ describe("Upload directory to USS", () => {
                 expect(err).toBeDefined();
             }
 
-            let tag = await getTag(ussname + "/I%20have%20a%20space.txt");
+            let tag = await getTag(REAL_SESSION,ussname + "/I%20have%20a%20space.txt");
             expect(tag).toMatch("t IBM-1140");
 
-            tag = await getTag(ussname + "/dir_with%20spaces/file%20withSpaceinName.txt");
+            tag = await getTag(REAL_SESSION,ussname + "/dir_with%20spaces/file%20withSpaceinName.txt");
             expect(tag).toMatch("t IBM-1140");
         });
 
@@ -325,13 +325,13 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName);
 
-            let tag = await getTag(ussname + "/baz.asciitext");
+            let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
 
-            tag = await getTag(ussname + "/foo.text");
+            tag = await getTag(REAL_SESSION,ussname + "/foo.text");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(ussname + "/bar.binary");
+            tag = await getTag(REAL_SESSION,ussname + "/bar.binary");
             expect(tag).toMatch("b binary");
         });
 
@@ -340,10 +340,10 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName);
 
-            let tag = await getTag(ussname + "/.project");
+            let tag = await getTag(REAL_SESSION,ussname + "/.project");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(ussname + "/.hidden");
+            tag = await getTag(REAL_SESSION,ussname + "/.hidden");
             expect(tag).toMatch("b binary");
         });
 
@@ -402,13 +402,13 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName);
 
-            let tag = await getTag(ussname + "/baz.asciitext");
+            let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
 
-            tag = await getTag(ussname + "/foo.text");
+            tag = await getTag(REAL_SESSION,ussname + "/foo.text");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(ussname + "/bar.binary");
+            tag = await getTag(REAL_SESSION,ussname + "/bar.binary");
             expect(tag).toMatch("b binary");
         });
 
@@ -418,31 +418,31 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName, ["--recursive --binary"]);
 
-            let tag = await getTag(ussname + "/piccpy.png");
+            let tag = await getTag(REAL_SESSION,ussname + "/piccpy.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(ussname + "/picCopyMe.png");
+            tag = await getTag(REAL_SESSION,ussname + "/picCopyMe.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(ussname + "/picCopyMeToo.png");
+            tag = await getTag(REAL_SESSION,ussname + "/picCopyMeToo.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(ussname + "/picCopy.png");
+            tag = await getTag(REAL_SESSION,ussname + "/picCopy.png");
             expect(tag).toMatch("t ISO8859-1");
 
-            tag = await getTag(ussname + "/picCopyNoTagPlease.png");
+            tag = await getTag(REAL_SESSION,ussname + "/picCopyNoTagPlease.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(ussname + "/copyMe.txt");
+            tag = await getTag(REAL_SESSION,ussname + "/copyMe.txt");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(ussname + "/copyMeToo.txt");
+            tag = await getTag(REAL_SESSION,ussname + "/copyMeToo.txt");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(ussname + "/copyAndMeToo.txt");
+            tag = await getTag(REAL_SESSION,ussname + "/copyAndMeToo.txt");
             expect(tag).toMatch("t IBM-1140");
 
-            tag = await getTag(ussname + "/copyButDontTagMe.text");
+            tag = await getTag(REAL_SESSION,ussname + "/copyButDontTagMe.text");
             expect(tag).toMatch("t ISO8859-1");
 
             let error: Error;
@@ -488,17 +488,17 @@ describe("Upload directory to USS", () => {
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
             testSuccessfulUpload(localDirName, ["--r --attributes", attributesPath]);
 
-            let tag = await getTag(ussname + "/baz.asciitext");
+            let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
-            tag = await getTag(ussname + "/foo.text");
+            tag = await getTag(REAL_SESSION,ussname + "/foo.text");
             expect(tag).toMatch("t IBM-1047");
-            tag = await getTag(ussname + "/bar.binary");
+            tag = await getTag(REAL_SESSION,ussname + "/bar.binary");
             expect(tag).toMatch("b binary");
-            tag = await getTag(ussname + "/nest_attribute_folder/baz.asciitext");
+            tag = await getTag(REAL_SESSION,ussname + "/nest_attribute_folder/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
-            tag = await getTag(ussname + "/nest_attribute_folder/foo.text");
+            tag = await getTag(REAL_SESSION,ussname + "/nest_attribute_folder/foo.text");
             expect(tag).toMatch("t IBM-1047");
-            tag = await getTag(ussname + "/nest_attribute_folder/bar.binary");
+            tag = await getTag(REAL_SESSION,ussname + "/nest_attribute_folder/bar.binary");
             expect(tag).toMatch("b binary");
 
 
@@ -547,21 +547,6 @@ describe("Upload directory to USS", () => {
         });
     });
 });
-
-async function getTag(ussPath: string) {
-    const request: object = {
-        request: "chtag",
-        action: "list"
-    };
-    const url = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES
-        + "/" + ussPath;
-    Imperative.console.info("z/OSMF URL: " + url);
-    const response = await ZosmfRestClient.putExpectJSON<any>(REAL_SESSION,
-        url,
-        [Headers.APPLICATION_JSON, {[Headers.CONTENT_LENGTH]: JSON.stringify(request).length.toString()}],
-        request);
-    return response.stdout[0];
-}
 
 function testSuccessfulUpload(localDirName: string, additionalParameters?: string[]) {
     const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
