@@ -42,3 +42,9 @@ https://www.simplified.guide/macos/bash-completion
 
 ### Windows
 Windows is not supported.
+
+## Troubleshooting
+To enable debug messages of the autocompletion script uncomment `#logfile="log"`. `log` file is created in current directory.
+
+## Limitations
+Listing of datasets is using default zosmf profile.
