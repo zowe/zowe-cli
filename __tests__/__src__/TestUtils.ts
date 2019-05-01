@@ -13,6 +13,9 @@ import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { randomBytes } from "crypto";
+import { ZosFilesConstants } from "../../packages/zosfiles/src/api";
+import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
+import { ZosmfRestClient } from "../../packages/rest";
 
 /**
  * Execute a CLI script
@@ -96,4 +99,19 @@ export function getRandomBytes(dataSize: number): Promise<Buffer> {
             resolve(randomData);
         });
     });
+}
+
+export async function getTag(session: AbstractSession, ussPath: string) {
+    const request: object = {
+        request: "chtag",
+        action: "list"
+    };
+    const url = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES
+        + "/" + ussPath;
+    Imperative.console.info("z/OSMF URL: " + url);
+    const response = await ZosmfRestClient.putExpectJSON<any>(session,
+        url,
+        [Headers.APPLICATION_JSON, {[Headers.CONTENT_LENGTH]: JSON.stringify(request).length.toString()}],
+        request);
+    return response.stdout[0];
 }
