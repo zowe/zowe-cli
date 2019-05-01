@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 
-describe("zosmf check status definition", () => {
+describe("zosmf list systems definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/check/status/Status.definition").StatusDefinition;
+        const definition: ICommandDefinition = require("../../../../src/cli/list/systems/Systems.definition").SystemsDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         expect(definition).toMatchSnapshot();
