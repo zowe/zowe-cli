@@ -11,12 +11,11 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zosmf group definition", () => {
-    it("should have the right command content", () => {
-        const definition: ICommandDefinition = require("../../src/cli/Zosmf.definition");
+describe("zosmf list systems definition", () => {
+    it("should not have changed", () => {
+        const definition: ICommandDefinition = require("../../../../src/cli/list/systems/Systems.definition").SystemsDefinition;
+        delete definition.handler;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2);
-        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });
