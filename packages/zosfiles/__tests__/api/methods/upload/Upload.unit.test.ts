@@ -1094,8 +1094,8 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledTimes(2);
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/uploadme");
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/ignoreme");
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.join("test", "path", "uploadme"));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.join("test", "path", "ignoreme"));
 
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/uploadme`)}`, `${dsName}/uploadme`, true);
@@ -1141,12 +1141,11 @@ describe("z/OS Files - Upload", () => {
 
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/uploaddir");
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.join("test", "path", "uploaddir"));
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                    `${path.normalize(`${testPath}/uploaddir/uploadedfile`)}`,
-                    `${dsName}/uploaddir/uploadedfile`,
-                     true);
+                                                              `${path.normalize(path.join(testPath, "uploaddir", "uploadedfile"))}`,
+                                                              `${dsName}/uploaddir/uploadedfile`, true);
             });
             it("should upload files in text or binary according to attributes", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
@@ -1176,8 +1175,8 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(chtagSpy).toHaveBeenCalledTimes(2);
-                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${dsName}/textfile`)}`, Tag.TEXT, "ISO8859-1");
-                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${dsName}/binaryfile`)}`, Tag.BINARY);
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/textfile`, Tag.TEXT, "ISO8859-1");
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/binaryfile`, Tag.BINARY);
             });
 
             it("should call API to tag a file as text that was uploaded in binary mode", async () => {
@@ -1188,7 +1187,7 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(chtagSpy).toHaveBeenCalledTimes(1);
-                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${dsName}/asciifile`)}`, Tag.TEXT, "ISO8859-1");
+                expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1");
             });
         });
     });
