@@ -10,12 +10,13 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
+import { SystemsDefinition } from "./systems/Systems.definition";
 
-describe("zosmf check status definition", () => {
-    it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/check/status/Status.definition").StatusDefinition;
-        delete definition.handler;
-        expect(definition).toBeDefined();
-        expect(definition).toMatchSnapshot();
-    });
-});
+export const ListCommand: ICommandDefinition = {
+    name: "list",
+    type: "group",
+    description: "Obtain a list of systems that are defined to a z/OSMF instance.",
+    children: [
+        SystemsDefinition,
+    ]
+};

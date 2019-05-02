@@ -11,11 +11,12 @@
 
 import { ICommandDefinition } from "@brightside/imperative";
 
-describe("zosmf check status definition", () => {
-    it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/check/status/Status.definition").StatusDefinition;
-        delete definition.handler;
+describe("zosmf list group definition", () => {
+    it("should have the right command content", () => {
+        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListCommand;
         expect(definition).toBeDefined();
+        expect(definition.children.length).toBe(1);
+        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });
