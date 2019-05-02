@@ -9,7 +9,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Imperative } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -19,16 +19,10 @@ import { PerformAction, ProvisioningConstants } from "../../../../";
 import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
-// Test Environment populated in the beforeAll();
 const RESPONSE_CHECK = "was successfully deleted";
-let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let REAL_SESSION: Session;
-let defaultSystem: ITestPropertiesSchema;
-let templateName: string;
-
 
 describe("provisioning delete instance with profile", () => {
+    let TEST_ENVIRONMENT: ITestEnvironment;
     let instance: any;
     let instanceID: string;
     let instanceName: string;
@@ -39,9 +33,8 @@ describe("provisioning delete instance with profile", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-        templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+        const templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
+        const REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         // Provision the template to have an instance to delete
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
@@ -69,11 +62,12 @@ describe("provisioning delete instance with profile", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain(RESPONSE_CHECK);
-    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 });
 
 
 describe("provisioning delete instance without profiles", () => {
+    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
     let zOSMF: ITestZosmfSchema;
     let instance: any;
     let instanceID: string;
@@ -85,8 +79,9 @@ describe("provisioning delete instance without profiles", () => {
             testName: "provisioning_delete_instance_no_profile",
         });
 
-        templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
+        const templateName = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.provisioning.templateName;
+        const REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
 
         // Provision the template to have an instance to delete
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
@@ -121,5 +116,5 @@ describe("provisioning delete instance without profiles", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain(RESPONSE_CHECK);
-    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 });
