@@ -1,23 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zosmf check status definition should not have changed 1`] = `
+exports[`zosmf list systems definition should not have changed 1`] = `
 Object {
-  "description": "Confirm that z/OSMF is running on a system specified in your profile and gather information about the z/OSMF server for diagnostic purposes. The command outputs properties of the z/OSMF server such as version, hostname, and installed plug-ins.",
+  "description": "Obtain a list of systems that are defined to a z/OSMF instance.",
   "examples": Array [
     Object {
-      "description": "Report the status of the z/OSMF server that you specified in your default z/OSMF profile",
+      "description": "Obtain a list of systems defined to a z/OSMF instance with your default z/OSMF profile",
       "options": "",
     },
     Object {
-      "description": "Report the status of the z/OSMF server that you specified in a supplied z/OSMF profile",
+      "description": "Obtain a list of systems defined to a z/OSMF instance for the specified z/OSMF profile",
       "options": "--zosmf-profile SomeZosmfProfileName",
     },
     Object {
-      "description": "Report the status of the z/OSMF server that you specified manually via command line",
+      "description": "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
       "options": "--host myhost --port 443 --user myuser --password mypass",
     },
   ],
-  "name": "status",
+  "name": "systems",
   "options": Array [
     Object {
       "aliases": Array [
