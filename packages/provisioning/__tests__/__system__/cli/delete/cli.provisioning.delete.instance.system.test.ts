@@ -20,6 +20,7 @@ import { ProvisioningTestUtils } from "../../../__resources__/utils/Provisioning
 import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 // Test Environment populated in the beforeAll();
+const RESPONSE_CHECK = "was successfully deleted";
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
@@ -27,7 +28,7 @@ let defaultSystem: ITestPropertiesSchema;
 let templateName: string;
 
 
-describe("with profile", () => {
+describe("provisioning delete instance with profile", () => {
     let instance: any;
     let instanceID: string;
     let instanceName: string;
@@ -67,12 +68,12 @@ describe("with profile", () => {
             [instanceName]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain(RESPONSE_CHECK);
     }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 });
 
 
-describe("without profiles", () => {
+describe("provisioning delete instance without profiles", () => {
     let zOSMF: ITestZosmfSchema;
     let instance: any;
     let instanceID: string;
@@ -119,6 +120,6 @@ describe("without profiles", () => {
             ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain(RESPONSE_CHECK);
     }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 });
