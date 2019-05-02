@@ -29,7 +29,7 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
         commandParameters.response.progress.startBar({task});
 
         const response = await Upload.fileToUSSFile(session, commandParameters.arguments.inputfile,
-            commandParameters.arguments.USSFileName, commandParameters.arguments.binary, task);
+            commandParameters.arguments.USSFileName, commandParameters.arguments.binary, undefined, task);
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;

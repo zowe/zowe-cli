@@ -25,7 +25,7 @@ Array [
     "conflictsWith": Array [
       "ascii-files",
     ],
-    "description": "Comma separated list of file names to be uploaded in binary mode. Use this option when you upload a directory in default ASCII mode, but you want to specify certain files to be uploaded in binary mode. All files matching specified file names will be uploaded in binary mode.",
+    "description": "Comma separated list of file names to be uploaded in binary mode. Use this option when you upload a directory in default ASCII mode, but you want to specify certain files to be uploaded in binary mode. All files matching specified file names will be uploaded in binary mode. If a .zosattributes file (or equivalent file specified via --attributes) is present, --binary-files will be ignored.",
     "name": "binary-files",
     "type": "string",
   },
@@ -36,8 +36,19 @@ Array [
     "conflictsWith": Array [
       "binary-files",
     ],
-    "description": "Comma separated list of file names to be uploaded in ASCII mode. Use this option when you upload a directory with --binary/-b flag, but you want to specify certain files to be uploaded in ASCII mode. All files matching specified file names will be uploaded in ASCII mode.",
+    "description": "Comma separated list of file names to be uploaded in ASCII mode. Use this option when you upload a directory with --binary/-b flag, but you want to specify certain files to be uploaded in ASCII mode. All files matching specified file names will be uploaded in ASCII mode. If a .zosattributes file (or equivalent file specified via --attributes) is present, --ascii-files will be ignored.",
     "name": "ascii-files",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "attrs",
+    ],
+    "conflictsWith": Array [
+      "ascii-files, binary-files",
+    ],
+    "description": "Path of an attributes file to control how files are uploaded",
+    "name": "attributes",
     "type": "string",
   },
   Object {
@@ -74,6 +85,10 @@ Array [
   Object {
     "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --binary --ascii-files \\"myFile1.txt,myFile2.txt,myFile3.txt\\"",
+  },
+  Object {
+    "description": "Recursively upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory, specifying files to ignore and file encodings in the local file my_global_attributes:",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --recursive --attributes my_global_attributes",
   },
 ]
 `;

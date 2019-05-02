@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { CheckCommand } from "./check/Check.definition";
+import { ListCommand } from "./list/List.definition";
 
 const definition: ICommandDefinition = {
     name: "zosmf",
@@ -18,7 +19,8 @@ const definition: ICommandDefinition = {
     summary: "Interact with z/OSMF",
     description: "Retrieve and show the properties of a z/OSMF web server",
     children: [
-        CheckCommand
+        CheckCommand,
+        ListCommand,
     ]
 };
 

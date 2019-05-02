@@ -15,7 +15,7 @@ describe("zosmf group definition", () => {
     it("should have the right command content", () => {
         const definition: ICommandDefinition = require("../../src/cli/Zosmf.definition");
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(1);
+        expect(definition.children.length).toBe(2);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });
