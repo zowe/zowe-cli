@@ -30,7 +30,7 @@ export const SshDefinition: ICommandDefinition = {
             type: "string"
         }],
     profile: {
-        required: ["ssh"]
+        optional: ["ssh"]
     },
     examples: [{
         description: "Issue a simple command, giving the working directory",
