@@ -22,6 +22,7 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let templateName: string;
+let instanceName: string;
 let instanceID: string;
 
 describe("provisioning list instance-info", () => {
@@ -37,15 +38,13 @@ describe("provisioning list instance-info", () => {
         let instance: IProvisionedInstance;
         instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
         instanceID = instance["object-id"];
-        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+        instanceName = instance["external-name"];
+        Imperative.console.info(`Provisioned instance: ${instanceName}`);
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should display instance info", async () => {
-        const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
-            .pop()["external-name"];
-        Imperative.console.info(`Instance name: ${instance}`);
         const regex = fs.readFileSync(__dirname + "/__regex__/instance_info_response.regex").toString();
-        const response = runCliScript(__dirname + "/__scripts__/instanceInfo.sh", TEST_ENVIRONMENT, [instance]);
+        const response = runCliScript(__dirname + "/__scripts__/instanceInfo.sh", TEST_ENVIRONMENT, [instanceName]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
@@ -63,14 +62,11 @@ describe("provisioning list instance-info", () => {
         });
 
         it("should display instance info", async () => {
-            const instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"]
-                .pop()["external-name"];
-            Imperative.console.info(`Instance name: ${instance}`);
             const regex = fs.readFileSync(__dirname + "/__regex__/instance_info_response.regex").toString();
             const response = runCliScript(__dirname + "/__scripts__/instanceInfo_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
-                    instance,
+                    instanceName,
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
