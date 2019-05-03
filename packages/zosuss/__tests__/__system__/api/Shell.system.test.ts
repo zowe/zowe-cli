@@ -53,4 +53,26 @@ describe("zowe uss issue ssh api call test", () => {
         expect(stdoutData).toMatch(new RegExp("\\" + cwd + "\\s"));
     }, TIME_OUT);
 
+    it("should receive return code for valid command", async () => {
+        const command = "ls";
+        let stdoutData = "";
+        const COMMAND_RC = 0;
+        const rc = await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
+            stdoutData += data;
+        });
+        expect(rc).toBe(COMMAND_RC);
+
+    }, TIME_OUT);
+
+    it("should receive return code for invalid command", async () => {
+        const command = "invalidCommand";
+        let stdoutData = "";
+        const COMMAND_NOT_FOUND_RC = 127;
+        const rc = await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
+            stdoutData += data;
+        });
+        expect(rc).toBe(COMMAND_NOT_FOUND_RC);
+
+    }, TIME_OUT);
+
 });
