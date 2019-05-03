@@ -1,1 +1,1 @@
-[\s\S]*Service Catalog templates[\s\S]*Published Templates:.[\s\S]*Name.[\s\S]*Version.[\s\S]*Owner[\s\S]*State[\s\S]*Description[\s\S]*Generated Name[\s\S]*Object Id[\s\S]*
+\b(Service Catalog)\b

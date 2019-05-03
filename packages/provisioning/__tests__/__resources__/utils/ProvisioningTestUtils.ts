@@ -152,14 +152,15 @@ export class ProvisioningTestUtils {
                                           instanceID: string, state: string) {
         let instance;
         try {
+            Imperative.console.info(`Waiting instance state to be "${state}"`);
             // Get the instance
             instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
             // Check if the instance state is equal to desired state
             while(instance.state !== state) {
                 instance = await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID);
-                Imperative.console.info(`Instance state: ${instance.state}`);
                 await this.sleep(this.SLEEP_TIME);
             }
+            Imperative.console.info(`${state} instance name: ${instance["external-name"]}`);
             return instance;
         } catch (thrownError) {
             Imperative.console.info(`Error ${thrownError}`);
