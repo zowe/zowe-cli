@@ -21,7 +21,7 @@ describe("zos-uss issue ssh command definition", () => {
         expect(definition.children).toBeUndefined();
 
         // Should require a ssh profile
-        expect(definition.profile.required).toEqual(["ssh"]);
+        expect(definition.profile.optional).toEqual(["ssh"]);
 
         // Should only contain one positional
         expect(definition.positionals.length).toEqual(1);
