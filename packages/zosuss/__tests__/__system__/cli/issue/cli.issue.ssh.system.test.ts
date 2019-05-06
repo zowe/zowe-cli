@@ -17,6 +17,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../rest";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { startCmdFlag } from "../../../../src/api/Shell";
 
 
 // Test environment will be populated in the "beforeAll"
@@ -32,9 +33,10 @@ let password: string;
 let privateKey: string;
 let keyPassphrase: string;
 
-function checkResponse(response: any) {
+function checkResponse(response: any, expectStatus: number) {
     expect(response.stderr.toString()).toBe("");
-    expect(response.status).toBe(0);
+    expect(response.status).toBe(expectStatus);
+    expect(response.stdout.toString()).not.toMatch(startCmdFlag);
 }
 
 function generateRandomString(j: number) {
@@ -69,7 +71,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
         // Imperative.console.info("Return OS command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
 
-        checkResponse(response);
+        checkResponse(response, 0);
         expect(response.stdout.toString()).toMatch("OS/390");
     });
 
@@ -79,7 +81,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
         // Imperative.console.info("Resolve --cwd Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
-        checkResponse(response);
+        checkResponse(response, 0);
         // match only "/"+cwd with no following alpha-numeric character e.g. "/cwd   "
         expect(response.stdout.toString()).toMatch(new RegExp("\\" + cwd + "\\s"));
     });
@@ -90,7 +92,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
         // Imperative.console.info("Invalid directory Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
-        checkResponse(response);
+        checkResponse(response, 0);
         expect(response.stdout.toString()).toContain("EDC5129I No such file or directory");
     });
 });
@@ -103,7 +105,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "issue_ssh",
             tempProfileTypes: ["ssh"]
-        });
+       });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         const directory = `${defaultSystem.unix.testdir}/`;
@@ -111,7 +113,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
         const commandName = `mkdir ${directory}/usstest && cd ${directory}/usstest && pwd`;
         // Imperative.console.info("Make test directory cmd:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-        checkResponse(response);
+        checkResponse(response, 0);
         expect(response.stdout.toString()).toContain(directory + "usstest");
     });
     afterAll(async () => {
@@ -130,12 +132,10 @@ describe("Use a test directory to do stuff in that creates files", () => {
         const randomDir = generateRandomString(j);
         const directory = `${defaultSystem.unix.testdir}/`;
         const testdir = directory + "test/";
-        const commandName = "mkdir " + testdir + "usstest/" + randomDir;
+        const commandName = "mkdir -p " + testdir + "usstest/" + randomDir + "; ls " + testdir + "usstest/" + randomDir;
         // Imperative.console.info("Long Dir Command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
-
-        checkResponse(response);
-        expect(response.stdout.toString()).toContain(randomDir);
+        checkResponse(response, 0);
     });
 });
 
@@ -208,9 +208,11 @@ describe("zowe uss issue ssh running bash scripts", () => {
         const commandName = "cd " + directory + " && chmod 777 exit64.sh && exit64.sh";
         // Imperative.console.info("Exit command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
+        const SIX_FOUR= 64;
 
-        checkResponse(response);
-        expect(response.stdout.toString()).not.toContain("About to exit64");
+        checkResponse(response, SIX_FOUR);
+        expect(response.stdout.toString()).toContain("About to exit64");
+        expect(response.stdout.toString()).not.toContain("It should not echo this");
     });
 
     it("script kills itself", async () => {
@@ -218,8 +220,9 @@ describe("zowe uss issue ssh running bash scripts", () => {
         const commandName = " cd " + directory + " && chmod 777 killItself.sh && killItself.sh";
         // Imperative.console.info("Script for kill command:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
+        const ONE_FOUR_THREE = 143;
 
-        checkResponse(response);
+        checkResponse(response, ONE_FOUR_THREE);
         expect(response.stdout.toString()).not.toContain("Ended");
     });
 
@@ -265,7 +268,7 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
         // now check the command can run
         command = "uname";
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [command]);
-        checkResponse(response);
+        checkResponse(response, 0);
         expect(response.stdout.toString()).toMatch("OS/390");
 
 
