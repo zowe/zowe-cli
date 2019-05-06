@@ -13,17 +13,15 @@ import { ImperativeError, Session } from "@brightside/imperative";
 import { CancelJobs, SubmitJobs } from "../../../";
 import { IJob } from "../../../index";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { JobTestsUtils } from "./JobTestsUtils";
 
 let REAL_SESSION: Session;
 let iefbr14JCL: string;
 
-let defaultSystem: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
 
 describe("CancelJobs System tests", () => {
@@ -32,45 +30,44 @@ describe("CancelJobs System tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = new Session({
-            user: defaultSystem.zosmf.user,
-            password: defaultSystem.zosmf.pass,
-            hostname: defaultSystem.zosmf.host,
-            port: defaultSystem.zosmf.port,
+            user: systemProps.zosmf.user,
+            password: systemProps.zosmf.pass,
+            hostname: systemProps.zosmf.host,
+            port: systemProps.zosmf.port,
             type: "basic",
-            rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
+            rejectUnauthorized: systemProps.zosmf.rejectUnauthorized
         });
 
-        const ACCOUNT = defaultSystem.tso.account;
+        const ACCOUNT = systemProps.tso.account;
 
         iefbr14JCL = JobTestsUtils.getIefbr14JCL(REAL_SESSION.ISession.user, ACCOUNT);
     });
 
     describe("Positive tests", () => {
         it("should be able to cancel a job using cancelJob", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             await CancelJobs.cancelJobForJob(REAL_SESSION, job);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
-            await CancelJobs.cancelJobCommon(REAL_SESSION, { jobname: job.jobname, jobid: job.jobid });
+            await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, { jcl: iefbr14JCL, status: "INPUT" });
-            await CancelJobs.cancelJobCommon(REAL_SESSION, { jobname: job.jobname, jobid: job.jobid, version: "2.0" });
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
+            await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
         }, LONG_TIMEOUT);
     });
 
@@ -117,7 +114,7 @@ describe("CancelJobs System tests", () => {
         it("should surface errors from z/OSMF when trying to cancel a non-existent job using cancelJobCommon", async () => {
             let err: Error | ImperativeError;
             try {
-                await CancelJobs.cancelJobCommon(REAL_SESSION, { jobname: "FAKEJOB", jobid: "JOB00001" });
+                await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: "FAKEJOB", jobid: "JOB00001"});
             } catch (e) {
                 err = e;
             }

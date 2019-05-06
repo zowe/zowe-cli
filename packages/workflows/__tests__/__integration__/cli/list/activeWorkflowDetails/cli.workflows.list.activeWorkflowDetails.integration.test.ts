@@ -21,7 +21,8 @@ describe("List Active Workflow Details", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_active_workflow_details"
+            testName: "list_active_workflow_details",
+            skipProperties: true
         });
     });
 

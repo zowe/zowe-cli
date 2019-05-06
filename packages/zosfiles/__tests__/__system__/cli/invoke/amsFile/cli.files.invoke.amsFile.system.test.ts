@@ -13,8 +13,7 @@ import * as fs from "fs";
 import { Session, TextUtils } from "@brightside/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
 
@@ -22,8 +21,7 @@ let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let user: string;
 let volume: string;
 
@@ -44,13 +42,12 @@ describe("Invoke AMS CLI", () => {
             testName: "zos_invoke_ams"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        volume = defaultSystem.datasets.list[0].vol;
+        volume = defaultSystem.datasets.vol;
 
     });
 
@@ -59,8 +56,7 @@ describe("Invoke AMS CLI", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -68,11 +64,10 @@ describe("Invoke AMS CLI", () => {
                 testName: "zos_files_invoke_ams_file_without_profile"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
             user = defaultSys.zosmf.user.trim().toUpperCase();
-            volume = defaultSys.datasets.list[0].vol;
+            volume = defaultSys.datasets.vol;
         });
 
         afterAll(async () => {

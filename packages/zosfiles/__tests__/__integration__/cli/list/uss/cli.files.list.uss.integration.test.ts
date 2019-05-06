@@ -20,7 +20,8 @@ describe("List USS file", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_uss_file_integration"
+            testName: "list_uss_file_integration",
+            skipProperties: true
         });
     });
 

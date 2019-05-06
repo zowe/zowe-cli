@@ -14,16 +14,14 @@ import * as path from "path";
 import { getRandomBytes, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Create, CreateDataSetTypeEnum, Delete, Upload } from "../../../../../../zosfiles";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 
 describe("Download Data Set", () => {
@@ -34,8 +32,7 @@ describe("Download Data Set", () => {
             testName: "download_data_set"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
@@ -47,8 +44,7 @@ describe("Download Data Set", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -56,8 +52,7 @@ describe("Download Data Set", () => {
                 testName: "zos_files_download_data_set_without_profile"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {
