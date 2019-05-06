@@ -14,18 +14,15 @@ import { Imperative, Session } from "@brightside/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Get, ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 import { IUploadMap } from "../../../../../src/api/methods/upload/doc/IUploadMap";
-import * as path from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 const inputfile = ".\\packages\\zosfiles\\__tests__\\__system__\\api\\methods\\upload\\testfiles\\upload.txt";
@@ -37,11 +34,9 @@ describe("Upload Data Set", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_upload"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -431,11 +426,9 @@ describe("Upload USS file", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_upload_uss"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -545,11 +538,9 @@ describe("Upload a local directory to USS directory", () => {
         const localDirWithSpaces = `${__dirname}/testfiles/space dir`;
         beforeAll(async () => {
             testEnvironment = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
                 testName: "zos_file_upload_dir_to_uss"
             });
-            systemProps = new TestProperties(testEnvironment.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
+            defaultSystem = testEnvironment.systemTestProperties;
 
             REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -675,7 +666,7 @@ describe("Upload a local directory to USS directory", () => {
                 uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: true});
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: true});
-                for(let i = 0; i < magicNum; i++) {
+                for (let i = 0; i < magicNum; i++) {
                     longResponse += testdata;
                 }
             } catch (err) {
@@ -700,7 +691,7 @@ describe("Upload a local directory to USS directory", () => {
             let getResponseLongFile;
             let longResponse: string = "";
             const magicNum = 6;
-            const fileMap: IUploadMap = {binary:  true, fileNames: ["file3.txt", "longline.txt"]};
+            const fileMap: IUploadMap = {binary: true, fileNames: ["file3.txt", "longline.txt"]};
             try {
                 uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: false, filesMap: fileMap});
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
@@ -710,7 +701,7 @@ describe("Upload a local directory to USS directory", () => {
                 getResponseLongFile = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: true});
                 // file1.txt should be ASCII like other files not mentioned in filesMap
                 getResponseFile1 = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: false});
-                for(let i = 0; i < magicNum; i++) {
+                for (let i = 0; i < magicNum; i++) {
                     longResponse += testdata;
                 }
             } catch (err) {
@@ -737,7 +728,7 @@ describe("Upload a local directory to USS directory", () => {
             let getResponseLongFile;
             let longResponse: string = "";
             const magicNum = 6;
-            const filesMap: IUploadMap = {binary:  false, fileNames: ["file3.txt", "longline.txt"]};
+            const filesMap: IUploadMap = {binary: false, fileNames: ["file3.txt", "longline.txt"]};
             try {
                 uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: true, filesMap});
                 isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
@@ -747,7 +738,7 @@ describe("Upload a local directory to USS directory", () => {
                 getResponseLongFile = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: false});
                 // file1.txt should be binary like other files not mentioned in filesMap
                 getResponseFile1 = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: true});
-                for(let i = 0; i < magicNum; i++) {
+                for (let i = 0; i < magicNum; i++) {
                     longResponse += testdata;
                 }
             } catch (err) {
@@ -769,11 +760,9 @@ describe("Upload a local directory to USS directory", () => {
     describe("Fail scenarios", () => {
         beforeAll(async () => {
             testEnvironment = await TestEnvironment.setUp({
-                tempProfileTypes: ["zosmf"],
                 testName: "zos_file_upload_dir_to_uss"
             });
-            systemProps = new TestProperties(testEnvironment.systemTestProperties);
-            defaultSystem = systemProps.getDefaultSystem();
+            defaultSystem = testEnvironment.systemTestProperties;
 
             REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

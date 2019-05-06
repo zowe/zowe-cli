@@ -13,17 +13,15 @@ import { ImperativeError, Session } from "@brightside/imperative";
 import { DeleteJobs, SubmitJobs } from "../../../";
 import { IJob } from "../../../index";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Get } from "../../../../zosfiles/src/api/methods/get";
 
 let REAL_SESSION: Session;
 let iefbr14JCL: string;
 
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
 
 describe("DeleteJobs System tests", () => {
@@ -32,8 +30,7 @@ describe("DeleteJobs System tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_get_jobs"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

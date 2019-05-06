@@ -42,7 +42,7 @@ export class ListWorkflows {
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion,
             [
-                {key: WorkflowConstants.workflowName, value : workflowName},
+                {key: WorkflowConstants.workflowName, value : workflowName ? encodeURIComponent(workflowName) : null},
                 {key: WorkflowConstants.category, value : category},
                 {key: WorkflowConstants.system, value : system},
                 {key: WorkflowConstants.owner, value : owner},

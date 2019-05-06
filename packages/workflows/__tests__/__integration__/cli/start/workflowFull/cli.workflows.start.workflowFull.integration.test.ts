@@ -20,7 +20,8 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 describe("Create workflow cli system tests", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "start_workflow_full"
+            testName: "start_workflow_full",
+            skipProperties: true
         });
     });
 

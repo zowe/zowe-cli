@@ -26,12 +26,12 @@ const badString = "Ba?d";
 const badString1 = "Ba&d";
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
-const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${workflowName}&category=${category}`
+const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${encodeURIComponent(workflowName)}&category=${category}`
                                          + `&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowsInfo = {
     workflowKey: "73c81ef4-eccc-47ce-8f08-8a5c97e753f1",
-    workflowName: "workflow1",
+    workflowName: "workflow one",
     workflowDescription: "Workflow test",
     workflowID: "Workflow test",
     workflowVersion: "1.0",

@@ -10,9 +10,9 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    Zowe CLI is a command line interface (CLI) that provides a simple and
    streamlined way to interact with IBM z/OS.
 
-   For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site.
+   For additional Zowe CLI documentation, visit https://zowe.github.io/docs-site
 
-   For Zowe CLI support, visit https://zowe.org.
+   For Zowe CLI support, visit https://zowe.org
 
 
  USAGE
@@ -33,6 +33,7 @@ exports[`Root level help tests top level help should contain support link 1`] = 
    zos-files | files     Manage z/OS data sets                            
    zos-jobs | jobs       Manage z/OS jobs                                 
    zos-tso | tso         Interact with TSO                                
+   zos-uss | uss         Issue z/OS USS commands and receive responses    
    zos-workflows | wf    Create and manage z/OSMF workflows               
    zosmf                 Interact with z/OSMF                             
 

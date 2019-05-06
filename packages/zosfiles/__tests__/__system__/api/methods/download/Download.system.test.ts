@@ -19,25 +19,22 @@ import {
     ZosFilesConstants,
     ZosFilesMessages
 } from "../../../../../";
-import { Imperative, Session, IO } from "@brightside/imperative";
+import { Imperative, IO, Session } from "@brightside/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
-import { mkdirpSync } from "fs-extra";
 import { posix } from "path";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 const rimraf = require("rimraf").sync;
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 let file: string;
@@ -46,11 +43,9 @@ describe("Download Data Set", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_download"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -410,7 +405,7 @@ describe("Download Data Set", () => {
     });
 
     describe("Download USS File", () => {
-         // Delete created uss file
+        // Delete created uss file
         afterAll(async () => {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 

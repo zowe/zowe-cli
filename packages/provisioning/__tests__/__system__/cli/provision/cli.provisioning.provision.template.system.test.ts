@@ -14,8 +14,7 @@ import { Imperative, Session } from "@brightside/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { DeleteInstance, ListInstanceInfo, ListRegistryInstances, PerformAction, ProvisioningConstants } from "../../../../../provisioning";
 
 const MAX_TIMEOUT_NUMBER: number = 3600000;
@@ -23,9 +22,8 @@ const SLEEP_TIME: number = 10000;
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let SYSTEM_PROPS: TestProperties;
 let REAL_SESSION: Session;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let templateName: string;
 let instanceName: string;
 let accountNumber: string;
@@ -80,8 +78,7 @@ describe("provisioning provision template", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        SYSTEM_PROPS = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = SYSTEM_PROPS.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         accountNumber = defaultSystem.tso.account;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
@@ -106,15 +103,14 @@ describe("provisioning provision template", () => {
 
         // Create a separate test environment for no profiles
         let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "provisioning_list_template_info_without_profiles"
             });
 
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
+            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {

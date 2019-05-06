@@ -14,16 +14,14 @@ import { inspect } from "util";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../../src/api/methods/create";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../../src/api/methods/delete";
 import { ZosFilesMessages } from "../../../../..";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let dsname: string;
 let volume: string;
@@ -37,8 +35,7 @@ describe("Create data set", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_dataset"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
@@ -114,12 +111,11 @@ describe("Create VSAM", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_vsam"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        volume = defaultSystem.datasets.list[0].vol;
+        volume = defaultSystem.datasets.vol;
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
 

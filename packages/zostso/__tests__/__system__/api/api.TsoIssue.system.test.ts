@@ -12,15 +12,13 @@
 import { ImperativeError, Session } from "@brightside/imperative";
 import { IIssueResponse, IIssueTsoParms, IssueTso, IStartTsoParms } from "../../../../zostso";
 import * as fs from "fs";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProperties: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;
 
@@ -33,11 +31,10 @@ describe("IssueTso.issueTsoCommand", () => {
         testEnvironment = await TestEnvironment.setUp({
                         testName: "zos_tso_issue"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProperties = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        ACCOUNT_NUMBER = defaultSystem.tso.account;
+        ACCOUNT_NUMBER = systemProperties.tso.account;
 
         START_PARAMS = {
             logonProcedure: "IZUFPROC",
