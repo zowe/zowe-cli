@@ -10,9 +10,7 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@brightside/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     IPerformActionResponse,
@@ -28,9 +26,6 @@ import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTes
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 let templateName: string;
 let instanceID: string;
 let RESPONSE_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/`;
@@ -41,8 +36,6 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_registry"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 

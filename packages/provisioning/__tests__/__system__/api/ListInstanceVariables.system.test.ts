@@ -24,9 +24,6 @@ import {
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
-
 let templateName: string;
 let instanceID: string;
 
@@ -37,8 +34,6 @@ describe("ListInstanceVariables (system)", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "provisioning_list_registry"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -132,4 +127,3 @@ describe("ListInstanceVariables (system)", () => {
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 });
-
