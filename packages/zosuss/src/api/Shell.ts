@@ -21,7 +21,6 @@ let authPos = 0;
 const authsAllowed = ["none"];
 let hasAuthFailed = false;
 export const startCmdFlag = "@@START OF COMMAND@@";
-export const endCmdFlag = "@@END OF COMMAND@@";
 
 export class Shell {
 
@@ -44,47 +43,43 @@ export class Shell {
                     if (err) { throw err; }
                     let dataBuffer = "";
                     let dataToPrint = "";
-                    let isCommandOutput = false;
+                    let isUserCommand = false;
+                    let rc: number;
 
+                    stream.on("exit", (exitcode) => {
+                        Logger.getAppLogger().debug("Return Code: " + exitcode);
+                        rc = exitcode;
+                    });
                     stream.on("close", () => {
                         Logger.getAppLogger().debug("SSH connection closed");
+                        stdoutHandler("\n");
                         conn.end();
-                        resolve();
+                        resolve(rc);
                     });
                     stream.on("data", (data: string) => {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
                         dataBuffer += data;
-                        // if(dataBuffer.includes("\n")) {
                         if(dataBuffer.includes("\r")) {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
                             // rather than print it out right away
-                            dataToPrint = dataBuffer.slice(0, dataBuffer.lastIndexOf("\r") + 1);
-                            dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r") + 1);
+                            dataToPrint = dataBuffer.slice(0, dataBuffer.lastIndexOf("\r"));
+                            dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
                             // check startCmdFlag: start printing out data
                             if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
-                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(`${startCmdFlag}`)+startCmdFlag.length);
-                                isCommandOutput = true;
+                                dataToPrint = dataToPrint.slice(dataToPrint.indexOf(startCmdFlag)+startCmdFlag.length);
+                                isUserCommand = true;
                             }
 
-                            // check endCmdFlag: end printing out data
-                            if(isCommandOutput && dataToPrint.match(new RegExp(`echo ${endCmdFlag}`))) {
-                                // cut out flag and print out the leftover
-                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`echo ${endCmdFlag}`));
-                                stdoutHandler(`${dataToPrint}\n`);
-
-                                isCommandOutput = false;
-                            } else if(isCommandOutput && dataToPrint.match(new RegExp(`${endCmdFlag}`))) {
-                                // cut out flag and print out the leftover
-                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf(`${endCmdFlag}`));
-                                stdoutHandler(`${dataToPrint}\n`);
-
-                                isCommandOutput = false;
-                            }
-
-                            // print out
-                            if (isCommandOutput) {
+                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ exit"))) {
+                                // if exit found, print out stuff before exit, then stop printing out.
+                                dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
+                                stdoutHandler(dataToPrint);
+                                dataToPrint = "";
+                                isUserCommand = false;
+                            } else if (isUserCommand) {
+                                // print out the user command result
                                 stdoutHandler(dataToPrint);
                                 dataToPrint = "";
                             }
@@ -92,8 +87,9 @@ export class Shell {
                     });
 
                     // exit multiple times in case of nested shells
-                    stream.end(`export PS1='$ '\necho ${startCmdFlag}\n${command}\necho ${endCmdFlag}\n` +
-                    `exit\nexit\nexit\nexit\nexit\nexit\nexit\nexit\n`);
+                    stream.write(`export PS1='$ '\necho ${startCmdFlag}\n${command}\n` +
+                    `exit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\nexit $?\n`);
+                    stream.end();
                 });
             });
             conn.connect({
