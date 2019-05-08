@@ -1,6 +1,6 @@
 # Versioning
 
-This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides [examples](#example-timeline) on how such scheme will work.
+This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides [examples](#example-timeline) on how such scheme works.
 
 We highly recommend that consumers adhere to the [requirements](#requirements), [tentative release schedule](#tentative-release-schedule), and [tag usage](#tag-usage) for versioning.
 
@@ -17,7 +17,7 @@ This format is frequently referred to as `"major.minor.patch"`
 **Example:**
 
 ```
-2.3.5-beta.201806291712
+2.3.5-daily.201806291712
 ```
 
 We use the following terms for the three digits (instead of `major.minor.patch`) to reinforce our [semantic versioning](https://semver.org/) strategy.
@@ -45,10 +45,6 @@ We tag various releases of our product in an NPM registry. End users install the
 * **`daily`**
 
    This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
-
-* **`beta`**
-
-   This tag points to the yet-to-become-community-edition version of the product. This pre-release snapshot contains a set of features and bug fixes, and is avalilable for validation. It will remain unchanged for a longer period of time compared to the `daily` tag (approximately 2 weeks) to allow time for consumers to verify the features and/or fixes before it is generally available to the community.
 
 * **`latest`**
 
@@ -99,10 +95,6 @@ The following table shows a tentative Zowe CLI release schedule:
 ## Tag Usage
 
 The following is a list of commands that users issue to install product versions: 
-
-* To obtain the beta validation version:
-
-  `npm install -g @brightside/core@beta`
 
 * To obtain the most current community edition version:
 
