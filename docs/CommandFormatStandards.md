@@ -1,11 +1,11 @@
 # Command Format Standards
 This article is a living summary of conventions and best practices for command and option descriptions (help text) in Zowe CLI and plug-ins. 
 
-- [Zowe CLI Command Structure](#zowe-cli-command-structure)
+- [Command Structure](#zowe-cli-command-structure)
 - [Command Definition Documents](#command-definition-documents)
 - [Syntax/Naming Conventions](#syntax-naming-conventions)
 
-## Zowe CLI Command Structure
+## Command Structure
 All `zowe` commands adhere to the following consistent structure:
 
 ### `zowe [group] [action] [object] [options]`
@@ -50,7 +50,7 @@ For the definition interface, see[`ICommandDefinition` interface within the Impe
 - `[actions]` are verbs. (e.g. "set", "run, "list", etc.)
 - `[objects]` are nouns. (e.g. "data-set", "command", etc.)
 - Hyphenate multiple words (e.g. `access-method-services`)
-    - Except positional parameter definition (limitation of yargs)
+    - Except for positional parameter definitions, (limitation of yargs) which do not use hyphens. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts). 
 
 #### `[option]` Naming Conventions
 - If possible, give options (especially flags), a one character alias. 

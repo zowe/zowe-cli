@@ -3,9 +3,9 @@ This document is a living summary of conventions and best practices for developm
 
 For "must-have" criteria specific to the Zowe Conformance Program, see [CLI Conformance](/docs/cli-conformance.md)]. 
 
-  - [Understanding Packages and Plug-ins](#project-layout-packages-and-plug-ins)
+  - [Understanding Packages and Plug-ins](#understanding-packages-and-plug-ins)
   - [Pull Requests](#pull-requests)
-  - [Contributing to Core Functionality](#contributing-to-zowe-cli-core-functionality)
+  - [Contributing to Core Functionality](#contributing-to-core-functionality)
   - [General Guidelines](#general-guidelines)
   - [Code Guidelines](#code-guidelines)
   - [Programmatic API Guidelines](#programmatic-api-guidelines)
