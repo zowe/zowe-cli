@@ -1,7 +1,9 @@
 # Contribution Guidelines
 This document is a living summary of conventions and best practices for development within Zowe CLI or development of Zowe CLI plug-ins. 
 
-  - [Project Layout, Packages, and Plug-ins](#project-layout-packages-and-plug-ins)
+For "must-have" criteria specific to the Zowe Conformance Program, see [CLI Conformance](/docs/cli-conformance.md)]. 
+
+  - [Understanding Packages and Plug-ins](#project-layout-packages-and-plug-ins)
   - [Pull Requests](#pull-requests)
   - [Contributing to Core Functionality](#contributing-to-zowe-cli-core-functionality)
   - [General Guidelines](#general-guidelines)
@@ -16,22 +18,13 @@ This document is a living summary of conventions and best practices for developm
   - [Documentation Guidelines](#documentation-guidelines)
   - [More Information](#more-information)
 
-## Project Layout, Packages, and Plug-ins
+## Understanding Packages and Plug-ins
 
 **Packages** are individual folders under the `packages` root folder that represent self-contained sets of functionality. For example, `zosjobs` and `zosfiles`. The structure allows packages to be easily pulled out into a separate project if needed, or turned into separately installable `npm` packages.
 
 **Plug-ins** are separately maintained "extensions" to the Zowe CLI.
 
 For more information and guidelines for setting up your project, see [Packages and Plugin Guidelines](./docs/PackagesAndPluginGuidelines.md).
-
-## Pull Requests
-
-Consider the following when you interact with pull requests:
-
-- Pull request reviewers should be assigned to a same-team member.
-- Pull requests should remain open for 24 hours or until close of business next business day (accounting for weekends and holidays).
-- Anyone can comment on a pull request to request delay on merging or to get questions answered.
-- Pull request reviewer should close pull request after 24 hours or by close of business next business day (accounting for weekends and holidays) if no requested changes or requests for delays are indicated.
 
 ## Contributing to Core Functionality
 
@@ -45,6 +38,14 @@ Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/imperati
   - Command definitions and processing
   - Secure credentials
   - Plug-in management
+
+## Pull Requests
+
+Consider the following when you interact with pull requests:
+
+- Pull request reviewers should be assigned to a same-team member.
+- Pull requests should remain open for at least 24 hours, or until close of business next business day (accounting for weekends and holidays).
+- Anyone can comment on a pull request to request delay on merging or to get questions answered.
 
 ## General Guidelines
 
@@ -77,7 +78,7 @@ The following list describes general conventions for contributing to Zowe CLI:
 
 Indent code with 4 spaces. This is also documented via `.editorconfig`, which can be used to automatically format the code if you use an [EditorConfig](http://editorconfig.org/) extension for your editor of choice.
 
-Lint rules are enforced through our [build process](#build-process).
+Lint rules are enforced through our [build process](#build-process-guidelines).
 
 ## Programmatic API Guidelines
 
@@ -100,7 +101,7 @@ For information about naming CLI commands and developing the syntax, see [Comman
 
 ## Versioning Guidelines 
 
-For information about adhering to our versioning scheme, see [Testing Guidelines](./docs/MaintainerVersioning.md).
+For information about adhering to our versioning scheme, see [Versioning Guidelines](./docs/MaintainerVersioning.md).
 
 ## Testing Guidelines
 
@@ -118,17 +119,19 @@ Use build tasks to enforce rules where possible.
 
 ## Documentation Guidelines
 
-- For **all contributions**, ensure that you document third-party software that your component uses in the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html).
+Open an issue in the [docs-site repository](https://github.com/zowe/docs-site) if you need assistance with the following tasks:
 
-- When contributing **a plug-in**, provide the following:
+- For **all contributions**, ensure that the [TPSRs section of documentation](https://zowe.github.io/docs-site/latest/appendix/tpsr.html) lists any third-party software used in your code. 
 
-  - End-user documentation on the Zowe Doc Site. Use existing plug-in topics as a model. Open an issue in [docs-site repository](https://github.com/zowe/docs-site) if you need assistance.
+- When contributing **a plug-in**, we recommend that you provide the following:
+
+  - End-user documentation on the Zowe Doc Site so that users can learn about your plug-in. Use existing plug-in topics as a model.
   
-  - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [this plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics).
+  - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [the CICS plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics).
   
-  - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [CICS plug-in contribution guidelines](https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md).
+  - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [the CICS plug-in contribution guidelines](https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md).
 
-- When contributing **code/functionality to the core CLI**, provide the following:
+- When contributing **code/functionality to the core CLI**, we recommend that you provide the following:
 
   - A Release Notes entry in Zowe Docs site to announce your change to end users. 
   
@@ -138,9 +141,9 @@ In addition to external documentation, please thoroughly comment your code for f
 
  ### JS Documentation
 
-- Use jsdoc annotations - [document this](https://marketplace.visualstudio.com/items?itemName=joelday.docthis) makes extensive use of jsdoc tags
+- Use jsdoc annotations - [document this](https://marketplace.visualstudio.com/items?itemName=joelday.docthis) makes extensive use of jsdoc tags.
   - Common tags to use, `@static`, `@memberOf`, `@returns`, `@params`, `@class`, `@exports`, `@interface`, `@types`, `@throws`, `@link`
-- CLI auto generated documentation is created via command definitions
+- CLI auto-generated documentation is created via command definitions
 - [tsdoc](http://typedoc.org/) is used to generate html documentation
 
 ## More Information
