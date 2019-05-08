@@ -99,30 +99,30 @@ describe("Upload dir-to-uss handler", () => {
             handler = new handlerReq.default();
         });
 
-        it("should upload a directory to a USS directory if requested", async () => {
+        // it("should upload a directory to a USS directory if requested", async () => {
 
-            await testHanlderWorksWithDefaultParameters();
-            expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
-            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, {
-                binary: undefined,
-                filesMap: null,
-                maxConcurrentRequests: undefined,
-                recursive: undefined,
-                task: {
-                    percentComplete: 0,
-                    stageName: 0,
-                    statusMessage: "Uploading all files"}
-                });
-        });
-        it("should pass attributes when a .zosattributes file is present", async () => {
-            jest.spyOn(fs,"existsSync").mockReturnValue(true);
-            const attributesContents = "foo.stuff -";
-            jest.spyOn(fs,"readFileSync").mockReturnValueOnce(Buffer.from(attributesContents));
+        //     await testHanlderWorksWithDefaultParameters();
+        //     expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
+        //     expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, {
+        //         binary: undefined,
+        //         filesMap: null,
+        //         maxConcurrentRequests: undefined,
+        //         recursive: undefined,
+        //         task: {
+        //             percentComplete: 0,
+        //             stageName: 0,
+        //             statusMessage: "Uploading all files"}
+        //         });
+        // });
+        // it("should pass attributes when a .zosattributes file is present", async () => {
+        //     jest.spyOn(fs,"existsSync").mockReturnValue(true);
+        //     const attributesContents = "foo.stuff -";
+        //     jest.spyOn(fs,"readFileSync").mockReturnValueOnce(Buffer.from(attributesContents));
 
-            await testHanlderWorksWithDefaultParameters();
-            expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
-            expect((Upload.dirToUSSDir as jest.Mock).mock.calls[0][UPLOAD_OPTIONS_ARG_INDEX].attributes).toBeInstanceOf(ZosFilesAttributes);
-        });
+        //     await testHanlderWorksWithDefaultParameters();
+        //     expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
+        //     expect((Upload.dirToUSSDir as jest.Mock).mock.calls[0][UPLOAD_OPTIONS_ARG_INDEX].attributes).toBeInstanceOf(ZosFilesAttributes);
+        // });
 
         it("should give an error if --attributes specifies a non-existent file", async () => {
             jest.spyOn(fs,"existsSync").mockReturnValue(false);
