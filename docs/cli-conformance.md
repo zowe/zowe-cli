@@ -17,4 +17,4 @@ A plug-in must follow meet the following requirements to be conformant under the
 
 If you are new to the project, get started creating your plug-in by cloning our sample plug-in. See [Zowe CLI Development Tutorials](https://zowe.github.io/docs-site/latest/extend/extend-cli/cli-devTutorials.html#getting-started) to learn more. 
 
-**Note:** You can also reference the [Zowe CLI Contribution Guidelines](https://github.com/zowe/zowe-cli/blob/conformance/CONTRIBUTING.md) to help you develop a plug-in efficiently. 
+**Note:** You can also reference the [Zowe CLI Contribution Guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md) to help you develop a plug-in efficiently. 
