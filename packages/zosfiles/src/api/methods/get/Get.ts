@@ -94,7 +94,7 @@ export class Get {
                     reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
                 }
             } catch (error) {
-                // If chtag fails still attempt to get file the default convert 
+                // If chtag fails still attempt to get file the default convert
                 Logger.getAppLogger().info(error);
             }
         }
