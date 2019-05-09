@@ -56,6 +56,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the payload is required
+     * @type {IMessageDefinition}
+     */
+    missingPayload: {
+        message: "Specify the payload."
+    },
+
+    /**
      * Message indicating that the USS directory name is required
      * @type {IMessageDefinition}
      */
