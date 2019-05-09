@@ -6,7 +6,7 @@ In general, tests should adhere to same lint rules and conventions as other code
 
 ## Test Locations
 
-There are multiple folders in the project that are used for testing purposes. Folders used for testing will have the syntax of `__folder-name__` making them easier to spot.
+There are multiple folders in the project that are used for testing purposes. Folders used for testing will have the syntax of `__folder-name__` making them easier to find.
 
 At the root of the project there are currently 2 main folders:
 
@@ -23,7 +23,7 @@ The actual test source will be found under each package's `__test__` directory. 
 
 This section covers common guidelines for unit, integration, and system testing.
 
-- `describe` blocks within the test file should never contain a `.` character. The reason for this is that it will affect the reporting on the CI/CD pipeline because of how we are parsing the JUnit output. 
+- `describe` blocks within the test file should never contain a `.` character. The reason for this is that it will affect the reporting on the CI/CD pipeline because of how we are parsing the JUnit output.
 
 ## Unit Testing
 
