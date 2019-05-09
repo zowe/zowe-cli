@@ -58,7 +58,7 @@ The following list describes general conventions for contributing to Zowe CLI:
 - Throw ImperativeError (or perhaps a wrapping of these) instead of throwing Error objects for automatic logging and node-report captures.
 - Provide adequate logging to diagnose problems that happen at external customer sites.
 - External messages should be defined externally, for localization.
-- Avoid using/referencing to `zowe` or `Zowe CLI` within help, source file names, and errors - this name is subject to change. For example use `core` instead.
+- Avoid using/referencing to `zowe` or `Zowe CLI` within help, source file names, and errors - this name is subject to change. For example use `cli` instead.
 - Keep "packages" small and independent without cross dependencies (e.g. `zosjobs` logically should not depend on `zosfiles` package)
   - When a package is dependent on another package, import the through the dependent package's interface (`index.ts`) 
   e.g. `packages/zosjobs/src/GetJobs.ts` will import the `rest` package via:
