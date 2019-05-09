@@ -34,8 +34,6 @@ For the definition interface, see[`ICommandDefinition` interface within the Impe
 - Keep `[options]` (flags, switches, positional parms) to a minimum. Split into multiple commands (`[object]`) if the options become cumbersome. 
 - Keep option syntax "logic" (only specify one, mutually exclusive parameters, etc.) to a minimum.
 - Keep descriptions brief & relevant. 
-- See [Command Description Guidelines](#command-description-guidelines) for command/option description & help text guidelines.
-- See [Command Naming Guidelines](#command-naming-guidelines.md) for command/option naming guidelines.
 - Hyphenated `[options]`, `[actions]`, or `[objects]` should have an alias that is the first letter of each hyphenated word. (e.g. `access-method-services` aliased with `ams`)
 - Use lower case
 - Names should be descriptive (i.e. the user should have a general/good idea of what the name means)
