@@ -45,6 +45,9 @@ describe.only("USS Utilities", () => {
         await Utilities.chtag(REAL_SESSION,ussname,Tag.BINARY);
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("b binary");
+
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
+        expect(isBin).toBe(true);
     });
 
     it("Should tag a text file", async () => {
@@ -52,6 +55,9 @@ describe.only("USS Utilities", () => {
         await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "ISO8859-1");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t ISO8859-1");
+
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
+        expect(isBin).toBe(true);
     });
 
     it("Should flag an EBCDIC file as text", async () => {
