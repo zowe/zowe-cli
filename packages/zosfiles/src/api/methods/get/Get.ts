@@ -17,7 +17,6 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
-import { Utilities } from "../utilities";
 
 /**
  * This class holds helper functions that are used to get the content of data sets or USS files through the z/OSMF APIs
@@ -86,16 +85,6 @@ export class Get {
         if (options.binary) {
             if (options.binary === true) {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-            }
-        } else {
-            try {
-                const isFileTagBinOrAscii = await Utilities.isFileTagBinOrAscii(session, USSFileName);
-                if (isFileTagBinOrAscii) {
-                    reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-                }
-            } catch (error) {
-                // If chtag fails still attempt to get file the default convert
-                Logger.getAppLogger().info(error);
             }
         }
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);

@@ -207,62 +207,6 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.subarray(0, data.length)).toEqual(data);
             });
-
-            it("Based on chtag should get uss file content in binary", async () => {
-                let error;
-                let response: Buffer;
-                const randomByteLength = 60;
-                const data: Buffer = await getRandomBytes(randomByteLength);
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
-                await Utilities.chtag(REAL_SESSION,ussname,Tag.BINARY);
-
-                try {
-                    response = await Get.USSFile(REAL_SESSION, ussname, {});
-                } catch (err) {
-                    error = err;
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.subarray(0, data.length)).toEqual(data);
-            });
-
-            it("Based on chtag should get uss file content stored as ASCII", async () => {
-                let error;
-                let response: Buffer;
-
-                const data: string = "I Lurv Zowe";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
-                await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "ISO8859-1");
-                try {
-                    response = await Get.USSFile(REAL_SESSION, ussname, {});
-                } catch (err) {
-                    error = err;
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.toString()).toEqual(data);
-            });
-
-            it("Based on chtag should get uss file content stored as EBCDIC", async () => {
-                let error;
-                let response: Buffer;
-
-                const data: string = "I test Zowe";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
-                await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "IBM-1047");
-
-                try {
-                    response = await Get.USSFile(REAL_SESSION, ussname, {});
-                } catch (err) {
-                    error = err;
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.toString()).toEqual(data);
-            });
         });
     });
 
