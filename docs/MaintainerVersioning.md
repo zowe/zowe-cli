@@ -98,7 +98,7 @@ The following is a list of commands that users issue to install product versions
 
 * To obtain the most current community edition version:
 
-  `npm install -g @brightside/core` OR `npm install -g @brightside/core@latest`
+  `npm install -g @zowe/cli` OR `npm install -g @zowe/cli@latest`
 
 * To obtain the supported incremental version:
 
@@ -113,7 +113,7 @@ The following is a list of commands that users issue to install product versions
 
 The version numbering below is not an exact sequence; it just represents possible sequences to help illustrate how this versioning process works.
 
-In this scenario, the following were released before this versioning scheme was implemented. The newest patches would have previously been labeled LTS-stable.
+In this scenario, the following versions were released before this versioning scheme was implemented. The newest patches would have previously been labeled LTS-stable.
 
 ```
 - 1.0.0
@@ -177,7 +177,8 @@ When 4.0.0 was delivered, it was tagged as LTS-incremental. Thereafter, each new
     - 4.1.3   @lts-incremental
 ```
 
-As we move forward in this scenario, development is also in progress on a 5.x feature-set which includes breaking changes. With each merge to our master branch, a new alpha version with a pre-release string is published. For example `5.4.0-alpha.201912301259`. It will be tagged as `@daily` to prevent NPM from automatically moving the latest tag to this new version. At the end of each sprint (2 weeks), the newest pre-release version produced in that sprint is tagged as `@beta`, for example `5.4.0-beta.201912301259`.
+As we move forward in this scenario, development is also in progress on a 5.x feature-set which includes breaking changes. With each merge to our master branch, a new alpha version with a pre-release string is published. For example `5.4.0-alpha.201912301259`. It will be tagged as `@daily` to prevent NPM from automatically moving the latest tag to this new version.
+
 To provide an opportunity for validation of that new beta release, we wait for one sprint. At the end of each sprint, we republish the previous beta release with no pre-release string (5.6.0 in the example below) and label that release as `@latest`. We then move the `@beta` label to the newest pre-release produced in the recently completed sprint.
 
 ```
