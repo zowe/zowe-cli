@@ -17,7 +17,7 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
-import { Utilities } from "../Utilities";
+import { Utilities } from "../utilities";
 
 /**
  * This class holds helper functions that are used to get the content of data sets or USS files through the z/OSMF APIs
