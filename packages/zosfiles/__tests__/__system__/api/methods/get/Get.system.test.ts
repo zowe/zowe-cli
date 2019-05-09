@@ -18,7 +18,7 @@ import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../..
 import { ZosmfRestClient } from "../../../../../../rest";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
 import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZosmfListResponse";
-
+import { Utilities, Tag } from "../../../../../src/api";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -207,6 +207,62 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.subarray(0, data.length)).toEqual(data);
             });
+
+            it("Based on chtag should get uss file content in binary", async () => {
+                let error;
+                let response: Buffer;
+                const randomByteLength = 60;
+                const data: Buffer = await getRandomBytes(randomByteLength);
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Utilities.chtag(REAL_SESSION,ussname,Tag.BINARY);
+
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname, {});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.subarray(0, data.length)).toEqual(data);
+            });
+
+            it("Based on chtag should get uss file content stored as ASCII", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "I Lurv Zowe";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "ISO8859-1");
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname, {});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual(data);
+            });
+
+            it("Based on chtag should get uss file content stored as EBCDIC", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "I test Zowe";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "IBM-1047");
+
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname, {});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual(data);
+            });
         });
     });
 
@@ -229,7 +285,7 @@ describe("Get", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display a proper message when getting the content of a data set that does not exists", async () => {
+            it("should display a proper message when getting the content of a data set that does not exist", async () => {
                 let response: Buffer;
                 let error;
 
@@ -262,7 +318,7 @@ describe("Get", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display a proper message when getting the content of a data set that does not exists", async () => {
+            it("should display a proper message when getting the content of a file that does not exist", async () => {
                 let response: Buffer;
                 let error;
 
@@ -271,7 +327,6 @@ describe("Get", () => {
                 } catch (err) {
                     error = err;
                 }
-
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("File not found.");
