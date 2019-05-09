@@ -10,14 +10,14 @@
 */
 
 import { posix } from "path";
-import { AbstractSession, ImperativeError, ImperativeExpect } from "@brightside/imperative";
+import { AbstractSession, Logger, ImperativeExpect } from "@brightside/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
-
+import { Utilities } from "../Utilities";
 
 /**
  * This class holds helper functions that are used to get the content of data sets or USS files through the z/OSMF APIs
@@ -78,14 +78,26 @@ export class Get {
             USSFileName = USSFileName.substr(1);
         }
 
-        USSFileName = encodeURIComponent(USSFileName);
-        const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
+        const encodedFileName = encodeURIComponent(USSFileName);
+        const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
         let reqHeaders: IHeaderContent[] = [];
-        if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        }
 
+        if (options.binary) {
+            if (options.binary === true) {
+                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+            }
+        } else {
+            try {
+                const isFileTagBinOrAscii = await Utilities.isFileTagBinOrAscii(session, USSFileName);
+                if (isFileTagBinOrAscii) {
+                    reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+                }
+            } catch (error) {
+                // If chtag fails still attempt to get file the default convert 
+                Logger.getAppLogger().info(error);
+            }
+        }
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 
         return content;

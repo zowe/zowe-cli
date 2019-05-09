@@ -16,6 +16,7 @@ export * from "./methods/download";
 export * from "./methods/list";
 export * from "./methods/upload";
 export * from "./methods/get";
+export * from "./methods/utilities";
 
 export * from "./utils/ZosFilesUtils";
 
