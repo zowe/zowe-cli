@@ -37,8 +37,8 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error: string;
-        let resp: string;
-        let getWfKey: string;
+    //    let resp: string;
+    //    let getWfKey: string;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -60,7 +60,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 params.response.console.log("Workflow deleted.");
                 break;
 
-            case "workflowName":
+         /*   case "workflowName":
                 try{
                     getWfKey = await ListArchivedWorkflows.getWfKey(this.mSession, this.arguments.workflowName, WorkflowConstants.ZOSMF_VERSION);
                     if (getWfKey === null) {
@@ -75,7 +75,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                     throw error;
                 }
                 params.response.data.setObj("Deleted.");
-                params.response.console.log("Workflow deleted.");
+                params.response.console.log("Workflow deleted."); */
                 break;
 
             default:

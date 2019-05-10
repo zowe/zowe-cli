@@ -14,6 +14,7 @@ import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession, ImperativeError } from "@brightside/imperative";
 import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "./WorkflowConstants";
 import { IArchivedWorkflows } from "./doc/IArchivedWorkflows";
+import { IWorkflowInfo } from "./doc/IWorkflowInfo";
 
 /**
  * Get list of archived workflows from registry.
@@ -27,55 +28,28 @@ export class ListArchivedWorkflows {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
      * @param {string} workflowName - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} category - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} system - the URI path with optional parameter for listing filtered workflows.
      * @param {string} owner - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} vendor - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} statusName - the URI path with optional parameter for listing filtered workflows.
      * @returns {string} z/OSMF response object
      * @memberof ListArchivedWorkflows
      */
-    public static async listArchivedWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-                                              workflowName?: string, category?: string, system?: string,
-                                              owner?: string, vendor?: string, statusName?: string ): Promise<IArchivedWorkflows> {
+   public static async listArchivedWorkflows(session: AbstractSession, workflowKey?: string,
+                                             zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        const resourcesQuery: string = ListArchivedWorkflows.getResourcesQuery(zOSMFVersion,
-            [
-                {key: WorkflowConstants.workflowName, value : workflowName ? encodeURIComponent(workflowName) : null},
-                {key: WorkflowConstants.category, value : category},
-                {key: WorkflowConstants.system, value : system},
-                {key: WorkflowConstants.owner, value : owner},
-                {key: WorkflowConstants.vendor, value : vendor},
-                {key: WorkflowConstants.statusName, value : statusName},
-            ]
-        );
+        let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
+       // resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
+       // resourcesQuery += `?${WorkflowConstants.workflowKey}=${workflowKey}`;
+        if (workflowKey){
+            resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}?${WorkflowConstants.workflowKey}=${workflowKey}`;
+        }
+         else  {
+            resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;}
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
     }
-
+}
+/*}
     /**
-     * This operation Builds URI path from provided parameters.
-     * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
-     * @param {string} params - The array with URI path with filters for listing filtered workflows.
-     * @returns {string} URI path for the REST call.
-     * @memberof LisArchivedWorkflows
-     */
-    public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>): string {
-        let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
-        let sign = "?";
-        params.forEach((element) => {
-            if (element.value) {
-                // Validate if parameter value does not contains ? or &
-                WorkflowValidator.validateParameter(element.value, wrongString.message);
-                query += sign + `${element.key}=${element.value}`;
-                sign = "&";
-            }
-        });
-        return query;
-    }
-
-    /**
-     * This operation is used to return an archived worflow-key by given workflow name.
+     * This operation is used to return a worflow-key by given workflow name.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} workflowName - workflow name by which to list workflows
      * @param {string} zOSMFVersion - identifies the version of the provisioning service.
@@ -83,21 +57,22 @@ export class ListArchivedWorkflows {
      * @throws {ImperativeError}
      * @memberof ListArchivedWorkflows
      */
-    public static async getWfKey(session: AbstractSession, workflowName: string,
-                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<string> | null{
+  /* public static async getWfKey(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
+                                workflowKey?: string )// : Promise<string> | null
+                                {
 
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        WorkflowValidator.validateNotEmptyString(workflowName, noWorkflowName.message);
+        WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowName.message);
 
-        const result: IArchivedWorkflows = await this.listArchivedWorkflows(session, zOSMFVersion, workflowName);
+        const result: IArchivedWorkflows = await this.listArchivedWorkflows(session, zOSMFVersion, workflowKey);
+       // return result.archivedWorkflows[0].workflowKey;
 
         // Check if there was more than one workflows found
         if (result.archivedWorkflows.length > 1){
             throw new ImperativeError({
-                msg: `More than one workflows found with name ` + workflowName,
+                msg: `More than one workflows found with name ` + workflowKey,
             });
         }
         return result.archivedWorkflows.length !== 0 ? result.archivedWorkflows[0].workflowKey : null;
-    }
-}
+ }*/

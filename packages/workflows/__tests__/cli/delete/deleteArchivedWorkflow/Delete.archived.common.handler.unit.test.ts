@@ -109,7 +109,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListArchivedWorkflows.getWfKey = jest.fn((session) => {
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return workflowKey;
             });

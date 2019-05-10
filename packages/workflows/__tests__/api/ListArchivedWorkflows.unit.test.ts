@@ -16,18 +16,13 @@ import { WorkflowConstants, wrongString, noSession, noWorkflowName } from "../..
 import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
 import { IArchivedWorkflows } from "../../src/api/doc/IArchivedWorkflows";
 
-const system = "SYS1";
-const category = "Provisioning";
-const statusName = "complete";
-const owner = "owner1";
-const vendor = "IBM";
-const workflowName = "workflow1";
-const badString = "Ba?d";
-const badString1 = "Ba&d";
 
+const workflowKey = "73c81ef4-eccc-47ce-8f08-8a5c97e753f1";
+// const workflowName = "workflow1";
+const badString = "Ba?d";
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
-const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${encodeURIComponent(workflowName)}&category=${category}`
-                                         + `&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
+const PRETEND_URL = START_RESOURCE_QUERY + `?workflowKey=${workflowKey}`;
+// const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${encodeURIComponent(workflowName)}`;
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowsInfo = {
     workflowKey: "73c81ef4-eccc-47ce-8f08-8a5c97e753f1",
@@ -93,8 +88,7 @@ describe("List archived workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, undefined,
-                                                                         workflowName, category, system, owner, vendor, statusName );
+            response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, workflowKey);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -136,8 +130,7 @@ describe("List archived workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, undefined,
-                                                                             badString, badString1, badString, badString, badString);
+                response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, badString);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -173,7 +166,7 @@ describe("Get workflow key by name", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.getWfKey(PRETEND_SESSION, workflowName);
+                response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, workflowKey);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
               error = thrownError;
@@ -194,7 +187,7 @@ describe("Get workflow key by name", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.getWfKey(PRETEND_SESSION, workflowName);
+                response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, workflowKey);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
               error = thrownError;
@@ -209,7 +202,7 @@ describe("Get workflow key by name", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.getWfKey(undefined, workflowName);
+                response = await ListArchivedWorkflows.listArchivedWorkflows(undefined, workflowKey);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
               error = thrownError;
@@ -221,7 +214,7 @@ describe("Get workflow key by name", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.getWfKey(PRETEND_SESSION, undefined);
+                response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, undefined);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
               error = thrownError;
@@ -240,7 +233,7 @@ describe("Get workflow key by name", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.getWfKey(PRETEND_SESSION, "workflow.*");
+                response = await ListArchivedWorkflows.listArchivedWorkflows(PRETEND_SESSION, "73*");
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
               error = thrownError;

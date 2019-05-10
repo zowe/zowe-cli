@@ -103,8 +103,9 @@ describe("List workflows handler", () => {
             expect(ListArchivedWorkflows.listArchivedWorkflows).toHaveBeenCalledWith(
                 fakeSession,
                 undefined,
-                workflowName,
-                owner,);
+         //       workflowName,
+         //       owner,
+         );
         });
     });
 });

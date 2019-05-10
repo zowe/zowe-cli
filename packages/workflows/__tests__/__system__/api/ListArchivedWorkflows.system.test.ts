@@ -118,7 +118,7 @@ describe("List archived workflows", () => {
 
             try {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, undefined,
-                    wfName, category, system, owner, vendor, statusName);
+                    wfKey);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -157,7 +157,7 @@ describe("List archived workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, badString, badString1, badString, badString, badString);
+                response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, badString, badString1);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
