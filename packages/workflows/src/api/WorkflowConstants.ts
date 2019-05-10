@@ -121,7 +121,15 @@ export class WorkflowConstants {
      * @type {string}
      * @memberof WorkflowConstants
      */
+
     public static readonly statusName: string = "statusName";
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly workflowKey: string = "workflowKey";
 
     /**
      * URI base for filter workflows from registry API.
