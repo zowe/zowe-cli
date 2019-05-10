@@ -57,7 +57,6 @@
   },
   "dependencies":   {
     "@brightside/imperative": "^2.4.1",
-    "@types/ssh2": "^0.5.38",
     "js-yaml": "3.13.0",
     "ssh2": "^0.8.2",
     "string-width": "2.1.1"
@@ -70,6 +69,7 @@
     "@types/js-yaml": "^3.11.1",
     "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
+    "@types/ssh2": "^0.5.38",
     "@types/yargs": "8.0.2",
     "chai": "^4.1.2",
     "chai-string": "^1.4.0",
