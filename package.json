@@ -55,9 +55,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
-  "dependencies":   {
-    "@types/minimatch": "^3.0.3",
-    "@types/ssh2": "^0.5.38",
+  "dependencies": {
     "@zowe/imperative": "^4.1.1-alpha.201904251420",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "js-yaml": "3.13.0",
@@ -73,6 +71,8 @@
     "@types/js-yaml": "^3.11.1",
     "@types/lodash": "^4.14.121",
     "@types/node": "8.0.28",
+    "@types/minimatch": "^3.0.3",
+    "@types/ssh2": "^0.5.38",
     "@types/sinon": "2.3.3",
     "@types/yargs": "8.0.2",
     "chai": "^4.1.2",
@@ -151,5 +151,7 @@
       "jest-sonar-reporter"
     ]
   },
-  "jest-junit": {"output": "__tests__/__results__/junit.xml"}
+  "jest-junit": {
+    "output": "__tests__/__results__/junit.xml"
+  }
 }
