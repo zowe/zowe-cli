@@ -51,6 +51,19 @@ export class Utilities {
         return response;
     }
 
+    /**
+     * Changes the tag attributes associate with a file using function chtag
+     *
+     * This function uses a JSON payload to set the  information via zosmf utilities function
+     *
+     * @param {AbstractSession} session     - z/OSMF connection info
+     * @param {Tag}             type - enum of chtag type of Test, Binary or Mixed
+     * @param {string}          codeset - optional string describing codeset e.g. IBM-1047
+     *
+     * @returns {IZosFilesResponse>} Promise that resolves to response object
+     *
+     * @throws {ImperativeError}
+     */
     public static async chtag(session: AbstractSession, ussFileName: string, type: Tag, codeset?: string): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName,ZosFilesMessages.missingUSSFileName.message);
 
