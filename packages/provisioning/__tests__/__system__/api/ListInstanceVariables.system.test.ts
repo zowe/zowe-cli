@@ -16,61 +16,51 @@ import {
     IProvisionedInstance,
     IProvisionedInstanceVariables,
     ListInstanceVariables,
-    ListRegistryInstances,
     noInstanceId,
     noSessionProvisioning,
     nozOSMFVersion,
     ProvisioningConstants
-} from "../../../../provisioning";
-
-const MAX_TIMEOUT_NUMBER: number = 3600000;
+} from "../../../";
+import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
+let templateName: string;
+let instanceID: string;
 
 let REAL_SESSION: Session;
-
-function expectZosmfResponseSucceeded(response: IProvisionedInstanceVariables, error: ImperativeError) {
-    expect(error).not.toBeDefined();
-    expect(response).toBeDefined();
-}
-
-function expectZosmfResponseFailed(response: IProvisionedInstanceVariables, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
 
 describe("ListInstanceVariables (system)", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_list_instance_variables"
+            testName: "provisioning_list_instance_vars"
         });
-
+        templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        let instance: IProvisionedInstance;
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        instanceID = instance["object-id"];
+        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
     });
 
     it("listVariablesCommon should succeed and return a list of variables of the provisioned instance", async () => {
         let response: IProvisionedInstanceVariables;
         let error: ImperativeError;
-        let instance: IProvisionedInstance;
-        let instanceId: string;
         try {
-            instance = (await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["scr-list"][0];
-            instanceId = instance["object-id"];
-            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
+            response = await ListInstanceVariables.listVariablesCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseSucceeded(response, error);
+        ProvisioningTestUtils.expectZosmfResponseSucceeded(response, error);
         expect(response.variables).toBeDefined();
-        expect(response.variables.length).toBeGreaterThan(0);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("listVariablesCommon should fail and throw an error if the session parameter is undefined", async () => {
         let response: IProvisionedInstanceVariables;
@@ -82,7 +72,7 @@ describe("ListInstanceVariables (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("listVariables should fail and throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -95,7 +85,7 @@ describe("ListInstanceVariables (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("listVariables should fail and throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -108,7 +98,7 @@ describe("ListInstanceVariables (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("listVariables should fail and throw an error if the instance id parameter is undefined", async () => {
@@ -121,7 +111,7 @@ describe("ListInstanceVariables (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
     it("listVariables should fail and throw an error if the instance id parameter is an empty string", async () => {
@@ -134,7 +124,7 @@ describe("ListInstanceVariables (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 });
 
