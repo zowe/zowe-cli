@@ -75,4 +75,28 @@ describe("zowe uss issue ssh api call test", () => {
 
     }, TIME_OUT);
 
+    it("should receive return code for valid command with cwd option", async () => {
+        const command = "ls";
+        const cwd =  `${defaultSystem.unix.testdir}`;
+        let stdoutData = "";
+        const COMMAND_RC = 0;
+        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
+            stdoutData += data;
+        });
+        expect(rc).toBe(COMMAND_RC);
+
+    }, TIME_OUT);
+
+    it("should receive return code for invalid command with cwd option", async () => {
+        const command = "invalidCommand";
+        const cwd =  `${defaultSystem.unix.testdir}`;
+        let stdoutData = "";
+        const COMMAND_NOT_FOUND_RC = 127;
+        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
+            stdoutData += data;
+        });
+        expect(rc).toBe(COMMAND_NOT_FOUND_RC);
+
+    }, TIME_OUT);
+
 });
