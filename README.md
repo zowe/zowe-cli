@@ -38,10 +38,9 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 **Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/latest/extend/extend-cli/cli-devTutorials.html). 
 
 ## Build Zowe CLI from Source
-The first time that you download Zowe CLI from the GitHub repository, issue the following commands to install the required Zowe CLI dependencies and several development tools:
+The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm config set @zowe:registry https://api.bintray.com/npm/ca/brightside
 npm install --registry https://registry.npmjs.org
 ```
 

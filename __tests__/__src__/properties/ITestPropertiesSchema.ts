@@ -24,7 +24,6 @@ import { ITestSshSchema } from "./ITestSshSchema";
  * see example_properties.yaml for descriptions and more details
  */
 export interface ITestPropertiesSchema {
-
     zosmf: ITestZosmfSchema;
     datasets: ITestDatasetSchema;
     zosjobs: ITestZosJobsSchema;

@@ -15,13 +15,13 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Session } from "@zowe/imperative";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ListCatalogTemplates } from "../../../../../";
-import { ProvisioningConstants } from "../../../../../index";
+import { ProvisioningTestUtils } from "../../../../__resources__/utils/ProvisioningTestUtils";
+import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
-const TIMEOUT = 30000;
+let TEMPLATE_NAME: string;
 
 describe("provisioning list template-info", () => {
 
@@ -31,55 +31,48 @@ describe("provisioning list template-info", () => {
             testName: "provisioning_list_template-info",
             tempProfileTypes: ["zosmf"]
         });
+        TEMPLATE_NAME = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-    });
-
     it("should display template info", async () => {
-        const template = (await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["psc-list"].pop().name;
         const regex = fs.readFileSync(__dirname + "/__regex__/template_info_response.regex").toString();
-        const response = runCliScript(__dirname + "/__scripts__/templateInfo.sh", TEST_ENVIRONMENT, [template]);
+        const response = runCliScript(__dirname + "/__scripts__/templateInfo.sh", TEST_ENVIRONMENT, [TEMPLATE_NAME]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    }, TIMEOUT);
+    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
     describe("without profiles", () => {
-
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
+        let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_template_info_without_profiles"
+                testName: "provisioning_list_template_info_no_profile"
             });
-
-            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            TEMPLATE_NAME = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.provisioning.templateName;
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should display template info", async () => {
-            const template = (await ListCatalogTemplates.listCatalogCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION))["psc-list"].pop().name;
             const regex = fs.readFileSync(__dirname + "/__regex__/template_info_response.regex").toString();
             const response = runCliScript(__dirname + "/__scripts__/templateInfo_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
-                    template,
-                    DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    TEMPLATE_NAME,
+                    zOSMF.host,
+                    zOSMF.port,
+                    zOSMF.user,
+                    zOSMF.pass
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-        }, TIMEOUT);
+        }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 });
