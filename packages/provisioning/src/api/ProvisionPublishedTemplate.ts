@@ -71,9 +71,11 @@ export class ProvisionPublishedTemplate {
         resourcesQuery += `${ProvisioningConstants.ACTIONS_RESOURCES}/${ProvisioningConstants.RESOURCE_PROVISION_RUN}`;
 
         if (optionalParms) {
-            return ZosmfRestClient.postExpectJSON<IProvisionTemplateResponse>(session, resourcesQuery, [Headers.APPLICATION_JSON], optionalParms);
+            return ZosmfRestClient.postExpectJSON<IProvisionTemplateResponse>(session, resourcesQuery,
+                [Headers.APPLICATION_JSON], optionalParms);
         } else {
-            return ZosmfRestClient.postExpectJSON<IProvisionTemplateResponse>(session, resourcesQuery, [Headers.APPLICATION_JSON]);
+            return ZosmfRestClient.postExpectJSON<IProvisionTemplateResponse>(session, resourcesQuery,
+                [Headers.APPLICATION_JSON]);
         }
     }
 

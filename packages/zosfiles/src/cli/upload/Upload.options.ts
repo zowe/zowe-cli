@@ -90,6 +90,18 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         type: "string",
         conflictsWith: ["binary-files"]
     },
+
+    /**
+     * The attributes option
+     * @type {ICommandOptionDefinition}
+     */
+    attributes: {
+        name: "attributes",
+        aliases: ["attrs"],
+        description: strings.ATTRIBUTES,
+        type: "string",
+        conflictsWith: ["ascii-files, binary-files"]
+    },
     /**
      *  The maximum concurrent requests for upload
      * @type {ICommandOptionDefinition}

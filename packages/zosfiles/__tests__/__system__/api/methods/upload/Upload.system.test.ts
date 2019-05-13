@@ -25,7 +25,7 @@ let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
-const inputfile = ".\\packages\\zosfiles\\__tests__\\__system__\\api\\methods\\upload\\testfiles\\upload.txt";
+const inputfile = "./packages/zosfiles/__tests__/__system__/api/methods/upload/testfiles/upload.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
 
 const uploadOptions: IUploadOptions = {} as any;
