@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./Utilities";
 export * from "./doc/Tag";
+export * from "./Utilities";
