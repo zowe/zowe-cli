@@ -14,6 +14,7 @@ import { ListArchivedWorkflows } from "../../../api/ListArchivedWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { IWorkflowsInfo } from "../../../api/doc/IWorkflowsInfo";
 import { IArchivedWorkflows } from "../../../api/doc/IArchivedWorkflows";
+import { IActiveWorkflows } from "../../../api/doc/IActiveWorkflows";
 
 /**
  * Common Handler for listing archived workflows for a system.
@@ -36,7 +37,7 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
      */
     public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
         this.arguments = commandParameters.arguments;
-        let response: IArchivedWorkflows;
+        let response: IActiveWorkflows;
         let error;
         const width = 42;
         try {
@@ -49,16 +50,16 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
 
         commandParameters.response.data.setObj(response);
 
-        response.archivedWorkflows.forEach((workflow: IWorkflowsInfo) => {
-            workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width)
+        response.workflows.forEach((workflow: IWorkflowsInfo) => {
+            workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
             workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
         });
 
         // Format & print the response
-        if (response.archivedWorkflows.length) {
+        if (response.workflows.length) {
             commandParameters.response.format.output({
                 fields: ["workflowName", "workflowKey"],
-                output: response.archivedWorkflows,
+                output: response.workflows,
                 format: "table",
                 header: true,
             });
