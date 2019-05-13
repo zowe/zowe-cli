@@ -20,9 +20,9 @@ export const ListArchivedWorkflowsOptions: { [key: string]: ICommandOptionDefini
      * The domain that is associated with the workflow that was performed.
      * @type {ICommandOptionDefinition}
      */
-    workflowName: {
-        name: "workflow-name",
-        aliases: ["wn"],
+    workflowKey: {
+        name: "workflow-key",
+        aliases: ["wk"],
         description: "Filter by workflow name. For wildcard use .*",
         type: "string",
         required: false

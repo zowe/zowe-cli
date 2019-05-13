@@ -33,10 +33,7 @@ export const ArchivedWorkflows: ICommandDefinition = {
         optional: ["zosmf"],
     },
     options: ([
-        ListArchivedWorkflowsOptions.workflowName,
-        ListArchivedWorkflowsOptions.owner,
-        ListArchivedWorkflowsOptions.asc,
-        ListArchivedWorkflowsOptions.desc,
+        ListArchivedWorkflowsOptions.workflowKey,
     ]),
     outputFormatOptions: true,
     examples: [
