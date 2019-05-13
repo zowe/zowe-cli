@@ -41,7 +41,6 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 The first time that you download Zowe CLI from the GitHub repository, issue the following commands to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm config set @zowe:registry https://api.bintray.com/npm/ca/brightside
 npm install --registry https://registry.npmjs.org
 ```
 
