@@ -92,7 +92,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
         // Imperative.console.info("Invalid directory Command:" + commandName +"--cwd /" +cwd);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_with_cwd.sh", TEST_ENVIRONMENT, [commandName, "/" + cwd]);
 
-        checkResponse(response, 0);
+        checkResponse(response, 1);
         expect(response.stdout.toString()).toContain("EDC5129I No such file or directory");
     });
 });
