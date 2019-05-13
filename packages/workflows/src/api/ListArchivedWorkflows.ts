@@ -21,12 +21,12 @@ export class ListArchivedWorkflows {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
-        if (workflowKey){
+    /*    if (workflowKey){
             resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}/${workflowKey}`;
         }
-         else  {
-            resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
-               }
+         else  {*/
+        resourcesQuery += `${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
+           //    }
         return ZosmfRestClient.getExpectJSON (session, resourcesQuery);
     }
 }

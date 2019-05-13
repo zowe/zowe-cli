@@ -50,19 +50,14 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
         commandParameters.response.data.setObj(response);
 
         response.archivedWorkflows.forEach((workflow: IWorkflowsInfo) => {
-        //    workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
-        /*   if(workflow) {
-                workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
-            } else {
-                console.error("Counting problems");
-            }*/
-          workflow.workflowDescription = TextUtils.wordWrap(`${workflow.workflowDescription}`, width);
+            workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width)
+            workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
         });
 
         // Format & print the response
         if (response.archivedWorkflows.length) {
             commandParameters.response.format.output({
-                fields: ["workflowName", "workflowKey", "workflowDescription"],
+                fields: ["workflowName", "workflowKey"],
                 output: response.archivedWorkflows,
                 format: "table",
                 header: true,
