@@ -59,13 +59,13 @@
     "typedocSpecifySrc": "npm install --no-save typedoc && typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
-  "dependencies":   {
+  "dependencies": {
     "@brightside/imperative": "^2.4.2",
     "@types/ssh2": "^0.5.38",
     "js-yaml": "3.13.0",
-    "ssh2": "^0.8.2",
     "minimatch": "^3.0.4",
-    "string-width": "2.1.1"    
+    "ssh2": "^0.8.2",
+    "string-width": "2.1.1"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
