@@ -9,113 +9,47 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { Imperative, ImperativeError, Session } from "@brightside/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
-    IPerformActionResponse,
-    IProvisionedInstances,
-    ListRegistryInstances,
     noInstanceId,
     noSessionProvisioning,
     nozOSMFVersion,
     PerformAction,
     ProvisioningConstants,
-    ProvisionPublishedTemplate
-} from "../../../../provisioning";
-
-
-const MAX_TIMEOUT_NUMBER: number = 3600000;
-const SLEEP_TIME: number = 10000;
+} from "../../../";
+import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
-let defaultSystem: ITestPropertiesSchema;
-
 let templateName: string;
-let instanceName: string;
-
+let instanceID: string;
 let REAL_SESSION: Session;
 
-
-function expectZosmfResponseFailed(response: IPerformActionResponse, error: ImperativeError, msg: string) {
-    expect(response).not.toBeDefined();
-    expect(error).toBeDefined();
-    expect(error.details.msg).toContain(msg);
-}
-
-async function findInstanceId(state: string) {
-    let instanceId: string;
-    let instances: IProvisionedInstances;
-    let error: ImperativeError;
-    try {
-        instances = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION);
-        for (const instance of instances["scr-list"]) {
-            if (instance["external-name"].includes(instanceName) && instance.state === state) {
-                instanceId = instance["object-id"];
-            }
-        }
-        return instanceId;
-    } catch (thrownError) {
-        error = thrownError;
-        Imperative.console.info(`Error ${error}`);
-    }
-}
-
-function sleep(time: number) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
-
 describe("DeleteInstance (system)", () => {
-    let instanceId: string;
     beforeAll(async () => {
+        let instance;
+
         testEnvironment = await TestEnvironment.setUp({
-            testName: "provisioning_perform_action"
+            testName: "provisioning_delete_instance"
         });
-
-        defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
-        instanceName = testEnvironment.systemTestProperties.provisioning.instanceName;
 
-        let error: ImperativeError;
-        try {
-            await sleep(SLEEP_TIME);
-            instanceId = await findInstanceId("deprovisioned");
-            Imperative.console.info(`Instance id of deprovisioned instance ${instanceId}`);
-            if (isNullOrUndefined(instanceId)) {
-                instanceId = await findInstanceId("provisioned");
-                if (isNullOrUndefined(instanceId)) {
-                    await ProvisionPublishedTemplate.provisionTemplateCommon(
-                        REAL_SESSION,
-                        ProvisioningConstants.ZOSMF_VERSION,
-                        templateName,
-                        defaultSystem.tso.account,
-                    );
-                    while (isNullOrUndefined(instanceId)) {
-                        await sleep(SLEEP_TIME);
-                        instanceId = await findInstanceId("provisioned");
-                    }
-                    Imperative.console.info(`Instance id of provisioned instance ${instanceId}`);
-                }
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
+        instanceID = instance["object-id"];
 
-                await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                    instanceId, "deprovision");
-                while (isNullOrUndefined(instanceId)) {
-                    await sleep(SLEEP_TIME);
-                    instanceId = await findInstanceId("deprovisioned");
-                }
-                Imperative.console.info(`Instance id of deprovisioned instance ${instanceId}`);
-            }
-
-        } catch (thrownError) {
-            error = thrownError;
-            Imperative.console.info(`Error ${error}`);
-        }
-    }, MAX_TIMEOUT_NUMBER);
+        // Deprovision the instance
+        instance = await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+            instanceID, ProvisioningTestUtils.ACTION_DEPROV);
+        Imperative.console.info(`Deprovision of the instance started, action-id: ${instance["action-id"]}`);
+        // Wait until instance state is 'deprovisioned'
+        instance = await ProvisioningTestUtils.waitInstanceState(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+            instanceID, ProvisioningTestUtils.STATE_DEPROV);
+        Imperative.console.info(`Deprovisioned instance: ${instance["external-name"]}`);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
@@ -126,8 +60,8 @@ describe("DeleteInstance (system)", () => {
         let response: any;
         let error: ImperativeError;
         try {
-            await sleep(SLEEP_TIME);
-            response = await DeleteInstance.deleteDeprovisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
+            response = await DeleteInstance.deleteDeprovisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+            Imperative.console.info(`Instance ${instanceID} was removed`);
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
@@ -136,7 +70,7 @@ describe("DeleteInstance (system)", () => {
         expect(response).toBeDefined();
         expect(response).toEqual("");
 
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should throw an error if the session parameter is undefined", async () => {
         let error: ImperativeError;
@@ -148,7 +82,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noSessionProvisioning.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is undefined", async () => {
@@ -161,7 +95,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should throw an error if the z/OSMF version parameter is an empty string", async () => {
@@ -174,7 +108,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
     });
 
     it("should throw an error if the instance-id parameter is undefined", async () => {
@@ -187,7 +121,7 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 
     it("should throw an error if the instance-id parameter is an empty string", async () => {
@@ -200,6 +134,6 @@ describe("DeleteInstance (system)", () => {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
         }
-        expectZosmfResponseFailed(response, error, noInstanceId.message);
+        ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noInstanceId.message);
     });
 });

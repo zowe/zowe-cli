@@ -9,13 +9,13 @@
 *
 */
 
-import * as fs from "fs";
 import { Imperative, Session } from "@brightside/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ProvisioningConstants } from "../../../../";
+import * as fs from "fs";
 import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
-import { ProvisioningConstants } from "../../../..";
 import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 // Test Environment populated in the beforeAll();
@@ -23,74 +23,77 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
 let templateName: string;
+let instance;
 let instanceID: string;
+let instanceName: string;
 
-describe("provisioning provision template", () => {
+describe("provisioning delete instance", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_prov_template",
+            testName: "provisioning_perform_action",
             tempProfileTypes: ["zosmf", "tso"]
         });
-
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-    });
 
-    it("should successfully issue the command", async () => {
-        const regex = fs.readFileSync(__dirname + "/../provision/__regex__/provision_template_response.regex").toString();
-        const response = runCliScript(__dirname + "/__scripts__/template/provision_template_success.sh", TEST_ENVIRONMENT,
-            [templateName]);
+        // Provision an instance to use it later
+        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        instanceID = instance["object-id"];
+        instanceName = instance["external-name"];
+        Imperative.console.info(`Provisioned instance: ${instanceName}`);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
-        // Get instanceID later delete that instance
-        instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
-        Imperative.console.info(`Instance ID: ${instanceID}`);
-        // Delete the provisioned instance
-        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-
+    it("should successfully perform checkStatus action", async () => {
+        const regex = fs.readFileSync(__dirname + "/__regex__/perform_action_response.regex").toString();
+        const response = runCliScript(__dirname + "/__scripts__/action/perform_checkStatus_action_success.sh", TEST_ENVIRONMENT,
+            [instanceName]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
+    }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
 
-    // Create a separate test environment for no profiles
+
     describe("without profiles", () => {
         let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_prov_template_no_profile"
+                testName: "provisioning_perform_action_no_profile"
             });
             zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
-        it("should successfully issue the command", async () => {
-            const regex = fs.readFileSync(__dirname + "/../provision/__regex__/provision_template_response.regex").toString();
-            const response = runCliScript(__dirname + "/__scripts__/template/provision_template_success_fully_qualified.sh",
-                TEST_ENVIRONMENT_NO_PROF,
-                [
-                    templateName,
+        // system test for perform action
+        it("should successfully perform deprovision action", async () => {
+            const regex = fs.readFileSync(__dirname + "/__regex__/perform_action_response.regex").toString();
+            const response = runCliScript(__dirname + "/__scripts__/action/perform_deprovision_fully_qualified.sh",
+                TEST_ENVIRONMENT, [
+                    instanceName,
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
                     zOSMF.pass
                 ]);
-
-            // Get instanceID later delete that instance
-            instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
-            Imperative.console.info(`Instance ID: ${instanceID}`);
-            // Delete the provisioned instance
-            await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
-
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-        }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
+        }, ProvisioningTestUtils.MAX_CLI_TIMEOUT);
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
-    });
+
+        // Wait until instance state is 'deprovisioned'
+        instance = await ProvisioningTestUtils.waitInstanceState(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+            instanceID, ProvisioningTestUtils.STATE_DEPROV);
+        instanceName = instance["external-name"];
+        Imperative.console.info(`Deprovisioned instance: ${instanceName}`);
+
+        // Delete deprovisioned instance
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 });
+
