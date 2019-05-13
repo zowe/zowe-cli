@@ -37,7 +37,7 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
      */
     public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
         this.arguments = commandParameters.arguments;
-        let response: IActiveWorkflows;
+        let response: IArchivedWorkflows;
         let error;
         const width = 42;
         try {
@@ -50,16 +50,16 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
 
         commandParameters.response.data.setObj(response);
 
-        response.workflows.forEach((workflow: IWorkflowsInfo) => {
-            workflow.workflowName = TextUtils.wordWrap(`${workflow.workflowName}`, width);
-            workflow.workflowKey = TextUtils.wordWrap(`${workflow.workflowKey}`, width);
+        response.archivedWorkflows.forEach((workflowKey: IWorkflowsInfo) => {
+         //   workflowKey.workflowName = TextUtils.wordWrap(`${workflowKey.workflowName}`, width);
+            workflowKey.workflowKey = TextUtils.wordWrap(`${workflowKey.workflowKey}`, width);
         });
 
         // Format & print the response
-        if (response.workflows.length) {
+        if (response.archivedWorkflows.length) {
             commandParameters.response.format.output({
                 fields: ["workflowName", "workflowKey"],
-                output: response.workflows,
+                output: response.archivedWorkflows,
                 format: "table",
                 header: true,
             });
