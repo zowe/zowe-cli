@@ -70,7 +70,6 @@ export class Utilities {
         if (type === Tag.BINARY) {
             ImperativeExpect.toBeEqual(codeset,undefined,"A codeset cannot be specified for a binary file.");
         }
-
         const payload = { request: "chtag", action: "set", type: type.valueOf()} as any;
         if (codeset) {
             payload.codeset = codeset;
