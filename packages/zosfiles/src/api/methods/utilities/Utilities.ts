@@ -10,7 +10,7 @@
 */
 
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { AbstractSession, ImperativeExpect, Headers } from "@brightside/imperative";
+import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
