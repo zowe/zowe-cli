@@ -23,31 +23,14 @@ import { join } from "path";
 export const ArchivedWorkflows: ICommandDefinition = {
     name: "archived-workflows",
     aliases: ["arw"],
-    summary: "List the archived workflows for a system.",
-    description: "List the archived workflows for a system.\n" +
-    "Multiple filters can be used together.\n" +
-    "Omitting all options will list all archived workflows on the sysplex",
+    summary: "List all archived workflows for a system.",
+    description: "List the archived workflows for a system.",
     type: "command",
     handler: join(__dirname, "ArchivedWorkflows.handler"),
     profile: {
         optional: ["zosmf"],
     },
     options: ([
-        ListArchivedWorkflowsOptions.workflowKey,
-    ]),
+      ]),
     outputFormatOptions: true,
-    examples: [
-        {
-            description: "List the archived workflow with name \"testworkflow\"",
-            options: "--wn \"testworkflow\""
-        },
-        {
-            description: "List multiple archived workflows on the entire syspex with names containing \"workflow\" from oldest to the newest",
-            options: "--wn \".*workflow.*\" --asc"
-        },
-        {
-            description: "List multiple archived workflows on system with names beginning with \"test\" that have owner \"owner1\"",
-            options: "--wn \"test.*\" --ow \"owner1\""
-        }
-    ],
 };

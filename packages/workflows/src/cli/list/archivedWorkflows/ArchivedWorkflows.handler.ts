@@ -9,12 +9,12 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils, ImperativeError } from "@brightside/imperative";
 import { ListArchivedWorkflows } from "../../../api/ListArchivedWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { IWorkflowsInfo } from "../../../api/doc/IWorkflowsInfo";
 import { IArchivedWorkflows } from "../../../api/doc/IArchivedWorkflows";
-import { IActiveWorkflows } from "../../../api/doc/IActiveWorkflows";
+
 
 /**
  * Common Handler for listing archived workflows for a system.
@@ -38,27 +38,28 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
     public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
         this.arguments = commandParameters.arguments;
         let response: IArchivedWorkflows;
-        let error;
         const width = 42;
+        let error: any;
+
         try {
             response = await ListArchivedWorkflows.listArchivedWorkflows(
-                this.mSession, this.arguments.workflowKey, undefined);
+                this.mSession, undefined);
         } catch (err) {
             error = "List workflow(s) " + err;
             throw error;
         }
-
         commandParameters.response.data.setObj(response);
 
         response.archivedWorkflows.forEach((workflowKey: IWorkflowsInfo) => {
-         //   workflowKey.workflowName = TextUtils.wordWrap(`${workflowKey.workflowName}`, width);
+            workflowKey.workflowName = TextUtils.wordWrap(`${workflowKey.workflowName}`, width);
             workflowKey.workflowKey = TextUtils.wordWrap(`${workflowKey.workflowKey}`, width);
+            workflowKey.workflowDescription = TextUtils.wordWrap(`${workflowKey.workflowDescription}`, width);
         });
 
         // Format & print the response
         if (response.archivedWorkflows.length) {
             commandParameters.response.format.output({
-                fields: ["workflowName", "workflowKey"],
+                fields: ["workflowName", "workflowKey", "workflowDescription"],
                 output: response.archivedWorkflows,
                 format: "table",
                 header: true,

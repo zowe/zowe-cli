@@ -97,7 +97,7 @@ describe("List archived workflow cli system tests", () => {
              // Archive workflow
             await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
         });
-        it("Should list workflows in zOSMF by name.", async () => {
+        it("Should list workflows in zOSMF.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
             testEnvironment, [wfName]);
             expect(response.stderr.toString()).toBe("");
@@ -106,11 +106,11 @@ describe("List archived workflow cli system tests", () => {
         });
     });
     describe("Failure Scenarios", () => {
-        it("Should throw error if no workflow with this wf name was found", async () => {
+        it("Should throw error if no workflow was found", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
             testEnvironment, [wfName + fakeName]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("No workflows match the provided workflow name");
+            expect(response.stderr.toString()).toContain("No workflow is archived");
         });
     });
 });

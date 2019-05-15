@@ -13,12 +13,7 @@ import { ListArchivedWorkflows } from "../../../../src/api/ListArchivedWorkflows
 
 describe("List workflows handler", () => {
     describe("process method", () => {
-        const workflowName = "fakeWorkflow";
-        const category = "Category";
-        const system = "TESTSYS";
-        const owner = "FAKEUID";
-        const vendor = "IBM";
-        const statusName = "canceled";
+      //  const workflowName = "fakeWorkflow";
         it("should list all archived workflows", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/list/archivedWorkflows/ArchivedWorkflows.handler");
@@ -40,8 +35,7 @@ describe("List workflows handler", () => {
                     commandResponse: "Some list of workflow(s)",
                     workflows: [
                         {
-                            owner: `${owner}`,
-                            workflowName: `${workflowName}`,
+                            workflowName: "fakeworkflow",
                             workflowDescription: "Test wf",
                             workflowKey: "Some-key-here"
                         }
@@ -67,8 +61,6 @@ describe("List workflows handler", () => {
                     arguments: {
                         $0: "zowe",
                         _: ["zos-workflows", "list", "archived-workflows" ],
-                        workflowName,
-                        owner,
                     },
                     response: {
                         format: {
@@ -103,8 +95,6 @@ describe("List workflows handler", () => {
             expect(ListArchivedWorkflows.listArchivedWorkflows).toHaveBeenCalledWith(
                 fakeSession,
                 undefined,
-         //       workflowName,
-         //       owner,
          );
         });
     });
