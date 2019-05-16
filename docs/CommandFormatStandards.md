@@ -6,20 +6,45 @@ This article is a living summary of conventions and best practices for command a
 - [Syntax/Naming Conventions](#syntax-naming-conventions)
 
 ## Command Structure
-Most `zowe` commands adhere to the following consistent structure:
+Most `zowe` commands adhere to the full structure. An abbreviated structure is explained following. 
 
-# `zowe [group] [action] [object] [options]`
+#### Form: `zowe [group] [action] [object] [options]`
+#### Example: `zowe zos-files list data-set 'mfuser.public.*' --attributes --max-length 5`
 
 Segment | Definition Type | Description
 --- | --- | ---
 `zowe` | `root` - Specified as the executable "bin" name in package.json | The primary or root command for the Zowe CLI.
-`[group]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The `[group]` defines a category of related commands (e.g. `zos-files`). Groups contain a set of `[actions]`.
-`[action]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The `[action]` is the command verb (e.g. `list`).
-`[object]` | `command` - Specified on Imperative `ICommandDefinition` "type" property | The `[object]` is the entity on which the `[action]` is being performed (e.g. `data-set`). 
-`[options]` | `options` - Specified on Imperative `ICommandDefinition` "options" & "positionals" properties | The `[options]` are the set of flags/switches & positional parameters for the command.
+`[group]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The group defines a category of related commands (e.g. `zos-files` for access datasets). Each group contains a set of `[actions]`.
+`[action]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The action is a usually a verb (e.g. `list`) that describes the operation or what it is meant to do. 
+`[object]` | `command` - Specified on Imperative `ICommandDefinition` "type" property | The object is usually a noun (e.g. `data-set`) that idenifies the entity on which the `[action]` is being performed. 
+`[options]` | `options` - Specified on Imperative `ICommandDefinition` "options" & "positionals" properties | Options are additional properties that modify the command (e.g., `max-length` to limit the number of results).  Options are also known as paramters, flags, switches, properites, and arguments. 
+
+### Additional Details about Options
+- Most options include a name/option and a value/argument (e.g., --max-length 5). 
+- Positional arguments are a special kind of option. They are values/arguments entered that don't have an explicit option name and are usually enteried immediately after the `object` (e.g., the file name in the list dataset command). These are usually required.
+- Required options are listed under a required options section. Other options are just listed under a options section. 
+- The online help may include other categories of options for connecting to a service like zOSMF (e.g, `password`), setting profiles, and global options (e.g., `response-format-json`)
+
+* 
+shortcuts
+quotes
+
+### Abbreviated Command Structure 
+Some commands have a shorter syntax. The authors of a command may have decided that a `object` isn't necessary. An example of this is the commands in the `plugins` group. 
+#### Form: `zowe [group] [action] [options]`
+#### Example: `zowe plugins list`
+#### Example: `zowe plugins update my-plugin`
+There is a tension here between consistency and applicablity. In the case of plugins, the syntax could have included a `obect` named plugin but that would be awkward (e.g., zowe plugins list plugins). We advise that teams use the full syntax in most cases but where it is better to have an abberviated syntax, apply to that to all commands in a `group` so that there is still a measure of consistency.
+
+### The Lost Group Problem for Command Structure
+When teams build plugins, the plugin name ends up as the ``
 
 **Example Command:**
-`zowe zos-files download data-set "HLQ.LLQ"`
+
+
+shortcuts
+
+
 
 ## Command Definition Documents
 
