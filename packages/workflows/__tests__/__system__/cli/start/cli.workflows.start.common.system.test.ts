@@ -10,11 +10,11 @@
 */
 
 import { ZosmfRestClient } from "../../../../../rest";
-import { Session } from "@zowe/imperative";
+import { Session, Imperative } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { CreateWorkflow, PropertiesWorkflow } from "../../../..";
+import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow } from "../../../..";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
@@ -93,6 +93,13 @@ describe("Create workflow cli system tests", () => {
             beforeAll(async () => {
                 const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
                 wfKey = response.workflowKey;
+            });
+            afterAll(async () => {
+                try {
+                    await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+                } catch (err) {
+                    Imperative.console.info(err);
+                }
             });
             it("Should start full workflow using wf key in zOSMF.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_full.sh",
