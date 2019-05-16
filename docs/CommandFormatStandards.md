@@ -6,14 +6,14 @@ This article is a living summary of conventions and best practices for command a
 - [Syntax/Naming Conventions](#syntax-naming-conventions)
 
 ## Command Structure
-All `zowe` commands adhere to the following consistent structure:
+Most `zowe` commands adhere to the following consistent structure:
 
-### `zowe [group] [action] [object] [options]`
+# `zowe [group] [action] [object] [options]`
 
 Segment | Definition Type | Description
 --- | --- | ---
-`zowe` | `root` - Specified as the "bin" name in package.json | The primary/root command for the Zowe CLI.
-`[group]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The `[group]` defines a set of logically related commands (e.g. `zos-files`). Groups contain a set of `[actions]`.
+`zowe` | `root` - Specified as the executable "bin" name in package.json | The primary or root command for the Zowe CLI.
+`[group]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The `[group]` defines a category of related commands (e.g. `zos-files`). Groups contain a set of `[actions]`.
 `[action]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The `[action]` is the command verb (e.g. `list`).
 `[object]` | `command` - Specified on Imperative `ICommandDefinition` "type" property | The `[object]` is the entity on which the `[action]` is being performed (e.g. `data-set`). 
 `[options]` | `options` - Specified on Imperative `ICommandDefinition` "options" & "positionals" properties | The `[options]` are the set of flags/switches & positional parameters for the command.
