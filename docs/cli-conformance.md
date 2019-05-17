@@ -11,7 +11,6 @@ A plug-in must meet the following requirements to be conformant under the Zowe C
 - The plug-in must be support user profiles that let users store mainframe connection information.
 - The plug-in must introduce a unique command group name that does not conflict with existing conformant plug-in group names. Plug-in names will be evaluated on a first-come, first-serve basis. 
 - Plug-in users must be able to override profiles using options on the command line and/or environment variables. 
-- The plug-in command/help syntax must adhere to the [Command Format Standards](https://github.com/zowe/zowe-cli/blob/master/docs/CommandFormatStandards.md).
 - All commands in the plug-in must only write to `stdout` or `stderr` via Imperative Framework's `response.console` APIs. This ensures that commands function with the `--response-format-json` flag.
 
 If you are new to the project, get started creating your plug-in by cloning our sample plug-in. See [Zowe CLI Development Tutorials](https://zowe.github.io/docs-site/latest/extend/extend-cli/cli-devTutorials.html#getting-started) to learn more. 
