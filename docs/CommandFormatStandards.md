@@ -80,7 +80,8 @@ There is a tension here between consistency and ease of understanding. In the ca
 ## The Lost Group Problem for Command Structure
 When teams build plug-ins, the plug-in name ends up as the `group` name (e.g., zowe cics). This means that your plugin can't have groups or categories of commands. A workaround is to append a group name to the `action` name (e.g., catetory-action and jobs-list). This may or may not be desirable. To avoid actions with compound names, teams can create seperate plugins. 
 
-
+## Related Documents
+[Zowe CLI Conformance Checklist](https://github.com/zowe/zowe-cli/blob/conformance/docs/cli-conformance.md)
 
 
 
