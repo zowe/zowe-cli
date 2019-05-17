@@ -116,7 +116,7 @@ describe("Upload dir-to-uss handler", () => {
             });
         });
         it("should pass attributes when a .zosattributes file is present", async () => {
-            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs,"existsSync").mockReturnValueOnce(true);
             const attributesContents = "foo.stuff -";
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(Buffer.from(attributesContents));
 
@@ -126,7 +126,7 @@ describe("Upload dir-to-uss handler", () => {
         });
 
         it("should give an error if --attributes specifies a non-existent file", async () => {
-            jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            jest.spyOn(fs,"existsSync").mockReturnValueOnce(false);
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "non-existent-file";
 
@@ -134,8 +134,8 @@ describe("Upload dir-to-uss handler", () => {
         });
 
         it("should give an error if file specified by --attributes cannot be read", async () => {
-            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
+            jest.spyOn(fs,"existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs,"readFileSync").mockImplementationOnce(() => {
                 throw new Error("File not found");
             });
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
