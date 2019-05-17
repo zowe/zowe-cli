@@ -24,8 +24,8 @@ You create "Definition Documents" to define the syntax/help text for commands: F
 
 ## Naming
 For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the following naming guiedelines should be followed. 
-- Aim for consistency between commands and across groups and plug-ins. Look at what others have done and consider following existing conventions. Re-inventing the wheel often makes things harder for users to learn and remember syntax. 
-- Use lower case for to make it easier to type commands. The CLI is case sensitive and mixed case introduces usability problems with typo errors.  
+- Aim for consistency between commands and across groups and plug-ins. Look at what others have done and consider following existing conventions. Re-inventing the wheel often makes things harder for users to learn and remember syntax. An example is the use of the term 'list' for outputing information. We've seen variations such as print, echo, and view but we've generally settled on 'list.' 
+- Use lower case for to make it easier to type commands. The CLI is case sensitive and mixed case introduces usability problems with typo errors. An exception to this is dataset names are which are not case-sensitive.
 - Segment names should be descriptive so that the user has a clear idea of what is meant.
 - `[actions]` are verbs. (e.g. "set", "run, "list", etc.)
 - `[objects]` are nouns. (e.g. "data-set", "command", etc.)
