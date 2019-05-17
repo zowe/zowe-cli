@@ -10,20 +10,19 @@ This article is a living summary of conventions and best practices for command a
 - [Abbreviated Command Structure](#abbreviated-command-structure)
 - [The Lost Group Problem for Command Structure](#the-lost-group-problem-for-command-structure)
 
-
 ## Command Structure
-Most `zowe` commands adhere to the full structure. An abbreviated structure is explained following. 
+Most `zowe` commands should adhere to the following complete structure. There are some exceptions described later in [Abbreviated Command Structure](#abbreviated-command-structure).
 
-#### Form: `zowe [group] [action] [object] [options]`
+#### Form: `zowe [group] [action] [object] <positional argument> [options...]`
 #### Example: `zowe zos-files list data-set 'mfuser.public.*' --attributes --max-length 5`
 
 Segment | Definition Type | Description
 --- | --- | ---
 `zowe` | `root` - Specified as the executable "bin" name in package.json | The primary or root command for the Zowe CLI.
 `[group]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The group defines a category of related commands (e.g. `zos-files` for access datasets). Each group contains a set of `[actions]`.
-`[action]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The action is a usually a verb (e.g. `list`) that describes the operation or what it is meant to do. 
+`[action]` | `group` - Specified on Imperative `ICommandDefinition` "type" property | The action is a usually a verb (e.g. `list`) that describes the operation or what it is meant to do.
 `[object]` | `command` - Specified on Imperative `ICommandDefinition` "type" property | The object is usually a noun (e.g. `data-set`) that idenifies the entity on which the `[action]` is being performed. 
-`[options]` | `options` - Specified on Imperative `ICommandDefinition` "options" & "positionals" properties | Options are additional properties that modify the command (e.g., `max-length` to limit the number of results).  Options are also known as paramters, flags, switches, properites, and arguments. 
+`[options]` | `options` - Specified on Imperative `ICommandDefinition` "options" & "positionals" properties | Options are additional properties that modify the command (e.g., `max-length` to limit the number of results). Options are also known flags or arguments.
 
 ## Command Definition Documents
 You create "Definition Documents" to define the syntax/help text for commands: For detailed information about defining & creating commands see the [Imperative CLI Framework wiki](https://github.com/zowe/imperative/wiki). For the definition interface, see[`ICommandDefinition` interface within the Imperative CLI Framework](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/ICommandDefinition.ts).
@@ -36,10 +35,11 @@ For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the f
 - `[actions]` are verbs. (e.g. "set", "run, "list", etc.)
 - `[objects]` are nouns. (e.g. "data-set", "command", etc.)
 - Hyphenated names should have an alias that is the first letter of each hyphenated word. (e.g. `access-method-services` aliased with `ams`)
-    - Note, you should not hyphenate the name of a positional parameter due to limitations of Impretive framework. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts). 
-- Each segment should have an alias or shortcut (e.g., `data-set | ds`). The alias should be short because the reason for having it is to simplify the typing of commands. Ideally it would be somewhat semantic. Best NOT to choose a "random" letter (i.e `access-method-services` aliased by `z`).
+    - Note, you should not hyphenate the name of a positional argument due to limitations of Imperetive framework. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts). 
+- Each segment should have an alias or shortcut (e.g., `data-set | ds`). The alias should be short because the reason for having it is to simplify the typing of commands. Ideally it would be somewhat semantic. Best NOT to choose a "random" letter (i.e `access-method-services` aliased by `z`). 
     - Single letter aliases are typed with a single dash (e.g., -a) on the command line while multi-letter aliases require two dashes (e.g., --ac). So, single letter aliases are attractive because they are the easiest to type. 
     - We have cases of three names (e.g., password includes --password  | --pass | --pw). This example came about due to a desire to have compatibily across the core CLI and various plugins and the desire to use OS Environmental Variables to assign passwords across services such zOSMF. 
+
 
 ## Descriptions
 For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the following description guidelines should be followed. 
