@@ -20,21 +20,51 @@ Segment | Definition Type | Description
 `[options]` | `options` - Specified on Imperative `ICommandDefinition` "options" & "positionals" properties | Options are additional properties that modify the command (e.g., `max-length` to limit the number of results).  Options are also known as paramters, flags, switches, properites, and arguments. 
 
 ## Command Definition Documents
+You create "Definition Documents" to define the syntax/help text for commands: For detailed information about defining & creating commands see the [Imperative CLI Framework wiki](https://github.com/zowe/imperative/wiki). For the definition interface, see[`ICommandDefinition` interface within the Imperative CLI Framework](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/ICommandDefinition.ts).
 
-You create "Definition Documents" to define the syntax/help text for commands:
+## Naming
+For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the following naming guiedelines should be followed. 
+- Aim for consistency between commands and across groups and plug-ins. Look at what others have done and consider following existing conventions. Re-inventing the wheel often makes things harder for users to learn and remember syntax. 
+- Use lower case for to make it easier to type commands. The CLI is case sensitive and mixed case introduces usability problems with typo errors.  
+- Segment names should be descriptive so that the user has a clear idea of what is meant.
+- `[actions]` are verbs. (e.g. "set", "run, "list", etc.)
+- `[objects]` are nouns. (e.g. "data-set", "command", etc.)
+- Hyphenated names should have an alias that is the first letter of each hyphenated word. (e.g. `access-method-services` aliased with `ams`)
+- Each segment should have an alias or shortcut (e.g., `data-set | ds`). The alias should be short because the reason for having it is to simplify the typing of commands. Ideally it would be somewhat semantic. Best NOT to choose a "random" letter (i.e `access-method-services` aliased by `z`).
+    - Single letter aliases are typed with a single dash (e.g., -a) on the command line while multi-letter aliases require two dashes (e.g., --ac). So, single letter aliases are attractive because they are the easiest to type. 
+    - We have cases of three names (e.g., password includes --password  | --pass | --pw). This example came about due to a desire to have compatibily across the core CLI and various plugins and the desire to use OS Environmental Variables to assign passwords across services such zOSMF. 
 
-For detailed information about defining & creating commands see the [Imperative CLI Framework wiki](https://github.com/zowe/imperative/wiki).
+## Descriptions
+For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the following description guidelines should be followed. 
+- Segments names need a summary & and full description.
+- The `summary` is a one line, short description. This appears in the list of sub-segments on online help pages (e.g., Zowe root help lists the groups with their short descriptions. Zowe group help lists the actions with their descriptions. 
+    - Do NOT include punctuation at the end of a summary description. 
+- The full `description` is a longer description of the purpose, intent, & usage of the group, action, object, or option. It is ideal to include use cases that apply so people understand the practical value. 
+- Descriptions should go beyond merely self referential (e.g., 'the job list command lists jobs' could be 'the job list command displays JCL data-sets on a LPAR'). You can expect users who are new to the underlying technology and may not know it in depth so the descriptions should inform and reveal the capabilities and function of the technology. 
 
-For the definition interface, see[`ICommandDefinition` interface within the Imperative CLI Framework](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/ICommandDefinition.ts).
+## Examples
+- Customer research and usability testing have revealed that examples are the single most importent element of the online help pages so they should be a priority to do well. 
+- On the help page for an `[object]` definition, you should include at least one command example. Where there are multiple options, there should be examples to demonstrate each. 
+- Ideally, the user should be able to copy/paste examples into the command line or a script. 
+- Examples include one line descriptions that should explain the purpose. Where there are multiple examples, the description should provide the distinguishing details. 
 
 ### Additional Details about Options
 - Most options include a name/option and a value/argument (e.g., --max-length 5). 
-- Positional arguments are a special kind of option. They are values/arguments entered that don't have an explicit option name and are usually enteried immediately after the `object` (e.g., the file name in the list dataset command). These are usually required.
+- Positional arguments are a special kind of option. They are values/arguments entered that don't have an explicit option name and are usually enteried immediately after the `object` (e.g., the file name in the list dataset command). These are usually required. A single positional argument is most common but some commands have multiple positional arguments. It is not advisable to do this because then the user has to type several values in a row in the right order which can be error prone and hard to understand the proper syntax. A positional argument has an implicit option name and should be fairly obvious that a value is needed. Where there is a need for multiple, consider adding fomal `option` names and make them required. 
 - Required options are listed under a required options section. Other options are just listed under a options section. 
 - The online help may include other categories of options for connecting to a service like zOSMF (e.g, `password`), setting profiles, and global options (e.g., `response-format-json`)
 - Teams bulding commands and plug-ins should be mindful of the number of `[options]` because adding many options can add a lot of complxity and make it hard to use. In these cases, consider splitting a command into multiple commands. 
 - Mutually exclusive options are two options that conflict and only one can be used. These can introduce usability problems. The use of both options can produce unpredicitable results or fail in error. The mutual exlusion with other options should be noted in the option description. 
 - Dependencies between options can exist. These can introduce usability problems. The dependencies with other options should be noted in the option description.
+- The arguments/values for an `option`  can sometimes take wildcards (e.g., a data-set name). The wildcard symbol is gnerally the asterisk * character. When building commands, consider using asterisk as the standard. 
+- The argumetns/values can somtimes be quoted and can be a safer way to type the command. When writing examples, it is advisable to show arguments in quotes. 
+- Some options take array values. The standard format is space separated. 
+
+#### `[action]` & `[object]` Naming Conventions
+
+- Hyphenate multiple words (e.g. `access-method-services`)
+    - Except for positional parameter definitions, (limitation of yargs) which do not use hyphens. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts). 
+
 
 ### Abbreviated Command Structure 
 Some commands have a shorter syntax. The authors of a command may have decided that a `object` isn't necessary. An example of this is the commands in the `plugins` group. 
@@ -46,31 +76,6 @@ There is a tension here between consistency and ease of understanding. In the ca
 ### The Lost Group Problem for Command Structure
 When teams build plug-ins, the plug-in name ends up as the `group` name (e.g., zowe cics). This means that your plugin can't have groups or categories of commands. A workaround is to append a group name to the `action` name (e.g., catetory-action and jobs-list). This may or may not be desirable. To avoid actions with compound names, teams can create seperate plugins. 
 
-## Naming Conventions
-- Use lower case for `[options]`, `[actions]`, and `[objects]`
-- Names should be descriptive so that the user has a clear idea of what the name means.
-- Hyphenated `[options]`, `[actions]`, or `[objects]` should have an alias that is the first letter of each hyphenated word. (e.g. `access-method-services` aliased with `ams`)
-- `[groups]`, `[actions]`, & `[objects]` need a summary & and full description 
-    - The `summary` is a very short (~6 word) description
-    - Do NOT include punctuation at the end of a summary
-    - The `description` is a full description of the purpose/intent & usage of the command/group/option and should include any 
--  On an `[object]` definition, you must include at least one command example
-    -  Ideally, the user should be able to copy/paste the example
-
-- Keep descriptions brief & relevant. 
-* 
-shortcuts
-quotes
-
-#### `[action]` & `[object]` Naming Conventions
-- `[actions]` are verbs. (e.g. "set", "run, "list", etc.)
-- `[objects]` are nouns. (e.g. "data-set", "command", etc.)
-- Hyphenate multiple words (e.g. `access-method-services`)
-    - Except for positional parameter definitions, (limitation of yargs) which do not use hyphens. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts). 
-
-#### `[option]` Naming Conventions
-- If possible, give options (especially flags), a one character alias. 
-    - Do NOT choose a "random" letter (i.e `access-method-services` aliased by `z`)
 
 
 
