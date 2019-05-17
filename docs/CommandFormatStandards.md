@@ -70,14 +70,14 @@ For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the f
 - The argumetns/values can somtimes be quoted and can be a safer way to type the command. When writing examples, it is advisable to show arguments in quotes. 
 - Some options take array values. The standard format is space separated. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts).
 
-### Abbreviated Command Structure 
+## Abbreviated Command Structure 
 Some commands have a shorter syntax. The authors of a command may have decided that a `object` isn't necessary. An example of this is the commands in the `plugins` group. 
 #### Form: `zowe [group] [action] [options]`
 #### Example: `zowe plugins list`
 #### Example: `zowe plugins update my-plugin`
 There is a tension here between consistency and ease of understanding. In the case of the plug-ins group, the syntax could have included a `obect` with the name plugin but that would be awkward (e.g., zowe plugins list plugins). We advise that teams use the full syntax in most cases but where it is better to have an abberviated syntax, apply to that to all commands in a `group` so that there is still a measure of consistency.
 
-### The Lost Group Problem for Command Structure
+## The Lost Group Problem for Command Structure
 When teams build plug-ins, the plug-in name ends up as the `group` name (e.g., zowe cics). This means that your plugin can't have groups or categories of commands. A workaround is to append a group name to the `action` name (e.g., catetory-action and jobs-list). This may or may not be desirable. To avoid actions with compound names, teams can create seperate plugins. 
 
 
