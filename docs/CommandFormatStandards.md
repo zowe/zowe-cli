@@ -3,7 +3,13 @@ This article is a living summary of conventions and best practices for command a
 
 - [Command Structure](#zowe-cli-command-structure)
 - [Command Definition Documents](#command-definition-documents)
-- [Syntax/Naming Conventions](#syntax-naming-conventions)
+- [Naming](#naming)
+- [Descriptions](#descriptions)
+- [Examples](#examples)
+- [Additional Details about Options](#additional-details-about-options)
+- [Abbreviated Command Structure](#abbreviated-command-structure)
+- [The Lost Group Problem for Command Structure](#the-lost-group-problem-for-command-structure)
+
 
 ## Command Structure
 Most `zowe` commands adhere to the full structure. An abbreviated structure is explained following. 
@@ -51,7 +57,7 @@ For syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]` the f
 - Ideally, the user should be able to copy/paste examples into the command line or a script. 
 - Examples include one line descriptions that should explain the purpose. Where there are multiple examples, the description should provide the distinguishing details. 
 
-### Additional Details about Options
+## Additional Details about Options
 - Most options include a an explicit name/option and a value/argument (e.g., --max-length 5). 
 - Positional arguments are a special kind of option. They are values/arguments entered that have an implicit option name and are usually enteried immediately after the `object` (e.g., the file name in the list dataset command). These are usually required. A single positional argument is most common but some commands have multiple positional arguments that are entered space separated. It is not advisable to have mulitple positional arguments because then the user has to type several values in a row in the right order which can be error prone and hard to understand the proper syntax. Where there appears to be a need for multiple positional arguments, consider adding formal `option` names and make them required. 
 - Required options are listed under a required options section. User research and usabilty testing have shown that required options are amongst the most important information in the online help pages so it is important to write good descriptions and include these in the examples.
