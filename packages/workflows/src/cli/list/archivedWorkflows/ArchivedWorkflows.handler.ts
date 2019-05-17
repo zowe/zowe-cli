@@ -9,12 +9,11 @@
 *
 */
 
-import { IHandlerParameters, TextUtils, ImperativeError } from "@brightside/imperative";
+import { IHandlerParameters, TextUtils } from "@brightside/imperative";
 import { ListArchivedWorkflows } from "../../../api/ListArchivedWorkflows";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 import { IWorkflowsInfo } from "../../../api/doc/IWorkflowsInfo";
 import { IArchivedWorkflows } from "../../../api/doc/IArchivedWorkflows";
-
 
 /**
  * Common Handler for listing archived workflows for a system.
@@ -23,7 +22,6 @@ import { IArchivedWorkflows } from "../../../api/doc/IArchivedWorkflows";
 export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
     /**
      * Command line arguments passed
-     * @private
      * @type {*}
      * @memberof ListArchivedWorkflowsHandler
      */
@@ -38,34 +36,32 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
     public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
         this.arguments = commandParameters.arguments;
         let response: IArchivedWorkflows;
+        let error;
         const width = 42;
-        let error: any;
-
         try {
             response = await ListArchivedWorkflows.listArchivedWorkflows(
-                this.mSession, undefined);
+                this.mSession);
         } catch (err) {
             error = "List workflow(s) " + err;
             throw error;
         }
         commandParameters.response.data.setObj(response);
 
-        response.archivedWorkflows.forEach((workflowKey: IWorkflowsInfo) => {
-            workflowKey.workflowName = TextUtils.wordWrap(`${workflowKey.workflowName}`, width);
-            workflowKey.workflowKey = TextUtils.wordWrap(`${workflowKey.workflowKey}`, width);
-            workflowKey.workflowDescription = TextUtils.wordWrap(`${workflowKey.workflowDescription}`, width);
+        response.archivedWorkflows.forEach((archivedWorkflows: IWorkflowsInfo) => {
+            archivedWorkflows.workflowName = TextUtils.wordWrap(`${archivedWorkflows.workflowName}`, width);
+            archivedWorkflows.workflowKey = TextUtils.wordWrap(`${archivedWorkflows.workflowKey}`, width);
         });
 
         // Format & print the response
         if (response.archivedWorkflows.length) {
-            commandParameters.response.format.output({
-                fields: ["workflowName", "workflowKey", "workflowDescription"],
+           commandParameters.response.format.output({
+                fields: ["workflowName", "workflowKey"],
                 output: response.archivedWorkflows,
                 format: "table",
                 header: true,
-            });
-        } else {
-            commandParameters.response.console.log("No workflows match the requested query");
-        }
+           });
+     } else {
+          commandParameters.response.console.log("No workflows match the requested query");
+       }
     }
 }

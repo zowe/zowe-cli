@@ -112,33 +112,6 @@ describe("List archived workflows", () => {
             }
             expectZosmfResponseSucceeded(response, error);
         });
-        it("List archived workflow that match all optional parameters", async () => {
-            let error;
-            let response;
-
-            try {
-                response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, undefined,
-                    wfKey);
-                Imperative.console.info("Response: " + inspect(response));
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
-            }
-            expectZosmfResponseSucceeded(response, error);
-        });
-        it("Successful even with zOSMF version undefined (because of default value).", async () => {
-            let error;
-            let response;
-
-            try {
-                response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, undefined);
-                Imperative.console.info("Response: " + inspect(response));
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error wut: " + inspect(error));
-            }
-            expectZosmfResponseSucceeded(response, error);
-        });
     });
     describe("Failure scenarios", () => {
         it("Throws an error with undefined session.", async () => {
@@ -152,18 +125,6 @@ describe("List archived workflows", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
-        });
-        it("Throws an error with incorrect parameter format.", async () => {
-            let error: ImperativeError;
-            let response: any;
-            try {
-                response = await ListArchivedWorkflows.listArchivedWorkflows(REAL_SESSION, badString, badString1);
-                Imperative.console.info(`Response ${response}`);
-            } catch (thrownError) {
-                error = thrownError;
-                Imperative.console.info(`Error ${error}`);
-            }
-            expectZosmfResponseFailed(response, error, wrongString.message);
         });
         it("Throws an error with zOSMF version as empty string.", async () => {
             let error: ImperativeError;

@@ -5,69 +5,15 @@ Object {
   "aliases": Array [
     "arw",
   ],
-  "description": "List the archived workflows for a system.
-Multiple filters can be used together.
-Omitting all options will list all archived workflows on the sysplex",
-  "examples": Array [
-    Object {
-      "description": "List the archived workflow with name \\"testworkflow\\"",
-      "options": "--wn \\"testworkflow\\"",
-    },
-    Object {
-      "description": "List multiple archived workflows on the entire syspex with names containing \\"workflow\\" from oldest to the newest",
-      "options": "--wn \\".*workflow.*\\" --asc",
-    },
-    Object {
-      "description": "List multiple archived workflows on system with names beginning with \\"test\\" that have owner \\"owner1\\"",
-      "options": "--wn \\"test.*\\" --ow \\"owner1\\"",
-    },
-  ],
+  "description": "List the archived z/OSMF workflows for a system or sysplex.",
   "name": "archived-workflows",
-  "options": Array [
-    Object {
-      "aliases": Array [
-        "wn",
-      ],
-      "description": "Filter by workflow name. For wildcard use .*",
-      "name": "workflow-name",
-      "required": false,
-      "type": "string",
-    },
-    Object {
-      "aliases": Array [
-        "ow",
-      ],
-      "description": "Filter by owner of the workflow(s) (a valid z/OS user ID).",
-      "name": "owner",
-      "required": false,
-      "type": "string",
-    },
-    Object {
-      "aliases": Array [
-        "asc",
-      ],
-      "description": "Optional parameter for listing workflows from the oldest to the newest.",
-      "name": "asc",
-      "required": false,
-      "type": "boolean",
-    },
-    Object {
-      "aliases": Array [
-        "desc",
-      ],
-      "description": "Optional parameter for listing workflows from the newest to the oldest.",
-      "name": "desc",
-      "required": false,
-      "type": "boolean",
-    },
-  ],
   "outputFormatOptions": true,
   "profile": Object {
     "optional": Array [
       "zosmf",
     ],
   },
-  "summary": "List the archived workflows for a system.",
+  "summary": "List all archived workflows for a system.",
   "type": "command",
 }
 `;

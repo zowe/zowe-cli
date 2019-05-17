@@ -10,12 +10,10 @@
 */
 
 import { ICommandDefinition } from "@brightside/imperative";
-import { ListArchivedWorkflowsOptions } from "./ArchivedWorkflows.options";
 import { join } from "path";
 
-
 /**
- * This object defines the command for listing workflow instance(s) in zOSMF.
+ * This object defines the command for listing archived z/OSMF workflows for a system or sysplex.
  * This is not something that is intended to be used outside of this npm package.
  *
  * @private
@@ -24,13 +22,11 @@ export const ArchivedWorkflows: ICommandDefinition = {
     name: "archived-workflows",
     aliases: ["arw"],
     summary: "List all archived workflows for a system.",
-    description: "List the archived workflows for a system.",
+    description: "List the archived z/OSMF workflows for a system or sysplex.",
     type: "command",
     handler: join(__dirname, "ArchivedWorkflows.handler"),
     profile: {
         optional: ["zosmf"],
     },
-    options: ([
-      ]),
     outputFormatOptions: true,
 };

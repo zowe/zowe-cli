@@ -111,7 +111,7 @@ describe("Delete workflow common handler", () => {
             // Mock the list function
             ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
                 fakeSession = session;
-                return workflowKey;
+                return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
 
             // Mocked function references

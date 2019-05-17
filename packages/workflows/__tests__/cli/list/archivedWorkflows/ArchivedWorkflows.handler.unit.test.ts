@@ -11,14 +11,15 @@
 
 import { ListArchivedWorkflows } from "../../../../src/api/ListArchivedWorkflows";
 
-describe("List workflows handler", () => {
+
+describe("Delete workflow common handler", () => {
     describe("process method", () => {
-      //  const workflowName = "fakeWorkflow";
-        it("should list all archived workflows", async () => {
+        it("should delete a workflow using workflow name", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/list/archivedWorkflows/ArchivedWorkflows.handler");
             const handler = new handlerReq.default();
-
+            const workflowKey = "fake-workflow-key";
+            const workflowName = "fake-name";
 
             // Vars populated by the mocked function
             let error;
@@ -27,20 +28,10 @@ describe("List workflows handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the create function
+            // Mock the list function
             ListArchivedWorkflows.listArchivedWorkflows = jest.fn((session) => {
                 fakeSession = session;
-                return {
-                    success: true,
-                    commandResponse: "Some list of workflow(s)",
-                    workflows: [
-                        {
-                            workflowName: "fakeworkflow",
-                            workflowDescription: "Test wf",
-                            workflowKey: "Some-key-here"
-                        }
-                    ],
-                };
+                return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
 
             // Mocked function references
@@ -59,9 +50,9 @@ describe("List workflows handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.processCmd({
                     arguments: {
-                        $0: "zowe",
-                        _: ["zos-workflows", "list", "archived-workflows" ],
-                    },
+                        $0: "fake",
+                        _: ["fake"]
+                               },
                     response: {
                         format: {
                             output: jest.fn((parms) => {
@@ -92,10 +83,8 @@ describe("List workflows handler", () => {
 
             expect(error).toBeUndefined();
             expect(ListArchivedWorkflows.listArchivedWorkflows).toHaveBeenCalledTimes(1);
-            expect(ListArchivedWorkflows.listArchivedWorkflows).toHaveBeenCalledWith(
-                fakeSession,
-                undefined,
-         );
+            expect(ListArchivedWorkflows.listArchivedWorkflows).toHaveBeenCalledWith(fakeSession);
+
         });
     });
 });
