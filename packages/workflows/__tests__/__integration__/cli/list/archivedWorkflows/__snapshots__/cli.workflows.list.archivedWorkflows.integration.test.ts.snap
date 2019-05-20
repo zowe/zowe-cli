@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`List Archived Workflows Should display the help 1`] = `
+exports[`List Archived Workflows should display the help 1`] = `
 "================Z/OS WORKFLOWS LIST ARCHIVED WORKFLOWS HELP===============
 
  COMMAND NAME
