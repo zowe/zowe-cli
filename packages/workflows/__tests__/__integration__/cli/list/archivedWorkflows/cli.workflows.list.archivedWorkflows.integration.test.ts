@@ -21,7 +21,8 @@ describe("List Archived Workflows", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_archived_workflows"
+            testName: "list_archived_workflows",
+            skipProperties: true
         });
     });
 
