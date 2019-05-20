@@ -13,6 +13,7 @@ import { Upload } from "../../../../src/api/methods/upload";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as fs from "fs";
 import { ZosFilesAttributes } from "../../../../src/api/utils/ZosFilesAttributes";
+
 jest.mock("../../../../src/api/utils/ZosFilesAttributes");
 
 describe("Upload dir-to-uss handler", () => {
@@ -98,7 +99,6 @@ describe("Upload dir-to-uss handler", () => {
             const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSSDir.handler");
             handler = new handlerReq.default();
         });
-
         it("should upload a directory to a USS directory if requested", async () => {
 
             await testHanlderWorksWithDefaultParameters();
@@ -111,13 +111,14 @@ describe("Upload dir-to-uss handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Uploading all files"}
-                });
+                    statusMessage: "Uploading all files"
+                }
+            });
         });
         it("should pass attributes when a .zosattributes file is present", async () => {
-            jest.spyOn(fs,"existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             const attributesContents = "foo.stuff -";
-            jest.spyOn(fs,"readFileSync").mockReturnValueOnce(Buffer.from(attributesContents));
+            jest.spyOn(fs, "readFileSync").mockReturnValueOnce(Buffer.from(attributesContents));
 
             await testHanlderWorksWithDefaultParameters();
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
@@ -125,26 +126,26 @@ describe("Upload dir-to-uss handler", () => {
         });
 
         it("should give an error if --attributes specifies a non-existent file", async () => {
-            jest.spyOn(fs,"existsSync").mockReturnValueOnce(false);
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "non-existent-file";
 
-            await testHandlerGivesExpectedErrorWithParams("Attributes file non-existent-file does not exist",params);
+            await testHandlerGivesExpectedErrorWithParams("Attributes file non-existent-file does not exist", params);
         });
 
         it("should give an error if file specified by --attributes cannot be read", async () => {
-            jest.spyOn(fs,"existsSync").mockReturnValueOnce(true);
-            jest.spyOn(fs,"readFileSync").mockImplementationOnce(() => {
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
                 throw new Error("File not found");
             });
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "dodgy file";
 
-            await testHandlerGivesExpectedErrorWithParams("Could not read attributes file dodgy file: File not found",params);
+            await testHandlerGivesExpectedErrorWithParams("Could not read attributes file dodgy file: File not found", params);
         });
         it("should override .zosattributes content with --attributes content", async () => {
-            jest.spyOn(fs,"existsSync").mockReturnValueOnce(true);
-            jest.spyOn(fs,"readFileSync").mockImplementationOnce((path: string) => {
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            jest.spyOn(fs, "readFileSync").mockImplementationOnce((path: string) => {
                 if (path === "real file") {
                     return "--attributes file contents";
                 } else if (path.endsWith(".zosattributes")) {
@@ -154,7 +155,7 @@ describe("Upload dir-to-uss handler", () => {
             const mockAttributesFromParam = {attributes: "--attributes"};
             const mockAttributesFromLocalFile = {attributes: ".zosattributes"};
 
-            (ZosFilesAttributes as any).mockImplementation( (fileContents: string) => {
+            (ZosFilesAttributes as any).mockImplementation((fileContents: string) => {
                 if (fileContents === "--attributes file contents") {
                     return mockAttributesFromParam;
                 } else if (fileContents === ".zosattributes file contents") {
@@ -197,8 +198,7 @@ describe("Upload dir-to-uss handler", () => {
         async function testHandlerGivesExpectedErrorWithParams(errorMsg: string, params: any) {
             try {
                 await handler.process(params);
-            }
-            catch (e) {
+            } catch (e) {
                 error = e;
             }
             expect(error).toBeDefined();

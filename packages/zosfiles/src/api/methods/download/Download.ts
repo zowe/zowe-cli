@@ -28,7 +28,6 @@ import { asyncPool } from "../../../../../utils";
 import { IGetOptions } from "../get";
 import { Writable } from "stream";
 
-
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
  */
@@ -225,7 +224,6 @@ export class Download {
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
             if (ussFileName.substr(0, 1) === "/") {
                 ussFileName = ussFileName.substr(1);
-
             }
 
             const destination = options.file || posix.normalize(posix.basename(ussFileName));
