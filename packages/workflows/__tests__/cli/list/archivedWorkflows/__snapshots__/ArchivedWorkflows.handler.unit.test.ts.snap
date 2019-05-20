@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Delete workflow common handler process method should delete a workflow using workflow name 1`] = `
+exports[`List archived workflows common handler process method should list all archived workflows 1`] = `
 Object {
   "fields": Array [
     "workflowName",
