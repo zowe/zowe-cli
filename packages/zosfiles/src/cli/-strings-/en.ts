@@ -384,6 +384,7 @@ export default {
                 }
             },
             DIR_TO_USS: {
+                SUMMARY: "Upload a local directory to a USS directory",
                 DESCRIPTION: "Upload a local directory to a USS directory.\n\n" +
                 "An optional .zosattributes file in the source directory can be used to control file conversion and tagging.\n\n" +
                 "An example .zosattributes file:{{space}}{{space}}\n" +
