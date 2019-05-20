@@ -12,9 +12,9 @@
 import { ListArchivedWorkflows } from "../../../../src/api/ListArchivedWorkflows";
 
 
-describe("Delete workflow common handler", () => {
+describe("List archived workflows common handler", () => {
     describe("process method", () => {
-        it("should delete a workflow using workflow name", async () => {
+        it("should list all archived workflows", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/list/archivedWorkflows/ArchivedWorkflows.handler");
             const handler = new handlerReq.default();
