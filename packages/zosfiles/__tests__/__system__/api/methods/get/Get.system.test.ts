@@ -18,7 +18,7 @@ import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../..
 import { ZosmfRestClient } from "../../../../../../rest";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
 import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZosmfListResponse";
-
+import { Utilities, Tag } from "../../../../../src/api";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -229,7 +229,7 @@ describe("Get", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display a proper message when getting the content of a data set that does not exists", async () => {
+            it("should display a proper message when getting the content of a data set that does not exist", async () => {
                 let response: Buffer;
                 let error;
 
@@ -262,7 +262,7 @@ describe("Get", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display a proper message when getting the content of a data set that does not exists", async () => {
+            it("should display a proper message when getting the content of a file that does not exist", async () => {
                 let response: Buffer;
                 let error;
 
@@ -271,7 +271,6 @@ describe("Get", () => {
                 } catch (err) {
                     error = err;
                 }
-
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("File not found.");
