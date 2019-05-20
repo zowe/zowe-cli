@@ -100,4 +100,26 @@ export class ListWorkflows {
         }
         return result.workflows.length !== 0 ? result.workflows[0].workflowKey : null;
     }
+
+    // /**
+    //  * This operation is used to return a worflow-key by given workflow name.
+    //  * @param {AbstractSession} session - z/OSMF connection info
+    //  * @param {string} workflowName - workflow name by which to list workflows
+    //  * @param {string} zOSMFVersion - identifies the version of the provisioning service.
+    //  * @returns {Promise<IActiveWorkflows> | null} - Promise with object containing wf properties, or null if none was found
+    //  * @throws {ImperativeError}
+    //  * @memberof ListWorkflows
+    //  */
+    // public static async getMultipleWfKeys(session: AbstractSession, workflowName: string,
+    //                                       zOSMFVersion = WorkflowConstants.ZOSMF_VERSION):
+    //                                       Promise<IActiveWorkflows> | null{
+
+    //     WorkflowValidator.validateSession(session);
+    //     WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+    //     WorkflowValidator.validateNotEmptyString(workflowName, noWorkflowName.message);
+
+    //     const result: IActiveWorkflows = await this.listWorkflows(session, zOSMFVersion, workflowName);
+
+    //     return result.workflows.length !== 0 ? result : null;
+    // }
 }

@@ -11,6 +11,7 @@
 
 import { DeleteWorkflow } from "../../../src/api/Delete";
 import { ListWorkflows } from "../../../src/api/ListWorkflows";
+import { AbstractSession } from "@brightside/imperative";
 
 
 describe("Delete workflow common handler", () => {
@@ -26,7 +27,7 @@ describe("Delete workflow common handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: AbstractSession = null;
 
             // Mock the delete function
             DeleteWorkflow.deleteWorkflow = jest.fn((session) => {
@@ -89,7 +90,10 @@ describe("Delete workflow common handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
             const handler = new handlerReq.default();
-            const workflowKey = "fake-workflow-key";
+            const wfArray = {workflows: [
+                {workflowKey: "fake-workflow-key"},
+                {workflowKey: "fake-workflow-key2"}
+            ]};
             const workflowName = "fake-name";
 
             // Vars populated by the mocked function
@@ -97,7 +101,7 @@ describe("Delete workflow common handler", () => {
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let fakeSession: AbstractSession = null;
 
             // Mock the delete function
             DeleteWorkflow.deleteWorkflow = jest.fn((session) => {
@@ -109,9 +113,9 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.getWfKey = jest.fn((session) => {
+            ListWorkflows.listWorkflows = jest.fn((session) => {
                 fakeSession = session;
-                return workflowKey;
+                return wfArray;
             });
 
             // Mocked function references
@@ -158,9 +162,10 @@ describe("Delete workflow common handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(DeleteWorkflow.deleteWorkflow).toHaveBeenCalledTimes(1);
-            expect(DeleteWorkflow.deleteWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey);
-
+            expect(DeleteWorkflow.deleteWorkflow).toHaveBeenCalledTimes(wfArray.workflows.length);
+            wfArray.workflows.forEach((element)=>{
+                expect(DeleteWorkflow.deleteWorkflow).toHaveBeenCalledWith(fakeSession, element.workflowKey);
+            });
         });
     });
 });

@@ -13,6 +13,7 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { DeleteWorkflow } from "../../api/Delete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListWorkflows } from "../../..";
+import { IActiveWorkflows } from "../../api/doc/IActiveWorkflows";
 
 
 /**
@@ -37,7 +38,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
         let resp;
-        let getWfKey;
+        let getWfKey: IActiveWorkflows;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -60,21 +61,28 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 break;
 
             case "workflowName":
-                try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                    getWfKey = await ListWorkflows.listWorkflows(this.mSession, undefined, this.arguments.workflowName);
                     if (getWfKey === null) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
                             additionalDetails: JSON.stringify(params)
                         });
                     }
-                    resp = await DeleteWorkflow.deleteWorkflow(this.mSession, getWfKey);
-                } catch (err){
-                    error = "Delete workflow: " + err;
-                    throw error;
-                }
+                    getWfKey.workflows.forEach(async (element, index) => {
+                        try {
+                            resp = await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
+                        } catch (err) {
+                            getWfKey.workflows.splice(index, 1);
+                        }
+                    });
                 params.response.data.setObj("Deleted.");
-                params.response.console.log("Workflow deleted.");
+                params.response.console.log("Workflow deleted(s): ");
+                params.response.format.output({
+                    fields: ["workflowName", "workflowKey"],
+                    output: getWfKey.workflows,
+                    format: "table",
+                    header: true,
+                });
                 break;
 
             default:
