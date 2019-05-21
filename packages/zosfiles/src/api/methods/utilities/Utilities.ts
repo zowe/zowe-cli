@@ -111,4 +111,23 @@ export class Utilities {
         }
         return false;
     }
+
+    /**
+     * Re-name USS file or directory
+     *
+     * @param {AbstractSession} session     - z/OSMF connection info
+     * @param {string}          USSFilePath - contains the current filepath
+     * @param {string}          newFilePath - contains the new filepath
+     *
+     * @returns {Promise<Buffer>} Promise that resolves to json information
+     *
+     * @throws {ImperativeError}
+     */
+    public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string): Promise<Buffer> {
+        ImperativeExpect.toNotBeNullOrUndefined(newFilePath, ZosFilesMessages.missingUSSFileName.message);
+        const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
+        const payload = { request: "move",  from: oldFilePath };
+        const response = await Utilities.putUSSPayload(session, newFilePath, payload);
+        return response;
+    }
 }
