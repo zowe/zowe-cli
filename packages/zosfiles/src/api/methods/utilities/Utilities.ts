@@ -125,7 +125,7 @@ export class Utilities {
     public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(newFilePath, ZosFilesMessages.missingUSSFileName.message);
         const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
-        const payload = { request: "move",  from: oldFilePath };
+        const payload = { request: "move",  from: path.posix.normalize(oldFilePath) };
         const response = await Utilities.putUSSPayload(session, newFilePath, payload);
         return response;
     }
