@@ -139,6 +139,11 @@ describe("Delete workflow common handler", () => {
                         workflowName
                     },
                     response: {
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        },
                         data: {
                             setMessage: jest.fn((setMsgArgs) => {
                                 apiMessage = setMsgArgs;

@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete workflow common handler process method should delete a workflow using workflow name 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "workflowKey": "fake-workflow-key",
+    },
+    Object {
+      "workflowKey": "fake-workflow-key2",
+    },
+  ],
+}
+`;
