@@ -15,6 +15,7 @@ import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListArchivedWorkflows } from "../../api/ListArchivedWorkflows";
 import { IArchivedWorkflows } from "../../../src/api/doc/IArchivedWorkflows";
 import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "../../../src/api/WorkflowConstants";
+import { IWorkflowsInfo } from "../../api/doc/IWorkflowsInfo";
 
 /**
  * Common handler to delete a workflow instance in z/OSMF.
@@ -38,7 +39,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error: string;
         let resp: string;
-        let getWfKey: string;
+        let getWfKey: IArchivedWorkflows;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -62,14 +63,19 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
 
             case "workflowName":
                 try{
-                    getWfKey = await ListArchivedWorkflows.getWfKey(this.mSession, this.arguments.workflowName, WorkflowConstants.ZOSMF_VERSION);
-                    if (getWfKey === null) {
+                    getWfKey = await ListArchivedWorkflows.listArchivedWorkflows(this.mSession);
+                    await getWfKey.archivedWorkflows.forEach((archivedWorkflow: IWorkflowsInfo) => {
+                        if (archivedWorkflow.workflowName === this.arguments.workflowName) {
+                            this.arguments.workflowKey =  archivedWorkflow.workflowKey;
+                        }
+                    });
+                    if (!this.arguments.workflowKey) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
                             additionalDetails: JSON.stringify(params)
                         });
                     }
-                    resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession, getWfKey);
+                    resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession, this.arguments.workflowKey);
                 } catch (err){
                     error = "Delete workflow: " + err;
                     throw error;
