@@ -3,7 +3,7 @@
 exports[`provisioning list instance vars definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "iv   ",
+    "iv",
   ],
   "description": "List a set of variables and their values for a given name.",
   "examples": Array [
