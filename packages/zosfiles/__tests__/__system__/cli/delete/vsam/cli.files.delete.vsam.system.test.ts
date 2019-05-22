@@ -13,15 +13,13 @@ import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProps: ITestPropertiesSchema;
 let dsname: string;
 let volume: string;
 let user: string;
@@ -34,14 +32,13 @@ describe("Delete VSAM Data Set", () => {
             testName: "zos_delete_vsam_data_set"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        user = defaultSystem.zosmf.user.toUpperCase();
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VSAM`);
-        volume = defaultSystem.datasets.list[0].vol;
+        user = systemProps.zosmf.user.toUpperCase();
+        dsname = getUniqueDatasetName(`${user}.ZOSFILE.VSAM`);
+        volume = systemProps.datasets.vol;
 
     });
 
@@ -50,8 +47,8 @@ describe("Delete VSAM Data Set", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+
+        let systemProperties: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -59,8 +56,7 @@ describe("Delete VSAM Data Set", () => {
                 testName: "zos_files_delete_vsam_data_set_without_profile"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            systemProperties = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {
@@ -75,16 +71,16 @@ describe("Delete VSAM Data Set", () => {
 
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
-            if (defaultSys.zosmf.basePath != null) {
-                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            if (systemProps.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = systemProps.zosmf.basePath;
             }
 
             response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [dsname, "--for-sure",
-                    defaultSys.zosmf.host,
-                    defaultSys.zosmf.port,
-                    defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    systemProps.zosmf.host,
+                    systemProps.zosmf.port,
+                    systemProps.zosmf.user,
+                    systemProps.zosmf.pass]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

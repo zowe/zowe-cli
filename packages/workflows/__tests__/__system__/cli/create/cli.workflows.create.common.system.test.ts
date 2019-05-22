@@ -11,11 +11,10 @@
 
 import { ZosmfRestClient } from "../../../../../rest";
 import { Session } from "@zowe/imperative";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { DeleteWorkflow } from "../../../..";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
 import { Create, CreateDataSetTypeEnum } from "../../../../../zosfiles/src/api/methods/create";
@@ -24,8 +23,7 @@ import { join } from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let definitionDs: string;
 let fakeDefFile: string;
@@ -33,6 +31,7 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
+let fakeLocalFile: string;
 const workflow = join(__dirname, "../../testfiles/demo.xml");
 const workflowDs = join(__dirname, "../../testfiles/demods.xml");
 
@@ -42,15 +41,14 @@ describe("Create workflow cli system tests", () => {
             tempProfileTypes: ["zosmf"],
             testName: "create_workflow_cli"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
         definitionDs = `${getUniqueDatasetName("PUBLIC")}`;
         definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
         fakeDefFile = definitionFile + "FAKEFILE";
-
+        fakeLocalFile = "qwerty.xml";
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
@@ -76,11 +74,11 @@ describe("Create workflow cli system tests", () => {
             }
         });
         describe("Success Scenarios", () => {
-            afterEach(async () =>{
+            afterEach(async () => {
                 let error;
-                const response: any =  await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
+                const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
                 response.workflows.forEach(async (element: any) => {
-                    if(element.workflowName===wfName){
+                    if (element.workflowName === wfName) {
                         wfKey = element.workflowKey;
                         try {
                             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
@@ -92,24 +90,24 @@ describe("Create workflow cli system tests", () => {
             });
             it("Should create workflow in zOSMF.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
-                testEnvironment, [wfName, definitionFile, system, owner]);
+                    testEnvironment, [wfName, definitionFile, system, owner]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
-                testEnvironment, [wfName, definitionFile, system, owner]);
+                    testEnvironment, [wfName, definitionFile, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
-                testEnvironment, [wfName, definitionFile, system, owner]);
+                    testEnvironment, [wfName, definitionFile, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("already exists.");
             });
             it("Should not throw error if workflow with the same name already exists and there is overwrite", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
-                testEnvironment, [wfName, definitionFile, system, owner]);
+                    testEnvironment, [wfName, definitionFile, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
-                testEnvironment, [wfName, definitionFile, system, owner, "--overwrite"]);
+                    testEnvironment, [wfName, definitionFile, system, owner, "--overwrite"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("workflowKey");
@@ -118,9 +116,60 @@ describe("Create workflow cli system tests", () => {
         describe("Failure Scenarios", () => {
             it("Should throw error if the uss file does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
-                testEnvironment, [wfName, fakeDefFile, system, owner]);
+                    testEnvironment, [wfName, fakeDefFile, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("was either not found or cannot be accessed");
+            });
+        });
+    });
+    describe("Create workflow using local file", () => {
+        describe("Success Scenarios", () => {
+            afterEach(async () =>{
+                let error;
+                const response: any =  await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
+                let deleteWorkflow: any;
+                for (deleteWorkflow of response.workflows) {
+                    if(deleteWorkflow.workflowName===wfName){
+                        wfKey = deleteWorkflow.workflowKey;
+                        try {
+                            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+                        } catch (err) {
+                            error = err;
+                        }
+                    }
+                }
+            });
+            it("Should create workflow in zOSMF.", async () => {
+                const response = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("workflowKey");
+            });
+            it("Should throw error if workflow with the same name already exists", async () => {
+                const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                const response = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("already exists.");
+            });
+            it("Should not throw error if workflow with the same name already exists and there is overwrite", async () => {
+                const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner]);
+                const response = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, workflow, system, owner, "--overwrite"]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("workflowKey");
+            });
+        });
+        describe("Failure Scenarios", () => {
+            it("Should throw error if the local file does not exist", async () => {
+                const response = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                testEnvironment, [wfName, fakeLocalFile, system, owner]);
+                expect(response.status).toBe(1);
+                expect(response.stderr.toString()).toContain("no such file or directory");
             });
         });
     });
@@ -153,11 +202,11 @@ describe("Create workflow cli system tests", () => {
             }
         });
         describe("Success Scenarios", () => {
-            afterEach(async () =>{
+            afterEach(async () => {
                 let error;
-                const response: any =  await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
+                const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
                 response.workflows.forEach(async (element: any) => {
-                    if(element.workflowName===wfName){
+                    if (element.workflowName === wfName) {
                         wfKey = element.workflowKey;
                         try {
                             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
@@ -169,24 +218,24 @@ describe("Create workflow cli system tests", () => {
             });
             it("Should create workflow in zOSMF.", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
-                testEnvironment, [wfName, definitionDs, system, owner]);
+                    testEnvironment, [wfName, definitionDs, system, owner]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
-                testEnvironment, [wfName, definitionDs, system, owner]);
+                    testEnvironment, [wfName, definitionDs, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
-                testEnvironment, [wfName, definitionDs, system, owner]);
+                    testEnvironment, [wfName, definitionDs, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("already exists.");
             });
             it("Should not throw error if workflow with the same name already exists and there is overwrite", async () => {
                 const createWf = await runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
-                testEnvironment, [wfName, definitionDs, system, owner]);
+                    testEnvironment, [wfName, definitionDs, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
-                testEnvironment, [wfName, definitionDs, system, owner, "--overwrite"]);
+                    testEnvironment, [wfName, definitionDs, system, owner, "--overwrite"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("workflowKey");
@@ -195,7 +244,7 @@ describe("Create workflow cli system tests", () => {
         describe("Failure Scenarios", () => {
             it("Should throw error if the dataset does not exist", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
-                testEnvironment, [wfName, fakeDefFile, system, owner]);
+                    testEnvironment, [wfName, fakeDefFile, system, owner]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("was either not found or cannot be accessed");
             });

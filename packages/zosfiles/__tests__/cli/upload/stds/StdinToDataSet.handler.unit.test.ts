@@ -29,7 +29,7 @@ describe("Upload stdin-to-data-set handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.bufferToDataSet = jest.fn((session) => {
+            Upload.streamToDataSet = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -97,7 +97,7 @@ describe("Upload stdin-to-data-set handler", () => {
 
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-            expect(Upload.bufferToDataSet).toHaveBeenCalledTimes(1);
+            expect(Upload.streamToDataSet).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -10,18 +10,15 @@
 */
 
 import { CheckStatus, ZosmfMessages } from "../../../../../zosmf";
-import { ConsoleValidator } from "../../../../../zosconsole";
-import { Session, Imperative } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 
 describe("Check Status Api", () => {
     beforeAll(async () => {
@@ -29,9 +26,7 @@ describe("Check Status Api", () => {
             tempProfileTypes: ["zosmf"],
             testName: "get_zosmf_info"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
-
+        defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
 
@@ -101,7 +96,7 @@ describe("Check Status Api", () => {
         });
 
         it("should return with proper message for invalid port", async () => {
-            const badPort = 9999;
+            const badPort = 51342;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.pass,
@@ -125,31 +120,6 @@ describe("Check Status Api", () => {
             expect(response).toBeFalsy();
             expect(error.message).toContain(`Error: connect ECONNREFUSED`);
             expect(error.message).toContain(badPort);
-        });
-
-        it("should return with proper message for rejectUnauthorized = true", async () => {
-            const badSession = new Session({
-                user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
-                hostname: defaultSystem.zosmf.host,
-                port: defaultSystem.zosmf.port,
-                type: "basic",
-                rejectUnauthorized: true,
-            });
-
-            let error;
-            let response;
-
-            try {
-                response = await CheckStatus.getZosmfInfo(badSession);
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
-            }
-
-            expect(error).toBeTruthy();
-            expect(response).toBeFalsy();
-            expect(error.message).toContain("Error: unable to verify the first certificate");
         });
     });
 });

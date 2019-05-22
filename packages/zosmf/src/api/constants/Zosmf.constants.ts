@@ -26,6 +26,18 @@ export const ZosmfConstants: { [key: string]: any } = {
     INFO: "/info",
 
     /**
+     * indicator for get topology services
+     * @type {string}
+     */
+    TOPOLOGY: "/resttopology",
+
+    /**
+     * indicator for get defined systems in zosmf
+     * @type {string}
+     */
+    SYSTEMS: "/systems",
+
+    /**
      * Known error codes return by the API
      * @type {object}
      */

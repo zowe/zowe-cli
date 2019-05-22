@@ -10,5 +10,9 @@
 */
 
 export interface ITestUnixSchema {
+    /**
+     * A directory on USS in which files and directories can be created
+     * and deleted
+     */
     testdir: string;
 }

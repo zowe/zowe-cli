@@ -10,5 +10,8 @@
 */
 
 export interface ITestConsoleSchema {
+    /**
+     * Another system ID in the sysplex to route a console command to
+     */
     sysplexsystem: string;
 }

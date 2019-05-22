@@ -21,7 +21,8 @@ describe("Delete Data Set", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_delete_data_set"
+            testName: "zos_delete_data_set",
+            skipProperties: true
         });
     });
 

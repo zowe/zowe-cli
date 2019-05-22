@@ -21,7 +21,8 @@ describe("provisioning provision template", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_prov_template_integration"
+            testName: "provisioning_prov_template_integration",
+            skipProperties: true
         });
     });
 

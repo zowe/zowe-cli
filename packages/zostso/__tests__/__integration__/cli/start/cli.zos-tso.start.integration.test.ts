@@ -21,6 +21,7 @@ describe("zos-tso start", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_tso_start_integration",
+            skipProperties: true
         });
     });
 

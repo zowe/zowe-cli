@@ -20,7 +20,8 @@ describe("zos-jobs cancel job command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_cancel_job_command"
+            testName: "zos_jobs_cancel_job_command",
+            skipProperties: true
         });
     });
 

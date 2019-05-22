@@ -12,11 +12,8 @@
 import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
 import { Session } from "@zowe/imperative";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-
-// TODO: Add cleanup once commands become available
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -43,13 +40,11 @@ describe("zos-jobs list jobs command", () => {
             testName: "zos_jobs_list_jobs_command",
             tempProfileTypes: ["zosmf"]
         });
-        IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
-        const systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        const defaultSystem = systemProps.getDefaultSystem();
-
+        const systemProps = TEST_ENVIRONMENT.systemTestProperties;
+        IEFBR14_JOB = systemProps.zosjobs.iefbr14Member;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        ACCOUNT = defaultSystem.tso.account;
+        ACCOUNT = systemProps.tso.account;
         const JOB_LENGTH = 6;
         JOB_NAME = REAL_SESSION.ISession.user.substr(0, JOB_LENGTH).toUpperCase() + "SF";
         NON_HELD_JOBCLASS = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
@@ -84,15 +79,13 @@ describe("zos-jobs list jobs command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            let SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_job_without_profiles"
                 });
-
-                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+                SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {
@@ -104,18 +97,18 @@ describe("zos-jobs list jobs command", () => {
 
                 // if API Mediation layer is being used (basePath has a value) then
                 // set an ENVIRONMENT variable to be used by zowe.
-                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
-                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                if (SYSTEM_PROPS.zosmf.basePath != null) {
+                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = SYSTEM_PROPS.zosmf.basePath;
                 }
 
                 const response = runCliScript(scriptDir + "/submit_and_list_jobs_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
                         TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosjobs.iefbr14Member,
-                        DEFAULT_SYSTEM_PROPS.zosmf.host,
-                        DEFAULT_SYSTEM_PROPS.zosmf.port,
-                        DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.pass
+                        SYSTEM_PROPS.zosmf.host,
+                        SYSTEM_PROPS.zosmf.port,
+                        SYSTEM_PROPS.zosmf.user,
+                        SYSTEM_PROPS.zosmf.pass
                     ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);

@@ -9,14 +9,13 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, CancelWorkflow } from "../..";
+import { CancelWorkflow, CreateWorkflow, DeleteWorkflow } from "../..";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../__tests__/__src__/properties/TestProperties";
 import { Upload } from "../../../zosfiles/src/api/methods/upload";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "../../../zosfiles/src/api";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
@@ -24,8 +23,7 @@ import { noSession, noWorkflowKey, nozOSMFVersion, WrongWorkflowKey } from "../.
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;
 let system: string;
@@ -49,15 +47,13 @@ function expectZosmfResponseFailed(response: string, error: ImperativeError, msg
 describe("Cancel workflow", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            // tempProfileTypes: ["zosmf"],
             testName: "create_workflow"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
-        definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
+        definitionFile = `${defaultSystem.unix.testdir.replace(/\/{2,}/g, "/")}/${getUniqueDatasetName(owner)}.xml`;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });
@@ -83,7 +79,7 @@ describe("Cancel workflow", () => {
                 error = err;
             }
         });
-        beforeEach(async () =>{
+        beforeEach(async () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
         });
@@ -116,7 +112,7 @@ describe("Cancel workflow", () => {
                 Imperative.console.info("Error wut: " + inspect(error));
             }
             expectZosmfResponseSucceeded(response, error);
-         });
+        });
     });
     describe("Fail scenarios", () => {
         // wfKey has value from last called CreateWorkflow

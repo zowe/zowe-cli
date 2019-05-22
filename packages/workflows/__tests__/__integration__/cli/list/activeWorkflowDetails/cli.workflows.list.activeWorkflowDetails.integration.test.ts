@@ -21,7 +21,8 @@ describe("List Active Workflow Details", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_active_workflow_details"
+            testName: "list_active_workflow_details",
+            skipProperties: true
         });
     });
 
@@ -61,6 +62,20 @@ describe("List Active Workflow Details", () => {
     it("Should throw error both options is specified.", async () => {
         const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_conflict.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["fakeKey", "fakeName"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("The following options conflict");
+    });
+
+    it("Should throw error skip-workflow-summary is used without other options.", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_sws.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["fakeKey"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("You must also specify at least one of the following:");
+    });
+
+    it("Should throw error list-steps and step-summary-only are used together.", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "list_active_workflow_details_ls_and_sso.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["fakeKey"]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("The following options conflict");
     });

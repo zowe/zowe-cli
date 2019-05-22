@@ -13,8 +13,7 @@ import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete, IDeleteVsamOptions } from "../../../../../src/api/methods/delete";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -23,8 +22,7 @@ let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let volume: string;
 
@@ -37,13 +35,12 @@ describe("Create VSAM Data Set", () => {
             testName: "zos_create_vsam_data_set"
         });
 
-        systemProps = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VSAM`);
-        volume = defaultSystem.datasets.list[0].vol;
+        volume = defaultSystem.datasets.vol;
 
     });
 
@@ -52,8 +49,7 @@ describe("Create VSAM Data Set", () => {
     });
 
     describe("without profiles", () => {
-        let sysProps;
-        let defaultSys: ITestSystemSchema;
+        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
@@ -61,8 +57,7 @@ describe("Create VSAM Data Set", () => {
                 testName: "zos_files_create_vsam_data_set_without_profile"
             });
 
-            sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            defaultSys = sysProps.getDefaultSystem();
+            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterEach(async () => {
@@ -115,7 +110,7 @@ describe("Create VSAM Data Set", () => {
 
         it("should create a VSAM data set specifying 'retain-to'", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
-                TEST_ENVIRONMENT, [dsname, `-v ${volume} --rt 2018360`]);
+                TEST_ENVIRONMENT, [dsname, `-v ${volume} --rt ${new Date().getFullYear() + 1}360`]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });

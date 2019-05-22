@@ -21,6 +21,7 @@ describe("zos-tso stop address-space", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_tso_stop_as_integration",
+            skipProperties: true
         });
     });
     afterAll(async () => {
