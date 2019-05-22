@@ -83,7 +83,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                     params.response.data.setObj("Deleted.");
 
                     if(getWfKey.workflows.length > 0){
-                        params.response.console.log("Workflow(s) deleted: ");
+                        params.response.console.log("Successfully deleted workflow(s): ");
                         params.response.format.output({
                             fields: ["workflowName", "workflowKey"],
                             output: successWf,
