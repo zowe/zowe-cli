@@ -69,16 +69,15 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                             additionalDetails: JSON.stringify(params)
                         });
                     }
+                    const successWf: IWorkflowsInfo[] = [];
                     const failedWfs: IWorkflowsInfo[] = [];
-                    let i: number = 0;
                     for(const element of getWfKey.workflows){
                         try {
                             resp = await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
+                            successWf.push(element);
                         } catch (err) {
-                            getWfKey.workflows.splice(i, 1);
                             failedWfs.push(element);
                         }
-                        i++;
                     }
 
                     params.response.data.setObj("Deleted.");
@@ -87,7 +86,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                         params.response.console.log("Workflow(s) deleted: ");
                         params.response.format.output({
                             fields: ["workflowName", "workflowKey"],
-                            output: getWfKey.workflows,
+                            output: successWf,
                             format: "table",
                             header: true,
                         });
@@ -98,13 +97,14 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                         params.response.format.output({
                             fields: ["workflowName", "workflowKey"],
                             output: failedWfs,
-                            format: "object",
+                            format: "table",
                             header: true,
                         });
                         throw new ImperativeError({
                             msg: `Some workflows were not deleted, please check the message above.`
                         });
                     }
+
                     break;
 
             default:
