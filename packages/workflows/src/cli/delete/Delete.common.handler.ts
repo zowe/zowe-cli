@@ -69,12 +69,12 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                             additionalDetails: JSON.stringify(params)
                         });
                     }
-                    const successWf: IWorkflowsInfo[] = [];
+                    const successWfs: IWorkflowsInfo[] = [];
                     const failedWfs: IWorkflowsInfo[] = [];
                     for(const element of getWfKey.workflows){
                         try {
                             resp = await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
-                            successWf.push(element);
+                            successWfs.push(element);
                         } catch (err) {
                             failedWfs.push(element);
                         }
@@ -86,7 +86,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                         params.response.console.log("Successfully deleted workflow(s): ");
                         params.response.format.output({
                             fields: ["workflowName", "workflowKey"],
-                            output: successWf,
+                            output: successWfs,
                             format: "table",
                             header: true,
                         });
