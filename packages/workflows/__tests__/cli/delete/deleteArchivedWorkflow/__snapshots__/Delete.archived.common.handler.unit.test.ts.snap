@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete workflow common handler process method should delete a workflow using workflow name 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+    "deletionStatus",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "deletionStatus": "Succeeded",
+      "workflowKey": "fake-workflow-key",
+      "workflowName": "fake-name",
+    },
+  ],
+}
+`;
+
+exports[`Delete workflow common handler process method should fail when deletion with workflow name fails fails 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+    "deletionStatus",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "deletionStatus": "Failed",
+      "workflowKey": "fake-workflow-key",
+      "workflowName": "fake-name",
+    },
+  ],
+}
+`;

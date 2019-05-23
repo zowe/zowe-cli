@@ -94,5 +94,12 @@ export interface IWorkflowsInfo {
      */
     archivedInstanceURI?: string;
 
+    /**
+     * Indicates the status of deletion
+     * @type {string}
+     * @memberof IWorkflowsInfo
+     */
+    deletionStatus?: string;
+
 }
 
