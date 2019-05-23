@@ -384,7 +384,34 @@ export default {
                 }
             },
             DIR_TO_USS: {
-                DESCRIPTION: "Upload a local directory to a USS directory",
+                SUMMARY: "Upload a local directory to a USS directory",
+                DESCRIPTION: "Upload a local directory to a USS directory.\n\n" +
+                "An optional .zosattributes file in the source directory can be used to control file conversion and tagging.\n\n" +
+                "An example .zosattributes file:{{space}}{{space}}\n" +
+                "# pattern        local-encoding        remote-encoding{{space}}{{space}}\n" +
+                "# Don't upload the node_modules directory{{space}}{{space}\n" +
+                "node_modules     -{{space}}{{space}\n" +
+                "# Don't upload files that start with periods{{space}}{{space}}\n" +
+                ".*               - {{space}}{{space}\n" +
+                "# Upload jpg images in binary{{space}}{{space}}\n" +
+                "*.jpg            binary                binary{{space}}{{space}}\n" +
+                "# Convert CICS Node.js profiles to EBCDIC{{space}}{{space}}\n" +
+                "*.profile        ISO8859-1             EBCDIC{{space}}{{space}}\n\n" +
+                "Lines starting with the ‘#’ character are comments. Each line can specify up to three positional attributes:\n"+
+
+                "{{bullet}} A pattern to match a set of files. Pattern-matching syntax follows the same rules as those that apply in .gitignore "+
+                "files (note that negated patterns that begin with ‘!’ are not supported). " +
+                "See https://git-scm.com/docs/gitignore#_pattern_format.\n" +
+                "{{bullet}} A local-encoding to identify a file’s encoding on the local workstation. If '-' is specified for local-encoding," +
+                "files that match the pattern are not transferred.\n" +
+                "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
+                "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are transferred " +
+                " in binary mode. Remote files are tagged either with the remote encoding or as binary. \n \n" +
+                "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the " +
+                "z/OS system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n " +
+                "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
+                "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",
+
                 POSITIONALS: {
                     INPUTDIR: "The local directory path that you want to upload to a USS directory",
                     USSDIR: "The name of the USS directory to which you want to upload the local directory"
@@ -396,7 +423,9 @@ export default {
                     EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
                     `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`
+                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`,
+                    EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
+                    `specifying files to ignore and file encodings in the local file my_global_attributes:`
                 }
             },
         },
@@ -411,11 +440,16 @@ export default {
             BINARY_FILES: "Comma separated list of file names to be uploaded in binary mode. " +
             "Use this option when you upload a directory in default ASCII mode, " +
             "but you want to specify certain files to be uploaded in binary mode. " +
-            "All files matching specified file names will be uploaded in binary mode.",
+            "All files matching specified file names will be uploaded in binary mode. " +
+            "If a .zosattributes file (or equivalent file specified via --attributes) is present, "+
+            "--binary-files will be ignored.",
             ASCII_FILES: "Comma separated list of file names to be uploaded in ASCII mode. " +
             "Use this option when you upload a directory with --binary/-b flag, " +
             "but you want to specify certain files to be uploaded in ASCII mode. "  +
-            "All files matching specified file names will be uploaded in ASCII mode.",
+            "All files matching specified file names will be uploaded in ASCII mode. " +
+            "If a .zosattributes file (or equivalent file specified via --attributes) is present, "+
+            "--ascii-files will be ignored.",
+            ATTRIBUTES: "Path of an attributes file to control how files are uploaded",
             MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files." +
             " Increasing the value results in faster uploads. " +
             "However, increasing the value increases resource consumption on z/OS and can be prone " +

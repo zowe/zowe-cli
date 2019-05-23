@@ -94,4 +94,3 @@ describe("List archived workflows", () => {
         });
     });
 });
-

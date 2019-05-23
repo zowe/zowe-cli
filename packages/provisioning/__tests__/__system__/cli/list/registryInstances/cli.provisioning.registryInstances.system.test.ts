@@ -14,9 +14,10 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 
 describe("provisioning list registry_instances", () => {
 
@@ -36,22 +37,15 @@ describe("provisioning list registry_instances", () => {
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
     });
 
+    // Create a separate test environment for no profiles
     describe("without profiles", () => {
-
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
+        let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_instance_variables_without_profiles"
+                testName: "provisioning_list_registry_instances_no_profile"
             });
-
-            DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should display registry instances", async () => {
@@ -59,14 +53,19 @@ describe("provisioning list registry_instances", () => {
             const response = runCliScript(__dirname + "/__scripts__/registryInstances_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
-                    DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    zOSMF.host,
+                    zOSMF.port,
+                    zOSMF.user,
+                    zOSMF.pass
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 });

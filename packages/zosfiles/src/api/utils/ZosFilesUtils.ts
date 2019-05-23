@@ -163,6 +163,16 @@ export class ZosFilesUtils {
             usspath = usspath.substring(1);
         }
         return usspath;
+
+    }
+
+    public static sanitizeUssPathForRestCall(ussPath: string): string {
+        let sanitizedPath = path.posix.normalize(ussPath);
+        if (sanitizedPath.charAt(0) === "/") {
+            // trim leading slash from unix files - API doesn't like it
+            sanitizedPath = sanitizedPath.substring(1);
+        }
+        return encodeURIComponent(sanitizedPath);
     }
 }
 
