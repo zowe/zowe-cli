@@ -13,6 +13,7 @@ import { ICommandDefinition } from "@brightside/imperative";
 import { ActiveWorkflows } from "./activeWorkflows/ActiveWorkflows.definition";
 import { ActiveWorkflowDetails } from "./activeWorkflowDetails/ActiveWorkflowDetails.definition";
 import { RetrieveWorkflowDefinition } from "./retrieveWorkflowDefinition/RetrieveWorkflowDefinition.definition";
+import { ArchivedWorkflows } from "./archivedWorkflows/ArchivedWorkflows.definition";
 
 
 /**
@@ -30,5 +31,6 @@ export const ListDefinition: ICommandDefinition = {
         ActiveWorkflows,
         ActiveWorkflowDetails,
         RetrieveWorkflowDefinition,
+        ArchivedWorkflows,
     ]
 };

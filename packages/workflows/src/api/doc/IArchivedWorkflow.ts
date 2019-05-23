@@ -22,5 +22,5 @@ export interface IArchivedWorkflow {
      * @type {string}
      * @memberof IArchivedWorkflow
      */
-    workflowKey: string;
+    workflowKey?: string;
 }
