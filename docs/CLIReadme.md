@@ -2301,17 +2301,17 @@ cataloged on the system. A VOLSER is analogous to a drive name on a PC.
    *-  Stream content from stdin to a sequential data set named
    "ibmuser.ps" from a Windows console:
 
-* `          $  zowe zos-files upload stdin-to-data-set "ibmuser.ps" < echo "hello world"`
+* `          $  echo "hello world" | zowe zos-files upload stdin-to-data-set "ibmuser.ps"`
 
    *-  Stream content from stdin to a partition data set member
    named "ibmuser.pds(mem)" from a Windows console:
 
-* `          $  zowe zos-files upload stdin-to-data-set "ibmuser.pds(mem)" < echo "hello world"`
+* `          $  echo "hello world" | zowe zos-files upload stdin-to-data-set "ibmuser.pds(mem)"`
 
    *-  Stream content from stdin to a migrated data set and wait
    for it to be recalled from a Windows console:
 
-* `          $  zowe zos-files upload stdin-to-data-set "ibmuser.ps" --mr wait < echo "hello world"`
+* `          $  echo "hello world" | zowe zos-files upload stdin-to-data-set "ibmuser.ps" --mr wait`
 
 ### dir-to-pds<a name="command-dir-to-pds"></a>
 Upload files from a directory to a partioned data set (PDS)
