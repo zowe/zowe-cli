@@ -275,11 +275,11 @@ Install plug\-ins to an application\.
 
       All plug\-ins specified in plugins\.json will be installed to the base
       CLI and the contents will be placed into
-      C:\Users\BAUJA03\\.zowe\plugins\plugins\.json\.
+      C:\Users\<user>\\.zowe\plugins\plugins\.json\.
 
       If you do not specify a plugins\.json file and do not specify a
       plug\-in, the default plugin\.json file
-      (C:\Users\BAUJA03\\.zowe\plugins\plugins\.json) will be used\. This
+      (C:\Users\<user>\\.zowe\plugins\plugins\.json) will be used\. This
       provides a way to install plug\-ins that were lost or corrupted after
       reinstalling or updating Zowe CLI\.
 
@@ -306,7 +306,7 @@ Install plug\-ins to an application\.
 ### Examples
 
 *  Install plug-ins saved in
-C:\Users\BAUJA03\.zowe\plugins\plugins.json:
+C:\Users\<user>\.zowe\plugins\plugins.json:
 
       * `$  zowe plugins install `
 
