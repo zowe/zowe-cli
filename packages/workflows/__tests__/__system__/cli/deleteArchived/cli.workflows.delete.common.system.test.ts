@@ -88,7 +88,7 @@ describe("Delete workflow cli system tests", () => {
                 testEnvironment, [wfName]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain(`Succeeded`);
+            expect(response.stdout.toString()).toContain(`Successfully`);
         });
     });
     describe("Failure Scenarios", () => {

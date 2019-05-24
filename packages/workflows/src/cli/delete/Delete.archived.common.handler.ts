@@ -62,56 +62,60 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 break;
 
             case "workflowName":
-                try{
-                    let wildCard: boolean = true;
-                    let check: boolean;
-                    let failed: boolean = false;
-                    let normalized: string;
-                    this.arguments.workflowName.includes(".*") ? normalized = this.arguments.workflowName.split(".*").join("*") : wildCard = false;
+                let wildCard: boolean = true;
+                let check: boolean;
+                let normalized: string;
+                const successWfs: IWorkflowsInfo[] = [];
+                const failedWfs: IWorkflowsInfo[] = [];
+                this.arguments.workflowName.includes(".*") ? normalized = this.arguments.workflowName.split(".*").join("*") : wildCard = false;
 
-                    listWorkflows = await ListArchivedWorkflows.listArchivedWorkflows(this.mSession);
+                listWorkflows = await ListArchivedWorkflows.listArchivedWorkflows(this.mSession);
 
-                    for(let i = listWorkflows.archivedWorkflows.length - 1; i >= 0; i--) {
-                        // Swap between checks to avoid "glob pattern string required" error.
-                        wildCard ?
-                        check = minimatch(listWorkflows.archivedWorkflows[i].workflowName, normalized) :
-                        check = (listWorkflows.archivedWorkflows[i].workflowName === this.arguments.workflowName);
+                for(let i = listWorkflows.archivedWorkflows.length - 1; i >= 0; i--) {
+                    // Swap between checks to avoid "glob pattern string required" error.
+                    wildCard ?
+                    check = minimatch(listWorkflows.archivedWorkflows[i].workflowName, normalized) :
+                    check = (listWorkflows.archivedWorkflows[i].workflowName === this.arguments.workflowName);
 
-                        if (check) {
-                            this.arguments.workflowKey = listWorkflows.archivedWorkflows[i].workflowKey;
-                            listWorkflows.archivedWorkflows[i].deletionStatus = "Succeeded";
-                            try {
-                                resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession, this.arguments.workflowKey);
-                            } catch (err) {
-                                listWorkflows.archivedWorkflows[i].deletionStatus = "Failed";
-                                failed = true;
-                            }
-                        } else {
-                            listWorkflows.archivedWorkflows.splice(i, 1);
+                    if (check) {
+                        try {
+                            resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession,
+                                                                                       listWorkflows.archivedWorkflows[i].workflowKey);
+                            successWfs.push(listWorkflows.archivedWorkflows[i]);
+                        } catch (err) {
+                            failedWfs.push(listWorkflows.archivedWorkflows[i]);
                         }
+                    } else {
+                        listWorkflows.archivedWorkflows.splice(i, 1);
                     }
+                }
 
-                    if (listWorkflows.archivedWorkflows.length === 0) {
-                        throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
-                        });
-                    }
+                if (listWorkflows.archivedWorkflows.length === 0) {
+                    throw new ImperativeError({
+                        msg: `No workflows match the provided workflow name.`,
+                    });                    }
 
-                    if (listWorkflows.archivedWorkflows.length) {
-                        params.response.format.output({
-                            fields: ["workflowName", "workflowKey", "deletionStatus"],
-                            output: listWorkflows.archivedWorkflows,
-                            format: "table",
-                            header: true,
-                        });
-                    }
-                    if (failed){
-                        throw new ImperativeError ({msg: `Some archived workflows could not be deleted. Marked as "Failed" in the list above`});
-                    }
-                } catch (err){
-                    error = "Delete workflow: " + err;
-                    throw error;
+                if(listWorkflows.archivedWorkflows.length > 0){
+                    params.response.console.log("Successfully deleted workflow(s): ");
+                    params.response.format.output({
+                        fields: ["workflowName", "workflowKey"],
+                        output: successWfs,
+                        format: "table",
+                        header: true,
+                    });
+                }
+
+                if(failedWfs.length > 0){
+                    params.response.console.log("\nFailed to delete Workflow(s): ");
+                    params.response.format.output({
+                        fields: ["workflowName", "workflowKey"],
+                        output: failedWfs,
+                        format: "table",
+                        header: true,
+                    });
+                    throw new ImperativeError({
+                        msg: `Some workflows were not deleted, please check the message above.`
+                    });
                 }
                 params.response.data.setObj("Deleted.");
                 break;

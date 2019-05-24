@@ -390,7 +390,7 @@ describe("Delete workflow common handler", () => {
                 error = e;
             }
 
-            expect(error.toString()).toContain(`Some archived workflows could not be deleted.`);
+            expect(error.toString()).toContain(`Some workflows were not deleted, please check the message above.`);
             expect(ArchivedDeleteWorkflow.archivedDeleteWorkflow).toHaveBeenCalledTimes(1);
             expect(ArchivedDeleteWorkflow.archivedDeleteWorkflow).toHaveBeenCalledWith(fakeSession, workflowKey);
         });
