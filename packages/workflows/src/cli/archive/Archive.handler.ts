@@ -69,7 +69,6 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                     if (getWfKey === null || getWfKey.workflows.length === 0) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
                         });
                     }
                     const successWfs: IWorkflowsInfo[] = [];
