@@ -5,28 +5,27 @@
 #-----------------------------------------------------------------------------#
 #  find and replace the following:                                            #
 #                                                                             #
-#  my-user-name    - This is your TSO user  ID                                #
-#  my-password     - This is your TSO password                                #
-#  my-jes-account  - This is your JES Account number for batch jobs           #
-#  my-uss-dir      - A directory on USS in which files and                    #
-#                    directories can be created                               #
-#  sysaff-system   - System Affinity for some batch jobs, use the system that #
-#                    you are running the tests on                             #
-#  ds-iefbr14-pds  - PDS qualified by an IEFBR14 member JCL to submit         #
-#  ds-iefbr14-ps   - PS with an IEFBR14 JCL to submit                         #
-#  zosmf-host      - The host name for the LPAR with z/OSMF                   #
-#  zosmf-port      - The z/OSMF port                                          #
+#  my-user-name      - This is your TSO user ID                               #
+#  my-password       - This is your TSO password                              #
+#  my-jes-account    - This is your JES Account number for batch jobs         #
+#  my-uss-dir        - A directory on USS in which files and                  #
+#                      directories can be created                             #
+#  sysaff-system     - System Affinity for some batch jobs, use the system    #
+#                      that you are running the tests on                      #
+#  ds-iefbr14-pds    - PDS qualified by an IEFBR14 member JCL to submit       #
+#  ds-iefbr14-ps     - PS with an IEFBR14 JCL to submit                       #
+#  zosmf-host        - The host name for the LPAR with z/OSMF                 #
+#  zosmf-port        - The z/OSMF port                                        #
 #  my-sysplex-system - system name of a system in your sysplex to which       #
 #                      console commands can be routed                         #
-#  my-volume-serial - volume serial used to create data sets                  #
-# ssh-host          - host to connect to ssh on z/OS                          #
-# ssh-port          - port to connect to ssh on z/OS - default is 22          #
-# ssh-private-key   -private key for SSH. specify null if no key              #
-
-keyPassphrase: ssh-private-key-passphrase passphrase for private key.
-  specify null if none
-# timeout for SSH connection. Specify null to use the default or 0 for no timeout
-handshakeTimeout: ssh-handshake-timeout
+#  my-volume-serial  - volume serial used to create data sets                 #
+#  ssh-host          - host to connect to ssh on z/OS                         #
+#  ssh-port          - port to connect to ssh on z/OS - default is 22         #
+#  ssh-private-key   - private key for SSH. specify null if no key            #
+#  ssh-private-key-passphrase - passphrase for private key. specify null if   #
+#                               none                                          #
+#  ssh-handshake-timeout - timeout for SSH connection. Specify null to use    #
+#                          the default or 0 for no timeout                    #
 #-----------------------------------------------------------------------------#
 #-- Note: If you add or rename any fields of this default template,         --#
 #-- please also update the ITestPropertiesSchema interface so that          --#
