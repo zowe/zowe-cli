@@ -351,3 +351,42 @@ describe("Utilities.putUSSPayload", () => {
         });
     });
 });
+
+describe("renameUSSFile", () => {
+    const dummySession = new Session({
+        user: "fake",
+        password: "fake",
+        hostname: "fake",
+        port: 443,
+        protocol: "https",
+        type: "basic"
+    });
+    it("should fail if new file path is not passed in", async () => {
+        let error: Error;
+        try {
+            await Utilities.renameUSSFile(dummySession, "/u/zowe/test", undefined);
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+    });
+    it("should execute if all parameters are provided", async () => {
+        let error: Error;
+        let renameResponse;
+        jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockReturnValue({});
+        const zosmfExpectSecondSpy = jest.spyOn(Utilities, "putUSSPayload");
+        const oldPath = "/u/zowe/test";
+        const newPath= "/u/zowe/test1";
+        try {
+            renameResponse = await Utilities.renameUSSFile(dummySession, oldPath, newPath);
+        } catch (err) {
+            error = err;
+        }
+        expect(error).not.toBeDefined();
+        expect(renameResponse).toBeTruthy();
+        const payload = { request: "move", from: oldPath };
+        expect(zosmfExpectSecondSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload);
+    });
+});
