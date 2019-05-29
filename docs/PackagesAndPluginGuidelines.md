@@ -109,9 +109,9 @@ Additionally, programmatic APIs should support and the following capabilities:
 - Should be categorized in classes that identify theirs actions. For example, `GetJobs.getJobStatus` or `SubmitJobs.submitJcl`.
 
 ## Commands
-Packages and plug-ins will always introduce a new command `[group]` to the Zowe CLI. 
+Packages and plug-ins will always introduce a new command `[group]` to the Zowe CLI. The command `[group]` is the first term you type into the command line after zowe (e.g., zowe cics). 
 
-**Note:** For more information about Zowe CLI commands, see [Command Guidelines](CommandFormatStandards.md).
+**Note:** For more information Zowe CLI commands best practices including command structure, naming, shortcuts, examples, options, and descriptions in Zowe CLI and plug-ins see [Command Guidelines](CommandFormatStandards.md).
 
 Using the command structure conventions, you create a directory structure that follows the following example:
 
