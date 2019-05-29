@@ -103,4 +103,38 @@ describe("Delete workflow cli system tests", () => {
             expect(response.stderr.toString()).toContain("No workflows match the provided workflow name");
         });
     });
+    describe("Delete multiple wf", () => {
+        beforeAll(async () => {
+            // Upload files only for successful scenarios
+            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+        });
+        afterAll(async () => {
+            let error;
+            let response;
+
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
+            // deleting uploaded workflow file
+            try {
+                const wfEndpoint = endpoint + definitionFile;
+                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
+            } catch (err) {
+                error = err;
+            }
+        });
+        beforeEach(async () => {
+            await CreateWorkflow.createWorkflow(REAL_SESSION, wfName + "a", definitionFile, system, owner);
+            await CreateWorkflow.createWorkflow(REAL_SESSION, wfName + "b", definitionFile, system, owner);
+            await CreateWorkflow.createWorkflow(REAL_SESSION, wfName + "c", definitionFile, system, owner);
+        });
+        it("Should delete workflows in zOSMF with wildcard.", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",
+                testEnvironment, [wfName + ".*"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Successfully deleted workflow(s)");
+            expect(response.stdout.toString()).toContain(wfName + "a");
+            expect(response.stdout.toString()).toContain(wfName + "c");
+            expect(response.stdout.toString()).toContain(wfName + "b");
+        });
+    });
 });
