@@ -42,6 +42,10 @@ export const DeleteActiveWorkflow: ICommandDefinition = {
         {
             description: "To delete a workflow instance in z/OSMF with workflow name \"testWorkflow\"",
             options: "--workflow-name \"testWorkflow\""
+        },
+        {
+            description: "To delete multiple workflow instances in z/OSMF with names starting with \"test\"",
+            options: "--workflow-name \"test.*\""
         }
     ],
 };
