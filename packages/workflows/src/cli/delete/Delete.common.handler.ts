@@ -13,6 +13,8 @@ import { IHandlerParameters, ImperativeError } from "@brightside/imperative";
 import { DeleteWorkflow } from "../../api/Delete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListWorkflows } from "../../..";
+import { IActiveWorkflows } from "../../api/doc/IActiveWorkflows";
+import { IWorkflowsInfo } from "../../api/doc/IWorkflowsInfo";
 
 
 /**
@@ -37,7 +39,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
         let resp;
-        let getWfKey;
+        let getWfKey: IActiveWorkflows;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -60,22 +62,50 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 break;
 
             case "workflowName":
-                try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                    if (getWfKey === null) {
+                    getWfKey = await ListWorkflows.listWorkflows(this.mSession, undefined, this.arguments.workflowName);
+                    if (getWfKey === null || getWfKey.workflows.length === 0) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
                             additionalDetails: JSON.stringify(params)
                         });
                     }
-                    resp = await DeleteWorkflow.deleteWorkflow(this.mSession, getWfKey);
-                } catch (err){
-                    error = "Delete workflow: " + err;
-                    throw error;
-                }
-                params.response.data.setObj("Deleted.");
-                params.response.console.log("Workflow deleted.");
-                break;
+                    const successWfs: IWorkflowsInfo[] = [];
+                    const failedWfs: IWorkflowsInfo[] = [];
+                    for(const element of getWfKey.workflows){
+                        try {
+                            resp = await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
+                            successWfs.push(element);
+                        } catch (err) {
+                            failedWfs.push(element);
+                        }
+                    }
+
+                    params.response.data.setObj("Deleted.");
+
+                    if(getWfKey.workflows.length > 0){
+                        params.response.console.log("Successfully deleted workflow(s): ");
+                        params.response.format.output({
+                            fields: ["workflowName", "workflowKey"],
+                            output: successWfs,
+                            format: "table",
+                            header: true,
+                        });
+                    }
+
+                    if(failedWfs.length > 0){
+                        params.response.console.log("\nFailed to delete Workflow(s): ");
+                        params.response.format.output({
+                            fields: ["workflowName", "workflowKey"],
+                            output: failedWfs,
+                            format: "table",
+                            header: true,
+                        });
+                        throw new ImperativeError({
+                            msg: `Some workflows were not deleted, please check the message above.`
+                        });
+                    }
+
+                    break;
 
             default:
             throw new ImperativeError({
