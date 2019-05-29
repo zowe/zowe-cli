@@ -1,5 +1,5 @@
-# Command Format Standards
-This article is a living summary of conventions and best practices for command and option descriptions (help text) in Zowe CLI and plug-ins. 
+# Command Format Guidelines and User Experience Best Practices
+This article provides standard conventions and best practices for command structure, naming, shortcuts, examples including descriptions (help text) in Zowe CLI and plug-ins. 
 
 - [Command Structure](#zowe-cli-command-structure)
 - [Command Definition Documents](#command-definition-documents)
