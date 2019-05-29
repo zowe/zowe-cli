@@ -90,6 +90,18 @@ describe("Delete workflow cli system tests", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(`Successfully`);
         });
+        it("Should delete workflows in zOSMF using wild card in the name", async () => {
+            const secondWf = await CreateWorkflow.createWorkflow(REAL_SESSION, `${wfName}2`, definitionFile, system, owner);
+            wfKey = secondWf.workflowKey;
+            await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",
+                testEnvironment, [`${wfName}.*`]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Successfully deleted workflow(s):");
+            expect(response.stdout.toString()).toContain(`${wfName}`);
+            expect(response.stdout.toString()).toContain(`${wfName}2`);
+        });
     });
     describe("Failure Scenarios", () => {
         it("Should throw error if no workflow with this wf key was found", async () => {
