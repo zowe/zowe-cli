@@ -20,8 +20,9 @@
 *
 */
 
-import { PropertiesWorkflow } from "../../../../src/api/Properties";
 import { ArchiveWorkflow } from "../../../../src/api/ArchiveWorkflow";
+import { ImperativeError } from "@brightside/imperative";
+import { ListWorkflows } from "../../../../src/api/ListWorkflows";
 
 
 describe("List workflow details handler", () => {
@@ -98,6 +99,389 @@ describe("List workflow details handler", () => {
                 fakeSession,
                 workflowKey,
                 undefined);
+        });
+        it("should archive a workflow using workflow name", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handler = new handlerReq.default();
+            const workflowName = "fake-name";
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            // Mock the archive function
+            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+                fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "archived"
+                };
+            });
+
+            // Mock the list function
+            ListWorkflows.listWorkflows = jest.fn((session) => {
+                fakeSession = session;
+                return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowName
+                    },
+                    response: {
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        },
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(fakeSession, workflowKey);
+
+        });
+    });
+    describe("fail scenarios", () => {
+        it("should fail when attemting to archive with workflow key fails", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handler = new handlerReq.default();
+            const workflowKey = "fake-workflow-key";
+            const workflowName = "fake-name";
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            // Mock the list function
+            ListWorkflows.listWorkflows = jest.fn((session) => {
+                fakeSession = session;
+                return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
+            });
+
+            // Mock the archive function
+            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+                fakeSession = session;
+                throw new ImperativeError ({msg: `archive failed`});
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowKey
+                    },
+                    response: {
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error.toString()).toContain(`archive failed`);
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(fakeSession, workflowKey, undefined);
+
+        });
+        it("should fail when no workflows match the provided wf name", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handler = new handlerReq.default();
+            const workflowKey = "fake-workflow-key";
+            const workflowName = "fake-name";
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            // Mock the archive function
+            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+                fakeSession = session;
+                throw new ImperativeError ({msg: `archive failed`});
+            });
+
+            // Mock the list function
+            ListWorkflows.listWorkflows = jest.fn((session) => {
+                fakeSession = session;
+                return {workflows: []};
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowName
+                    },
+                    response: {
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        },
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error.toString()).toContain("No workflows match the provided workflow name.");
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(0);
+
+        });
+        it("should fail when archivation with workflow name fails", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handler = new handlerReq.default();
+            const workflowKey = "fake-workflow-key";
+            const workflowName = "fake-name";
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            // Mock the archive function
+            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+                fakeSession = session;
+                throw new ImperativeError ({msg: `archive failed`});
+            });
+
+            // Mock the list function
+            ListWorkflows.listWorkflows = jest.fn((session) => {
+                fakeSession = session;
+                return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowName
+                    },
+                    response: {
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        },
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error.toString()).toContain(`Some workflows were not archived, please check the message above.`);
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(fakeSession, workflowKey);
+        });
+        it("should fail when neither workflow key or name is chosen", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handler = new handlerReq.default();
+            const workflowKey = "fake-workflow-key";
+            const workflowName = "fake-name";
+            const workflowNothing = "fake-option";
+
+            // Vars populated by the mocked function
+            let error;
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+
+            // Mock the archive function
+            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+                throw new ImperativeError ({msg: `archive failed`});
+            });
+
+            // Mocked function references
+            const profFunc = jest.fn((args) => {
+                return {
+                    host: "fake",
+                    port: "fake",
+                    user: "fake",
+                    pass: "fake",
+                    auth: "fake",
+                    rejectUnauthorized: "fake",
+                };
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.processCmd({
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"],
+                        workflowNothing
+                    },
+                    response: {
+                        format: {
+                            output: jest.fn((parms) => {
+                                expect(parms).toMatchSnapshot();
+                            })
+                        },
+                        data: {
+                            setMessage: jest.fn((setMsgArgs) => {
+                                apiMessage = setMsgArgs;
+                            }),
+                            setObj: jest.fn((setObjArgs) => {
+                                jsonObj = setObjArgs;
+                            })
+                        },
+                        console: {
+                            log: jest.fn((logArgs) => {
+                                logMessage += "\n" + logArgs;
+                            })
+                        }
+                    },
+                    profiles: {
+                        get: profFunc
+                    }
+                } as any);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error.toString()).toContain(`Internal create error:`);
+            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(0);
         });
     });
 });

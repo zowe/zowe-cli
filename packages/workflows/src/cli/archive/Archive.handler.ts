@@ -106,7 +106,6 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                             msg: `Some workflows were not archived, please check the message above.`
                         });
                     }
-
                     break;
 
             default:
