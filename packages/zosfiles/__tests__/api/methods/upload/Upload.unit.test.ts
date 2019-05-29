@@ -1094,13 +1094,12 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledTimes(2);
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploadme")));
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"ignoreme")));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.posix.join("test", "path", "uploadme"));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.posix.join("test", "path", "ignoreme"));
 
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                                                              path.normalize(path.join(testPath,"uploadme")),
-                                                             `${dsName}/uploadme`, true);
+                    `${path.posix.normalize(`${testPath}/uploadme`)}`, `${dsName}/uploadme`, true);
             });
 
             it("should not upload ignored directories", async () => {
@@ -1143,10 +1142,10 @@ describe("z/OS Files - Upload", () => {
 
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploaddir")));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.posix.join("test", "path", "uploaddir"));
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                                                              path.normalize(path.join(testPath, "uploaddir", "uploadedfile")),
+                                                              `${path.posix.normalize(path.posix.join(testPath, "uploaddir", "uploadedfile"))}`,
                                                               `${dsName}/uploaddir/uploadedfile`, true);
             });
             it("should upload files in text or binary according to attributes", async () => {
@@ -1159,12 +1158,12 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse.success).toBeTruthy();
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                                                             path.normalize(path.join(testPath,"textfile")),
+                                                             `${path.posix.normalize(`${testPath}/textfile`)}`,
                                                              `${dsName}/textfile`,
                                                               false,
                                                               "ISO8859-1");
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                                                              path.normalize(path.join(testPath,"binaryfile")),
+                                                             `${path.posix.normalize(`${testPath}/binaryfile`)}`,
                                                              `${dsName}/binaryfile`, true);
             });
 
