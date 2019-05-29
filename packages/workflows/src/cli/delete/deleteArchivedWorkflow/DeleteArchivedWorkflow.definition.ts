@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@brightside/imperative";
 import { join } from "path";
 import { DeleteArchivedWorkflowOptions } from "../deleteArchivedWorkflow/DeleteArchivedWorkflow.options";
 
@@ -42,6 +42,10 @@ export const DeleteArchivedWorkflow: ICommandDefinition = {
         {
             description: "To delete an archived workflow from z/OSMF with workflow name \"testWorkflow\"",
             options: "--workflow-name \"testWorkflow\""
-        }
+        },
+        {
+            description: "To delete multiple archived workflows from z/OSMF with names beginnig with \"test\"",
+            options: "--workflow-name \"test.*\""
+        },
     ],
 };
