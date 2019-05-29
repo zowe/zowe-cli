@@ -12,7 +12,7 @@
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { AbstractSession, Imperative } from "@zowe/imperative";
-import { Utilities, Tag, Upload } from "../../../../../src/api";
+import { Utilities, Tag, Upload, Create, Download } from "../../../../../src/api";
 import { getUniqueDatasetName, getTag } from "../../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: AbstractSession;
@@ -70,4 +70,22 @@ describe.only("USS Utilities", () => {
         expect(isBin).toBe(false);
     });
 
+    it("should rename USS file", async () => {
+        const defaultSystem = testEnvironment.systemTestProperties;
+
+        let createdName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.CREATED`);
+        createdName = createdName.replace(/\./g, "");
+        createdName = `${defaultSystem.unix.testdir}/${createdName}`;
+
+        let newName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.RENAMED`);
+        newName = newName.replace(/\./g, "");
+        newName = `${defaultSystem.unix.testdir}/${newName}`;
+
+        Imperative.console.info("Uploading file with name: " + createdName);
+        await Create.uss(REAL_SESSION, createdName, "file");
+        Imperative.console.info("Should rename to: " + newName);
+        await Utilities.renameUSSFile(REAL_SESSION, createdName, newName);
+        const result = await Download.ussFile(REAL_SESSION, newName);
+        expect(result.success).toBe(true);
+    });
 });
