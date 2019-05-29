@@ -918,7 +918,7 @@ removal\.
       * `$  zowe profiles delete ssh-profile profilename`
 
 ## list | ls<a name="module-list"></a>
-List profiles of the type 
+List profiles of the type
 ### zosmf-profiles<a name="command-zosmf-profiles"></a>
 z/OSMF Profile
 
@@ -3872,17 +3872,17 @@ Upload the content of a stdin to a z/OS data set
 *  Stream content from stdin to a sequential data set
 named "ibmuser.ps" from a Windows console:
 
-      * `$  zowe zos-files upload stdin-to-data-set "ibmuser.ps" < echo "hello world"`
+      * `$  echo "hello world" | zowe zos-files upload stdin-to-data-set "ibmuser.ps"`
 
 *  Stream content from stdin to a partition data set
 member named "ibmuser.pds(mem)" from a Windows console:
 
-      * `$  zowe zos-files upload stdin-to-data-set "ibmuser.pds(mem)" < echo "hello world"`
+      * `$  echo "hello world" | zowe zos-files upload stdin-to-data-set "ibmuser.pds(mem)"`
 
 *  Stream content from stdin to a migrated data set and
 wait for it to be recalled from a Windows console:
 
-      * `$  zowe zos-files upload stdin-to-data-set "ibmuser.ps" --mr wait < echo "hello world"`
+      * `$  echo "hello world" | zowe zos-files upload stdin-to-data-set "ibmuser.ps" --mr wait`
 
 ### dir-to-pds<a name="command-dir-to-pds"></a>
 Upload files from a local directory to a partitioned data set (PDS)
@@ -4055,13 +4055,13 @@ Upload a local directory to a USS directory\.
 An optional \.zosattributes file in the source directory can be used to
 control file conversion and tagging\.
 
-An example \.zosattributes file:  
-\# pattern local\-encoding remote\-encoding  
-\# Don't upload the node\_modules directory  
-\.\* \-   
-\*\.jpg binary binary  
-\# Convert CICS Node\.js profiles to EBCDIC  
-\*\.profile ISO8859\-1 EBCDIC  
+An example \.zosattributes file:
+\# pattern local\-encoding remote\-encoding
+\# Don't upload the node\_modules directory
+\.\* \-
+\*\.jpg binary binary
+\# Convert CICS Node\.js profiles to EBCDIC
+\*\.profile ISO8859\-1 EBCDIC
 
 Lines starting with the ‘\#’ character are comments\. Each line can
 specify up to three positional attributes:
