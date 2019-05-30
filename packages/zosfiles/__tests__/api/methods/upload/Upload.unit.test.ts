@@ -1094,8 +1094,8 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledTimes(2);
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.join("test", "path", "uploadme"));
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.join("test", "path", "ignoreme"));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploadme")));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"ignoreme")));
 
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
@@ -1143,7 +1143,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
-                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.join("test", "path", "uploaddir"));
+                expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploaddir")));
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath, "uploaddir", "uploadedfile")),
