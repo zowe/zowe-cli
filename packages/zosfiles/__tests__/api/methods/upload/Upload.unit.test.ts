@@ -1096,7 +1096,9 @@ describe("z/OS Files - Upload", () => {
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/ignoreme");
 
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession, `${path.normalize(`${testPath}/uploadme`)}`, `${dsName}/uploadme`, true);
+                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                                                              path.normalize(path.join(testPath,"uploadme")),
+                                                             `${dsName}/uploadme`, true);
             });
 
             it("should not upload ignored directories", async () => {
@@ -1142,9 +1144,8 @@ describe("z/OS Files - Upload", () => {
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith("test/path/uploaddir");
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                    `${path.normalize(`${testPath}/uploaddir/uploadedfile`)}`,
-                    `${dsName}/uploaddir/uploadedfile`,
-                     true);
+                                                              path.normalize(path.join(testPath, "uploaddir", "uploadedfile")),
+                                                              `${dsName}/uploaddir/uploadedfile`, true);
             });
             it("should upload files in text or binary according to attributes", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
@@ -1156,12 +1157,12 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse.success).toBeTruthy();
                 expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                                                             `${path.normalize(`${testPath}/textfile`)}`,
+                                                             path.normalize(path.join(testPath,"textfile")),
                                                              `${dsName}/textfile`,
                                                               false,
                                                               "ISO8859-1");
                 expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
-                                                             `${path.normalize(`${testPath}/binaryfile`)}`,
+                                                              path.normalize(path.join(testPath,"binaryfile")),
                                                              `${dsName}/binaryfile`, true);
             });
 
