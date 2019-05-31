@@ -9,29 +9,28 @@
 *
 */
 
-import { ITestSystemsGroupSchema } from "./ITestSystemsGroupSchema";
+import { ITestZosmfSchema } from "./ITestZosmfSchema";
+import { ITestConsoleSchema } from "./ITestConsoleSchema";
+import { ITestTsoSchema } from "./ITestTsoSchema";
+import { ITestZosJobsSchema } from "./ITestZosJobsSchema";
+import { ITestProvisioningSchema } from "./ITestProvisioningSchema";
+import { ITestWorkflowsSchema } from "./ITestWorkflowsSchema";
+import { ITestUnixSchema } from "./ITestUnixSchema";
+import { ITestDatasetSchema } from "./ITestDatasetSchema";
+import { ITestSshSchema } from "./ITestSshSchema";
 
 /**
  * Interface representing the values in the custom_properties.yaml file
  * see example_properties.yaml for descriptions and more details
  */
 export interface ITestPropertiesSchema {
-
-    systems: ITestSystemsGroupSchema;
-
-    zosjobs: {
-        iefbr14Member: string,
-        iefbr14PSDataSet: string,
-        jobclass: string;
-        sysaff: string;
-    };
-
-    provisioning: {
-        templateName: string,
-        instanceName: string
-    };
-
-    workflows: {
-        system: string
-    };
+    zosmf: ITestZosmfSchema;
+    datasets: ITestDatasetSchema;
+    zosjobs: ITestZosJobsSchema;
+    provisioning: ITestProvisioningSchema;
+    tso: ITestTsoSchema;
+    console: ITestConsoleSchema;
+    workflows: ITestWorkflowsSchema;
+    unix: ITestUnixSchema;
+    ssh: ITestSshSchema;
 }

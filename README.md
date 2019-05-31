@@ -38,10 +38,9 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 **Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://zowe.github.io/docs-site/latest/extend/extend-cli/cli-devTutorials.html). 
 
 ## Build Zowe CLI from Source
-The first time that you download Zowe CLI from the GitHub repository, issue the following commands to install the required Zowe CLI dependencies and several development tools:
+The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm config set @zowe:registry https://api.bintray.com/npm/ca/brightside
 npm install --registry https://registry.npmjs.org
 ```
 
@@ -135,12 +134,10 @@ If the `custom_properties.yaml` file cannot be found or loaded, an error with re
 
 ## Frequently Asked Questions
 
-- [How can I install Zowe CLI as a root user on Mac/Linux?](how-can-i-install-zowe-cli-as-a-root-user-on-Mac-Linux)
+- **How can I install Zowe CLI as a root user on Mac/Linux?**
 
-### How can I install Zowe CLI as a root user on Mac/Linux?
+  You can install the CLI as root so that all users can access the CLI without installing it individually on their user account. As the root user on Mac/Linux, issue the following command: 
 
-You can install the CLI as root so that all users can access the CLI without installing it individually on their user account. As the root user on Mac/Linux, issue the following command: 
+  ```npm i -g @zowe/cli@latest --ignore-scripts```
 
-```npm i -g @zowe/cli@latest --ignore-scripts```
-
-**Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
+  **Warning!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.

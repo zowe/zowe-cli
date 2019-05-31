@@ -12,8 +12,7 @@
 import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -54,15 +53,14 @@ describe("zos-jobs delete job command", () => {
 
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-            let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+            let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_delete_job_without_profiles"
                 });
 
-                const systemProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-                DEFAULT_SYSTEM_PROPS = systemProps.getDefaultSystem();
+                DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {

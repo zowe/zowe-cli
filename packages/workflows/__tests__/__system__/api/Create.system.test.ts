@@ -13,11 +13,9 @@ import { CreateWorkflow, DeleteWorkflow } from "../../..";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { Upload } from "../../../../zosfiles/src/api/methods/upload";
+import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { ZosFilesConstants } from "../../../../zosfiles/src/api";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
@@ -26,19 +24,23 @@ import {
     noSession,
     noSystemName,
     noWorkflowDefinitionFile,
-    noWorkflowName, nozOSMFVersion, wrongOwner
+    noWorkflowName,
+    nozOSMFVersion,
+    wrongOwner
 } from "../../../src/api/WorkflowConstants";
+import { ICreatedWorkflowLocal } from "../../../src/api/doc/ICreatedWorkflowLocal";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
 let inputFile: string;
+let tempDefFile: string;
+let tempVarFile: string;
 
 const workflow = __dirname + "/../testfiles/demo.xml";
 const vars = __dirname + "/../testfiles/vars.properties";
@@ -61,11 +63,9 @@ describe("Create workflow", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            // tempProfileTypes: ["zosmf"],
             testName: "create_workflow"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
         wfName = `${getUniqueDatasetName(owner)}`;
@@ -121,7 +121,7 @@ describe("Create workflow", () => {
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
             wfKey = response.workflowKey;
-            });
+        });
         it("Should create workflow in zOSMF with variable input file.", async () => {
             let error;
             let response: ICreatedWorkflow;
@@ -135,10 +135,8 @@ describe("Create workflow", () => {
             }
             expectZosmfResponseSucceeded(response, error);
             expect(response.workflowKey).toBeDefined();
-            // TODO: after properties API is created check also if variable has the right value, something like that:
-            // expect(propResponse.variables.value).toContain("Hello world");
             wfKey = response.workflowKey;
-            });
+        });
         it("Should create workflow in zOSMF with variable.", async () => {
             let error;
             let response: ICreatedWorkflow;
@@ -156,14 +154,14 @@ describe("Create workflow", () => {
             // TODO: after properties API is created check also if variable has the right value, something like that:
             // expect(propResponse.variables.value).toContain("Hello world");
             wfKey = response.workflowKey;
-            });
+        });
         it("Should create workflow in zOSMF with all options.", async () => {
             let error;
             let response: ICreatedWorkflow;
 
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, inputFile,
-                    "GREETING=HELLO WORLD", true, "Public",false, "1.0");
+                    "GREETING=HELLO WORLD", true, "Public", false, "1.0");
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -174,7 +172,7 @@ describe("Create workflow", () => {
             // TODO: after properties API is created check also if variable has the right value, something like that:
             // expect(propResponse.variables.value).toContain("Hello world");
             wfKey = response.workflowKey;
-            });
+        });
     });
     describe("Failure scenarios", () => {
         it("Throws an error with incorrect variable format.", async () => {
@@ -278,7 +276,7 @@ describe("Create workflow", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner,  null,
+                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, null,
                     null, null, null, null, "");
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
@@ -401,7 +399,7 @@ describe("Create workflow", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner,"DS..NAME");
+                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, "DS..NAME");
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -413,7 +411,7 @@ describe("Create workflow", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner,"DS.123.NAME");
+                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, "DS.123.NAME");
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -542,6 +540,54 @@ describe("Create workflow", () => {
                 Imperative.console.info(`Error ${error}`);
             }
             expect(error.errorCode).toEqual(wrongPath);
+        });
+    });
+    describe("Success Scenarios create from local file", () => {
+        afterEach(async () => {
+            // deleting workflow
+            await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
+            try {
+                await Delete.ussFile(REAL_SESSION, tempDefFile.slice(1));
+                await Delete.ussFile(REAL_SESSION, tempVarFile.slice(1));
+            } catch (err) {
+                Imperative.console.info("Error: " + inspect(err));
+            }
+        });
+        it("Should create workflow in zOSMF with variable input file.", async () => {
+            let error;
+            let response: ICreatedWorkflow;
+
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expectZosmfResponseSucceeded(response, error);
+            expect(response.workflowKey).toBeDefined();
+            wfKey = response.workflowKey;
+        });
+        it("Should create workflow in zOSMF with variable input file and keep the files", async () => {
+            let error;
+            let response: ICreatedWorkflowLocal;
+
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars, null, false, null,
+                                                                    false, true);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+            expect(response.workflowKey).toBeDefined();
+            expect(response.filesKept).toBeDefined();
+            expect(response.filesKept).toHaveLength(2);
+            wfKey = response.workflowKey;
+            tempDefFile = response.filesKept[0];
+            tempVarFile = response.filesKept[1];
         });
     });
 });

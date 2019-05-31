@@ -22,6 +22,7 @@ describe("zos-tso send as", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_tso_send_as_integration",
+            skipProperties: true
         });
     });
 

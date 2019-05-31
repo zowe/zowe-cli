@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zossmf check status definition should not have changed 1`] = `
+exports[`zosmf check status definition should not have changed 1`] = `
 Object {
   "description": "Confirm that z/OSMF is running on a system specified in your profile and gather information about the z/OSMF server for diagnostic purposes. The command outputs properties of the z/OSMF server such as version, hostname, and installed plug-ins.",
   "examples": Array [

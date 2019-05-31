@@ -14,7 +14,6 @@ import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../..";
 import { WorkflowConstants } from "../../src/api/WorkflowConstants";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../zosfiles/src/api";
 import { CreateWorkflow } from "../../src/api/Create";
@@ -26,16 +25,14 @@ const workflowKeyConst: string = "0123-456789-abc-def";
 let workflowKeyActual: string;
 const localWorkflowPath: string = `${__dirname}/testfiles/demo.xml`;
 let remoteWorkflowPath: string;
-let sysProperties: TestProperties;
 const allWorkflowKeys: string[] = [];
 
 async function setup() {
     testEnvironment = await TestEnvironment.setUp({
         testName: "archive_workflow"
     });
-    sysProperties = new TestProperties(testEnvironment.systemTestProperties);
     session = TestEnvironment.createZosmfSession(testEnvironment);
-    remoteWorkflowPath=`${sysProperties.getDefaultSystem().unix.testdir}/wf${Date.now()}.xml`;
+    remoteWorkflowPath=`${testEnvironment.systemTestProperties.unix.testdir.replace(/\/{2,}/g, "/")}/wf${Date.now()}.xml`;
 }
 
 async function cleanup() {
@@ -58,8 +55,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
     });
     beforeEach(async ()=> {
         const systemName = testEnvironment.systemTestProperties.workflows.system;
-        const system = sysProperties.getDefaultSystem();
-        const owner = system.zosmf.user;
+        const owner = testEnvironment.systemTestProperties.zosmf.user;
         const workflowInstance = await CreateWorkflow.createWorkflow(session, `Arch Workflow ${Date.now()}`, remoteWorkflowPath, systemName, owner);
         workflowKeyActual = workflowInstance.workflowKey;
         allWorkflowKeys.push(workflowKeyActual);
@@ -178,9 +174,8 @@ describe("Errors caused by the user interaction", ()=>{
         }
     });
     it("409 Request Conflict", async ()=>{
-        const systemName = testEnvironment.systemTestProperties.systems.primary;
-        const system = sysProperties.getDefaultSystem();
-        const owner = system.zosmf.user;
+        const systemName = testEnvironment.systemTestProperties.workflows.system;
+        const owner = testEnvironment.systemTestProperties.zosmf.user;
         const workflowInstance = await CreateWorkflow.createWorkflow(session, `Arch Workflow ${Date.now()}`, remoteWorkflowPath, systemName, owner);
         workflowKeyActual = workflowInstance.workflowKey;
 

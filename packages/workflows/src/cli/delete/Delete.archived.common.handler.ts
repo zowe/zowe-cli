@@ -14,7 +14,8 @@ import { ArchivedDeleteWorkflow } from "../../api/ArchivedDelete";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { ListArchivedWorkflows } from "../../api/ListArchivedWorkflows";
 import { IArchivedWorkflows } from "../../../src/api/doc/IArchivedWorkflows";
-import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "../../../src/api/WorkflowConstants";
+import { IWorkflowsInfo } from "../../api/doc/IWorkflowsInfo";
+const minimatch = require("minimatch");
 
 /**
  * Common handler to delete a workflow instance in z/OSMF.
@@ -38,7 +39,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error: string;
         let resp: string;
-        let getWfKey: string;
+        let listWorkflows: IArchivedWorkflows;
         this.arguments = params.arguments;
 
         let sourceType: string;
@@ -61,21 +62,62 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 break;
 
             case "workflowName":
-                try{
-                    getWfKey = await ListArchivedWorkflows.getWfKey(this.mSession, this.arguments.workflowName, WorkflowConstants.ZOSMF_VERSION);
-                    if (getWfKey === null) {
-                        throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
-                        });
+                let wildCard: boolean = true;
+                let check: boolean;
+                let normalized: string;
+                const successWfs: IWorkflowsInfo[] = [];
+                const failedWfs: IWorkflowsInfo[] = [];
+                this.arguments.workflowName.includes(".*") ? normalized = this.arguments.workflowName.split(".*").join("*") : wildCard = false;
+
+                listWorkflows = await ListArchivedWorkflows.listArchivedWorkflows(this.mSession);
+
+                for(let i = listWorkflows.archivedWorkflows.length - 1; i >= 0; i--) {
+                    // Swap between checks to avoid "glob pattern string required" error.
+                    wildCard ?
+                    check = minimatch(listWorkflows.archivedWorkflows[i].workflowName, normalized) :
+                    check = (listWorkflows.archivedWorkflows[i].workflowName === this.arguments.workflowName);
+
+                    if (check) {
+                        try {
+                            resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession,
+                                                                                       listWorkflows.archivedWorkflows[i].workflowKey);
+                            successWfs.push(listWorkflows.archivedWorkflows[i]);
+                        } catch (err) {
+                            failedWfs.push(listWorkflows.archivedWorkflows[i]);
+                        }
+                    } else {
+                        listWorkflows.archivedWorkflows.splice(i, 1);
                     }
-                    resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(this.mSession, getWfKey);
-                } catch (err){
-                    error = "Delete workflow: " + err;
-                    throw error;
+                }
+
+                if (listWorkflows.archivedWorkflows.length === 0) {
+                    throw new ImperativeError({
+                        msg: `No workflows match the provided workflow name.`,
+                    });                    }
+
+                if(listWorkflows.archivedWorkflows.length > 0){
+                    params.response.console.log("Successfully deleted workflow(s): ");
+                    params.response.format.output({
+                        fields: ["workflowName", "workflowKey"],
+                        output: successWfs,
+                        format: "table",
+                        header: true,
+                    });
+                }
+
+                if(failedWfs.length > 0){
+                    params.response.console.log("\nFailed to delete Workflow(s): ");
+                    params.response.format.output({
+                        fields: ["workflowName", "workflowKey"],
+                        output: failedWfs,
+                        format: "table",
+                        header: true,
+                    });
+                    throw new ImperativeError({
+                        msg: `Some workflows were not deleted, please check the message above.`
+                    });
                 }
                 params.response.data.setObj("Deleted.");
-                params.response.console.log("Workflow deleted.");
                 break;
 
             default:

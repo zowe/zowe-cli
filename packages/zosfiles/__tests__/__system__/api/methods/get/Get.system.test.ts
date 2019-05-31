@@ -9,22 +9,20 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, ZosFilesConstants, List, } from "../../../../../";
-import { Imperative, Session } from "@zowe/imperative";
+import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants, } from "../../../../../";
+import { Imperative, IO, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
 import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZosmfListResponse";
-
+import { Utilities, Tag } from "../../../../../src/api";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 
@@ -32,11 +30,9 @@ describe("Get", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_view"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -96,6 +92,7 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.toString()).toEqual(data);
             });
+
 
             it("should get data set content with volume option", async () => {
                 let error;
@@ -232,7 +229,7 @@ describe("Get", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display a proper message when getting the content of a data set that does not exists", async () => {
+            it("should display a proper message when getting the content of a data set that does not exist", async () => {
                 let response: Buffer;
                 let error;
 
@@ -265,7 +262,7 @@ describe("Get", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display a proper message when getting the content of a data set that does not exists", async () => {
+            it("should display a proper message when getting the content of a file that does not exist", async () => {
                 let response: Buffer;
                 let error;
 
@@ -274,7 +271,6 @@ describe("Get", () => {
                 } catch (err) {
                     error = err;
                 }
-
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("File not found.");

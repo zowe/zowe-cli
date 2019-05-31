@@ -14,62 +14,16 @@ import { Imperative, Session } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestSystemSchema } from "../../../../../../__tests__/__src__/properties/ITestSystemSchema";
-import { TestProperties } from "../../../../../../__tests__/__src__/properties/TestProperties";
-import { DeleteInstance, ListInstanceInfo, ListRegistryInstances, PerformAction, ProvisioningConstants } from "../../../../../provisioning";
-
-const MAX_TIMEOUT_NUMBER: number = 3600000;
-const SLEEP_TIME: number = 10000;
+import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
+import { ProvisioningConstants } from "../../../..";
+import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let SYSTEM_PROPS: TestProperties;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let REAL_SESSION: Session;
-let defaultSystem: ITestSystemSchema;
 let templateName: string;
-let instanceName: string;
-let accountNumber: string;
-
-function sleep(time: number) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-async function cleanUp() {
-    const instances = await ListRegistryInstances.listRegistryCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION);
-    for (const instance of instances["scr-list"]) {
-        let instanceState: string;
-        let instanceId: string;
-        if (instance["external-name"].includes(instanceName)) {
-            instanceId = instance["object-id"];
-            if (instance.state === "being-provisioned") {
-                instanceId = instance["object-id"];
-                instanceState = instance.state;
-                while (instanceState === "being-provisioned") {
-                    await sleep(SLEEP_TIME);
-                    instanceState = (await ListInstanceInfo.listInstanceCommon(REAL_SESSION,
-                        ProvisioningConstants.ZOSMF_VERSION, instanceId)).state;
-                    Imperative.console.info(`Instance state is ${instanceState}`);
-                }
-                Imperative.console.info(`Instance state is ${instanceState}`);
-                await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                    instanceId, "deprovision");
-                instanceState = "being-deprovisioned";
-                while (instanceState === "being-deprovisioned") {
-                    await sleep(SLEEP_TIME);
-                    instanceState = (await ListInstanceInfo.listInstanceCommon(REAL_SESSION,
-                        ProvisioningConstants.ZOSMF_VERSION, instanceId)).state;
-                    Imperative.console.info(`Instance state is ${instanceState}`);
-                }
-                Imperative.console.info(`Instance state is ${instanceState}`);
-                await DeleteInstance.deleteDeprovisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceId);
-
-            } else {
-                await PerformAction.doProvisioningActionCommon(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
-                    instanceId, "deprovision");
-            }
-        }
-    }
-}
+let instanceID: string;
 
 describe("provisioning provision template", () => {
 
@@ -80,45 +34,35 @@ describe("provisioning provision template", () => {
             tempProfileTypes: ["zosmf", "tso"]
         });
 
-        SYSTEM_PROPS = new TestProperties(TEST_ENVIRONMENT.systemTestProperties);
-        defaultSystem = SYSTEM_PROPS.getDefaultSystem();
         templateName = templateName = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
-        accountNumber = defaultSystem.tso.account;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        instanceName = TEST_ENVIRONMENT.systemTestProperties.provisioning.instanceName;
     });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        await cleanUp();
-    }, MAX_TIMEOUT_NUMBER);
 
     it("should successfully issue the command", async () => {
         const regex = fs.readFileSync(__dirname + "/../provision/__regex__/provision_template_response.regex").toString();
         const response = runCliScript(__dirname + "/__scripts__/template/provision_template_success.sh", TEST_ENVIRONMENT,
-            [templateName, accountNumber]);
+            [templateName]);
+
+        // Get instanceID later delete that instance
+        instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
+        Imperative.console.info(`Instance ID: ${instanceID}`);
+        // Delete the provisioned instance
+        await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-    }, MAX_TIMEOUT_NUMBER);
+    }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
+    // Create a separate test environment for no profiles
     describe("without profiles", () => {
-
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
-        let DEFAULT_SYSTEM_PROPS: ITestSystemSchema;
+        let zOSMF: ITestZosmfSchema;
 
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_template_info_without_profiles"
+                testName: "provisioning_prov_template_no_profile"
             });
-
-            const sysProps = new TestProperties(TEST_ENVIRONMENT_NO_PROF.systemTestProperties);
-            DEFAULT_SYSTEM_PROPS = sysProps.getDefaultSystem();
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+            zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });
 
         it("should successfully issue the command", async () => {
@@ -127,15 +71,26 @@ describe("provisioning provision template", () => {
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     templateName,
-                    accountNumber,
-                    DEFAULT_SYSTEM_PROPS.zosmf.host,
-                    DEFAULT_SYSTEM_PROPS.zosmf.port,
-                    DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    zOSMF.host,
+                    zOSMF.port,
+                    zOSMF.user,
+                    zOSMF.pass
                 ]);
+
+            // Get instanceID later delete that instance
+            instanceID = new RegExp(regex, "g").exec(response.stdout.toString())[2];
+            Imperative.console.info(`Instance ID: ${instanceID}`);
+            // Delete the provisioned instance
+            await ProvisioningTestUtils.removeRegistryInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, instanceID);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
-        }, MAX_TIMEOUT_NUMBER);
+        }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 });

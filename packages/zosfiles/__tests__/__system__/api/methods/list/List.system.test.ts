@@ -9,19 +9,17 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload,  ZosFilesMessages } from "../../../../../";
+import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload } from "../../../../../";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let path: string;
 let filename: string;
@@ -30,11 +28,9 @@ describe("List command group", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_list"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -314,7 +310,7 @@ describe("List command group", () => {
                 let response;
 
                 try {
-                    response = await List.fileList(REAL_SESSION, path, { maxLength: 1 });
+                    response = await List.fileList(REAL_SESSION, path, {maxLength: 1});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;

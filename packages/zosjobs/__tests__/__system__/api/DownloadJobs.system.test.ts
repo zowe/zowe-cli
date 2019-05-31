@@ -11,18 +11,16 @@
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../../";
 import { ImperativeError, IO, Session } from "@zowe/imperative";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "../../../../zosfiles/src/api/methods/get";
 
 let outputDirectory: string;
 let REAL_SESSION: Session;
 let account: string;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
 
 describe("Download Jobs - System tests", () => {
     let jobid: string;
@@ -34,8 +32,7 @@ describe("Download Jobs - System tests", () => {
             testName: "zos_download_jobs"
         });
         outputDirectory = testEnvironment.workingDir + "/output";
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -59,8 +56,10 @@ describe("Download Jobs - System tests", () => {
         }
     });
 
-    afterEach(() => {
-        require("rimraf").sync(outputDirectory);
+    afterEach((done: any) => {
+        require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
+            done(err);
+        });
     });
 
     afterAll(async () => {
@@ -71,11 +70,10 @@ describe("Download Jobs - System tests", () => {
 
         it("should be able to download a single DD from job output", async () => {
             const downloadDir = outputDirectory + "/downloadsingle/";
-            const content = await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
+            await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,
                 jobFile: jesJCLJobFile
             });
-            expect(content).toContain("EXEC PGM=IEFBR14");
             expect(IO.existsSync(downloadDir)).toEqual(true);
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
             expect(IO.existsSync(expectedFile)).toEqual(true);
@@ -84,10 +82,9 @@ describe("Download Jobs - System tests", () => {
 
         it("should be able to download a single DD from job output", async () => {
 
-            const content = await DownloadJobs.downloadSpoolContent(REAL_SESSION,
+            await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile,
             );
-            expect(content).toContain("EXEC PGM=IEFBR14");
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");

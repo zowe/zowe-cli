@@ -21,12 +21,12 @@ const category = "Provisioning";
 const statusName = "complete";
 const owner = "owner1";
 const vendor = "IBM";
-const workflowName = "workflow1";
+const workflowName = "workflow one";
 const badString = "Ba?d";
 const badString1 = "Ba&d";
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
-const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${workflowName}&category=${category}`
+const PRETEND_URL = START_RESOURCE_QUERY + `?workflowName=${encodeURIComponent(workflowName)}&category=${category}`
                                          + `&system=${system}&owner=${owner}&vendor=${vendor}&statusName=${statusName}`;
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowsInfo = {

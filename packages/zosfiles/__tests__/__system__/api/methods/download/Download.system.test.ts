@@ -19,25 +19,22 @@ import {
     ZosFilesConstants,
     ZosFilesMessages
 } from "../../../../../";
-import { Imperative, Session, IO } from "@zowe/imperative";
+import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { TestProperties } from "../../../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../../../__tests__/__src__/properties/ITestSystemSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
-import { mkdirpSync } from "fs-extra";
 import { posix } from "path";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 const rimraf = require("rimraf").sync;
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 let file: string;
@@ -46,11 +43,9 @@ describe("Download Data Set", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_file_download"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
@@ -410,7 +405,7 @@ describe("Download Data Set", () => {
     });
 
     describe("Download USS File", () => {
-         // Delete created uss file
+        // Delete created uss file
         afterAll(async () => {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
@@ -443,7 +438,6 @@ describe("Download Data Set", () => {
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
-                expect(response.apiResponse).toEqual(Buffer.from(data));
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
@@ -471,7 +465,6 @@ describe("Download Data Set", () => {
 
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
-                expect(response.apiResponse).toEqual(Buffer.from(data));
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
@@ -496,7 +489,6 @@ describe("Download Data Set", () => {
                 }
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
-                expect(response.apiResponse).toEqual(Buffer.from(data));
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`test1.txt`).toString());
@@ -505,6 +497,7 @@ describe("Download Data Set", () => {
                 // Delete created local file
                 IO.deleteFile("test1.txt");
             });
+
         });
 
         describe("Failure scenarios", () => {

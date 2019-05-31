@@ -129,6 +129,13 @@ export class WorkflowConstants {
      * @type {string}
      * @memberof WorkflowConstants
      */
+    public static readonly workflowKey: string = "workflowKey";
+    /**
+     * URI base for filter workflows from registry API.
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
     public static readonly workflowName: string = "workflowName";
 
     /**
@@ -178,6 +185,14 @@ export class WorkflowConstants {
      * @memberof WorkflowConstants
      */
     public static readonly filePath: string = "definitionFilePath";
+
+    /**
+     * Default path for uploading temporary files
+     * @static
+     * @type {string}
+     * @memberof WorkflowConstants
+     */
+    public static readonly tempPath: string = "/tmp";
 
 }
 

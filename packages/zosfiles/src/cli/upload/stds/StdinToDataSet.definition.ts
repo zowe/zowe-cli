@@ -48,15 +48,18 @@ export const StdinToDataSetDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.ps" < echo "hello world"`
+            options: `"ibmuser.ps"`,
+            prefix: `echo "hello world" |`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.pds(mem)" < echo "hello world"`
+            options: `"ibmuser.pds(mem)"`,
+            prefix: `echo "hello world" |`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"ibmuser.ps" --mr wait < echo "hello world"`
+            options: `"ibmuser.ps" --mr wait`,
+            prefix: `echo "hello world" |`
         }
     ]
 };

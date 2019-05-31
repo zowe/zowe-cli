@@ -21,7 +21,8 @@ describe("provisioning perform", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "provisioning_provision"
+            testName: "provisioning_provision",
+            skipProperties: true
         });
     });
 

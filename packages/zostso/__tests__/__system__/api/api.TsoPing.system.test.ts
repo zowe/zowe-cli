@@ -13,16 +13,14 @@ import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { IPingResponse, noPingInput, PingTso, StopTso } from "../../../../zostso";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestProperties } from "../../../../../__tests__/__src__/properties/TestProperties";
-import { ITestSystemSchema } from "../../../../../__tests__/__src__/properties/ITestSystemSchema";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { IStartTsoParms, StartTso } from "../../../index";
 
 let servletKey: string;
 
 let testEnvironment: ITestEnvironment;
-let systemProps: TestProperties;
-let defaultSystem: ITestSystemSchema;
+let systemProperties: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 
 function expectZosmfResponseSucceeded(response: IPingResponse, error: ImperativeError) {
@@ -45,8 +43,7 @@ describe("PingTsoCommand Test", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_tso_ping"
         });
-        systemProps = new TestProperties(testEnvironment.systemTestProperties);
-        defaultSystem = systemProps.getDefaultSystem();
+        systemProperties = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         const START_PARAMS: IStartTsoParms = {
@@ -59,7 +56,7 @@ describe("PingTsoCommand Test", () => {
         };
 
         // start an address space for us to ping
-        START_PARAMS.account = defaultSystem.tso.account;
+        START_PARAMS.account = systemProperties.tso.account;
         const response = await StartTso.startCommon(REAL_SESSION, START_PARAMS);
         servletKey = response.servletKey;
     });
