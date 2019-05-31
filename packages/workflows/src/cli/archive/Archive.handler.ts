@@ -14,6 +14,8 @@ import { ArchiveWorkflow } from "../../api/ArchiveWorkflow";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 import { noWorkflowName } from "../../api/WorkflowConstants";
 import { ListWorkflows } from "../../..";
+import { IWorkflowsInfo } from "../../api/doc/IWorkflowsInfo";
+import { IActiveWorkflows } from "../../api/doc/IActiveWorkflows";
 
 
 /**
@@ -47,7 +49,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
         }
 
         let resp;
-        let getWfKey;
+        let getWfKey: IActiveWorkflows;
         let error;
 
         switch (sourceType) {
@@ -63,22 +65,48 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 break;
 
             case "workflowName":
-                try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                    if (getWfKey === null) {
+                    getWfKey = await ListWorkflows.listWorkflows(this.mSession, undefined, this.arguments.workflowName);
+                    if (getWfKey === null || getWfKey.workflows.length === 0) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
                         });
                     }
-                    resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, getWfKey, undefined);
-                } catch (err){
-                    error = "Archive workflow: " + err;
-                    throw error;
-                }
-                params.response.data.setObj(resp);
-                params.response.console.log("Workflow archived with workflow-name " + this.arguments.workflowName);
-                break;
+                    const successWfs: IWorkflowsInfo[] = [];
+                    const failedWfs: IWorkflowsInfo[] = [];
+                    for(const element of getWfKey.workflows){
+                        try {
+                            resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, element.workflowKey);
+                            successWfs.push(element);
+                        } catch (err) {
+                            failedWfs.push(element);
+                        }
+                    }
+
+                    params.response.data.setObj("Archived.");
+
+                    if(getWfKey.workflows.length > 0){
+                        params.response.console.log("Successfully archived workflow(s): ");
+                        params.response.format.output({
+                            fields: ["workflowName", "workflowKey"],
+                            output: successWfs,
+                            format: "table",
+                            header: true,
+                        });
+                    }
+
+                    if(failedWfs.length > 0){
+                        params.response.console.log("\nFailed to archive Workflow(s): ");
+                        params.response.format.output({
+                            fields: ["workflowName", "workflowKey"],
+                            output: failedWfs,
+                            format: "table",
+                            header: true,
+                        });
+                        throw new ImperativeError({
+                            msg: `Some workflows were not archived, please check the message above.`
+                        });
+                    }
+                    break;
 
             default:
             throw new ImperativeError({
