@@ -1,52 +1,44 @@
 # Package and Plug-in Guidelines
-This document is intended to be a living summary document of conventions and best practices for creating packages and plug-ins for Zowe CLI.
-
-Packages are contributions bundled directly with the base Zowe CLI. It is the core set of commands and API functionality. 
-
-Plug-ins are essentially identical to packages. However, you create and maintain plug-ins outside of the Zowe CLI code base and install them using the plug-in manager.
+This document is a living summary of conventions for developing packages and plug-ins for Zowe CLI. Packages are contributions bundled directly with the base Zowe CLI. They are the core set of commands and API functionality. Plug-ins are similar to packages, however, you create and maintain plug-ins outside of the Zowe CLI code base and install them using the plug-in manager.
 
 Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zowe/zowe-cli-sample-plugin) as a code base.
 
-## Contents
 - [Plug-in Repositories](#plug-in-repositories)
 - [Directories](#directories)
 - [Directory Structure](#directory-structure)
 - [Programmatic APIs](#programmatic-apis)
 - [Commands](#commands)
-- [CLI Directory and File Structure](#cli-directory-and-file-structure)
 - [Profiles](#profiles)
 
 ## Plug-in Repositories
 
-Name plug-in repositories according to the `[group]` name , where `[group]` is your Zowe CLI `[group]` name. 
+Name plug-in repositories according to the Zowe CLI `[group]` name. For example, the `cics` plug-in repository name is `/zowe-cli-cics-plugin`.
 
-**Note:** For more information, see [Command Format Standards](CommandFormatStandards.md) for details on `[group]`.
-
-For example, the `endevor` plug-in repository name is `endevor`.
+**Note:** See [Command Format Standards](CommandFormatStandards.md) for details about `[group]`.
 
 ## Directories
-Packages and plug-ins require the following directories and files:
+
+The following directories and files are required in packages and plug-ins:
 
 - `src/` for source code
-- `src/cli/` contains your command definitions and handlers
+- `src/cli/` contains command definitions and handlers
   - Create your `[group]` definition within this directory.
   - Do NOT place additional `.definition` files in this directory. 
-      
-      **Note:** For more information,see [CLI Directory and File Structure](#cli-directory-and-file-structure). 
-- A `README.md` for instructions on building, testing, packaging, etc.
-  - TODO: README Guidelines
+- A `README.md` for instructions about building, testing, etc... For more information, see [Documentation Guidelines](../CONTRIBUTING.md#documentation-guidelines).
 - An `index.ts` for exports from your package or plug-in.
 
 ### Package Directories
 
-In addition to the requirements that are described in [Directories](#directories), packages require the following directories and files:
+In addition to the requirements described in [Directories](#directories), **packages** require the following directories and files:
+- A `packages` folder (built in contributions to Zowe CLI)
 - `__tests__` directory for test code. Each package has a `__tests__` directory.
   - `__tests__` contains the unit tests (the structure maps exactly to the `src/` directory structure - this is a requirement for Jest and manual mocking).
   - `__tests__/__system__` for system tests (See [System Test Layout](TESTING.md#system-test-layout) for more details)
 - The imperative configuration document has a command module glob that will automatically recognize a file in this directory (`"**/cli/*.definition!(.d).*s"`)
 
+
 ### Plug-in Directories
-In addition to the requirements that are described in [Directories](#directories), packages plug-ins require the following directories and files:
+In addition to the requirements that are described in [Directories](#directories), **plug-ins** require the following directories and files:
 
 - `package.json`
 
@@ -57,7 +49,8 @@ When introducing a new **package** to bundle with base Zowe CLI, you create a di
 For plug-ins, this is handled automatically based on the name of your plug-in.
 
 ### Example Package Structure
-The following diagram illustrates an example of the directory structure of a package:
+The following diagram illustrates the package directory structure:
+
 ```
 packages
 └── mypackage
@@ -75,7 +68,8 @@ packages
 ```
 
 ### Example Plug-in Structure
-The following diagram illustrates an example of the directory structure of a plug-in:
+The following diagram illustrates the plug-in directory structure
+
 ```
 <root>
 ├── src
@@ -94,7 +88,9 @@ The following diagram illustrates an example of the directory structure of a plu
 ```
 
 ## Programmatic APIs
+
 Programmatic APIs should adhere to the following standards and conventions:
+
 - [Code Standards](../CONTRIBUTING.md#code-standards)
 - [General Conventions](../CONTRIBUTING.md#general-conventions)
 - [Programmatic APIs Standards](../CONTRIBUTING.md#programmatic-apis)
@@ -103,22 +99,22 @@ Programmatic APIs should adhere to the following standards and conventions:
 - [JS Documentation](../CONTRIBUTING.md#js-documentation)
 
 Additionally, programmatic APIs should support and the following capabilities:
-- Include trace messages
-- Support backward compatibility throughout releases
+
+- Include trace messages.
+- Support backward compatibility throughout releases.
 - Provide a `Common` version API call that accepts: 
-  - Connection information, when applicable
-  - Parm objects that can be extended in the future while maintaining forward and backward compatibility
-- Include *convenience methods* that aid in calling `Common` methods, when appropriate
+  - Connection information, when applicable.
+  - Parm objects that can be extended in the future while maintaining forward and backward compatibility.
+- Include *convenience methods* that aid in calling `Common` methods, when appropriate.
 - Should be categorized in classes that identify theirs actions. For example, `GetJobs.getJobStatus` or `SubmitJobs.submitJcl`.
 
 ## Commands
-Packages and plug-ins will always introduce a new command `[group]` to the Zowe CLI. 
+Packages and plug-ins will always introduce a new command `[group]` to the Zowe CLI. The command `[group]` is the first term you type into the command line after zowe (e.g., zowe cics). 
 
-**Note:** For more information about Zowe CLI commands, see [Command Guidelines](/docs/CommandFormatStandards.md).
+**Note:** For more information Zowe CLI commands best practices including command structure, naming, shortcuts, examples, options, and descriptions in Zowe CLI and plug-ins see [Command Guidelines](CommandFormatStandards.md).
 
-Using the command structure conventions, you create a directory structure that follows the example found in section [CLI Directory and File Structure](#cli-directory-and-file-structure) section.
+Using the command structure conventions, you create a directory structure that follows the following example:
 
-## CLI Directory and File Structure
 **Example Layout:**
 ```
 cli
@@ -136,6 +132,6 @@ cli
 ```
 
 ## Profiles 
-You define profile types on the base imperative configuration document (found in the root `imperative/` directory). Packages and plug-ins can define their own profile type, or, they can take advantage of a previously defined profile type. For example, the `zos-files` and `zos-console` share a `zosmf` profile because both profile types use z/OSMF APIs.
+Define profile types on the base imperative configuration document (found in the root `imperative/` directory). Packages and plug-ins can define their own profile type, or, they can take advantage of a previously defined profile type. For example, the `zos-files` and `zos-console` share a `zosmf` profile because both profile types use z/OSMF APIs.
 
 For more information, see [Profile Guidelines](ProfileGuidelines.md).
