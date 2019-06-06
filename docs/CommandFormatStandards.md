@@ -33,7 +33,7 @@ You create "Definition Documents" to define the syntax/help text for commands. F
 
 Refer to the following guidelines for naming `[groups]`, `[actions]`, `[objects]`, and `[options]` in syntax:
 
-- Aim for consistency between commands and across groups and plug-ins. Look at what others have done and consider existing conventions. Re-inventing the wheel often makes it difficult for users to learn and remember syntax. An example is the use of the term `list` for outputing information. We've seen variations such as `print`, `echo`, and `view`, but generally settled on a standard of `list`.
+- Aim for consistency between commands and across groups and plug-ins. Look at what others have done and consider existing conventions. Re-inventing the wheel often makes it difficult for users to learn and remember syntax. An example is the use of the term `list` for outputting information. We've seen variations such as `print`, `echo`, and `view`, but generally settled on a standard of `list`.
 
 - Use lower case so that it is easier to type commands. The CLI is case sensitive and mixed case introduces usability problems with typos/errors. An exception is mainframe dataset name values, which are not case-sensitive.
 
@@ -49,11 +49,11 @@ Refer to the following guidelines for naming `[groups]`, `[actions]`, `[objects]
 
     - Single letter aliases are typed with a single dash (for example, -a) on the command-line while multi-letter aliases require two dashes (for example, `--ac`). So, single letter aliases are attractive because they are the easiest to type. 
 
-    - We have cases of three names/aliases (for example, password includes --password  | --pass | --pw). This example came about due to a desire to have compatibily across the core CLI and various plugins and the desire to use OS Environmental Variables to assign passwords across services such zOSMF. 
+    - We have cases of three names/aliases (for example, password includes --password  | --pass | --pw). This example came about due to a desire to have compatiblity across the core CLI and various plugins and the desire to use OS Environmental Variables to assign passwords across services such zOSMF. 
 
 ## Command Descriptions
 
-Refer to the following guidelines when writing descriptions for syntax segments `[objects]`, `[actions]`, `[objects]`, and `[options]`:
+Refer to the following guidelines when writing descriptions for syntax segments `[group]`, `[actions]`, `[objects]`, and `[options]`:
 
 - Segments names require both a summary and full description.
 
@@ -67,7 +67,7 @@ Refer to the following guidelines when writing descriptions for syntax segments 
 
 ## Command Examples
 
-Research and usability testing has revealed that examples are the single most importent element of the online help pages. Adding useful examples should be a priority.
+Research and usability testing has revealed that examples are the single most important element of the online help pages. Adding useful examples should be a priority.
 
 - On the help page for an `[object]` definition, you should include at least one command example. Where there are multiple options, there should be examples to demonstrate each.
 
@@ -79,17 +79,17 @@ Research and usability testing has revealed that examples are the single most im
 
 - Most options include a an explicit name/option and a value/argument (for example, `--max-length 5`).
 
-- Positional arguments are a special kind of option. They are values/arguments entered that have an implicit option name and are usually enteried immediately after the `object` (for example, the file name in the `zowe zos-files list dataset` command). These are usually required arguments. A single positional argument is most common but some commands have multiple positional arguments that are entered space-separated. We do not advise having mulitple positional arguments because then the user must type several values in a row in the correct order, which can be error prone and hard to understand the proper syntax. Where there appears to be a need for multiple positional arguments, consider adding formal `option` names and make them required. 
+- Positional arguments are a special kind of option. They are values/arguments entered that have an implicit option name and are usually entered immediately after the `object` (for example, the file name in the `zowe zos-files list dataset` command). These are usually required arguments. A single positional argument is most common but some commands have multiple positional arguments that are entered space-separated. We do not advise having multitple positional arguments because then the user must type several values in a row in the correct order, which can be error prone and hard to understand the proper syntax. Where there appears to be a need for multiple positional arguments, consider adding formal `option` names and make them required. 
 
-- Required options are listed under a Required Options section in the help. User research and usabilty testing have shown that statements expalining which options are required is among the most useful information in the online help pages, so it is important to write good descriptions and include these in the examples.
+- Required options are listed under a Required Options section in the help. User research and usability testing have shown that statements explaining which options are required is among the most useful information in the online help pages, so it is important to write good descriptions and include these in the examples.
 
 - Non-required options are listed under an Options section in the help.
 
 - The help may include other categories of options for connecting to a service such as z/OSMF (for example, `--password`), setting profiles, and global options (for example,`response-format-json`)
 
-- Teams bulding commands and plug-ins should be mindful of the number of `[options]` because adding many options can add a lot of complxity to the commands and reduce usability. In these cases, consider splitting a command into multiple commands.
+- Teams building commands and plug-ins should be mindful of the number of `[options]`, because adding many options can add complexity to the commands and reduce usability. In these cases, consider splitting a command into multiple commands.
 
-- Mutually exclusive options are two options that conflict and only one can be used. These can introduce usability problems. The use of both options can produce unpredicitable results or fail in error. The mutual exlusion with other options should be noted in the option description. 
+- Mutually exclusive options are two options that conflict and only one can be used. These can introduce usability problems. The use of both options can produce unpredictable results or fail in error. The mutual exclusion with other options should be noted in the option description. 
 
 - Dependencies between options can exist (if you specify one, you must specify the other, for example). This can introduce usability problems. The dependencies with other options should be noted in the option description.
 
@@ -107,7 +107,7 @@ Some commands have a shorter syntax. The authors of a command might have decided
 #### Example: `zowe plugins list`
 #### Example: `zowe plugins update my-plugin`
 
-There is a tension here between consistency and ease of understanding. In the case of the plug-ins group, the syntax could have included a `obect` with the name plugin but that would be awkward (for example, zowe plugins list plugins). We advise that teams use the full syntax in most cases but where it is better to have an abberviated syntax, apply to that to all commands in a `group` so that there is still a measure of consistency. 
+There is a tension here between consistency and ease of understanding. In the case of the plug-ins group, the syntax could have included a `object` with the name plugin but that would be awkward (for example, zowe plugins list plugins). We advise that teams use the full syntax in most cases but where it is better to have an abbreviated syntax, apply to that to all commands in a `group` so that there is still a measure of consistency. 
 
 ## The Lost Group Problem for Command Structure
-When teams build plug-ins, the plug-in name ends up as the `group` name (for example, zowe cics). This means that your plugin can't have groups or categories of commands. A workaround is to append a group name to the `action` name (for example, catetory-action and jobs-list). This may or may not be desirable. To avoid actions with compound names, teams can create seperate plug-ins. 
+When teams build plug-ins, the plug-in name ends up as the `group` name (for example, zowe cics). This means that your plugin can't have groups or categories of commands. A workaround is to append a group name to the `action` name (for example, category-action and jobs-list). This may or may not be desirable. To avoid actions with compound names, teams can create separate plug-ins. 
