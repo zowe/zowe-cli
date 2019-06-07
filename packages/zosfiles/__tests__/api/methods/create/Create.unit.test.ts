@@ -739,3 +739,131 @@ describe("Create VSAM Data Set", () => {
         });
     });
 });
+
+describe("Create ZFS", () => {
+    const dummySession: any = {};
+    const fileSystemName = "TEST.ZFS";
+
+    it("should succeed with correct parameters", async () => {
+        (ZosmfRestClient as any).postExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const options = {
+            perms: 755,
+            cylsPri: 100,
+            cylsSec: 10,
+            timeout: 20
+        };
+        await Create.zfs(dummySession, fileSystemName, options);
+    });
+
+    it("should fail if perms parameter omitted", async () => {
+        let error;
+        (ZosmfRestClient as any).postExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const options = {
+            cylsPri: 100,
+            cylsSec: 10,
+            timeout: 20
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(error.message).toContain("perms");
+    });
+
+    it("should fail if cylsPri parameter omitted", async () => {
+        let error;
+        (ZosmfRestClient as any).postExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const options = {
+            perms: 755,
+            cylsSec: 10,
+            timeout: 20
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(error.message).toContain("cyls-pri");
+    });
+
+    it("should fail if cylsSec parameter omitted", async () => {
+        let error;
+        (ZosmfRestClient as any).postExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const options = {
+            perms: 755,
+            cylsPri: 100,
+            timeout: 20
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(error.message).toContain("cyls-sec");
+    });
+
+    it("should fail if timeout parameter omitted", async () => {
+        let error;
+        (ZosmfRestClient as any).postExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const options = {
+            perms: 755,
+            cylsPri: 100,
+            cylsSec: 10
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(error.message).toContain("timeout");
+    });
+
+    it("should fail if REST client throws error", async () => {
+        let error;
+        (ZosmfRestClient as any).postExpectString = jest.fn(() => {
+            throw Error("aardvarks like errors");
+        });
+        const options = {
+            perms: 755,
+            cylsPri: 100,
+            cylsSec: 10,
+            timeout: 20
+        };
+
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toEqual("aardvarks like errors");
+    });
+});
