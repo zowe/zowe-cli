@@ -164,3 +164,7 @@ describe("Create VSAM", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
 });
+
+describe("Create ZFS", () => {
+    
+});
