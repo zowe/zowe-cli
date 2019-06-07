@@ -25,7 +25,6 @@ const zfsStrings = fileStrings.CREATE.ACTIONS.ZFS;
 export const ZfsDefinition: ICommandDefinition = {
     name: "zos-file-system",
     aliases: ["zfs"],
-    summary: zfsStrings.SUMMARY,
     description: zfsStrings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/zfs.handler",

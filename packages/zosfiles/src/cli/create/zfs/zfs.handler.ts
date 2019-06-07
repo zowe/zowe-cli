@@ -21,7 +21,7 @@ import { Create } from "../../../api/methods/create";
 export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // collect the options from our command line arguments into an object
-        const createZfsOptions: Partial<ICreateZfsOptions> = {
+        const createZfsOptions: Partial<ICreateZfsOptions> = JSON.parse(JSON.stringify({
             owner: commandParameters.arguments.owner,
             group: commandParameters.arguments.group,
             perms: commandParameters.arguments.perms,
@@ -32,7 +32,7 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
             dataclass: commandParameters.arguments.dataClass,
             volumes: commandParameters.arguments.volumes,
             timeout: commandParameters.arguments.timeout
-        };
+        }));
 
         return Create.zfs(session, commandParameters.arguments.fileSystemName, createZfsOptions);
     }

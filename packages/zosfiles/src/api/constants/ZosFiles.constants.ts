@@ -39,12 +39,6 @@ export const ZosFilesConstants: { [key: string]: any } = {
     RES_ZFS_FILES: "/mfs/zfs",
 
     /**
-     * Indicator of a z/OS mfs
-     * @type {string}
-     */
-    RES_MFS: "/mfs",
-
-    /**
      * Indicator of a members request
      * @type {string}
      * @memberOf ZosFilesConstants
