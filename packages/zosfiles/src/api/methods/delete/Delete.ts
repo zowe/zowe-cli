@@ -188,6 +188,6 @@ export class Delete {
             success: true,
             commandResponse: ZosFilesMessages.zfsDeletedSuccessfully.message,
             apiResponse: data
-        };
+        }
     }
 }

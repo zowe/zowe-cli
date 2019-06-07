@@ -26,7 +26,6 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
 export const ZfsDefinition: ICommandDefinition = {
     name: "zos-file-system",
     aliases: ["zfs"],
-    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: join(__dirname, "zfs.handler"),

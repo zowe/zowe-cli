@@ -183,16 +183,15 @@ export default {
                 }
             },
             ZFS: {
-                SUMMARY: "Delete a z/OS file system permanently",
-                DESCRIPTION: "Delete a z/OS file system permanently.",
+                DESCRIPTION: "Delete a z/OS file system permanently",
                 POSITIONALS: {
-                    FILESYSTEMNAME: "The name of the z/OS file system that you want to delete."
+                    FILESYSTEMNAME: "The name of the z/OS file system that you want to delete"
                 },
                 OPTIONS: {
                     FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently."
                 },
                 EXAMPLES: {
-                    EX1: "Delete the z/OS file system 'HLQ.MYNEW.ZFS'"
+                    EX1: "Delete the z/OS File System 'HLQ.MYNEW.ZFS'"
                 }
             }
         }
