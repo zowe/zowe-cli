@@ -164,6 +164,65 @@ describe("Create VSAM", () => {
     }, LONGER_TIMEOUT);
 });
 
-describe("Create ZFS", () => {
-    
+describe("Create z/OS file system", () => {
+    let fsname: string;
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_create_zfs"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        let response;
+        try {
+            response = await Delete.zfs(REAL_SESSION, fsname);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    afterEach(async () => {
+        let response;
+        try {
+            response = await Delete.zfs(REAL_SESSION, fsname);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    const options: ICreateZfsOptions = {} as any;
+
+    it("should create a ZFS with defaults", async () => {
+        let error;
+        let response;
+
+        options.perms = 755;
+        options.cylsPri = 100;
+        options.cylsSec = 10;
+        options.timeout = 20;
+
+        try {
+            response = await Create.zfs(REAL_SESSION, fsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
 });
