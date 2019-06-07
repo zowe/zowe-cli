@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "5.7.4-alpha.201906071931",
+  "version": "5.8.0-alpha.201906072027",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
