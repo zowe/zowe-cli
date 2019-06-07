@@ -181,6 +181,18 @@ export default {
                     EX2: "Delete the file named '/a/ibmuser/my_text.txt'",
                     EX3: "Recursively delete the directory named '/u/ibmuser/testcases'"
                 }
+            },
+            ZFS: {
+                DESCRIPTION: "Delete a z/OS file system permanently",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the z/OS file system that you want to delete"
+                },
+                OPTIONS: {
+                    FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently."
+                },
+                EXAMPLES: {
+                    EX1: "Delete the z/OS File System 'HLQ.MYNEW.ZFS'"
+                }
             }
         }
     },
