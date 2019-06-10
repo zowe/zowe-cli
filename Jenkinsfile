@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines@v1.0.2') import org.zowe.pipelines.nodejs.NodeJSPipeline
+@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
@@ -45,11 +45,17 @@ node('ca-jenkins-agent') {
     // npm publish configuration
     pipeline.publishConfig = [
         email: pipeline.gitConfig.email,
-        credentialsId: 'GizaArtifactory'
+        credentialsId: 'GizaArtifactory',
+        scope: '@zowe'
     ]
 
     pipeline.registryConfig = [
-        pipeline.publishConfig
+        [
+            email: pipeline.publishConfig.email,
+            credentialsId: pipeline.publishConfig.credentialsId,
+            url: 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
+            scope: pipeline.publishConfig.scope
+        ]
     ]
 
     // Initialize the pipeline library, should create 5 steps
@@ -136,14 +142,6 @@ node('ca-jenkins-agent') {
         junitOutput: INTEGRATION_JUNIT_OUTPUT
     )
 
-    // Check for vulnerabilities
-    pipeline.createStage(
-        name: "Check for Vulnerabilities",
-        stage: {
-            sh 'npm run audit:public'
-        }
-    )
-
     // Perform sonar qube operations
     pipeline.createStage(
         name: "SonarQube",
@@ -154,6 +152,9 @@ node('ca-jenkins-agent') {
             }
         }
     )
+
+    // Check Vulnerabilities
+    pipeline.checkVulnerabilities()
 
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
