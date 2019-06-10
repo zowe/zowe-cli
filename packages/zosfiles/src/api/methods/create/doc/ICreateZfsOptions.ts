@@ -66,9 +66,9 @@ export interface ICreateZfsOptions {
 
     /**
      * The volumes on which to allocate space
-     * @type {string}
+     * @type {string[]}
      */
-    volumes?: string;
+    volumes?: string[];
 
     /**
      * The number of seconds to wait for command to complete
