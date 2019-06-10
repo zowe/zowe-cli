@@ -14,7 +14,7 @@ import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Delete, IDeleteVsamOptions } from "../../../../../src/api/methods/delete";
+import { Delete } from "../../../../../src/api/methods/delete";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
@@ -39,7 +39,7 @@ describe("Create z/OS File System", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        fsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.ZFS`);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         volume = defaultSystem.datasets.vol;
     });
 
@@ -61,7 +61,8 @@ describe("Create z/OS File System", () => {
 
         afterEach(async () => {
             // use DELETE APIs
-            const response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
+            await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
         it("should create a z/OS file system", () => {
@@ -73,8 +74,7 @@ describe("Create z/OS File System", () => {
 
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
-                [fsname,
-                    volume,
+                [fsname, volume,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
