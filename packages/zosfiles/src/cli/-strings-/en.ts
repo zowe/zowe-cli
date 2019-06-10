@@ -191,7 +191,7 @@ export default {
                     FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently."
                 },
                 EXAMPLES: {
-                    EX1: "Delete the z/OS File System 'HLQ.MYNEW.ZFS'"
+                    EX1: "Delete the z/OS file system 'HLQ.MYNEW.ZFS'"
                 }
             }
         }

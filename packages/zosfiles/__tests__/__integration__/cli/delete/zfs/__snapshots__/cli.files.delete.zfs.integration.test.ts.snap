@@ -87,7 +87,7 @@ exports[`Delete z/OS File System should display delete zfs help 1`] = `
  EXAMPLES
  --------
 
-   - Delete the z/OS File System 'HLQ.MYNEW.ZFS':
+   - Delete the z/OS file system 'HLQ.MYNEW.ZFS':
 
       $ zowe zos-files delete zos-file-system \\"HLQ.MYNEW.ZFS\\" -f
 
