@@ -8,10 +8,7 @@ CCS141/
 .vscode
 .idea
 src/brightside.iml
-
-# currently causes an issue installing dependencies for users without giza artifactory access
-package-lock.json
-
+npm-shrinkwrap.json
 # Sonar Files
 .sonar_lock
 .scannerwork/
