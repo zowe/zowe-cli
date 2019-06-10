@@ -9,28 +9,13 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import i18nEnglish from "../../../../src/cli/-strings-/en";
+import { ZfsDefinition } from "../../../../src/cli/delete/zfs/zfs.definition";
 
-describe("zos-files delete zfs command definition", () => {
-    it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/delete/zfs/zfs.definition").ZfsDefinition;
+describe("ZfsDefinition", () => {
+    it("should use the correct object for strings", () => {
+        const strings = i18nEnglish.DELETE.ACTIONS.ZFS;
 
-        expect(definition).toBeDefined();
-
-        // Should not contain children since this is a command
-        expect(definition.children).toBeUndefined();
-
-        // Should require a zosmf profile
-        expect(definition.profile.optional).toEqual(["zosmf"]);
-
-        // Should only contain one positional
-        expect(definition.positionals.length).toEqual(1);
-
-        // The positional should be required
-        expect(definition.positionals[0].required).toBeTruthy();
-
-        // Should not change
-        expect(definition.options).toMatchSnapshot();
-        expect(definition.examples).toMatchSnapshot();
+        expect(ZfsDefinition.description).toBe(strings.DESCRIPTION);
     });
 });
