@@ -201,15 +201,19 @@ describe("Create z/OS file system", () => {
     });
 
     const options: ICreateZfsOptions = {} as any;
+    const perms = 755;
+    const cylsPri = 100;
+    const cylsSec = 10;
+    const timeout = 20;
 
     it("should create a ZFS with defaults", async () => {
         let error;
         let response;
 
-        options.perms = 755;
-        options.cylsPri = 100;
-        options.cylsSec = 10;
-        options.timeout = 20;
+        options.perms = perms;
+        options.cylsPri = cylsPri;
+        options.cylsSec = cylsSec;
+        options.timeout = timeout;
 
         try {
             response = await Create.zfs(REAL_SESSION, fsname, options);

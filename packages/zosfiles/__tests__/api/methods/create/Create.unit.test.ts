@@ -758,7 +758,7 @@ describe("Create ZFS", () => {
     });
 
     it("should fail if perms parameter omitted", async () => {
-        let error;
+        let caughtError;
         (ZosmfRestClient as any).postExpectString = jest.fn(() => {
             // Do nothing
         });
@@ -771,16 +771,16 @@ describe("Create ZFS", () => {
         try {
             await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
-            error = e;
+            caughtError = e;
         }
 
-        expect(error).toBeDefined();
-        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
-        expect(error.message).toContain("perms");
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(caughtError.message).toContain("perms");
     });
 
     it("should fail if cylsPri parameter omitted", async () => {
-        let error;
+        let caughtError;
         (ZosmfRestClient as any).postExpectString = jest.fn(() => {
             // Do nothing
         });
@@ -793,16 +793,16 @@ describe("Create ZFS", () => {
         try {
             await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
-            error = e;
+            caughtError = e;
         }
 
-        expect(error).toBeDefined();
-        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
-        expect(error.message).toContain("cyls-pri");
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(caughtError.message).toContain("cyls-pri");
     });
 
     it("should fail if cylsSec parameter omitted", async () => {
-        let error;
+        let caughtError;
         (ZosmfRestClient as any).postExpectString = jest.fn(() => {
             // Do nothing
         });
@@ -815,16 +815,16 @@ describe("Create ZFS", () => {
         try {
             await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
-            error = e;
+            caughtError = e;
         }
 
-        expect(error).toBeDefined();
-        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
-        expect(error.message).toContain("cyls-sec");
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(caughtError.message).toContain("cyls-sec");
     });
 
     it("should fail if timeout parameter omitted", async () => {
-        let error;
+        let caughtError;
         (ZosmfRestClient as any).postExpectString = jest.fn(() => {
             // Do nothing
         });
@@ -837,18 +837,20 @@ describe("Create ZFS", () => {
         try {
             await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
-            error = e;
+            caughtError = e;
         }
 
-        expect(error).toBeDefined();
-        expect(error.message).toContain(ZosFilesMessages.missingZfsOption.message);
-        expect(error.message).toContain("timeout");
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain(ZosFilesMessages.missingZfsOption.message);
+        expect(caughtError.message).toContain("timeout");
     });
 
     it("should fail if REST client throws error", async () => {
-        let error;
+        const error = new Error("This is a test");
+
+        let caughtError;
         (ZosmfRestClient as any).postExpectString = jest.fn(() => {
-            throw Error("aardvarks like errors");
+            throw error;
         });
         const options = {
             perms: 755,
@@ -860,10 +862,10 @@ describe("Create ZFS", () => {
         try {
             await Create.zfs(dummySession, fileSystemName, options);
         } catch (e) {
-            error = e;
+            caughtError = e;
         }
 
-        expect(error).toBeDefined();
-        expect(error.message).toEqual("aardvarks like errors");
+        expect(caughtError).toBeDefined();
+        expect(caughtError).toBe(error);
     });
 });
