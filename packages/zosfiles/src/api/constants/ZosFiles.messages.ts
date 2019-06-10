@@ -457,6 +457,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     zfsDeletedSuccessfully: {
         message: "z/OS file system deleted successfully."
-    }
+    },
 };
 
