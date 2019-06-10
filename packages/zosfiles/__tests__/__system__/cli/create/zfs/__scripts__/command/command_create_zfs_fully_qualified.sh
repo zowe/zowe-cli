@@ -1,8 +1,9 @@
 #!/bin/bash
 fsn=$1
-HOST=$2
-PORT=$3
-USER=$4
-PASS=$5
-zowe zos-files create data-set-vsam "$fsn" --host $HOST --port $PORT --user $USER --password $PASS --ru=false
+vols=$2
+HOST=$3
+PORT=$4
+USER=$5
+PASS=$6
+zowe zos-files create data-set-vsam "$fsn" --volumes $vols --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 exit $?

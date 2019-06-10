@@ -176,6 +176,7 @@ describe("Create z/OS file system", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        volume = defaultSystem.datasets.vol;
     });
 
     afterAll(async () => {
@@ -202,8 +203,8 @@ describe("Create z/OS file system", () => {
 
     const options: ICreateZfsOptions = {} as any;
     const perms = 755;
-    const cylsPri = 100;
-    const cylsSec = 10;
+    const cylsPri = 10;
+    const cylsSec = 2;
     const timeout = 20;
 
     it("should create a ZFS with defaults", async () => {
@@ -214,6 +215,7 @@ describe("Create z/OS file system", () => {
         options.cylsPri = cylsPri;
         options.cylsSec = cylsSec;
         options.timeout = timeout;
+        options.volumes = [volume];
 
         try {
             response = await Create.zfs(REAL_SESSION, fsname, options);

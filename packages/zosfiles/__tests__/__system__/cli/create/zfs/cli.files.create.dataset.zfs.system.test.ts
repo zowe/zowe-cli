@@ -74,6 +74,7 @@ describe("Create z/OS File System", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [fsname,
+                    volume,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -91,21 +92,14 @@ describe("Create z/OS File System", () => {
 
         it("should create a ZFS", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-                TEST_ENVIRONMENT, [fsname]);
+                TEST_ENVIRONMENT, [fsname, volume]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });
 
         it("should create a ZFS with primary and secondary cylinders specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-                TEST_ENVIRONMENT, [fsname, `--cp 100 --cs 10`]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-        });
-
-        it("should create a ZFS with volume specified", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-                TEST_ENVIRONMENT, [fsname, `-v ${volume}`]);
+                TEST_ENVIRONMENT, [fsname, volume, `--cp 100 --cs 10`]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });
