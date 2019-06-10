@@ -20,6 +20,6 @@ Use a profile to store configuration items under the following conditions:
 
 ### When You Should Not Use Profiles to Store Configuration Items
 
-- Your profiles requires a global configuration. That is, depending on the use case, the use of an environment variable might be more suitable for this type of configuration.
+- Your profile requires a global configuration. That is, depending on the use case, the use of an environment variable might be more suitable for this type of configuration.
 
 
