@@ -105,7 +105,7 @@ describe("Delete z/OS File System", () => {
 
     describe("Expected failures", () => {
         it("should fail deleting a data set that does not exist", async () => {
-            const notExistZfs = `${fsname}.NOTEXIST`
+            const notExistZfs = `${fsname}.NOTEXIST`;
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [notExistZfs, "--for-sure"]);
             expect(response.status).toBe(1);
