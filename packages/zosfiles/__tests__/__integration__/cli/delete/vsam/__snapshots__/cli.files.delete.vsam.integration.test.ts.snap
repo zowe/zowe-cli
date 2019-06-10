@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Delete VSAM Data Set should display delete vsam help 1`] = `
-"================Z/OS FILES CREATE HELP===============
+"================Z/OS FILES DELETE HELP===============
 
  COMMAND NAME
  ------------
@@ -121,7 +121,7 @@ exports[`Delete VSAM Data Set should display delete vsam help 1`] = `
 
       $ zowe zos-files delete data-set-vsam \\"ibmuser.cntl.vsam\\" -f --erase
 
-================Z/OS CFILES CREATE HELP WITH RFJ===========
+================Z/OS FILES DELETE HELP WITH RFJ===========
 {
   \\"success\\": true,
   \\"exitCode\\": 0,
