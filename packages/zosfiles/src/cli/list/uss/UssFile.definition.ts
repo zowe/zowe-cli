@@ -50,11 +50,11 @@ export const USSFileDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"/u/ibmuser --rff name"`
+            options: `"/u/ibmuser" --rff name`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"/u/ibmuser --rfh"`
+            options: `"/u/ibmuser" --rfh`
         }
     ]
 };
