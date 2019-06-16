@@ -73,7 +73,7 @@ The following list describes general conventions for contributing to Zowe CLI:
 
 ## Code Guidelines
 
-Indent code with 4 spaces. This is also documented via `.editorconfig`, which can be used to automatically format the code if you use an [EditorConfig](https://editorconfig.org/) extension for your editor of choice.
+Indent code with 4 spaces. This is also documented via `.editorconfig`, which can be used to automatically format the code if you use an [EditorConfig](http://editorconfig.org/) extension for your editor of choice.
 
 Lint rules are enforced through our [build process](#build-process-guidelines).
 
@@ -97,6 +97,8 @@ Programmatic APIs should also adhere to the following standards and conventions:
 - [Source File Naming Standards](#file-naming-guidelines)
 - [Testing Guidelines](./docs/TESTING.md)
 - [JS Documentation](#js-documentation)
+
+## File Naming Guidelines
 
 ## File Naming Guidelines
 
@@ -157,7 +159,7 @@ In addition to external documentation, please thoroughly comment your code for f
 - Use jsdoc annotations - [document this](https://marketplace.visualstudio.com/items?itemName=joelday.docthis) makes extensive use of jsdoc tags.
   - Common tags to use, `@static`, `@memberOf`, `@returns`, `@params`, `@class`, `@exports`, `@interface`, `@types`, `@throws`, `@link`
 - CLI auto-generated documentation is created via command definitions
-- [tsdoc](https://typedoc.org/) is used to generate html documentation
+- [tsdoc](http://typedoc.org/) is used to generate html documentation
 
 ## More Information
 | For more information about ... | See: |
