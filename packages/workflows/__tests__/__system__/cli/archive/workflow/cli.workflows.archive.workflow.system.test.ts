@@ -14,7 +14,7 @@ import { Session } from "@brightside/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { CreateWorkflow, DeleteWorkflow } from "../../../../..";
+import { CreateWorkflow, DeleteWorkflow, ArchivedDeleteWorkflow } from "../../../../..";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
 import { ZosFilesConstants } from "../../../../../../zosfiles/src/api";
@@ -31,11 +31,11 @@ let owner: string;
 let wfName: string;
 const workflow = join(__dirname, "../../../testfiles/demo.xml");
 
-describe("List workflow cli system tests", () => {
+describe("Archive workflow cli system tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
-            testName: "list_workflow_cli"
+            testName: "archive_workflow_cli"
         });
         defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
@@ -49,7 +49,7 @@ describe("List workflow cli system tests", () => {
         await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
         await TestEnvironment.cleanUp(testEnvironment);
     });
-    describe("List all workflows", () => {
+    describe("Archive workflows", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
@@ -89,7 +89,7 @@ describe("List workflow cli system tests", () => {
                 const archiveCleanUp = await ZosmfRestClient.getExpectJSON<any>(REAL_SESSION,
                     "/zosmf/workflow/rest/1.0/archivedworkflows");
                 archiveCleanUp.archivedWorkflows.forEach(async (element: any) => {
-                    if (element.workflowName === wfName) {
+                    if (element.workflowName === wfName || element.workflowName === `${wfName}2`) {
                         wfKey = element.workflowKey;
                         try {
                             await ZosmfRestClient.deleteExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/archivedworkflows/" + wfKey);
@@ -128,6 +128,15 @@ describe("List workflow cli system tests", () => {
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain(`${wfName}`);
+            });
+            it("should archive multiple workflows using wildcard .*", async () => {
+                await CreateWorkflow.createWorkflow(REAL_SESSION, `${wfName}2`, definitionFile, system, owner);
+                const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
+                    testEnvironment, [`${wfName}.*`]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain(`${wfName}`);
+                expect(response.stdout.toString()).toContain(`${wfName}2`);
             });
         });
         describe("Fail Scenarions", () => {
