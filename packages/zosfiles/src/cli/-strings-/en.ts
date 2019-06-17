@@ -85,7 +85,7 @@ export default {
             ZFS: {
                 DESCRIPTION: "Create a z/OS file system",
                 POSITIONALS: {
-                    FILESYSTEMNAME: "The name of the file system to mount"
+                    FILESYSTEMNAME: "The name of the file system to create"
                 },
                 OPTIONS: {
                     OWNER: "The z/OS user ID or UID for the owner of the ZFS root directory",
@@ -94,9 +94,10 @@ export default {
                     CYLS_PRI: "The number of primary cylinders to allocate for the ZFS",
                     CYLS_SEC: "The number of secondary cylinders to allocate for the ZFS",
                     VOLUMES: "The storage volumes on which to allocate the z/OS file system. Specify a single volume by its volume serial " +
-                    "(VOLSER). To specify more than one volume, enclose the option in double-quotes and separate each VOLSER with a space. " +
-                    "You must specify the volumes option when your cluster is not SMS-managed.",
-                    TIMEOUT: "The number of seconds to wait for the create command to complete"
+                    "(VOLSER). To specify more than one volume, separate each VOLSER with a space. You must specify the volumes option when your " +
+                    "cluster is not SMS-managed.",
+                    TIMEOUT: `The number of seconds to wait for the underlying "zfsadm format" command to complete. If this command times out, ` +
+                    `the ZFS may have been created but not formatted correctly.`
                 },
                 EXAMPLES: {
                     DEFAULT_VALUES: `Create a ZFS named "HLQ.MYNEW.ZFS" using default values of 755 permissions, 10 primary and 2 secondary ` +
