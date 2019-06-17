@@ -32,6 +32,8 @@ The following information is critical to working with the code, running/writing/
 | Guidelines for running tests on Zowe CLI | [Testing Guidelines](./docs/TESTING.md) |
 | Guidelines for running tests on the plug-ins that you build| [Plug-in Testing Guidelines](./docs/PluginTESTINGGuidelines.md) |
 | Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
+| Naming CLI commands and developing syntax | [Command Format Standards](./docs/CommandFormatStandards.md) |
+| Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
 Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs/MaintainerVersioning.md) |
 
 

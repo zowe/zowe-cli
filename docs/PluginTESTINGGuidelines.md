@@ -1,5 +1,5 @@
 # Zowe CLI Plug-in Testing Guidelines
-This document is intended to be a living summary of conventions and best practices for development within Zowe CLI or development of Zowe CLI plug-ins.
+This document is intended to be a living summary of conventions and best practices for running tests against Zowe CLI plug-ins. 
 
 ## Contents
 - [Automated Tests](#automated-tests)
@@ -9,10 +9,10 @@ This document is intended to be a living summary of conventions and best practic
 
 ## Automated Tests
 
-This plugin has two groups of tests that can be run separately:
+Plug-ins have two groups of tests that can be run separately:
 
-* unit tests 
-* system and integration tests.
+* Unit tests 
+* System and integration tests.
 
 All automated test suite file names should end in `.test.ts`. 
 
@@ -21,12 +21,11 @@ To run all automated tests, use the command `npm run test`.
 ## Unit tests 
 
 Unit tests test the logic of your code without interacting with any back end servers or modifying the file system. 
-Dependencies, web APIs, file system functions, and so on should all be mocked with jest's mocking functionality. 
+Dependencies, web APIs, file system functions, and so on should all be mocked with the Jest mocking functionality. 
 
 Unit tests are run with the npm script `test:unit` which is run via the command `npm run test:unit`.
 
-Unit tests are stored under the directory `__tests__` in the project root.  
-You should duplicate the directory structure of file you are unit testing within this folder. 
+Unit tests are stored under the directory `__tests__` in the project root. You should duplicate the directory structure of file you are unit testing within this folder. 
 For instance, if you are testing the file `src/api/MyAPI.ts`, you should create the file `__tests__/api/MyAPI.test.ts`. 
 
 
@@ -53,8 +52,7 @@ You can modify example_properties.yaml to include whatever properties are necess
 
 You can run the system tests by issuing: `npm run test:system`.
 
-If the `custom_properties.yaml` file cannot be found or loaded,
-an error with relevant details will be thrown.
+If the `custom_properties.yaml` file cannot be found or loaded, an error with relevant details will be thrown.
 
 ### Types of System and Integration Tests 
 
