@@ -1,34 +1,35 @@
 # Testing Guidelines
 
-Zowe CLI uses the [jest] testing framework.
+Zowe CLI uses the [jest](https://jestjs.io/) testing framework.
 
-Generally speaking, tests should adhere to same lint rules and conventions as other code within the project.
+In general, tests should adhere to same lint rules and conventions as other code within the project.
 
 ## Test Locations
 
-There are multiple folders in the project that are used for testing purposes. Folders used for testing will have the syntax of `__folder-name__` making them easier to spot.
+There are multiple folders in the project that are used for testing purposes. Folders used for testing will have the syntax of `__folder-name__` making them easier to find.
 
 At the root of the project there are currently 2 main folders:
 
-- [\_\_tests\_\_](../__tests__): This folder contains
+- The [\_\_tests\_\_](../__tests__) folder contains:
   - Test utilities
   - Resources for tests
   - Results of tests
-- [\_\_mocks\_\_](../__mocks__): Defined by the [jest] framework as a place where entire `node_modules` can be mocked.
+- The [\_\_mocks\_\_](../__mocks__) folder:
+  - Defined by the [jest] framework as a place where entire `node_modules` can be mocked.
 
 The actual test source will be found under each package's `__test__` directory. Every package must have a single `__test__` directory as a sibling folder to the package's `src` folder.
 
 ## Test Structure
 
-This section covers all the common guidelines for unit, integration, and system testing.
+This section covers common guidelines for unit, integration, and system testing.
 
-- `describe` blocks within the test file should never contain a `.` character. The reason for this is that it will affect the reporting on the CI/CD pipeline because of how we are parsing the JUnit output. 
+- `describe` blocks within the test file should never contain a `.` character. The reason for this is that it will affect the reporting on the CI/CD pipeline because of how we are parsing the JUnit output.
 
 ## Unit Testing
 
-Unit testing is an important aspect for testing as it makes sure all of our underlying functions are properly tested before even being used together with other components. As such, here are the rules to keep in mind for unit testing:
+Unit testing is important because it makes sure that underlying functions are properly tested before being used together with other components. As such, here are the rules to keep in mind for unit testing:
 
-- For every new TypeScript file that introduces a piece of functionality, a corresponding unit test needs to be created for it.
+- For every new TypeScript file that introduces a piece of functionality, create a corresponding unit test.
   - All unit test files should end with `.unit.test.ts` for test filtering purposes. Any unit test that doesn't end in this exact syntax will not be run in the CI/CD environment.
   - A package's `__tests__` folder should have the exact same directory structure as the `src` folder. (example: if you have `src/folder/another-folder`, then you should have `__tests__/folder/another-folder`)
   - With the 2 above things in mind, if there is a class under `src/folder/SomeClass.ts`, the corresponding unit test would be under `__tests__/folder/SomeClass.unit.test.ts`.
@@ -38,11 +39,11 @@ Unit testing is an important aspect for testing as it makes sure all of our unde
 
 ## Integration Tests
 
-Package/Plugin integration tests are divided into two categories:
-- **API**: Invoking the REST/other public APIs directly (as an app, CI/CD environment, etc. would)
-- **CLI**: Issuing commands via script/exec and ensuring correctness of output (as a user at their terminal/console would)
-
 The intent of integration tests is to test all edge cases without having to rely on a specific system setup. Instead of sending the requests to one of your systems, you can do so to a mock server that can be modified on the fly. They can also test help text output and syntax error responses from the CLI/Plugin.
+
+Package/Plugin integration tests are divided into two categories:
+- **API**: Invoking the REST/other public APIs directly (as an app, CI/CD environment, etc... would).
+- **CLI**: Issuing commands via script/exec and ensuring correctness of output (as a user at their terminal/console would).
 
 ### Integration Test Layout
 - Place integration tests under the packages `__tests__/__integration__` directory. 
@@ -53,11 +54,12 @@ The intent of integration tests is to test all edge cases without having to rely
 - Name **CLI** integration tests as `cli.<group>.<action>.<object>.integration.test.ts`
 
 ## System Tests
+
+The intent of system tests are to test the commands & APIs as they will be used in "real-world" scenarios. Meaning, system tests can/should manipulate the file-system, invoke remote services, etc. as the commands & APIs normally would. 
+
 Package/Plugin system tests are divided into two categories:
 - **API**: Invoking our REST/other public APIs directly (as an app, CI/CD environment, etc. would)
 - **CLI**: Issuing commands via script/exec and ensuring correctness of output (as a user at their terminal/console would)
-
-The intent of system tests are to test the commands & APIs as they will be used in "real-world" scenarios. Meaning, system tests can/should manipulate the file-system, invoke remote services, etc. as the commands & APIs normally would. 
 
 When writing CLI System tests, you can use the utilities in TestEnvironment.ts to create a temporary directory for logging, profiles, and other test data. 
 Calling TestEnvironment.setUp gives you an environment from which to run CLI scripts. You can also ask it to automatically create profiles from your custom_properties.yaml file like so: 
@@ -87,8 +89,7 @@ beforeAll(async () => {
 
 ```
 
-Temporary profiles are created using a randomized profile name to avoid collision with any existing profiles you may be using. The Zowe CLI home environmental variable is automatically set to the temporary directory created in the TestEnvironment.setUp function. 
-If you do request any temporary profiles being created, please be sure to call TestEnvironment.cleanUp in an afterAll block as shown in the example above.
+Temporary profiles are created using a randomized profile name to avoid collision with any existing profiles you may be using. The Zowe CLI home environmental variable is automatically set to the temporary directory created in the TestEnvironment.setUp function. If you do request any temporary profiles being created, please be sure to call TestEnvironment.cleanUp in an afterAll block as shown in the example above.
 
 If you run the tests and forgot to call TestEnvironment.cleanUp, killed the process before the afterAll jest hook could run, 
 or otherwise prevented the profiles from being deleted, you can clean up these stranded profiles by running the command `npm run test:cleanUpProfiles`.
