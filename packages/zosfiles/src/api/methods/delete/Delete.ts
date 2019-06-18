@@ -163,4 +163,31 @@ export class Delete {
             throw error;
         }
     }
+
+    /**
+     * Deletes a z/OS file system
+     *
+     * @param {AbstractSession}           session      z/OSMF connection info
+     * @param {string}                    fileSystemName     The name of the ZFS to delete
+     *
+     * @throws {ImperativeError} File system name must be specified as a non-empty string
+     *
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_DeleteUnixzFsFilesystem.htm
+     */
+    public static async zfs(session: AbstractSession,     fileSystemName: string): Promise<IZosFilesResponse> {
+        // required
+        ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
+        ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
+
+        // Format the endpoint to send the request to
+        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
+
+        const data = await ZosmfRestClient.deleteExpectString(session, endpoint, []);
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.zfsDeletedSuccessfully.message,
+            apiResponse: data
+        };
+    }
 }
