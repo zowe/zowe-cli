@@ -14,6 +14,7 @@ import i18nTypings from "../-strings-/en";
 import { DsDefinition } from "./ds/Ds.definition";
 import { VsamDefinition } from "./vsam/Vsam.definition";
 import { UssDefinition } from "./uss/Uss.definition";
+import { ZfsDefinition } from "./zfs/zfs.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).DELETE;
@@ -32,6 +33,7 @@ export const DeleteDefinition: ICommandDefinition = {
     children: [
         DsDefinition,
         VsamDefinition,
-        UssDefinition
+        UssDefinition,
+        ZfsDefinition
     ]
 };

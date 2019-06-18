@@ -18,6 +18,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { Delete } from "../../../../../src/api/methods/delete";
 import { ZosFilesMessages } from "../../../../..";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ICreateZfsOptions } from "../../../../../src/api/methods/create/doc/ICreateZfsOptions";
 
 
 let testEnvironment: ITestEnvironment;
@@ -32,7 +33,6 @@ describe("Create data set", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_create_dataset"
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -108,7 +108,6 @@ describe("Create VSAM", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
             testName: "zos_create_vsam"
         });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -162,5 +161,74 @@ describe("Create VSAM", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+});
+
+describe("Create z/OS file system", () => {
+    let fsname: string;
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_create_zfs"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        volume = defaultSystem.datasets.vol;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        let response;
+        try {
+            response = await Delete.zfs(REAL_SESSION, fsname);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    afterEach(async () => {
+        let response;
+        try {
+            response = await Delete.zfs(REAL_SESSION, fsname);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    const options: ICreateZfsOptions = {} as any;
+    const perms = 755;
+    const cylsPri = 10;
+    const cylsSec = 2;
+    const timeout = 20;
+
+    it("should create a ZFS with defaults", async () => {
+        let error;
+        let response;
+
+        options.perms = perms;
+        options.cylsPri = cylsPri;
+        options.cylsSec = cylsSec;
+        options.timeout = timeout;
+        options.volumes = [volume];
+
+        try {
+            response = await Create.zfs(REAL_SESSION, fsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
 });

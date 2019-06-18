@@ -275,6 +275,7 @@ describe("Delete", () => {
             expect(caughtError).toBe(error);
         });
     });
+
     describe("uss", () => {
         const dataset = "IJKL";
 
@@ -331,6 +332,76 @@ describe("Delete", () => {
                 caughtError = e;
             }
 
+            expect(caughtError).toBe(error);
+        });
+    });
+
+    describe("zfs", () => {
+        const fileSystemName = "TEST.ZFS";
+
+        it("should succeed with correct parameters", async () => {
+            (ZosmfRestClient as any).deleteExpectString = jest.fn(() => {
+                // Do nothing
+            });
+            await Delete.zfs(dummySession, fileSystemName);
+        });
+
+        it("should fail if fileSystemName is missing or blank", async () => {
+            let caughtError;
+            (ZosmfRestClient as any).deleteExpectString = jest.fn(() => {
+                // Do nothing
+            });
+
+            // TEST AGAINST EMPTY STRING
+            try {
+                await Delete.zfs(dummySession, "");
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingFileSystemName.message);
+
+            caughtError = undefined;
+
+            // TEST AGAINST NULL
+            try {
+                await Delete.zfs(dummySession, null as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingFileSystemName.message);
+
+            caughtError = undefined;
+
+            // TEST AGAINST UNDEFINED
+            try {
+                await Delete.zfs(dummySession, undefined as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingFileSystemName.message);
+        });
+
+        it("should handle an error from the ZosmfRestClient", async () => {
+            const error = new Error("This is a test");
+
+            let caughtError;
+            (ZosmfRestClient as any).deleteExpectString = jest.fn(() => {
+                throw error;
+            });
+
+            try {
+                await Delete.zfs(dummySession, fileSystemName);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
             expect(caughtError).toBe(error);
         });
     });
