@@ -20,6 +20,7 @@ import { CreateDataSetTypeEnum } from "./CreateDataSetType.enum";
 import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
 import { Invoke } from "../invoke";
 import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
+import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import i18nTypings from "../../../cli/-strings-/en";
 import * as path from "path";
 
@@ -381,6 +382,39 @@ export class Create {
         return ZosmfRestClient.postExpectString(session, parameters, headers, payload);
     }
 
+    public static async zfs(
+        session: AbstractSession,
+        fileSystemName: string,
+        options?: Partial<ICreateZfsOptions>)
+        : Promise<IZosFilesResponse> {
+        // We require the file system name
+        ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
+
+        // Removes undefined properties
+        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
+
+        let endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
+
+        this.zfsValidateOptions(tempOptions);
+        tempOptions.JSONversion = 1;
+
+        if (!isNullOrUndefined(tempOptions.timeout)) {
+            endpoint += `?timeout=${tempOptions.timeout}`;
+            delete tempOptions.timeout;
+        }
+
+        const jsonContent = JSON.stringify(tempOptions);
+        const headers = [{"Content-Length": jsonContent.length}];
+
+        const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.zfsCreatedSuccessfully.message,
+            apiResponse: data
+        };
+    }
+
     // ____________________________________________________________________________
     /**
      * Convert the options received from the CLI into options that we supply to IDCAMS.
@@ -527,6 +561,76 @@ export class Create {
                     case "storeclass":
                     case "mgntclass":
                     case "dataclass":
+                        // no validation at this time
+                        break;
+
+                    default:
+                        throw new ImperativeError({msg: ZosFilesMessages.invalidFilesCreateOption.message + option});
+
+                } // end switch
+            }
+        } // end for
+    }
+
+    // ____________________________________________________________________________
+    /**
+     * Validate the options for the command to create a z/OS file system
+     * @param options - options for the creation of the file system
+     */
+    private static zfsValidateOptions(options: ICreateZfsOptions): void {
+        ImperativeExpect.toNotBeNullOrUndefined(options,
+            ZosFilesMessages.missingFilesCreateOptions.message
+        );
+
+        /* If our caller does not supply these options, we supply default values for them,
+         * so they should exist at this point.
+         */
+        ImperativeExpect.toNotBeNullOrUndefined(options.perms,
+            ZosFilesMessages.missingZfsOption.message + "perms"
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(options.cylsPri,
+            ZosFilesMessages.missingZfsOption.message + "cyls-pri"
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(options.cylsSec,
+            ZosFilesMessages.missingZfsOption.message + "cyls-sec"
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(options.timeout,
+            ZosFilesMessages.missingZfsOption.message + "timeout"
+        );
+
+        // validate specific options
+        for (const option in options) {
+            if (options.hasOwnProperty(option)) {
+                switch (option) {
+
+                    case "perms":
+                        const maxPerm = 777;
+                        if ((options.perms < 0) || (options.perms > maxPerm)) {
+                            throw new ImperativeError({
+                                msg: ZosFilesMessages.invalidPermsOption.message + options.perms
+                            });
+                        }
+                        break;
+
+                    case "cylsPri":
+                    case "cylsSec":
+                        // Validate maximum allocation quantity
+                        if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                            throw new ImperativeError({
+                                msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
+                                    strings.COMMON.FOR + " '" + option + "' " + strings.COMMON.WITH_VALUE +
+                                    " = " + options[option] + "."
+                            });
+                        }
+                        break;
+
+                    case "owner":
+                    case "group":
+                    case "storeclass":
+                    case "mgntclass":
+                    case "dataclass":
+                    case "volumes":
+                    case "timeout":
                         // no validation at this time
                         break;
 

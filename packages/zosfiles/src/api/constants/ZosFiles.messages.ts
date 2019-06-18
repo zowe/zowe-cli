@@ -417,6 +417,46 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     errorParsingAttributesFile: {
         message: "Error parsing attributes file {{file}}: {{message}}"
-    }
+    },
+
+    /**
+     * Message indicating that the file system name is required
+     * @type {IMessageDefinition}
+     */
+    missingFileSystemName: {
+        message: "Specify the file system name."
+    },
+
+    /**
+     * Message indicating that an expected ZFS option was not supplied.
+     * @type {IMessageDefinition}
+     */
+    missingZfsOption: {
+        message: "To create a z/OS file system, the following option must be supplied: "
+    },
+
+    /**
+     * Message indicating invalid 'create' command 'perms' option
+     * @type {IMessageDefinition}
+     */
+    invalidPermsOption: {
+        message: "Invalid zos-files create command 'perms' option: "
+    },
+
+    /**
+     * Message indicating that the ZFS was created successfully
+     * @type {IMessageDefinition}
+     */
+    zfsCreatedSuccessfully: {
+        message: "z/OS file system created successfully."
+    },
+
+    /**
+     * Message indicating that the ZFS was deleted successfully
+     * @type {IMessageDefinition}
+     */
+    zfsDeletedSuccessfully: {
+        message: "z/OS file system deleted successfully."
+    },
 };
 
