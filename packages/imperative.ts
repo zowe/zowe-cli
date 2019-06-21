@@ -30,6 +30,7 @@ const config: IImperativeConfig = {
     rootCommandDescription: Constants.DESCRIPTION,
     defaultHome: Constants.HOME_DIR,
     envVariablePrefix: Constants.ENV_PREFIX,
+    webHelpLogoImgPath: require("find-up").sync("web-help/logo.png", {cwd: process.mainModule.filename}),
     logging: {
         appLogging: {
             logFile: Constants.LOG_LOCATION
