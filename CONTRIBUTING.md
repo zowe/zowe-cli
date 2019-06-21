@@ -83,6 +83,21 @@ The following list describes conventions for contributing to Zowe CLI APIs:
 
 - When developing programmatic asynchronous APIs, return promises instead of using call-backs.
 - Use ImperativeExpect to perform minimum parameter validation for API methods (e.g. verify parms exist `ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix", "prefix is required");)
+- Include trace messages.
+- Support backward compatibility throughout releases.
+- Provide a `Common` version API call that accepts: 
+  - Connection information, when applicable.
+  - Parm objects that can be extended in the future while maintaining forward and backward compatibility.
+- Include *convenience methods* that aid in calling `Common` methods, when appropriate.
+- Should be categorized in classes that identify theirs actions. For example, `GetJobs.getJobStatus` or `SubmitJobs.submitJcl`.
+
+Programmatic APIs should also adhere to the following standards and conventions:
+
+- [Code Standards](#code-guidelines)
+- [General Conventions](#general-guidelines)
+- [Source File Naming Standards](#file-naming-guidelines)
+- [Testing Guidelines](./docs/TESTING.md)
+- [JS Documentation](#js-documentation)
 
 ## File Naming Guidelines
 
