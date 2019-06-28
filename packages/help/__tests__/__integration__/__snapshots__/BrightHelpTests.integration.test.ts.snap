@@ -25,7 +25,7 @@ exports[`Root level help tests top level help should contain support link 1`] = 
  GROUPS
  ------
 
-   config                Manage configuration and overrides.              
+   config                Manage configuration and overrides               
    plugins               Install and manage plug-ins                      
    profiles              Create and manage configuration profiles         
    provisioning | pv     Perform z/OSMF provisioning tasks                
