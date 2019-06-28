@@ -43,10 +43,10 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm install --registry https://registry.npmjs.org
+npm install --@zowe:registry=https://registry.npmjs.org --no-package-lock --force
 ```
 
-**Note:** When necessary, you can run the `npm install --registry https://registry.npmjs.org` command again to update dependencies that were changed in package.json.
+**Note:** When necessary, you can run the install command again to update dependencies that were changed in package.json.
 
 If you have credentials to connect to gizaartifactory.jfrog.io, you can issue `npm install` without the `--registry` option. 
 
