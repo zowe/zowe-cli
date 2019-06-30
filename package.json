@@ -66,6 +66,7 @@
   "dependencies": {
     "@zowe/imperative": "^4.1.9-alpha.201906191533",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
+    "get-stdin": "^7.0.0",
     "js-yaml": "^3.13.1",
     "minimatch": "^3.0.4",
     "ssh2": "^0.8.2",
