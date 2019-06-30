@@ -23,20 +23,18 @@ export const StdinDefinition: ICommandDefinition = {
     options: ([
         {
             name: "view-all-spool-content", aliases: ["vasc"],
-            description: "Print all spool output." +
-                " If you use this option you will wait the job to complete.",
+            description: "View all spool content for specified job ID",
             type: "boolean"
         },
         {
             name: "directory", aliases: ["d"],
-            description: "The local directory you would like to download the output of the job." +
-                " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +
-                " If you use this option you will wait the job to complete.",
+            description: "The local directory you would like to download the output for the job to. "
+                + "Creates a subdirectory using the jobID as the name and files are titled based on DD names.",
             type: "string"
         },
         {
             name: "extension", aliases: ["e"],
-            description: "A file extension to save the job output with. Default is '.txt'.",
+            description: "A file extension to save the job output with",
             type: "string"
         },
     ] as ICommandOptionDefinition[]),
