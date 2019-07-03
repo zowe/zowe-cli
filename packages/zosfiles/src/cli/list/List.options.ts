@@ -62,7 +62,6 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         aliases: ["p"],
         description: strings.PATH,
         type: "string"
-<<<<<<< HEAD
     },
 
     /**
@@ -75,7 +74,5 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         description: strings.FSNAME,
         type: "string",
         conflictsWith: ["path"]
-=======
->>>>>>> Add option path for list zfs
     }
 };

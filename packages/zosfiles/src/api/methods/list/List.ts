@@ -177,7 +177,6 @@ export class List {
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
     public static async zfs(session: AbstractSession, options: IZfsOptions = {}): Promise<IZosFilesResponse> {
-<<<<<<< HEAD
         try {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_MFS}`);
@@ -217,17 +216,8 @@ export class List {
             if (options.path) {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
             }
-=======
-
-        try {
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_MFS}`);
->>>>>>> list zfs
 
             const reqHeaders: IHeaderContent[] = [];
-            // if (options.path) {
-            //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
-            // }
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {

@@ -40,8 +40,8 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
         }
 =======
         const response = await List.zfs(session, {
-            path: commandParameters.arguments.volumeSerial,
-            fsname: commandParameters.arguments.attributes,
+            path: commandParameters.arguments.path,
+            fsname: commandParameters.arguments.fsname,
             maxLength: commandParameters.arguments.maxLength
         });
 >>>>>>> list zfs

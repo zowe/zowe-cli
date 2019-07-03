@@ -365,7 +365,6 @@ export default {
                 }
             },
             ZFS: {
-<<<<<<< HEAD
                 SUMMARY: "Listing mounted z/OS file systems",
                 DESCRIPTION: "List all mounted filesystems, or the specific filesystem mounted at a given path," +
                     "or the filesystem with a given Filesystem name.",
@@ -373,14 +372,6 @@ export default {
                     EX1: "To list all mounted file systems",
                     EX2: "To list file systems mounted to a specific path",
                     EX3: "To list file systems mounted with a specific name"
-=======
-                SUMMARY: "List ZFS",
-                DESCRIPTION: "List ZFS",
-                EXAMPLES: {
-                    EX1: `Show the files and directories in path '/u/ibmuser'`,
-                    EX2: "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
-                    EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
->>>>>>> list zfs
                 }
             }
         },
@@ -392,13 +383,9 @@ export default {
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
             PATH: "Specifies the path where the file system is mounted." +
-<<<<<<< HEAD
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
                 " This option and --path are mutually exclusive."
-=======
-                " This option and --fsname are mutually exclusive."
->>>>>>> Add option path for list zfs
         }
     },
     UPLOAD: {
