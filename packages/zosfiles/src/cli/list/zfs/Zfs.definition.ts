@@ -40,7 +40,15 @@ export const ZfsDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `list zfs`
+            options: ""
+        },
+        {
+            description: strings.EXAMPLES.EX2,
+            options: "-p /a/ibmuser"
+        },
+        {
+            description: strings.EXAMPLES.EX3,
+            options: "-f MY.ZFS"
         }
     ]
 };
