@@ -177,10 +177,15 @@ export class List {
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
     public static async zfs(session: AbstractSession, options: IZfsOptions = {}): Promise<IZosFilesResponse> {
-
         try {
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_MFS}`);
+            if (options.path) {
+                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
+            }
+            else if (options.fsname) {
+                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
+            }
 
             const reqHeaders: IHeaderContent[] = [];
             // if (options.path) {
