@@ -33,7 +33,8 @@ export const ZfsDefinition: ICommandDefinition = {
         optional: ["zosmf"],
     },
     options: [
-        ListOptions.maxLength
+        ListOptions.maxLength,
+        ListOptions.path
     ],
     examples: [
         {
