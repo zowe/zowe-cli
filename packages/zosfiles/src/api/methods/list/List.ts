@@ -20,6 +20,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
+import { IZfsOptions } from "./doc/IZfsOptions";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -140,6 +141,48 @@ export class List {
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
             const reqHeaders: IHeaderContent[] = [];
+            if (options.maxLength) {
+                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+            } else {
+                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+
+            this.log.debug(`Endpoint: ${endpoint}`);
+
+            const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);
+
+            return {
+                success: true,
+                commandResponse: null,
+                apiResponse: response
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieve zfs files
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {IZfsOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} data set name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     */
+    public static async zfs(session: AbstractSession, options: IZfsOptions = {}): Promise<IZosFilesResponse> {
+
+        try {
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`);
+
+            const reqHeaders: IHeaderContent[] = [];
+            // if (options.path) {
+            //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
+            // }
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
