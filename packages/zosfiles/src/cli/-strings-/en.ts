@@ -365,13 +365,12 @@ export default {
                 }
             },
             ZFS: {
-                SUMMARY: "Listing mounted z/OS file systems",
-                DESCRIPTION: "List all mounted filesystems, or the specific filesystem mounted at a given path," +
-                    "or the filesystem with a given Filesystem name.",
+                SUMMARY: "List ZFS",
+                DESCRIPTION: "List ZFS",
                 EXAMPLES: {
-                    EX1: "To list all mounted file systems",
-                    EX2: "To list file systems mounted to a specific path",
-                    EX3: "To list file systems mounted with a specific name"
+                    EX1: `Show the files and directories in path '/u/ibmuser'`,
+                    EX2: "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
+                    EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
                 }
             }
         },
