@@ -62,5 +62,16 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         aliases: ["p"],
         description: strings.PATH,
         type: "string"
+    },
+
+    /**
+     * The indicator that where the name of mounted.
+     * @type {ICommandOptionDefinition}
+     */
+    fsname: {
+        name: "fsname",
+        aliases: ["f"],
+        description: strings.FSNAME,
+        type: "string"
     }
 };

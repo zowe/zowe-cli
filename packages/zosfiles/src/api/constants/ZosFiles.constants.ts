@@ -65,6 +65,13 @@ export const ZosFilesConstants: { [key: string]: any } = {
     RES_PATH: "path",
 
     /**
+     * Indicator of a ds file name
+     * @type {string}
+     * @memberOf ZosFilesConstants
+     */
+    RES_FSNAME: "fsname",
+
+    /**
      * Indicator the query parameters used to qualify the request
      */
     RES_DS_LEVEL: "dslevel",
