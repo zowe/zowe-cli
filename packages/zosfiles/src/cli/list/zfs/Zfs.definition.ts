@@ -34,7 +34,8 @@ export const ZfsDefinition: ICommandDefinition = {
     },
     options: [
         ListOptions.maxLength,
-        ListOptions.path
+        ListOptions.path,
+        ListOptions.fsname
     ],
     examples: [
         {

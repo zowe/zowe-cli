@@ -21,8 +21,8 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const response = await List.zfs(session, {
-            path: commandParameters.arguments.volumeSerial,
-            fsname: commandParameters.arguments.attributes,
+            path: commandParameters.arguments.path,
+            fsname: commandParameters.arguments.fsname,
             maxLength: commandParameters.arguments.maxLength
         });
 

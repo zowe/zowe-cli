@@ -382,7 +382,9 @@ export default {
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
             PATH: "Specifies the path where the file system is mounted." +
-                " This option and --fsname are mutually exclusive."
+                " This option and --fsname are mutually exclusive.",
+            FSNAME: "Specifies the name of the mounted file system." +
+                " This option and --path are mutually exclusive."
         }
     },
     UPLOAD: {
