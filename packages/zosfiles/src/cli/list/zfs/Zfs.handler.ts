@@ -20,6 +20,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+<<<<<<< HEAD
         let response;
         if (commandParameters.arguments.path)
         {
@@ -37,10 +38,18 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
                 maxLength: commandParameters.arguments.maxLength
             });
         }
+=======
+        const response = await List.zfs(session, {
+            path: commandParameters.arguments.volumeSerial,
+            fsname: commandParameters.arguments.attributes,
+            maxLength: commandParameters.arguments.maxLength
+        });
+>>>>>>> list zfs
 
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {
             commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse.items));
         } else {
+<<<<<<< HEAD
             commandParameters.response.data.setObj(response);
             commandParameters.response.format.output({
                 fields: ["name", "mountpoint"],
@@ -52,6 +61,13 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
             //     const outputStr = "Name:" + mem.name + " - Mountpoint:" + mem.mountpoint;
             //     commandParameters.response.console.log(outputStr);
             // });
+=======
+            response.apiResponse.items.forEach((mem: any) =>
+            {
+                const outputStr = "Name:" + mem.name + " - Mountpoint:" + mem.mountpoint;
+                commandParameters.response.console.log(outputStr);
+            });
+>>>>>>> list zfs
         }
 
         return response;
