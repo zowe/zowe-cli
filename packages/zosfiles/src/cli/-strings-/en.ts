@@ -378,7 +378,9 @@ export default {
             ATTRIBUTES: "Display more information about each member. Data sets with an undefined record format display information related to " +
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
-                " If you specify an incorrect value, the parameter returns up to 1000 items."
+                " If you specify an incorrect value, the parameter returns up to 1000 items.",
+            PATH: "Specifies the path where the file system is mounted." +
+                " This option and --fsname are mutually exclusive."
         }
     },
     UPLOAD: {

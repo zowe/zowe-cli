@@ -51,5 +51,16 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         aliases: ["max"],
         description: strings.MAXLENGTH,
         type: "number"
+    },
+
+    /**
+     * The indicator that where ti file syste is mounted.
+     * @type {ICommandOptionDefinition}
+     */
+    path: {
+        name: "path",
+        aliases: ["p"],
+        description: strings.PATH,
+        type: "string"
     }
 };
