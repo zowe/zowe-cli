@@ -6,7 +6,6 @@ Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zo
 - [Plug-in Repositories](#plug-in-repositories)
 - [Directories](#directories)
 - [Directory Structure](#directory-structure)
-- [Programmatic APIs](#programmatic-apis)
 - [Commands](#commands)
 - [Profiles](#profiles)
 
@@ -86,27 +85,6 @@ The following diagram illustrates the plug-in directory structure
 ├── README.md
 └── package.json
 ```
-
-## Programmatic APIs
-
-Programmatic APIs should adhere to the following standards and conventions:
-
-- [Code Standards](../CONTRIBUTING.md#code-standards)
-- [General Conventions](../CONTRIBUTING.md#general-conventions)
-- [Programmatic APIs Standards](../CONTRIBUTING.md#programmatic-apis)
-- [Source File Naming Standards](../CONTRIBUTING.md#source-file-naming-standards)
-- [Testing Guidelines](TESTING.md)
-- [JS Documentation](../CONTRIBUTING.md#js-documentation)
-
-Additionally, programmatic APIs should support and the following capabilities:
-
-- Include trace messages.
-- Support backward compatibility throughout releases.
-- Provide a `Common` version API call that accepts: 
-  - Connection information, when applicable.
-  - Parm objects that can be extended in the future while maintaining forward and backward compatibility.
-- Include *convenience methods* that aid in calling `Common` methods, when appropriate.
-- Should be categorized in classes that identify theirs actions. For example, `GetJobs.getJobStatus` or `SubmitJobs.submitJcl`.
 
 ## Commands
 Packages and plug-ins will always introduce a new command `[group]` to the Zowe CLI. The command `[group]` is the first term you type into the command line after zowe (e.g., `zowe cics`). 

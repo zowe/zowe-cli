@@ -83,16 +83,17 @@ export default {
                 }
             },
             ZFS: {
-                DESCRIPTION: "Create a z/OS file system",
+                SUMMARY: "Create a z/OS file system",
+                DESCRIPTION: "Create a z/OS file system.",
                 POSITIONALS: {
-                    FILESYSTEMNAME: "The name of the file system to create"
+                    FILESYSTEMNAME: "The name of the file system to create."
                 },
                 OPTIONS: {
-                    OWNER: "The z/OS user ID or UID for the owner of the ZFS root directory",
-                    GROUP: "The z/OS group ID or GID for the group of the ZFS root directory",
-                    PERMS: "The permissions code for the ZFS root directory",
-                    CYLS_PRI: "The number of primary cylinders to allocate for the ZFS",
-                    CYLS_SEC: "The number of secondary cylinders to allocate for the ZFS",
+                    OWNER: "The z/OS user ID or UID for the owner of the ZFS root directory.",
+                    GROUP: "The z/OS group ID or GID for the group of the ZFS root directory.",
+                    PERMS: "The permissions code for the ZFS root directory.",
+                    CYLS_PRI: "The number of primary cylinders to allocate for the ZFS.",
+                    CYLS_SEC: "The number of secondary cylinders to allocate for the ZFS.",
                     VOLUMES: "The storage volumes on which to allocate the z/OS file system. Specify a single volume by its volume serial " +
                     "(VOLSER). To specify more than one volume, separate each VOLSER with a space. You must specify the volumes option when your " +
                     "cluster is not SMS-managed.",
@@ -184,9 +185,10 @@ export default {
                 }
             },
             ZFS: {
-                DESCRIPTION: "Delete a z/OS file system permanently",
+                SUMMARY: "Delete a z/OS file system permanently",
+                DESCRIPTION: "Delete a z/OS file system permanently.",
                 POSITIONALS: {
-                    FILESYSTEMNAME: "The name of the z/OS file system that you want to delete"
+                    FILESYSTEMNAME: "The name of the z/OS file system that you want to delete."
                 },
                 OPTIONS: {
                     FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently."
