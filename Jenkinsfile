@@ -147,8 +147,7 @@ node('ca-jenkins-agent') {
         name: "Codecov",
         operation: {
             sh 'curl -s https://codecov.io/bash | bash -s | -t $CODECOV_TOKEN'
-        },
-        timeout: [time: 30, unit: 'MINUTES']
+        }
     )
 
     // Perform sonar qube operations
