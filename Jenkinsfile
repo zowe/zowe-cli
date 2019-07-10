@@ -146,7 +146,7 @@ node('ca-jenkins-agent') {
         name: "Codecov",
         operation: {
             withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_ZOWE_CLI', passwordVariable: 'CODECOV_ZOWE_CLI')]) {
-                sh 'curl -s https://codecov.io/bash | bash -s'
+                sh 'curl -s https://codecov.io/bash -f ${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml | bash -s'
             }
         }
     )
