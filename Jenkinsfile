@@ -143,6 +143,7 @@ node('ca-jenkins-agent') {
 
     //Upload Reports to Code Coverage
 <<<<<<< HEAD
+<<<<<<< HEAD
     pipeline.test(
         name: "Codecov",
         operation: {
@@ -161,6 +162,12 @@ node('ca-jenkins-agent') {
         timeout: [time: 30, unit: 'MINUTES']
 >>>>>>> Test Codecov in Jenkins
 =======
+=======
+    pipeline.test(
+        name: "Codecov",
+        operation: {
+            sh 'curl -s https://codecov.io/bash | bash -s | -t b1db0c87-e1bf-46e4-ba4e-869a64554e20'
+>>>>>>> Add Codecov stuff in Jenkins and ReadMe
         }
 >>>>>>> Remove extra code in line 150
     )
