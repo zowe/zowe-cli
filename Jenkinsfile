@@ -142,11 +142,10 @@ node('ca-jenkins-agent') {
     )
 
     //Upload Reports to Code Coverage
-    def CODECOV_TOKEN = "7fdaee11-b5d0-4b55-9e50-883f0c595129"
     pipeline.test(
         name: "Codecov",
         operation: {
-            sh 'curl -s https://codecov.io/bash | bash -s | -t $CODECOV_TOKEN'
+            sh 'curl -s https://codecov.io/bash | bash -s | -t b1db0c87-e1bf-46e4-ba4e-869a64554e20'
         }
     )
 
