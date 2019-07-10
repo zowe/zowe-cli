@@ -142,6 +142,7 @@ node('ca-jenkins-agent') {
     )
 
     //Upload Reports to Code Coverage
+<<<<<<< HEAD
     pipeline.test(
         name: "Codecov",
         operation: {
@@ -149,6 +150,15 @@ node('ca-jenkins-agent') {
                 sh 'curl -s https://codecov.io/bash | bash -s'
             }
         }
+=======
+    def CODECOV_TOKEN = "7fdaee11-b5d0-4b55-9e50-883f0c595129"
+    pipeline.test(
+        name: "Codecov",
+        operation: {
+            sh 'curl -s https://codecov.io/bash | bash -s | -t $CODECOV_TOKEN'
+        },
+        timeout: [time: 30, unit: 'MINUTES']
+>>>>>>> Test Codecov in Jenkins
     )
 
     // Perform sonar qube operations
