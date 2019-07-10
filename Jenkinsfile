@@ -145,7 +145,9 @@ node('ca-jenkins-agent') {
     pipeline.test(
         name: "Codecov",
         operation: {
-            sh 'curl -s https://codecov.io/bash | bash -s | -t b1db0c87-e1bf-46e4-ba4e-869a64554e20'
+            withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_ZOWE_CLI', passwordVariable: 'CODECOV_ZOWE_CLI')]) {
+                sh 'curl -s https://codecov.io/bash | bash -s'
+            }
         }
     )
 
