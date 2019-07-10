@@ -142,8 +142,6 @@ node('ca-jenkins-agent') {
     )
 
     //Upload Reports to Code Coverage
-<<<<<<< HEAD
-<<<<<<< HEAD
     pipeline.test(
         name: "Codecov",
         operation: {
@@ -151,31 +149,6 @@ node('ca-jenkins-agent') {
                 sh 'curl -s https://codecov.io/bash -f ${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml | bash -s'
             }
         }
-=======
-    def CODECOV_TOKEN = "7fdaee11-b5d0-4b55-9e50-883f0c595129"
-    pipeline.test(
-        name: "Codecov",
-        operation: {
-            sh 'curl -s https://codecov.io/bash | bash -s | -t $CODECOV_TOKEN'
-<<<<<<< HEAD
-        },
-        timeout: [time: 30, unit: 'MINUTES']
->>>>>>> Test Codecov in Jenkins
-=======
-=======
-    pipeline.test(
-        name: "Codecov",
-        operation: {
-<<<<<<< HEAD
-            sh 'curl -s https://codecov.io/bash | bash -s | -t b1db0c87-e1bf-46e4-ba4e-869a64554e20'
->>>>>>> Add Codecov stuff in Jenkins and ReadMe
-=======
-            withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_ZOWE_CLI', passwordVariable: 'CODECOV_ZOWE_CLI')]) {
-                sh 'curl -s https://codecov.io/bash | bash -s'
-            }
->>>>>>> Revise CodeCov Credentials
-        }
->>>>>>> Remove extra code in line 150
     )
 
     // Perform sonar qube operations
