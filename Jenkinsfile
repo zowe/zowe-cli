@@ -142,11 +142,12 @@ node('ca-jenkins-agent') {
     )
 
     //Upload Reports to Code Coverage
+    def CODECOV_ID = "CODECOV_ZOWE_CLI"
     pipeline.test(
         name: "Codecov",
         operation: {
-            withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_ZOWE_CLI', passwordVariable: 'CODECOV_ZOWE_CLI')]) {
-                sh 'curl -s https://codecov.io/bash -f ${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml | bash -s'
+            withCredentials([usernamePassword(credentialsId: CODECOV_ID, usernameVariable: 'CODECOV_USERNAME', passwordVariable: 'CODECOV_PASSWORD')]) {
+                sh 'curl -s https://codecov.io/bash -f ${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml -t ${CODECOV_PASSWORD}  | bash -s'
             }
         }
     )
