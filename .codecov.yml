@@ -6,7 +6,3 @@ coverage:
     project:
       default:
         target: 55
-flags:
-  default:
-    paths:
-      - __tests__/__results__/unit/coverage
