@@ -156,9 +156,13 @@ node('ca-jenkins-agent') {
         name: "Codecov",
         operation: {
             sh 'curl -s https://codecov.io/bash | bash -s | -t $CODECOV_TOKEN'
+<<<<<<< HEAD
         },
         timeout: [time: 30, unit: 'MINUTES']
 >>>>>>> Test Codecov in Jenkins
+=======
+        }
+>>>>>>> Remove extra code in line 150
     )
 
     // Perform sonar qube operations
