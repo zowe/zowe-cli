@@ -141,6 +141,16 @@ node('ca-jenkins-agent') {
         junitOutput: INTEGRATION_JUNIT_OUTPUT
     )
 
+    //Upload Reports to Code Coverage
+    def CODECOV_TOKEN = "7fdaee11-b5d0-4b55-9e50-883f0c595129"
+    pipeline.test(
+        name: "Codecov",
+        operation: {
+            sh 'curl -s https://codecov.io/bash | bash -s | -t $CODECOV_TOKEN'
+        },
+        timeout: [time: 30, unit: 'MINUTES']
+    )
+
     // Perform sonar qube operations
     pipeline.createStage(
         name: "SonarQube",
