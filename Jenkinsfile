@@ -146,7 +146,7 @@ node('ca-jenkins-agent') {
         name: "Codecov",
         stage: {
             withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_USERNAME', passwordVariable: 'CODECOV_CLI_TOKEN')]) {
-                sh "echo ${CODECOV_ZOWE_CLI} ${CODECOV_USERNAME} ${CODECOV_CLI_TOKEN} "
+                sh "echo ${CODECOV_USERNAME} ${CODECOV_CLI_TOKEN}"
                 sh "curl -s https://codecov.io/bash | bash -s -t ${CODECOV_CLI_TOKEN}"
             }
         }
