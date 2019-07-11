@@ -2,7 +2,9 @@ coverage:
   status:
     patch:
       default:
-        target: 60
+        target: 80
     project:
       default:
-        target: 55
+        target: 80
+codecov: 
+  token: secret:pOECOuSnsbsu785VI+ibiVlnkaNTxVp6Y6O5vvJ+8bfDRKewu7Z/qtr3U6a+hfRKi0TyW18QCHZg2aRtNHUpD8EXmBOVYvHL4hiJmDAC0vk=
