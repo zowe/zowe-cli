@@ -1,53 +1,47 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Imperative, ImperativeConfig, WebHelpGenerator } from "@zowe/imperative";
-
-const ncp = require("ncp");
+import { CommandResponse, WebHelpGenerator } from "@zowe/imperative";
 
 (async () => {
-    let outDir: string = "./dist";
+    const outDir: string = __dirname + "/dist";
     if (fs.existsSync(outDir)) {
-        require("rimraf").sync(path.join(outDir, "*"));
+        require("rimraf").sync(outDir + "/*");
     } else {
         fs.mkdirSync(outDir);
     }
 
+    let cliPackageDir: string = "../";
+    let imperativeImportPath: string = "@zowe/imperative";
+    let imperativeRequirePath: string = "../packages/imperative";
+    if (process.argv.length > 2) {
+        cliPackageDir = process.argv[2];
+        imperativeImportPath = path.join(__dirname, cliPackageDir, "../imperative");
+        imperativeRequirePath = path.join(__dirname, cliPackageDir, "lib/imperative");
+    }
+
     // Get all command definitions
-    const myConfig: ImperativeConfig = ImperativeConfig.instance;
-    myConfig.loadedConfig = require("../packages/imperative");
+    const imperativeModule: any = await import(imperativeImportPath);
+    const myConfig: any = imperativeModule.ImperativeConfig.instance;
+    myConfig.loadedConfig = require(imperativeRequirePath);
     // Need to avoid any .definition file inside of __tests__ folders
     myConfig.loadedConfig.commandModuleGlobs = ["**/!(__tests__)/cli/*.definition!(.d).*s"];
     // Need to set this for the internal caller location so that the commandModuleGlobs finds the commands
-    process.mainModule.filename = path.join(__dirname, "..", "package.json");
+    const oldFilename: string = process.mainModule.filename;
+    process.mainModule.filename = path.join(__dirname, cliPackageDir, "package.json");
     // Initialize Imperative for commands to document
-    await Imperative.init(myConfig.loadedConfig);
-    // Build command help pages
-    const helpGenerator = new WebHelpGenerator(myConfig, outDir);
-    helpGenerator.sanitizeHomeDir = true;
-    helpGenerator.singleDirOutput = true;
-    helpGenerator.buildHelp();
+    await imperativeModule.Imperative.init(myConfig.loadedConfig);
+    process.mainModule.filename = oldFilename;
 
-    let sourceDir: string = "../node_modules/@zowe/imperative/help-site/dist";
-    ncp(path.join(sourceDir, "css"), path.join(outDir, "css"));
-    ncp(path.join(sourceDir, "js"), path.join(outDir, "js"));
-
-    sourceDir = "../node_modules/@zowe/imperative/node_modules";
-    const nodeModules: string[] = [
-        "balloon-css",
-        "bootstrap",
-        "clipboard",
-        "delegate",
-        "github-markdown-css",
-        "jquery",
-        "jstree",
-        "popper.js",
-        "select",
-        "split.js",
-        "tiny-emitter"
-    ];
-    outDir = path.join(outDir, "node_modules");
-    fs.mkdirSync(outDir);
-    for (const nodeModule of nodeModules) {
-        ncp(path.join(sourceDir, nodeModule), path.join(outDir, nodeModule));
+    // Ensure required config values are defined
+    if (myConfig.rootCommandName === undefined) {
+        myConfig.rootCommandName = "zowe";
     }
+    if (myConfig.loadedConfig.webHelpLogoImgPath === undefined) {
+        myConfig.loadedConfig.webHelpLogoImgPath = __dirname + "/logo.png";
+    }
+
+    // Build command help pages
+    const helpGenerator = new WebHelpGenerator(imperativeModule.Imperative.fullCommandTree, myConfig, outDir);
+    helpGenerator.sanitizeHomeDir = true;
+    helpGenerator.buildHelp(new CommandResponse({ silent: false }));
 })();
