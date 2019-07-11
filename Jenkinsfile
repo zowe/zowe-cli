@@ -145,8 +145,7 @@ node('ca-jenkins-agent') {
     pipeline.createStage(
         name: "Codecov",
         stage: {
-            withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_USERNAME', passwordVariable: 'CODECOV_CLI_TOKEN')]) {
-                sh "export CODECOV_TOKEN=${CODECOV_CLI_TOKEN}"
+            withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_USERNAME', passwordVariable: 'CODECOV_TOKEN')]) {
                 sh "curl -s https://codecov.io/bash | bash -s"
             }
         }
