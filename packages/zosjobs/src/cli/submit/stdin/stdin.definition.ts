@@ -10,25 +10,16 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
 
-export const LocalFileDefinition: ICommandDefinition = {
-    name: "local-file",
-    aliases: ["lf"],
+export const StdinDefinition: ICommandDefinition = {
+    name: "stdin",
+    aliases: ["in"],
     type: "command",
-    summary: "Submit a job contained in a local file",
-    description: "Submit a job (JCL) contained in a local file. " +
+    summary: "Submit a job read from standard in",
+    description: "Submit a job (JCL) passed to the command via the stdin stream. " +
         "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
         "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
     handler: __dirname + "/../Submit.shared.handler",
-    positionals: [
-        {
-            name: "localFile",
-            description: "The local file containing the JCL to submit. ",
-            type: "string",
-            required: true
-        }
-    ],
     options: ([
         {
             name: "view-all-spool-content", aliases: ["vasc"],
@@ -48,16 +39,9 @@ export const LocalFileDefinition: ICommandDefinition = {
             description: "A file extension to save the job output with. Default is '.txt'.",
             type: "string"
         },
-    ]as ICommandOptionDefinition[]),
+    ] as ICommandOptionDefinition[]),
     profile: {
         optional: ["zosmf"]
     },
     outputFormatOptions: true,
-    examples:
-        [
-            {
-                options: "\"iefbr14.txt\"",
-                description: "Submit the JCL in the file \"iefbr14.txt\""
-            }
-        ]
 };

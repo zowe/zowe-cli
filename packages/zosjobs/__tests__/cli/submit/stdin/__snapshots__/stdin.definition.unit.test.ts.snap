@@ -1,18 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-jobs submit local file definition should not have changed 1`] = `
+exports[`zos-jobs submit stdin definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "lf",
+    "in",
   ],
-  "description": "Submit a job (JCL) contained in a local file. The command presents errors verbatim from the z/OSMF Jobs REST endpoints. For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
-  "examples": Array [
-    Object {
-      "description": "Submit the JCL in the file \\"iefbr14.txt\\"",
-      "options": "\\"iefbr14.txt\\"",
-    },
-  ],
-  "name": "local-file",
+  "description": "Submit a job (JCL) passed to the command via the stdin stream. The command presents errors verbatim from the z/OSMF Jobs REST endpoints. For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+  "name": "stdin",
   "options": Array [
     Object {
       "aliases": Array [
@@ -40,20 +34,12 @@ Object {
     },
   ],
   "outputFormatOptions": true,
-  "positionals": Array [
-    Object {
-      "description": "The local file containing the JCL to submit. ",
-      "name": "localFile",
-      "required": true,
-      "type": "string",
-    },
-  ],
   "profile": Object {
     "optional": Array [
       "zosmf",
     ],
   },
-  "summary": "Submit a job contained in a local file",
+  "summary": "Submit a job read from standard in",
   "type": "command",
 }
 `;

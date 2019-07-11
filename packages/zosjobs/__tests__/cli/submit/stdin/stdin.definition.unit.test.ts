@@ -11,13 +11,11 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-jobs submit group definition", () => {
+describe("zos-jobs submit stdin definition", () => {
     it("should not have changed", () => {
-        const CHILDREN = 3;
-        const definition: ICommandDefinition = require("../../../src/cli/submit/Submit.definition").SubmitDefinition;
+        const definition: ICommandDefinition = require("../../../../src/cli/submit/stdin/stdin.definition").StdinDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(CHILDREN);
-        delete definition.children;
+        delete definition.handler;
         expect(definition).toMatchSnapshot();
     });
 });
