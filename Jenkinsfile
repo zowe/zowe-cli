@@ -141,6 +141,16 @@ node('ca-jenkins-agent') {
         junitOutput: INTEGRATION_JUNIT_OUTPUT
     )
 
+    //Upload Reports to Code Coverage
+    pipeline.createStage(
+        name: "Codecov",
+        stage: {
+            withCredentials([usernamePassword(credentialsId: 'CODECOV_ZOWE_CLI', usernameVariable: 'CODECOV_USERNAME', passwordVariable: 'CODECOV_TOKEN')]) {
+                sh "curl -s https://codecov.io/bash | bash -s"
+            }
+        }
+    )
+
     // Perform sonar qube operations
     pipeline.createStage(
         name: "SonarQube",
