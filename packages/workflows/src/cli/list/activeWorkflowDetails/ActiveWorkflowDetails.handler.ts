@@ -43,7 +43,6 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
         let response: IWorkflowInfo;
         let requireSteps: boolean;
         let stepSummaries: IStepSummary[] = [];
-        let step: IStepSummary;
         let error: any;
 
         if (this.arguments.workflowKey) {
