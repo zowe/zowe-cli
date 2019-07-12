@@ -21,11 +21,11 @@ Array [
   },
   Object {
     "description": "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
-    "options": "\\"/u/ibmuser --rff name\\"",
+    "options": "\\"/u/ibmuser\\" --rff name",
   },
   Object {
     "description": "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail",
-    "options": "\\"/u/ibmuser --rfh\\"",
+    "options": "\\"/u/ibmuser\\" --rfh",
   },
 ]
 `;

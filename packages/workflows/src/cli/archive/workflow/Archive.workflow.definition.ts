@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
+import { ICommandDefinition } from "@brightside/imperative";
 import { ArchiveOptions } from "../Archive.options";
 import { join } from "path";
 
@@ -40,8 +40,12 @@ export const Workflow: ICommandDefinition = {
             options: "--wn \"testworkflow\" "
         },
         {
+            description: "Archive multiple workflows with workflow names starting with \"test\"",
+            options: "--wn \"test.*\" "
+        },
+        {
             description: "Archive a workflow with workflow key \"123-456-abv-xyz\"",
             options: "--wk \"123-456-abv-xyz\" "
-        }
+        },
     ],
 };
