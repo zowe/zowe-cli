@@ -64,21 +64,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey, undefined,
                                                                       requireSteps, this.arguments.listVariables);
             if(this.arguments.stepsSummaryOnly && response.steps) {
-                for(step of response.steps) {
-                    let miscValue: string = "N/A";
-                    if(step.submitAs && step.submitAs.match(/.*JCL/)) {
-                        if(step.jobInfo && step.jobInfo.jobstatus) {
-                            miscValue = step.jobInfo.jobstatus.jobid;
-                        }
-                    } else if(step.template) {
-                        miscValue = "TSO";
-                    } else if(step.isRestStep) {
-                        miscValue = `HTTP ${step.actualStatusCode}`;
-                    }
-                    step.misc = miscValue;
-
-                    stepSummaries.push(step);
-                }
+                stepSummaries = await PropertiesWorkflow.processStepSummaries(response.steps);
             } else {
                 stepSummaries = response.steps;
             }
