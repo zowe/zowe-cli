@@ -73,7 +73,7 @@ The following list describes general conventions for contributing to Zowe CLI:
 
 ## Code Guidelines
 
-Indent code with 4 spaces. This is also documented via `.editorconfig`, which can be used to automatically format the code if you use an [EditorConfig](http://editorconfig.org/) extension for your editor of choice.
+Indent code with 4 spaces. This is also documented via `.editorconfig`, which can be used to automatically format the code if you use an [EditorConfig](https://editorconfig.org/) extension for your editor of choice.
 
 Lint rules are enforced through our [build process](#build-process-guidelines).
 
@@ -83,6 +83,20 @@ The following list describes conventions for contributing to Zowe CLI APIs:
 
 - When developing programmatic asynchronous APIs, return promises instead of using call-backs.
 - Use ImperativeExpect to perform minimum parameter validation for API methods (e.g. verify parms exist `ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix", "prefix is required");)
+- Include trace messages.
+- Support backward compatibility throughout releases.
+- Provide a `Common` version API call that accepts: 
+  - Connection information, when applicable.
+  - Parm objects that can be extended in the future while maintaining forward and backward compatibility.
+- Include *convenience methods* that aid in calling `Common` methods, when appropriate.
+- Should be categorized in classes that identify theirs actions. For example, `GetJobs.getJobStatus` or `SubmitJobs.submitJcl`.
+ 
+Programmatic APIs should also adhere to the following standards and conventions:
+- [Code Standards](#code-guidelines)
+- [General Conventions](#general-guidelines)
+- [Source File Naming Standards](#file-naming-guidelines)
+- [Testing Guidelines](./docs/TESTING.md)
+- [JS Documentation](#js-documentation)
 
 ## File Naming Guidelines
 
@@ -143,7 +157,7 @@ In addition to external documentation, please thoroughly comment your code for f
 - Use jsdoc annotations - [document this](https://marketplace.visualstudio.com/items?itemName=joelday.docthis) makes extensive use of jsdoc tags.
   - Common tags to use, `@static`, `@memberOf`, `@returns`, `@params`, `@class`, `@exports`, `@interface`, `@types`, `@throws`, `@link`
 - CLI auto-generated documentation is created via command definitions
-- [tsdoc](http://typedoc.org/) is used to generate html documentation
+- [tsdoc](https://typedoc.org/) is used to generate html documentation
 
 ## More Information
 | For more information about ... | See: |

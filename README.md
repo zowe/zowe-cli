@@ -1,5 +1,7 @@
 # Zowe CLI  <!-- omit in toc -->
 
+[![codecov](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli)
+
 Zowe CLI is a command-line interface that lets application developers interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets application developers use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. It provides a set of utilities and services for application developers that want to become efficient in supporting and building z/OS applications quickly.
 
 ## Contents  <!-- omit in toc -->
@@ -43,10 +45,10 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
-npm install --registry https://registry.npmjs.org
+npm install --@zowe:registry=https://registry.npmjs.org --no-package-lock --force
 ```
 
-**Note:** When necessary, you can run the `npm install --registry https://registry.npmjs.org` command again to update dependencies that were changed in package.json.
+**Note:** When necessary, you can run the install command again to update dependencies that were changed in package.json.
 
 If you have credentials to connect to gizaartifactory.jfrog.io, you can issue `npm install` without the `--registry` option. 
 
