@@ -474,6 +474,162 @@ const PRETEND_SESSION = new Session({
 
 const HEAD = Headers.APPLICATION_JSON;
 
+const STEP_WITH_SUBSTEPS: IStepInfo[] = [
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.1",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+        steps: [{
+            stepNumber: "step.stepNumber",
+            name: "step.name.1.1",
+            state: "step.state",
+            autoEnable: true,
+            description: "step.description",
+            isRestStep: true,
+            optional: true,
+            runAsUser: "step.runAsUser",
+            title: "step.title",
+            userDefined: true,
+            steps: [{
+                stepNumber: "step.stepNumber",
+                name: "step.name.1.1.1",
+                state: "step.state",
+                autoEnable: true,
+                description: "step.description",
+                isRestStep: true,
+                optional: true,
+                runAsUser: "step.runAsUser",
+                title: "step.title",
+                userDefined: true,
+            },
+            {
+                stepNumber: "step.stepNumber",
+                name: "step.name.1.1.2",
+                state: "step.state",
+                autoEnable: true,
+                description: "step.description",
+                isRestStep: true,
+                optional: true,
+                runAsUser: "step.runAsUser",
+                title: "step.title",
+                userDefined: true,
+            }],
+        },
+        {
+            stepNumber: "step.stepNumber",
+            name: "step.name.1.2",
+            state: "step.state",
+            autoEnable: true,
+            description: "step.description",
+            isRestStep: true,
+            optional: true,
+            runAsUser: "step.runAsUser",
+            title: "step.title",
+            userDefined: true,
+        }],
+    },
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.2",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+];
+
+const FLATTEN_STEP = [
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.1",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        misc: "HTTP undefined",
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.1.1",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        misc: "HTTP undefined",
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.1.1.1",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        misc: "HTTP undefined",
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.1.1.2",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        misc: "HTTP undefined",
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.1.2",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        misc: "HTTP undefined",
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+    {
+        stepNumber: "step.stepNumber",
+        name: "step.name.2",
+        state: "step.state",
+        autoEnable: true,
+        description: "step.description",
+        isRestStep: true,
+        misc: "HTTP undefined",
+        optional: true,
+        runAsUser: "step.runAsUser",
+        title: "step.title",
+        userDefined: true,
+    },
+];
+
 function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {
     expect(error).not.toBeDefined();
     expect(response).toBeDefined();
@@ -713,7 +869,21 @@ describe("Get workflow properties", () => {
             expectZosmfResponseSucceeded(response, error);
             expect(response).toEqual(PRETEND_ZOSMF_RESPONSE);
         });
+        it("Flatten the substeps", async () => {
 
+            let error: ImperativeError;
+            let response: any;
+            try {
+                response = await PropertiesWorkflow.processStepSummaries(STEP_WITH_SUBSTEPS);
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+
+            expectZosmfResponseSucceeded(response, error);
+            expect(response).toEqual(FLATTEN_STEP);
+        });
     });
 
     describe("Fail scenarios", () => {
