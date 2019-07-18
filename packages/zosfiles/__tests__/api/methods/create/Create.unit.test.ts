@@ -14,7 +14,7 @@ import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invok
 import { ZosmfRestClient } from "../../../../../rest/";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
 
-describe("Create data set", () => {
+describe.only("Create data set", () => {
     const dummySession: any = {};
     const dataSetName = "testing";
     const dsOptions: any = {alcunit: "CYL"};
@@ -40,7 +40,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.PARTITIONED, ...dsOptions}));
         });
 
-        it("should be able to create an extended partitioned data set (PDSE)", async () => {
+        it("should be able to create an extended partitioned data set (PDSE) - test with LIBRARY", async () => {
 
             dsOptions.dsntype = "LIBRARY";
 
@@ -52,7 +52,42 @@ describe("Create data set", () => {
             dsOptions.dsntype = undefined;
         });
 
+        it("should be able to create an extended partitioned data set (PDSE) - test with PDS", async () => {
+
+            dsOptions.dsntype = "PDS";
+
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName, dsOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.PARTITIONED, ...dsOptions}));
+            dsOptions.dsntype = undefined;
+        });
+
+        it("explicit testing of dsntype", async () => {
+            let success: boolean = false;
+            const dsntypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
+            for (const type of dsntypes) {
+                dsOptions.dsntype = type;
+                try {
+                    await Create.dataSetValidateOptions(dsOptions);
+                } catch (err) {
+                    expect(success).toBe(true);
+                }
+            }
+            try {
+                dsOptions.dsntype = "PDSE";
+                await Create.dataSetValidateOptions(dsOptions);
+            } catch (err) {
+                success = true;
+            }
+            expect(success).toBe(true);
+        });
+
         it("should be able to create a sequential data set (PS)", async () => {
+
+            dsOptions.dsntype = "PDS";
+
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
 
             expect(response.success).toBe(true);
