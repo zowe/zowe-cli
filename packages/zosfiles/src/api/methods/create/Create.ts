@@ -190,10 +190,26 @@ export class Create {
 
                     case "dsntype":
                         // Key to create a PDSE.
-                        const type: string = tempOptions.dsntype.toUpperCase();
-                        const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
-                        if (availableTypes.indexOf(type) === -1 ) {
-                            throw new ImperativeError({msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype});
+                        switch (tempOptions.dsntype.toUpperCase()) {
+                            case "BASIC":
+                                break;
+                            case "EXTPREF":
+                                break;
+                            case "EXTREQ":
+                                break;
+                            case "HFS":
+                                break;
+                            case "LARGE":
+                                break;
+                            case "PDS":
+                                break;
+                            case "LIBRARY":
+                                break;
+                            case "PIPE":
+                                break;
+
+                            default:
+                                throw new ImperativeError({msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype});
                         }
                         break;
 
