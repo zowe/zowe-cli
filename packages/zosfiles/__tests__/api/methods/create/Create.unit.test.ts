@@ -14,7 +14,7 @@ import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invok
 import { ZosmfRestClient } from "../../../../../rest/";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
 
-describe.only("Create data set", () => {
+describe("Create data set", () => {
     const dummySession: any = {};
     const dataSetName = "testing";
     const dsOptions: any = {alcunit: "CYL"};
