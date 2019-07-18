@@ -189,15 +189,28 @@ export class Create {
                         break;
 
                     case "dsntype":
-                        // Key to create a PDSE.  Only valid value is LIBRARY (as far as I know)
+                        // Key to create a PDSE.
                         switch (tempOptions.dsntype.toUpperCase()) {
+                            case "BASIC":
+                                break;
+                            case "EXTPREF":
+                                break;
+                            case "EXTREQ":
+                                break;
+                            case "HFS":
+                                break;
+                            case "LARGE":
+                                break;
+                            case "PDS":
+                                break;
                             case "LIBRARY":
+                                break;
+                            case "PIPE":
                                 break;
 
                             default:
                                 throw new ImperativeError({msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype});
                         }
-
                         break;
 
                     case "dsorg":
