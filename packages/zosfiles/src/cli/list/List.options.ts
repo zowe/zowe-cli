@@ -61,7 +61,8 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         name: "path",
         aliases: ["p"],
         description: strings.PATH,
-        type: "string"
+        type: "string",
+        conflictsWith: ["fsname"]
     },
 
     /**
@@ -72,6 +73,7 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         name: "fsname",
         aliases: ["f"],
         description: strings.FSNAME,
-        type: "string"
+        type: "string",
+        conflictsWith: ["path"]
     }
 };
