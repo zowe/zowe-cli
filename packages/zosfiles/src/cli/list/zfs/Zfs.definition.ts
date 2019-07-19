@@ -28,6 +28,7 @@ export const ZfsDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
+    outputFormatOptions: true,
     handler: path.join(__dirname, "Zfs.handler"),
     profile: {
         optional: ["zosmf"],
