@@ -13,7 +13,7 @@
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { WorkflowConstants, nozOSMFVersion,
-        noWorkflowKey } from "./WorkflowConstants";
+         noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IWorkflowInfo } from "./doc/IWorkflowInfo";
 import { IStepSummary } from "./doc/IStepSummary";
@@ -52,7 +52,6 @@ export class PropertiesWorkflow {
 
         } else if (variables)   {
             resourcesQuery += `?${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
-
         }
 
         return ZosmfRestClient.getExpectJSON<IWorkflowInfo>(session, resourcesQuery, [Headers.APPLICATION_JSON]);
