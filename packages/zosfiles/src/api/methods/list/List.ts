@@ -180,11 +180,41 @@ export class List {
         try {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_MFS}`);
+            if (options.fsname) {
+                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
+            }
+
+            const reqHeaders: IHeaderContent[] = [];
+            // if (options.path) {
+            //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
+            // }
+            if (options.maxLength) {
+                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+            } else {
+                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+
+            this.log.debug(`Endpoint: ${endpoint}`);
+
+            const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);
+
+            return {
+                success: true,
+                commandResponse: null,
+                apiResponse: response
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
+    }
+
+    public static async zfsWithPath(session: AbstractSession, options: IZfsOptions = {}): Promise<IZosFilesResponse> {
+        try {
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`);
             if (options.path) {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
-            }
-            else if (options.fsname) {
-                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
             }
 
             const reqHeaders: IHeaderContent[] = [];
