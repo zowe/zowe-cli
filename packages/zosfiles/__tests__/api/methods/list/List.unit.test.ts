@@ -307,6 +307,32 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
+
+        it("should return with data when specify start and attributes options", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                items: ["test"]
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}[&start=${dsname}]`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, start: dsname});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
     });
 
     describe("fileList", () => {
