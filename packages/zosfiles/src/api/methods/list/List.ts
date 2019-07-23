@@ -94,7 +94,7 @@ export class List {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
             if (options.start) {
-                endpoint = `${endpoint}[&start=${options.start}]`;
+                endpoint = `${endpoint}&start=${options.start}`;
             }
 
             const reqHeaders: IHeaderContent[] = [];

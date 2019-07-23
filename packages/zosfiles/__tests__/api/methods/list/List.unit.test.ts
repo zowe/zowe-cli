@@ -315,7 +315,7 @@ describe("z/OS Files - List", () => {
                 items: ["test"]
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}[&start=${dsname}]`);
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}&start=${dsname}`);
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
