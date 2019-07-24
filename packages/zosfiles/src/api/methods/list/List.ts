@@ -91,8 +91,11 @@ export class List {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
+            if (options.start) {
+                endpoint = `${endpoint}&start=${options.start}`;
+            }
 
             const reqHeaders: IHeaderContent[] = [];
             if (options.attributes) {
