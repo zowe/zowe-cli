@@ -198,11 +198,12 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[0].dsname).toEqual(dsname);
             });
 
-            it("should list a data set with attributes", async () => {
+            it("should list a data set with attributes and start options", async () => {
                 let error;
                 let response: IZosFilesResponse;
                 const option: IListOptions = {
-                    attributes: true
+                    attributes: true,
+                    start: dsname
                 };
 
                 try {
