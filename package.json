@@ -115,7 +115,6 @@
     "sinon": "3.2.1",
     "sinon-chai": "2.13.0",
     "strip-ansi": "^4.0.0",
-    "strip-json-comments": "^3.0.1",
     "through2": "^2.0.3",
     "ts-jest": "^24.0.0",
     "ts-node": "^3.3.0",

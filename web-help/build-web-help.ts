@@ -3,13 +3,13 @@ import * as path from "path";
 import { CommandResponse, WebHelpGenerator } from "@zowe/imperative";
 
 interface IConfig {
-    cliPackage: null | string,
-    excludeGroups: string[],
-};
+    cliPackage: null | string;
+    excludeGroups: string[];
+}
 
 (async () => {
-    const jsonText: string = fs.readFileSync(__dirname + "/config.json").toString();
-    const config: IConfig = JSON.parse(require("strip-json-comments")(jsonText));
+    const config: IConfig = require("js-yaml").safeLoad(
+        fs.readFileSync(__dirname + "/config.yaml", "utf8"));
 
     const outDir: string = __dirname + "/dist";
     if (fs.existsSync(outDir)) {
@@ -53,7 +53,7 @@ interface IConfig {
     // Exclude undesired command groups
     const cmdDefinitions: any = imperativeModule.Imperative.fullCommandTree;
     cmdDefinitions.children = cmdDefinitions.children
-        .filter((group: any) => config.excludeGroups.indexOf(group.name) === -1);
+        .filter((group: any) => (config.excludeGroups || []).indexOf(group.name) === -1);
 
     // Build command help pages
     const helpGenerator = new WebHelpGenerator(cmdDefinitions, myConfig, outDir);
