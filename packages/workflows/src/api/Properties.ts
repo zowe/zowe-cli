@@ -16,6 +16,8 @@ import { WorkflowConstants, nozOSMFVersion,
         noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IWorkflowInfo } from "./doc/IWorkflowInfo";
+import { IStepSummary } from "./doc/IStepSummary";
+import { IStepInfo } from "./doc/IStepInfo";
 
 export class PropertiesWorkflow {
     /**
@@ -55,5 +57,52 @@ export class PropertiesWorkflow {
 
         return ZosmfRestClient.getExpectJSON<IWorkflowInfo>(session, resourcesQuery, [Headers.APPLICATION_JSON]);
     }
-}
 
+    /**
+     * Processes the z/OSMF workflow step info
+     * in a recursive manner.
+     *
+     * @protected
+     * @static
+     * @param {IStepInfo[]} steps z/OSMF steps to be processed
+     * @returns {Promise<IStepSummary[]>} Array of z/OSMF step summary objects
+     * @memberof PropertiesWorkflow
+     */
+    public static async processStepSummaries(steps: IStepInfo[]): Promise<IStepSummary[]> {
+        let stepSummaries: IStepSummary[] = [];
+
+        for(const step of steps) {
+            let miscValue: string = "N/A";
+            if(step.submitAs && step.submitAs.match(/.*JCL/)) {
+                if(step.jobInfo && step.jobInfo.jobstatus) {
+                    miscValue = step.jobInfo.jobstatus.jobid;
+                }
+            } else if(step.template) {
+                miscValue = "TSO";
+            } else if(step.isRestStep) {
+                miscValue = `HTTP ${step.actualStatusCode}`;
+            }
+            const stepSummary: IStepSummary = {
+                stepNumber: step.stepNumber,
+                name: step.name,
+                state: step.state,
+                misc: miscValue,
+                autoEnable: step.autoEnable,
+                description: step.description,
+                isRestStep: step.isRestStep,
+                optional: step.optional,
+                runAsUser: step.runAsUser,
+                title: step.title,
+                userDefined: step.userDefined,
+            };
+
+            stepSummaries.push(stepSummary);
+            if(step.steps) {
+                const subSteps = await PropertiesWorkflow.processStepSummaries(step.steps);
+                stepSummaries = stepSummaries.concat(subSteps);
+            }
+        }
+
+        return stepSummaries;
+    }
+}
