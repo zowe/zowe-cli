@@ -64,7 +64,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@zowe/imperative": "^4.2.0-alpha.201907311259",
+    "@zowe/imperative": "^4.2.1-alpha.201908021954",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "get-stdin": "^7.0.0",
     "js-yaml": "^3.13.1",
