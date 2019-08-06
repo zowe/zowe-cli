@@ -59,5 +59,9 @@ exports[`Root level help tests top level help should contain support link 1`] = 
 
       Display help text
 
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
 "
 `;
