@@ -38,7 +38,7 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
             });
         }
 
-        if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {
+        if (response.apiResponse.items.length > 0) {
             commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse.items));
         } else {
             commandParameters.response.data.setObj(response);
