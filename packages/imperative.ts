@@ -9,7 +9,6 @@
 *
 */
 
-import * as fs from "fs";
 import * as path from "path";
 
 // WIP Imperative version of Brightside
@@ -27,31 +26,13 @@ import {
 } from "./zostso/src/cli/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
 
-function tryFindWebHelpLogoImgPath(): string {
-    // Search for file bundled with package
-    const packageLogoPath = path.join(path.dirname(process.mainModule.filename),
-        "..", "node_modules", "@zowe", "cli", "web-help", "logo.png");
-    if (fs.existsSync(packageLogoPath)) {
-        return packageLogoPath;
-    }
-
-    // If not installed as package, fall back to source location
-    const devLogoPath = path.join(__dirname, "..", "web-help", "logo.png");
-    if (fs.existsSync(devLogoPath)) {
-        return devLogoPath;
-    }
-
-    // If neither one found, just continue without a logo
-    return undefined;
-}
-
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
     commandModuleGlobs: ["**/cli/*.definition!(.d).*s"],
     rootCommandDescription: Constants.DESCRIPTION,
     defaultHome: Constants.HOME_DIR,
     envVariablePrefix: Constants.ENV_PREFIX,
-    webHelpLogoImgPath: tryFindWebHelpLogoImgPath(),
+    webHelpLogoImgPath: path.join(__dirname, "..", "web-help", "logo.png"),
     logging: {
         appLogging: {
             logFile: Constants.LOG_LOCATION
