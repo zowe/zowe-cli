@@ -30,7 +30,8 @@
   "files": [
     "lib",
     "docs",
-    "scripts"
+    "scripts",
+    "web-help/logo.png"
   ],
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
@@ -67,7 +68,6 @@
   "dependencies": {
     "@zowe/imperative": "^4.2.1-alpha.201908021954",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
-    "find-up": "^4.1.0",
     "get-stdin": "^7.0.0",
     "js-yaml": "^3.13.1",
     "minimatch": "^3.0.4",
