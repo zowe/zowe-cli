@@ -9,9 +9,10 @@ interface IConfig {
 
 (async () => {
     const config: IConfig = require("js-yaml").safeLoad(
-        fs.readFileSync(__dirname + "/config.yaml", "utf8"));
+        fs.readFileSync(path.join(__dirname, "config.yaml"), "utf8"));
+    console.log("Loaded configuration from config.yaml");
 
-    const outDir: string = __dirname + "/dist";
+    const outDir: string = path.join(__dirname, "dist");
     if (fs.existsSync(outDir)) {
         require("rimraf").sync(outDir + "/*");
     } else {
@@ -59,4 +60,9 @@ interface IConfig {
     const helpGenerator = new WebHelpGenerator(cmdDefinitions, myConfig, outDir);
     helpGenerator.sanitizeHomeDir = true;
     helpGenerator.buildHelp(new CommandResponse({ silent: false }));
-})();
+
+    console.log("Output located in", outDir);
+})().catch((error) => {
+    console.error(error);
+    process.exit(1);
+});

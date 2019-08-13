@@ -92,5 +92,4 @@ imperative_debug.log
 .DS_Store
 
 /web-help/dist/
-/web-help/config.yaml
 /web-help/node_modules
