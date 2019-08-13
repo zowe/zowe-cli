@@ -30,7 +30,8 @@
   "files": [
     "lib",
     "docs",
-    "scripts"
+    "scripts",
+    "web-help/logo.png"
   ],
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
@@ -61,7 +62,8 @@
     "doc:generate": "npm run doc:clean && gulp doc",
     "doc:clean": "rimraf docs/CLIReadme.md",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "audit:public": "npm audit --registry https://registry.npmjs.org/"
+    "audit:public": "npm audit --registry https://registry.npmjs.org/",
+    "build:webHelp": "ts-node ./web-help/build-web-help.ts"
   },
   "dependencies": {
     "@zowe/imperative": "^4.2.1-alpha.201908021954",
@@ -78,10 +80,10 @@
     "@types/fs-extra": "^5.0.5",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
-    "@types/node": "8.0.28",
     "@types/minimatch": "^3.0.3",
-    "@types/ssh2": "^0.5.38",
+    "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
+    "@types/ssh2": "^0.5.38",
     "@types/yargs": "8.0.2",
     "chai": "^4.1.2",
     "chai-string": "^1.4.0",
@@ -108,7 +110,7 @@
     "jsonfile": "^4.0.0",
     "madge": "3.2.0",
     "prompt": "1.0.0",
-    "rimraf": "2.6.2",
+    "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
     "sinon": "3.2.1",
     "sinon-chai": "2.13.0",
