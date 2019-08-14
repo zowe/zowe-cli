@@ -90,3 +90,6 @@ imperative_debug.log
 
 #MacOS fs
 .DS_Store
+
+/web-help/dist/
+/web-help/node_modules
