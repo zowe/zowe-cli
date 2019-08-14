@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { CommandResponse, WebHelpGenerator } from "@zowe/imperative";
+import { CommandResponse, WebHelpGenerator } from "../node_modules/@zowe/imperative";
 
 interface IConfig {
     cliPackage: null | string;
@@ -20,7 +20,7 @@ interface IConfig {
     }
 
     let cliPackageDir: string = path.join(__dirname, "..");
-    let imperativeImportPath: string = "@zowe/imperative";
+    let imperativeImportPath: string = "../node_modules/@zowe/imperative";
     let imperativeRequirePath: string = "../packages/imperative";
 
     if (config.cliPackage) {

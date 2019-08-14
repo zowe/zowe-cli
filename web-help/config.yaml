@@ -5,8 +5,8 @@
 # "web-help" folder and provide its name here (e.g., "@brightside/core"). In
 # order for the script to find the NPM package, it must be located in a
 # "node_modules" subfolder. You can install it to this folder with the
-# `npm install --prefix .` command, or point to an existing install with a
-# symlink.
+# command `mkdir node_modules && npm install <cliPackage> --no-package-lock`,
+# or point to an existing install with a symlink.
 ###############################################################################
 cliPackage: null
 
