@@ -27,6 +27,7 @@ describe("z/OS Files - List", () => {
             {member: "m2"}
         ]
     };
+    const fsname = "USER.DATA.SET";
 
     const dummySession = new Session({
         user: "fake",
@@ -501,6 +502,151 @@ describe("z/OS Files - List", () => {
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+        });
+
+    });
+
+    describe("zfs", () => {
+        beforeEach(() => {
+            expectJsonSpy.mockClear();
+            expectJsonSpy.mockImplementation(() => listApiResponse);
+        });
+
+        it("should list all mounted filesystems", async () => {
+            let response;
+            let error;
+
+            try {
+                response = await List.zfs(dummySession, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+        });
+
+        it("should return 2 records of all mounted filesystems", async () => {
+            let response;
+            let error;
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_MFS}`);
+
+            try {
+                response = await List.zfs(dummySession, { maxLength: 2 });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+        });
+
+        it("should throw error when zosmfRestClient.getExpectJSON error", async () => {
+            let response;
+            let error;
+            const testError = new ImperativeError({
+                msg: "test error"
+            });
+
+            expectJsonSpy.mockRejectedValueOnce(testError);
+
+            try {
+                response = await List.zfs(dummySession, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeFalsy();
+            expect(error).toBeTruthy();
+            expect(error).toBe(testError);
+        });
+
+        it("should return with list when input path name is valid", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: "USER.DATA.SET",
+                            mountpoint: "/u/myuser",
+                            fstname: "ZFS",
+                            mode: ["rdonly", "acl", "synchonly"],
+                            dev: 82,
+                            fstype: 1,
+                            bsize: 1024,
+                            bavail: 45279,
+                            blocks: 126720,
+                            sysname: "S0W1",
+                            writeibc: 0,
+                            diribc: 98
+                        }
+                ],  returnedRows: 1, totalRows: 1, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`,`?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+            // const endpoint = posix.join(ZosFilesConstants.RESOURCE,`${ZosFilesConstants.RES_MFS}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.zfsWithPath(dummySession, { path });
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should return with list when input fsname is valid", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: "USER.DATA.SET",
+                            mountpoint: "/u/myuser",
+                            fstname: "ZFS",
+                            mode: ["rdonly", "acl", "synchonly"],
+                            dev: 82,
+                            fstype: 1,
+                            bsize: 1024,
+                            bavail: 45279,
+                            blocks: 126720,
+                            sysname: "S0W1",
+                            writeibc: 0,
+                            diribc: 98
+                        }
+                ],  returnedRows: 1, totalRows: 1, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`,`?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(fsname)}`);
+            // const endpoint = posix.join(ZosFilesConstants.RESOURCE,`${ZosFilesConstants.RES_MFS}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.zfs(dummySession, { fsname });
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
     });

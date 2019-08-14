@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Zfs handler process method should list all mounted files 1`] = `
+Object {
+  "apiResponse": Object {
+    "items": Array [
+      "test-items",
+    ],
+  },
+  "commandResponse": "listed",
+  "success": true,
+}
+`;
+
+exports[`Zfs handler process method should list all mounted files 2`] = `""`;
+
+exports[`Zfs handler process method should list all mounted files 3`] = `""`;
+
+exports[`Zfs handler process method should list all mounted files using path 1`] = `
+Object {
+  "apiResponse": Object {
+    "items": Array [
+      "test-items",
+    ],
+  },
+  "commandResponse": "listed",
+  "success": true,
+}
+`;
+
+exports[`Zfs handler process method should list all mounted files using path 2`] = `""`;
+
+exports[`Zfs handler process method should list all mounted files using path 3`] = `""`;
