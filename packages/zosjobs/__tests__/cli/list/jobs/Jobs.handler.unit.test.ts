@@ -78,7 +78,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
 describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs using defaults", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, owner, prefix) => {
+        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, prefix, owner) => {
             passedSession = session;
             return GetJobsData.SAMPLE_JOBS;
         });
@@ -87,7 +87,7 @@ describe("list jobs handler tests", () => {
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
         await handler.process(params);
         expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, passedSession.ISession.user, "*");
+        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, "*", passedSession.ISession.user);
     });
 
     it("should be able to get a list of jobs for a specific owner", async () => {
@@ -102,12 +102,12 @@ describe("list jobs handler tests", () => {
         params.arguments.owner = "TESTOWN";
         await handler.process(params);
         expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, "TESTOWN", "*");
+        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, "*", "TESTOWN");
     });
 
     it("should be able to get a list of jobs for a specific prefix", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, owner, prefix) => {
+        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, prefix, owner) => {
             passedSession = session;
             return GetJobsData.SAMPLE_JOBS;
         });
@@ -117,7 +117,7 @@ describe("list jobs handler tests", () => {
         params.arguments.prefix = "TESTPRFX";
         await handler.process(params);
         expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, passedSession.ISession.user, "TESTPRFX");
+        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, "TESTPRFX", passedSession.ISession.user);
     });
 
     it("should not transform an error from the zosmf rest client", async () => {
