@@ -24,7 +24,7 @@ interface IConfig {
     let imperativeRequirePath: string = "../packages/imperative";
 
     if (config.cliPackage) {
-        cliPackageDir = path.join(__dirname, "node_modules", config.cliPackage);
+        cliPackageDir = fs.realpathSync(path.join(__dirname, "node_modules", config.cliPackage));
         imperativeImportPath = path.join(cliPackageDir, "../imperative");
         imperativeRequirePath = path.join(cliPackageDir, "lib/imperative");
     }

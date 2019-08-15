@@ -4,9 +4,9 @@
 # To generate help for another CLI, install it as an NPM package in the
 # "web-help" folder and provide its name here (e.g., "@brightside/core"). In
 # order for the script to find the NPM package, it must be located in a
-# "node_modules" subfolder. You can install it to this folder with the
+# "node_modules" subfolder. You can install it in this folder with the
 # command `mkdir node_modules && npm install <cliPackage> --no-package-lock`,
-# or point to an existing install with a symlink.
+# or link to a global install with `npm link <cliPackage>`.
 ###############################################################################
 cliPackage: null
 
