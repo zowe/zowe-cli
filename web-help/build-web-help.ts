@@ -19,14 +19,21 @@ interface IConfig {
         fs.mkdirSync(outDir);
     }
 
+    // Set default paths to build web help for CLI in this repo
     let cliPackageDir: string = path.join(__dirname, "..");
     let imperativeImportPath: string = "../node_modules/@zowe/imperative";
     let imperativeRequirePath: string = "../packages/imperative";
 
+    // Modify paths if building web help for another CLI
     if (config.cliPackage) {
         cliPackageDir = fs.realpathSync(path.join(__dirname, "node_modules", config.cliPackage));
         imperativeImportPath = path.join(cliPackageDir, "../imperative");
         imperativeRequirePath = path.join(cliPackageDir, "lib/imperative");
+
+        // Import path is different if CLI package installed globally
+        if (!fs.existsSync(imperativeImportPath)) {
+            imperativeImportPath = path.join(cliPackageDir, "node_modules/@zowe/imperative");
+        }
     }
 
     // Get all command definitions
