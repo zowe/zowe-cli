@@ -11,22 +11,14 @@
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
-import { IMountZfsOptions } from "../../../api/methods/mount/doc/IMountZfsOptions";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Mount } from "../../../api/methods/mount";
+import { Unmount } from "../../../api/methods/unmount";
 
 /**
- * Handler to mount a z/OS file system
+ * Handler to unmount a z/OS file system
  */
 export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        // collect the options from our command line arguments into an object
-        const mountZfsOptions: Partial<IMountZfsOptions> = {
-            "mount-point": commandParameters.arguments["mount-point"],
-            "fs-type": commandParameters.arguments["fs-type"],
-            "mode": commandParameters.arguments.mode,
-        };
-
-        return Mount.zfs(session, commandParameters.arguments.fileSystemName, mountZfsOptions);
+        return Unmount.zfs(session, commandParameters.arguments.fileSystemName);
     }
 }

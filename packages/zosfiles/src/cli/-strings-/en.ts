@@ -410,6 +410,22 @@ export default {
             }
         }
     },
+    UNMOUNT: {
+        SUMMARY: "<placeholder> Unmount a file system </placeholder>",
+        DESCRIPTION: "<placeholder> Unmount a file system. </placeholder>",
+        ACTIONS: {
+            ZFS: {
+                SUMMARY: "Unmount a z/OS file system",
+                DESCRIPTION: "Unmount a UNIX file system.",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the file system to unmount."
+                },
+                EXAMPLES: {
+                    EX1: "Unmount a mounted file system"
+                },
+            }
+        }
+    },
     UPLOAD: {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {

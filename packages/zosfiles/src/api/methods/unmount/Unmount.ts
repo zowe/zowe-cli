@@ -11,64 +11,46 @@
 
 import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 
-import { IMountZfsOptions } from "./doc/IMountZfsOptions";
 import { isNullOrUndefined } from "util";
-import { IHeaderContent, ZosmfRestClient } from "../../../../../rest";
-import { getErrorContext } from "../../../../../utils";
+import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 
 /**
- * This class holds helper functions that are used to mount file systems through the z/OS MF APIs
+ * This class holds helper functions that are used to unmount file systems through the z/OS MF APIs
  */
-export class Mount {
+export class Unmount {
     /**
-     * Mount a z/OS file system
+     * Unmount a z/OS file system
      *
      * @param {AbstractSession}  session         - z/OS MF connection info
      * @param {string}           fileSystemName  - contains the file system name
-     * @param {IListOptions}     [options={}]    - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
      * @throws {ImperativeError} file system name must be set
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      *
-     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_MountUnixFile.htm
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_UnmountUnixFile.htm
      */
     public static async zfs(
         session: AbstractSession,
-        fileSystemName: string,
-        options?: Partial<IMountZfsOptions>)
+        fileSystemName: string)
         : Promise<IZosFilesResponse> {
         // We require the file system name
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
 
-        // Removes undefined properties
-        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
-        tempOptions.action = "mount";
-
-        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
-            ZosFilesMessages.missingZfsOption.message + "fs-type"
-        );
-        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
-            ZosFilesMessages.missingZfsOption.message + "fs-type"
-        );
-        ImperativeExpect.toNotBeNullOrUndefined(options.mode,
-            ZosFilesMessages.missingZfsOption.message + "mode"
-        );
-
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
-        const jsonContent = JSON.stringify(tempOptions);
+        const jsonContent = JSON.stringify({action: "unmount"});
         const headers = [{"Content-Length": jsonContent.length}];
 
         const data = await ZosmfRestClient.putExpectString(session, endpoint, headers, jsonContent);
 
         return {
             success: true,
-            commandResponse: ZosFilesMessages.zfsMountedSuccessfully.message,
+            commandResponse: ZosFilesMessages.zfsUnmountedSuccessfully.message,
             apiResponse: data
         };
     }
