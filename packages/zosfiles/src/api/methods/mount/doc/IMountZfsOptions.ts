@@ -20,13 +20,13 @@ export interface IMountZfsOptions {
      * The directory to use as a mount point
      * @type {string}
      */
-    mountPoint?: string;
+    "mount-point"?: string;
 
     /**
      * The file system type to mount
      * @type {string}
      */
-    fstype?: string;
+    "fs-type"?: string;
 
     /**
      * The mode for mounting the file system

@@ -22,9 +22,9 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         // collect the options from our command line arguments into an object
         const mountZfsOptions: Partial<IMountZfsOptions> = {
-            mountPoint: commandParameters.arguments.mountPoint,
-            fstype: commandParameters.arguments.fstype,
-            mode: commandParameters.arguments.mode,
+            "mount-point": commandParameters.arguments["mount-point"],
+            "fs-type": commandParameters.arguments["fs-type"],
+            "mode": commandParameters.arguments.mode,
         };
 
         return Mount.zfs(session, commandParameters.arguments.fileSystemName, mountZfsOptions);

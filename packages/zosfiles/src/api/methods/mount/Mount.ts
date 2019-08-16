@@ -48,12 +48,22 @@ export class Mount {
         const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
         tempOptions.action = "mount";
 
+        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
+            ZosFilesMessages.missingZfsOption.message + "fs-type"
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
+            ZosFilesMessages.missingZfsOption.message + "fs-type"
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(options.mode,
+            ZosFilesMessages.missingZfsOption.message + "mode"
+        );
+
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
         const jsonContent = JSON.stringify(tempOptions);
         const headers = [{"Content-Length": jsonContent.length}];
 
-        const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
+        const data = await ZosmfRestClient.putExpectString(session, endpoint, headers, jsonContent);
 
         return {
             success: true,
