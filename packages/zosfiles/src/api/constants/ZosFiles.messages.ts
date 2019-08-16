@@ -458,5 +458,21 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     zfsDeletedSuccessfully: {
         message: "z/OS file system deleted successfully."
     },
+
+    /**
+     * Message indicating that the ZFS was mounted successfully.
+     * @type {IMessageDefinition}
+     */
+    zfsMountedSuccessfully: {
+        message: "z/OS file system mounted successfully."
+    },
+
+    /**
+     * Message indicating that the ZFS was unmounted successfully.
+     * @type {IMessageDefinition}
+     */
+    zfsUnmountedSuccessfully: {
+        message: "z/OS file system unmounted successfully."
+    }
 };
 

@@ -16,6 +16,7 @@ import { InvokeDefinition } from "./invoke/Invoke.definition";
 import { DownloadDefinition } from "./download/Download.definition";
 import { ListDefinition } from "./list/List.definition";
 import { UploadDefinition } from "./upload/Upload.definition";
+import { MountDefinition } from "./mount/Mount.definition";
 import { ZosmfSession } from "../../../zosmf";
 
 /**
@@ -36,7 +37,8 @@ const definition: ICommandDefinition = {
         InvokeDefinition,
         DownloadDefinition,
         ListDefinition,
-        UploadDefinition
+        UploadDefinition,
+        MountDefinition
     ],
     passOn: [
         {

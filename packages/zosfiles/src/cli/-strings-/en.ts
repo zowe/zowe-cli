@@ -374,6 +374,28 @@ export default {
                 " If you specify an incorrect value, the parameter returns up to 1000 items."
         }
     },
+    MOUNT: {
+        SUMMARY: "<placeholder> Mount a file system </placeholder>",
+        DESCRIPTION: "<placeholder> Mount a file system. </placeholder>",
+        ACTIONS: {
+            ZFS: {
+                SUMMARY: "Mount a z/OS file system",
+                DESCRIPTION: "Mount a UNIX file system on a specified directory.",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the file system to mount."
+                },
+                EXAMPLES: {
+                    EX1: `Mount a file system using default options`,
+                    EX2: `Mount an HFS file system with write access`
+                },
+                OPTIONS: {
+                    MOUNTPOINT: "Specify the directory to use as a mount point.",
+                    FSTYPE: "Specify the file system type to mount.",
+                    MODE: "Specify the mode for mounting the file system (rdonly - read only, rdwr - read write)."
+                }
+            }
+        }
+    },
     UPLOAD: {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {
