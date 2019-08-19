@@ -147,7 +147,7 @@
     "transform": {
       ".(ts)": "ts-jest"
     },
-    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
+    "testRegex": "zosjobs\\__tests__.*\\.(spec|test)\\.ts$",
     "moduleFileExtensions": [
       "ts",
       "js"
