@@ -460,6 +460,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the mount point is required
+     * @type {IMessageDefinition}
+     */
+    missingMountPoint: {
+        message: "Specify the mount point."
+    },
+
+    /**
      * Message indicating that an expected file system option was not supplied.
      * @type {IMessageDefinition}
      */

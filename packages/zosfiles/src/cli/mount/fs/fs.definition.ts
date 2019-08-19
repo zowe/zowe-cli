@@ -35,20 +35,25 @@ export const FsDefinition: ICommandDefinition = {
             description: fsStrings.POSITIONALS.FILESYSTEMNAME,
             required: true,
         },
+        {
+            name: "mountPoint",
+            type: "string",
+            description: fsStrings.POSITIONALS.MOUNTPOINT,
+            required: true,
+        },
     ],
     options: [
-        FsMountOptions.mountPoint,
-        FsMountOptions.fstype,
+        FsMountOptions.fsType,
         FsMountOptions.mode
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: fsStrings.EXAMPLES.EX1,
-            options: "MY.FS --mp /a/ibmuser/mountdir"
+            options: "MY.ZFS /a/ibmuser/mountdir"
         },
         {
             description: fsStrings.EXAMPLES.EX2,
-            options: "MY.FS --mp /a/ibmuser/mountdir --ft ZFS -m rdwr"
+            options: "MY.HFS /a/ibmuser/mountdir --ft HFS -m rdwr"
         }
     ]
 };

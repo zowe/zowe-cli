@@ -21,21 +21,10 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).MO
  */
 export const FsMountOptions: { [key: string]: ICommandOptionDefinition } = {
     /**
-     * The directory to use as a mount point
-     * @type {ICommandOptionDefinition}
-     */
-    mountPoint: {
-        name: "mount-point",
-        aliases: ["mp"],
-        description: strings.MOUNTPOINT,
-        type: "string"
-    },
-
-    /**
      * The file system type to mount
      * @type {ICommandOptionDefinition}
      */
-    fstype: {
+    fsType: {
         name: "fs-type",
         aliases: ["ft"],
         description: strings.FSTYPE,

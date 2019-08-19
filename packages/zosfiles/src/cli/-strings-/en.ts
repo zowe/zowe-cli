@@ -396,14 +396,14 @@ export default {
                 SUMMARY: "Mount a z/OS file system",
                 DESCRIPTION: "Mount a UNIX file system on a specified directory.",
                 POSITIONALS: {
-                    FILESYSTEMNAME: "The name of the file system to mount."
+                    FILESYSTEMNAME: "The name of the file system to mount.",
+                    MOUNTPOINT: "The directory to use as a mount point."
                 },
                 EXAMPLES: {
-                    EX1: `Mount a file system using default options`,
-                    EX2: `Mount an HFS file system with write access`
+                    EX1: `Mount a z/OS file system using default options`,
+                    EX2: `Mount a hierarchical file system with write access`
                 },
                 OPTIONS: {
-                    MOUNTPOINT: "Specify the directory to use as a mount point.",
                     FSTYPE: "Specify the file system type to mount.",
                     MODE: "Specify the mode for mounting the file system (rdonly - read only, rdwr - read write)."
                 }

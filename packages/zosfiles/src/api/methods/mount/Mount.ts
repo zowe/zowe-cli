@@ -27,6 +27,7 @@ export class Mount {
      *
      * @param {AbstractSession}  session         - z/OS MF connection info
      * @param {string}           fileSystemName  - contains the file system name
+     * @param {string}           mountPoint      - contains the mount point
      * @param {IListOptions}     [options={}]    - contains the options to be sent
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
@@ -39,14 +40,17 @@ export class Mount {
     public static async fs(
         session: AbstractSession,
         fileSystemName: string,
+        mountPoint: string,
         options?: Partial<IMountFsOptions>)
         : Promise<IZosFilesResponse> {
-        // We require the file system name
+        // We require the file system name and mount point
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(mountPoint, ZosFilesMessages.missingMountPoint.message);
 
         // Removes undefined properties
         const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
         tempOptions.action = "mount";
+        tempOptions["mount-point"] = mountPoint;
 
         ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
             ZosFilesMessages.missingFsOption.message + "fs-type"

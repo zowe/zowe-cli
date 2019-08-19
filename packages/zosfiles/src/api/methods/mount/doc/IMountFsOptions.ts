@@ -17,12 +17,6 @@
 export interface IMountFsOptions {
 
     /**
-     * The directory to use as a mount point
-     * @type {string}
-     */
-    "mount-point"?: string;
-
-    /**
      * The file system type to mount
      * @type {string}
      */
