@@ -9,9 +9,8 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 
-import { isNullOrUndefined } from "util";
 import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -22,7 +21,7 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
  */
 export class Unmount {
     /**
-     * Unmount a z/OS file system
+     * Unmount a Unix file system
      *
      * @param {AbstractSession}  session         - z/OS MF connection info
      * @param {string}           fileSystemName  - contains the file system name
@@ -34,7 +33,7 @@ export class Unmount {
      *
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_UnmountUnixFile.htm
      */
-    public static async zfs(
+    public static async fs(
         session: AbstractSession,
         fileSystemName: string)
         : Promise<IZosFilesResponse> {
@@ -50,7 +49,7 @@ export class Unmount {
 
         return {
             success: true,
-            commandResponse: ZosFilesMessages.zfsUnmountedSuccessfully.message,
+            commandResponse: ZosFilesMessages.fsUnmountedSuccessfully.message,
             apiResponse: data
         };
     }

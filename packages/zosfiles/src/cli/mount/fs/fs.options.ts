@@ -14,12 +14,12 @@ import { ICommandOptionDefinition } from "@zowe/imperative";
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).MOUNT.ACTIONS.ZFS.OPTIONS;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).MOUNT.ACTIONS.FS.OPTIONS;
 
 /**
  * Object containing all extra options to be used by the Mount API
  */
-export const ZfsMountOptions: { [key: string]: ICommandOptionDefinition } = {
+export const FsMountOptions: { [key: string]: ICommandOptionDefinition } = {
     /**
      * The directory to use as a mount point
      * @type {ICommandOptionDefinition}

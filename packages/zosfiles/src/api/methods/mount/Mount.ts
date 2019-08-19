@@ -9,12 +9,11 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 
-import { IMountZfsOptions } from "./doc/IMountZfsOptions";
+import { IMountFsOptions } from "./doc/IMountFsOptions";
 import { isNullOrUndefined } from "util";
-import { IHeaderContent, ZosmfRestClient } from "../../../../../rest";
-import { getErrorContext } from "../../../../../utils";
+import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -24,7 +23,7 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
  */
 export class Mount {
     /**
-     * Mount a z/OS file system
+     * Mount a Unix file system
      *
      * @param {AbstractSession}  session         - z/OS MF connection info
      * @param {string}           fileSystemName  - contains the file system name
@@ -37,10 +36,10 @@ export class Mount {
      *
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_MountUnixFile.htm
      */
-    public static async zfs(
+    public static async fs(
         session: AbstractSession,
         fileSystemName: string,
-        options?: Partial<IMountZfsOptions>)
+        options?: Partial<IMountFsOptions>)
         : Promise<IZosFilesResponse> {
         // We require the file system name
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
@@ -50,13 +49,10 @@ export class Mount {
         tempOptions.action = "mount";
 
         ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
-            ZosFilesMessages.missingZfsOption.message + "fs-type"
-        );
-        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
-            ZosFilesMessages.missingZfsOption.message + "fs-type"
+            ZosFilesMessages.missingFsOption.message + "fs-type"
         );
         ImperativeExpect.toNotBeNullOrUndefined(options.mode,
-            ZosFilesMessages.missingZfsOption.message + "mode"
+            ZosFilesMessages.missingFsOption.message + "mode"
         );
 
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
@@ -68,7 +64,7 @@ export class Mount {
 
         return {
             success: true,
-            commandResponse: ZosFilesMessages.zfsMountedSuccessfully.message,
+            commandResponse: ZosFilesMessages.fsMountedSuccessfully.message,
             apiResponse: data
         };
     }

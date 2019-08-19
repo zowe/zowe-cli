@@ -15,15 +15,15 @@ import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
-const zfsStrings = fileStrings.UNMOUNT.ACTIONS.ZFS;
+const fsStrings = fileStrings.UNMOUNT.ACTIONS.FS;
 
-export const ZfsDefinition: ICommandDefinition = {
-    name: "zos-file-system",
-    aliases: ["zfs"],
-    summary: zfsStrings.SUMMARY,
-    description: zfsStrings.DESCRIPTION,
+export const FsDefinition: ICommandDefinition = {
+    name: "file-system",
+    aliases: ["fs"],
+    summary: fsStrings.SUMMARY,
+    description: fsStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/zfs.handler",
+    handler: __dirname + "/fs.handler",
     profile: {
         optional: ["zosmf"],
     },
@@ -31,14 +31,14 @@ export const ZfsDefinition: ICommandDefinition = {
         {
             name: "fileSystemName",
             type: "string",
-            description: zfsStrings.POSITIONALS.FILESYSTEMNAME,
+            description: fsStrings.POSITIONALS.FILESYSTEMNAME,
             required: true,
         },
     ],
     examples: [
         {
-            description: zfsStrings.EXAMPLES.EX1,
-            options: "MY.ZFS"
+            description: fsStrings.EXAMPLES.EX1,
+            options: "MY.FS"
         }
     ]
 };

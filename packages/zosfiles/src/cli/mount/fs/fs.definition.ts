@@ -10,21 +10,21 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { ZfsMountOptions } from "./zfs.options";
+import { FsMountOptions } from "./fs.options";
 
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
-const zfsStrings = fileStrings.MOUNT.ACTIONS.ZFS;
+const fsStrings = fileStrings.MOUNT.ACTIONS.FS;
 
-export const ZfsDefinition: ICommandDefinition = {
-    name: "zos-file-system",
-    aliases: ["zfs"],
-    summary: zfsStrings.SUMMARY,
-    description: zfsStrings.DESCRIPTION,
+export const FsDefinition: ICommandDefinition = {
+    name: "file-system",
+    aliases: ["fs"],
+    summary: fsStrings.SUMMARY,
+    description: fsStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/zfs.handler",
+    handler: __dirname + "/fs.handler",
     profile: {
         optional: ["zosmf"],
     },
@@ -32,23 +32,23 @@ export const ZfsDefinition: ICommandDefinition = {
         {
             name: "fileSystemName",
             type: "string",
-            description: zfsStrings.POSITIONALS.FILESYSTEMNAME,
+            description: fsStrings.POSITIONALS.FILESYSTEMNAME,
             required: true,
         },
     ],
     options: [
-        ZfsMountOptions.mountPoint,
-        ZfsMountOptions.fstype,
-        ZfsMountOptions.mode
+        FsMountOptions.mountPoint,
+        FsMountOptions.fstype,
+        FsMountOptions.mode
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
-            description: zfsStrings.EXAMPLES.EX1,
-            options: "MY.ZFS --mp /a/ibmuser/mountdir"
+            description: fsStrings.EXAMPLES.EX1,
+            options: "MY.FS --mp /a/ibmuser/mountdir"
         },
         {
-            description: zfsStrings.EXAMPLES.EX2,
-            options: "MY.ZFS --mp /a/ibmuser/mountdir --ft ZFS -m rdwr"
+            description: fsStrings.EXAMPLES.EX2,
+            options: "MY.FS --mp /a/ibmuser/mountdir --ft ZFS -m rdwr"
         }
     ]
 };

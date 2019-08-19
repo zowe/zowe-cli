@@ -10,11 +10,11 @@
 */
 
 /**
- * Interface for the options to the mount zos-file-system API.
+ * Interface for the options to the mount file-system API.
  * @export
- * @interface IMountZfsOptions
+ * @interface IMountFsOptions
  */
-export interface IMountZfsOptions {
+export interface IMountFsOptions {
 
     /**
      * The directory to use as a mount point

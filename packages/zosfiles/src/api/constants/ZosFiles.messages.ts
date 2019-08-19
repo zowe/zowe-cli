@@ -460,19 +460,27 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that the ZFS was mounted successfully.
+     * Message indicating that an expected file system option was not supplied.
      * @type {IMessageDefinition}
      */
-    zfsMountedSuccessfully: {
-        message: "z/OS file system mounted successfully."
+    missingFsOption: {
+        message: "To create a file system, the following option must be supplied: "
     },
 
     /**
-     * Message indicating that the ZFS was unmounted successfully.
+     * Message indicating that the file system was mounted successfully.
      * @type {IMessageDefinition}
      */
-    zfsUnmountedSuccessfully: {
-        message: "z/OS file system unmounted successfully."
+    fsMountedSuccessfully: {
+        message: "File system mounted successfully."
+    },
+
+    /**
+     * Message indicating that the file system was unmounted successfully.
+     * @type {IMessageDefinition}
+     */
+    fsUnmountedSuccessfully: {
+        message: "File system unmounted successfully."
     }
 };
 

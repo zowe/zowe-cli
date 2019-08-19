@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { ZfsDefinition } from "./zfs/zfs.definition";
+import { FsDefinition } from "./fs/fs.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -28,6 +28,6 @@ export const UnmountDefinition: ICommandDefinition = {
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
-        ZfsDefinition
+        FsDefinition
     ],
 };

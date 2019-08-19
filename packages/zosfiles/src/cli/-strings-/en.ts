@@ -392,7 +392,7 @@ export default {
         SUMMARY: "<placeholder> Mount a file system </placeholder>",
         DESCRIPTION: "<placeholder> Mount a file system. </placeholder>",
         ACTIONS: {
-            ZFS: {
+            FS: {
                 SUMMARY: "Mount a z/OS file system",
                 DESCRIPTION: "Mount a UNIX file system on a specified directory.",
                 POSITIONALS: {
@@ -414,7 +414,7 @@ export default {
         SUMMARY: "<placeholder> Unmount a file system </placeholder>",
         DESCRIPTION: "<placeholder> Unmount a file system. </placeholder>",
         ACTIONS: {
-            ZFS: {
+            FS: {
                 SUMMARY: "Unmount a z/OS file system",
                 DESCRIPTION: "Unmount a UNIX file system.",
                 POSITIONALS: {
