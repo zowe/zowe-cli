@@ -12,7 +12,7 @@
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { Create } from "../../../../../src/api/methods/create";
-import { Mount } from "../../../../../src/api/methods/mount";
+import { Mount, IMountFsOptions } from "../../../../../src/api/methods/mount";
 import { Unmount } from "../../../../../src/api/methods/unmount";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -42,6 +42,10 @@ describe("Mount and unmount a file system", () => {
     const cylsPri = 10;
     const cylsSec = 2;
     const timeout = 20;
+
+    const mountOptions: IMountFsOptions = {} as any;
+    const fsType = "ZFS";
+    const mode = "rdonly";
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
@@ -107,9 +111,12 @@ describe("Mount and unmount a file system", () => {
     it("should mount a FS to a mount point", async () => {
         let response;
         let error;
+        mountOptions["fs-type"] = fsType;
+        mountOptions.mode = mode;
 
         try {
-            response = await Mount.fs(REAL_SESSION, fsname, mountPoint, {});
+            response = await Mount.fs(REAL_SESSION, fsname, mountPoint, mountOptions);
+            Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
             Imperative.console.info("Error: " + inspect(error));
@@ -122,6 +129,7 @@ describe("Mount and unmount a file system", () => {
 
         try{
             response = await List.zfs(REAL_SESSION, {});
+            Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
             Imperative.console.info("Error: " + inspect(error));
@@ -139,6 +147,7 @@ describe("Mount and unmount a file system", () => {
 
         try {
             response = await Unmount.fs(REAL_SESSION, fsname);
+            Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
             Imperative.console.info("Error: " + inspect(error));
@@ -151,6 +160,7 @@ describe("Mount and unmount a file system", () => {
 
         try{
             response = await List.zfs(REAL_SESSION, {});
+            Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
             Imperative.console.info("Error: " + inspect(error));
