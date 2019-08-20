@@ -51,10 +51,10 @@ export class Mount {
 
         // Removes undefined properties
         const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
-        tempOptions.action = "mount";
-        tempOptions["mount-point"] = mountPoint;
 
         this.fsValidateOptions(tempOptions);
+        tempOptions.action = "mount";
+        tempOptions["mount-point"] = mountPoint;
 
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 

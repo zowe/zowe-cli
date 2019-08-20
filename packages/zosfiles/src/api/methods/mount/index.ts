@@ -9,4 +9,6 @@
 *
 */
 
+export * from "./doc/IMountFsOptions";
+
 export * from "./Mount";
