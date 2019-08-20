@@ -16,12 +16,12 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("Create z/OS File System", () => {
+describe("Mount File System", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_create_zos_file_system",
+            testName: "zos_mount_file_system",
             skipProperties: true
         });
     });
@@ -31,24 +31,32 @@ describe("Create z/OS File System", () => {
     });
 
     it("should display the help", () => {
-        const response = runCliScript(__dirname + "/__scripts__/create_zfs_help.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/mount_fs_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("should fail creating a ZFS due to missing data set name", () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-            TEST_ENVIRONMENT, []);
+    it("should fail mounting a FS due to missing file system name and mount point", () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs.sh",
+            TEST_ENVIRONMENT, ["", ""]);
+        expect(response.stderr.toString()).toContain("Missing Positional Argument");
+        expect(response.stderr.toString()).toContain("fileSystemName");
+        expect(response.stderr.toString()).toContain("mountPoint");
+    });
+
+    it("should fail mounting a FS due to missing file system name", () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs.sh",
+            TEST_ENVIRONMENT, ["","/u/ibmuser/mount"]);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
         expect(response.stderr.toString()).toContain("fileSystemName");
     });
 
-    it("should fail creating a ZFS due to invalid number of primary cylinders", () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_cylspri.sh",
-            TEST_ENVIRONMENT, ["TEST.ZFS", "true"]);
-        expect(response.stderr.toString()).toContain("The value must be a number");
-        expect(response.stderr.toString()).toContain("cyls-pri");
+    it("should fail mounting a FS due to missing mount point", () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs.sh",
+            TEST_ENVIRONMENT, ["TEST.ZFS", ""]);
+        expect(response.stderr.toString()).toContain("Missing Positional Argument");
+        expect(response.stderr.toString()).toContain("mountPoint");
     });
 
 });

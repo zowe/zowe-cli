@@ -36,7 +36,7 @@ describe("Unmount File System", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("should fail unmounting a ZFS due to missing file system name", async () => {
+    it("should fail unmounting the fs due to missing file system name", async () => {
         const response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs.sh",
             TEST_ENVIRONMENT, [""]);
         expect(response.status).toBe(1);

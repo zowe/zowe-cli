@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files create zfs command definition", () => {
+describe("zos-files mount fs command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/create/zfs/zfs.definition").ZfsDefinition;
+        const definition: ICommandDefinition = require("../../../../src/cli/mount/fs/fs.definition").FsDefinition;
 
         expect(definition).toBeDefined();
 
@@ -23,11 +23,12 @@ describe("zos-files create zfs command definition", () => {
         // Should require a zosmf profile
         expect(definition.profile.optional).toEqual(["zosmf"]);
 
-        // Should only contain one positional
-        expect(definition.positionals.length).toEqual(1);
+        // Should contain two positionals
+        expect(definition.positionals.length).toEqual(2);
 
-        // The positional should be required
+        // The positionals should be required
         expect(definition.positionals[0].required).toBeTruthy();
+        expect(definition.positionals[1].required).toBeTruthy();
 
         // Should not change
         expect(definition.options).toMatchSnapshot();

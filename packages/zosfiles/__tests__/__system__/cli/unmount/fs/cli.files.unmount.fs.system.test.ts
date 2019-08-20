@@ -25,12 +25,12 @@ let defaultSystem: ITestPropertiesSchema;
 let fsname: string;
 let volume: string;
 
-describe("Delete z/OS File System", () => {
+describe("Unmount File System", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
-            testName: "zos_delete_zos_file_system"
+            testName: "zos_unmount_file_system"
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
@@ -52,7 +52,7 @@ describe("Delete z/OS File System", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_delete_zos_file_system_without_profile"
+                testName: "zos_files_unmount_file_system_without_profile"
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
@@ -62,22 +62,22 @@ describe("Delete z/OS File System", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should delete a data set", async () => {
+        it("should unmount a file system", async () => {
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
             if (defaultSys.zosmf.basePath != null) {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
             }
 
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
-                TEST_ENVIRONMENT_NO_PROF, [fsname, volume,
+            let response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF, [fsname,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.pass]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs_fully_qualified.sh",
-                TEST_ENVIRONMENT_NO_PROF, [fsname, "--for-sure",
+            response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF, [fsname,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -90,12 +90,12 @@ describe("Delete z/OS File System", () => {
     });
 
     describe("Success scenarios", () => {
-        it("should delete a VSAM data set", async () => {
+        it("should unmount a file system", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume]);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
-                TEST_ENVIRONMENT, [fsname, "--for-sure"]);
+                TEST_ENVIRONMENT, [fsname]);
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -104,12 +104,12 @@ describe("Delete z/OS File System", () => {
     });
 
     describe("Expected failures", () => {
-        it("should fail deleting a data set that does not exist", async () => {
+        it("should fail unmounting a file system that does not exist", async () => {
             const notExistZfs = `${fsname}.NOTEXIST`;
-            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
-                TEST_ENVIRONMENT, [notExistZfs, "--for-sure"]);
+            const response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs.sh",
+                TEST_ENVIRONMENT, [notExistZfs]);
             expect(response.status).toBe(1);
-            expect(stripNewLines(response.stderr.toString())).toContain(`ENTRY ${notExistZfs} NOT DELETED`);
+            expect(stripNewLines(response.stderr.toString())).toContain(`ENTRY ${notExistZfs} NOT DELETED`); // CHANGE ME
         });
     });
 });

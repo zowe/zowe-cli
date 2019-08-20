@@ -9,19 +9,20 @@
 *
 */
 
-import { Create } from "../../../../src/api/methods/create/Create";
+import { Mount } from "../../../../src/api/methods/mount/Mount";
 import { ImperativeError } from "@zowe/imperative";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const message: string = "Dummy error message";
 
-describe("Create z/OS file system handler", () => {
+describe("Mount file system handler", () => {
     describe("process method", () => {
-        it("should create a ZFS if requested", async () => {
+        it("should mount a FS if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/create/zfs/zfs.handler");
+            const handlerReq = require("../../../../src/cli/mount/fs/fs.handler");
             const handler = new handlerReq.default();
-            const fileSystemName = "testing";
+            const fileSystemName = "TEST.ZFS";
+            const mountPoint = "/u/ibmuser/mount";
 
             // Vars populated by the mocked function
             let error;
@@ -31,11 +32,11 @@ describe("Create z/OS file system handler", () => {
             let fakeSession = null;
 
             // Mock the zfs function
-            Create.zfs = jest.fn((session) => {
+            Mount.fs = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
-                    commandResponse: "created"
+                    commandResponse: "mounted"
                 };
             });
 
@@ -58,6 +59,7 @@ describe("Create z/OS file system handler", () => {
                         $0: "fake",
                         _: ["fake"],
                         fileSystemName,
+                        mountPoint,
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
@@ -93,8 +95,8 @@ describe("Create z/OS file system handler", () => {
 
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-            expect(Create.zfs).toHaveBeenCalledTimes(1);
-            expect(Create.zfs).toHaveBeenCalledWith(fakeSession, fileSystemName, {});
+            expect(Mount.fs).toHaveBeenCalledTimes(1);
+            expect(Mount.fs).toHaveBeenCalledWith(fakeSession, fileSystemName, mountPoint, {});
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
@@ -103,9 +105,10 @@ describe("Create z/OS file system handler", () => {
 
     it("should raise an error", async () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../src/cli/create/zfs/zfs.handler");
+        const handlerReq = require("../../../../src/cli/mount/fs/fs.handler");
         const handler = new handlerReq.default();
-        const fileSystemName = "testing";
+        const fileSystemName = "TEST.ZFS";
+        const mountPoint = "/u/ibmuser/mount";
 
         // Vars populated by the mocked function
         let error: any;
@@ -114,8 +117,8 @@ describe("Create z/OS file system handler", () => {
         let logMessage = "";
         let fakeSession = null;
 
-        // Mock the zfs function
-        Create.zfs = jest.fn((session) => {
+        // Mock the fs function
+        Mount.fs = jest.fn((session) => {
             fakeSession = session;
             const impErr = new ImperativeError({
                 msg: message
@@ -143,6 +146,7 @@ describe("Create z/OS file system handler", () => {
                     $0: "fake",
                     _: ["fake"],
                     fileSystemName,
+                    mountPoint,
                     ...UNIT_TEST_ZOSMF_PROF_OPTS
                 },
                 response: {
@@ -170,7 +174,7 @@ describe("Create z/OS file system handler", () => {
 
         expect(error).toBeDefined();
         expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-        expect(Create.zfs).toHaveBeenCalledTimes(1);
-        expect(Create.zfs).toHaveBeenCalledWith(fakeSession, fileSystemName, {});
+        expect(Mount.fs).toHaveBeenCalledTimes(1);
+        expect(Mount.fs).toHaveBeenCalledWith(fakeSession, fileSystemName, mountPoint, {});
     });
 });

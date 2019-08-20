@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Create z/OS file system handler process method should create a ZFS if requested 1`] = `
+exports[`Mount file system handler process method should mount a FS if requested 1`] = `
 Object {
-  "commandResponse": "created",
+  "commandResponse": "mounted",
   "success": true,
 }
 `;
 
-exports[`Create z/OS file system handler process method should create a ZFS if requested 2`] = `""`;
+exports[`Mount file system handler process method should mount a FS if requested 2`] = `""`;
 
-exports[`Create z/OS file system handler process method should create a ZFS if requested 3`] = `
+exports[`Mount file system handler process method should mount a FS if requested 3`] = `
 "
-created"
+mounted"
 `;

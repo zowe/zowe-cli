@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files create group definition", () => {
+describe("zos-files mount group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/create/Create.definition").CreateDefinition;
+        const definition: ICommandDefinition = require("../../../src/cli/mount/Mount.definition").MountDefinition;
 
         expect(definition).toBeDefined();
 
