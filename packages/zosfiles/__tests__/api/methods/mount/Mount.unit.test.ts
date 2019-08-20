@@ -49,6 +49,25 @@ describe("Mount FS", () => {
         expect(caughtError.message).toContain(ZosFilesMessages.invalidMountModeOption.message);
     });
 
+    it("should fail with a bad option", async () => {
+        let caughtError;
+        (ZosmfRestClient as any).putExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const options = {
+            "fs-type":"ZFS",
+            "mode":"rdonly",
+            "moed":"rw"
+        };
+        try {
+            await Mount.fs(dummySession, fileSystemName, mountPoint, options);
+        } catch (e) {
+            caughtError = e;
+        }
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain(ZosFilesMessages.invalidFilesMountOption.message);
+    });
+
     it("should fail if REST client throws error", async () => {
         const error = new Error("This is a test");
 

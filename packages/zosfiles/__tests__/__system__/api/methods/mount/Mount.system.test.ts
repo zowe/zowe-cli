@@ -11,7 +11,9 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../../src/api/methods/create";
+import { Create } from "../../../../../src/api/methods/create";
+import { Mount } from "../../../../../src/api/methods/mount";
+import { Unmount } from "../../../../../src/api/methods/unmount";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -19,216 +21,143 @@ import { Delete } from "../../../../../src/api/methods/delete";
 import { ZosFilesMessages } from "../../../../..";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../../src/api/methods/create/doc/ICreateZfsOptions";
+import { SshSession, Shell } from "../../../../../../zosuss/";
+import { List } from "../../../../../src/api";
 
 
 let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
-let dsname: string;
 let volume: string;
 
 const LONGER_TIMEOUT = 10000;
 
-describe("Create data set", () => {
-
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_create_dataset"
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
-    });
-
-    beforeEach(async () => {
-        let response;
-        try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
-        } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
-        }
-    });
-
-    afterEach(async () => {
-        let response;
-        try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
-        } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
-        }
-    });
-
-    const options: ICreateDataSetOptions = {} as any;
-
-    it("should create a partitioned data set", async () => {
-        let error;
-        let response;
-
-        try {
-            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
-            Imperative.console.info("Response: " + inspect(response));
-        } catch (err) {
-            error = err;
-            Imperative.console.info("Error: " + inspect(error));
-        }
-
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-
-        expect(response.success).toBe(true);
-        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
-    }, LONGER_TIMEOUT);
-
-    it("should create a sequential data set", async () => {
-        let error;
-        let response;
-
-        try {
-            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
-            Imperative.console.info("Response: " + inspect(response));
-        } catch (err) {
-            error = err;
-            Imperative.console.info("Error: " + inspect(error));
-        }
-
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-
-        expect(response.success).toBe(true);
-        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
-    }, LONGER_TIMEOUT);
-});
-
-describe("Create VSAM", () => {
-
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_create_vsam"
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
-        volume = defaultSystem.datasets.vol;
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
-    });
-
-    beforeEach(async () => {
-        let response;
-        try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
-        } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
-        }
-    });
-
-    afterEach(async () => {
-        let response;
-        try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
-        } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
-        }
-    });
-
-    const options: ICreateVsamOptions = {} as any;
-
-    it("should create a VSAM data set with defaults (volume must be specified)", async () => {
-        let error;
-        let response;
-
-        options.volumes = volume;
-
-        try {
-            response = await Create.vsam(REAL_SESSION, dsname, options);
-            Imperative.console.info("Response: " + inspect(response));
-        } catch (err) {
-            error = err;
-            Imperative.console.info("Error: " + inspect(error));
-        }
-
-        expect(error).toBeFalsy();
-        expect(response).toBeTruthy();
-
-        expect(response.success).toBe(true);
-        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
-    }, LONGER_TIMEOUT);
-});
-
-describe("Create z/OS file system", () => {
+describe("Mount and unmount a file system", () => {
     let fsname: string;
+    let dirname: string;
+    let mountPoint: string;
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_create_zfs"
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        volume = defaultSystem.datasets.vol;
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
-    });
-
-    beforeEach(async () => {
-        let response;
-        try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
-        } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
-        }
-    });
-
-    afterEach(async () => {
-        let response;
-        try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
-        } catch (error) {
-            Imperative.console.info("Error: " + inspect(error));
-        }
-    });
-
-    const options: ICreateZfsOptions = {} as any;
+    const zfsOptions: ICreateZfsOptions = {} as any;
     const perms = 755;
     const cylsPri = 10;
     const cylsSec = 2;
     const timeout = 20;
 
-    it("should create a ZFS with defaults", async () => {
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_mount_unmount_fs"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+        const thisSshSession = new SshSession({
+            hostname:defaultSystem.ssh.host,
+            port:defaultSystem.ssh.port,
+            user:defaultSystem.ssh.user,
+            password:defaultSystem.ssh.password,
+        });
+        volume = defaultSystem.datasets.vol;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[0];
+        mountPoint = "/tmp/" + dirname;
+
+        // Execute SSH to add mountpoint to temp directory, in case of delete failure
+        await Shell.executeSsh(thisSshSession, "mkdir /tmp/" + dirname, jest.fn());
+
+        // Create a ZFS
         let error;
         let response;
-
-        options.perms = perms;
-        options.cylsPri = cylsPri;
-        options.cylsSec = cylsSec;
-        options.timeout = timeout;
-        options.volumes = [volume];
+        zfsOptions.perms = perms;
+        zfsOptions.cylsPri = cylsPri;
+        zfsOptions.cylsSec = cylsSec;
+        zfsOptions.timeout = timeout;
+        zfsOptions.volumes = [volume];
 
         try {
-            response = await Create.zfs(REAL_SESSION, fsname, options);
+            response = await Create.zfs(REAL_SESSION, fsname, zfsOptions);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
             Imperative.console.info("Error: " + inspect(error));
         }
+    });
+
+    afterAll(async () => {
+        defaultSystem = testEnvironment.systemTestProperties;
+        const thisSshSession = new SshSession({
+            hostname:defaultSystem.ssh.host,
+            port:defaultSystem.ssh.port,
+            user:defaultSystem.ssh.user,
+            password:defaultSystem.ssh.password,
+        });
+
+        // Delete the ZFS
+        let response;
+        try {
+            response = await Delete.zfs(REAL_SESSION, fsname);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+        await TestEnvironment.cleanUp(testEnvironment);
+
+        // Remove the mount point
+        await Shell.executeSsh(thisSshSession, "rmdir /tmp/" + dirname, jest.fn());
+    });
+
+    it("should mount a FS to a mount point", async () => {
+        let response;
+        let error;
+
+        try {
+            response = await Mount.fs(REAL_SESSION, fsname, mountPoint, {});
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
 
         expect(error).toBeUndefined();
         expect(response).toBeTruthy();
-
         expect(response.success).toBe(true);
-        expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
+        expect(response.commandResponse).toContain(ZosFilesMessages.fsMountedSuccessfully.message);
+
+        try{
+            response = await List.zfs(REAL_SESSION, {});
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(mountPoint);
+    }, LONGER_TIMEOUT);
+
+    it("should unmount a FS from a mount point", async () => {
+        let response;
+        let error;
+
+        try {
+            response = await Unmount.fs(REAL_SESSION, fsname);
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.fsUnmountedSuccessfully.message);
+
+        try{
+            response = await List.zfs(REAL_SESSION, {});
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeDefined();
+        expect(response).toBeFalsy();
+        expect(response.success).toBe(false);
     }, LONGER_TIMEOUT);
 });
