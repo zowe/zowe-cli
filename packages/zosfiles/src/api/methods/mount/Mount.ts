@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/imperative";
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
 import { isNullOrUndefined } from "util";
@@ -54,18 +54,7 @@ export class Mount {
         tempOptions.action = "mount";
         tempOptions["mount-point"] = mountPoint;
 
-        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
-            ZosFilesMessages.missingFsOption.message + "fs-type"
-        );
-        ImperativeExpect.toNotBeEqual(options["fs-type"], "",
-            ZosFilesMessages.missingFsOption.message + "fs-type"
-        );
-        ImperativeExpect.toNotBeNullOrUndefined(options.mode,
-            ZosFilesMessages.missingFsOption.message + "mode"
-        );
-        ImperativeExpect.toNotBeEqual(options.mode, "",
-            ZosFilesMessages.missingFsOption.message + "mode"
-        );
+        this.fsValidateOptions(tempOptions);
 
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
@@ -79,5 +68,55 @@ export class Mount {
             commandResponse: ZosFilesMessages.fsMountedSuccessfully.message,
             apiResponse: data
         };
+    }
+
+    /**
+     * Validate the options for the command to mount a z/OS file system
+     * @param options - options for the mounting of the file system
+     */
+    private static fsValidateOptions(options: IMountFsOptions): void {
+        ImperativeExpect.toNotBeNullOrUndefined(options,
+            ZosFilesMessages.missingFilesMountOptions.message
+        );
+
+        /* If our caller does not supply these options, we supply default values for them,
+         * so they should exist at this point.
+         */
+        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
+            ZosFilesMessages.missingFsOption.message + "fs-type"
+        );
+        ImperativeExpect.toNotBeEqual(options["fs-type"], "",
+            ZosFilesMessages.missingFsOption.message + "fs-type"
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(options.mode,
+            ZosFilesMessages.missingFsOption.message + "mode"
+        );
+        ImperativeExpect.toNotBeEqual(options.mode, "",
+            ZosFilesMessages.missingFsOption.message + "mode"
+        );
+
+        // validate specific options
+        for (const option in options) {
+            if (options.hasOwnProperty(option)) {
+                switch (option) {
+
+                    case "mode":
+                        if ((options.mode !== "rdonly") && (options.mode !== "rdwr")) {
+                            throw new ImperativeError({
+                                msg: ZosFilesMessages.invalidMountModeOption.message + options.mode
+                            });
+                        }
+                        break;
+
+                    case "fs-type":
+                        // no validation at this time
+                        break;
+
+                    default:
+                        throw new ImperativeError({msg: ZosFilesMessages.invalidFilesMountOption.message + option});
+
+                } // end switch
+            }
+        } // end for
     }
 }

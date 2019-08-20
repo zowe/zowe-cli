@@ -468,11 +468,35 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating the 'mount' command options is null or undefined
+     * @type {IMessageDefinition}
+     */
+    missingFilesMountOptions: {
+        message: "No zos-files mount command options."
+    },
+
+    /**
+     * Message indicating an invalid 'mount' command option
+     * @type {IMessageDefinition}
+     */
+    invalidFilesMountOption: {
+        message: "Invalid zos-files mount command option: "
+    },
+
+    /**
      * Message indicating that an expected file system option was not supplied.
      * @type {IMessageDefinition}
      */
     missingFsOption: {
-        message: "To create a file system, the following option must be supplied: "
+        message: "To mount a file system, the following option must be supplied: "
+    },
+
+    /**
+     * Message indicating invalid 'mount' command 'mode' option
+     * @type {IMessageDefinition}
+     */
+    invalidMountModeOption: {
+        message: "Invalid zos-files mount command 'mode' option: "
     },
 
     /**
