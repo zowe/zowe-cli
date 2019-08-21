@@ -496,7 +496,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     invalidMountModeOption: {
-        message: "Invalid zos-files mount command 'mode' option: "
+        message: "Invalid zos-files mount command 'mode' value: "
     },
 
     /**

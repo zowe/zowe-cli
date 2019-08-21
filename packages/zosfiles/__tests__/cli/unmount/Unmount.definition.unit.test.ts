@@ -11,8 +11,22 @@
 
 import i18nEnglish from "../../../src/cli/-strings-/en";
 import { UnmountDefinition } from "../../../src/cli/unmount/Unmount.definition";
+import { ICommandDefinition } from "@zowe/imperative";
 
-describe("UnmountDefinition", () => {
+describe("zos-files unmount group definition", () => {
+    it("should not have changed", () => {
+        const definition: ICommandDefinition = require("../../../src/cli/unmount/Unmount.definition").UnmountDefinition;
+
+        expect(definition).toBeDefined();
+
+        // Should not contain options nor examples since this is a group
+        expect(definition.options).toBeUndefined();
+        expect(definition.examples).toBeUndefined();
+
+        // Should have children since this is a group
+        expect(definition.children).toBeDefined();
+    });
+
     it("should be using the correct string field in the object", () => {
         expect(UnmountDefinition.description).toBe(i18nEnglish.UNMOUNT.DESCRIPTION);
     });

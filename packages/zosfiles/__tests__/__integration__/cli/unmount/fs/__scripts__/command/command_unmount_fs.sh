@@ -5,7 +5,4 @@ set -e
 
 echo "================Z/OS FILES UNMOUNT FILE SYSTEM==============="
 zowe zos-files unmount fs "$fsn" $rfj
-if [ $? -gt 0 ]
-then
-    exit $?
-fi
+exit $?

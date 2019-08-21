@@ -9,6 +9,8 @@
 *
 */
 
+import i18nEnglish from "../../../src/cli/-strings-/en";
+import { MountDefinition } from "../../../src/cli/mount/Mount.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files mount group definition", () => {
@@ -23,5 +25,9 @@ describe("zos-files mount group definition", () => {
 
         // Should have children since this is a group
         expect(definition.children).toBeDefined();
+    });
+
+    it("should be using the correct string field in the object", () => {
+        expect(MountDefinition.description).toBe(i18nEnglish.MOUNT.DESCRIPTION);
     });
 });

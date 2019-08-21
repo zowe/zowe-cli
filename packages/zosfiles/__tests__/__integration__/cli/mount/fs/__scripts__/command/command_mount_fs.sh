@@ -5,7 +5,4 @@ set -e
 
 echo "================Z/OS FILES MOUNT FILE-SYSTEM==============="
 zowe zos-files mount fs "$fsn" "$md" --user ibmuser --pass 123456 --host google.com
-if [ $? -gt 0 ]
-then
-    exit $?
-fi
+exit $?

@@ -9,22 +9,12 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
-import { posix } from "path";
-import { Unmount, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../..";
+import { Unmount, ZosFilesMessages } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
-import { Invoke } from "../../../../src/api/methods/invoke";
 
 describe("Unmount", () => {
-    const dummySession = new Session({
-        user: "dummy",
-        password: "dummy",
-        hostname: "machine",
-        port: 443,
-        protocol: "https",
-        type: "basic"
-    });
+    const dummySession: any = {};
 
     describe("fs", () => {
         const fileSystemName = "TEST.ZFS";
