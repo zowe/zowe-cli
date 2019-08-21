@@ -23,27 +23,46 @@ let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
-let fsname: string;
 let volume: string;
 
-describe("Create z/OS File System", () => {
+describe("Mount and unmount file system", () => {
+    let fsname: string;
+    let mountPoint: string;
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
-            testName: "zos_create_zos_file_system"
+            testName: "zos_mount_unmount_file_system"
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        volume = defaultSystem.datasets.vol;
+
+        const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
+        mountPoint = "//tmp/" + dirname;
+        const sshCommand = "mkdir " + mountPoint;
+
+        const response = runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
+            TEST_ENVIRONMENT, [sshCommand, fsname,
+                defaultSystem.ssh.host,
+                defaultSystem.ssh.port,
+                defaultSystem.ssh.user,
+                defaultSystem.ssh.password]);
     });
 
     afterAll(async () => {
+        const sshCommand = "rmdir " + mountPoint;
+        const response = runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
+            TEST_ENVIRONMENT, [sshCommand, fsname,
+                defaultSystem.ssh.host,
+                defaultSystem.ssh.port,
+                defaultSystem.ssh.user,
+                defaultSystem.ssh.password]);
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
@@ -53,55 +72,98 @@ describe("Create z/OS File System", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_create_zos_file_system_without_profile"
+                testName: "zos_files_mount_unmount_file_system_without_profile"
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterEach(async () => {
-            // use DELETE APIs
-            await Delete.zfs(REAL_SESSION, fsname);
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should create a z/OS file system", () => {
+        it("should mount a file system", () => {
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
             if (defaultSys.zosmf.basePath != null) {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
             }
 
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
+            let response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
-                [fsname, volume,
+                [fsname, mountPoint,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.pass]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_list_fs_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [fsname,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(mountPoint.slice(1));
+        });
+
+        it("should unmount a file system", () => {
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (defaultSys.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+            }
+
+            let response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [fsname,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_list_fs_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [fsname,
+                    defaultSys.zosmf.host,
+                    defaultSys.zosmf.port,
+                    defaultSys.zosmf.user,
+                    defaultSys.zosmf.pass]);
+            expect(response.stderr.toString()).toBeTruthy();
+            expect(response.status).toBe(1);
         });
     });
 
-    describe("Success scenarios", () => {
-
-        afterEach(async () => {
-            const response = await Delete.zfs(REAL_SESSION, fsname);
-        });
-
-        it("should create a ZFS", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-                TEST_ENVIRONMENT, [fsname, volume]);
+    describe("With profiles", () => {
+        it("should mount a file system", () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs.sh",
+                TEST_ENVIRONMENT, [fsname, mountPoint]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-        });
 
-        it("should create a ZFS with primary and secondary cylinders specified", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-                TEST_ENVIRONMENT, [fsname, volume, `--cp 100 --cs 10`]);
+            response = runCliScript(__dirname + "/__scripts__/command/command_list_fs.sh",
+                TEST_ENVIRONMENT, [fsname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(mountPoint.slice(1));
+        });
+
+        it("should unmount a file system", () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs.sh",
+                TEST_ENVIRONMENT, [fsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_list_fs.sh",
+                TEST_ENVIRONMENT, [fsname]);
+            expect(response.stderr.toString()).toBeTruthy();
+            expect(response.status).toBe(1);
         });
     });
 });

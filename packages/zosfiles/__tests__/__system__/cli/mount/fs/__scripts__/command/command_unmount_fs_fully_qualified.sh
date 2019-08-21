@@ -7,5 +7,5 @@ PASS=$5
 set -e
 
 echo "================Z/OS FILES UNMOUNT FILE SYSTEM==============="
-zowe zos-files unmount zos-file-system "$fsn" --host $HOST --port $PORT --user $USER --password $PASS --ru=false
+zowe zos-files unmount file-system "$fsn" --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 exit $?

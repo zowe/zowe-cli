@@ -34,7 +34,6 @@ const LONGER_TIMEOUT = 10000;
 
 describe("Mount and unmount a file system", () => {
     let fsname: string;
-    let dirname: string;
     let mountPoint: string;
 
     const zfsOptions: ICreateZfsOptions = {} as any;
@@ -62,11 +61,11 @@ describe("Mount and unmount a file system", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[0];
+        const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "/tmp/" + dirname;
 
         // Execute SSH to add mountpoint to temp directory, in case of delete failure
-        await Shell.executeSsh(thisSshSession, "mkdir /tmp/" + dirname, jest.fn());
+        await Shell.executeSsh(thisSshSession, "mkdir " + mountPoint, jest.fn());
 
         // Create a ZFS
         let error;
@@ -105,7 +104,7 @@ describe("Mount and unmount a file system", () => {
         await TestEnvironment.cleanUp(testEnvironment);
 
         // Remove the mount point
-        await Shell.executeSsh(thisSshSession, "rmdir /tmp/" + dirname, jest.fn());
+        await Shell.executeSsh(thisSshSession, "rmdir " + mountPoint, jest.fn());
     });
 
     it("should mount a FS to a mount point", async () => {
