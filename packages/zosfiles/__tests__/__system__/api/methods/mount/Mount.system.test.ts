@@ -128,7 +128,7 @@ describe("Mount and unmount a file system", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.fsMountedSuccessfully.message);
 
         try{
-            response = await List.zfs(REAL_SESSION, {});
+            response = await List.zfs(REAL_SESSION, {fsname});
             Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
@@ -138,7 +138,8 @@ describe("Mount and unmount a file system", () => {
         expect(error).toBeUndefined();
         expect(response).toBeTruthy();
         expect(response.success).toBe(true);
-        expect(response.commandResponse).toContain(mountPoint);
+        expect(response.apiResponse.items.length).toBe(1);
+        expect(response.apiResponse.items[0].mountpoint).toContain(mountPoint);
     }, LONGER_TIMEOUT);
 
     it("should unmount a FS from a mount point", async () => {
@@ -159,7 +160,7 @@ describe("Mount and unmount a file system", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.fsUnmountedSuccessfully.message);
 
         try{
-            response = await List.zfs(REAL_SESSION, {});
+            response = await List.zfs(REAL_SESSION, {fsname});
             Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
@@ -167,7 +168,7 @@ describe("Mount and unmount a file system", () => {
         }
 
         expect(error).toBeDefined();
-        expect(response).toBeFalsy();
-        expect(response.success).toBe(false);
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
     }, LONGER_TIMEOUT);
 });
