@@ -34,6 +34,10 @@ exports[`zos-tso should display the help 1`] = `
 
       Display help text
 
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
    --help-web  | --hw (boolean)
 
       Display HTML help in browser
@@ -42,9 +46,9 @@ exports[`zos-tso should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"The help was constructed for command: zos-tso.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue TSO commands and interact with TSO address spaces\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   issue      Issue TSO commands       \\\\n   ping       Ping a TSO address space \\\\n   send       Send data to TSO         \\\\n   start | st Start TSO/E address space\\\\n   stop | sp  Stop TSO/E address space \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue TSO commands and interact with TSO address spaces\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   issue      Issue TSO commands       \\\\n   ping       Ping a TSO address space \\\\n   send       Send data to TSO         \\\\n   start | st Start TSO/E address space\\\\n   stop | sp  Stop TSO/E address space \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue TSO commands and interact with TSO address spaces\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   issue      Issue TSO commands       \\\\n   ping       Ping a TSO address space \\\\n   send       Send data to TSO         \\\\n   start | st Start TSO/E address space\\\\n   stop | sp  Stop TSO/E address space \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Issue TSO commands and interact with TSO address spaces\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-tso <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   issue      Issue TSO commands       \\\\n   ping       Ping a TSO address space \\\\n   send       Send data to TSO         \\\\n   start | st Start TSO/E address space\\\\n   stop | sp  Stop TSO/E address space \\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
 }"
 `;
 
