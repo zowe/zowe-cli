@@ -23,7 +23,7 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).UNMOU
  */
 export const UnmountDefinition: ICommandDefinition = {
     name: "unmount",
-    aliases: [],
+    aliases: ["umount"],
     type: "group",
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,

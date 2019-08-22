@@ -389,8 +389,8 @@ export default {
         }
     },
     MOUNT: {
-        SUMMARY: "<placeholder> Mount a file system </placeholder>",
-        DESCRIPTION: "<placeholder> Mount a file system. </placeholder>",
+        SUMMARY: "Mount file systems",
+        DESCRIPTION: "Mount z/OS UNIX file systems, such as HFS, ZFS, and more. This connects you to USS file systems.",
         ACTIONS: {
             FS: {
                 SUMMARY: "Mount a file system",
@@ -404,15 +404,15 @@ export default {
                     EX2: `Mount a hierarchical file system with write access`
                 },
                 OPTIONS: {
-                    FSTYPE: "Specify the file system type to mount.",
-                    MODE: "Specify the mode for mounting the file system (rdonly - read only, rdwr - read write)."
+                    FSTYPE: "Specify the file system type to mount (HFS, ZFS, NFS, TFS).",
+                    MODE: "Specify the mode for mounting the file system (rdonly - read-only, rdwr - read/write)."
                 }
             }
         }
     },
     UNMOUNT: {
-        SUMMARY: "<placeholder> Unmount a file system </placeholder>",
-        DESCRIPTION: "<placeholder> Unmount a file system. </placeholder>",
+        SUMMARY: "Unmount file systems",
+        DESCRIPTION: "Unmount file systems, such as HFS, ZFS, and more. This disconnects you from USS file systems.",
         ACTIONS: {
             FS: {
                 SUMMARY: "Unmount a file system",
