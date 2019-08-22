@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-zowe zos-jobs view -h
+zowe zos-jobs list -h
 if [ $? -gt 0 ]
 then
     exit $?
 fi
 
-zowe zos-jobs view --help --response-format-json
+zowe zos-jobs list --help --response-format-json
 exit $?
