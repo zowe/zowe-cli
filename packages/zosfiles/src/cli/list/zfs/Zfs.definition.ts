@@ -24,7 +24,8 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).LI
  * @type {ICommandDefinition}
  */
 export const ZfsDefinition: ICommandDefinition = {
-    name: "zfs",
+    name: "file-system",
+    aliases: ["fs"],
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
