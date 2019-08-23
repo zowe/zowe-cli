@@ -9,7 +9,11 @@
 *
 */
 
-export * from "./doc/IMountFsMode";
-export * from "./doc/IMountFsOptions";
-
-export * from "./Mount";
+/**
+ * Type for the mode option of the mount file-system API.
+ * @export
+ * @type IMountFsMode
+ */
+export type IMountFsMode =
+    "rdonly" |
+    "rdwr";

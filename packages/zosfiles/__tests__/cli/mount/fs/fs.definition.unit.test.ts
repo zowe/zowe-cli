@@ -27,8 +27,8 @@ describe("zos-files mount fs command definition", () => {
         expect(definition.positionals.length).toEqual(2);
 
         // The positionals should be required
-        expect(definition.positionals[0].required).toBeTruthy();
-        expect(definition.positionals[1].required).toBeTruthy();
+        expect(definition.positionals[0].required).toEqual(true);
+        expect(definition.positionals[1].required).toEqual(true);
 
         // Should not change
         expect(definition.options).toMatchSnapshot();

@@ -9,6 +9,8 @@
 *
 */
 
+import { IMountFsMode } from "./IMountFsMode";
+
 /**
  * Interface for the options to the mount file-system API.
  * @export
@@ -24,7 +26,7 @@ export interface IMountFsOptions {
 
     /**
      * The mode for mounting the file system
-     * @type {string}
+     * @type {IMountFsMode}
      */
-    mode?: string;
+    mode?: IMountFsMode;
 }

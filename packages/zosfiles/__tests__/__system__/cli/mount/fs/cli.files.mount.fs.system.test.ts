@@ -82,7 +82,7 @@ describe("Mount and unmount file system", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should mount a file system", () => {
+        it("should mount and unmount a file system", () => {
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
             if (defaultSys.zosmf.basePath != null) {
@@ -109,16 +109,8 @@ describe("Mount and unmount file system", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(mountPoint.slice(1));
-        });
 
-        it("should unmount a file system", () => {
-            // if API Mediation layer is being used (basePath has a value) then
-            // set an ENVIRONMENT variable to be used by zowe.
-            if (defaultSys.zosmf.basePath != null) {
-                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
-            }
-
-            let response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs_fully_qualified.sh",
+            response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [fsname,
                     defaultSys.zosmf.host,
@@ -141,7 +133,7 @@ describe("Mount and unmount file system", () => {
     });
 
     describe("With profiles", () => {
-        it("should mount a file system", () => {
+        it("should mount and unmount a file system", () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs.sh",
                 TEST_ENVIRONMENT, [fsname, mountPoint]);
             expect(response.stderr.toString()).toBe("");
@@ -152,10 +144,8 @@ describe("Mount and unmount file system", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(mountPoint.slice(1));
-        });
 
-        it("should unmount a file system", () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs.sh",
+            response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs.sh",
                 TEST_ENVIRONMENT, [fsname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

@@ -397,14 +397,15 @@ export default {
                 DESCRIPTION: "Mount a UNIX file system on a specified directory.",
                 POSITIONALS: {
                     FILESYSTEMNAME: "The name of the file system to mount.",
-                    MOUNTPOINT: "The directory to use as a mount point."
+                    MOUNTPOINT: "Specifies the mount point you will be using to mount. It is usually a directory."
                 },
                 EXAMPLES: {
                     EX1: `Mount a z/OS file system using default options`,
                     EX2: `Mount a hierarchical file system with write access`
                 },
                 OPTIONS: {
-                    FSTYPE: "Specify the file system type to mount (HFS, ZFS, NFS, TFS).",
+                    FSTYPE: "Specify the file system type that you are going to mount. The name must match the TYPE operand on a FILESYSTYPE"
+                        + " statement in the BPXPRMxx parmlib member for the file system.",
                     MODE: "Specify the mode for mounting the file system (rdonly - read-only, rdwr - read/write)."
                 }
             }

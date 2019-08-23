@@ -64,12 +64,17 @@ describe("Mount and unmount a file system", () => {
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "/tmp/" + dirname;
 
+        let error;
+
         // Execute SSH to add mountpoint to temp directory, in case of delete failure
-        await Shell.executeSsh(thisSshSession, "mkdir " + mountPoint, jest.fn());
+        try {
+            await Shell.executeSsh(thisSshSession, "mkdir " + mountPoint, jest.fn());
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
 
         // Create a ZFS
-        let error;
-        let response;
         zfsOptions.perms = perms;
         zfsOptions.cylsPri = cylsPri;
         zfsOptions.cylsSec = cylsSec;
@@ -77,8 +82,7 @@ describe("Mount and unmount a file system", () => {
         zfsOptions.volumes = [volume];
 
         try {
-            response = await Create.zfs(REAL_SESSION, fsname, zfsOptions);
-            Imperative.console.info("Response: " + inspect(response));
+            await Create.zfs(REAL_SESSION, fsname, zfsOptions);
         } catch (err) {
             error = err;
             Imperative.console.info("Error: " + inspect(error));
@@ -95,19 +99,22 @@ describe("Mount and unmount a file system", () => {
         });
 
         // Delete the ZFS
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
         await TestEnvironment.cleanUp(testEnvironment);
 
         // Remove the mount point
-        await Shell.executeSsh(thisSshSession, "rmdir " + mountPoint, jest.fn());
+        try {
+            await Shell.executeSsh(thisSshSession, "rmdir " + mountPoint, jest.fn());
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
     });
 
-    it("should mount a FS to a mount point", async () => {
+    it("should mount a FS to a mount point and then unmount", async () => {
         let response;
         let error;
         mountOptions["fs-type"] = fsType;
@@ -139,11 +146,6 @@ describe("Mount and unmount a file system", () => {
         expect(response.success).toBe(true);
         expect(response.apiResponse.items.length).toBe(1);
         expect(response.apiResponse.items[0].mountpoint).toContain(mountPoint);
-    }, LONGER_TIMEOUT);
-
-    it("should unmount a FS from a mount point", async () => {
-        let response;
-        let error;
 
         try {
             response = await Unmount.fs(REAL_SESSION, fsname);

@@ -24,6 +24,7 @@ describe("Unmount", () => {
                 // Do nothing
             });
             await Unmount.fs(dummySession, fileSystemName);
+            expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
         });
 
         it("should fail if fileSystemName is missing or blank", async () => {

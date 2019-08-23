@@ -7,7 +7,7 @@ Array [
       "ft",
     ],
     "defaultValue": "ZFS",
-    "description": "Specify the file system type to mount (HFS, ZFS, NFS, TFS).",
+    "description": "Specify the file system type that you are going to mount. The name must match the TYPE operand on a FILESYSTYPE statement in the BPXPRMxx parmlib member for the file system.",
     "name": "fs-type",
     "type": "string",
   },
@@ -15,6 +15,13 @@ Array [
     "aliases": Array [
       "m",
     ],
+    "allowableValues": Object {
+      "caseSensitive": true,
+      "values": Array [
+        "rdonly",
+        "rdwr",
+      ],
+    },
     "defaultValue": "rdonly",
     "description": "Specify the mode for mounting the file system (rdonly - read-only, rdwr - read/write).",
     "name": "mode",

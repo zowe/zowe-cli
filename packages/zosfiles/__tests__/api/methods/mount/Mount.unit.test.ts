@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
-import { Mount, IMountFsOptions } from "../../../..";
+import { Mount, IMountFsMode, IMountFsOptions } from "../../../..";
 import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
 
@@ -24,29 +24,13 @@ describe("Mount FS", () => {
         (ZosmfRestClient as any).putExpectString = jest.fn(() => {
             // Do nothing
         });
+        const mode: IMountFsMode = "rdonly";
         const options: IMountFsOptions = {
             "fs-type":"ZFS",
-            "mode":"rdonly"
+            "mode":mode
         };
         await Mount.fs(dummySession, fileSystemName, mountPoint, options);
-    });
-
-    it("should fail with a bad mode", async () => {
-        let caughtError;
-        (ZosmfRestClient as any).putExpectString = jest.fn(() => {
-            // Do nothing
-        });
-        const options = {
-            "fs-type":"ZFS",
-            "mode":"rw"
-        };
-        try {
-            await Mount.fs(dummySession, fileSystemName, mountPoint, options);
-        } catch (e) {
-            caughtError = e;
-        }
-        expect(caughtError).toBeDefined();
-        expect(caughtError.message).toContain(ZosFilesMessages.invalidMountModeOption.message);
+        expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
     });
 
     it("should fail with a bad option", async () => {
@@ -54,9 +38,10 @@ describe("Mount FS", () => {
         (ZosmfRestClient as any).putExpectString = jest.fn(() => {
             // Do nothing
         });
+        const mode: IMountFsMode = "rdonly";
         const options = {
             "fs-type":"ZFS",
-            "mode":"rdonly",
+            "mode":mode,
             "moed":"rw"
         };
         try {
@@ -75,9 +60,10 @@ describe("Mount FS", () => {
         (ZosmfRestClient as any).putExpectString = jest.fn(() => {
             throw error;
         });
+        const mode: IMountFsMode = "rdonly";
         const options = {
             "fs-type":"ZFS",
-            "mode":"rdonly"
+            "mode":mode
         };
 
         try {

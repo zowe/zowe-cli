@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionAllowableValues, ICommandOptionDefinition } from "@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
 
@@ -41,6 +41,10 @@ export const FsMountOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["m"],
         description: strings.MODE,
         type: "string",
-        defaultValue: "rdonly"
+        defaultValue: "rdonly",
+        allowableValues: {
+            values: ["rdonly", "rdwr"],
+            caseSensitive: true
+        }
     }
 };

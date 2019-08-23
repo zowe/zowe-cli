@@ -44,10 +44,8 @@ export class Mount {
         options?: Partial<IMountFsOptions>)
         : Promise<IZosFilesResponse> {
         // We require the file system name and mount point
-        ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
-        ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
-        ImperativeExpect.toNotBeNullOrUndefined(mountPoint, ZosFilesMessages.missingMountPoint.message);
-        ImperativeExpect.toNotBeEqual(mountPoint, "", ZosFilesMessages.missingMountPoint.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(mountPoint, ZosFilesMessages.missingMountPoint.message);
 
         // Removes undefined properties
         const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
@@ -82,16 +80,10 @@ export class Mount {
         /* If our caller does not supply these options, we supply default values for them,
          * so they should exist at this point.
          */
-        ImperativeExpect.toNotBeNullOrUndefined(options["fs-type"],
+        ImperativeExpect.toBeDefinedAndNonBlank(options["fs-type"],
             ZosFilesMessages.missingFsOption.message + "fs-type"
         );
-        ImperativeExpect.toNotBeEqual(options["fs-type"], "",
-            ZosFilesMessages.missingFsOption.message + "fs-type"
-        );
-        ImperativeExpect.toNotBeNullOrUndefined(options.mode,
-            ZosFilesMessages.missingFsOption.message + "mode"
-        );
-        ImperativeExpect.toNotBeEqual(options.mode, "",
+        ImperativeExpect.toBeDefinedAndNonBlank(options.mode,
             ZosFilesMessages.missingFsOption.message + "mode"
         );
 
