@@ -103,7 +103,7 @@ describe("Mount file system handler", () => {
         });
     });
 
-    it("should fail to mount a FS when there is an error", async () => {
+    it("should fail to mount a FS when there is an API error", async () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../src/cli/mount/fs/fs.handler");
         const handler = new handlerReq.default();

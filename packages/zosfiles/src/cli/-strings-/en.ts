@@ -397,7 +397,7 @@ export default {
                 DESCRIPTION: "Mount a UNIX file system on a specified directory.",
                 POSITIONALS: {
                     FILESYSTEMNAME: "The name of the file system to mount.",
-                    MOUNTPOINT: "Specifies the mount point you will be using to mount. It is usually a directory."
+                    MOUNTPOINT: "The directory to use as a mount point."
                 },
                 EXAMPLES: {
                     EX1: `Mount a z/OS file system using default options`,
