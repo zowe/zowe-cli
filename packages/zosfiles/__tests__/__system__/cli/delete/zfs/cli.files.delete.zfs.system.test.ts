@@ -62,7 +62,7 @@ describe("Delete z/OS File System", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
-        it("should delete a data set", async () => {
+        it("should delete a ZFS", async () => {
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
             if (defaultSys.zosmf.basePath != null) {
@@ -90,7 +90,7 @@ describe("Delete z/OS File System", () => {
     });
 
     describe("Success scenarios", () => {
-        it("should delete a VSAM data set", async () => {
+        it("should delete a ZFS", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume]);
 
@@ -104,7 +104,7 @@ describe("Delete z/OS File System", () => {
     });
 
     describe("Expected failures", () => {
-        it("should fail deleting a data set that does not exist", async () => {
+        it("should fail deleting a ZFS that does not exist", async () => {
             const notExistZfs = `${fsname}.NOTEXIST`;
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [notExistZfs, "--for-sure"]);

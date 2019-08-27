@@ -388,6 +388,45 @@ export default {
                 " This option and --path are mutually exclusive."
         }
     },
+    MOUNT: {
+        SUMMARY: "Mount file systems",
+        DESCRIPTION: "Mount z/OS UNIX file systems, such as HFS, ZFS, and more. This connects you to USS file systems.",
+        ACTIONS: {
+            FS: {
+                SUMMARY: "Mount a file system",
+                DESCRIPTION: "Mount a UNIX file system on a specified directory.",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the file system to mount.",
+                    MOUNTPOINT: "The directory to use as a mount point."
+                },
+                EXAMPLES: {
+                    EX1: `Mount a z/OS file system using default options`,
+                    EX2: `Mount a hierarchical file system with write access`
+                },
+                OPTIONS: {
+                    FSTYPE: "Specify the file system type that you are going to mount. The name must match the TYPE operand on a FILESYSTYPE"
+                        + " statement in the BPXPRMxx parmlib member for the file system.",
+                    MODE: "Specify the mode for mounting the file system (rdonly - read-only, rdwr - read/write)."
+                }
+            }
+        }
+    },
+    UNMOUNT: {
+        SUMMARY: "Unmount file systems",
+        DESCRIPTION: "Unmount file systems, such as HFS, ZFS, and more. This disconnects you from USS file systems.",
+        ACTIONS: {
+            FS: {
+                SUMMARY: "Unmount a file system",
+                DESCRIPTION: "Unmount a UNIX file system.",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the file system to unmount."
+                },
+                EXAMPLES: {
+                    EX1: "Unmount a mounted file system"
+                },
+            }
+        }
+    },
     UPLOAD: {
         DESCRIPTION: "Upload the contents of a file to z/OS data sets",
         ACTIONS: {

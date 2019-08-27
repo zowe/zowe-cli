@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unmount File System should display unmount fs help 1`] = `
+"================Z/OS FILES UNMOUNT HELP===============
+
+ COMMAND NAME
+ ------------
+
+   file-system | fs
+
+ DESCRIPTION
+ -----------
+
+   Unmount a UNIX file system.
+
+ USAGE
+ -----
+
+   zowe zos-files unmount file-system <fileSystemName> [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   fileSystemName		 (string)
+
+      The name of the file system to unmount.
+
+ ZOSMF CONNECTION OPTIONS
+ ------------------------
+
+   --host  | -H (string)
+
+      The z/OSMF server host name.
+
+   --port  | -P (number)
+
+      The z/OSMF server port.
+
+      Default value: 443
+
+   --user  | -u (string)
+
+      Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+   --password  | --pass | --pw (string)
+
+      Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+   --reject-unauthorized  | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+   --base-path  | --bp (string)
+
+      The base path for your API mediation layer instance. Specify this option to
+      prepend the base path to all z/OSMF resources when making REST requests. Do not
+      specify this option if you are not using an API mediation layer.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Unmount a mounted file system:
+
+      $ zowe zos-files unmount file-system MY.FS
+
+================Z/OS FILES UNMOUNT HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: file-system.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   file-system | fs\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Unmount a UNIX file system.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files unmount file-system <fileSystemName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   fileSystemName\\\\t\\\\t (string)\\\\n\\\\n      The name of the file system to unmount.\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path  | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Unmount a mounted file system:\\\\n\\\\n      $ zowe zos-files unmount file-system MY.FS\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   file-system | fs\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Unmount a UNIX file system.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files unmount file-system <fileSystemName> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   fileSystemName\\\\t\\\\t (string)\\\\n\\\\n      The name of the file system to unmount.\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path  | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Unmount a mounted file system:\\\\n\\\\n      $ zowe zos-files unmount file-system MY.FS\\\\n\\\\n\\"
+}"
+`;
