@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files mount fs command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "ft",
+    ],
+    "defaultValue": "ZFS",
+    "description": "Specify the file system type that you are going to mount. The name must match the TYPE operand on a FILESYSTYPE statement in the BPXPRMxx parmlib member for the file system.",
+    "name": "fs-type",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "m",
+    ],
+    "allowableValues": Object {
+      "caseSensitive": true,
+      "values": Array [
+        "rdonly",
+        "rdwr",
+      ],
+    },
+    "defaultValue": "rdonly",
+    "description": "Specify the mode for mounting the file system (rdonly - read-only, rdwr - read/write).",
+    "name": "mode",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files mount fs command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Mount a z/OS file system using default options",
+    "options": "MY.ZFS /a/ibmuser/mountdir",
+  },
+  Object {
+    "description": "Mount a hierarchical file system with write access",
+    "options": "MY.HFS /a/ibmuser/mountdir --ft HFS -m rdwr",
+  },
+]
+`;

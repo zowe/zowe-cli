@@ -35,6 +35,10 @@ exports[`zos-jobs command should display the help 1`] = `
 
       Display help text
 
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
    --help-web  | --hw (boolean)
 
       Display HTML help in browser
@@ -43,8 +47,8 @@ exports[`zos-jobs command should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"The help was constructed for command: zos-jobs.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   cancel | can  Cancel a job              \\\\n   delete | del  Delete a job              \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   cancel | can  Cancel a job              \\\\n   delete | del  Delete a job              \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   cancel | can  Cancel a job              \\\\n   delete | del  Delete a job              \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Manage z/OS jobs.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   cancel | can  Cancel a job              \\\\n   delete | del  Delete a job              \\\\n   download | dl Download job output       \\\\n   list | ls     List jobs and spool files \\\\n   submit | sub  Submit z/OS jobs          \\\\n   view | vw     View details of a z/OS job\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
 }"
 `;

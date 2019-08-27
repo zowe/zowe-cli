@@ -16,7 +16,9 @@ import { InvokeDefinition } from "./invoke/Invoke.definition";
 import { DownloadDefinition } from "./download/Download.definition";
 import { ListDefinition } from "./list/List.definition";
 import { UploadDefinition } from "./upload/Upload.definition";
+import { MountDefinition } from "./mount/Mount.definition";
 import { ZosmfSession } from "../../../zosmf";
+import { UnmountDefinition } from "./unmount/Unmount.definition";
 
 /**
  * This object defines the top level command group for zosfiles. This is not
@@ -36,7 +38,9 @@ const definition: ICommandDefinition = {
         InvokeDefinition,
         DownloadDefinition,
         ListDefinition,
-        UploadDefinition
+        UploadDefinition,
+        MountDefinition,
+        UnmountDefinition
     ],
     passOn: [
         {

@@ -363,6 +363,16 @@ export default {
                     EX2: "Show the files and directories in path '/u/ibmuser displaying only the file or directory name",
                     EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
                 }
+            },
+            ZFS: {
+                SUMMARY: "Listing mounted z/OS file systems",
+                DESCRIPTION: "List all mounted filesystems, or the specific filesystem mounted at a given path," +
+                    "or the filesystem with a given Filesystem name.",
+                EXAMPLES: {
+                    EX1: "To list all mounted file systems",
+                    EX2: "To list file systems mounted to a specific path",
+                    EX3: "To list file systems mounted with a specific name"
+                }
             }
         },
         OPTIONS: {
@@ -371,7 +381,50 @@ export default {
             ATTRIBUTES: "Display more information about each member. Data sets with an undefined record format display information related to " +
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
-                " If you specify an incorrect value, the parameter returns up to 1000 items."
+                " If you specify an incorrect value, the parameter returns up to 1000 items.",
+            PATH: "Specifies the path where the file system is mounted." +
+                " This option and --fsname are mutually exclusive.",
+            FSNAME: "Specifies the name of the mounted file system." +
+                " This option and --path are mutually exclusive."
+        }
+    },
+    MOUNT: {
+        SUMMARY: "Mount file systems",
+        DESCRIPTION: "Mount z/OS UNIX file systems, such as HFS, ZFS, and more. This connects you to USS file systems.",
+        ACTIONS: {
+            FS: {
+                SUMMARY: "Mount a file system",
+                DESCRIPTION: "Mount a UNIX file system on a specified directory.",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the file system to mount.",
+                    MOUNTPOINT: "The directory to use as a mount point."
+                },
+                EXAMPLES: {
+                    EX1: `Mount a z/OS file system using default options`,
+                    EX2: `Mount a hierarchical file system with write access`
+                },
+                OPTIONS: {
+                    FSTYPE: "Specify the file system type that you are going to mount. The name must match the TYPE operand on a FILESYSTYPE"
+                        + " statement in the BPXPRMxx parmlib member for the file system.",
+                    MODE: "Specify the mode for mounting the file system (rdonly - read-only, rdwr - read/write)."
+                }
+            }
+        }
+    },
+    UNMOUNT: {
+        SUMMARY: "Unmount file systems",
+        DESCRIPTION: "Unmount file systems, such as HFS, ZFS, and more. This disconnects you from USS file systems.",
+        ACTIONS: {
+            FS: {
+                SUMMARY: "Unmount a file system",
+                DESCRIPTION: "Unmount a UNIX file system.",
+                POSITIONALS: {
+                    FILESYSTEMNAME: "The name of the file system to unmount."
+                },
+                EXAMPLES: {
+                    EX1: "Unmount a mounted file system"
+                },
+            }
         }
     },
     UPLOAD: {
