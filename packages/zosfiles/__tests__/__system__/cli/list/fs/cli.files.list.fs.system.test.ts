@@ -29,7 +29,7 @@ describe("List all mounted filesystems", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
-            testName: "list_zfs"
+            testName: "list_fs"
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
@@ -68,7 +68,7 @@ describe("List all mounted filesystems", () => {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
             }
 
-            const response = runCliScript(__dirname + "/__scripts__/command/command_list_zfs_system.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_list_fs_system.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     defaultSys.zosmf.host,
@@ -85,7 +85,7 @@ describe("List all mounted filesystems", () => {
     describe("Success scenarios", () => {
 
         it("should list all mounted filesystems", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_zfs.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -93,7 +93,7 @@ describe("List all mounted filesystems", () => {
         });
 
         it("should list all mounted filesystems with response-format-json flag", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_zfs.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -103,7 +103,7 @@ describe("List all mounted filesystems", () => {
 
     describe("Expected failures", () => {
         it("should fail due to path not existing", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_zfs.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["-p /xxxx"]);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toEqual("");
@@ -113,7 +113,7 @@ describe("List all mounted filesystems", () => {
 
     describe("Expected failures", () => {
         it("should fail due to fsname not existing", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_zfs.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["-f xxxx"]);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toEqual("");

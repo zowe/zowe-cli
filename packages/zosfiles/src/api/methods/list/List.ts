@@ -20,7 +20,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
-import { IZfsOptions } from "./doc/IZfsOptions";
+import { IFsOptions } from "./doc/IFsOptions";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -176,7 +176,7 @@ export class List {
      * @throws {ImperativeError} data set name must be set
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
-    public static async zfs(session: AbstractSession, options: IZfsOptions = {}): Promise<IZosFilesResponse> {
+    public static async fs(session: AbstractSession, options: IFsOptions = {}): Promise<IZosFilesResponse> {
         try {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_MFS}`);
@@ -221,7 +221,7 @@ export class List {
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
 
-    public static async zfsWithPath(session: AbstractSession, options: IZfsOptions = {}): Promise<IZosFilesResponse> {
+    public static async fsWithPath(session: AbstractSession, options: IFsOptions = {}): Promise<IZosFilesResponse> {
         try {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_MFS}`);

@@ -364,7 +364,7 @@ export default {
                     EX3: "Show the files and directories in path '/u/ibmuser' displaying the headers associated with the file detail"
                 }
             },
-            ZFS: {
+            FS: {
                 SUMMARY: "Listing mounted z/OS file systems",
                 DESCRIPTION: "List all mounted filesystems, or the specific filesystem mounted at a given path," +
                     "or the filesystem with a given Filesystem name.",

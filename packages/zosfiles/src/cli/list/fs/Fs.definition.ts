@@ -17,20 +17,20 @@ import i18nTypings from "../../-strings-/en";
 import { ZosmfSession } from "../../../../../zosmf";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).LIST.ACTIONS.ZFS;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).LIST.ACTIONS.FS;
 
 /**
  * List data sets command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
-export const ZfsDefinition: ICommandDefinition = {
+export const FsDefinition: ICommandDefinition = {
     name: "file-system",
     aliases: ["fs"],
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     outputFormatOptions: true,
-    handler: path.join(__dirname, "Zfs.handler"),
+    handler: path.join(__dirname, "Fs.handler"),
     profile: {
         optional: ["zosmf"],
     },

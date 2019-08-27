@@ -22,7 +22,7 @@ describe("List all mounted filesystems", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "list_zfs",
+            testName: "list_fs",
             skipProperties: true
         });
     });
@@ -32,16 +32,16 @@ describe("List all mounted filesystems", () => {
     });
 
     it("should display the help", () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command_list_zfs_help.sh");
+        const shellScript = path.join(__dirname, "__scripts__", "command_list_fs_help.sh");
         const response = runCliScript(shellScript, TEST_ENVIRONMENT);
         expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
-        // expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toMatchSnapshot();
     });
 
     describe("Expected failures", () => {
         it("should fail due to conflict option", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_zfs.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [""]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Syntax Error");
