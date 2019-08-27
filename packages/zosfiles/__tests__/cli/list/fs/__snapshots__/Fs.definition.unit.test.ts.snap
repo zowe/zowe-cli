@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-files list zfs command definition should not have changed 1`] = `
+exports[`zos-files list fs command definition should not have changed 1`] = `
 Array [
   Object {
     "aliases": Array [
@@ -32,7 +32,7 @@ Array [
 ]
 `;
 
-exports[`zos-files list zfs command definition should not have changed 2`] = `
+exports[`zos-files list fs command definition should not have changed 2`] = `
 Array [
   Object {
     "description": "To list all mounted file systems",
