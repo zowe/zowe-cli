@@ -358,4 +358,83 @@ describe("List command group", () => {
         });
     });
 
+    describe("Files System", () => {
+
+        describe("Success scenarios", () => {
+
+            it("should list all files system", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await List.fs(REAL_SESSION, null);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items[0].name).toEqual(".");
+                expect(response.apiResponse.items[0].mode.startsWith("d")).toBeTruthy();
+                expect(response.apiResponse.items[1].name).toEqual("..");
+                expect(response.apiResponse.items[2].name).toEqual(filename);
+                expect(response.apiResponse.items[2].mode.startsWith("d")).toBeFalsy();
+            });
+
+            it("should list a uss directory but limited to one", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await List.fs(REAL_SESSION, {maxLength: 1});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items[0].name).toEqual(".");
+                expect(response.apiResponse.items[0].mode.startsWith("d")).toBeTruthy();
+                expect(response.apiResponse.items.length).toBe(1);
+            });
+        });
+
+        describe("Failure Scenarios", () => {
+            it("should display proper error message when missing session", async () => {
+                let response: IZosFilesResponse;
+                let error;
+                try {
+                    response = await List.fs(undefined, null);
+                } catch (err) {
+                    error = err;
+                }
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(error.message).toContain("Expect Error: Required object must be defined");
+            });
+
+            it("should display proper message when listing path files and file does not exists", async () => {
+                let response: IZosFilesResponse;
+                let error;
+                try {
+                    response = await List.fs(REAL_SESSION, name);
+                } catch (err) {
+                    error = err;
+                }
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(error).toBeDefined();
+                expect(error.message).toContain("name is not defined");
+            });
+        });
+    });
+
 });
