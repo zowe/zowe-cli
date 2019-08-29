@@ -358,7 +358,7 @@ describe("List command group", () => {
         });
     });
 
-    describe("Files System", () => {
+    describe("file System", () => {
 
         describe("Success scenarios", () => {
 
@@ -378,11 +378,9 @@ describe("List command group", () => {
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toBe(null);
-                expect(response.apiResponse.items[0].name).toEqual(".");
-                expect(response.apiResponse.items[0].mode.startsWith("d")).toBeTruthy();
-                expect(response.apiResponse.items[1].name).toEqual("..");
-                expect(response.apiResponse.items[2].name).toEqual(filename);
-                expect(response.apiResponse.items[2].mode.startsWith("d")).toBeFalsy();
+                expect(response.apiResponse.items.length).toBeGreaterThan(0);
+                expect(response.apiResponse.items[0]).toHaveProperty("name");
+                expect(response.apiResponse.items[0]).toHaveProperty("mountpoint");
             });
 
             it("should list a uss directory but limited to one", async () => {
@@ -401,40 +399,12 @@ describe("List command group", () => {
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toBe(null);
-                expect(response.apiResponse.items[0].name).toEqual(".");
-                expect(response.apiResponse.items[0].mode.startsWith("d")).toBeTruthy();
                 expect(response.apiResponse.items.length).toBe(1);
+                expect(response.apiResponse.items[0]).toHaveProperty("name");
+                expect(response.apiResponse.items[0]).toHaveProperty("mountpoint");
             });
         });
 
-        describe("Failure Scenarios", () => {
-            it("should display proper error message when missing session", async () => {
-                let response: IZosFilesResponse;
-                let error;
-                try {
-                    response = await List.fs(undefined, null);
-                } catch (err) {
-                    error = err;
-                }
-                expect(response).toBeFalsy();
-                expect(error).toBeTruthy();
-                expect(error.message).toContain("Expect Error: Required object must be defined");
-            });
-
-            it("should display proper message when listing path files and file does not exists", async () => {
-                let response: IZosFilesResponse;
-                let error;
-                try {
-                    response = await List.fs(REAL_SESSION, name);
-                } catch (err) {
-                    error = err;
-                }
-                expect(response).toBeFalsy();
-                expect(error).toBeTruthy();
-                expect(error).toBeDefined();
-                expect(error.message).toContain("name is not defined");
-            });
-        });
     });
 
 });
