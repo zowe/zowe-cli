@@ -366,8 +366,8 @@ export default {
             },
             FS: {
                 SUMMARY: "Listing mounted z/OS file systems",
-                DESCRIPTION: "List all mounted filesystems, or the specific filesystem mounted at a given path," +
-                    "or the filesystem with a given Filesystem name.",
+                DESCRIPTION: "List all mounted file systems, or the specific file system mounted at a given path," +
+                    "or the file system with a given file system name.",
                 EXAMPLES: {
                     EX1: "To list all mounted file systems",
                     EX2: "To list file systems mounted to a specific path",
