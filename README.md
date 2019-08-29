@@ -87,7 +87,7 @@ npm install -g
 
 <b>Notes:</b>
 
-- Depending on how you configured npm on Linux or Mac, you might need to refix the `npm install -g` command or the `npm uninstall -g` command with `sudo` to let npm have write access to the installation directory.
+- Depending on how you configured npm on Linux or Mac, you might need to prefix the `npm install -g` command or the `npm uninstall -g` command with `sudo` to let npm have write access to the installation directory.
 - On Windows, the `npm install -g` command might fail several times due to an `EPERM` error. This appears to be a bug that npm documented in their GitHub issues. This behaviour does not appear to be specific to installing the Zowe CLI package. Unfortunately, the only solution that we know of is to issue the `npm cache clean` command and the `npm install -g` command repeatedly until it works.
 
 ## Uninstall Zowe CLI
@@ -106,7 +106,7 @@ The most fundamental Zowe CLI profile is a `zosmf` profile. Issue the following 
 zowe profiles create zosmf-profile --help
 ```
 
-After you create your profile, you can confirm that the properties of your profile can connect to and communicate with your mainframe system sucessfully by issuing the following command:
+After you create your profile, you can confirm that the properties of your profile can connect to and communicate with your mainframe system successfully by issuing the following command:
 
 ```
 zowe zosmf check status
