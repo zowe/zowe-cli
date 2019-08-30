@@ -367,7 +367,7 @@ describe("List command group", () => {
                 let response;
 
                 try {
-                    response = await List.fs(REAL_SESSION, null);
+                    response = await List.fs(REAL_SESSION);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;

@@ -365,13 +365,13 @@ export default {
                 }
             },
             FS: {
-                SUMMARY: "Listing mounted z/OS file systems",
-                DESCRIPTION: "List all mounted file systems, or the specific file system mounted at a given path," +
-                    "or the file system with a given file system name.",
+                SUMMARY: "Listing mounted z/OS filesystems",
+                DESCRIPTION: "List all mounted filesystems, or the specific filesystem mounted at a given path, " +
+                    "or the filesystem with a given filesystem name.",
                 EXAMPLES: {
-                    EX1: "To list all mounted file systems",
-                    EX2: "To list file systems mounted to a specific path",
-                    EX3: "To list file systems mounted with a specific name"
+                    EX1: "To list all mounted filesystems",
+                    EX2: "To list filesystems mounted to a specific path",
+                    EX3: "To list filesystems mounted with a specific name"
                 }
             }
         },
