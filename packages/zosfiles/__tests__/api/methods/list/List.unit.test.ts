@@ -506,7 +506,7 @@ describe("z/OS Files - List", () => {
 
     });
 
-    describe("zfs", () => {
+    describe("fs", () => {
         beforeEach(() => {
             expectJsonSpy.mockClear();
             expectJsonSpy.mockImplementation(() => listApiResponse);
@@ -517,7 +517,7 @@ describe("z/OS Files - List", () => {
             let error;
 
             try {
-                response = await List.zfs(dummySession, undefined);
+                response = await List.fs(dummySession, undefined);
             } catch (err) {
                 error = err;
             }
@@ -534,7 +534,7 @@ describe("z/OS Files - List", () => {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_MFS}`);
 
             try {
-                response = await List.zfs(dummySession, { maxLength: 2 });
+                response = await List.fs(dummySession, { maxLength: 2 });
             } catch (err) {
                 error = err;
             }
@@ -555,7 +555,7 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockRejectedValueOnce(testError);
 
             try {
-                response = await List.zfs(dummySession, undefined);
+                response = await List.fs(dummySession, undefined);
             } catch (err) {
                 error = err;
             }
@@ -573,7 +573,7 @@ describe("z/OS Files - List", () => {
                         {
                             name: "USER.DATA.SET",
                             mountpoint: "/u/myuser",
-                            fstname: "ZFS",
+                            fstname: "FS",
                             mode: ["rdonly", "acl", "synchonly"],
                             dev: 82,
                             fstype: 1,
@@ -593,7 +593,7 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.zfsWithPath(dummySession, { path });
+                    response = await List.fsWithPath(dummySession, { path });
                 } catch (err) {
                     error = err;
                 }
@@ -615,7 +615,7 @@ describe("z/OS Files - List", () => {
                         {
                             name: "USER.DATA.SET",
                             mountpoint: "/u/myuser",
-                            fstname: "ZFS",
+                            fstname: "FS",
                             mode: ["rdonly", "acl", "synchonly"],
                             dev: 82,
                             fstype: 1,
@@ -635,7 +635,7 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.zfs(dummySession, { fsname });
+                    response = await List.fs(dummySession, { fsname });
                 } catch (err) {
                     error = err;
                 }

@@ -134,7 +134,7 @@ describe("Mount and unmount a file system", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.fsMountedSuccessfully.message);
 
         try{
-            response = await List.zfs(REAL_SESSION, {fsname});
+            response = await List.fs(REAL_SESSION, {fsname});
             Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;
@@ -161,7 +161,7 @@ describe("Mount and unmount a file system", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.fsUnmountedSuccessfully.message);
 
         try{
-            response = await List.zfs(REAL_SESSION, {fsname});
+            response = await List.fs(REAL_SESSION, {fsname});
             Imperative.console.info("Response: " + inspect(response));
         } catch (e) {
             error = e;

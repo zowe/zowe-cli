@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files list zfs command definition", () => {
+describe("zos-files list fs command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/list/zfs/Zfs.definition").ZfsDefinition;
+        const definition: ICommandDefinition = require("../../../../src/cli/list/fs/Fs.definition").FsDefinition;
 
         expect(definition).toBeDefined();
 

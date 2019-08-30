@@ -15,11 +15,11 @@ import UssFileHandler from "../../../../src/cli/list/uss/UssFile.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
 import { IZosFilesResponse } from "../../../../src/api";
 
-describe("Zfs handler", () => {
+describe("fs handler", () => {
     describe("process method", () => {
         it("should list all mounted files", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/zfs/Zfs.handler");
+            const handlerReq = require("../../../../src/cli/list/fs/Fs.handler");
             const handler = new handlerReq.default();
 
             // Vars populated by the mocked function
@@ -29,8 +29,8 @@ describe("Zfs handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the List.zfs function
-            List.zfs = jest.fn((session) => {
+            // Mock the List.fs function
+            List.fs = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -95,8 +95,8 @@ describe("Zfs handler", () => {
 
 //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-            expect(List.zfs).toHaveBeenCalledTimes(1);
-            expect(List.zfs).toHaveBeenCalledWith(fakeSession, {fsname: undefined, maxLength: undefined, path: null});
+            expect(List.fs).toHaveBeenCalledTimes(1);
+            expect(List.fs).toHaveBeenCalledWith(fakeSession, {fsname: undefined, maxLength: undefined, path: null});
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
@@ -104,7 +104,7 @@ describe("Zfs handler", () => {
 
         it("should list all mounted files using path", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/zfs/Zfs.handler");
+            const handlerReq = require("../../../../src/cli/list/fs/Fs.handler");
             const handler = new handlerReq.default();
             const path = "testing";
 
@@ -115,8 +115,8 @@ describe("Zfs handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the List.zfs function
-            List.zfsWithPath = jest.fn((session) => {
+            // Mock the List.fs function
+            List.fsWithPath = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -181,8 +181,8 @@ describe("Zfs handler", () => {
 
 //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-            expect(List.zfsWithPath).toHaveBeenCalledTimes(1);
-            expect(List.zfsWithPath).toHaveBeenCalledWith(fakeSession, {fsname: null, maxLength: undefined, path: "testing"});
+            expect(List.fsWithPath).toHaveBeenCalledTimes(1);
+            expect(List.fsWithPath).toHaveBeenCalledWith(fakeSession, {fsname: null, maxLength: undefined, path: "testing"});
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

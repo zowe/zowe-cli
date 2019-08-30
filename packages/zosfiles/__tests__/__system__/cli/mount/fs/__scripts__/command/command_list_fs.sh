@@ -4,5 +4,5 @@ rfj=$2
 set -e
 
 echo "================Z/OS FILES LIST FILE-SYSTEM==============="
-zowe zos-files list zfs -f "$fsn" $rfj
+zowe zos-files list fs -f "$fsn" $rfj
 exit $?

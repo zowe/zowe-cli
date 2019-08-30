@@ -7,5 +7,5 @@ PASS=$5
 set -e
 
 echo "================Z/OS FILES LIST FILE-SYSTEM==============="
-zowe zos-files list zfs -f "$fsn" --host $HOST --port $PORT --user $USER --password $PASS --ru=false
+zowe zos-files list fs -f "$fsn" --host $HOST --port $PORT --user $USER --password $PASS --ru=false
 exit $?
