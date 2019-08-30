@@ -35,15 +35,15 @@ Array [
 exports[`zos-files list fs command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "To list all mounted file systems",
+    "description": "To list all mounted filesystems",
     "options": "",
   },
   Object {
-    "description": "To list file systems mounted to a specific path",
+    "description": "To list filesystems mounted to a specific path",
     "options": "-p /a/ibmuser",
   },
   Object {
-    "description": "To list file systems mounted with a specific name",
+    "description": "To list filesystems mounted with a specific name",
     "options": "-f MY.ZFS",
   },
 ]
