@@ -18,12 +18,12 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to list a data sets
  * @export
  */
-export default class ZfsHandler extends ZosFilesBaseHandler {
+export default class FsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         let response;
         if (commandParameters.arguments.path)
         {
-            response = await List.zfsWithPath(session, {
+            response = await List.fsWithPath(session, {
                 path: commandParameters.arguments.path,
                 fsname: null,
                 maxLength: commandParameters.arguments.maxLength
@@ -31,7 +31,7 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
         }
         else
         {
-            response = await List.zfs(session, {
+            response = await List.fs(session, {
                 path: null,
                 fsname: commandParameters.arguments.fsname,
                 maxLength: commandParameters.arguments.maxLength

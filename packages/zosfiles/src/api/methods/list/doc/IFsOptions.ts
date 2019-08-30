@@ -12,7 +12,7 @@
 /**
  * This interface defines the options that can be sent into the zfs function
  */
-export interface IZfsOptions {
+export interface IFsOptions {
 
     /**
      * Specifies the path where the file system is mounted
