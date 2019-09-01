@@ -106,6 +106,24 @@ export default {
                     SPECIFY_CYLS: `Create a ZFS with 100 primary and 10 secondary cylinders allocated`,
                     SPECIFY_VOLUMES: `Create a ZFS specifying the volumes that should be used`
                 }
+            },
+            USS: {
+                SUMMARY: "Create a UNIX file or directory",
+                DESCRIPTION: "Create a UNIX file or directory.",
+                POSITIONALS: {
+                    PATH: "name of the file or directory you are going to create"
+                },
+                OPTIONS: {
+                    TYPE: "The request type. This field supports the values: directory or dir to create a directory. " +
+                    "The value: file is supported to create a file.",
+                    MODE: "	Specifies the file or directory permission bits to be used in creating the file or directory. ",
+                },
+                EXAMPLES: {
+                    DEFAULT_VALUES: `Create a ZFS named "HLQ.MYNEW.ZFS" using default values of 755 permissions, 10 primary and 2 secondary ` +
+                    `cylinders allocated, and a timeout of 20 seconds`,
+                    SPECIFY_CYLS: `Create a ZFS with 100 primary and 10 secondary cylinders allocated`,
+                    SPECIFY_VOLUMES: `Create a ZFS specifying the volumes that should be used`
+                }
             }
         },
         POSITIONALS: {

@@ -17,6 +17,7 @@ import { PdsDefinition } from "./pds/Pds.definition";
 import { PsDefinition } from "./ps/Ps.definition";
 import { VsamDefinition } from "./vsam/vsam.definition";
 import { ZfsDefinition } from "./zfs/zfs.definition";
+import { UssDefinition } from "./uss/uss.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -38,6 +39,7 @@ export const CreateDefinition: ICommandDefinition = {
         CPDSDefinition,
         ClassicPDSDefinition,
         VsamDefinition,
-        ZfsDefinition
+        ZfsDefinition,
+        UssDefinition
     ]
 };

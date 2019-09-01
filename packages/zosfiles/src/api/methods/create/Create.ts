@@ -364,7 +364,8 @@ export class Create {
     public static async uss(session: AbstractSession,
                             ussPath: string,
                             type: string,
-                            mode?: string) {
+                            mode?: string)
+                            : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
         ussPath = path.posix.normalize(ussPath);
@@ -376,7 +377,13 @@ export class Create {
         if(mode) {
             payload = {...payload, ...{ mode }};
         }
-        return ZosmfRestClient.postExpectString(session, parameters, headers, payload);
+        const data = await ZosmfRestClient.postExpectString(session, parameters, headers, payload);
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.zfsCreatedSuccessfully.message,
+            apiResponse: data
+        };
     }
 
     public static async zfs(
