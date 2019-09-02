@@ -46,16 +46,16 @@ export const UssDefinition: ICommandDefinition = {
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
-            description: ussStrings.EXAMPLES.DEFAULT_VALUES,
-            options: "HLQ.MYNEW.ZFS"
+            description: ussStrings.EXAMPLES.CREATE_DIR,
+            options: "testDir --type directory"
         },
         {
-            description: ussStrings.EXAMPLES.SPECIFY_CYLS,
-            options: "HLQ.MYNEW.ZFS --cp 100 --cs 10"
+            description: ussStrings.EXAMPLES.CREATE_FILE,
+            options: "text.txt --type file"
         },
         {
-            description: ussStrings.EXAMPLES.SPECIFY_VOLUMES,
-            options: "HLQ.MYNEW.ZFS -v ZFS001 ZFS002"
+            description: ussStrings.EXAMPLES.SPECIFY_MODE,
+            options: "text.txt -t file -m rwxrwxrwx"
         }
     ]
 };

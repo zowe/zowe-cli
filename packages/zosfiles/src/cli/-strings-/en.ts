@@ -119,10 +119,9 @@ export default {
                     MODE: "	Specifies the file or directory permission bits to be used in creating the file or directory. ",
                 },
                 EXAMPLES: {
-                    DEFAULT_VALUES: `Create a ZFS named "HLQ.MYNEW.ZFS" using default values of 755 permissions, 10 primary and 2 secondary ` +
-                    `cylinders allocated, and a timeout of 20 seconds`,
-                    SPECIFY_CYLS: `Create a ZFS with 100 primary and 10 secondary cylinders allocated`,
-                    SPECIFY_VOLUMES: `Create a ZFS specifying the volumes that should be used`
+                    CREATE_DIR: `Create a USS directory named "text.txt"`,
+                    CREATE_FILE: `Create a USS directory named "testDir" `,
+                    SPECIFY_MODE: `Create a USS directory named "text.txt" with mode "rwxrwxrwx" `
                 }
             }
         },
