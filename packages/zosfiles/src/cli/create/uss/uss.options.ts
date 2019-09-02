@@ -29,7 +29,11 @@ export const UssCreateOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["t"],
         description: strings.TYPE,
         type: "string",
-        required: true
+        required: true,
+        allowableValues: {
+            values : ["directory", "file"],
+            caseSensitive: true
+        },
     },
     /**
      * The user ID for owner of the ZFS root directory
@@ -39,6 +43,8 @@ export const UssCreateOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "mode",
         aliases: ["m"],
         description: strings.MODE,
-        type: "string"
+        type: "string",
+        // tslint:disable-next-line: no-magic-numbers
+        stringLengthRange: [9, 9]
     }
 };

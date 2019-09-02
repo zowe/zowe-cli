@@ -444,6 +444,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the USS file or directory was created successfully
+     * @type {IMessageDefinition}
+     */
+    ussFileDirectorySuccessfully: {
+        message: "USS file or directory created successfully."
+    },
+
+    /**
      * Message indicating that the ZFS was created successfully
      * @type {IMessageDefinition}
      */
