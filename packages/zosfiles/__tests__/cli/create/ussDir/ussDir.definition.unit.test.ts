@@ -11,9 +11,9 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files create uss command definition", () => {
+describe("zos-files create uss file command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/create/uss/uss.definition").UssDefinition;
+        const definition: ICommandDefinition = require("../../../../src/cli/create/ussDir/ussDir.definition").UssDirDefinition;
 
         expect(definition).toBeDefined();
 

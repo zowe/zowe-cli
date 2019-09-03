@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create USS file process method should create a USS directory if requested 1`] = `
+Object {
+  "commandResponse": "created",
+  "success": true,
+}
+`;
+
+exports[`Create USS file process method should create a USS directory if requested 2`] = `""`;
+
+exports[`Create USS file process method should create a USS directory if requested 3`] = `
+"
+created"
+`;

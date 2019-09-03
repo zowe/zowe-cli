@@ -13,11 +13,11 @@ import { Create } from "../../../../src/api/methods/create/Create";
 // import { CreateDataSetTypeEnum } from "../../../../src/api/methods/create/CreateDataSetType.enum";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-describe("Create USS file or directory", () => {
+describe("Create USS file", () => {
     describe("process method", () => {
         it("should create a USS directory if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/create/uss/uss.handler");
+            const handlerReq = require("../../../../src/cli/create/ussDir/ussDir.handler");
             const handler = new handlerReq.default();
             const ussDir = "testing";
 
@@ -92,7 +92,7 @@ describe("Create USS file or directory", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.uss).toHaveBeenCalledTimes(1);
-            expect(Create.uss).toHaveBeenCalledWith(fakeSession, undefined, undefined, undefined);
+            expect(Create.uss).toHaveBeenCalledWith(fakeSession, undefined, "directory", undefined);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
