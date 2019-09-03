@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { CreateDefaults } from "../../../api/methods/create";
-import { UssCreateOptions } from "./uss.options";
+import { UssCreateOptions } from "../ussFile/uss.options";
 import { ZosFilesConstants } from "../../../api";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 
@@ -20,15 +20,15 @@ import { ZosmfSession } from "../../../../../zosmf";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);
-const ussStrings = fileStrings.CREATE.ACTIONS.USS;
+const ussStrings = fileStrings.CREATE.ACTIONS.USSDIR;
 
-export const UssDefinition: ICommandDefinition = {
-    name: "uss-file",
-    aliases: ["uss"],
+export const UssDirDefinition: ICommandDefinition = {
+    name: "uss-directory",
+    aliases: ["dir"],
     summary: ussStrings.SUMMARY,
     description: ussStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/uss.handler",
+    handler: __dirname + "/ussDir.handler",
     profile: {
         optional: ["zosmf"],
     },
@@ -41,21 +41,16 @@ export const UssDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        UssCreateOptions.type,
         UssCreateOptions.mode
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
-            description: ussStrings.EXAMPLES.CREATE_DIR,
-            options: "testDir --type directory"
-        },
-        {
-            description: ussStrings.EXAMPLES.CREATE_FILE,
-            options: "text.txt --type file"
+            description: ussStrings.EXAMPLES.CREATE_DIRECTORY,
+            options: "testDir"
         },
         {
             description: ussStrings.EXAMPLES.SPECIFY_MODE,
-            options: "text.txt -t file -m rwxrwxrwx"
+            options: "testDir -m rwxrwxrwx"
         }
     ]
 };

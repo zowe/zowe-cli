@@ -107,21 +107,32 @@ export default {
                     SPECIFY_VOLUMES: `Create a ZFS specifying the volumes that should be used`
                 }
             },
-            USS: {
-                SUMMARY: "Create a UNIX file or directory",
-                DESCRIPTION: "Create a UNIX file or directory.",
+            USSFILE: {
+                SUMMARY: "Create a UNIX file",
+                DESCRIPTION: "Create a UNIX file.",
                 POSITIONALS: {
-                    PATH: "name of the file or directory you are going to create"
+                    PATH: "name of the file you are going to create"
                 },
                 OPTIONS: {
-                    TYPE: "The request type. This field supports the values: directory or dir to create a directory. " +
-                    "The value: file is supported to create a file.",
-                    MODE: "	Specifies the file or directory permission bits to be used in creating the file or directory. ",
+                    MODE: "	Specifies the file permission bits to be used in creating.",
                 },
                 EXAMPLES: {
-                    CREATE_DIR: `Create a USS directory named "text.txt"`,
-                    CREATE_FILE: `Create a USS directory named "testDir" `,
+                    CREATE_FILE: `Create a USS directory named "test.ext" `,
                     SPECIFY_MODE: `Create a USS directory named "text.txt" with mode "rwxrwxrwx" `
+                }
+            },
+            USSDIR: {
+                SUMMARY: "Create a UNIX directory",
+                DESCRIPTION: "Create a UNIX directory.",
+                POSITIONALS: {
+                    PATH: "name of the directory you are going to create"
+                },
+                OPTIONS: {
+                    MODE: "	Specifies the directory permission bits to be used in creating.",
+                },
+                EXAMPLES: {
+                    CREATE_DIRECTORY: `Create a USS directory named "testDir" `,
+                    SPECIFY_MODE: `Create a USS directory named "testDir" with mode "rwxrwxrwx" `
                 }
             }
         },

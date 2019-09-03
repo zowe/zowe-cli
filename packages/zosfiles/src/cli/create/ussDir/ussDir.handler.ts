@@ -18,17 +18,11 @@ import { Create } from "../../../api/methods/create";
 /**
  * Handler to create a z/OS file system
  */
-export default class UssHandler extends ZosFilesBaseHandler {
+export default class UssDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        // collect the options from our command line arguments into an object
-        // const createUssOptions: Partial<ICreateUssOptions> = {
-        //     type: commandParameters.arguments.type,
-        //     mode: commandParameters.arguments.mode
-        // };
-        const srtType = commandParameters.arguments.type;
+
         const strMode = commandParameters.arguments.mode;
 
-
-        return Create.uss(session, commandParameters.arguments.ussPath, srtType, strMode);
+        return Create.uss(session, commandParameters.arguments.ussPath, "directory", strMode);
     }
 }

@@ -17,9 +17,10 @@ import { PdsDefinition } from "./pds/Pds.definition";
 import { PsDefinition } from "./ps/Ps.definition";
 import { VsamDefinition } from "./vsam/vsam.definition";
 import { ZfsDefinition } from "./zfs/zfs.definition";
-import { UssDefinition } from "./uss/uss.definition";
 
 import i18nTypings from "../-strings-/en";
+import { UssDirDefinition } from "./ussDir/ussDir.definition";
+import { UssFileDefinition } from "./ussFile/ussFile.definition";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../-strings-/en").default as typeof i18nTypings).CREATE;
@@ -40,6 +41,7 @@ export const CreateDefinition: ICommandDefinition = {
         ClassicPDSDefinition,
         VsamDefinition,
         ZfsDefinition,
-        UssDefinition
+        UssFileDefinition,
+        UssDirDefinition
     ]
 };
