@@ -26,7 +26,8 @@
   "files": [
     "lib",
     "docs",
-    "scripts"
+    "scripts",
+    "web-help/logo.png"
   ],
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
@@ -57,7 +58,8 @@
     "doc:generate": "npm run doc:clean && npm run typedoc && gulp doc",
     "doc:clean": "gulp cleanTypedoc && rimraf docs/CLIReadme.md",
     "typedocSpecifySrc": "npm install --no-save typedoc && typedoc --options ./typedoc.json",
-    "audit:public": "npm audit --registry https://registry.npmjs.org/"
+    "audit:public": "npm audit --registry https://registry.npmjs.org/",
+    "build:webHelp": "ts-node ./web-help/build-web-help.ts"
   },
   "dependencies": {
     "@brightside/imperative": "^2.6.0",
@@ -111,7 +113,7 @@
     "ts-jest": "^23.10.5",
     "ts-node": "^3.3.0",
     "tslint": "5.10.0",
-    "typescript": "^2.6.2",
+    "typescript": "^2.9.2",
     "uuid": "^3.3.2"
   },
   "resolutions": {

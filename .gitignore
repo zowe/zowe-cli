@@ -86,3 +86,5 @@ __tests__/__system__/util/Zosmf.info.ts
 
 audit.txt
 imperative_debug.log
+
+/web-help/dist/
