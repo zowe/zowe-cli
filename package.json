@@ -113,7 +113,7 @@
     "ts-jest": "^23.10.5",
     "ts-node": "^3.3.0",
     "tslint": "5.10.0",
-    "typescript": "^2.9.2",
+    "typescript": "^2.6.2",
     "uuid": "^3.3.2"
   },
   "resolutions": {
