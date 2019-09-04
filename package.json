@@ -58,8 +58,7 @@
     "doc:generate": "npm run doc:clean && npm run typedoc && gulp doc",
     "doc:clean": "gulp cleanTypedoc && rimraf docs/CLIReadme.md",
     "typedocSpecifySrc": "npm install --no-save typedoc && typedoc --options ./typedoc.json",
-    "audit:public": "npm audit --registry https://registry.npmjs.org/",
-    "build:webHelp": "ts-node ./web-help/build-web-help.ts"
+    "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
     "@brightside/imperative": "^2.6.0",
