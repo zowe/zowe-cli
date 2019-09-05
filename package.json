@@ -26,7 +26,8 @@
   "files": [
     "lib",
     "docs",
-    "scripts"
+    "scripts",
+    "web-help/logo.png"
   ],
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
