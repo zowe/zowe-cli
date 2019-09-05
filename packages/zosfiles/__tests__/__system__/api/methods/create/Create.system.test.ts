@@ -26,7 +26,6 @@ let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let dsname: string;
 let volume: string;
-let ussname: string;
 let filename: string;
 let basePath: string;
 
