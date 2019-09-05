@@ -26,6 +26,9 @@ let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let dsname: string;
 let volume: string;
+let ussname: string;
+let filename: string;
+let basePath: string;
 
 const LONGER_TIMEOUT = 10000;
 
@@ -230,5 +233,121 @@ describe("Create z/OS file system", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+});
+
+describe("Create uss file", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_create_uss_file"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        // dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
+        basePath = `${defaultSystem.zosmf.basePath.trim()}`;
+        filename = `${basePath}/test.txt`.replace(/\./g, "");
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        let response;
+        try {
+            response = await Delete.ussFile(REAL_SESSION, filename);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    afterEach(async () => {
+        let response;
+        try {
+            response = await Delete.ussFile(REAL_SESSION, filename);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    const options: ICreateDataSetOptions = {} as any;
+
+    it("should create a uss file", async () => {
+        let error;
+        let response;
+
+        try {
+            response = await Create.uss(REAL_SESSION, filename, "file");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.ussCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+});
+
+describe("Create uss directory", () => {
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_create_uss_dir"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        // dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
+        basePath = `${defaultSystem.zosmf.basePath.trim()}`;
+        filename = `${basePath}/testDir`.replace(/\./g, "");
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        let response;
+        try {
+            response = await Delete.ussFile(REAL_SESSION, filename);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    afterEach(async () => {
+        let response;
+        try {
+            response = await Delete.ussFile(REAL_SESSION, filename);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    const options: ICreateDataSetOptions = {} as any;
+
+    it("should create a uss directory", async () => {
+        let error;
+        let response;
+
+        try {
+            response = await Create.uss(REAL_SESSION, filename, "directory");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.ussCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
 });

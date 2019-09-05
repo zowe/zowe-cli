@@ -521,6 +521,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     fsUnmountedSuccessfully: {
         message: "File system unmounted successfully."
+    },
+
+    /**
+     * Message indicating that the uss file or directory crated successfully.
+     * @type {IMessageDefinition}
+     */
+    ussCreatedSuccessfully: {
+        message: "USS file or directory created successfully."
     }
 };
 
