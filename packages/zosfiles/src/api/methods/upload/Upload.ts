@@ -336,30 +336,35 @@ export class Upload {
 
         // Retrieve the information on the input data set name to determine if it is a
         // sequential data set or PDS.
-        const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName});
-        if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
-            // Look for the index of the data set in the response from the List API
-            const dsnameIndex = listResponse.apiResponse.returnedRows === 0 ? -1 :
-                listResponse.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === dataSetName.toUpperCase());
-            if (dsnameIndex !== -1) {
-                // If dsnameIndex === -1, it means we could not find the given data set.
-                // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
-                const dsInfo = listResponse.apiResponse.items[dsnameIndex];
-                switch (dsInfo.dsorg) {
-                    case "PO":
-                    case "PO-E":
-                        isUploadToPds = true;
-                        break;
-                    default:
-                        // if loading to a physical sequential data set and multiple files found then error
-                        if (uploadFileList.length > 1) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
-                            });
-                        }
-                        break;
+        try {
+            const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName});
+            if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
+                // Look for the index of the data set in the response from the List API
+                const dsnameIndex = listResponse.apiResponse.returnedRows === 0 ? -1 :
+                    listResponse.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === dataSetName.toUpperCase());
+                if (dsnameIndex !== -1) {
+                    // If dsnameIndex === -1, it means we could not find the given data set.
+                    // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
+                    const dsInfo = listResponse.apiResponse.items[dsnameIndex];
+                    switch (dsInfo.dsorg) {
+                        case "PO":
+                        case "PO-E":
+                            isUploadToPds = true;
+                            break;
+                        default:
+                            // if loading to a physical sequential data set and multiple files found then error
+                            if (uploadFileList.length > 1) {
+                                throw new ImperativeError({
+                                    msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
+                                });
+                            }
+                            break;
+                    }
                 }
             }
+        } catch(error) {
+            // Prevent GET z/OSMF API call from failing
+            // when archived datasets are present
         }
 
         // Loop through the array of upload file and perform upload one file at a time.
