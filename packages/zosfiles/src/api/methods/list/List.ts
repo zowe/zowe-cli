@@ -108,6 +108,24 @@ export class List {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
 
+            // Migrated recall options
+            if (options.recall) {
+                switch (options.recall.toLowerCase()) {
+                    case "wait":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                        break;
+                    case "nowait":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        break;
+                    case "error":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                        break;
+                    default:
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        break;
+                }
+            }
+
             this.log.debug(`Endpoint: ${endpoint}`);
 
             const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);

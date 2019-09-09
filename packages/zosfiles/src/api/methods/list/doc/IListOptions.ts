@@ -33,4 +33,10 @@ export interface IListOptions {
      * An optional search parameter that specifies the first data set name to return in the response document
      */
     start?: string;
+
+    /**
+     * An optional parameter that specifies how to handle migrated data sets
+     * @example "wait, nowait, error"
+     */
+    recall?: string;
 }
