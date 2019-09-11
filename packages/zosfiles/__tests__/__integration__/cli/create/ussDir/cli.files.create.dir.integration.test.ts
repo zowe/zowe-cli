@@ -16,12 +16,12 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("Create z/OS USS file", () => {
+describe("Create z/OS USS directory", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_create_uss_file",
+            testName: "zos_create_uss_dir",
             skipProperties: true
         });
     });
@@ -31,21 +31,21 @@ describe("Create z/OS USS file", () => {
     });
 
     it("should display the help", () => {
-        const response = runCliScript(__dirname + "/__scripts__/create_uss_file_help.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/create_uss_dir_help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("should fail creating a USS file due to missing uss path", () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_create_uss_file.sh",
+    it("should fail creating a USS directory due to missing uss path", () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_create_uss_dir.sh",
             TEST_ENVIRONMENT, []);
         expect(response.stderr.toString()).toContain("Missing Positional Argument");
         expect(response.stderr.toString()).toContain("ussPath");
     });
 
-    it("should fail creating a USS file due to invalid length on option mode", () => {
-        const response = runCliScript(__dirname + "/__scripts__/command/command_create_uss_file_mode.sh",
+    it("should fail creating a USS directory due to invalid length on option mode", () => {
+        const response = runCliScript(__dirname + "/__scripts__/command/command_create_uss_dir_mode.sh",
             TEST_ENVIRONMENT, []);
         expect(response.stderr.toString()).toContain("Invalid value length for option");
         expect(response.stderr.toString()).toContain("--mode");
