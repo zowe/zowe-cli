@@ -1,3 +1,5 @@
+import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedRecallOptions";
+
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -36,7 +38,6 @@ export interface IListOptions {
 
     /**
      * An optional parameter that specifies how to handle migrated data sets
-     * @example "wait, nowait, error"
      */
-    recall?: string;
+    recall?: ZosmfMigratedRecallOptions;
 }
