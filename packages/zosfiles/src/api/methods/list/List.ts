@@ -120,9 +120,6 @@ export class List {
                     case "error":
                         reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
                         break;
-                    default:
-                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                        break;
                 }
             }
 
