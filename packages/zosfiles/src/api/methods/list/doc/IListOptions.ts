@@ -1,5 +1,3 @@
-import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedRecallOptions";
-
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -10,6 +8,8 @@ import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedReca
 * Copyright Contributors to the Zowe Project.
 *
 */
+
+import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedRecallOptions";
 
 /**
  * This interface defines the options that can be sent into the dwanload data set function
