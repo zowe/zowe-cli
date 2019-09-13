@@ -334,6 +334,69 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
+
+        it("should return with data when specify recall and attributes options", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                items: ["test"]
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            // Unit test for wait option
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, recall: "wait"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT]);
+            expectJsonSpy.mockClear();
+
+            // Unit test for nowait option
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, recall: "nowait"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT]);
+            expectJsonSpy.mockClear();
+
+            // Unit test for error option
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, recall: "error"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR]);
+            expectJsonSpy.mockClear();
+        });
     });
 
     describe("fileList", () => {
