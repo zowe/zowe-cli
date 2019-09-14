@@ -336,7 +336,7 @@ export class Upload {
 
         // Retrieve the information on the input data set name to determine if it is a
         // sequential data set or PDS.
-        const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName});
+        const listResponse = await List.dataSet(session, dataSetName, {attributes: true, maxLength: 1, start: dataSetName, recall: "wait"});
         if (listResponse.apiResponse != null && listResponse.apiResponse.returnedRows != null && listResponse.apiResponse.items != null) {
             // Look for the index of the data set in the response from the List API
             const dsnameIndex = listResponse.apiResponse.returnedRows === 0 ? -1 :

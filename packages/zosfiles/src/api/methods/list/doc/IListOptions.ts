@@ -9,6 +9,8 @@
 *
 */
 
+import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedRecallOptions";
+
 /**
  * This interface defines the options that can be sent into the dwanload data set function
  */
@@ -33,4 +35,9 @@ export interface IListOptions {
      * An optional search parameter that specifies the first data set name to return in the response document
      */
     start?: string;
+
+    /**
+     * An optional parameter that specifies how to handle migrated data sets
+     */
+    recall?: ZosmfMigratedRecallOptions;
 }
