@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "m",
     ],
-    "description": "	Specifies the file permission bits to be used in creating.",
+    "description": "Specifies the file permission bits to use when creating the file. ",
     "name": "mode",
     "stringLengthRange": Array [
       9,
