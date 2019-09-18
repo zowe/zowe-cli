@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { CreateDefaults } from "../../../api/methods/create";
-import { UssCreateOptions } from "../ussFile/uss.options";
+import { UssCreateOptions } from "../ussDir/uss.options";
 import { ZosFilesConstants } from "../../../api";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 
