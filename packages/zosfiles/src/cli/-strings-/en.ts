@@ -111,10 +111,10 @@ export default {
                 SUMMARY: "Create a UNIX file",
                 DESCRIPTION: "Create a UNIX file.",
                 POSITIONALS: {
-                    PATH: "name of the file you are going to create"
+                    PATH: "The name of the file that you want to create."
                 },
                 OPTIONS: {
-                    MODE: "	Specifies the file permission bits to be used in creating.",
+                    MODE: "Specifies the file permission bits to use when creating the file. ",
                 },
                 EXAMPLES: {
                     CREATE_FILE: `Create a USS directory named "test.ext" `,
@@ -125,10 +125,10 @@ export default {
                 SUMMARY: "Create a UNIX directory",
                 DESCRIPTION: "Create a UNIX directory.",
                 POSITIONALS: {
-                    PATH: "name of the directory you are going to create"
+                    PATH: "The name of the directory that you want to create."
                 },
                 OPTIONS: {
-                    MODE: "	Specifies the directory permission bits to be used in creating.",
+                    MODE: "Specifies the file permission bits to use when creating the directory.",
                 },
                 EXAMPLES: {
                     CREATE_DIRECTORY: `Create a USS directory named "testDir" `,
