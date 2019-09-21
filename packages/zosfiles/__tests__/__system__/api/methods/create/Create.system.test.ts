@@ -244,8 +244,7 @@ describe("Create uss file", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        // dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
-        basePath = `${defaultSystem.zosmf.basePath.trim()}`;
+        basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         filename = `${basePath}/test.txt`.replace(/\./g, "");
     });
 
@@ -303,7 +302,7 @@ describe("Create uss directory", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         // dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
-        basePath = `${defaultSystem.zosmf.basePath.trim()}`;
+        basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         filename = `${basePath}/testDir`.replace(/\./g, "");
     });
 

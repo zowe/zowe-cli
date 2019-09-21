@@ -40,7 +40,7 @@ describe("Create USS dir", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        basePath = `${defaultSystem.zosmf.basePath.trim()}`;
+        basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         fileName = `${basePath}/test`;
 
