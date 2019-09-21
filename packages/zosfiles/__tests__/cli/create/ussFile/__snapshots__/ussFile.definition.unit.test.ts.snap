@@ -20,11 +20,11 @@ Array [
 exports[`zos-files create uss file command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Create a USS directory named \\"test.ext\\" ",
+    "description": "Create a USS file named \\"test.ext\\" ",
     "options": "text.txt",
   },
   Object {
-    "description": "Create a USS directory named \\"text.txt\\" with mode \\"rwxrwxrwx\\" ",
+    "description": "Create a USS file named \\"text.txt\\" with mode \\"rwxrwxrwx\\" ",
     "options": "text.txt -m rwxrwxrwx",
   },
 ]

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Create z/OS USS directory should display the help 1`] = `
-"================Z/OS FILES CREATE ZOS-FILE-SYSTEM HELP===============
+"================Z/OS FILES CREATE USS DIRECTORY HELP===============
 
  COMMAND NAME
  ------------
@@ -103,7 +103,7 @@ exports[`Create z/OS USS directory should display the help 1`] = `
 
       $ zowe zos-files create uss-directory testDir -m rwxrwxrwx
 
-================Z/OS FILES CREATE ZOS-FILE-SYSTEM HELP WITH RFJ===========
+================Z/OS FILES CREATE USS DIRECTORY HELP WITH RFJ===========
 {
   \\"success\\": true,
   \\"exitCode\\": 0,
