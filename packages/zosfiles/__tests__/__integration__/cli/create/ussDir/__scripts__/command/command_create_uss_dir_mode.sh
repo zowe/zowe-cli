@@ -2,7 +2,7 @@
 fsn=$1
 set -e
 
-echo "================Z/OS FILES CREATE USS FILE==============="
+echo "================Z/OS FILES CREATE USS DIRECTORY==============="
 zowe zos-files create dir test -m sss --user ibmuser --pass 123456 --host google.com
 if [ $? -gt 0 ]
 then
