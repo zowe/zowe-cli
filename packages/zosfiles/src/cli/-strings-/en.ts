@@ -117,8 +117,8 @@ export default {
                     MODE: "Specifies the file permission bits to use when creating the file. ",
                 },
                 EXAMPLES: {
-                    CREATE_FILE: `Create a USS directory named "test.ext" `,
-                    SPECIFY_MODE: `Create a USS directory named "text.txt" with mode "rwxrwxrwx" `
+                    CREATE_FILE: `Create a USS file named "test.ext" `,
+                    SPECIFY_MODE: `Create a USS file named "text.txt" with mode "rwxrwxrwx" `
                 }
             },
             USSDIR: {

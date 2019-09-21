@@ -381,7 +381,7 @@ export class Create {
 
         return {
             success: true,
-            commandResponse: ZosFilesMessages.ussFileDirectorySuccessfully.message,
+            commandResponse: ZosFilesMessages.ussCreatedSuccessfully.message,
             apiResponse: data
         };
     }
