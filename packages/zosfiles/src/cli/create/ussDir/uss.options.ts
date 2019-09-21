@@ -21,7 +21,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
  */
 export const UssCreateOptions: { [key: string]: ICommandOptionDefinition } = {
     /**
-     * The user ID for owner of the ZFS root directory
+     * The permission bits for owner, group, and world users of the directory
      * @type {ICommandOptionDefinition}
      */
     mode: {

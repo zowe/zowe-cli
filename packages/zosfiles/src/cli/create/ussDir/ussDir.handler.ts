@@ -16,7 +16,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { Create } from "../../../api/methods/create";
 
 /**
- * Handler to create a z/OS file system
+ * Handler to create a USS Directory
  */
 export default class UssDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
