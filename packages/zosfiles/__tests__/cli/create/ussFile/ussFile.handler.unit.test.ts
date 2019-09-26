@@ -15,7 +15,7 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/m
 
 describe("Create USS file", () => {
     describe("process method", () => {
-        it("should create a USS directory if requested", async () => {
+        it("should create a USS file if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/cli/create/ussFile/ussFile.handler");
             const handler = new handlerReq.default();
