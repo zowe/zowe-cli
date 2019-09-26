@@ -13,3 +13,17 @@ exports[`Create USS file process method should create a USS directory if request
 "
 created"
 `;
+
+exports[`Create USS file process method should create a USS file if requested 1`] = `
+Object {
+  "commandResponse": "created",
+  "success": true,
+}
+`;
+
+exports[`Create USS file process method should create a USS file if requested 2`] = `""`;
+
+exports[`Create USS file process method should create a USS file if requested 3`] = `
+"
+created"
+`;
