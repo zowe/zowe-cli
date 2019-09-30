@@ -97,7 +97,8 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         name: "variables",
         aliases: ["vs"],
         description: "Includes a list of variables for the workflow. " +
-        "The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
+        "The variables that you specify here take precedence over the variables that are specified in the workflow variable input file." +
+        "Make sure the value meets all regular expression requirements set for the corresponding variable",
         type: "string",
         required: false
     },
