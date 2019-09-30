@@ -69,10 +69,10 @@ export const UssFile: ICommandDefinition = {
         },
         {
             description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
-            "on system \"TESTM1\" with owner \"MYSYSID\" and with variables DUMMYVAR1 and DUMMYVAR2 with values DUMMYVAL1 and DUMMYVAL2, " +
+            "on system \"TESTM1\" with owner \"MYSYSID\" and with variables VAR1 and VAR2 with values DUMMYVAL1 and DUMMYVAL2, " +
             "and assign it to the owner",
             options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\"" +
-                "--variables DUMMYVAR1=DUMMYVAL1,DUMMYVAR2=DUMMYVAL2 " +
+                "--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 " +
                 "--owner \"MYSYSID\" --assign-to-owner"
         }
     ],
