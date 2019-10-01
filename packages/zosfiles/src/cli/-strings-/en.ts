@@ -106,6 +106,34 @@ export default {
                     SPECIFY_CYLS: `Create a ZFS with 100 primary and 10 secondary cylinders allocated`,
                     SPECIFY_VOLUMES: `Create a ZFS specifying the volumes that should be used`
                 }
+            },
+            USSFILE: {
+                SUMMARY: "Create a UNIX file",
+                DESCRIPTION: "Create a UNIX file.",
+                POSITIONALS: {
+                    PATH: "The name of the file that you want to create."
+                },
+                OPTIONS: {
+                    MODE: "Specifies the file permission bits to use when creating the file. ",
+                },
+                EXAMPLES: {
+                    CREATE_FILE: `Create a USS file named "test.ext" `,
+                    SPECIFY_MODE: `Create a USS file named "text.txt" with mode "rwxrwxrwx" `
+                }
+            },
+            USSDIR: {
+                SUMMARY: "Create a UNIX directory",
+                DESCRIPTION: "Create a UNIX directory.",
+                POSITIONALS: {
+                    PATH: "The name of the directory that you want to create."
+                },
+                OPTIONS: {
+                    MODE: "Specifies the file permission bits to use when creating the directory.",
+                },
+                EXAMPLES: {
+                    CREATE_DIRECTORY: `Create a USS directory named "testDir" `,
+                    SPECIFY_MODE: `Create a USS directory named "testDir" with mode "rwxrwxrwx" `
+                }
             }
         },
         POSITIONALS: {
