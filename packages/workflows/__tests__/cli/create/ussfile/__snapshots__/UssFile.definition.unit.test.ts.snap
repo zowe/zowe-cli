@@ -20,8 +20,8 @@ Object {
       "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\" --owner \\"MYSYSID\\" --variables-input-file TESTID.DATA(PROPERTIES)",
     },
     Object {
-      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and with variable DUMMYVAR value DUMMYVAL and assign it to the owner",
-      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\" --variables DUMMYVAR=DUMMYVAL --owner \\"MYSYSID\\" --assign-to-owner",
+      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and with variables VAR1 and VAR2 with values DUMMYVAL1 and DUMMYVAL2, and assign it to the owner",
+      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\"--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 --owner \\"MYSYSID\\" --assign-to-owner",
     },
   ],
   "name": "workflow-from-uss-file",
@@ -66,7 +66,7 @@ Object {
       "aliases": Array [
         "vs",
       ],
-      "description": "Includes a list of variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
+      "description": "Includes a list of variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file. Make sure the value meets all regular expression requirements set for the corresponding variable.",
       "name": "variables",
       "required": false,
       "type": "string",

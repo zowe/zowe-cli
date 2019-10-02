@@ -66,7 +66,7 @@ Object {
       "aliases": Array [
         "vs",
       ],
-      "description": "Includes a list of variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file.",
+      "description": "Includes a list of variables for the workflow. The variables that you specify here take precedence over the variables that are specified in the workflow variable input file. Make sure the value meets all regular expression requirements set for the corresponding variable.",
       "name": "variables",
       "required": false,
       "type": "string",
