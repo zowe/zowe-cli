@@ -904,3 +904,82 @@ describe("Create ZFS", () => {
         expect(caughtError).toBe(error);
     });
 });
+
+describe("Create uss file or directory", () => {
+    const dummySession: any = {};
+    const ussPath = "testing_uss_path";
+    const optionFile = "file";
+    const optionDir = "directory";
+    const optionMode = "rwxrwxrwx";
+    const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussPath;
+
+    let mySpy: any;
+
+    beforeEach(() => {
+        mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockReturnValue("");
+    });
+
+    afterEach(() => {
+        mySpy.mockReset();
+        mySpy.mockRestore();
+    });
+
+    describe("Success scenarios", () => {
+        it("should be able to create a directory", async () => {
+            const response = await Create.uss(dummySession, ussPath, optionDir);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+                {type: optionDir});
+        });
+
+        it("should be able to create a file", async () => {
+            const response = await Create.uss(dummySession, ussPath, optionFile);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+                {type: optionFile});
+        });
+
+        it("should be able to create a directory with option mode", async () => {
+            const response = await Create.uss(dummySession, ussPath, optionDir, optionMode);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+                {type: optionDir, mode: optionMode});
+        });
+
+        it("should be able to create a file with option mode", async () => {
+            const response = await Create.uss(dummySession, ussPath, optionFile, optionMode);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+                {type: optionFile, mode: optionMode});
+        });
+
+    });
+
+    describe("Expected failures", () => {
+        it("should fail if the zOSMF REST client fails", async () => {
+            const errorMsg = "Dummy error message";
+            mySpy.mockImplementation(() => {
+                throw new ImperativeError({msg: errorMsg});
+            });
+
+            let error;
+            try {
+                await Create.uss(dummySession, ussPath, optionDir);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+                {type: "directory"});
+            expect(error).toContain(errorMsg);
+        });
+    });
+});
