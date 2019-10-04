@@ -18,7 +18,7 @@ import { getUniqueDatasetName, getTag } from "../../../../../../../__tests__/__s
 let REAL_SESSION: AbstractSession;
 let testEnvironment: ITestEnvironment;
 
-describe.only("USS Utilities", () => {
+describe("USS Utilities", () => {
 
     const localfile = "./packages/zosfiles/__tests__/__system__/api/methods/utilities/__data__/tagfile.txt";
     let ussname: string;
