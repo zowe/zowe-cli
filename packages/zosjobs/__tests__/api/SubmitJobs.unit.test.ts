@@ -11,9 +11,9 @@
 
 // unit tests for submit jobs
 
-import { MonitorJobs, SubmitJobs } from "../../";
-import { ZosmfRestClient } from "../../../rest/src/ZosmfRestClient";
-import { ImperativeError } from "@zowe/imperative";
+import {IJob, MonitorJobs, SubmitJobs} from "../../";
+import {ZosmfRestClient} from "../../../rest/src/ZosmfRestClient";
+import {ImperativeError} from "@zowe/imperative";
 
 jest.mock("../../../rest/src/ZosmfRestClient");
 jest.mock("../../src/api/MonitorJobs");
@@ -63,6 +63,28 @@ describe("Submit Jobs API", () => {
                 );
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
+            });
+
+        it("should allow users to call submitJCL and wait for output status",
+            async () => {
+                (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                const job = await SubmitJobs.submitJob(fakeSession,
+                    "DATA.SET"
+                );
+                // mocking worked if this fake job name is filled in
+                expect(job.jobname).toEqual(fakeJobName);
+                MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+                    jobToWaitFor.status = "OUTPUT";
+                    jobToWaitFor.retcode = "CC 0000";
+                    return jobToWaitFor;
+                });
+                const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
+                    wait: true,
+                    jclSource: "dataset"
+                }, job);
+                expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
+                expect((finishedJob as IJob).status).toEqual("OUTPUT");
+                expect((finishedJob as IJob).retcode).toEqual("CC 0000");
             });
 
 
@@ -138,8 +160,7 @@ describe("Submit Jobs API", () => {
                 await SubmitJobs.submitJclCommon(fakeSession, {
                     jcl: "//EXEC PGM=IEFBR14"
                 });
-            }
-            catch (e) {
+            } catch (e) {
                 err = e;
             }
             expect(err).toBeDefined();
@@ -419,8 +440,7 @@ describe("Submit Jobs API", () => {
                 await SubmitJobs.submitJclCommon(fakeSession, {
                     jcl: undefined
                 });
-            }
-            catch (e) {
+            } catch (e) {
                 err = e;
             }
             expect(err).toBeDefined();
@@ -528,7 +548,7 @@ describe("Submit Jobs API", () => {
         it("should reject calls to submitJclString that don't provide JCL string", async () => {
             let err: any;
             try {
-                await SubmitJobs.submitJclString(fakeSession, undefined, {jclSource : "stdin"});
+                await SubmitJobs.submitJclString(fakeSession, undefined, {jclSource: "stdin"});
             } catch (e) {
                 err = e;
             }
