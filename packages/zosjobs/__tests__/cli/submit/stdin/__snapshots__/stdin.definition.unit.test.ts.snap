@@ -18,6 +18,14 @@ Object {
     },
     Object {
       "aliases": Array [
+        "w",
+      ],
+      "description": "Wait for the job to enter OUTPUT status before completing the command.",
+      "name": "wait",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
         "d",
       ],
       "description": "The local directory you would like to download the output of the job. Creates a subdirectory using the jobID as the name and files are titled based on DD names. If you use this option you will wait the job to complete.",
