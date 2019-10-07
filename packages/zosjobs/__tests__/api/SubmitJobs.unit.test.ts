@@ -11,9 +11,9 @@
 
 // unit tests for submit jobs
 
-import {IJob, MonitorJobs, SubmitJobs} from "../../";
-import {ZosmfRestClient} from "../../../rest/src/ZosmfRestClient";
-import {ImperativeError} from "@brightside/imperative";
+import { IJob, MonitorJobs, SubmitJobs } from "../../";
+import { ZosmfRestClient } from "../../../rest/src/ZosmfRestClient";
+import { ImperativeError } from "@brightside/imperative";
 
 jest.mock("../../../rest/src/ZosmfRestClient");
 jest.mock("../../src/api/MonitorJobs");
