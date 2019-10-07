@@ -28,6 +28,14 @@ Object {
     },
     Object {
       "aliases": Array [
+        "w",
+      ],
+      "description": "Wait for the job to enter OUTPUT status before completing the command.",
+      "name": "wait",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
         "vasc",
       ],
       "description": "Print all spool output. If you use this option you will wait the job to complete.",
