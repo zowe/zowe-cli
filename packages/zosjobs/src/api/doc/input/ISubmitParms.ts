@@ -35,7 +35,13 @@ export interface ISubmitParms {
     /**
      * Wait for the job to reach output status
      */
-    wait?: boolean;
+    waitForActive?: boolean;
+
+
+    /**
+     * Wait for the job to reach output status
+     */
+    waitForOutput?: boolean;
 
     /**
      * Local directory path to download output of the job

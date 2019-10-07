@@ -19,6 +19,35 @@ exports[`submit shared handler process method should submit JCL contained within
 
 exports[`submit shared handler process method should submit JCL contained within a data-set if requested 3`] = `"Submitted JCL contained in \\"dataset\\": \\"DATA.SET\\""`;
 
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and wait for active 1`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "object",
+  "output": Object {
+    "jobid": "JOB123",
+    "jobname": "MYJOB",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+  },
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and wait for active 2`] = `
+Object {
+  "jobid": "JOB123",
+  "jobname": "MYJOB",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+}
+`;
+
+exports[`submit shared handler process method should submit JCL contained within a data-set if requested and wait for active 3`] = `"Submitted JCL contained in \\"dataset\\": \\"DATA.SET\\""`;
+
 exports[`submit shared handler process method should submit JCL contained within a data-set if requested and wait for output 1`] = `
 Object {
   "fields": Array [

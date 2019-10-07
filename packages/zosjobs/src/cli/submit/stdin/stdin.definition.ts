@@ -28,9 +28,15 @@ export const StdinDefinition: ICommandDefinition = {
             type: "boolean"
         },
         {
-            name: "wait", aliases: ["w"],
+            name: "wait-for-output", aliases: ["wfo"],
             description: "Wait for the job to enter OUTPUT status before completing the command.",
             type: "boolean"
+        },
+        {
+            name: "wait-for-active", aliases: ["wfa"],
+            description: "Wait for the job to enter ACTIVE status before completing the command.",
+            type: "boolean",
+            conflictsWith: ["wait-for-output", "view-all-spool-content", "directory"]
         },
         {
             name: "directory", aliases: ["d"],
