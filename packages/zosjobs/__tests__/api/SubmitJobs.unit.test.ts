@@ -79,12 +79,33 @@ describe("Submit Jobs API", () => {
                     return jobToWaitFor;
                 });
                 const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
-                    wait: true,
+                    waitForOutput: true,
                     jclSource: "dataset"
                 }, job);
                 expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
                 expect((finishedJob as IJob).status).toEqual("OUTPUT");
                 expect((finishedJob as IJob).retcode).toEqual("CC 0000");
+            });
+        it("should allow users to call submitJCL and wait for ACTIVE status",
+            async () => {
+                (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
+                const job = await SubmitJobs.submitJob(fakeSession,
+                    "DATA.SET"
+                );
+                // mocking worked if this fake job name is filled in
+                expect(job.jobname).toEqual(fakeJobName);
+                MonitorJobs.waitForStatusCommon = jest.fn((session, jobToWaitFor) => {
+                    jobToWaitFor.status = "ACTIVE";
+                    jobToWaitFor.retcode = null;
+                    return jobToWaitFor;
+                });
+                const finishedJob = await SubmitJobs.checkSubmitOptions(fakeSession, {
+                    waitForActive: true,
+                    jclSource: "dataset"
+                }, job);
+                expect((finishedJob as IJob).jobname).toEqual(fakeJobName);
+                expect((finishedJob as IJob).status).toEqual("ACTIVE");
+                expect((finishedJob as IJob).retcode).toEqual(null);
             });
 
 

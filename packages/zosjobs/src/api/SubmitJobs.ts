@@ -195,9 +195,17 @@ export class SubmitJobs {
      */
     public static async checkSubmitOptions(session: AbstractSession, parms: ISubmitParms, responseJobInfo: IJob): Promise<IJob | ISpoolFile[]> {
 
+        if (parms.waitForActive) {
+            const activeJob = await MonitorJobs.waitForStatusCommon(session, {
+                jobid: responseJobInfo.jobid,
+                jobname: responseJobInfo.jobname,
+                status: "ACTIVE"
+            });
+            return activeJob;
+        }
         // if viewAppSpoolContent option passed, it waits till job status is output
         // then get content of each spool file and return array of ISpoolFiles object
-        if (parms.viewAllSpoolContent || parms.wait) {
+        if (parms.viewAllSpoolContent || parms.waitForOutput) {
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
