@@ -9,6 +9,9 @@
 *
 */
 
+jest.mock("../../../src/api/MonitorJobs");
+import { IJob, MonitorJobs } from "../../..";
+
 jest.mock("../../../src/api/SubmitJobs");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@brightside/imperative";
 import { SubmitJobs } from "../../../src/api/SubmitJobs";
@@ -76,11 +79,13 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
 
 const LOCALFILE_PARAMETERS: IHandlerParameters = {
     ...DEFAULT_PARAMETERS,
-    ...{ arguments: {
-        $0: "bright",
-        _: ["zos-jobs", "submit", "local-file"],
-        ...ZOSMF_PROF_OPTS
-    }},
+    ...{
+        arguments: {
+            $0: "bright",
+            _: ["zos-jobs", "submit", "local-file"],
+            ...ZOSMF_PROF_OPTS
+        }
+    },
 };
 
 describe("submit shared handler", () => {
@@ -179,6 +184,61 @@ describe("submit shared handler", () => {
             expect(dataSetSpecified).toBe(theDataSet);
         });
 
+        it("should submit JCL contained within a data-set if requested and wait for output", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../src/cli/submit/Submit.shared.handler");
+            const handler = new handlerReq.default();
+
+            // Vars populated by the mocked function
+            let error;
+            let dataSetSpecified;
+
+            // Mock the submit JCL function
+            SubmitJobs.submitJob = jest.fn((session, dataset) => {
+                dataSetSpecified = dataset;
+                return {
+                    jobname: "MYJOB",
+                    jobid: "JOB123",
+                    status: "INPUT",
+                    retcode: "UNKNOWN"
+                };
+            });
+
+            const completedJob: any = {
+                jobname: "MYJOB",
+                jobid: "JOB123",
+                status: "OUTPUT",
+                retcode: "CC 0000"
+            };
+
+
+            MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+                return completedJob;
+            });
+
+            SubmitJobs.checkSubmitOptions = jest.fn((session, parms) => {
+                return MonitorJobs.waitForJobOutputStatus(session, parms);
+            });
+            // The handler should fail
+            const theDataSet = "DATA.SET";
+            // tslint:disable-next-line
+            const copy = Object.assign({}, DEFAULT_PARAMETERS);
+            copy.arguments.dataset = theDataSet;
+            copy.arguments.wait = true;
+            copy.profiles = PROFILES;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await handler.process(copy);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(SubmitJobs.submitJob).toHaveBeenCalledTimes(1);
+            expect(SubmitJobs.checkSubmitOptions).toHaveBeenCalledTimes(1);
+            expect(MonitorJobs.waitForJobOutputStatus).toHaveBeenCalledTimes(1);
+            expect(dataSetSpecified).toBe(theDataSet);
+        });
         it("should submit JCL contained within a local-file if requested", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../src/cli/submit/Submit.shared.handler");
