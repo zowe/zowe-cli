@@ -37,6 +37,11 @@ export const LocalFileDefinition: ICommandDefinition = {
             type: "boolean"
         },
         {
+            name: "wait", aliases: ["w"],
+            description: "Wait for the job to enter OUTPUT status before completing the command.",
+            type: "boolean"
+        },
+        {
             name: "directory", aliases: ["d"],
             description: "The local directory you would like to download the output of the job." +
                 " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +

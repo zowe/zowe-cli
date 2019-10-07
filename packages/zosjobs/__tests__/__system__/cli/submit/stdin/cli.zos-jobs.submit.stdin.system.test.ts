@@ -9,11 +9,12 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IO, Session } from "@zowe/imperative";
+import {ITestEnvironment} from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import {runCliScript} from "../../../../../../../__tests__/__src__/TestUtils";
+import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import {IO, Session} from "@zowe/imperative";
+import {Get} from "../../../../../../zosfiles/src/api/methods/get";
 
 
 process.env.FORCE_COLOR = "0";
@@ -37,9 +38,7 @@ describe("zos-jobs submit stdin command", () => {
         account = systemProps.tso.account;
         const maxJobNamePrefixLength = 5;
         // JCL to submit
-        jcl = "//" + systemProps.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
-            ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
-            "//EXEC PGM=IEFBR14";
+        jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();
 
         // Create an local file with JCL to submit
         const bufferJCL: Buffer = Buffer.from(jcl);
@@ -65,7 +64,7 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("jobid");
         });
 
-        it("should subbt a job using JCL on stdin with 'view-all-spool-content' option", async () => {
+        it("should submit a job using JCL on stdin with 'view-all-spool-content' option", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_vasc.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--vasc"]);
             expect(response.stderr.toString()).toBe("");
@@ -73,7 +72,16 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("Spool file");
             expect(response.stdout.toString()).toContain("JES2");
         });
-
+        it("should submit a job and wait for it to reach output status ", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_wait.sh",
+                TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("jobname");
+            expect(response.stdout.toString()).toContain("retcode");
+            expect(response.stdout.toString()).toContain("CC 0000");
+            expect(response.stdout.toString()).not.toContain("null"); // retcode should not be null
+        });
         it("should submit a job using JCL on stdin with 'directory' option", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_with_directory.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--directory", "./"]);

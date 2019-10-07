@@ -33,6 +33,11 @@ export interface ISubmitParms {
     viewAllSpoolContent?: boolean;
 
     /**
+     * Wait for the job to reach output status
+     */
+    wait?: boolean;
+
+    /**
      * Local directory path to download output of the job
      */
     directory?: string;
