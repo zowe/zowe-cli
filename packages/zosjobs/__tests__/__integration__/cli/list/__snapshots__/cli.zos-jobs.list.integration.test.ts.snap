@@ -19,7 +19,7 @@ exports[`zos-jobs list command should display the help 1`] = `
  --------
 
    jobs | js                   List z/OS jobs on JES spool/queues
-   spool-files-by-jobid | sfbj List spool files of a z/OS job    
+   spool-files-by-jobid | sfbj List spool files of a z/OS job
 
  GLOBAL OPTIONS
  --------------
