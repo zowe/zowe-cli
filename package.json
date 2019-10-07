@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "5.12.0-alpha.201907221144",
+  "version": "6.0.1",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -30,7 +30,8 @@
   "files": [
     "lib",
     "docs",
-    "scripts"
+    "scripts",
+    "web-help/logo.png"
   ],
   "publishConfig": {
     "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
@@ -64,7 +65,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@zowe/imperative": "^4.1.12-alpha.201907111518",
+    "@zowe/imperative": "4.4.1",
     "@zowe/perf-timing": "^1.0.3-alpha.201902201448",
     "get-stdin": "^7.0.0",
     "js-yaml": "^3.13.1",
@@ -78,10 +79,10 @@
     "@types/fs-extra": "^5.0.5",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
-    "@types/node": "8.0.28",
     "@types/minimatch": "^3.0.3",
-    "@types/ssh2": "^0.5.38",
+    "@types/node": "8.0.28",
     "@types/sinon": "2.3.3",
+    "@types/ssh2": "^0.5.38",
     "@types/yargs": "8.0.2",
     "chai": "^4.1.2",
     "chai-string": "^1.4.0",
@@ -108,7 +109,7 @@
     "jsonfile": "^4.0.0",
     "madge": "3.2.0",
     "prompt": "1.0.0",
-    "rimraf": "2.6.2",
+    "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
     "sinon": "3.2.1",
     "sinon-chai": "2.13.0",

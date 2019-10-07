@@ -27,6 +27,7 @@ describe("z/OS Files - List", () => {
             {member: "m2"}
         ]
     };
+    const fsname = "USER.DATA.SET";
 
     const dummySession = new Session({
         user: "fake",
@@ -307,6 +308,95 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
+
+        it("should return with data when specify start and attributes options", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                items: ["test"]
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}&start=${dsname}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, start: dsname});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should return with data when specify recall and attributes options", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                items: ["test"]
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            // Unit test for wait option
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, recall: "wait"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT]);
+            expectJsonSpy.mockClear();
+
+            // Unit test for nowait option
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, recall: "nowait"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT]);
+            expectJsonSpy.mockClear();
+
+            // Unit test for error option
+            try {
+                response = await List.dataSet(dummySession, dsname, {attributes: true, recall: "error"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR]);
+            expectJsonSpy.mockClear();
+        });
     });
 
     describe("fileList", () => {
@@ -475,6 +565,151 @@ describe("z/OS Files - List", () => {
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+        });
+
+    });
+
+    describe("fs", () => {
+        beforeEach(() => {
+            expectJsonSpy.mockClear();
+            expectJsonSpy.mockImplementation(() => listApiResponse);
+        });
+
+        it("should list all mounted filesystems", async () => {
+            let response;
+            let error;
+
+            try {
+                response = await List.fs(dummySession, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+        });
+
+        it("should return 2 records of all mounted filesystems", async () => {
+            let response;
+            let error;
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_MFS}`);
+
+            try {
+                response = await List.fs(dummySession, { maxLength: 2 });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+        });
+
+        it("should throw error when zosmfRestClient.getExpectJSON error", async () => {
+            let response;
+            let error;
+            const testError = new ImperativeError({
+                msg: "test error"
+            });
+
+            expectJsonSpy.mockRejectedValueOnce(testError);
+
+            try {
+                response = await List.fs(dummySession, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeFalsy();
+            expect(error).toBeTruthy();
+            expect(error).toBe(testError);
+        });
+
+        it("should return with list when input path name is valid", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: "USER.DATA.SET",
+                            mountpoint: "/u/myuser",
+                            fstname: "FS",
+                            mode: ["rdonly", "acl", "synchonly"],
+                            dev: 82,
+                            fstype: 1,
+                            bsize: 1024,
+                            bavail: 45279,
+                            blocks: 126720,
+                            sysname: "S0W1",
+                            writeibc: 0,
+                            diribc: 98
+                        }
+                ],  returnedRows: 1, totalRows: 1, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`,`?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+            // const endpoint = posix.join(ZosFilesConstants.RESOURCE,`${ZosFilesConstants.RES_MFS}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.fsWithPath(dummySession, { path });
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should return with list when input fsname is valid", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: "USER.DATA.SET",
+                            mountpoint: "/u/myuser",
+                            fstname: "FS",
+                            mode: ["rdonly", "acl", "synchonly"],
+                            dev: 82,
+                            fstype: 1,
+                            bsize: 1024,
+                            bavail: 45279,
+                            blocks: 126720,
+                            sysname: "S0W1",
+                            writeibc: 0,
+                            diribc: 98
+                        }
+                ],  returnedRows: 1, totalRows: 1, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`,`?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(fsname)}`);
+            // const endpoint = posix.join(ZosFilesConstants.RESOURCE,`${ZosFilesConstants.RES_MFS}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.fs(dummySession, { fsname });
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
     });

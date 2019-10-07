@@ -20,6 +20,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
+import { IFsOptions } from "./doc/IFsOptions";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -91,8 +92,11 @@ export class List {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+            let  endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
+            if (options.start) {
+                endpoint = `${endpoint}&start=${options.start}`;
+            }
 
             const reqHeaders: IHeaderContent[] = [];
             if (options.attributes) {
@@ -102,6 +106,21 @@ export class List {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+
+            // Migrated recall options
+            if (options.recall) {
+                switch (options.recall.toLowerCase()) {
+                    case "wait":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                        break;
+                    case "nowait":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        break;
+                    case "error":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                        break;
+                }
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);
@@ -138,6 +157,92 @@ export class List {
         try {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+
+            const reqHeaders: IHeaderContent[] = [];
+            if (options.maxLength) {
+                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+            } else {
+                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+
+            this.log.debug(`Endpoint: ${endpoint}`);
+
+            const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);
+
+            return {
+                success: true,
+                commandResponse: null,
+                apiResponse: response
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieve zfs files
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {IZfsOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} data set name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     */
+    public static async fs(session: AbstractSession, options: IFsOptions = {}): Promise<IZosFilesResponse> {
+        try {
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`);
+            if (options.fsname) {
+                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
+            }
+
+            const reqHeaders: IHeaderContent[] = [];
+            // if (options.path) {
+            //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
+            // }
+            if (options.maxLength) {
+                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
+            } else {
+                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+
+            this.log.debug(`Endpoint: ${endpoint}`);
+
+            const response: any = await ZosmfRestClient.getExpectJSON(session, endpoint, reqHeaders);
+
+            return {
+                success: true,
+                commandResponse: null,
+                apiResponse: response
+            };
+        } catch (error) {
+            this.log.error(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieve zfs files if indicated path
+     *
+     * @param {AbstractSession}  session      - z/OS MF connection info
+     * @param {IZfsOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     *
+     * @throws {ImperativeError} data set name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     */
+
+    public static async fsWithPath(session: AbstractSession, options: IFsOptions = {}): Promise<IZosFilesResponse> {
+        try {
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_MFS}`);
+            if (options.path) {
+                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
+            }
 
             const reqHeaders: IHeaderContent[] = [];
             if (options.maxLength) {

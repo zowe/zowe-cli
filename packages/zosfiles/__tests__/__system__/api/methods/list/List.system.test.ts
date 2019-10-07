@@ -198,11 +198,12 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[0].dsname).toEqual(dsname);
             });
 
-            it("should list a data set with attributes", async () => {
+            it("should list a data set with attributes and start options", async () => {
                 let error;
                 let response: IZosFilesResponse;
                 const option: IListOptions = {
-                    attributes: true
+                    attributes: true,
+                    start: dsname
                 };
 
                 try {
@@ -355,6 +356,55 @@ describe("List command group", () => {
                 expect(error.message).toContain("name is not defined");
             });
         });
+    });
+
+    describe("file System", () => {
+
+        describe("Success scenarios", () => {
+
+            it("should list all files system", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await List.fs(REAL_SESSION);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBeGreaterThan(0);
+                expect(response.apiResponse.items[0]).toHaveProperty("name");
+                expect(response.apiResponse.items[0]).toHaveProperty("mountpoint");
+            });
+
+            it("should list a uss directory but limited to one", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await List.fs(REAL_SESSION, {maxLength: 1});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(1);
+                expect(response.apiResponse.items[0]).toHaveProperty("name");
+                expect(response.apiResponse.items[0]).toHaveProperty("mountpoint");
+            });
+        });
+
     });
 
 });

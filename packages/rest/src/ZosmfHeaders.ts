@@ -153,8 +153,8 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_MIGRATED_RECALL_WAIT: IHeaderContent = {"X-IBM-Migrated-Reacall": "wait"};
-    public static readonly X_IBM_MIGRATED_RECALL_NO_WAIT: IHeaderContent = {"X-IBM-Migrated-Reacall": "nowait"};
-    public static readonly X_IBM_MIGRATED_RECALL_ERROR: IHeaderContent = {"X-IBM-Migrated-Reacall": "error"};
+    public static readonly X_IBM_MIGRATED_RECALL_WAIT: IHeaderContent = {"X-IBM-Migrated-Recall": "wait"};
+    public static readonly X_IBM_MIGRATED_RECALL_NO_WAIT: IHeaderContent = {"X-IBM-Migrated-Recall": "nowait"};
+    public static readonly X_IBM_MIGRATED_RECALL_ERROR: IHeaderContent = {"X-IBM-Migrated-Recall": "error"};
 
 }
