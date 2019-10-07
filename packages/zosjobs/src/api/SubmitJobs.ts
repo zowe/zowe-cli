@@ -11,7 +11,14 @@
 
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@brightside/imperative";
-import { IJob, ISubmitJclNotifyParm, ISubmitJclParms, ISubmitJobNotifyParm, ISubmitJobParms, JOB_STATUS } from "../../../zosjobs";
+import {
+    IJob,
+    ISubmitJclNotifyParm,
+    ISubmitJclParms,
+    ISubmitJobNotifyParm,
+    ISubmitJobParms,
+    JOB_STATUS
+} from "../../../zosjobs";
 import { JobsConstants } from "./JobsConstants";
 import { ZosJobsMessages } from "./JobsMessages";
 import { ISubmitParms } from "./doc/input/ISubmitParms";
@@ -190,17 +197,21 @@ export class SubmitJobs {
 
         // if viewAppSpoolContent option passed, it waits till job status is output
         // then get content of each spool file and return array of ISpoolFiles object
-        if (parms.viewAllSpoolContent) {
+        if (parms.viewAllSpoolContent || parms.wait) {
             if (parms.task != null) {
                 parms.task.statusMessage = "Waiting for " + responseJobInfo.jobid + " to enter OUTPUT";
                 parms.task.percentComplete = TaskProgress.THIRTY_PERCENT;
             }
             const job: IJob = await MonitorJobs.waitForJobOutputStatus(session, responseJobInfo);
+            if (!parms.viewAllSpoolContent) {
+                return job;
+            }
             if (parms.task != null) {
                 parms.task.statusMessage = "Retrieving spool content for " + job.jobid +
                     (job.retcode == null ? "" : ", " + job.retcode);
                 parms.task.percentComplete = TaskProgress.SEVENTY_PERCENT;
             }
+
             const spoolFiles: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
             const arrOfSpoolFile: ISpoolFile[] = [];
             for (const file of spoolFiles) {

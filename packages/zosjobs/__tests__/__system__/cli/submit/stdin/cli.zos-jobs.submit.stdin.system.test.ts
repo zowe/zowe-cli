@@ -13,7 +13,7 @@ import {ITestEnvironment} from "../../../../../../../__tests__/__src__/environme
 import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import {runCliScript} from "../../../../../../../__tests__/__src__/TestUtils";
 import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import {IO, Session} from "@brightside/imperative";
+import {IO, Session} from "@zowe/imperative";
 import {Get} from "../../../../../../zosfiles/src/api/methods/get";
 
 
@@ -25,11 +25,10 @@ let REAL_SESSION: Session;
 let systemProps: ITestPropertiesSchema;
 let account: string;
 let jcl: string;
-describe("zos-jobs submit local-file command", () => {
-    // Create the unique test environment
+describe("zos-jobs submit stdin command", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_jobs_submit_local_file_command",
+            testName: "zos_jobs_submit_stdin_command",
             tempProfileTypes: ["zosmf"]
         });
 
@@ -45,7 +44,6 @@ describe("zos-jobs submit local-file command", () => {
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(__dirname + "/testFileOfLocalJCL.txt");
         IO.writeFile(__dirname + "/testFileOfLocalJCL.txt", bufferJCL);
-
     });
 
     afterAll(async () => {
@@ -57,8 +55,8 @@ describe("zos-jobs submit local-file command", () => {
     });
 
     describe("Live system tests", () => {
-        it("should submit a job in an existing valid local file ", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file.sh",
+        it("should submit a job using JCL on stdin", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -66,17 +64,16 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stdout.toString()).toContain("jobid");
         });
 
-        it("should submit a job in an existing valid local file with 'view-all-spool-content' option", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_vasc.sh",
+        it("should submit a job using JCL on stdin with 'view-all-spool-content' option", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_vasc.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--vasc"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Spool file");
             expect(response.stdout.toString()).toContain("JES2");
         });
-
         it("should submit a job and wait for it to reach output status ", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_wait.sh",
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_wait.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -85,8 +82,8 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stdout.toString()).toContain("CC 0000");
             expect(response.stdout.toString()).not.toContain("null"); // retcode should not be null
         });
-        it("should submit a job in an existing valid local file with 'directory' option", async () => {
-            const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_with_directory.sh",
+        it("should submit a job using JCL on stdin with 'directory' option", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_with_directory.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--directory", "./"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -123,7 +120,7 @@ describe("zos-jobs submit local-file command", () => {
                     TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
                 }
 
-                const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_fully_qualified.sh",
+                const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
                         __dirname + "/testFileOfLocalJCL.txt",
@@ -139,5 +136,4 @@ describe("zos-jobs submit local-file command", () => {
             });
         });
     });
-
 });
