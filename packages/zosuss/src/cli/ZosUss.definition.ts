@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { IssueCommand } from "./issue/Issue.definition";
+import { ViewCommand } from "./view/View.definition";
 import { SshSession } from "../SshSession";
 
 export const definition: ICommandDefinition = {
@@ -21,6 +22,7 @@ export const definition: ICommandDefinition = {
     description: "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",
     children: [
         IssueCommand,
+        ViewCommand,
     ],
     passOn: [
         {
