@@ -26,12 +26,26 @@ export default class Handler extends SshBaseHandler {
 
     public async processCmd(commandParameters: IHandlerParameters) {
         let rc;
+        let cmd = "cat ";
+        let iconvCmd = "";
         this.parameters = commandParameters;
+        if (commandParameters.arguments.tail) { cmd = "tail -f ";}
+
+        if (commandParameters.arguments.iconv) {
+            if (commandParameters.arguments.iconvFrom && commandParameters.arguments.iconvTo) {
+                iconvCmd = "|iconv -f " + commandParameters.arguments.iconvFrom + " -t " + commandParameters.arguments.iconvTo;
+            } else {
+                iconvCmd = "|iconv -f utf8 -t IBM-1047";
+            }
+        }
+
+        const command = cmd + commandParameters.arguments.file + iconvCmd;
+
         if (commandParameters.arguments.cwd) {
-            rc = await Shell.executeSshCwd(this.mSession, `cat ${commandParameters.arguments.command}`, commandParameters.arguments.cwd,
+            rc = await Shell.executeSshCwd(this.mSession, command, commandParameters.arguments.cwd,
                 this.handleStdout.bind(this));
         } else {
-            rc = await Shell.executeSsh(this.mSession, `cat ${commandParameters.arguments.command}`, this.handleStdout.bind(this));
+            rc = await Shell.executeSsh(this.mSession, command, this.handleStdout.bind(this));
         }
         commandParameters.response.data.setExitCode(rc);
     }

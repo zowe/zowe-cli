@@ -18,7 +18,7 @@ export const FileDefinition: ICommandDefinition = {
     handler: __dirname + "/File.handler",
     type: "command",
     positionals: [{
-        name: "command",
+        name: "file",
         description: "View a z/OS USS file",
         type: "string",
         required: true
@@ -28,7 +28,28 @@ export const FileDefinition: ICommandDefinition = {
             name: "cwd",
             description: "Working directory in which to execute the command",
             type: "string"
-        }],
+        },
+        {
+            name: "tail",
+            description: "Continually view files and get live updates",
+            type: "boolean"
+        },
+        {
+            name: "iconv",
+            description: "Convert from one page code to another",
+            type: "boolean"
+        },
+        {
+            name: "from",
+            description: "Codeset that you are converting from",
+            type: "string"
+        },
+        {
+            name: "to",
+            description: "Codeset that you are converting to",
+            type: "string"
+        }
+    ],
     profile: {
         optional: ["ssh"]
     },
