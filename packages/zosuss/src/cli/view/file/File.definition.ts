@@ -13,14 +13,14 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 export const FileDefinition: ICommandDefinition = {
     name: "file",
-    aliases: ["file"],
+    aliases: ["f"],
     description: "View a z/OS USS file",
     handler: __dirname + "/File.handler",
     type: "command",
     positionals: [
         {
             name: "file",
-            description: "View a z/OS USS file",
+            description: "Specify the file name to view",
             type: "string",
             required: true
         }
@@ -33,30 +33,28 @@ export const FileDefinition: ICommandDefinition = {
         },
         {
             name: "tail",
-            description: "Continually view files and get live updates",
+            description: "View a file with live updates",
             type: "boolean"
         },
         {
             name: "iconv",
             aliases: ["i"],
-            description: "Convert from one page code to another.",
-            type: "boolean",
+            description: "Convert from one code page to another",
+            type: "boolean"
         },
         {
             name: "iconvFrom",
             aliases: ["f"],
-            description: "Codeset that you are converting from",
+            description: "Code page from which you are converting. This option is only applicable when the iconv option is specified.",
             type: "string",
             defaultValue: "utf8",
-            impliesOneOf: ["iconv"]
         },
         {
             name: "iconvTo",
             aliases: ["t"],
-            description: "Codeset that you are converting to",
+            description: "Code page to which you are converting. This option is only applicable when the iconv option is specified.",
             type: "string",
             defaultValue: "IBM-1047",
-            impliesOneOf: ["iconv"]
         }
     ],
     profile: {
@@ -64,7 +62,7 @@ export const FileDefinition: ICommandDefinition = {
     },
     examples: [
         {
-            description: "View a file, giving the working directory",
+            description: "View a file",
             options: '"/u/files/file.txt" '
         },
         {
