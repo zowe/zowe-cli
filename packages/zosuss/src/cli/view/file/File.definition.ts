@@ -17,12 +17,14 @@ export const FileDefinition: ICommandDefinition = {
     description: "View a z/OS USS file",
     handler: __dirname + "/File.handler",
     type: "command",
-    positionals: [{
-        name: "file",
-        description: "View a z/OS USS file",
-        type: "string",
-        required: true
-    }],
+    positionals: [
+        {
+            name: "file",
+            description: "View a z/OS USS file",
+            type: "string",
+            required: true
+        }
+    ],
     options: [
         {
             name: "cwd",
@@ -36,25 +38,46 @@ export const FileDefinition: ICommandDefinition = {
         },
         {
             name: "iconv",
-            description: "Convert from one page code to another",
-            type: "boolean"
+            aliases: ["i"],
+            description: "Convert from one page code to another.",
+            type: "boolean",
         },
         {
-            name: "from",
+            name: "iconvFrom",
+            aliases: ["f"],
             description: "Codeset that you are converting from",
-            type: "string"
+            type: "string",
+            defaultValue: "utf8",
+            impliesOneOf: ["iconv"]
         },
         {
-            name: "to",
+            name: "iconvTo",
+            aliases: ["t"],
             description: "Codeset that you are converting to",
-            type: "string"
+            type: "string",
+            defaultValue: "IBM-1047",
+            impliesOneOf: ["iconv"]
         }
     ],
     profile: {
         optional: ["ssh"]
     },
-    examples: [{
-        description: "View a file, giving the working directory",
-        options: "\"file.txt\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp "
-    }]
+    examples: [
+        {
+            description: "View a file, giving the working directory",
+            options: '"/u/files/file.txt" '
+        },
+        {
+            description: "View a file, giving the working directory",
+            options: '"file.txt" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp'
+        },
+        {
+            description: "View a utf8 file, converting to 1047 EBCDIC",
+            options: '"/u/files/file.txt" --iconv '
+        },
+        {
+            description: "View a file converting from one code page to another",
+            options: '"/u/files/file.txt" --iconv --iconvFrom utf8 --iconvTo IBM1057'
+        },
+    ]
 };

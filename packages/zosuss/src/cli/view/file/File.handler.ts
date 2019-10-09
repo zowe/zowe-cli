@@ -29,14 +29,12 @@ export default class Handler extends SshBaseHandler {
         let cmd = "cat ";
         let iconvCmd = "";
         this.parameters = commandParameters;
-        if (commandParameters.arguments.tail) { cmd = "tail -f ";}
+        if (commandParameters.arguments.tail) {
+            cmd = "tail -f ";
+        }
 
         if (commandParameters.arguments.iconv) {
-            if (commandParameters.arguments.iconvFrom && commandParameters.arguments.iconvTo) {
-                iconvCmd = "|iconv -f " + commandParameters.arguments.iconvFrom + " -t " + commandParameters.arguments.iconvTo;
-            } else {
-                iconvCmd = "|iconv -f utf8 -t IBM-1047";
-            }
+            iconvCmd = "|iconv -f " + commandParameters.arguments.iconvFrom + " -t " + commandParameters.arguments.iconvTo;
         }
 
         const command = cmd + commandParameters.arguments.file + iconvCmd;
