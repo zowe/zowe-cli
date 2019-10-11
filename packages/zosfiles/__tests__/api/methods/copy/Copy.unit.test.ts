@@ -38,7 +38,7 @@ describe("Copy Dataset", () => {
             describe("Success Scenarios", () => {
                 const fromDataSetName = "USER.DATA.FROM";
                 const toDataSetName = "USER.DATA.TO";
-        
+
                 it("should send a request", async () => {
                     const expectedPayload = {
                         "request": "copy",
@@ -55,9 +55,9 @@ describe("Copy Dataset", () => {
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
                     ];
-        
+
                     const apiResponse = await Copy.dataSet(dummySession, fromDataSetName, toDataSetName);
-        
+
                     expect(apiResponse).toEqual({
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
@@ -72,5 +72,5 @@ describe("Copy Dataset", () => {
                 });
             });
         });
-    });    
+    });
 });
