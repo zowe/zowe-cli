@@ -1,3 +1,5 @@
+import { enqueue } from "../../..";
+
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -23,4 +25,15 @@ export interface ICopyDatasetOptions {
      * The volume where the to data set resides.
      */
     toVolume?: string;
+
+    /**
+     * If true, members in the target dataset are replaced.
+     * If false, like named members are not copied and an error is returned
+     */
+    replace?: boolean;
+
+    /**
+     * This is the enqueue type for the "to" data set. SHRW is the default for PDS, EXCLU for sequential
+     */
+    enq?: enqueue;
 }

@@ -17,7 +17,7 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
-import { ICopyDatasetOptions } from "./index";
+import { ICopyDatasetOptions, enqueue } from ".";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -40,12 +40,13 @@ export class Copy {
     public static async dataSet(session: AbstractSession,
                                 fromDataSetName: string,
                                 toDataSetName: string,
-                                options?: Partial<ICopyDatasetOptions>): Promise<IZosFilesResponse> {
+                                options: Partial<ICopyDatasetOptions> = {}): Promise<IZosFilesResponse> {
 
         ImperativeExpect.toNotBeNullOrUndefined(fromDataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(fromDataSetName, "", ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(toDataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(toDataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(options.enq, enqueue.SHRW, ZosFilesMessages.unsupportedDatasetType.message);
 
         try {
             let endpoint: string = posix.join(
@@ -53,7 +54,7 @@ export class Copy {
                 ZosFilesConstants.RES_DS_FILES,
             );
 
-            if (options && options.toVolume) {
+            if (options.toVolume) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
 
@@ -61,23 +62,19 @@ export class Copy {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            let payload;
+            const payload = {
+                "request": "copy",
+                "from-dataset": {
+                    dsn: fromDataSetName,
+                }
+            } as any;
 
-            if(options && options.fromVolume) {
-                payload = {
-                    "request": "copy",
-                    "from-dataset": {
-                        dsn: fromDataSetName,
-                        volser: options.fromVolume,
-                    }
-                };
-            } else {
-                payload = {
-                    "request": "copy",
-                    "from-dataset": {
-                        dsn: fromDataSetName,
-                    },
-                };
+            if(options.fromVolume) {
+                payload["from-dataset"].volser = options.fromVolume;
+            }
+
+            if (options.enq) {
+                payload.enq = options.enq;
             }
 
             const reqHeaders: IHeaderContent[] = [
@@ -119,7 +116,7 @@ export class Copy {
         fromMemberName: string,
         toDataSetName: string,
         toMemberName: string,
-        options?: Partial<ICopyDatasetOptions>): Promise<IZosFilesResponse> {
+        options: Partial<ICopyDatasetOptions> = {}): Promise<IZosFilesResponse> {
 
         ImperativeExpect.toNotBeNullOrUndefined(fromDataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(fromDataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -131,32 +128,31 @@ export class Copy {
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
             );
-            if (options && options.toVolume) {
+            if (options.toVolume) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
             endpoint = posix.join(endpoint, `${toDataSetName}(${toMemberName})`);
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            let payload;
+            const payload = {
+                "request": "copy",
+                "from-dataset": {
+                    dsn: fromDataSetName,
+                    member: fromMemberName,
+                }
+            } as any;
 
-            if(options && options.fromVolume) {
-                payload = {
-                    "request": "copy",
-                    "from-dataset": {
-                        dsn: fromDataSetName,
-                        member: fromMemberName,
-                        volser: options.fromVolume,
-                    }
-                };
-            } else {
-                payload = {
-                    "request": "copy",
-                    "from-dataset": {
-                        dsn: fromDataSetName,
-                        member: fromMemberName,
-                    }
-                };
+            if(options.fromVolume) {
+                payload["from-dataset"].volser = options.fromVolume;
+            }
+
+            if (options.replace) {
+                payload.replace = options.replace;
+            }
+
+            if (options.enq) {
+                payload.enq = options.enq;
             }
 
             const reqHeaders: IHeaderContent[] = [
