@@ -9,7 +9,11 @@
 *
 */
 
-export * from "./Copy";
-export * from "./CopyEnqueueType.enum";
-
-export * from "./doc/ICopyDatasetOptions";
+/**
+ * Enumerated type that describes the different kinds of data sets that can be created
+ */
+export const enum enqueue {
+    SHR = "SHR",
+    SHRW = "SHRW",
+    EXCLU = "EXCLU",
+}

@@ -15,7 +15,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List, ICopyDatasetOptions } from "../../../../../src/api";
+import { List, ICopyDatasetOptions, enqueue } from "../../../../../src/api";
 import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZosmfListResponse";
 
 let REAL_SESSION: Session;
@@ -87,6 +87,33 @@ describe("Copy Dataset", () => {
                     expect(contents2).toBeTruthy();
                     expect(contents1.toString()).toEqual(contents2.toString());
                 });
+                it("should copy with enqueue type `SHR`", async () => {
+                    const options: ICopyDatasetOptions = { enq: enqueue.SHR };
+                    let error;
+                    let response;
+                    let contents1;
+                    let contents2;
+
+                    try {
+                        response = await Copy.dataSet(REAL_SESSION, fromDsName, toDsName, options);
+                        contents1 = await Get.dataSet(REAL_SESSION, fromDsName);
+                        contents2 = await Get.dataSet(REAL_SESSION, toDsName);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeFalsy();
+
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                    expect(contents1).toBeTruthy();
+                    expect(contents2).toBeTruthy();
+                    expect(contents1.toString()).toEqual(contents2.toString());
+                });
             });
             describe("Failure Scenarios", () => {
                 it("no 'from' dataset", async () => {
@@ -101,7 +128,6 @@ describe("Copy Dataset", () => {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
-                    expect(error).toBeTruthy();
                     expect(error).toBeTruthy();
                     expect(error.message).toContain("data set not found");
 
@@ -119,7 +145,6 @@ describe("Copy Dataset", () => {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
-                    expect(error).toBeTruthy();
                     expect(error).toBeTruthy();
                     expect(error.message).toContain("data set not found");
 
@@ -176,6 +201,24 @@ describe("Copy Dataset", () => {
 
                     expect(response).toBeFalsy();
                 });
+                it("set enqueue as 'SHRW'", async () => {
+                    let error;
+                    let response;
+                    const options: ICopyDatasetOptions = { enq: enqueue.SHRW };
+                    try {
+                        response = await Copy.dataSet(REAL_SESSION, fromDsName, toDsName, options);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeTruthy();
+                    // TODO: Right message?
+                    expect(error.message).toContain(ZosFilesMessages.unsupportedDatasetType.message);
+
+                    expect(response).toBeFalsy();
+                });
             });
         });
 
@@ -214,6 +257,78 @@ describe("Copy Dataset", () => {
                             memberName,
                             toDsName,
                             memberName,
+                        );
+                        contents1 = await Get.dataSet(REAL_SESSION, `${fromDsName}(${memberName})`);
+                        contents2 = await Get.dataSet(REAL_SESSION, `${toDsName}(${memberName})`);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeFalsy();
+
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                    expect(contents1).toBeTruthy();
+                    expect(contents2).toBeTruthy();
+                    expect(contents1).toEqual(contents2);
+                });
+                it("should replace members with same name", async () => {
+                    let error;
+                    let response;
+                    let contents1;
+                    let contents2;
+
+                    const options: ICopyDatasetOptions = { replace: true };
+
+                    try {
+                        await Upload.fileToDataset(REAL_SESSION, `${__dirname}/../upload/testfiles/upload.txt`, toDsName);
+
+                        response = await Copy.dataSetMember(
+                            REAL_SESSION,
+                            fromDsName,
+                            memberName,
+                            toDsName,
+                            memberName,
+                            options,
+                        );
+                        contents1 = await Get.dataSet(REAL_SESSION, `${fromDsName}(${memberName})`);
+                        contents2 = await Get.dataSet(REAL_SESSION, `${toDsName}(${memberName})`);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeFalsy();
+
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                    expect(contents1).toBeTruthy();
+                    expect(contents2).toBeTruthy();
+                    expect(contents1).toEqual(contents2);
+                });
+                it("should copy with enqueue type `SHRW`", async () => {
+                    let error;
+                    let response;
+                    let contents1;
+                    let contents2;
+
+                    const options: ICopyDatasetOptions = { enq: enqueue.SHRW };
+
+                    try {
+                        response = await Copy.dataSetMember(
+                            REAL_SESSION,
+                            fromDsName,
+                            memberName,
+                            toDsName,
+                            memberName,
+                            options,
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDsName}(${memberName})`);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDsName}(${memberName})`);
@@ -278,7 +393,6 @@ describe("Copy Dataset", () => {
                     }
 
                     expect(error).toBeTruthy();
-                    expect(error).toBeTruthy();
                     expect(error.message).toContain("data set not found");
 
                     expect(response).toBeFalsy();
@@ -301,7 +415,6 @@ describe("Copy Dataset", () => {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
-                    expect(error).toBeTruthy();
                     expect(error).toBeTruthy();
                     expect(error.message).toContain("Member not found");
 
@@ -373,6 +486,31 @@ describe("Copy Dataset", () => {
 
                     expect(error).toBeTruthy();
                     expect(error.message).toContain("Expect Error: Required object must be defined");
+
+                    expect(response).toBeFalsy();
+                });
+                it("member already exists", async () => {
+                    let error;
+                    let response;
+
+                    try {
+                        await Upload.fileToDataset(REAL_SESSION, `${__dirname}/../upload/testfiles/upload.txt`, toDsName);
+
+                        response = await Copy.dataSetMember(
+                            REAL_SESSION,
+                            fromDsName,
+                            memberName,
+                            toDsName,
+                            memberName,
+                        );
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeTruthy();
+                    expect(error.message).toContain("Like-named member already exists");
 
                     expect(response).toBeFalsy();
                 });
@@ -465,7 +603,6 @@ describe("Copy Dataset", () => {
                     }
 
                     expect(error).toBeTruthy();
-                    expect(error).toBeTruthy();
                     expect(error.message).toContain("Volume not available");
 
                     expect(response).toBeFalsy();
@@ -492,7 +629,6 @@ describe("Copy Dataset", () => {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
-                    expect(error).toBeTruthy();
                     expect(error).toBeTruthy();
                     expect(error.message).toContain("Volume not available");
 
@@ -600,7 +736,6 @@ describe("Copy Dataset", () => {
                     }
 
                     expect(error).toBeTruthy();
-                    expect(error).toBeTruthy();
                     expect(error.message).toContain("Volume not available");
 
                     expect(response).toBeFalsy();
@@ -634,7 +769,6 @@ describe("Copy Dataset", () => {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
 
-                    expect(error).toBeTruthy();
                     expect(error).toBeTruthy();
                     expect(error.message).toContain("Volume not available");
 
