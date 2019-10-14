@@ -12,12 +12,13 @@
 import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { posix } from "path";
 
-import { ZosmfRestClient, ZosmfHeaders } from "../../../../../rest";
+import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ICopyDatasetOptions, enqueue } from ".";
+import { isNullOrUndefined } from "util";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -54,7 +55,7 @@ export class Copy {
                 ZosFilesConstants.RES_DS_FILES,
             );
 
-            if (options.toVolume) {
+            if (!isNullOrUndefined(options.toVolume)) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
 
@@ -69,15 +70,15 @@ export class Copy {
                 }
             } as any;
 
-            if(options.fromVolume) {
+            if(!isNullOrUndefined(options.fromVolume)) {
                 payload["from-dataset"].volser = options.fromVolume;
             }
 
-            if (options.enq) {
+            if (!isNullOrUndefined(options.enq)) {
                 payload.enq = options.enq;
             }
 
-            if (options.alias !== undefined) {
+            if (!isNullOrUndefined(options.alias)) {
                 payload.alias = options.alias;
             }
 
@@ -132,7 +133,7 @@ export class Copy {
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
             );
-            if (options.toVolume) {
+            if (!isNullOrUndefined(options.toVolume)) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
             endpoint = posix.join(endpoint, `${toDataSetName}(${toMemberName})`);
@@ -147,15 +148,15 @@ export class Copy {
                 }
             } as any;
 
-            if(options.fromVolume) {
+            if(!isNullOrUndefined(options.fromVolume)) {
                 payload["from-dataset"].volser = options.fromVolume;
             }
 
-            if (options.replace) {
+            if (!isNullOrUndefined(options.replace)) {
                 payload.replace = options.replace;
             }
 
-            if (options.enq) {
+            if (!isNullOrUndefined(options.enq)) {
                 payload.enq = options.enq;
             }
 
