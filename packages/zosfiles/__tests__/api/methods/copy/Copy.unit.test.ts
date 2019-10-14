@@ -105,6 +105,75 @@ describe("Copy Dataset", () => {
                         expectedPayload
                     );
                 });
+
+                it("should send a request with alias = true", async () => {
+                    const options: ICopyDatasetOptions = { alias: true };
+
+                    const expectedPayload = {
+                        "request": "copy",
+                        "from-dataset": {
+                            dsn: fromDataSetName,
+                        },
+                        "alias": true,
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        toDataSetName
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ];
+
+                    const response = await Copy.dataSet(dummySession, fromDataSetName, toDataSetName, options);
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
+                it("should send a request with alias = false", async () => {
+                    const options: ICopyDatasetOptions = { alias: false };
+
+                    const expectedPayload = {
+                        "request": "copy",
+                        "from-dataset": {
+                            dsn: fromDataSetName,
+                        },
+                        "alias": false,
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        toDataSetName
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ];
+
+                    const response = await Copy.dataSet(dummySession, fromDataSetName, toDataSetName, options);
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
             });
             describe("Failure Scenarios", () => {
                 const fromDataSetName = "USER.DATA.FROM";

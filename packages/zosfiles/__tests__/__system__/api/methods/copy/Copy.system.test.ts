@@ -61,7 +61,7 @@ describe("Copy Dataset", () => {
                 }
             });
             describe("Success Scenarios", () => {
-                it("should copy", async () => {
+                it("copy", async () => {
                     let error;
                     let response;
                     let contents1;
@@ -87,8 +87,35 @@ describe("Copy Dataset", () => {
                     expect(contents2).toBeTruthy();
                     expect(contents1.toString()).toEqual(contents2.toString());
                 });
-                it("should copy with enqueue type `SHR`", async () => {
+                it("enqueue type set to `SHR`", async () => {
                     const options: ICopyDatasetOptions = { enq: enqueue.SHR };
+                    let error;
+                    let response;
+                    let contents1;
+                    let contents2;
+
+                    try {
+                        response = await Copy.dataSet(REAL_SESSION, fromDsName, toDsName, options);
+                        contents1 = await Get.dataSet(REAL_SESSION, fromDsName);
+                        contents2 = await Get.dataSet(REAL_SESSION, toDsName);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeFalsy();
+
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                    expect(contents1).toBeTruthy();
+                    expect(contents2).toBeTruthy();
+                    expect(contents1.toString()).toEqual(contents2.toString());
+                });
+                it("alias set to `true`", async () => {
+                    const options: ICopyDatasetOptions = { alias: true };
                     let error;
                     let response;
                     let contents1;
@@ -244,7 +271,7 @@ describe("Copy Dataset", () => {
             });
 
             describe("Success Scenarios", () => {
-                it("should copy", async () => {
+                it("copy", async () => {
                     let error;
                     let response;
                     let contents1;
@@ -276,7 +303,7 @@ describe("Copy Dataset", () => {
                     expect(contents2).toBeTruthy();
                     expect(contents1).toEqual(contents2);
                 });
-                it("should replace members with same name", async () => {
+                it("replace members with same name", async () => {
                     let error;
                     let response;
                     let contents1;
@@ -313,13 +340,48 @@ describe("Copy Dataset", () => {
                     expect(contents2).toBeTruthy();
                     expect(contents1).toEqual(contents2);
                 });
-                it("should copy with enqueue type `SHRW`", async () => {
+                it("enqueue type set to `SHRW`", async () => {
                     let error;
                     let response;
                     let contents1;
                     let contents2;
 
                     const options: ICopyDatasetOptions = { enq: enqueue.SHRW };
+
+                    try {
+                        response = await Copy.dataSetMember(
+                            REAL_SESSION,
+                            fromDsName,
+                            memberName,
+                            toDsName,
+                            memberName,
+                            options,
+                        );
+                        contents1 = await Get.dataSet(REAL_SESSION, `${fromDsName}(${memberName})`);
+                        contents2 = await Get.dataSet(REAL_SESSION, `${toDsName}(${memberName})`);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeFalsy();
+
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                    expect(contents1).toBeTruthy();
+                    expect(contents2).toBeTruthy();
+                    expect(contents1).toEqual(contents2);
+                });
+                it("alias set to `true`", async () => {
+                    let error;
+                    let response;
+                    let contents1;
+                    let contents2;
+
+                    const options: ICopyDatasetOptions = { alias: true };
 
                     try {
                         response = await Copy.dataSetMember(

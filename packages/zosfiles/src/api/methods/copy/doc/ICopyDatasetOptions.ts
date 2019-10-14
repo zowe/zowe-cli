@@ -36,4 +36,10 @@ export interface ICopyDatasetOptions {
      * This is the enqueue type for the "to" data set. SHRW is the default for PDS, EXCLU for sequential
      */
     enq?: enqueue;
+
+    /**
+     * If true, aliases are copied along with main member
+     * If false(default), alias relationships are not maintained.
+     */
+    alias?: boolean;
 }
