@@ -53,6 +53,17 @@ describe("zos-jobs submit data-set command", () => {
             expect(response.stdout.toString()).toContain("jobid");
         });
 
+        it("should submit a job and wait for it to reach output status ", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_wait.sh",
+                TEST_ENVIRONMENT, [jclMember]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("jobname");
+            expect(response.stdout.toString()).toContain("retcode");
+            expect(response.stdout.toString()).toContain("CC 0000");
+            expect(response.stdout.toString()).not.toContain("null"); // retcode should not be null
+        });
+
         it("should submit a job in an existing valid data set from a physical sequential data set", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_no_member.sh",
                 TEST_ENVIRONMENT, [psJclDataSet]);

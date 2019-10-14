@@ -14,6 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
+import { Get } from "../../../../../../zosfiles/src/api/methods/get";
 
 
 process.env.FORCE_COLOR = "0";
@@ -38,9 +39,7 @@ describe("zos-jobs submit local-file command", () => {
         account = systemProps.tso.account;
         const maxJobNamePrefixLength = 5;
         // JCL to submit
-        jcl = "//" + systemProps.zosmf.user.toUpperCase().substring(0, maxJobNamePrefixLength) + "J JOB  " + account +
-            ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
-            "//EXEC PGM=IEFBR14";
+        jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();
 
         // Create an local file with JCL to submit
         const bufferJCL: Buffer = Buffer.from(jcl);
@@ -76,6 +75,16 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stdout.toString()).toContain("JES2");
         });
 
+        it("should submit a job and wait for it to reach output status ", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_wait.sh",
+                TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("jobname");
+            expect(response.stdout.toString()).toContain("retcode");
+            expect(response.stdout.toString()).toContain("CC 0000");
+            expect(response.stdout.toString()).not.toContain("null"); // retcode should not be null
+        });
         it("should submit a job in an existing valid local file with 'directory' option", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_with_directory.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--directory", "./"]);
