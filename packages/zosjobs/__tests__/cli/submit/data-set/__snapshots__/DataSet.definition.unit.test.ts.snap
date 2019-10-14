@@ -28,6 +28,27 @@ Object {
     },
     Object {
       "aliases": Array [
+        "wfo",
+      ],
+      "description": "Wait for the job to enter OUTPUT status before completing the command.",
+      "name": "wait-for-output",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "wfa",
+      ],
+      "conflictsWith": Array [
+        "wait-for-output",
+        "view-all-spool-content",
+        "directory",
+      ],
+      "description": "Wait for the job to enter ACTIVE status before completing the command.",
+      "name": "wait-for-active",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
         "vasc",
       ],
       "description": "Print all spool output. If you use this option you will wait the job to complete.",
