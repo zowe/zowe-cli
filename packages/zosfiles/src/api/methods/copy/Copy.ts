@@ -77,6 +77,10 @@ export class Copy {
                 payload.enq = options.enq;
             }
 
+            if (options.alias !== undefined) {
+                payload.alias = options.alias;
+            }
+
             const reqHeaders: IHeaderContent[] = [
                 Headers.APPLICATION_JSON,
                 { [ Headers.CONTENT_LENGTH ] : JSON.stringify(payload).length.toString() }
