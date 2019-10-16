@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IO, Session } from "@zowe/imperative";
+import { IO, Session } from "@brightside/imperative";
 import { Get } from "../../../../../../zosfiles/src/api/methods/get";
 
 

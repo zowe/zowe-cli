@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@brightside/imperative";
 
 export const StdinDefinition: ICommandDefinition = {
     name: "stdin",
