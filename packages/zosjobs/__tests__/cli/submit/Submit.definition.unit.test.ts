@@ -13,9 +13,10 @@ import { ICommandDefinition } from "@brightside/imperative";
 
 describe("zos-jobs submit group definition", () => {
     it("should not have changed", () => {
+        const numChildren = 3;
         const definition: ICommandDefinition = require("../../../src/cli/submit/Submit.definition").SubmitDefinition;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2);
+        expect(definition.children.length).toBe(numChildren);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });

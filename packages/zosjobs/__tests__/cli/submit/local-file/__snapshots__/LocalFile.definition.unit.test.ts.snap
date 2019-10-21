@@ -24,6 +24,27 @@ Object {
     },
     Object {
       "aliases": Array [
+        "wfo",
+      ],
+      "description": "Wait for the job to enter OUTPUT status before completing the command.",
+      "name": "wait-for-output",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "wfa",
+      ],
+      "conflictsWith": Array [
+        "wait-for-output",
+        "view-all-spool-content",
+        "directory",
+      ],
+      "description": "Wait for the job to enter ACTIVE status before completing the command.",
+      "name": "wait-for-active",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
         "d",
       ],
       "description": "The local directory you would like to download the output for the job to. Creates a subdirectory using the jobID as the name and files are titled based on DD names.",
