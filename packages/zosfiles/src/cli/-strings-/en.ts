@@ -20,18 +20,29 @@ export default {
         WITH_VALUE: "with value"
     },
     COPY: {
-        DESCRIPTION: "copy the contents of a data set or a dataset member",
+        DESCRIPTION: "copy the contents of a data set or a data set member",
         ACTIONS: {
             DATA_SET: {
-                DESCRIPTION: "Copy the contents of a dataset into another existing dataset",
+                DESCRIPTION: "Copy the contents of a data set into another existing data set",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
                     TODSNAME: "The name of the data set that you want to copy to",
                 },
                 OPTIONS: {
-                    // VOLUME: "The volume serial (VOLSER) where the data set resides. The option is required only when the data set is not" +
-                    //     " catalogued on the system.",
-                    // FOR_SURE: "Specify this option to confirm that you want to delete the data set permanently."
+                },
+                EXAMPLES: {
+                    EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
+                }
+            },
+            DATA_SET_MEMBER: {
+                DESCRIPTION: "Copy the contents of a data set member into another partitioned data set",
+                POSITIONALS: {
+                    FROMDSNAME: "The name of the data set that you want to copy from",
+                    FROMDSMEMBERNAME: "The name of the data set member that you want to copy from",
+                    TODSNAME: "The name of the data set that you want to copy to",
+                    TODSMEMBERNAME: "The name of the data set member that you want to copy to",
+                },
+                OPTIONS: {
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
