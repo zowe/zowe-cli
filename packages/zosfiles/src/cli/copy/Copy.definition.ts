@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { DsDefinition } from "./ds/Ds.definition";
+import { DsmDefinition } from "./dsm/Dsm.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -27,6 +28,7 @@ export const CopyDefinition: ICommandDefinition = {
     type: "group",
     description: strings.DESCRIPTION,
     children: [
-        DsDefinition
+        DsDefinition,
+        DsmDefinition,
     ],
 };
