@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { CopyDefinition } from "./copy/Copy.definition";
 import { CreateDefinition } from "./create/Create.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { InvokeDefinition } from "./invoke/Invoke.definition";
@@ -40,7 +41,8 @@ const definition: ICommandDefinition = {
         ListDefinition,
         UploadDefinition,
         MountDefinition,
-        UnmountDefinition
+        UnmountDefinition,
+        CopyDefinition,
     ],
     passOn: [
         {
