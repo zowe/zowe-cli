@@ -61,7 +61,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@brightside/imperative": "2.7.2",
+    "@brightside/imperative": "2.7.3",
     "js-yaml": "^3.13.1",
     "minimatch": "^3.0.4",
     "ssh2": "^0.8.2",
