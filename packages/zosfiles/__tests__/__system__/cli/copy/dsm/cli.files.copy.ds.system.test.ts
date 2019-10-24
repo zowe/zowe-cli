@@ -22,10 +22,12 @@ let toDsName: string;
 let user: string;
 
 const scriptsLocation = join(__dirname, "__scripts__", "command");
-const createSequentialScript = join(scriptsLocation, "command_create_data_set_sequential.sh");
-const uploadScript = join(scriptsLocation, "command_upload_stds_fully_qualified.sh");
+const createPartitionedScript = join(scriptsLocation, "command_create_data_set_partitioned.sh");
+const uploadScript = join(scriptsLocation, "command_upload_dtp.sh");
 const deleteScript = join(scriptsLocation, "command_delete_data_set.sh");
-const copyScript = join(scriptsLocation, "command_copy_data_set.sh");
+const copyScript = join(scriptsLocation, "command_copy_data_set_member.sh");
+const localDirName = join(__dirname, "__data__", "command_upload_dtp_dir");
+const memberName = "mem1";
 
 describe("Copy Dataset", () => {
     beforeAll(async () => {
@@ -36,20 +38,20 @@ describe("Copy Dataset", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        fromDsName = `${user}.FROM.DS`;
-        toDsName = `${user}.TO.DS`;
+        fromDsName = `${user}.FROM.PDS`;
+        toDsName = `${user}.TO.PDS`;
     });
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Sequential", () => {
+    describe("Member", () => {
         describe("Success scenarios", () => {
             beforeEach(async () => {
-                runCliScript(createSequentialScript, TEST_ENVIRONMENT, [fromDsName]);
-                runCliScript(createSequentialScript, TEST_ENVIRONMENT, [toDsName]);
-                runCliScript(uploadScript, TEST_ENVIRONMENT, [fromDsName]);
+                runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDsName]);
+                runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDsName]);
+                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, fromDsName]);
             });
 
             afterEach(async () => {
@@ -58,7 +60,12 @@ describe("Copy Dataset", () => {
             });
 
             it("copy", async () => {
-                const response = runCliScript(copyScript, TEST_ENVIRONMENT, [fromDsName, toDsName]);
+                const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    memberName,
+                    toDsName,
+                    memberName,
+                ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();

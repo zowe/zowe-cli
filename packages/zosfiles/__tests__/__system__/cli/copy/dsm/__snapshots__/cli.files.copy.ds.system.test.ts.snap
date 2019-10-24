@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Copy Data Set Success scenarios should copy a data set 1`] = `
+"================Z/OS FILES COPY DATA SET===============
+Data set copied successfully.
+"
+`;
+
+exports[`Copy Dataset Member Success scenarios copy 1`] = `
+"================Z/OS FILES COPY DATA SET===============
+Data set copied successfully.
+"
+`;
+
+exports[`Copy Dataset Partitioned Success scenarios copy 1`] = `
+"================Z/OS FILES COPY DATA SET===============
+Data set copied successfully.
+"
+`;
+
+exports[`Copy Dataset Sequential Success scenarios copy 1`] = `
+"================Z/OS FILES COPY DATA SET===============
+Data set copied successfully.
+"
+`;
