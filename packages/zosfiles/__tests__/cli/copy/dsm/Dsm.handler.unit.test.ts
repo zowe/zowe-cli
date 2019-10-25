@@ -13,6 +13,15 @@ import { Copy, IZosFilesResponse } from "../../../../src/api";
 import DsHandler from "../../../../src/cli/copy/dsm/Dsm.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
 
+const dummySession = {
+    user: "dummy",
+    password: "dummy",
+    hostname: "machine",
+    port: 443,
+    protocol: "https",
+    type: "basic"
+};
+
 describe("DsmHandler", () => {
     const defaultReturn: IZosFilesResponse = {
         success        : true,
@@ -26,7 +35,7 @@ describe("DsmHandler", () => {
         copyDatasetSpy.mockImplementation(async () => defaultReturn);
     });
 
-    it("should call Copy.dataSetMember without volume", async () => {
+    it("should call Copy.dataSetMember", async () => {
         const handler = new DsHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
@@ -40,13 +49,32 @@ describe("DsmHandler", () => {
             }
         };
 
-        const dummySession = {
-            user: "dummy",
-            password: "dummy",
-            hostname: "machine",
-            port: 443,
-            protocol: "https",
-            type: "basic"
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            commandParameters.arguments.fromDataSetName,
+            commandParameters.arguments.fromDataSetMemberName,
+            commandParameters.arguments.toDataSetName,
+            commandParameters.arguments.toDataSetMemberName,
+            {},
+        );
+        expect(response).toBe(defaultReturn);
+    });
+
+    it("should call Copy.dataSetMember to copy all members", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName: "ABCD",
+                fromDataSetMemberName: "*",
+                toDataSetName: "EFGH",
+                toDataSetMemberName: "",
+            }
         };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);

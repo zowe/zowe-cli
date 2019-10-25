@@ -24,7 +24,7 @@ export default class DsmHandler extends ZosFilesBaseHandler {
             commandParameters.arguments.fromDataSetMemberName,
             commandParameters.arguments.toDataSetName,
             commandParameters.arguments.toDataSetMemberName,
-            {}
+            {},
         );
     }
 }

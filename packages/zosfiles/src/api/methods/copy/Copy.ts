@@ -120,13 +120,18 @@ export class Copy {
         fromDataSetName: string,
         fromMemberName: string,
         toDataSetName: string,
-        toMemberName: string,
+        toMemberName?: string,
         options: Partial<ICopyDatasetOptions> = {}): Promise<IZosFilesResponse> {
 
         ImperativeExpect.toNotBeNullOrUndefined(fromDataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(fromDataSetName, "", ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(toDataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(toDataSetName, "", ZosFilesMessages.missingDatasetName.message);
+
+        if (fromMemberName !== "*") {
+            // TODO Better message
+            ImperativeExpect.toNotBeNullOrUndefined(toMemberName, ZosFilesMessages.missingDatasetName.message);
+        }
 
         try {
             let endpoint: string = posix.join(
@@ -136,7 +141,12 @@ export class Copy {
             if (!isNullOrUndefined(options.toVolume)) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
-            endpoint = posix.join(endpoint, `${toDataSetName}(${toMemberName})`);
+
+            if (fromMemberName === "*") {
+                endpoint = posix.join(endpoint, toDataSetName);
+            } else {
+                endpoint = posix.join(endpoint, `${toDataSetName}(${toMemberName})`);
+            }
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

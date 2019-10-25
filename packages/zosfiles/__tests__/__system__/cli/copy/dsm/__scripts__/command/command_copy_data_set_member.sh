@@ -6,7 +6,7 @@ toDataSetMemberName=$4
 set -e
 
 echo "================Z/OS FILES COPY DATA SET==============="
-zowe zos-files copy data-set-member $fromDataSetName $fromDataSetMemberName $toDataSetName $toDataSetMemberName
+zowe zos-files copy data-set-member "$fromDataSetName" "$fromDataSetMemberName" "$toDataSetName" "$toDataSetMemberName"
 if [ $? -gt 0 ]
 then
     exit $?
