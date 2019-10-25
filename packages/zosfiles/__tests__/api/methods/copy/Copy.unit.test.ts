@@ -235,7 +235,7 @@ describe("Copy Dataset", () => {
                     const expectedEndpoint = posix.join(
                         ZosFilesConstants.RESOURCE,
                         ZosFilesConstants.RES_DS_FILES,
-                        `${toDsName}(${memberName})`
+                        `${toDsName}(${memberName})`,
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -248,6 +248,45 @@ describe("Copy Dataset", () => {
                         memberName,
                         toDsName,
                         memberName,
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
+
+                it("should send a request to copy all members", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "from-dataset": {
+                            dsn: fromDsName,
+                            member: "*",
+                        },
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        toDsName,
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ];
+
+                    const response = await Copy.dataSetMember(
+                        dummySession,
+                        fromDsName,
+                        "*",
+                        toDsName,
+                        ""
                     );
 
                     expect(response).toEqual({

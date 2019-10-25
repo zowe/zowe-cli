@@ -26,6 +26,8 @@ let toDsName: string;
 
 const missingDatasetName = "missing";
 const missingDatasetMember = "missing";
+const fileName1 = "file1";
+const fileName2 = "file2";
 
 describe("Copy Dataset", () => {
     beforeAll(async () => {
@@ -344,13 +346,13 @@ describe("Copy Dataset", () => {
     });
 
     describe("Partitioned", () => {
-        const memberName = "upload";
+        const memberName = fileName1;
         beforeEach(async () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDsName);
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDsName);
 
-                await Upload.fileToDataset(REAL_SESSION, `${__dirname}/../upload/testfiles/upload.txt`, fromDsName);
+                await Upload.fileToDataset(REAL_SESSION, `${__dirname}/testfiles/${fileName1}.txt`, fromDsName);
             } catch (err) {
                 Imperative.console.info("Error: " + inspect(err));
             }
@@ -397,6 +399,40 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1).toEqual(contents2);
             });
+            it("copy all members", async () => {
+                let error;
+                let response;
+                let contents1;
+                let contents2;
+
+                try {
+                    await Upload.fileToDataset(REAL_SESSION, `${__dirname}/testfiles/${fileName2}.txt`, fromDsName);
+
+                    response = await Copy.dataSetMember(
+                        REAL_SESSION,
+                        fromDsName,
+                        "*",
+                        toDsName,
+                        "",
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, fromDsName);
+                    contents2 = await Get.dataSet(REAL_SESSION, toDsName);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                expect(contents1).toBeTruthy();
+                expect(contents2).toBeTruthy();
+                expect(contents1).toEqual(contents2);
+            });
             it("replace members with same name", async () => {
                 let error;
                 let response;
@@ -406,7 +442,7 @@ describe("Copy Dataset", () => {
                 const options: ICopyDatasetOptions = { replace: true };
 
                 try {
-                    await Upload.fileToDataset(REAL_SESSION, `${__dirname}/../upload/testfiles/upload.txt`, toDsName);
+                    await Upload.fileToDataset(REAL_SESSION, `${__dirname}/testfiles/file2.txt`, toDsName);
 
                     response = await Copy.dataSetMember(
                         REAL_SESSION,
@@ -697,7 +733,7 @@ describe("Copy Dataset", () => {
                 let response;
 
                 try {
-                    await Upload.fileToDataset(REAL_SESSION, `${__dirname}/../upload/testfiles/upload.txt`, toDsName);
+                    await Upload.fileToDataset(REAL_SESSION, `${__dirname}/testfiles/${fileName1}.txt`, toDsName);
 
                     response = await Copy.dataSetMember(
                         REAL_SESSION,
