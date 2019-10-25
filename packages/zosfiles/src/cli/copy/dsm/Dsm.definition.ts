@@ -58,7 +58,15 @@ export const DsmDefinition: ICommandDefinition = {
             required: false,
         },
     ],
-    options: ([] as ICommandOptionDefinition[]),
+    options: ([
+        {
+            name: "replace",
+            aliases: ["r"],
+            description: strings.OPTIONS.REPLACE,
+            type: "boolean",
+            required: false
+        },
+    ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.EXAMPLES.EX1,

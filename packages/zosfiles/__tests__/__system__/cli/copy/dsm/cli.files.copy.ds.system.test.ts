@@ -26,6 +26,7 @@ const createPartitionedScript = join(scriptsLocation, "command_create_data_set_p
 const uploadScript = join(scriptsLocation, "command_upload_dtp.sh");
 const deleteScript = join(scriptsLocation, "command_delete_data_set.sh");
 const copyScript = join(scriptsLocation, "command_copy_data_set_member.sh");
+const copyScriptReplace = join(scriptsLocation, "command_copy_data_set_member_with_replace.sh");
 const localDirName = join(__dirname, "__data__", "command_upload_dtp_dir");
 const memberName = "mem1";
 
@@ -47,19 +48,18 @@ describe("Copy Dataset", () => {
     });
 
     describe("Member", () => {
+        beforeEach(async () => {
+            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDsName]);
+            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDsName]);
+            runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, fromDsName]);
+        });
+
+        afterEach(async () => {
+            runCliScript(deleteScript, TEST_ENVIRONMENT, [fromDsName]);
+            runCliScript(deleteScript, TEST_ENVIRONMENT, [toDsName]);
+        });
         describe("Success scenarios", () => {
-            beforeEach(async () => {
-                runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDsName]);
-                runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDsName]);
-                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, fromDsName]);
-            });
-
-            afterEach(async () => {
-                runCliScript(deleteScript, TEST_ENVIRONMENT, [fromDsName]);
-                runCliScript(deleteScript, TEST_ENVIRONMENT, [toDsName]);
-            });
-
-            it("copy", async () => {
+            it("copy a single member", async () => {
                 const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
                     fromDsName,
                     memberName,
@@ -68,6 +68,45 @@ describe("Copy Dataset", () => {
                 ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+            it("copy all members", async () => {
+                const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    "*",
+                    toDsName,
+                ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+            it("copy a single member and replace existing member", async () => {
+                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
+                const response = runCliScript(copyScriptReplace, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    memberName,
+                    toDsName,
+                    memberName,
+                ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+        });
+        describe("Failure scenarios", () => {
+            it("cannot replace a member without --replace flag", async () => {
+                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
+                const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    memberName,
+                    toDsName,
+                    memberName,
+                ]);
+                expect(response.stderr.toString()).toContain("Like-named member already exists");
+                expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toMatchSnapshot();
             });
         });

@@ -43,6 +43,7 @@ export default {
                     TODSMEMBERNAME: "The name of the data set member that you want to copy to",
                 },
                 OPTIONS: {
+                    REPLACE: "Specify this option to confirm that you want to replace the data set member if it exists.",
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
