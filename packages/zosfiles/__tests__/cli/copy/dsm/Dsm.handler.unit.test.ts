@@ -121,5 +121,37 @@ describe("DsmHandler", () => {
             );
             expect(response).toBe(defaultReturn);
         });
+        it("should call Copy.dataSetMember with volumes specified", async () => {
+            const handler = new DsHandler();
+
+            expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+            const fromVolume = "IJKLMNO";
+            const toVolume = "PQRSTU";
+
+            const commandParameters: any = {
+                arguments: {
+                    "fromDataSetName": "ABCD",
+                    "fromDataSetMemberName": "UVW",
+                    "toDataSetName": "EFGH",
+                    "toDataSetMemberName": "XYZ",
+                    "from-volume": fromVolume,
+                    "to-volume": toVolume,
+                }
+            };
+            const expectedOptions: ICopyDatasetOptions = { fromVolume, toVolume };
+
+            const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+            expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                commandParameters.arguments.fromDataSetName,
+                commandParameters.arguments.fromDataSetMemberName,
+                commandParameters.arguments.toDataSetName,
+                commandParameters.arguments.toDataSetMemberName,
+                expectedOptions,
+            );
+            expect(response).toBe(defaultReturn);
+        });
     });
 });

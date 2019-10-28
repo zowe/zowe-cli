@@ -38,7 +38,6 @@ describe("Copy Dataset", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-
         volume = defaultSystem.datasets.vol;
         fromDSName = `${user}.FROM.DS`;
         toDSName = `${user}.TO.DS`;
