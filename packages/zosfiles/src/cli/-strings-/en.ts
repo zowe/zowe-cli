@@ -31,6 +31,7 @@ export default {
                 OPTIONS: {
                     FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
                     TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
+                    ALIAS: "Specify this option to choose if aliases are copied along with main member",
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
@@ -48,6 +49,7 @@ export default {
                     REPLACE: "Specify this option to confirm that you want to replace the data set member if it exists.",
                     FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
                     TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
+                    ALIAS: "Specify this option to choose if aliases are copied along with main member",
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"

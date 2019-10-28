@@ -28,6 +28,8 @@ const uploadScript = join(scriptsLocation, "command_upload_dtp.sh");
 const deleteScript = join(scriptsLocation, "command_delete_data_set.sh");
 const copyScript = join(scriptsLocation, "command_copy_data_set_member.sh");
 const copyScriptReplace = join(scriptsLocation, "command_copy_data_set_member_with_replace.sh");
+const copyScriptVolume = join(scriptsLocation, "command_copy_data_set_member_with_volumes.sh");
+const copyScriptAlias = join(scriptsLocation, "command_copy_data_set_member_with_alias.sh");
 const localDirName = join(__dirname, "__data__", "command_upload_dtp_dir");
 const memberName = "mem1";
 
@@ -97,10 +99,8 @@ describe("Copy Dataset", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(response.stdout.toString()).toContain("Data set copied successfully.");
             });
-
             it("copy with from and to volume specified", async () => {
-                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
-                const response = runCliScript(copyScriptReplace, TEST_ENVIRONMENT, [
+                const response = runCliScript(copyScriptVolume, TEST_ENVIRONMENT, [
                     fromDsName,
                     memberName,
                     toDsName,
@@ -113,11 +113,23 @@ describe("Copy Dataset", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(response.stdout.toString()).toContain("Data set copied successfully.");
             });
+            it("copy with alias = true", async () => {
+                const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    memberName,
+                    toDsName,
+                    memberName,
+                ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
         });
         describe("Failure scenarios", () => {
             it("cannot replace a member without --replace flag", async () => {
                 runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
-                const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
+                const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [
                     fromDsName,
                     memberName,
                     toDsName,

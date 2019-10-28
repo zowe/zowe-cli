@@ -28,6 +28,7 @@ const uploadScript = join(scriptsLocation, "command_upload_stds_fully_qualified.
 const deleteScript = join(scriptsLocation, "command_delete_data_set.sh");
 const copyScript = join(scriptsLocation, "command_copy_data_set.sh");
 const copyScriptWithVolumes = join(scriptsLocation, "command_copy_data_set_volumes.sh");
+const copyScriptWithAlias = join(scriptsLocation, "command_copy_data_set_alias.sh");
 
 describe("Copy Dataset", () => {
     beforeAll(async () => {
@@ -65,6 +66,7 @@ describe("Copy Dataset", () => {
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
             });
 
             it("copy with from and to volume specified", async () => {
@@ -77,6 +79,15 @@ describe("Copy Dataset", () => {
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+
+            it("copy with alias = true", async () => {
+                const response = runCliScript(copyScriptWithAlias, TEST_ENVIRONMENT, [fromDSName, toDSName]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
             });
         });
     });
