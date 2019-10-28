@@ -5,3 +5,9 @@ exports[`Copy Dataset Sequential Success scenarios copy 1`] = `
 Data set copied successfully.
 "
 `;
+
+exports[`Copy Dataset Sequential Success scenarios copy with from and to volume specified 1`] = `
+"================Z/OS FILES COPY DATA SET===============
+Data set copied successfully.
+"
+`;

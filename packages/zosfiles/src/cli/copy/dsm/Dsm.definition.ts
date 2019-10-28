@@ -18,7 +18,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COPY.ACTIONS.DATA_SET_MEMBER;
 
 /**
- * This object defines the command for delete data-set within zosfiles. This is not
+ * This object defines the command for copy data set within zosfiles. This is not
  * something that is intended to be used outside of the zosfiles package.
  *
  * @private
@@ -64,6 +64,20 @@ export const DsmDefinition: ICommandDefinition = {
             aliases: ["r"],
             description: strings.OPTIONS.REPLACE,
             type: "boolean",
+            required: false
+        },
+        {
+            name: "from-volume",
+            aliases: ["fvol"],
+            description: strings.OPTIONS.FROMVOLUME,
+            type: "string",
+            required: false
+        },
+        {
+            name: "to-volume",
+            aliases: ["tvol"],
+            description: strings.OPTIONS.TOVOLUME,
+            type: "string",
             required: false
         },
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),

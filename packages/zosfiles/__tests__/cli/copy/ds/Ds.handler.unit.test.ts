@@ -9,7 +9,7 @@
 *
 */
 
-import { Copy, IZosFilesResponse } from "../../../../src/api";
+import { Copy, IZosFilesResponse, ICopyDatasetOptions } from "../../../../src/api";
 import DsHandler from "../../../../src/cli/copy/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
 
@@ -26,7 +26,7 @@ describe("DsHandler", () => {
         copyDatasetSpy.mockImplementation(async () => defaultReturn);
     });
 
-    it("should call Copy.dataSet without volume", async () => {
+    it("should call Copy.dataSet", async () => {
         const handler = new DsHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
@@ -55,6 +55,44 @@ describe("DsHandler", () => {
             commandParameters.arguments.fromDataSetName,
             commandParameters.arguments.toDataSetName,
             {},
+        );
+        expect(response).toBe(defaultReturn);
+    });
+    it("should call Copy.dataSet with volumes specified", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const fromVolume = "IJKLMNO";
+        const toVolume = "PQRSTU";
+
+        const commandParameters: any = {
+            arguments: {
+                "fromDataSetName": "ABCD",
+                "toDataSetName": "EFGH",
+                "from-volume": fromVolume,
+                "to-volume": toVolume,
+            }
+        };
+
+        const dummySession = {
+            user: "dummy",
+            password: "dummy",
+            hostname: "machine",
+            port: 443,
+            protocol: "https",
+            type: "basic"
+        };
+
+        const expectedOptions: ICopyDatasetOptions = { fromVolume, toVolume };
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            commandParameters.arguments.fromDataSetName,
+            commandParameters.arguments.toDataSetName,
+            expectedOptions,
         );
         expect(response).toBe(defaultReturn);
     });

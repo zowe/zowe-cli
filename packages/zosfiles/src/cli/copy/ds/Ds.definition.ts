@@ -19,7 +19,7 @@ import { ZosmfSession } from "../../../../../zosmf";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).COPY.ACTIONS.DATA_SET;
 
 /**
- * This object defines the command for delete data-set within zosfiles. This is not
+ * This object defines the command for copying data sets within zosfiles. This is not
  * something that is intended to be used outside of the zosfiles package.
  *
  * @private
@@ -47,7 +47,22 @@ export const DsDefinition: ICommandDefinition = {
             required: true,
         },
     ],
-    options: ([] as ICommandOptionDefinition[]),
+    options: ([
+        {
+            name: "from-volume",
+            aliases: ["fvol"],
+            description: strings.OPTIONS.FROMVOLUME,
+            type: "string",
+            required: false
+        },
+        {
+            name: "to-volume",
+            aliases: ["tvol"],
+            description: strings.OPTIONS.TOVOLUME,
+            type: "string",
+            required: false
+        },
+    ] as ICommandOptionDefinition[]),
     examples: [
         {
             description: strings.EXAMPLES.EX1,

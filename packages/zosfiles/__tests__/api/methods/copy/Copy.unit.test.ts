@@ -11,7 +11,7 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-import { Copy, ZosFilesConstants, ZosFilesMessages, ICopyDatasetOptions, enqueue } from "../../../../";
+import { Copy, ZosFilesConstants, ZosFilesMessages, ICopyDatasetOptions, enqueue } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
 
