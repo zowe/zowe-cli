@@ -417,6 +417,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     errorParsingAttributesFile: {
         message: "Error parsing attributes file {{file}}: {{message}}"
-    }
+    },
+
+    /**
+     * Message indicating that the data set was recalled successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetMigratedSuccessfully: {
+        message: "Data set migrated successfully.",
+    },
 };
 
