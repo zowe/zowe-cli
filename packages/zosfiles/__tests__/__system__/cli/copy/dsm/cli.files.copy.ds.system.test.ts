@@ -20,6 +20,7 @@ let defaultSystem: ITestPropertiesSchema;
 let fromDsName: string;
 let toDsName: string;
 let user: string;
+let volume: string;
 
 const scriptsLocation = join(__dirname, "__scripts__", "command");
 const createPartitionedScript = join(scriptsLocation, "command_create_data_set_partitioned.sh");
@@ -39,6 +40,7 @@ describe("Copy Dataset", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
+        volume = defaultSystem.datasets.vol;
         fromDsName = `${user}.FROM.PDS`;
         toDsName = `${user}.TO.PDS`;
     });
@@ -49,8 +51,8 @@ describe("Copy Dataset", () => {
 
     describe("Member", () => {
         beforeEach(async () => {
-            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDsName]);
-            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDsName]);
+            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDsName, volume]);
+            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDsName, volume]);
             runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, fromDsName]);
         });
 
@@ -89,6 +91,22 @@ describe("Copy Dataset", () => {
                     memberName,
                     toDsName,
                     memberName,
+                ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+
+            it("copy with from and to volume specified", async () => {
+                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
+                const response = runCliScript(copyScriptReplace, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    memberName,
+                    toDsName,
+                    memberName,
+                    volume,
+                    volume,
                 ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
