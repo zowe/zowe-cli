@@ -24,6 +24,14 @@ export default class DsmHandler extends ZosFilesBaseHandler {
             options.replace = commandParameters.arguments.replace;
         }
 
+        if (commandParameters.arguments["from-volume"]) {
+            options.fromVolume = commandParameters.arguments["from-volume"];
+        }
+
+        if (commandParameters.arguments["to-volume"]) {
+            options.toVolume = commandParameters.arguments["to-volume"];
+        }
+
         return Copy.dataSetMember(
             session,
             commandParameters.arguments.fromDataSetName,

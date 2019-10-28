@@ -20,10 +20,19 @@ export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const options: ICopyDatasetOptions = {};
 
-        // if (commandParameters.arguments.volume) {
-        //     options.volume = commandParameters.arguments.volume;
-        // }
+        if (commandParameters.arguments["from-volume"]) {
+            options.fromVolume = commandParameters.arguments["from-volume"];
+        }
 
-        return Copy.dataSet(session, commandParameters.arguments.fromDataSetName, commandParameters.arguments.toDataSetName, {});
+        if (commandParameters.arguments["to-volume"]) {
+            options.toVolume = commandParameters.arguments["to-volume"];
+        }
+
+        return Copy.dataSet(
+            session,
+            commandParameters.arguments.fromDataSetName,
+            commandParameters.arguments.toDataSetName,
+            options
+        );
     }
 }

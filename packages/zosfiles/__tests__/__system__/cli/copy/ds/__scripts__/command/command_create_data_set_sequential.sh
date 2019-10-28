@@ -1,9 +1,10 @@
 #!/bin/bash
-dsn=$1
+dataSet=$1
+volume=$2
 set -e
 
 echo "================Z/OS FILES CREATE PDS==============="
-zowe zos-files create data-set-sequential "$1"
+zowe zos-files create data-set-sequential "$dataSet" --volume-serial $volume
 if [ $? -gt 0 ]
 then
     exit $?

@@ -29,6 +29,8 @@ export default {
                     TODSNAME: "The name of the data set that you want to copy to",
                 },
                 OPTIONS: {
+                    FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
+                    TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
@@ -44,6 +46,8 @@ export default {
                 },
                 OPTIONS: {
                     REPLACE: "Specify this option to confirm that you want to replace the data set member if it exists.",
+                    FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
+                    TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
