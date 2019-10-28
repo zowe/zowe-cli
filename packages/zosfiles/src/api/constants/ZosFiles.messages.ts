@@ -521,6 +521,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     ussCreatedSuccessfully: {
         message: "USS file or directory created successfully."
-    }
+    },
+
+    /**
+     * Message indicating that the data set was recalled successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetRecalledSuccessfully: {
+        message: "Data set recalled successfully.",
+    },
 };
 
