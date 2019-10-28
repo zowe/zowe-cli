@@ -153,5 +153,35 @@ describe("DsmHandler", () => {
             );
             expect(response).toBe(defaultReturn);
         });
+        it("should call Copy.dataSetMember with alias = true", async () => {
+            const handler = new DsHandler();
+
+            expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+            const alias = true;
+
+            const commandParameters: any = {
+                arguments: {
+                    fromDataSetName: "ABCD",
+                    fromDataSetMemberName: "UVW",
+                    toDataSetName: "EFGH",
+                    toDataSetMemberName: "XYZ",
+                    alias,
+                }
+            };
+            const expectedOptions: ICopyDatasetOptions = { alias };
+
+            const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+            expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                commandParameters.arguments.fromDataSetName,
+                commandParameters.arguments.fromDataSetMemberName,
+                commandParameters.arguments.toDataSetName,
+                commandParameters.arguments.toDataSetMemberName,
+                expectedOptions,
+            );
+            expect(response).toBe(defaultReturn);
+        });
     });
 });

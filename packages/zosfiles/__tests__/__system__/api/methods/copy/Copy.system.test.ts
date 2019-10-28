@@ -608,7 +608,6 @@ describe("Copy Dataset", () => {
                 }
 
                 expect(error).toBeTruthy();
-                expect(error).toBeTruthy();
                 expect(error.message).toContain("data set not found");
 
                 expect(response).toBeFalsy();

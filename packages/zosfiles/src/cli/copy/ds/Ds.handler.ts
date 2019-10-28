@@ -23,9 +23,11 @@ export default class DsHandler extends ZosFilesBaseHandler {
         if (commandParameters.arguments["from-volume"]) {
             options.fromVolume = commandParameters.arguments["from-volume"];
         }
-
         if (commandParameters.arguments["to-volume"]) {
             options.toVolume = commandParameters.arguments["to-volume"];
+        }
+        if (commandParameters.arguments.alias) {
+            options.alias = commandParameters.arguments.alias;
         }
 
         return Copy.dataSet(

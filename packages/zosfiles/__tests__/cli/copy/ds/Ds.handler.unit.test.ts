@@ -96,4 +96,40 @@ describe("DsHandler", () => {
         );
         expect(response).toBe(defaultReturn);
     });
+    it("should call Copy.dataSet with alias specified", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const alias = true;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName: "ABCD",
+                toDataSetName: "EFGH",
+                alias,
+            }
+        };
+
+        const dummySession = {
+            user: "dummy",
+            password: "dummy",
+            hostname: "machine",
+            port: 443,
+            protocol: "https",
+            type: "basic"
+        };
+
+        const expectedOptions: ICopyDatasetOptions = { alias };
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            commandParameters.arguments.fromDataSetName,
+            commandParameters.arguments.toDataSetName,
+            expectedOptions,
+        );
+        expect(response).toBe(defaultReturn);
+    });
 });

@@ -62,6 +62,13 @@ export const DsDefinition: ICommandDefinition = {
             type: "string",
             required: false
         },
+        {
+            name: "alias",
+            aliases: ["al"],
+            description: strings.OPTIONS.ALIAS,
+            type: "boolean",
+            required: false
+        },
     ] as ICommandOptionDefinition[]),
     examples: [
         {

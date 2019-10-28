@@ -80,6 +80,13 @@ export const DsmDefinition: ICommandDefinition = {
             type: "string",
             required: false
         },
+        {
+            name: "alias",
+            aliases: ["al"],
+            description: strings.OPTIONS.ALIAS,
+            type: "boolean",
+            required: false
+        },
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
