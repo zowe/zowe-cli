@@ -69,6 +69,16 @@ export const DsDefinition: ICommandDefinition = {
             type: "boolean",
             required: false
         },
+        {
+            name: "enqueue",
+            aliases: ["enq"],
+            description: strings.OPTIONS.ENQUEUE,
+            type: "string",
+            required: false,
+            allowableValues: {
+                values: ["EXCLU", "SHR"],
+            },
+        }
     ] as ICommandOptionDefinition[]),
     examples: [
         {

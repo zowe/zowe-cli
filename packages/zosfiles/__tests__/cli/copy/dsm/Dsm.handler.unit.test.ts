@@ -9,7 +9,7 @@
 *
 */
 
-import { Copy, IZosFilesResponse, ICopyDatasetOptions } from "../../../../src/api";
+import { Copy, IZosFilesResponse, ICopyDatasetOptions, enqueue } from "../../../../src/api";
 import DsHandler from "../../../../src/cli/copy/dsm/Dsm.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
 
@@ -169,6 +169,35 @@ describe("DsmHandler", () => {
                 }
             };
             const expectedOptions: ICopyDatasetOptions = { alias };
+
+            const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+            expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                commandParameters.arguments.fromDataSetName,
+                commandParameters.arguments.fromDataSetMemberName,
+                commandParameters.arguments.toDataSetName,
+                commandParameters.arguments.toDataSetMemberName,
+                expectedOptions,
+            );
+            expect(response).toBe(defaultReturn);
+        });
+        it("should call Copy.dataSetMember with enqueue specified", async () => {
+            const handler = new DsHandler();
+
+            expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+            const commandParameters: any = {
+                arguments: {
+                    fromDataSetName: "ABCD",
+                    fromDataSetMemberName: "UVW",
+                    toDataSetName: "EFGH",
+                    toDataSetMemberName: "XYZ",
+                    enqueue: "SHRW",
+                }
+            };
+            const expectedOptions: ICopyDatasetOptions = { enq: enqueue.SHRW };
 
             const response = await handler.processWithSession(commandParameters, dummySession as any);
 
