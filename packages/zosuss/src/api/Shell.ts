@@ -116,8 +116,14 @@ export class Shell {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.handshakeTimeout.message,
                     }));
+                } else if ( err.message.includes("ECONNREFUSED")) {
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message,
+                    }));
                 } else {
-                    throw err;
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message,
+                    }));
                 }
             });
         });
