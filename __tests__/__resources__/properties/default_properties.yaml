@@ -97,7 +97,7 @@ provisioning:
 workflows:
   # The system where you want to run your workflow
   # (must exist and be active within your zOSMF)
-  system: system
+  system: workflow-system
 #-------------------------------------------------------------------------#
 #  SSH testing properties                                                 #
 #-------------------------------------------------------------------------#
