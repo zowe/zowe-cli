@@ -29,6 +29,7 @@ const deleteScript = join(scriptsLocation, "command_delete_data_set.sh");
 const copyScript = join(scriptsLocation, "command_copy_data_set.sh");
 const copyScriptWithVolumes = join(scriptsLocation, "command_copy_data_set_volumes.sh");
 const copyScriptWithAlias = join(scriptsLocation, "command_copy_data_set_alias.sh");
+const copyScriptWithEnqueue = join(scriptsLocation, "command_copy_data_set_enqueue.sh");
 
 describe("Copy Dataset", () => {
     beforeAll(async () => {
@@ -84,6 +85,14 @@ describe("Copy Dataset", () => {
 
             it("copy with alias = true", async () => {
                 const response = runCliScript(copyScriptWithAlias, TEST_ENVIRONMENT, [fromDSName, toDSName]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+
+            it("copy with enqueue = SHR", async () => {
+                const response = runCliScript(copyScriptWithEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "SHR"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();

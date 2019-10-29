@@ -29,6 +29,9 @@ export default class DsHandler extends ZosFilesBaseHandler {
         if (commandParameters.arguments.alias) {
             options.alias = commandParameters.arguments.alias;
         }
+        if (commandParameters.arguments.enqueue) {
+            options.enq = commandParameters.arguments.enqueue;
+        }
 
         return Copy.dataSet(
             session,
