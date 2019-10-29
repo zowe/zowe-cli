@@ -93,6 +93,29 @@ export class ZosmfSession {
     };
 
     /**
+     * Option used in profile creation and commands to indicate token-based connection to z/OSMF
+     */
+    public static ZOSMF_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
+        name: "token-type",
+        aliases: ["tt"],
+        description: "The token type for z/OSMF returned in the HTTP Cookie header, for example: 'LtpaToken2'." +
+        " The existence of a 'tokenType' indicates that basic authentication will not be used after a token has been obtained.",
+        type: "stringOrEmpty",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands to indicate the token value for connecting to z/OSMF
+     */
+    public static ZOSMF_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
+        name: "token-value",
+        aliases: ["tv"],
+        description: "the token value associated with the token type.",
+        type: "string",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -102,7 +125,9 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_USER,
         ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
-        ZosmfSession.ZOSMF_OPTION_BASE_PATH
+        ZosmfSession.ZOSMF_OPTION_BASE_PATH,
+        ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE,
+        ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE,
     ];
 
 
@@ -135,7 +160,6 @@ export class ZosmfSession {
     public static createBasicZosmfSessionFromArguments(args: ICommandArguments): Session {
         this.log.debug("Creating a z/OSMF session from arguments");
         return new Session({
-            type: "basic",
             hostname: args.host,
             port: args.port,
             user: args.user,

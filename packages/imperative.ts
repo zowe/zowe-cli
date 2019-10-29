@@ -72,6 +72,15 @@ const config: IImperativeConfig = {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH,
                     },
+                    tokenType: {
+                        type: "string",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE,
+                    },
+                    tokenValue: {
+                        type: "string",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE,
+                        secure: true,
+                    }
                 },
                 required: ["host"],
             },
