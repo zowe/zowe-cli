@@ -23,7 +23,7 @@ import { ICreateDataSetOptions } from "../../api/methods/create/doc/ICreateDataS
 export function generateZosmfOptions(commandArguments: Arguments): ICreateDataSetOptions {
     return JSON.parse(JSON.stringify({
         alcunit: commandArguments.allocationSpaceUnit,
-        volser: commandArguments.volumeSerial,
+        volser: commandArguments.volser,
         primary: commandArguments.primarySpace,
         secondary: commandArguments.secondarySpace,
         dirblk: commandArguments.directoryBlocks,

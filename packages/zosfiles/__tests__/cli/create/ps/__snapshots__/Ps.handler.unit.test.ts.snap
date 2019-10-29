@@ -13,3 +13,17 @@ exports[`Create PS data set handler process method should create a PS data set i
 "
 created"
 `;
+
+exports[`Create PS data set handler should create a PS data set if requested 1`] = `
+Object {
+  "commandResponse": "created",
+  "success": true,
+}
+`;
+
+exports[`Create PS data set handler should create a PS data set if requested 2`] = `""`;
+
+exports[`Create PS data set handler should create a PS data set if requested 3`] = `
+"
+created"
+`;

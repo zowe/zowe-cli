@@ -13,3 +13,17 @@ exports[`Create PDS data set handler process method should create a PDS data set
 "
 created"
 `;
+
+exports[`Create PDS data set handler process method should create a PDS data set with volser set 1`] = `
+Object {
+  "commandResponse": "created",
+  "success": true,
+}
+`;
+
+exports[`Create PDS data set handler process method should create a PDS data set with volser set 2`] = `""`;
+
+exports[`Create PDS data set handler process method should create a PDS data set with volser set 3`] = `
+"
+created"
+`;
