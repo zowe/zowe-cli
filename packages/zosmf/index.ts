@@ -9,6 +9,13 @@
 *
 */
 
-export * from "./src/ZosmfSession";
-export * from "./src/api";
+export * from "./src/api/ZosmfSession";
+
+export * from "./src/api/CheckStatus";
+export * from "./src/api/ListDefinedSystems";
+export * from "./src/api/doc/IZosmfInfoResponse";
+export * from "./src/api/doc/IZosmfPluginInfo";
+export * from "./src/api/constants/Zosmf.constants";
+export * from "./src/api/constants/Zosmf.messages";
+export * from "./src/api/doc/IZosmfListDefinedSystemsResponse";
 

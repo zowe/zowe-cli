@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { ZosmfSession } from "../../../ZosmfSession";
+import { ZosmfSession } from "../../../api/ZosmfSession";
 
 export const StatusDefinition: ICommandDefinition = {
     name: "status",
