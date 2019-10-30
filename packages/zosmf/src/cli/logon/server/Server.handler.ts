@@ -37,8 +37,8 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
         const sessionConfig = this.mSession.ISession;
 
         // make it a token connection
-        sessionConfig.tokenType = "LtpaToken2";
         sessionConfig.type = "token";
+        sessionConfig.tokenType = "LtpaToken2";
         const session = new Session(sessionConfig);
 
         // obtain token

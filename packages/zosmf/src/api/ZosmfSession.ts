@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session } from "@zowe/imperative";
+import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session, ISession } from "@zowe/imperative";
 
 /**
  * Utility Methods for Brightside
@@ -51,7 +51,6 @@ export class ZosmfSession {
         aliases: ["u"],
         description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
         type: "string",
-        required: true,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
@@ -64,7 +63,6 @@ export class ZosmfSession {
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
-        required: true
     };
 
     /**
@@ -99,7 +97,7 @@ export class ZosmfSession {
         name: "token-type",
         aliases: ["tt"],
         description: "The token type for z/OSMF returned in the HTTP Cookie header, for example: 'LtpaToken2'." +
-        " The existence of a 'tokenType' indicates that basic authentication will not be used after a token has been obtained.",
+            " The existence of a 'tokenType' indicates that basic authentication will not be used after a token has been obtained.",
         type: "stringOrEmpty",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
@@ -145,7 +143,6 @@ export class ZosmfSession {
             port: profile.port,
             user: profile.user,
             password: profile.password,
-            base64EncodedAuth: profile.auth,
             rejectUnauthorized: profile.rejectUnauthorized,
             basePath: profile.basePath,
         });
@@ -159,15 +156,27 @@ export class ZosmfSession {
      */
     public static createBasicZosmfSessionFromArguments(args: ICommandArguments): Session {
         this.log.debug("Creating a z/OSMF session from arguments");
-        return new Session({
+
+        const sessionConfig: ISession = {
             hostname: args.host,
             port: args.port,
-            user: args.user,
-            password: args.password,
-            base64EncodedAuth: args.auth,
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
-        });
+        };
+
+        if (args.tokenType) {
+            this.log.debug("Using token authentication");
+            sessionConfig.type = "token";
+            sessionConfig.tokenType = args.tokenType;
+            sessionConfig.tokenValue = args.tokenValue;
+        } else {
+            this.log.debug("Using token authentication");
+            sessionConfig.type = "basic";
+            sessionConfig.user = args.user;
+            sessionConfig.password = args.password;
+        }
+
+        return new Session(sessionConfig);
     }
 
 
