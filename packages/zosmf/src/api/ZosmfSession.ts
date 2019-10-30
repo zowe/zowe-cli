@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session, ISession } from "@zowe/imperative";
+import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session, ISession, ImperativeError } from "@zowe/imperative";
 
 /**
  * Utility Methods for Brightside
@@ -164,19 +164,28 @@ export class ZosmfSession {
             basePath: args.basePath,
         };
 
-        if (args.tokenType) {
+        if (args.tokenType && args.tokenValue) {
             this.log.debug("Using token authentication");
             sessionConfig.type = "token";
             sessionConfig.tokenType = args.tokenType;
             sessionConfig.tokenValue = args.tokenValue;
         } else {
-            this.log.debug("Using token authentication");
+            this.log.debug("Using basic authentication");
             sessionConfig.type = "basic";
             sessionConfig.user = args.user;
             sessionConfig.password = args.password;
         }
 
-        return new Session(sessionConfig);
+        let session: Session;
+        try {
+            session = new Session(sessionConfig);
+        } catch (err) {
+            throw new ImperativeError({
+                msg: "Session could not be established.  Must have user & password OR tokenType & tokenValue",
+            });
+        }
+
+        return session;
     }
 
 

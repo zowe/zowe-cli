@@ -9,7 +9,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { LogonConstants } from "./LogonConstants";
 
@@ -30,7 +30,7 @@ export class Logon {
     public static async logon(session: AbstractSession) {
         Logger.getAppLogger().trace("Logon.logon()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        const response = await ZosmfRestClient.getExpectJSON<any>(session, LogonConstants.RESOURCE);
+        await ZosmfRestClient.getExpectJSON<any>(session, LogonConstants.RESOURCE); // TODO(Kelosky): eventually a real auth endpoint
         return session.ISession.tokenValue;
     }
 

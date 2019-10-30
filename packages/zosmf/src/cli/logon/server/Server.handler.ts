@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ProfilesConstants, Imperative, Session } from "@zowe/imperative";
+import { IHandlerParameters, ProfilesConstants, Imperative, Session, ImperativeError } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
 import { Logon } from "../../../api/Logon";
 
@@ -44,17 +44,27 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
         // obtain token
         const tokenValue = await Logon.logon(session);
 
-        // TODO(Kelosky): how do we get type and name of loaded profile??
-        await Imperative.api.profileManager(`zosmf`).update({
-            name: 'ca11',
-            args: { 
-                "token-type": TOKEN_TYPE,
-                "token-value": tokenValue,
-            },
-            merge: true
-        });
+        if (tokenValue) {
+            // update the profile given
+            await Imperative.api.profileManager(`zosmf`).update({
+                name: this.mZosmfLoadedProfile.name,
+                args: {
+                    "token-type": TOKEN_TYPE,
+                    "token-value": tokenValue,
+                },
+                merge: true
+            });
 
-        // TODO(Kelosky): build other response stuff and do NOT print token
-        this.console.log(`Logon complete:\n  ${tokenValue}`);
+            // TODO(Kelosky): build other response stuff and do NOT print token
+            this.console.log(`Logon complete!`);
+
+        } else {
+            // TODO(Kelosky): most ideally we'll get a 401 or some other HTTP error for invalid users; 
+            // we need our systems configured properly for this.
+            throw new ImperativeError({
+                msg: "You are a failure.",
+            });
+        }
+
     }
 }
