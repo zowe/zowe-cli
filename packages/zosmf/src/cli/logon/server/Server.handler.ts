@@ -30,15 +30,22 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
 
-        // get existing session
+        // get a default built session
         const sessionConfig = this.mSession.ISession;
 
-        // make it a token connection
-        sessionConfig.type = "token";
+        // set users requested token type
         sessionConfig.tokenType = (params.arguments.jsonWebToken) ? "jwtToken" : "LtpaToken2";
+
+        // force it to be a token connection
+        sessionConfig.type = "token";
+
+        // remove any existing token value
+        delete sessionConfig.tokenValue;
+
+        // establish a new session object
         const session = new Session(sessionConfig);
 
-        // obtain token
+        // logon to obtain a obtain token
         const tokenValue = await Logon.logon(session);
 
         if (tokenValue) {

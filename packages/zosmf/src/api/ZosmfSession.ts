@@ -164,16 +164,16 @@ export class ZosmfSession {
             basePath: args.basePath,
         };
 
-        if (args.tokenType && args.tokenValue) {
+        this.log.debug("Using basic authentication");
+        sessionConfig.type = "basic";
+        sessionConfig.user = args.user;
+        sessionConfig.password = args.password;
+
+        if (args.tokenType && args.tokenValue && args.tokenValue !== "") {
             this.log.debug("Using token authentication");
             sessionConfig.type = "token";
             sessionConfig.tokenType = args.tokenType;
             sessionConfig.tokenValue = args.tokenValue;
-        } else {
-            this.log.debug("Using basic authentication");
-            sessionConfig.type = "basic";
-            sessionConfig.user = args.user;
-            sessionConfig.password = args.password;
         }
 
         let session: Session;
