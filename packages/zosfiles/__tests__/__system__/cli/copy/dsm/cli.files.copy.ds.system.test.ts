@@ -30,6 +30,7 @@ const copyScript = join(scriptsLocation, "command_copy_data_set_member.sh");
 const copyScriptReplace = join(scriptsLocation, "command_copy_data_set_member_with_replace.sh");
 const copyScriptVolume = join(scriptsLocation, "command_copy_data_set_member_with_volumes.sh");
 const copyScriptAlias = join(scriptsLocation, "command_copy_data_set_member_with_alias.sh");
+const copyScriptEnqueue = join(scriptsLocation, "command_copy_data_set_member_with_enqueue.sh");
 const localDirName = join(__dirname, "__data__", "command_upload_dtp_dir");
 const memberName = "mem1";
 
@@ -119,6 +120,19 @@ describe("Copy Dataset", () => {
                     memberName,
                     toDsName,
                     memberName,
+                ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+            it("copy with enqueue = SHRW", async () => {
+                const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [
+                    fromDsName,
+                    memberName,
+                    toDsName,
+                    memberName,
+                    "SHRW"
                 ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
