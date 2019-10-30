@@ -47,7 +47,7 @@ export class GetJobs {
     public static async getJobsByPrefix(session: AbstractSession, prefix: string) {
         Logger.getAppLogger().trace("GetJobs.getJobsByPrefix()");
         ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix");
-        return GetJobs.getJobsCommon(session, {prefix});
+        return GetJobs.getJobsCommon(session, { prefix });
     }
 
     /**
@@ -62,7 +62,7 @@ export class GetJobs {
     public static async getJobsByOwner(session: AbstractSession, owner: string) {
         Logger.getAppLogger().trace("GetJobs.getJobsByOwner()");
         ImperativeExpect.toBeDefinedAndNonBlank(owner, "owner");
-        return GetJobs.getJobsCommon(session, {owner});
+        return GetJobs.getJobsCommon(session, { owner });
     }
 
     /**
@@ -80,7 +80,7 @@ export class GetJobs {
         Logger.getAppLogger().trace("GetJobs.getJobsByOwnerAndPrefix()");
         ImperativeExpect.toBeDefinedAndNonBlank(owner, "owner");
         ImperativeExpect.toBeDefinedAndNonBlank(prefix, "prefix");
-        return GetJobs.getJobsCommon(session, {owner, prefix});
+        return GetJobs.getJobsCommon(session, { owner, prefix });
     }
 
     /**
@@ -95,7 +95,7 @@ export class GetJobs {
         Logger.getAppLogger().trace("GetJobs.getJob()");
         ImperativeExpect.toBeDefinedAndNonBlank(jobid, "jobid");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        const jobs = await GetJobs.getJobsCommon(session, {jobid, owner: "*"});
+        const jobs = await GetJobs.getJobsCommon(session, { jobid, owner: "*" });
 
         const errorMessagePrefix =
             "Obtaining job info for a single job id " + jobid + " on " + session.ISession.hostname + ":" + session.ISession.port + " failed: ";
@@ -134,9 +134,7 @@ export class GetJobs {
 
         if (parms) {
             if (parms.owner) {
-                if (parms.owner !== session.ISession.user) {
-                    query += (JobsConstants.QUERY_OWNER + parms.owner);
-                }
+                query += (JobsConstants.QUERY_OWNER + parms.owner);
             }
             if (parms.prefix) {
                 if (parms.prefix !== JobsConstants.DEFAULT_PREFIX) {
@@ -180,7 +178,7 @@ export class GetJobs {
      */
     public static async getStatus(session: AbstractSession, jobname: string, jobid: string) {
         Logger.getAppLogger().trace("GetJobs.getStatus()");
-        return GetJobs.getStatusCommon(session, {jobname, jobid});
+        return GetJobs.getStatusCommon(session, { jobname, jobid });
     }
 
     /**
@@ -197,7 +195,7 @@ export class GetJobs {
      */
     public static async getStatusForJob(session: AbstractSession, job: IJob) {
         Logger.getAppLogger().trace("GetJobs.getStatusForJob()");
-        return GetJobs.getStatusCommon(session, {jobname: job.jobname, jobid: job.jobid});
+        return GetJobs.getStatusCommon(session, { jobname: job.jobname, jobid: job.jobid });
     }
 
     /**
@@ -227,7 +225,7 @@ export class GetJobs {
      */
     public static getSpoolFiles(session: AbstractSession, jobname: string, jobid: string) {
         Logger.getAppLogger().trace("GetJobs.getSpoolFiles()");
-        return GetJobs.getSpoolFilesCommon(session, {jobname, jobid});
+        return GetJobs.getSpoolFilesCommon(session, { jobname, jobid });
     }
 
     /**
@@ -242,7 +240,7 @@ export class GetJobs {
      */
     public static getSpoolFilesForJob(session: AbstractSession, job: IJob) {
         Logger.getAppLogger().trace("GetJobs.getSpoolFilesForJob()");
-        return GetJobs.getSpoolFilesCommon(session, {jobname: job.jobname, jobid: job.jobid});
+        return GetJobs.getSpoolFilesCommon(session, { jobname: job.jobname, jobid: job.jobid });
     }
 
     /**
@@ -272,7 +270,7 @@ export class GetJobs {
      */
     public static async getJcl(session: AbstractSession, jobname: string, jobid: string) {
         Logger.getAppLogger().trace("GetJobs.getJcl()");
-        return GetJobs.getJclCommon(session, {jobname, jobid});
+        return GetJobs.getJclCommon(session, { jobname, jobid });
     }
 
     /**
@@ -287,7 +285,7 @@ export class GetJobs {
      */
     public static async getJclForJob(session: AbstractSession, job: IJob) {
         Logger.getAppLogger().trace("GetJobs.getJclForJob()");
-        return GetJobs.getJclCommon(session, {jobname: job.jobname, jobid: job.jobid});
+        return GetJobs.getJclCommon(session, { jobname: job.jobname, jobid: job.jobid });
     }
 
     /**
