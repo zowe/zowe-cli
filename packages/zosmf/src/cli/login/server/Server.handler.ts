@@ -66,7 +66,7 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
             // TODO(Kelosky): most ideally we'll get a 401 or some other HTTP error for invalid users; 
             // we need our systems configured properly for this.
             throw new ImperativeError({
-                msg: "You are a failure.",
+                msg: "Login failed.",
             });
         }
 
