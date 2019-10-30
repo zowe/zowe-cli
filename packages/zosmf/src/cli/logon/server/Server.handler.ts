@@ -30,15 +30,12 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
 
-        // TODO(Kelosky): default to LTPA and add option for jwt?
-        const TOKEN_TYPE = "LtpaToken2";
-
         // get existing session
         const sessionConfig = this.mSession.ISession;
 
         // make it a token connection
         sessionConfig.type = "token";
-        sessionConfig.tokenType = "LtpaToken2";
+        sessionConfig.tokenType = (params.arguments.jsonWebToken) ? "jwtToken" : "LtpaToken2";
         const session = new Session(sessionConfig);
 
         // obtain token
@@ -49,7 +46,7 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
             await Imperative.api.profileManager(`zosmf`).update({
                 name: this.mZosmfLoadedProfile.name,
                 args: {
-                    "token-type": TOKEN_TYPE,
+                    "token-type": sessionConfig.tokenType,
                     "token-value": tokenValue,
                 },
                 merge: true

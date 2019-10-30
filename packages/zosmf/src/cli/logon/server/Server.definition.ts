@@ -21,7 +21,14 @@ export const ServerDefinition: ICommandDefinition = {
     profile: {
         optional: ["zosmf"],
     },
-    options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+    options: [
+        ...ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+        {
+            name: "json-web-token", aliases: ["jwt"],
+            description: "Logon and obtain JWT token instead of default LTPA2.",
+            type: "boolean"
+        },
+    ],
     examples: [
         {
             description: "Logon to an instance of z/OSMF in order to obtain or update they " +
