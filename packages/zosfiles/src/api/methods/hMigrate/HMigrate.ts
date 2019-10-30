@@ -51,12 +51,13 @@ export class HMigrate {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const payload = { request: "hmigrate" };
+            const payload = { request: "hmigrate", wait:true };
 
             const headers: IHeaderContent[] = [
               Headers.APPLICATION_JSON,
+              { "Content-Length": JSON.stringify(payload).length.toString() },
             ];
-
+            
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {

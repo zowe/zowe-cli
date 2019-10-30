@@ -49,6 +49,7 @@ describe("hMigrate data set", () => {
 
             const expectedHeaders = [
                 { "Content-Type": "application/json"},
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
             ];
 
             const response = await HMigrate.dataSet(dummySession, dataSetName);
