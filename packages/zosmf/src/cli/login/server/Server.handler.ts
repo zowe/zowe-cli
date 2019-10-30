@@ -11,7 +11,7 @@
 
 import { IHandlerParameters, ProfilesConstants, Imperative, Session, ImperativeError } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
-import { Logon } from "../../../api/Logon";
+import { Login } from "../../../api/Login";
 
 /**
  * Handler to logon to z/OSMF
@@ -45,8 +45,8 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
         // establish a new session object
         const session = new Session(sessionConfig);
 
-        // logon to obtain a obtain token
-        const tokenValue = await Logon.logon(session);
+        // login to obtain a obtain token
+        const tokenValue = await Login.login(session);
 
         if (tokenValue) {
             // update the profile given
@@ -60,7 +60,7 @@ export default class LogonServerHandler extends ZosmfBaseHandler {
             });
 
             // TODO(Kelosky): build other response stuff and do NOT print token
-            this.console.log(`Logon complete!`);
+            this.console.log(`Login complete!`);
 
         } else {
             // TODO(Kelosky): most ideally we'll get a 401 or some other HTTP error for invalid users; 

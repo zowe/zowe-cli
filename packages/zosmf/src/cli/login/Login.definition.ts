@@ -12,10 +12,10 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { ServerDefinition } from "./server/Server.definition";
 
-export const LogonCommand: ICommandDefinition = {
-    name: "logon",
+export const LoginCommand: ICommandDefinition = {
+    name: "login",
     type: "group",
-    description: "Logon to a z/OSMF instance.",
+    description: "Login to a z/OSMF instance.",
     children: [
         ServerDefinition
     ]

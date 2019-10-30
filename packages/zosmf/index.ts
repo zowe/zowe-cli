@@ -11,6 +11,8 @@
 
 export * from "./src/api/ZosmfSession";
 
+export * from "./src/api/Login";
+export * from "./src/api/LoginConstants";
 export * from "./src/api/CheckStatus";
 export * from "./src/api/ListDefinedSystems";
 export * from "./src/api/doc/IZosmfInfoResponse";

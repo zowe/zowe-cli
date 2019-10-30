@@ -11,26 +11,26 @@
 */
 import { AbstractSession, ImperativeExpect, Logger, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { LogonConstants } from "./LogonConstants";
+import { LoginConstants } from "./LoginConstants";
 
 /**
  * Class to handle logging onto z/OSMF.
  * @export
- * @class Logon
+ * @class Login
  */
-export class Logon {
+export class Login {
 
     /**
-     * Perform z/OSMF logon to obtain LTPA2 or other token types.
+     * Perform z/OSMF login to obtain LTPA2 or other token types.
      * @static
      * @param {AbstractSession} session
      * @returns
-     * @memberof Logon
+     * @memberof Login
      */
-    public static async logon(session: AbstractSession) {
-        Logger.getAppLogger().trace("Logon.logon()");
+    public static async login(session: AbstractSession) {
+        Logger.getAppLogger().trace("Login.login()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        await ZosmfRestClient.getExpectJSON<any>(session, LogonConstants.RESOURCE); // TODO(Kelosky): eventually a real auth endpoint
+        await ZosmfRestClient.getExpectJSON<any>(session, LoginConstants.RESOURCE); // TODO(Kelosky): eventually a real auth endpoint
         return session.ISession.tokenValue;
     }
 

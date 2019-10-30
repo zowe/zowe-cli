@@ -11,18 +11,18 @@
 
 
 /**
- * Class for various logon constants.
+ * Class for various login constants.
  * @export
- * @class LogonConstants
+ * @class LoginConstants
  */
-export class LogonConstants {
+export class LoginConstants {
 
 
     /**
      * URI base jobs API
      * @static
      * @type {string}
-     * @memberof LogonConstants
+     * @memberof LoginConstants
      */
     public static readonly RESOURCE: string = "/zosmf/info";
 

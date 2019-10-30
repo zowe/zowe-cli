@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { CheckCommand } from "./check/Check.definition";
 import { ListCommand } from "./list/List.definition";
-import { LogonCommand } from "./logon/Logon.definition";
+import { LoginCommand } from "./login/Login.definition";
 
 const definition: ICommandDefinition = {
     name: "zosmf",
@@ -22,7 +22,7 @@ const definition: ICommandDefinition = {
     children: [
         CheckCommand,
         ListCommand,
-        LogonCommand,
+        LoginCommand,
     ]
 };
 
