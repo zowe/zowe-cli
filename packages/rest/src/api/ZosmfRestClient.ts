@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeError, Logger, RestClient, TextUtils } from "@zowe/imperative";
+import { IImperativeError, Logger, RestClient, TextUtils, RestConstants } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
@@ -54,6 +54,7 @@ export class ZosmfRestClient extends RestClient {
      */
     protected processError(original: IImperativeError): IImperativeError {
         original.msg = "z/OSMF REST API Error:\n" + original.msg;
+
         let details = original.causeErrors;
         try {
             const json = JSON.parse(details);
@@ -73,6 +74,29 @@ export class ZosmfRestClient extends RestClient {
             this.log.debug("Encountered an error trying to parse causeErrors as JSON  - causeErrors is likely not JSON format");
         }
         original.msg += "\n" + details; // add the data string which is the original error
+
+        if (this.response && this.response.statusCode === RestConstants.HTTP_STATUS_401) {
+            original.msg = "This operation requires authentication.\n\n" + original.msg +
+                "\nHost:      " + this.session.ISession.hostname +
+                "\nPort:      " + this.session.ISession.port +
+                "\nBase Path: " + this.session.ISession.basePath +
+                "\nResource:  " + this.mResource +
+                "\nRequest:   " + this.mRequest +
+                "\nHeaders:   " + JSON.stringify(this.mReqHeaders) +
+                "\nPayload:   " + this.mRequest +
+                "\n"
+                ;
+
+            if (this.session.ISession.type === "basic") {
+                original.additionalDetails = "Username or password are not valid or expired.\n\n" +
+                    "For CLI usage, see `zowe profiles update zosmf --help`";
+            }
+            if (this.session.ISession.type === "token") {
+                original.additionalDetails = "Token is not valid or expired.\n\n" +
+                    "For CLI usage, see `zowe zosmf server login --help`";
+            }
+        }
+
         return original;
     }
 }
