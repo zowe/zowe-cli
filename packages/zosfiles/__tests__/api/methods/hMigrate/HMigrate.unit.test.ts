@@ -14,6 +14,7 @@ import { posix } from "path";
 import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
+import { IMigrateOptions } from "../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
 import { Invoke } from "../../../../src/api/methods/invoke";
 
 describe("hMigrate data set", () => {
@@ -45,10 +46,10 @@ describe("hMigrate data set", () => {
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
                 dataSetName,
-                );
+            );
 
             const expectedHeaders = [
-                { "Content-Type": "application/json"},
+                { "Content-Type": "application/json" },
                 { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
             ];
 
@@ -67,6 +68,36 @@ describe("hMigrate data set", () => {
                 expectedPayload,
             );
         });
+        it("should send a request with wait = true", async () => {
+            const options: IMigrateOptions = { wait: true };
+
+            const expectedPayload = {
+                request: "hmigrate",
+                wait: true,
+            };
+            const expectedEndpoint = posix.join(
+                ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                dataSetName
+            );
+            const expectedHeaders = [
+                { "Content-Type": "application/json" },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+            ];
+
+            const response = await HMigrate.dataSet(dummySession, dataSetName, options);
+
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
+            });
+            expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(putExpectStringSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                expectedEndpoint,
+                expectedHeaders,
+                expectedPayload
+            );
+        });
     });
 });
-

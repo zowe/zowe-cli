@@ -17,7 +17,8 @@ import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { Invoke } from "../invoke";
+import { IMigrateOptions } from "./doc/IMigrateOptions";
+import { isNullOrUndefined } from "util";
 
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
@@ -40,7 +41,7 @@ export class HMigrate {
      */
     public static async dataSet(session: AbstractSession,
                                 dataSetName: string,
-                                ): Promise<IZosFilesResponse> {
+                                options: Partial<IMigrateOptions> = {}): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -51,7 +52,11 @@ export class HMigrate {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const payload = { request: "hmigrate", wait:true };
+            const payload = { request: "hmigrate" } as any;
+
+            if(!isNullOrUndefined(options.wait)) {
+                payload.wait = options.wait;
+            }
 
             const headers: IHeaderContent[] = [
               Headers.APPLICATION_JSON,
