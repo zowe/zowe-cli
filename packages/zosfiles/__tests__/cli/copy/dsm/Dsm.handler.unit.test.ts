@@ -197,7 +197,7 @@ describe("DsmHandler", () => {
                     enqueue: "SHRW",
                 }
             };
-            const expectedOptions: ICopyDatasetOptions = { enq: enqueue.SHRW };
+            const expectedOptions = { enq: "SHRW" };
 
             const response = await handler.processWithSession(commandParameters, dummySession as any);
 

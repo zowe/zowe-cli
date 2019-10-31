@@ -13,7 +13,7 @@
  * Enumerated type that describes the different kinds of data sets that can be created
  */
 export const enum enqueue {
-    SHR = "SHR",
-    SHRW = "SHRW",
-    EXCLU = "EXCLU",
+    SHR,
+    SHRW,
+    EXCLU,
 }
