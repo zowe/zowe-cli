@@ -57,7 +57,7 @@ export class HMigrate {
               Headers.APPLICATION_JSON,
               { "Content-Length": JSON.stringify(payload).length.toString() },
             ];
-            
+
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
