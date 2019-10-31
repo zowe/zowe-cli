@@ -99,5 +99,14 @@ describe("Copy Dataset", () => {
                 expect(response.stdout.toString()).toContain("Data set copied successfully.");
             });
         });
+        describe("Failure scenarios", () => {
+            it("copy with invalid enqueue type", async () => {
+                const response = runCliScript(copyScriptWithEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "ABC"]);
+                expect(response.stderr.toString()).toContain("Invalid value specified for option");
+                expect(response.stderr.toString()).toMatchSnapshot();
+                expect(response.status).toBe(1);
+                expect(response.stdout.toString()).toMatchSnapshot();
+            });
+        });
     });
 });

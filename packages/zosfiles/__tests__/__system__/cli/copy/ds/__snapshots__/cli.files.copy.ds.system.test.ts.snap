@@ -1,5 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Copy Dataset Sequential Failure scenarios copy with invalid enqueue type 1`] = `
+"
+Syntax Error:
+Invalid value specified for option:
+--enqueue (--enq)
+
+You specified:
+ABC
+
+The value must match one of the following regular expressions:
+[ 'EXCLU', 'SHR' ].
+
+Example:
+
+ - Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to:
+
+      $ zowe zos-files copy data-set \\"ibmuser.cntl\\" -f
+
+Use \\"zowe zos-files copy data-set --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`Copy Dataset Sequential Failure scenarios copy with invalid enqueue type 2`] = `
+"================Z/OS FILES COPY DATA SET===============
+"
+`;
+
 exports[`Copy Dataset Sequential Success scenarios copy 1`] = `
 "================Z/OS FILES COPY DATA SET===============
 Data set copied successfully.
