@@ -15,7 +15,6 @@ import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
 import { IMigrateOptions } from "../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
-import { Invoke } from "../../../../src/api/methods/invoke";
 
 describe("hMigrate data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

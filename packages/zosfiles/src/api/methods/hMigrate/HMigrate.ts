@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, IHeaderContent, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, IHeaderContent, Headers } from "@zowe/imperative";
 
 import { posix } from "path";
 
@@ -19,8 +19,6 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IMigrateOptions } from "./doc/IMigrateOptions";
 import { isNullOrUndefined } from "util";
-
-import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to recall files through the
@@ -42,12 +40,10 @@ export class HMigrate {
     public static async dataSet(session: AbstractSession,
                                 dataSetName: string,
                                 options: Partial<IMigrateOptions> = {}): Promise<IZosFilesResponse> {
-        // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            // Format the endpoint to send the request to
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
