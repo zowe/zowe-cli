@@ -48,27 +48,18 @@ export default class LoginHandler extends ZosmfBaseHandler {
         // login to obtain a obtain token
         const tokenValue = await Login.login(session);
 
-        if (tokenValue) {
-            // update the profile given
-            await Imperative.api.profileManager(`zosmf`).update({
-                name: this.mZosmfLoadedProfile.name,
-                args: {
-                    "token-type": sessionConfig.tokenType,
-                    "token-value": tokenValue,
-                },
-                merge: true
-            });
+        // update the profile given
+        await Imperative.api.profileManager(`zosmf`).update({
+            name: this.mZosmfLoadedProfile.name,
+            args: {
+                "token-type": sessionConfig.tokenType,
+                "token-value": tokenValue,
+            },
+            merge: true
+        });
 
-            // TODO(Kelosky): build other response stuff and do NOT print token
-            this.console.log(`Login complete!`);
-
-        } else {
-            // TODO(Kelosky): most ideally we'll get a 401 or some other HTTP error for invalid users; 
-            // we need our systems configured properly for this.
-            throw new ImperativeError({
-                msg: "Login failed.",
-            });
-        }
-
+        // TODO(Kelosky): build other response stuff and do NOT print token
+        this.console.log(`Login complete!`);
+        console.log(tokenValue)
     }
 }

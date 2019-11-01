@@ -89,7 +89,7 @@ export class ZosmfRestClient extends RestClient {
 
             if (this.session.ISession.type === "basic") {
                 original.additionalDetails = "Username or password are not valid or expired.\n\n" +
-                    "For CLI usage, see `zowe profiles update zosmf --help`";
+                    "For CLI usage, see `zowe zosmf login --help`";
             }
             if (this.session.ISession.type === "token") {
                 original.additionalDetails = "Token is not valid or expired.\n\n" +
