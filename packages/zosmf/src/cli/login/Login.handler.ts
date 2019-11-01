@@ -60,6 +60,5 @@ export default class LoginHandler extends ZosmfBaseHandler {
 
         // TODO(Kelosky): build other response stuff and do NOT print token
         this.console.log(`Login complete!`);
-        console.log(tokenValue)
     }
 }
