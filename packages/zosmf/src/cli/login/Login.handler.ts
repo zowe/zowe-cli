@@ -10,19 +10,19 @@
 */
 
 import { IHandlerParameters, ProfilesConstants, Imperative, Session, ImperativeError } from "@zowe/imperative";
-import { ZosmfBaseHandler } from "../../../ZosmfBaseHandler";
-import { Login } from "../../../api/Login";
+import { ZosmfBaseHandler } from "../../ZosmfBaseHandler";
+import { Login } from "../../api/Login";
 
 /**
- * Handler to logon to z/OSMF
+ * Handler to login to z/OSMF
  * @export
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class LogonServerHandler extends ZosmfBaseHandler {
+export default class LoginHandler extends ZosmfBaseHandler {
 
     /**
-     * Handler for the "zos-jobs list jobs" command. Produces a tabular list of jobs on spool based on
+     * Handler for the "zosmf login" command. Produces a tabular list of jobs on spool based on
      * the input parameters.
      * @param {IHandlerParameters} params - see interface for details
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete

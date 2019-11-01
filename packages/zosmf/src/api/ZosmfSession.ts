@@ -108,7 +108,7 @@ export class ZosmfSession {
     public static ZOSMF_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
         name: "token-value",
         aliases: ["tv"],
-        description: "the token value associated with the token type.",
+        description: "The token value associated with the token type.",
         type: "string",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
@@ -176,16 +176,7 @@ export class ZosmfSession {
             sessionConfig.tokenValue = args.tokenValue;
         }
 
-        let session: Session;
-        try {
-            session = new Session(sessionConfig);
-        } catch (err) {
-            throw new ImperativeError({
-                msg: "Session could not be established.  Must have user & password OR tokenType & tokenValue",
-            });
-        }
-
-        return session;
+        return new Session(sessionConfig);
     }
 
 
