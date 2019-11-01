@@ -9,13 +9,14 @@
 *
 */
 
-import { Create, Delete, CreateDataSetTypeEnum, HMigrate, ZosFilesMessages, Get } from "../../../../..";
+import { Create, Delete, CreateDataSetTypeEnum, HMigrate, ZosFilesMessages } from "../../../../..";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List, IZosFilesResponse, IListOptions } from "../../../../../src/api";
+import { List, IListOptions } from "../../../../../src/api";
+import { IMigrateOptions } from "../../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -23,7 +24,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dataSet1: string;
 let dataSet2: string;
 
-const options: IListOptions = { attributes: true };
+const listOptions: IListOptions = { attributes: true };
 
 describe("Migrate Dataset", () => {
     beforeAll(async () => {
@@ -57,13 +58,14 @@ describe("Migrate Dataset", () => {
     });
     describe("Success Scenarios", () => {
         it("Migrate sequential", async () => {
+            const migrateOptions: IMigrateOptions = { wait: true };
             let error;
             let migrateResponse;
             let listResponse;
 
             try {
-                migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1);
-                listResponse = await List.dataSet(REAL_SESSION, dataSet1, options);
+                migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, migrateOptions);
+                listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
                 Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
             } catch (err) {
                 error = err;
@@ -78,13 +80,14 @@ describe("Migrate Dataset", () => {
             expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
         });
         it("Migrate partitioned", async () => {
+            const migrateOptions: IMigrateOptions = { wait: true };
             let error;
             let migrateResponse;
             let listResponse;
 
             try {
-                migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2);
-                listResponse = await List.dataSet(REAL_SESSION, dataSet2, options);
+                migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, migrateOptions);
+                listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
                 Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
             } catch (err) {
                 error = err;
