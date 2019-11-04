@@ -153,7 +153,7 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: ICopyDatasetOptions = { enq: enqueue.SHR };
+        const expectedOptions = { enq: "SHR" };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
