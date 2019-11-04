@@ -12,32 +12,20 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Copy, IZosFilesResponse, ICopyDatasetOptions } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { generateZosmfOptions } from "../Copy.utils";
 
 /**
  * Handler to copy a data set.
  */
 export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const options: ICopyDatasetOptions = {};
-
-        if (commandParameters.arguments["from-volume"]) {
-            options.fromVolume = commandParameters.arguments["from-volume"];
-        }
-        if (commandParameters.arguments["to-volume"]) {
-            options.toVolume = commandParameters.arguments["to-volume"];
-        }
-        if (commandParameters.arguments.alias) {
-            options.alias = commandParameters.arguments.alias;
-        }
-        if (commandParameters.arguments.enqueue) {
-            options.enq = commandParameters.arguments.enqueue;
-        }
+        const options: ICopyDatasetOptions = generateZosmfOptions(commandParameters.arguments);
 
         return Copy.dataSet(
             session,
             commandParameters.arguments.fromDataSetName,
             commandParameters.arguments.toDataSetName,
-            options
+            options,
         );
     }
 }

@@ -28,14 +28,8 @@ export default {
                     FROMDSNAME: "The name of the data set that you want to copy from",
                     TODSNAME: "The name of the data set that you want to copy to",
                 },
-                OPTIONS: {
-                    FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
-                    TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
-                    ALIAS: "Specify this option to choose if aliases are copied along with main member",
-                    ENQUEUE: "Specify this option to choose the enqueue type for the `to` data set",
-                },
                 EXAMPLES: {
-                    EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
+                    EX1: "Copy the contents of a data set named 'user.from.set' to 'user.to.set"
                 }
             },
             DATA_SET_MEMBER: {
@@ -46,18 +40,20 @@ export default {
                     TODSNAME: "The name of the data set that you want to copy to",
                     TODSMEMBERNAME: "The name of the data set member that you want to copy to",
                 },
-                OPTIONS: {
-                    REPLACE: "Specify this option to confirm that you want to replace the data set member if it exists.",
-                    FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
-                    TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
-                    ALIAS: "Specify this option to choose if aliases are copied along with main member",
-                    ENQUEUE: "Specify this option to choose the enqueue type for the `to` data set",
-                },
                 EXAMPLES: {
-                    EX1: "Copy the data set named 'ibmuser.data.from' to 'ibmuser.data.to"
+                    EX1: "Copy the data set member in data set 'user.from.set' with name 'member.name' to data set" +
+                        " 'user.to.set' with member name 'member.name'",
+                    EX2: "Copy all members from data set 'user.from.set' to data set 'user.to.set'",
                 }
             },
-        }
+        },
+        OPTIONS: {
+            ENQUEUE: "Specify this option to choose the enqueue type for the `to` data set",
+            REPLACE: "Specify this option to confirm that you want to replace the data set member if it exists.",
+            FROMVOLUME: "Specify this option to choose the volser of the dataset you are copying from",
+            TOVOLUME: "Specify this option to choose the volser of the dataset you are copying to",
+            ALIAS: "Specify this option to choose if aliases are copied along with main member",
+        },
     },
     CREATE: {
         DESCRIPTION: "Create data sets",

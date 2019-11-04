@@ -182,7 +182,7 @@ describe("Copy Dataset", () => {
 
                 it("should fail if the zOSMF REST client fails", async () => {
                     copyExpectStringSpy.mockImplementation(() => {
-                        throw new ImperativeError({msg: errorMessage});
+                        throw new ImperativeError({ msg: errorMessage });
                     });
                     const expectedPayload = {
                         "request": "copy",

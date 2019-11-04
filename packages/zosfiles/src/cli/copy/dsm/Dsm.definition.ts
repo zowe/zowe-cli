@@ -11,12 +11,13 @@
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { join } from "path";
+import { CopyOptions } from "../Copy.options";
 
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).COPY.ACTIONS.DATA_SET_MEMBER;
-
+const stringsCopy = (require("../../-strings-/en").default as typeof i18nTypings).COPY;
+const { DESCRIPTION, POSITIONALS, EXAMPLES } = stringsCopy.ACTIONS.DATA_SET_MEMBER;
 /**
  * This object defines the command for copy data set within zosfiles. This is not
  * something that is intended to be used outside of the zosfiles package.
@@ -26,7 +27,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
 export const DsmDefinition: ICommandDefinition = {
     name: "data-set-member",
     aliases: ["dsm"],
-    description: strings.DESCRIPTION,
+    description: DESCRIPTION,
     type: "command",
     handler: join(__dirname, "Dsm.handler"),
     profile: {
@@ -36,61 +37,37 @@ export const DsmDefinition: ICommandDefinition = {
         {
             name: "fromDataSetName",
             type: "string",
-            description: strings.POSITIONALS.FROMDSNAME,
+            description: POSITIONALS.FROMDSNAME,
             required: true,
         },
         {
             name: "fromDataSetMemberName",
             type: "string",
-            description: strings.POSITIONALS.FROMDSMEMBERNAME,
+            description: POSITIONALS.FROMDSMEMBERNAME,
             required: true,
         },
         {
             name: "toDataSetName",
             type: "string",
-            description: strings.POSITIONALS.TODSNAME,
+            description: POSITIONALS.TODSNAME,
             required: true,
         },
         {
             name: "toDataSetMemberName",
             type: "string",
-            description: strings.POSITIONALS.TODSMEMBERNAME,
+            description: POSITIONALS.TODSMEMBERNAME,
             required: false,
         },
     ],
     options: ([
-        {
-            name: "replace",
-            aliases: ["r"],
-            description: strings.OPTIONS.REPLACE,
-            type: "boolean",
-            required: false
-        },
-        {
-            name: "from-volume",
-            aliases: ["fvol"],
-            description: strings.OPTIONS.FROMVOLUME,
-            type: "string",
-            required: false
-        },
-        {
-            name: "to-volume",
-            aliases: ["tvol"],
-            description: strings.OPTIONS.TOVOLUME,
-            type: "string",
-            required: false
-        },
-        {
-            name: "alias",
-            aliases: ["al"],
-            description: strings.OPTIONS.ALIAS,
-            type: "boolean",
-            required: false
-        },
+        CopyOptions.fromVolume,
+        CopyOptions.toVolume,
+        CopyOptions.alias,
+        CopyOptions.replace,
         {
             name: "enqueue",
             aliases: ["enq"],
-            description: strings.OPTIONS.ENQUEUE,
+            description: stringsCopy.OPTIONS.ENQUEUE,
             type: "string",
             required: false,
             allowableValues: {
@@ -100,8 +77,12 @@ export const DsmDefinition: ICommandDefinition = {
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
-            description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.cntl" -f`
-        }
+            description: EXAMPLES.EX1,
+            options: `"user.from.set" "member.name" "user.to.set" "member.name"`
+        },
+        {
+            description: EXAMPLES.EX2,
+            options: `"user.from.set" "*" "user.to.set"`
+        },
     ],
 };

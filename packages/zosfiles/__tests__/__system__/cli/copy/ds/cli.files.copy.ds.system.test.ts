@@ -27,9 +27,9 @@ const createSequentialScript = join(scriptsLocation, "command_create_data_set_se
 const uploadScript = join(scriptsLocation, "command_upload_stds_fully_qualified.sh");
 const deleteScript = join(scriptsLocation, "command_delete_data_set.sh");
 const copyScript = join(scriptsLocation, "command_copy_data_set.sh");
-const copyScriptWithVolumes = join(scriptsLocation, "command_copy_data_set_volumes.sh");
-const copyScriptWithAlias = join(scriptsLocation, "command_copy_data_set_alias.sh");
-const copyScriptWithEnqueue = join(scriptsLocation, "command_copy_data_set_enqueue.sh");
+const copyScriptVolumes = join(scriptsLocation, "command_copy_data_set_volumes.sh");
+const copyScriptAlias = join(scriptsLocation, "command_copy_data_set_alias.sh");
+const copyScriptEnqueue = join(scriptsLocation, "command_copy_data_set_enqueue.sh");
 
 describe("Copy Dataset", () => {
     beforeAll(async () => {
@@ -71,7 +71,7 @@ describe("Copy Dataset", () => {
             });
 
             it("copy with from and to volume specified", async () => {
-                const response = runCliScript(copyScriptWithVolumes, TEST_ENVIRONMENT, [
+                const response = runCliScript(copyScriptVolumes, TEST_ENVIRONMENT, [
                     fromDSName,
                     toDSName,
                     volume,
@@ -84,7 +84,7 @@ describe("Copy Dataset", () => {
             });
 
             it("copy with alias = true", async () => {
-                const response = runCliScript(copyScriptWithAlias, TEST_ENVIRONMENT, [fromDSName, toDSName]);
+                const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [fromDSName, toDSName]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();
@@ -92,11 +92,20 @@ describe("Copy Dataset", () => {
             });
 
             it("copy with enqueue = SHR", async () => {
-                const response = runCliScript(copyScriptWithEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "SHR"]);
+                const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "SHR"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            });
+        });
+        describe("Failure scenarios", () => {
+            it("copy with invalid enqueue type", async () => {
+                const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "ABC"]);
+                expect(response.stderr.toString()).toContain("Invalid value specified for option");
+                expect(response.stderr.toString()).toMatchSnapshot();
+                expect(response.status).toBe(1);
+                expect(response.stdout.toString()).toMatchSnapshot();
             });
         });
     });
