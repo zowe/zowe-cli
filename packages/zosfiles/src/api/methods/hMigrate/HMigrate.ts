@@ -50,7 +50,7 @@ export class HMigrate {
 
             const payload = { request: "hmigrate" } as any;
 
-            if(!isNullOrUndefined(options.wait)) {
+            if(!options.wait != null) {
                 payload.wait = options.wait;
             }
 
@@ -63,7 +63,7 @@ export class HMigrate {
 
             return {
                 success        : true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message,
             };
         } catch (error) {
             Logger.getAppLogger().error(error);

@@ -57,7 +57,7 @@ describe("Migrate Dataset", () => {
         }
     });
     describe("Success Scenarios", () => {
-        it("Migrate sequential", async () => {
+        it("should migrate a sequential data set", async () => {
             const migrateOptions: IMigrateOptions = { wait: true };
             let error;
             let migrateResponse;
@@ -79,7 +79,7 @@ describe("Migrate Dataset", () => {
             expect(listResponse.apiResponse.items[0].migr).toBe("YES");
             expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
         });
-        it("Migrate partitioned", async () => {
+        it("should migrate a partioned dataset", async () => {
             const migrateOptions: IMigrateOptions = { wait: true };
             let error;
             let migrateResponse;
@@ -103,7 +103,7 @@ describe("Migrate Dataset", () => {
         });
     });
     describe("Failure Scenarios", () => {
-        it("Undefined data set name", async () => {
+        it("should throw an error if data set name is undefined", async () => {
             let error;
             let migrateResponse;
 
@@ -120,7 +120,7 @@ describe("Migrate Dataset", () => {
 
             expect(migrateResponse).toBeFalsy();
         });
-        it("Missing data set name", async () => {
+        it("should throw an error if data set name is missing", async () => {
             let error;
             let migrateResponse;
 
