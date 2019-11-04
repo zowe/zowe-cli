@@ -16,6 +16,11 @@ describe("DsDefinition", () => {
     it("should use the correct object for strings", () => {
         const strings = i18nEnglish.COPY.ACTIONS.DATA_SET;
 
+        expect(DsDefinition).toBeDefined();
+        expect(DsDefinition.children).toBeUndefined();
+        expect(DsDefinition.profile.optional).toEqual(["zosmf"]);
+        expect(DsDefinition.options).toMatchSnapshot();
+        expect(DsDefinition.examples).toMatchSnapshot();
         expect(DsDefinition.description).toBe(strings.DESCRIPTION);
     });
 });

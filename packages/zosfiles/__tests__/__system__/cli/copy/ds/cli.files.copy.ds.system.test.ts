@@ -49,64 +49,62 @@ describe("Copy Dataset", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    describe("Sequential", () => {
-        describe("Success scenarios", () => {
-            beforeEach(async () => {
-                runCliScript(createSequentialScript, TEST_ENVIRONMENT, [fromDSName, volume]);
-                runCliScript(createSequentialScript, TEST_ENVIRONMENT, [toDSName, volume]);
-                runCliScript(uploadScript, TEST_ENVIRONMENT, [fromDSName]);
-            });
-
-            afterEach(async () => {
-                runCliScript(deleteScript, TEST_ENVIRONMENT, [fromDSName]);
-                runCliScript(deleteScript, TEST_ENVIRONMENT, [toDSName]);
-            });
-
-            it("copy", async () => {
-                const response = runCliScript(copyScript, TEST_ENVIRONMENT, [fromDSName, toDSName]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-                expect(response.stdout.toString()).toContain("Data set copied successfully.");
-            });
-
-            it("copy with from and to volume specified", async () => {
-                const response = runCliScript(copyScriptVolumes, TEST_ENVIRONMENT, [
-                    fromDSName,
-                    toDSName,
-                    volume,
-                    volume,
-                ]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-                expect(response.stdout.toString()).toContain("Data set copied successfully.");
-            });
-
-            it("copy with alias = true", async () => {
-                const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [fromDSName, toDSName]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-                expect(response.stdout.toString()).toContain("Data set copied successfully.");
-            });
-
-            it("copy with enqueue = SHR", async () => {
-                const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "SHR"]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toMatchSnapshot();
-                expect(response.stdout.toString()).toContain("Data set copied successfully.");
-            });
+    describe("Success scenarios", () => {
+        beforeEach(async () => {
+            runCliScript(createSequentialScript, TEST_ENVIRONMENT, [fromDSName, volume]);
+            runCliScript(createSequentialScript, TEST_ENVIRONMENT, [toDSName, volume]);
+            runCliScript(uploadScript, TEST_ENVIRONMENT, [fromDSName]);
         });
-        describe("Failure scenarios", () => {
-            it("copy with invalid enqueue type", async () => {
-                const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "ABC"]);
-                expect(response.stderr.toString()).toContain("Invalid value specified for option");
-                expect(response.stderr.toString()).toMatchSnapshot();
-                expect(response.status).toBe(1);
-                expect(response.stdout.toString()).toMatchSnapshot();
-            });
+
+        afterEach(async () => {
+            runCliScript(deleteScript, TEST_ENVIRONMENT, [fromDSName]);
+            runCliScript(deleteScript, TEST_ENVIRONMENT, [toDSName]);
+        });
+
+        it("Should copy a data set", async () => {
+            const response = runCliScript(copyScript, TEST_ENVIRONMENT, [fromDSName, toDSName]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(response.stdout.toString()).toContain("Data set copied successfully.");
+        });
+
+        it("Should copy a data set with from and to volume specified", async () => {
+            const response = runCliScript(copyScriptVolumes, TEST_ENVIRONMENT, [
+                fromDSName,
+                toDSName,
+                volume,
+                volume,
+            ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(response.stdout.toString()).toContain("Data set copied successfully.");
+        });
+
+        it("Should copy a data set with alias = true", async () => {
+            const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [fromDSName, toDSName]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(response.stdout.toString()).toContain("Data set copied successfully.");
+        });
+
+        it("Should copy a data set with enqueue = SHR", async () => {
+            const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "SHR"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(response.stdout.toString()).toContain("Data set copied successfully.");
+        });
+    });
+    describe("Failure scenarios", () => {
+        it("Shouldn't be able to copy a data set with invalid enqueue type", async () => {
+            const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "ABC"]);
+            expect(response.stderr.toString()).toContain("Invalid value specified for option");
+            expect(response.stderr.toString()).toMatchSnapshot();
+            expect(response.status).toBe(1);
+            expect(response.stdout.toString()).toMatchSnapshot();
         });
     });
 });

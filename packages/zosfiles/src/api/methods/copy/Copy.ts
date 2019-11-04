@@ -55,7 +55,7 @@ export class Copy {
                 ZosFilesConstants.RES_DS_FILES,
             );
 
-            if (!isNullOrUndefined(options.toVolume)) {
+            if (options.toVolume != null) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
 
@@ -70,15 +70,15 @@ export class Copy {
                 }
             } as any;
 
-            if(!isNullOrUndefined(options.fromVolume)) {
+            if(options.fromVolume != null) {
                 payload["from-dataset"].volser = options.fromVolume;
             }
 
-            if (!isNullOrUndefined(options.enq)) {
+            if (options.enq != null) {
                 payload.enq = options.enq;
             }
 
-            if (!isNullOrUndefined(options.alias)) {
+            if (options.alias != null) {
                 payload.alias = options.alias;
             }
 
@@ -137,7 +137,7 @@ export class Copy {
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
             );
-            if (!isNullOrUndefined(options.toVolume)) {
+            if (options.toVolume != null) {
                 endpoint = posix.join(endpoint, `-(${options.toVolume})`);
             }
 
@@ -157,15 +157,15 @@ export class Copy {
                 }
             } as any;
 
-            if(!isNullOrUndefined(options.fromVolume)) {
+            if(options.fromVolume != null) {
                 payload["from-dataset"].volser = options.fromVolume;
             }
 
-            if (!isNullOrUndefined(options.replace)) {
+            if (options.replace != null) {
                 payload.replace = options.replace;
             }
 
-            if (!isNullOrUndefined(options.enq)) {
+            if (options.enq != null) {
                 payload.enq = options.enq;
             }
 
