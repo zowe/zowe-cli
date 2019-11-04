@@ -235,6 +235,23 @@ describe("Copy", () => {
 
                 expect(response).toBeFalsy();
             });
+            it("Shouldn't be able to copy a data set to an non-existing data set", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await Copy.dataSet(REAL_SESSION, fromDsName, "I.DONT.EXIST");
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeTruthy();
+                expect(error.message).toContain("data set not found");
+
+                expect(response).toBeFalsy();
+            });
             it("Shouldn't be able to copy a data set with an empty data set name", async () => {
                 let error;
                 let response;
@@ -340,7 +357,6 @@ describe("Copy", () => {
 
                 expect(response).toBeFalsy();
             });
-
         });
     });
 
