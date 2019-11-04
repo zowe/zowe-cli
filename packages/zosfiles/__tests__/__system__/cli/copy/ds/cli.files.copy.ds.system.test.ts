@@ -23,7 +23,6 @@ let defaultSystem: ITestPropertiesSchema;
 let fromDSName: string;
 let toDSName: string;
 let user: string;
-let volume: string;
 let REAL_SESSION: Session;
 
 const scriptsLocation = join(__dirname, "__scripts__", "command");
@@ -45,7 +44,6 @@ describe("Copy Dataset", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        volume = defaultSystem.datasets.vol;
         fromDSName = `${user}.FROM.DS`;
         toDSName = `${user}.TO.DS`;
     });
@@ -56,8 +54,8 @@ describe("Copy Dataset", () => {
 
     describe("Success scenarios", () => {
         beforeEach(async () => {
-            runCliScript(createSequentialScript, TEST_ENVIRONMENT, [fromDSName, volume]);
-            runCliScript(createSequentialScript, TEST_ENVIRONMENT, [toDSName, volume]);
+            runCliScript(createSequentialScript, TEST_ENVIRONMENT, [fromDSName]);
+            runCliScript(createSequentialScript, TEST_ENVIRONMENT, [toDSName]);
             runCliScript(uploadScript, TEST_ENVIRONMENT, [fromDSName]);
         });
 
