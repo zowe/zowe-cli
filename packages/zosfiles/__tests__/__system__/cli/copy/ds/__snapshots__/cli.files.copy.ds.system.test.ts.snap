@@ -1,32 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Copy Dataset Failure scenarios Shouldn't be able to copy a data set member with invalid enqueue type 1`] = `
-"
-Syntax Error:
-Invalid value specified for option:
---enqueue (--enq)
-
-You specified:
-ABC
-
-The value must match one of the following regular expressions:
-[ 'EXCLU', 'SHR' ].
-
-Example:
-
- - Copy the contents of a data set named 'user.from.set' to 'user.to.set:
-
-      $ zowe zos-files copy data-set \\"user.from.set\\" \\"user.to.set\\"
-
-Use \\"zowe zos-files copy data-set --help\\" to view command description, usage, and options.
-"
-`;
-
-exports[`Copy Dataset Failure scenarios Shouldn't be able to copy a data set member with invalid enqueue type 2`] = `
-"================Z/OS FILES COPY DATA SET===============
-"
-`;
-
 exports[`Copy Dataset Failure scenarios Shouldn't be able to copy a data set with invalid enqueue type 1`] = `
 "
 Syntax Error:
@@ -54,76 +27,7 @@ exports[`Copy Dataset Failure scenarios Shouldn't be able to copy a data set wit
 "
 `;
 
-exports[`Copy Dataset Sequential Failure scenarios copy with invalid enqueue type 1`] = `
-"
-Syntax Error:
-Invalid value specified for option:
---enqueue (--enq)
-
-You specified:
-ABC
-
-The value must match one of the following regular expressions:
-[ 'EXCLU', 'SHR' ].
-
-Example:
-
- - Copy the contents of a data set named 'user.from.set' to 'user.to.set:
-
-      $ zowe zos-files copy data-set \\"user.from.set\\" \\"user.to.set\\"
-
-Use \\"zowe zos-files copy data-set --help\\" to view command description, usage, and options.
-"
-`;
-
-exports[`Copy Dataset Sequential Failure scenarios copy with invalid enqueue type 2`] = `
-"================Z/OS FILES COPY DATA SET===============
-"
-`;
-
-exports[`Copy Dataset Sequential Success scenarios copy 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
-exports[`Copy Dataset Sequential Success scenarios copy with alias = true 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
-exports[`Copy Dataset Sequential Success scenarios copy with enqueue = SHR 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
-exports[`Copy Dataset Sequential Success scenarios copy with from and to volume specified 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
 exports[`Copy Dataset Success scenarios Should copy a data set 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
-exports[`Copy Dataset Success scenarios Should copy a data set member 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
-exports[`Copy Dataset Success scenarios Should copy a data set member with alias = true 1`] = `
-"================Z/OS FILES COPY DATA SET===============
-Data set copied successfully.
-"
-`;
-
-exports[`Copy Dataset Success scenarios Should copy a data set member with enqueue = SHR 1`] = `
 "================Z/OS FILES COPY DATA SET===============
 Data set copied successfully.
 "
@@ -136,6 +40,12 @@ Data set copied successfully.
 `;
 
 exports[`Copy Dataset Success scenarios Should copy a data set with enqueue = SHR 1`] = `
+"================Z/OS FILES COPY DATA SET===============
+Data set copied successfully.
+"
+`;
+
+exports[`Copy Dataset Success scenarios Should copy a data set with from and to volume specified 1`] = `
 "================Z/OS FILES COPY DATA SET===============
 Data set copied successfully.
 "
