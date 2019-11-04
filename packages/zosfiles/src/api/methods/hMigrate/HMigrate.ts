@@ -18,7 +18,6 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IMigrateOptions } from "./doc/IMigrateOptions";
-import { isNullOrUndefined } from "util";
 
 /**
  * This class holds helper functions that are used to recall files through the
