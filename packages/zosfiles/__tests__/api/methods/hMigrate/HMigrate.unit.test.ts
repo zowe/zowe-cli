@@ -105,11 +105,10 @@ describe("hMigrate data set", () => {
 
         it("should fail if the zOSMF REST client fails", async () => {
             putExpectStringSpy.mockImplementation(() => {
-                throw new ImperativeError({msg: errorMessage});
+                throw new ImperativeError({ msg: errorMessage });
             });
-            const expectedPayload = {
-                "request": "hmigrate",
-            };
+            const expectedPayload = { request: "hmigrate" };
+
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
