@@ -14,6 +14,9 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
+import { List } from "../../../../../src/api";
+import { Session } from "@zowe/imperative";
+import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZosmfListResponse";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
@@ -21,6 +24,7 @@ let fromDSName: string;
 let toDSName: string;
 let user: string;
 let volume: string;
+let REAL_SESSION: Session;
 
 const scriptsLocation = join(__dirname, "__scripts__", "command");
 const createSequentialScript = join(scriptsLocation, "command_create_data_set_sequential.sh");
@@ -38,6 +42,7 @@ describe("Copy Dataset", () => {
             testName: "zos_copy_data_set"
         });
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         volume = defaultSystem.datasets.vol;
@@ -70,16 +75,32 @@ describe("Copy Dataset", () => {
         });
 
         it("Should copy a data set with from and to volume specified", async () => {
+            let toVolume;
+            let fromVolume;
+            let error;
+
+            try {
+                const listOfFromDataSets = await List.dataSet(REAL_SESSION, fromDSName, {attributes: true});
+                listOfFromDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => fromVolume = dataSetObj.vol);
+
+                const listOfToDataSets = await List.dataSet(REAL_SESSION, toDSName, { attributes: true });
+                listOfToDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => toVolume = dataSetObj.vol);
+            } catch (err) {
+                error = err;
+            }
+
             const response = runCliScript(copyScriptVolumes, TEST_ENVIRONMENT, [
                 fromDSName,
                 toDSName,
-                volume,
-                volume,
+                fromVolume,
+                toVolume,
             ]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
             expect(response.stdout.toString()).toContain("Data set copied successfully.");
+            expect(error).toBeUndefined();
         });
 
         it("Should copy a data set with alias = true", async () => {

@@ -178,7 +178,7 @@ export class Copy {
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
