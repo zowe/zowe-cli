@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DsDefinition should use the correct object for strings 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "fvol",
+    ],
+    "description": "Specify this option to choose the volser of the dataset you are copying from",
+    "name": "from-volume",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "tvol",
+    ],
+    "description": "Specify this option to choose the volser of the dataset you are copying to",
+    "name": "to-volume",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "al",
+    ],
+    "description": "Specify this option to choose if aliases are copied along with main member",
+    "name": "alias",
+    "required": false,
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "enq",
+    ],
+    "allowableValues": Object {
+      "values": Array [
+        "EXCLU",
+        "SHR",
+      ],
+    },
+    "description": "Specify this option to choose the enqueue type for the \`to\` data set",
+    "name": "enqueue",
+    "required": false,
+    "type": "string",
+  },
+]
+`;
+
+exports[`DsDefinition should use the correct object for strings 2`] = `
+Array [
+  Object {
+    "description": "Copy the contents of a data set named 'user.from.set' to 'user.to.set",
+    "options": "\\"user.from.set\\" \\"user.to.set\\"",
+  },
+]
+`;

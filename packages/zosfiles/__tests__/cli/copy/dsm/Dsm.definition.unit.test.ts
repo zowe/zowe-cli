@@ -16,6 +16,11 @@ describe("DsmDefinition", () => {
     it("should use the correct object for strings", () => {
         const strings = i18nEnglish.COPY.ACTIONS.DATA_SET_MEMBER;
 
+        expect(DsmDefinition).toBeDefined();
+        expect(DsmDefinition.children).toBeUndefined();
+        expect(DsmDefinition.profile.optional).toEqual(["zosmf"]);
+        expect(DsmDefinition.options).toMatchSnapshot();
+        expect(DsmDefinition.examples).toMatchSnapshot();
         expect(DsmDefinition.description).toBe(strings.DESCRIPTION);
     });
 });

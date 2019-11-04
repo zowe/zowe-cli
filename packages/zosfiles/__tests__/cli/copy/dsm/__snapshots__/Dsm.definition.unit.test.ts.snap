@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DsmDefinition should use the correct object for strings 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "al",
+    ],
+    "description": "Specify this option to choose if aliases are copied along with main member",
+    "name": "alias",
+    "required": false,
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "enq",
+    ],
+    "allowableValues": Object {
+      "values": Array [
+        "EXCLU",
+        "SHR",
+        "SHRW",
+      ],
+    },
+    "description": "Specify this option to choose the enqueue type for the \`to\` data set",
+    "name": "enqueue",
+    "required": false,
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "fvol",
+    ],
+    "description": "Specify this option to choose the volser of the dataset you are copying from",
+    "name": "from-volume",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "r",
+    ],
+    "description": "Specify this option to confirm that you want to replace the data set member if it exists.",
+    "name": "replace",
+    "required": false,
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "tvol",
+    ],
+    "description": "Specify this option to choose the volser of the dataset you are copying to",
+    "name": "to-volume",
+    "type": "string",
+  },
+]
+`;
+
+exports[`DsmDefinition should use the correct object for strings 2`] = `
+Array [
+  Object {
+    "description": "Copy the data set member in data set 'user.from.set' with name 'member.name' to data set 'user.to.set' with member name 'member.name'",
+    "options": "\\"user.from.set\\" \\"member.name\\" \\"user.to.set\\" \\"member.name\\"",
+  },
+  Object {
+    "description": "Copy all members from data set 'user.from.set' to data set 'user.to.set'",
+    "options": "\\"user.from.set\\" \\"*\\" \\"user.to.set\\"",
+  },
+]
+`;

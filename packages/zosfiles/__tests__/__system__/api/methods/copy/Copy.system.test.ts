@@ -29,7 +29,7 @@ const missingDatasetMember = "missing";
 const fileName1 = "file1";
 const fileName2 = "file2";
 
-describe("Copy Dataset", () => {
+describe("Copy", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({ testName: "zos_file_copy" });
         defaultSystem = testEnvironment.systemTestProperties;
@@ -43,7 +43,7 @@ describe("Copy Dataset", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    describe("Sequential", () => {
+    describe("Data set", () => {
         beforeEach(async () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDsName);
@@ -62,7 +62,7 @@ describe("Copy Dataset", () => {
             }
         });
         describe("Success Scenarios", () => {
-            it("copy", async () => {
+            it("Should copy a data set", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -88,7 +88,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1.toString()).toEqual(contents2.toString());
             });
-            it("enqueue type set to `SHR`", async () => {
+            it("Should copy a data set with enqueue type set to `SHR`", async () => {
                 const options: ICopyDatasetOptions = { enq: enqueue.SHR };
                 let error;
                 let response;
@@ -115,7 +115,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1.toString()).toEqual(contents2.toString());
             });
-            it("alias set to `true`", async () => {
+            it("Should copy a data set with alias set to `true`", async () => {
                 const options: ICopyDatasetOptions = { alias: true };
                 let error;
                 let response;
@@ -142,7 +142,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1.toString()).toEqual(contents2.toString());
             });
-            it("'from' and 'to' volume specified", async () => {
+            it("Should copy a data set with 'from' and 'to' volumes specified", async () => {
                 let fromVolume: string;
                 let toVolume: string;
                 let options: ICopyDatasetOptions;
@@ -184,7 +184,7 @@ describe("Copy Dataset", () => {
             });
         });
         describe("Failure Scenarios", () => {
-            it("no 'from' dataset", async () => {
+            it("Shouldn't be able to copy a data set with no 'from' dataset", async () => {
                 let error;
                 let response;
 
@@ -201,7 +201,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("no 'to' dataset", async () => {
+            it("Shouldn't be able to copy a data set with no 'to' dataset", async () => {
                 let error;
                 let response;
 
@@ -218,7 +218,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("invalid data set name", async () => {
+            it("Shouldn't be able to copy a data set with an invalid data set name", async () => {
                 let error;
                 let response;
 
@@ -235,7 +235,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("empty data set name", async () => {
+            it("Shouldn't be able to copy a data set with an empty data set name", async () => {
                 let error;
                 let response;
 
@@ -252,7 +252,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("missing session", async () => {
+            it("Shouldn't be able to copy a data set with a missing session", async () => {
                 let error;
                 let response;
 
@@ -269,7 +269,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("set enqueue as 'SHRW'", async () => {
+            it("Shouldn't be able to copy a data set with set enqueue type as 'SHRW'", async () => {
                 let error;
                 let response;
                 const options: ICopyDatasetOptions = { enq: enqueue.SHRW };
@@ -286,7 +286,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("Wrong 'from' volume", async () => {
+            it("Shouldn't be able to copy a data set with the wrong 'from' volume", async () => {
                 let toVolume: string;
                 let options: ICopyDatasetOptions;
 
@@ -313,7 +313,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("Wrong 'to' volume", async () => {
+            it("Shouldn't be able to copy a data set with the wrong 'to' volume", async () => {
                 let fromVolume: string;
                 let options: ICopyDatasetOptions;
 
@@ -344,7 +344,7 @@ describe("Copy Dataset", () => {
         });
     });
 
-    describe("Partitioned", () => {
+    describe("Data set member", () => {
         const memberName = fileName1;
         beforeEach(async () => {
             try {
@@ -366,7 +366,7 @@ describe("Copy Dataset", () => {
         });
 
         describe("Success Scenarios", () => {
-            it("copy", async () => {
+            it("Should copy a data set member", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -398,7 +398,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1).toEqual(contents2);
             });
-            it("copy all members", async () => {
+            it("Should copy all members of a data set", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -432,7 +432,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1).toEqual(contents2);
             });
-            it("replace members with same name", async () => {
+            it("Should replace members with the same name", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -469,7 +469,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1).toEqual(contents2);
             });
-            it("enqueue type set to `SHRW`", async () => {
+            it("Should copy a data set member with enqueue type set to `SHRW`", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -504,7 +504,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1).toEqual(contents2);
             });
-            it("alias set to `true`", async () => {
+            it("Should copy a data set member with alias set to `true`", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -539,7 +539,7 @@ describe("Copy Dataset", () => {
                 expect(contents2).toBeTruthy();
                 expect(contents1).toEqual(contents2);
             });
-            it("'from' and 'to' volume specified", async () => {
+            it("Should copy a data set member with 'from' and 'to' volume specified", async () => {
                 let error;
                 let response;
                 let contents1;
@@ -588,7 +588,7 @@ describe("Copy Dataset", () => {
             });
         });
         describe("Failure Scenarios", () => {
-            it("no 'from' dataset", async () => {
+            it("Shouldn't be able to copy a data set member with no 'from' dataset", async () => {
                 let error;
                 let response;
 
@@ -611,7 +611,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("no 'to' dataset", async () => {
+            it("Shouldn't be able to copy a data set member with no 'to' dataset", async () => {
                 let error;
                 let response;
 
@@ -634,7 +634,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("missing 'from' dataset member", async () => {
+            it("Shouldn't be able to copy a data set member with missing 'from' dataset member", async () => {
                 let error;
                 let response;
 
@@ -657,7 +657,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("invalid data set name", async () => {
+            it("Shouldn't be able to copy a data set member with invalid data set name", async () => {
                 let error;
                 let response;
 
@@ -680,7 +680,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("empty data set name", async () => {
+            it("Shouldn't be able to copy a data set member with empty data set name", async () => {
                 let error;
                 let response;
 
@@ -703,7 +703,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("missing session", async () => {
+            it("Shouldn't be able to copy a data set member with missing session", async () => {
                 let error;
                 let response;
 
@@ -726,7 +726,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("member already exists", async () => {
+            it("Shouldn't be able to copy a data set member if the member already exists", async () => {
                 let error;
                 let response;
 
@@ -751,7 +751,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("Wrong 'from' volume", async () => {
+            it("Shouldn't be able to copy a data set member with the wrong 'from' volume", async () => {
                 let error;
                 let response;
                 let toVolume: string;
@@ -785,7 +785,7 @@ describe("Copy Dataset", () => {
 
                 expect(response).toBeFalsy();
             });
-            it("Wrong 'to' volume", async () => {
+            it("Shouldn't be able to copy a data set member with the wrong 'to' volume", async () => {
                 let error;
                 let response;
                 let fromVolume: string;
