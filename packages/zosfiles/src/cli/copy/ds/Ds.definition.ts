@@ -13,10 +13,11 @@ import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { join } from "path";
 
 import i18nTypings from "../../-strings-/en";
-import { ZosmfSession } from "../../../../../zosmf";
+import { CopyOptions } from "../Copy.options";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings).COPY.ACTIONS.DATA_SET;
+const stringsCopy = (require("../../-strings-/en").default as typeof i18nTypings).COPY;
+const { DESCRIPTION, POSITIONALS, EXAMPLES } = stringsCopy.ACTIONS.DATA_SET;
 
 /**
  * This object defines the command for copying data sets within zosfiles. This is not
@@ -27,7 +28,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
 export const DsDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
-    description: strings.DESCRIPTION,
+    description: DESCRIPTION,
     type: "command",
     handler: join(__dirname, "Ds.handler"),
     profile: {
@@ -37,42 +38,24 @@ export const DsDefinition: ICommandDefinition = {
         {
             name: "fromDataSetName",
             type: "string",
-            description: strings.POSITIONALS.FROMDSNAME,
+            description: POSITIONALS.FROMDSNAME,
             required: true,
         },
         {
             name: "toDataSetName",
             type: "string",
-            description: strings.POSITIONALS.TODSNAME,
+            description: POSITIONALS.TODSNAME,
             required: true,
         },
     ],
     options: ([
-        {
-            name: "from-volume",
-            aliases: ["fvol"],
-            description: strings.OPTIONS.FROMVOLUME,
-            type: "string",
-            required: false
-        },
-        {
-            name: "to-volume",
-            aliases: ["tvol"],
-            description: strings.OPTIONS.TOVOLUME,
-            type: "string",
-            required: false
-        },
-        {
-            name: "alias",
-            aliases: ["al"],
-            description: strings.OPTIONS.ALIAS,
-            type: "boolean",
-            required: false
-        },
+        CopyOptions.fromVolume,
+        CopyOptions.toVolume,
+        CopyOptions.alias,
         {
             name: "enqueue",
             aliases: ["enq"],
-            description: strings.OPTIONS.ENQUEUE,
+            description: stringsCopy.OPTIONS.ENQUEUE,
             type: "string",
             required: false,
             allowableValues: {
@@ -82,8 +65,8 @@ export const DsDefinition: ICommandDefinition = {
     ] as ICommandOptionDefinition[]),
     examples: [
         {
-            description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.cntl" -f`
+            description: EXAMPLES.EX1,
+            options: `"user.from.set" "user.to.set"`
         }
     ],
 };

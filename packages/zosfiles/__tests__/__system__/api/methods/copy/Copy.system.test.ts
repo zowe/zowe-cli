@@ -282,7 +282,6 @@ describe("Copy Dataset", () => {
                 }
 
                 expect(error).toBeTruthy();
-                // TODO: Right message?
                 expect(error.message).toContain(ZosFilesMessages.unsupportedDatasetType.message);
 
                 expect(response).toBeFalsy();

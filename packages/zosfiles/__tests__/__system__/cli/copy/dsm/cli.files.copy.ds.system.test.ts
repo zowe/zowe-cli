@@ -17,8 +17,8 @@ import { join } from "path";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
-let fromDsName: string;
-let toDsName: string;
+let fromDSName: string;
+let toDSName: string;
 let user: string;
 let volume: string;
 
@@ -44,8 +44,8 @@ describe("Copy Dataset", () => {
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         volume = defaultSystem.datasets.vol;
-        fromDsName = `${user}.FROM.PDS`;
-        toDsName = `${user}.TO.PDS`;
+        fromDSName = `${user}.FROM.PDS`;
+        toDSName = `${user}.TO.PDS`;
     });
 
     afterAll(async () => {
@@ -54,21 +54,21 @@ describe("Copy Dataset", () => {
 
     describe("Member", () => {
         beforeEach(async () => {
-            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDsName, volume]);
-            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDsName, volume]);
-            runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, fromDsName]);
+            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [fromDSName, volume]);
+            runCliScript(createPartitionedScript, TEST_ENVIRONMENT, [toDSName, volume]);
+            runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, fromDSName]);
         });
 
         afterEach(async () => {
-            runCliScript(deleteScript, TEST_ENVIRONMENT, [fromDsName]);
-            runCliScript(deleteScript, TEST_ENVIRONMENT, [toDsName]);
+            runCliScript(deleteScript, TEST_ENVIRONMENT, [fromDSName]);
+            runCliScript(deleteScript, TEST_ENVIRONMENT, [toDSName]);
         });
         describe("Success scenarios", () => {
             it("copy a single member", async () => {
                 const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     memberName,
-                    toDsName,
+                    toDSName,
                     memberName,
                 ]);
                 expect(response.stderr.toString()).toBe("");
@@ -78,9 +78,9 @@ describe("Copy Dataset", () => {
             });
             it("copy all members", async () => {
                 const response = runCliScript(copyScript, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     "*",
-                    toDsName,
+                    toDSName,
                 ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
@@ -88,11 +88,11 @@ describe("Copy Dataset", () => {
                 expect(response.stdout.toString()).toContain("Data set copied successfully.");
             });
             it("copy a single member and replace existing member", async () => {
-                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
+                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDSName]);
                 const response = runCliScript(copyScriptReplace, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     memberName,
-                    toDsName,
+                    toDSName,
                     memberName,
                 ]);
                 expect(response.stderr.toString()).toBe("");
@@ -102,9 +102,9 @@ describe("Copy Dataset", () => {
             });
             it("copy with from and to volume specified", async () => {
                 const response = runCliScript(copyScriptVolume, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     memberName,
-                    toDsName,
+                    toDSName,
                     memberName,
                     volume,
                     volume,
@@ -116,9 +116,9 @@ describe("Copy Dataset", () => {
             });
             it("copy with alias = true", async () => {
                 const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     memberName,
-                    toDsName,
+                    toDSName,
                     memberName,
                 ]);
                 expect(response.stderr.toString()).toBe("");
@@ -128,9 +128,9 @@ describe("Copy Dataset", () => {
             });
             it("copy with enqueue = SHRW", async () => {
                 const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     memberName,
-                    toDsName,
+                    toDSName,
                     memberName,
                     "SHRW"
                 ]);
@@ -142,14 +142,21 @@ describe("Copy Dataset", () => {
         });
         describe("Failure scenarios", () => {
             it("cannot replace a member without --replace flag", async () => {
-                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDsName]);
+                runCliScript(uploadScript, TEST_ENVIRONMENT, [localDirName, toDSName]);
                 const response = runCliScript(copyScriptAlias, TEST_ENVIRONMENT, [
-                    fromDsName,
+                    fromDSName,
                     memberName,
-                    toDsName,
+                    toDSName,
                     memberName,
                 ]);
                 expect(response.stderr.toString()).toContain("Like-named member already exists");
+                expect(response.status).toBe(1);
+                expect(response.stdout.toString()).toMatchSnapshot();
+            });
+            it("copy with invalid enqueue type", async () => {
+                const response = runCliScript(copyScriptEnqueue, TEST_ENVIRONMENT, [fromDSName, toDSName, "ABC"]);
+                expect(response.stderr.toString()).toContain("Invalid value specified for option");
+                expect(response.stderr.toString()).toMatchSnapshot();
                 expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toMatchSnapshot();
             });

@@ -84,13 +84,13 @@ export class Copy {
 
             const reqHeaders: IHeaderContent[] = [
                 Headers.APPLICATION_JSON,
-                { [ Headers.CONTENT_LENGTH ] : JSON.stringify(payload).length.toString() }
+                { [Headers.CONTENT_LENGTH] : JSON.stringify(payload).length.toString() },
             ];
 
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);
 
             return {
-                success        : true,
+                success: true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         } catch (error) {
@@ -129,7 +129,6 @@ export class Copy {
         ImperativeExpect.toNotBeEqual(toDataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         if (fromMemberName !== "*") {
-            // TODO Better message
             ImperativeExpect.toNotBeNullOrUndefined(toMemberName, ZosFilesMessages.missingDatasetName.message);
         }
 
@@ -172,13 +171,13 @@ export class Copy {
 
             const reqHeaders: IHeaderContent[] = [
                 Headers.APPLICATION_JSON,
-                { [ Headers.CONTENT_LENGTH ] : JSON.stringify(payload).length.toString() }
+                { [Headers.CONTENT_LENGTH] : JSON.stringify(payload).length.toString() },
             ];
 
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);
 
             return {
-                success        : true,
+                success: true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         } catch (error) {
