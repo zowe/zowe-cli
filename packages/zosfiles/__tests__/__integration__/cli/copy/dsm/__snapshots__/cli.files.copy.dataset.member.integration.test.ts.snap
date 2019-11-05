@@ -1,0 +1,139 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Copy Data Set Member Success Scenarios Should display the help 1`] = `
+"================Z/OS FILES COPY DATA SET MEMBER HELP===============
+
+ COMMAND NAME
+ ------------
+
+   data-set-member | dsm
+
+ DESCRIPTION
+ -----------
+
+   Copy the contents of a data set member into another partitioned data set
+
+ USAGE
+ -----
+
+   zowe zos-files copy data-set-member <fromDataSetName> <fromDataSetMemberName> <toDataSetName> [toDataSetMemberName] [options]
+
+ POSITIONAL ARGUMENTS
+ --------------------
+
+   fromDataSetName		 (string)
+
+      The name of the data set that you want to copy from
+
+   fromDataSetMemberName		 (string)
+
+      The name of the data set member that you want to copy from
+
+   toDataSetName		 (string)
+
+      The name of the data set that you want to copy to
+
+   toDataSetMemberName		 (string)
+
+      The name of the data set member that you want to copy to
+
+ OPTIONS
+ -------
+
+   --alias  | --al (boolean)
+
+      Specify this option to choose if aliases are copied along with main member
+
+   --enqueue  | --enq (string)
+
+      Specify this option to choose the enqueue type for the \`to\` data set
+
+      Allowed values: EXCLU, SHR, SHRW
+
+   --from-volume  | --fvol (string)
+
+      Specify this option to choose the volser of the dataset you are copying from
+
+   --replace  | -r (boolean)
+
+      Specify this option to confirm that you want to replace the data set member if
+      it exists.
+
+   --to-volume  | --tvol (string)
+
+      Specify this option to choose the volser of the dataset you are copying to
+
+ ZOSMF CONNECTION OPTIONS
+ ------------------------
+
+   --host  | -H (string)
+
+      The z/OSMF server host name.
+
+   --port  | -P (number)
+
+      The z/OSMF server port.
+
+      Default value: 443
+
+   --user  | -u (string)
+
+      Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+   --password  | --pass | --pw (string)
+
+      Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+   --reject-unauthorized  | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+   --base-path  | --bp (string)
+
+      The base path for your API mediation layer instance. Specify this option to
+      prepend the base path to all z/OSMF resources when making REST requests. Do not
+      specify this option if you are not using an API mediation layer.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Copy the data set member in data set 'user.from.set' with
+   name 'member.name' to data set 'user.to.set' with member name 'member.name':
+
+      $ zowe zos-files copy data-set-member \\"user.from.set\\" \\"member.name\\" \\"user.to.set\\" \\"member.name\\"
+
+   - Copy all members from data set 'user.from.set' to data set
+   'user.to.set':
+
+      $ zowe zos-files copy data-set-member \\"user.from.set\\" \\"*\\" \\"user.to.set\\"
+
+"
+`;
