@@ -23,7 +23,6 @@ describe("Copy Data Set", () => {
             skipProperties: true
         });
     });
-
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
