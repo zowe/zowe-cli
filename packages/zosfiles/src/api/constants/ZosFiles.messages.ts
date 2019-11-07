@@ -432,7 +432,15 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     dataSetRenamedSuccessfully: {
-        message: "Data set renamed successfully."
-    }
+        message: "Data set renamed successfully.",
+    },
+
+    /**
+     * Message indicating that the data set was copied successfully
+     * @type {string}
+     */
+    datasetCopiedSuccessfully: {
+        message: "Data set copied successfully."
+    },
 };
 
