@@ -13,6 +13,7 @@ import { Shell, SshSession } from "../../../index";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ZosUssMessages } from "../../../src/api/constants/ZosUss.messages";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let SSH_SESSION: SshSession;
@@ -96,6 +97,46 @@ describe("zowe uss issue ssh api call test", () => {
             stdoutData += data;
         });
         expect(rc).toBe(COMMAND_NOT_FOUND_RC);
+
+    }, TIME_OUT);
+
+    it("should handle errors correctly when connection fails", async () => {
+        const invalidSshSession = new SshSession({
+            hostname: "invalidhost",
+            port: 22,
+            user: "",
+            password: ""
+        });
+
+        try {
+            const command = "uname";
+            let stdoutData = "";
+            await Shell.executeSsh(invalidSshSession, command, (data: string) => {
+                stdoutData += data;
+            });
+        } catch (error) {
+            expect(error.toString()).toContain(ZosUssMessages.unexpected.message);
+        }
+
+    }, TIME_OUT);
+
+    it("should handle errors correctly when connection is refused", async () => {
+        const invalidSshSession = new SshSession({
+            hostname: "localhost",
+            port: 22,
+            user: "root",
+            password: "**ThisPasswordIsExpectedNotToBeTheRealPasswordForRoot**"
+        });
+
+        try {
+            const command = "uname";
+            let stdoutData = "";
+            await Shell.executeSsh(invalidSshSession, command, (data: string) => {
+                stdoutData += data;
+            });
+        } catch (error) {
+            expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
+        }
 
     }, TIME_OUT);
 
