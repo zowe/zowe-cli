@@ -19,6 +19,9 @@ export * from "./methods/get";
 export * from "./methods/utilities";
 export * from "./methods/mount";
 export * from "./methods/unmount";
+export * from "./methods/rename";
+export * from "./methods/hMigrate";
+export * from "./methods/copy";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
