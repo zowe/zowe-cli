@@ -108,13 +108,16 @@ describe("zowe uss issue ssh api call test", () => {
             password: ""
         });
 
+        let error;
         try {
             const command = "uname";
             let stdoutData = "";
             await Shell.executeSsh(invalidSshSession, command, (data: string) => {
                 stdoutData += data;
             });
-        } catch (error) {
+        } catch (err) {
+            error = err;
+            expect(error).toBeTruthy();
             expect(error.toString()).toContain(ZosUssMessages.unexpected.message);
         }
 
@@ -128,13 +131,16 @@ describe("zowe uss issue ssh api call test", () => {
             password: "**ThisPasswordIsExpectedNotToBeTheRealPasswordForRoot**"
         });
 
+        let error;
         try {
             const command = "uname";
             let stdoutData = "";
             await Shell.executeSsh(invalidSshSession, command, (data: string) => {
                 stdoutData += data;
             });
-        } catch (error) {
+        } catch (err) {
+            error = err;
+            expect(error).toBeTruthy();
             expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
         }
 
