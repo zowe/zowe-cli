@@ -39,7 +39,7 @@ export class Copy {
      */
     public static async dataSet(
         session: AbstractSession,
-        { dataSetName: fromDataSetName, memberName: fromMemberName }: ICopyDataSet,
+        { dataSetName: fromDataSetName, memberName: fromMemberName, replace }: ICopyDataSet,
         { dataSetName: toDataSetName, memberName: toMemberName }: ICopyDataSet,
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(fromDataSetName, ZosFilesMessages.missingDatasetName.message);
@@ -59,6 +59,7 @@ export class Copy {
             "from-dataset": {
                 dsn: fromDataSetName,
             },
+            "replace": replace
         };
 
         if(fromMemberName != null) {
