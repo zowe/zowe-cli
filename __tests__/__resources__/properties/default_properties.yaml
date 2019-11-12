@@ -36,15 +36,15 @@
 #-------------------------------------------------------------------------#
 zosmf:
   # your z/OSMF User ID
-  user: &zosmfuser zosmf-user
+  user: zosmf-user
   # your z/OSMF password
-  pass: &zosmfpass zosmf-password
+  pass: zosmf-password
   # host for your instance of z/OSMF
-  host: &zosmfhost zosmf-host
+  host: zosmf-host
   # port for your instance of z/OSMF
-  port: &zosmfport zosmf-port
+  port: zosmf-port
   # false to allow self signed certificates when connecting
-  rejectUnauthorized: &zosmfreject false
+  rejectUnauthorized: false
   # base path if any to be prepended to all z/OSMF resources
   # such as a base path exposed from a gateway/ API mediation layer
   basePath: null
@@ -52,7 +52,7 @@ zosmf:
 #  TSO testing properties                                                 #
 #-------------------------------------------------------------------------#
 tso:
-  account: &tsoaccount tso-account
+  account: tso-account
 #-------------------------------------------------------------------------#
 #  Console API Tests parameters                                           #
 #-------------------------------------------------------------------------#
