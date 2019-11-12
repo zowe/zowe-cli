@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, Headers } from "@brightside/imperative";
 import { posix } from "path";
 
 import { ZosmfRestClient, IHeaderContent } from "../../../../../rest";

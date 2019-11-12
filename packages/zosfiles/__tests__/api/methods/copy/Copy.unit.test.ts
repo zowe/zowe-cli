@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, ImperativeError } from "@zowe/imperative";
+import { Session, ImperativeError } from "@brightside/imperative";
 import { posix } from "path";
 
 import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../..";

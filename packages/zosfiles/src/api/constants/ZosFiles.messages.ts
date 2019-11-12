@@ -9,7 +9,6 @@
 *
 */
 
-import { getErrorContext } from "../../../../utils/src/CoreUtils";
 import { ZosFilesConstants } from "./ZosFiles.constants";
 import { IMessageDefinition } from "@brightside/imperative";
 
@@ -425,7 +424,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     datasetMigratedSuccessfully: {
         message: "Data set migrated successfully.",
-    },    
+    },
 
     /**
      * Message indicating that the data set has been renamed successfully.
@@ -443,4 +442,3 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
         message: "Data set copied successfully."
     },
 };
-
