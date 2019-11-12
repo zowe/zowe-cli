@@ -9,7 +9,7 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
+import { Session } from "@brightside/imperative";
 import { posix } from "path";
 import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
