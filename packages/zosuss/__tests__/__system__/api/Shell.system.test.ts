@@ -117,9 +117,9 @@ describe("zowe uss issue ssh api call test", () => {
             });
         } catch (err) {
             error = err;
-            expect(error).toBeTruthy();
-            expect(error.toString()).toContain(ZosUssMessages.unexpected.message);
         }
+        expect(error).toBeTruthy();
+        expect(error.toString()).toContain(ZosUssMessages.unexpected.message);
 
     }, TIME_OUT);
 
@@ -140,9 +140,9 @@ describe("zowe uss issue ssh api call test", () => {
             });
         } catch (err) {
             error = err;
-            expect(error).toBeTruthy();
-            expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
         }
+        expect(error).toBeTruthy();
+        expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
 
     }, TIME_OUT);
 
