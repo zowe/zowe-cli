@@ -578,5 +578,22 @@ export default {
             Constants.DISPLAY_NAME + " attempts to upload all members at once" +
             " without a maximum number of concurrent requests. "
         }
-    }
+    },
+    HMIGRATE: {
+        DESCRIPTION: "Migrate data sets.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Migrate a data set.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to migrate.",
+                },
+                EXAMPLES: {
+                    EX1: `Migrate a data set using default options`,
+                },
+            }
+        },
+        OPTIONS: {
+            WAIT: "If true then the function waits for completion of the request. If false the request is queued.",
+        },
+    },
 };
