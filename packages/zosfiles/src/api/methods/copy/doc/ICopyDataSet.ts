@@ -27,10 +27,4 @@ export interface ICopyDataSet {
      * @type {string}
      */
     memberName?: string;
-
-    /**
-     * Replace option
-     * @type {boolean}
-     */
-    replace?: boolean;
 }
