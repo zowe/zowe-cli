@@ -9,4 +9,6 @@
 *
 */
 
+export * from "./doc/IMigrateOptions";
+
 export * from "./HMigrate";
