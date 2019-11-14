@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, IHeaderContent, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, IHeaderContent, Headers } from "@zowe/imperative";
 
 import { posix } from "path";
 
@@ -17,9 +17,7 @@ import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { Invoke } from "../invoke";
-
-import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
+import { IRecallOptions } from "./doc/IRecallOptions";
 
 /**
  * This class holds helper functions that are used to recall files through the
@@ -40,28 +38,35 @@ export class HRecall {
      */
     public static async dataSet(session: AbstractSession,
                                 dataSetName: string,
-                                ): Promise<IZosFilesResponse> {
-        // required
+                                options: Partial<IRecallOptions> = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            // Format the endpoint to send the request to
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const payload = { request: "hrecall" };
+            const payload = { request: "hrecall" } as any;
+
+            if(options.wait != null) {
+                payload.wait = options.wait;
+            }
+
+            if(options.nowait != null) {
+                payload.nowait = options.nowait;
+            }
 
             const headers: IHeaderContent[] = [
               Headers.APPLICATION_JSON,
+              { "Content-Length": JSON.stringify(payload).length.toString() },
             ];
 
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
                 success        : true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message,
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
