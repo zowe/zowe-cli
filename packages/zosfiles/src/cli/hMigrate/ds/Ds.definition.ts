@@ -17,7 +17,7 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings);
 const dSStrings = strings.HMIGRATE.ACTIONS.DATA_SET;
 
-export const DSDefinition: ICommandDefinition = {
+export const DsDefinition: ICommandDefinition = {
   name: "data-set",
   aliases: ["ds"],
   description: dSStrings.DESCRIPTION,
