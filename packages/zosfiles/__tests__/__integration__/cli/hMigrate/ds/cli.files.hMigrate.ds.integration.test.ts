@@ -22,6 +22,7 @@ describe("Migrate Data Set", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_migrate_data_set",
+            skipProperties: true
         });
     });
 
