@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { DSDefinition } from "../hMigrate/ds/Ds.definition";
+import { DsDefinition } from "../hMigrate/ds/Ds.definition";
 
 import i18nTypings from "../-strings-/en";
 
@@ -27,6 +27,6 @@ export const HMigrateDefinition: ICommandDefinition = {
     type: "group",
     description: DESCRIPTION,
     children: [
-        DSDefinition,
+        DsDefinition,
     ],
 };
