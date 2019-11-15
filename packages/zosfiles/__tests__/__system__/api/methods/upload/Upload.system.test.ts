@@ -9,7 +9,7 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse, Upload, ZosFilesMessages } from "../../../../../";
+import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse, Upload, ZosFilesMessages, Download } from "../../../../../";
 import { Imperative, Session } from "@brightside/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
@@ -55,6 +55,7 @@ describe("Upload Data Set", () => {
             beforeEach(async () => {
                 let error;
                 let response;
+                uploadOptions.etag = null;
 
                 try {
                     response = await Create.dataSet(REAL_SESSION,
@@ -83,6 +84,34 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+            });
+
+            it("should upload a file to a physical sequential data set with Etag defined", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // we have to get first the Etag, so we can compare it
+                await Upload.fileToDataset(REAL_SESSION,
+                    __dirname + "/testfiles/upload.txt", dsname);
+                const downloadOptions = {file: __dirname + "/testfiles/upload.txt", returnEtag: true};
+                const downloadResponse = await Download.dataSet(REAL_SESSION, dsname, downloadOptions) ;
+
+                // after we have the Etag, we can try to upload the file with etag specified
+                uploadOptions.etag = downloadResponse.apiResponse.etag;
+
+                try {
+                    // packages/zosfiles/__tests__/__system__/api/methods/upload/
+                    response = await Upload.fileToDataset(REAL_SESSION,
+                        __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -176,7 +205,7 @@ describe("Upload Data Set", () => {
             beforeEach(async () => {
                 let error;
                 let response;
-
+                uploadOptions.etag = null;
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                 } catch (err) {
@@ -476,6 +505,35 @@ describe("Upload USS file", () => {
             expect(getResponse).toEqual(Buffer.from(data.toString()));
 
         });
+
+        it("should upload a USS file with Etag", async () => {
+            let error;
+            let uploadResponse;
+            let getResponse;
+            const data: Buffer = Buffer.from(testdata);
+
+            // we have to upload the file once and get the etag
+            await Upload.bufferToUSSFile(REAL_SESSION, ussname, data);
+            const downloadOptions = {file: inputfile, returnEtag: true};
+            const downloadResponse = await Download.ussFile(REAL_SESSION, ussname, downloadOptions);
+
+            // after we have the Etag, we can try to upload the file with etag specified
+            const etag = downloadResponse.apiResponse.etag;
+
+            try {
+                uploadResponse = await Upload.fileToUSSFile(REAL_SESSION, inputfile, ussname, false, null, etag);
+                Imperative.console.info("Response: " + inspect(uploadResponse));
+                getResponse = await Download.ussFile(REAL_SESSION, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(getResponse.apiResponse).toEqual(Buffer.from(testdata));
+
+        });
+
         it("should upload a USS file in binary mode", async () => {
             let error;
             let uploadResponse;

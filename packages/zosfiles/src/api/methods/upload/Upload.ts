@@ -188,6 +188,10 @@ export class Upload {
                 }
             }
 
+            if (options.etag) {
+                reqHeader.push({"If-Match" : options.etag});
+            }
+
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeader, fileBuffer);
 
             return {
@@ -380,15 +384,17 @@ export class Upload {
      * Upload content to USS file
      * @param {AbstractSession} session - z/OS connection info
      * @param {string} ussname          - Name of the USS file to write to
-     * @param {Buffer} buffer          - Data to be written
+     * @param {Buffer} buffer           - Data to be written
      * @param {boolean} binary          - The indicator to upload the file in binary mode
+     * @param {string} etag             - ETag value
      * @returns {Promise<object>}
      */
     public static async bufferToUSSFile(session: AbstractSession,
                                         ussname: string,
                                         buffer: Buffer,
                                         binary: boolean = false,
-                                        localEncoding?: string) {
+                                        localEncoding?: string,
+                                        etag?: string) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
@@ -402,7 +408,9 @@ export class Upload {
         } else {
             headers.push(ZosmfHeaders.TEXT_PLAIN);
         }
-
+        if (etag) {
+            headers.push({"If-Match" : etag});
+        }
         return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
     }
 
@@ -410,7 +418,8 @@ export class Upload {
                                       inputFile: string,
                                       ussname: string,
                                       binary: boolean = false,
-                                      localEncoding?: string): Promise<IZosFilesResponse> {
+                                      localEncoding?: string,
+                                      etag?: string): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
@@ -445,7 +454,7 @@ export class Upload {
         // read payload from file
         payload = fs.readFileSync(inputFile);
 
-        await this.bufferToUSSFile(session, ussname, payload, binary, localEncoding);
+        await this.bufferToUSSFile(session, ussname, payload, binary, localEncoding, etag);
         result = {
             success: true,
             from: inputFile,

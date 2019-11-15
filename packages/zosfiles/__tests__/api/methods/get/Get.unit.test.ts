@@ -20,7 +20,11 @@ describe("z/OS Files - View", () => {
     const dsname = "USER.DATA.SET";
     const ussfile = "USER.TXT";
     const content = Buffer.from("This\nis\r\na\ntest");
-
+    const etagValue = "B96F33797D8D271C6FBAB2A6E789D312";
+    const contentAndEtag = {
+        data: content,
+        etag: etagValue
+    };
     const dummySession = new Session({
         user: "fake",
         password: "fake",
@@ -32,10 +36,14 @@ describe("z/OS Files - View", () => {
 
     describe("dataset", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+        const zosmfExpectEtagSpy = jest.spyOn(ZosmfRestClient, "getExpectBufferAndEtag");
 
         beforeEach(() => {
             zosmfExpectSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => content);
+
+            zosmfExpectEtagSpy.mockClear();
+            zosmfExpectEtagSpy.mockImplementation(() => contentAndEtag);
         });
 
         it("should throw an error if the data set name is null", async () => {
@@ -124,6 +132,26 @@ describe("z/OS Files - View", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
         });
 
+        it("should get data set content and Etag", async () => {
+            let response;
+            let caughtError;
+            const returnEtag = true;
+
+            try {
+                response = await Get.dataSet(dummySession, dsname, {returnEtag});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(contentAndEtag);
+
+            expect(zosmfExpectEtagSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectEtagSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_RETURN_ETAG]);
+        });
+
         it("should get data set content with volume option", async () => {
             let response;
             let caughtError;
@@ -148,10 +176,14 @@ describe("z/OS Files - View", () => {
 
         describe("uss file", () => {
             const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+            const zosmfExpectEtagSecondSpy = jest.spyOn(ZosmfRestClient, "getExpectBufferAndEtag");
 
             beforeEach(() => {
                 zosmfExpectSecondSpy.mockClear();
                 zosmfExpectSecondSpy.mockImplementation(() => content);
+
+                zosmfExpectEtagSecondSpy.mockClear();
+                zosmfExpectEtagSecondSpy.mockImplementation(() => contentAndEtag);
             });
 
             it("should throw an error if the uss file name is null", async () => {
@@ -219,6 +251,7 @@ describe("z/OS Files - View", () => {
                 expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
             });
 
+
             it("should get uss file content in binary mode", async () => {
                 let response;
                 let caughtError;
@@ -237,6 +270,26 @@ describe("z/OS Files - View", () => {
 
                 expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            });
+
+            it("should get uss file content and Etag", async () => {
+                let response;
+                let caughtError;
+                const returnEtag = true;
+
+                try {
+                    response = await Get.USSFile(dummySession, ussfile, {returnEtag});
+                } catch (e) {
+                    caughtError = e;
+                }
+
+                const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+
+                expect(caughtError).toBeUndefined();
+                expect(response).toEqual(contentAndEtag);
+
+                expect(zosmfExpectEtagSecondSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfExpectEtagSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_RETURN_ETAG]);
             });
         });
     });

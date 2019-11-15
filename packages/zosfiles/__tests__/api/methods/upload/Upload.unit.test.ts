@@ -407,6 +407,25 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            zosmfExpectSpy.mockClear();
+
+            // Unit test for etag option
+            uploadOptions.etag = "AD58883197C42E539B2FBB8F4F49CD60";
+            options = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT, {"If-Match" : uploadOptions.etag}];
+
+            try {
+                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            zosmfExpectSpy.mockClear();
+
         });
         it("return with proper response when upload dataset with specify volume option", async () => {
             const buffer: Buffer = Buffer.from("testing");
@@ -763,6 +782,25 @@ describe("z/OS Files - Upload", () => {
 
             try {
                 USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, true);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
+        });
+
+        it("return with proper response when upload USS file with Etag", async () => {
+            const data: Buffer = Buffer.from("testing");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const etag = "AD58883197C42E539B2FBB8F4F49CD60";
+            const headers = [ZosmfHeaders.TEXT_PLAIN, {"If-Match" : etag}];
+
+            try {
+                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, null, etag);
             } catch (err) {
                 error = err;
             }

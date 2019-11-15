@@ -79,8 +79,17 @@ export class Download {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
             }
 
+            let datasetContent: Buffer;
+            let restResponse: {data: Buffer; etag: string};
+            if (options.returnEtag) {
+                reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                restResponse = await ZosmfRestClient.getExpectBufferAndEtag(session, endpoint, reqHeaders);
+                datasetContent = restResponse.data;
+            } else {
+                datasetContent = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
+            }
+
             // Get contents of the data set
-            let content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
                 extension = options.extension;
@@ -94,16 +103,23 @@ export class Download {
 
             IO.createDirsSyncFromFilePath(destination);
 
-            if ((!options.binary) && (content.byteLength > 0)) {
-                content = Buffer.from(IO.processNewlines(content.toString()));
+            if ((!options.binary) && (datasetContent.byteLength > 0)) {
+                datasetContent = Buffer.from(IO.processNewlines(datasetContent.toString()));
             }
 
-            IO.writeFile(destination, Buffer.from(content));
+            IO.writeFile(destination, Buffer.from(datasetContent));
 
+            let response: any;
+            if (options.returnEtag) {
+                restResponse.data = datasetContent;
+                response = restResponse;
+            } else {
+                response = datasetContent;
+            }
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: content
+                apiResponse: response
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -221,7 +237,14 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         try {
-            let fileContent = await Get.USSFile(session, ussFileName, {binary: options.binary});
+            let fileContent: Buffer;
+            let restResponse: {data: Buffer; etag: string};
+            if (options.returnEtag) {
+                restResponse = await Get.USSFile(session, ussFileName, {binary: options.binary, returnEtag: options.returnEtag});
+                fileContent = restResponse.data;
+            } else {
+                fileContent = await Get.USSFile(session, ussFileName, {binary: options.binary});
+            }
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
@@ -237,10 +260,18 @@ export class Download {
             }
             IO.writeFile(destination, Buffer.from(fileContent));
 
+            let response: any;
+            if (options.returnEtag) {
+                restResponse.data = fileContent;
+                response = restResponse;
+            } else {
+                response = fileContent;
+            }
+
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
-                apiResponse: fileContent
+                apiResponse: response
             };
         } catch (error) {
             Logger.getAppLogger().error(error);

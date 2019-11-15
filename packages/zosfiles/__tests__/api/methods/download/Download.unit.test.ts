@@ -26,7 +26,15 @@ describe("z/OS Files - Download", () => {
     const arrOfUssPath: string[] = ussname.split("/");
     const localFileName = arrOfUssPath[arrOfUssPath.length - 1];
     const ussFileContent = "Test data for unit test";
-
+    const etagValue = "B96F33797D8D271C6FBAB2A6E789D312";
+    const dsContentAndEtag = {
+        data: dsContent,
+        etag: etagValue
+    };
+    const ussContentAndEtag = {
+        data: ussFileContent,
+        etag: etagValue
+    };
     const dummySession = new Session({
         user: "fake",
         password: "fake",
@@ -38,12 +46,16 @@ describe("z/OS Files - Download", () => {
 
     describe("dataset", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+        const zosmfExpectETagSpy = jest.spyOn(ZosmfRestClient, "getExpectBufferAndEtag");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
 
         beforeEach(() => {
             zosmfExpectSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => dsContent);
+
+            zosmfExpectETagSpy.mockClear();
+            zosmfExpectETagSpy.mockImplementation(() => dsContentAndEtag);
 
             ioCreateDirSpy.mockClear();
             ioCreateDirSpy.mockImplementation(() => null);
@@ -218,6 +230,44 @@ describe("z/OS Files - Download", () => {
 
             expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteFileSpy).toHaveBeenCalledWith(file, Buffer.from(dsContent));
+        });
+
+        it("should download a data set and return Etag", async () => {
+            let response;
+            let caughtError;
+            const volume = "testVs";
+            const extension = ".test";
+            const destination = dsFolder + extension;
+            const returnEtag = true;
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {volume, extension, returnEtag});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const newDsContent = IO.processNewlines(dsContent.toString());
+            const dsEtag = response.apiResponse.etag;
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                apiResponse: {
+                    data: Buffer.from(newDsContent),
+                    etag: dsEtag
+                }
+            });
+
+            expect(zosmfExpectETagSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectETagSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_RETURN_ETAG]) ;
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(newDsContent));
         });
 
         it("should handle a z/OS MF error", async () => {
@@ -517,6 +567,7 @@ describe("z/OS Files - Download", () => {
     describe("USS File", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "getExpectString");
         const zosmfExpectBufferSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
+        const zosmfExpectETagSpy = jest.spyOn(ZosmfRestClient, "getExpectBufferAndEtag");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
 
@@ -526,6 +577,9 @@ describe("z/OS Files - Download", () => {
 
             zosmfExpectBufferSpy.mockClear();
             zosmfExpectBufferSpy.mockImplementation(() => ussFileContent);
+
+            zosmfExpectETagSpy.mockClear();
+            zosmfExpectETagSpy.mockImplementation(() => ussContentAndEtag);
 
             ioCreateDirSpy.mockClear();
             ioCreateDirSpy.mockImplementation(() => null);
@@ -595,6 +649,40 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfExpectBufferSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectBufferSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteFileSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteFileSpy).toHaveBeenCalledWith(destination, Buffer.from(ussFileContent));
+        });
+
+        it("should download uss file and return Etag", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+            const returnEtag = true;
+            try {
+                response = await Download.ussFile(dummySession, ussname, {returnEtag});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const ussEtag = response.apiResponse.etag;
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                apiResponse: {
+                    data: Buffer.from(ussFileContent),
+                    etag: ussEtag
+                }
+            });
+
+            expect(zosmfExpectETagSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectETagSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_RETURN_ETAG]);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);

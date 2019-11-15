@@ -14,6 +14,7 @@ import {
     CreateDataSetTypeEnum,
     Delete,
     Download,
+    Upload,
     IDownloadOptions,
     IZosFilesResponse,
     ZosFilesConstants,
@@ -29,7 +30,6 @@ import { readFileSync } from "fs";
 import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
 import { posix } from "path";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-
 const rimraf = require("rimraf").sync;
 
 let REAL_SESSION: Session;
@@ -145,6 +145,43 @@ describe("Download Data Set", () => {
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
                 file = dsname.replace(regex, "/") + ".txt";
+            });
+
+            it("should download a data set and return Etag", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                const options: IDownloadOptions = {
+                    returnEtag: true
+                };
+
+                try {
+                    response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+                expect(response.apiResponse.etag).toBeDefined();
+                // convert the data set name to use as a path/file for clean up in AfterEach
+                const regex = /\./gi;
+                file = dsname.replace(regex, "/") + ".txt";
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                expect(fileContents).toEqual(data);
             });
 
             it("should download a data set that has been populated by upload and use file extension specified", async () => {
@@ -444,6 +481,57 @@ describe("Download Data Set", () => {
                 const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
 
+            });
+
+            it("should download uss file and return Etag", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+
+                const options: IDownloadOptions = {
+                    returnEtag: true
+                };
+
+                try {
+                    response = await Download.ussFile(REAL_SESSION, ussname, options);
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.apiResponse.data).toEqual(Buffer.from(data));
+                expect(response.apiResponse.etag).toBeDefined();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a 10 mb uss file and return Etag", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                // Create a 10 mb buffer
+                const bufferSize = 10000000;
+                const buffer = new ArrayBuffer(bufferSize);
+                const data = Buffer.from(buffer);
+
+                (await Upload.bufferToUSSFile(REAL_SESSION, ussname, data));
+
+                const options: IDownloadOptions = {
+                    returnEtag: true
+                };
+                try {
+                    response = await Download.ussFile(REAL_SESSION, ussname, options);
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.apiResponse.data).toEqual(Buffer.from(data));
+                expect(response.apiResponse.etag).toBeDefined();
             });
 
             it("should download uss file content in binary", async () => {

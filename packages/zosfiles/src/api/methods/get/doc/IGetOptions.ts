@@ -26,4 +26,12 @@ export interface IGetOptions {
      * @type {string}
      */
     volume?: string;
+
+    /**
+     * The indicator to force return of ETag.
+     * If set to 'true' it forces the response to include an "ETag" header, regardless of the size of the response data.
+     * If it is not present, the the default is to only send an Etag for data sets smaller than a system determined length,
+     * which is at least 8MB.
+     */
+    returnEtag?: boolean;
 }

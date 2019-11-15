@@ -50,10 +50,22 @@ export class Get {
             endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
         }
 
+        let dsContent: Buffer;
+        let restResponse: {data: Buffer; etag: string};
+        if (options.returnEtag) {
+            reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+            restResponse = await ZosmfRestClient.getExpectBufferAndEtag(session, endpoint, reqHeaders);
+        } else {
+            dsContent = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
+        }
+        let returnValue: any;
+        if (options.returnEtag) {
+            returnValue = restResponse;
+        } else {
+            returnValue = dsContent;
+        }
 
-        const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
-
-        return content;
+        return returnValue;
     }
 
     /**
@@ -63,11 +75,11 @@ export class Get {
      * @param {string}           USSFileName  - contains the data set name
      * @param {IViewOptions} [options={}] - contains the options to be sent
      *
-     * @returns {Promise<Buffer>} Promise that resolves to the content of the uss file
+     * @returns {Promise<any>} Promise that resolves to the content of the uss file
      *
      * @throws {ImperativeError}
      */
-    public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer> {
+    public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<any> {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         USSFileName = posix.normalize(USSFileName);
@@ -87,8 +99,23 @@ export class Get {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
             }
         }
-        const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 
-        return content;
+        let fileContent: Buffer;
+        let restResponse: {data: Buffer; etag: string};
+        if (options.returnEtag) {
+            reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+            restResponse = await ZosmfRestClient.getExpectBufferAndEtag(session, endpoint, reqHeaders);
+        } else {
+            fileContent = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
+        }
+
+        let returnValue: any;
+        if (options.returnEtag) {
+            returnValue = restResponse;
+        } else {
+            returnValue = fileContent;
+        }
+
+        return returnValue;
     }
 }
