@@ -9,9 +9,10 @@
 *
 */
 
-import { IImperativeError, Logger, RestClient, TextUtils } from "@brightside/imperative";
+import { IImperativeError, Logger, RestClient, TextUtils, Session, HTTP_VERB } from "@brightside/imperative";
 import { isNullOrUndefined } from "util";
 import { ZosmfHeaders } from "./ZosmfHeaders";
+import { IBufferWithEtag } from "../../zosfiles/src/api/doc/IBufferWithEtagResponse";
 
 /**
  * Wrapper for invoke z/OSMF API through the RestClient to perform common error
@@ -29,6 +30,24 @@ export class ZosmfRestClient extends RestClient {
      */
     public get log(): Logger {
         return Logger.getAppLogger();
+    }
+
+    /**
+     * REST HTTP GET operation
+     * @static
+     * @param {Session} session - representing connection to this api
+     * @param {string} resource - URI for which this request should go against
+     * @param {any} reqHeaders - headers to include in the REST request
+     * @returns {Promise<IBufferWithEtag>} - response body content from http(s) call and ETag value
+     * @throws  if the request gets a status code outside of the 200 range
+     *          or other connection problems occur (e.g. connection refused)
+     * @memberof ZosmfRestClient
+     */
+    public static async getExpectBufferAndEtag(session: Session, resource: string, reqHeaders: any[] = []): Promise<IBufferWithEtag> {
+        const client = new this(session);
+        await client.performRest(resource, HTTP_VERB.GET, reqHeaders);
+        const returnValue: IBufferWithEtag = {data: client.data, etag: client.response.headers.etag};
+        return returnValue;
     }
 
     /**

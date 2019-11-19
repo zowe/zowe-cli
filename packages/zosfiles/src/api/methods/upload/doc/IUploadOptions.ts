@@ -74,4 +74,10 @@ export interface IUploadOptions {
      * Default: 1
      */
     maxConcurrentRequests?: number;
+
+    /**
+     * Etag value to pass to z/OSMF.
+     * It is used to check if the file was modified on target system before it is updated.
+     */
+    etag?: string;
 }

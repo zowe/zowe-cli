@@ -157,4 +157,26 @@ export class ZosmfHeaders {
     public static readonly X_IBM_MIGRATED_RECALL_NO_WAIT: IHeaderContent = {"X-IBM-Migrated-Reacall": "nowait"};
     public static readonly X_IBM_MIGRATED_RECALL_ERROR: IHeaderContent = {"X-IBM-Migrated-Reacall": "error"};
 
+    /**
+     * Check ETag on read header
+     * Returns HTTP 304 if not modified
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly IF_NONE_MATCH = "If-None-Match";
+
+    /**
+     * Check ETag on write header
+     * Returns HTTP 412 if not matched
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly IF_MATCH = "If-Match";
+
+    /**
+     * Force ETag return header
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RETURN_ETAG: IHeaderContent = {"X-IBM-Return-Etag": "true"};
 }
