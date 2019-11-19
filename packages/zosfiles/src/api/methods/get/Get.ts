@@ -51,7 +51,7 @@ export class Get {
      *
      * @throws {ImperativeError}
      */
-    public static async dataSetwithEtag(session: AbstractSession, dataSetName: string, options: IGetOptions = {}): Promise<IBufferWithEtag> {
+    public static async dataSetWithEtag(session: AbstractSession, dataSetName: string, options: IGetOptions = {}): Promise<IBufferWithEtag> {
         return await this.dataSetHelper(session, dataSetName, options) as IBufferWithEtag;
     }
 

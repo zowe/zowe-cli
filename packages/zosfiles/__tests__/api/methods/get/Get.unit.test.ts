@@ -139,7 +139,7 @@ describe("z/OS Files - View", () => {
             const returnEtag = true;
 
             try {
-                response = await Get.dataSetwithEtag(dummySession, dsname, {returnEtag});
+                response = await Get.dataSetWithEtag(dummySession, dsname, {returnEtag});
             } catch (e) {
                 caughtError = e;
             }
