@@ -220,7 +220,7 @@ describe("Copy", () => {
             beforeEach(async () => {
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
                     await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                     await Copy.dataSet(
                         REAL_SESSION,
@@ -249,7 +249,8 @@ describe("Copy", () => {
                 }
 
                 expect(error).toBeTruthy();
-                expect(response).toBeNull();
+                expect(error.message).toContain("Like-named member already exists");
+                expect(response).toBeFalsy();
             });
             it("Should succeed with replace option", async () => {
                 let error;
