@@ -15,13 +15,14 @@ import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { Get, IGetOptions } from "../../../../src/api/methods/get";
 import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
+import { IBufferWithEtag } from "../../../../src/api/doc/IBufferWithEtagResponse";
 
 describe("z/OS Files - View", () => {
     const dsname = "USER.DATA.SET";
     const ussfile = "USER.TXT";
     const content = Buffer.from("This\nis\r\na\ntest");
     const etagValue = "B96F33797D8D271C6FBAB2A6E789D312";
-    const contentAndEtag = {
+    const contentAndEtag: IBufferWithEtag = {
         data: content,
         etag: etagValue
     };
@@ -133,12 +134,12 @@ describe("z/OS Files - View", () => {
         });
 
         it("should get data set content and Etag", async () => {
-            let response;
+            let response: IBufferWithEtag;
             let caughtError;
             const returnEtag = true;
 
             try {
-                response = await Get.dataSet(dummySession, dsname, {returnEtag});
+                response = await Get.dataSetwithEtag(dummySession, dsname, {returnEtag});
             } catch (e) {
                 caughtError = e;
             }
@@ -273,12 +274,12 @@ describe("z/OS Files - View", () => {
             });
 
             it("should get uss file content and Etag", async () => {
-                let response;
+                let response: IBufferWithEtag;
                 let caughtError;
                 const returnEtag = true;
 
                 try {
-                    response = await Get.USSFile(dummySession, ussfile, {returnEtag});
+                    response = await Get.USSFileWithEtag(dummySession, ussfile, {returnEtag});
                 } catch (e) {
                     caughtError = e;
                 }

@@ -23,6 +23,7 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions } from "./doc/IDownloadOptions";
+import { IBufferWithEtag } from "../../doc/IBufferWithEtagResponse";
 import { Get } from "../get/Get";
 import { asyncPool } from "../../../../../utils";
 
@@ -80,7 +81,7 @@ export class Download {
             }
 
             let datasetContent: Buffer;
-            let restResponse: {data: Buffer; etag: string};
+            let restResponse: IBufferWithEtag;
             if (options.returnEtag) {
                 reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
                 restResponse = await ZosmfRestClient.getExpectBufferAndEtag(session, endpoint, reqHeaders);
@@ -238,9 +239,9 @@ export class Download {
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         try {
             let fileContent: Buffer;
-            let restResponse: {data: Buffer; etag: string};
+            let restResponse: IBufferWithEtag;
             if (options.returnEtag) {
-                restResponse = await Get.USSFile(session, ussFileName, {binary: options.binary, returnEtag: options.returnEtag});
+                restResponse = await Get.USSFileWithEtag(session, ussFileName, {binary: options.binary, returnEtag: options.returnEtag});
                 fileContent = restResponse.data;
             } else {
                 fileContent = await Get.USSFile(session, ussFileName, {binary: options.binary});
