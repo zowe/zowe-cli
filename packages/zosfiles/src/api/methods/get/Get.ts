@@ -17,6 +17,7 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
+import { IBufferWithEtag } from "../../doc/IBufferWithEtagResponse";
 
 /**
  * This class holds helper functions that are used to get the content of data sets or USS files through the z/OSMF APIs
@@ -29,31 +30,29 @@ export class Get {
      *
      * @param {AbstractSession}  session      - z/OSMF connection info
      * @param {string}           dataSetName  - contains the data set name
-     * @param {IViewOptions} [options={}] - contains the options to be sent
+     * @param {IGetOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<Buffer>} Promise that resolves to the content of the data set
      *
      * @throws {ImperativeError}
      */
     public static async dataSet(session: AbstractSession, dataSetName: string, options: IGetOptions = {}): Promise<Buffer> {
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        return await this.dataSetHelper(session, dataSetName, options) as Buffer;
+    }
 
-        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
-
-        let reqHeaders: IHeaderContent[] = [];
-        if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        }
-
-        if (options.volume) {
-            endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
-        }
-
-
-        const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
-
-        return content;
+    /**
+     * Retrieve data sets content with Etag
+     *
+     * @param {AbstractSession}  session      - z/OSMF connection info
+     * @param {string}           dataSetName  - contains the data set name
+     * @param {IGetOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IBufferWithEtag>} Promise that resolves to the content of the data set
+     *
+     * @throws {ImperativeError}
+     */
+    public static async dataSetWithEtag(session: AbstractSession, dataSetName: string, options: IGetOptions = {}): Promise<IBufferWithEtag> {
+        return await this.dataSetHelper(session, dataSetName, options) as IBufferWithEtag;
     }
 
     /**
@@ -61,13 +60,43 @@ export class Get {
      *
      * @param {AbstractSession}  session      - z/OSMF connection info
      * @param {string}           USSFileName  - contains the data set name
-     * @param {IViewOptions} [options={}] - contains the options to be sent
+     * @param {IGetOptions} [options={}] - contains the options to be sent
      *
      * @returns {Promise<Buffer>} Promise that resolves to the content of the uss file
      *
      * @throws {ImperativeError}
      */
-    public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer> {
+    public static async USSFile(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer>  {
+        return await this.USSFileHelper(session, USSFileName, options) as Buffer;
+    }
+
+    /**
+     * Retrieve USS file content and Etag
+     *
+     * @param {AbstractSession}  session      - z/OSMF connection info
+     * @param {string}           USSFileName  - contains the data set name
+     * @param {IGetOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<IBufferWithEtag>} Promise that resolves to the content of the uss file
+     *
+     * @throws {ImperativeError}
+     */
+    public static async USSFileWithEtag(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<IBufferWithEtag>  {
+        return await this.USSFileHelper(session, USSFileName, options) as IBufferWithEtag;
+    }
+
+    /**
+     * Helper method - Retrieve USS file content
+     *
+     * @param {AbstractSession}  session      - z/OSMF connection info
+     * @param {string}           USSFileName  - contains the data set name
+     * @param {IGetOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<Buffer|IBufferWithEtag>} Promise that resolves to the content of the uss file
+     *
+     * @throws {ImperativeError}
+     */
+    private static async USSFileHelper(session: AbstractSession, USSFileName: string, options: IGetOptions = {}): Promise<Buffer|IBufferWithEtag>  {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         USSFileName = posix.normalize(USSFileName);
@@ -87,8 +116,54 @@ export class Get {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
             }
         }
-        const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 
-        return content;
+        let fileContent: Buffer;
+        let restResponse: IBufferWithEtag;
+        if (options.returnEtag) {
+            reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+            restResponse = await ZosmfRestClient.getExpectBufferAndEtag(session, endpoint, reqHeaders);
+        } else {
+            fileContent = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
+        }
+
+        return options.returnEtag ? restResponse : fileContent;
+    }
+
+    /**
+     * Private method - Retrieve data sets content
+     *
+     * @param {AbstractSession}  session      - z/OSMF connection info
+     * @param {string}           dataSetName  - contains the data set name
+     * @param {IGetOptions} [options={}] - contains the options to be sent
+     *
+     * @returns {Promise<Buffer|IBufferWithEtag>} Promise that resolves to the content of the data set
+     *
+     * @throws {ImperativeError}
+     */
+    private static async dataSetHelper(session: AbstractSession, dataSetName: string, options: IGetOptions = {}): Promise<Buffer|IBufferWithEtag> {
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+
+        let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
+
+        let reqHeaders: IHeaderContent[] = [];
+        if (options.binary) {
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+        }
+
+        if (options.volume) {
+            endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
+        }
+
+        let dsContent: Buffer;
+        let restResponse: IBufferWithEtag;
+        if (options.returnEtag) {
+            reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+            restResponse = await ZosmfRestClient.getExpectBufferAndEtag(session, endpoint, reqHeaders);
+        } else {
+            dsContent = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
+        }
+
+        return options.returnEtag ? restResponse : dsContent;
     }
 }

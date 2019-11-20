@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs submit command Syntax errors should occur if --wfa and --directory are both specified 1`] = `
+"
+Syntax Error:
+The following options conflict (mutually exclusive):
+--wait-for-active
+--directory
+
+Syntax Error:
+Missing Required Option:
+--host (-H)
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
+Missing Required Option:
+--user (-u)
+
+Option Description:
+Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+Syntax Error:
+Missing Required Option:
+--password (--pass,--pw)
+
+Option Description:
+Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+Use \\"zowe zos-jobs submit stdin --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs submit command Syntax errors should occur if --wfa and --vasc are both specified  1`] = `
+"
+Syntax Error:
+The following options conflict (mutually exclusive):
+--wait-for-active
+--view-all-spool-content
+
+Syntax Error:
+Missing Required Option:
+--host (-H)
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
+Missing Required Option:
+--user (-u)
+
+Option Description:
+Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+Syntax Error:
+Missing Required Option:
+--password (--pass,--pw)
+
+Option Description:
+Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+Use \\"zowe zos-jobs submit stdin --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs submit command should display the help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   stdin | in
+
+ DESCRIPTION
+ -----------
+
+   Submit a job (JCL) passed to the command via the stdin stream. The command
+   presents errors verbatim from the z/OSMF Jobs REST endpoints. For more
+   information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST
+   documentation.
+
+ USAGE
+ -----
+
+   zowe zos-jobs submit stdin [options]
+
+ OPTIONS
+ -------
+
+   --view-all-spool-content  | --vasc (boolean)
+
+      Print all spool output. If you use this option you will wait the job to
+      complete.
+
+   --wait-for-output  | --wfo (boolean)
+
+      Wait for the job to enter OUTPUT status before completing the command.
+
+   --wait-for-active  | --wfa (boolean)
+
+      Wait for the job to enter ACTIVE status before completing the command.
+
+   --directory  | -d (string)
+
+      The local directory you would like to download the output of the job. Creates a
+      subdirectory using the jobID as the name and files are titled based on DD names.
+      If you use this option you will wait the job to complete.
+
+   --extension  | -e (string)
+
+      A file extension to save the job output with. Default is '.txt'.
+
+ ZOSMF CONNECTION OPTIONS
+ ------------------------
+
+   --host  | -H (string)
+
+      The z/OSMF server host name.
+
+   --port  | -P (number)
+
+      The z/OSMF server port.
+
+      Default value: 443
+
+   --user  | -u (string)
+
+      Mainframe (z/OSMF) user name, which can be the same as your TSO login.
+
+   --password  | --pass | --pw (string)
+
+      Mainframe (z/OSMF) password, which can be the same as your TSO password.
+
+   --reject-unauthorized  | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+   --base-path  | --bp (string)
+
+      The base path for your API mediation layer instance. Specify this option to
+      prepend the base path to all z/OSMF resources when making REST requests. Do not
+      specify this option if you are not using an API mediation layer.
+
+ PROFILE OPTIONS
+ ---------------
+
+   --zosmf-profile  | --zosmf-p (string)
+
+      The name of a (zosmf) profile to load for this command execution.
+
+ RESPONSE FORMAT OPTIONS
+ -----------------------
+
+   --response-format-filter  | --rff (array)
+
+      Filter (include) fields in the response. Accepts an array of field/property
+      names to include in the output response. You can filter JSON objects properties
+      OR table columns/fields. In addition, you can use this option in conjunction
+      with '--response-format-type' to reduce the output of a command to a single
+      field/property or a list of a single field/property.
+
+   --response-format-type  | --rft (string)
+
+      The command response output format type. Must be one of the following:
+
+      table: Formats output data as a table. Use this option when the output data is
+      an array of homogeneous JSON objects. Each property of the object will become a
+      column in the table.
+
+      list: Formats output data as a list of strings. Can be used on any data type
+      (JSON objects/arrays) are stringified and a new line is added after each entry
+      in an array.
+
+      object: Formats output data as a list of prettified objects (or single object).
+      Can be used in place of \\"table\\" to change from tabular output to a list of
+      prettified objects.
+
+      string: Formats output data as a string. JSON objects/arrays are stringified.
+
+      Allowed values: table, list, object, string
+
+   --response-format-header  | --rfh (boolean)
+
+      If \\"--response-format-type table\\" is specified, include the column headers in
+      the output.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+"
+`;
