@@ -294,7 +294,7 @@ describe("Copy", () => {
                     await Copy.dataSet(
                         dummySession,
                         { dataSetName: fromDataSetName },
-                        { dataSetName: undefined},
+                        { dataSetName: undefined },
                     );
                 } catch (err) {
                     error = err;
