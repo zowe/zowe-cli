@@ -62,6 +62,8 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             sourceType = "dataset";
         } else if (this.mArguments.localFile) {
             sourceType = "local-file";
+        } else if (params.definition.name === "stdin") {
+            sourceType = "stdin";
         }
         let response: IJob; // Response from Submit Job
         let apiObj: any;    // API Object to set in the command JSON response
