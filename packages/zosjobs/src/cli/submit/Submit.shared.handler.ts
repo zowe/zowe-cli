@@ -19,6 +19,7 @@ import { ISpoolFile } from "../../api/doc/response/ISpoolFile";
 import { IDownloadOptions } from "../../../../zosfiles/src/api/methods/download/doc/IDownloadOptions";
 import { Get } from "../../../../zosfiles/src/api/methods/get/Get";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import getstdin = require("get-stdin");
 
 /**
  * "zos-jobs submit data-set" command handler. Submits a job (JCL) contained within a z/OS data set (PS or PDS member).
@@ -61,6 +62,8 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             sourceType = "dataset";
         } else if (this.mArguments.localFile) {
             sourceType = "local-file";
+        } else if (params.definition.name === "stdin") {
+            sourceType = "stdin";
         }
         let response: IJob; // Response from Submit Job
         let apiObj: any;    // API Object to set in the command JSON response
@@ -109,11 +112,20 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                     spoolFilesResponse = apiObj;
                 }
                 break;
+            // Submit the JCL piped in on stdin
+            case "stdin":
+                const Jcl = await getstdin();
+                apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);
+                source = "stdin";
+                if (parms.viewAllSpoolContent) {
+                    spoolFilesResponse = apiObj;
+                }
+                break;
             default:
                 throw new ImperativeError({
                     msg: `Internal submit error: Unable to determine the JCL source. ` +
                         `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(params.arguments)
                 });
         }
 
