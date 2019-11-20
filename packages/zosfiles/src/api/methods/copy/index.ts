@@ -9,6 +9,4 @@
 *
 */
 
-export * from "./doc/ICopyDataSet";
-
 export * from "./Copy";
