@@ -216,5 +216,73 @@ describe("Copy", () => {
                 });
             });
         });
+        describe("Replace option", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                    await Copy.dataSet(
+                        REAL_SESSION,
+                        { dataSetName: fromDataSetName, memberName: file1 },
+                        { dataSetName: toDataSetName, memberName: file2 },
+                    );
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("Should result in error without replace option", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dataSetName: fromDataSetName, memberName: file1 },
+                        { dataSetName: toDataSetName, memberName: file2 },
+                        { replace: false }
+                    );
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeTruthy();
+                expect(error.message).toContain("Like-named member already exists");
+                expect(response).toBeFalsy();
+            });
+            it("Should succeed with replace option", async () => {
+                let error;
+                let response;
+                let contents1;
+                let contents2;
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dataSetName: fromDataSetName, memberName: file1 },
+                        { dataSetName: toDataSetName, memberName: file2 },
+                        { replace: true }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                expect(contents1).toBeTruthy();
+                expect(contents2).toBeTruthy();
+                expect(contents1.toString()).toEqual(contents2.toString());
+            });
+        });
     });
 });
