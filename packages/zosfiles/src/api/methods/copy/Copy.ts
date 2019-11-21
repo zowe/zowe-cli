@@ -68,7 +68,7 @@ export class Copy {
         }
 
         if (options.replace !== undefined) {
-            payload["replace"] = options.replace;
+            payload.replace = options.replace;
         }
 
         const reqHeaders: IHeaderContent[] = [
