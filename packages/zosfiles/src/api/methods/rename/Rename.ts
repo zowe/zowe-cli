@@ -16,7 +16,7 @@ import { ZosmfRestClient, IHeaderContent } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { IDataSet } from "../..";
+import { IDataSet } from "../../doc/IDataSet";
 
 /**
  * Class to handle renaming data sets
@@ -34,15 +34,13 @@ export class Rename {
         beforeDataSetName: string,
         afterDataSetName: string,
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toNotBeNullOrUndefined(beforeDataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(beforeDataSetName, "", ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeNullOrUndefined(afterDataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(afterDataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(beforeDataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(afterDataSetName, ZosFilesMessages.missingDatasetName.message);
 
         return this.rename(
             session,
-            afterDataSetName,
-            { dataSetName: beforeDataSetName },
+            afterDataSetName.trim(),
+            { dataSetName: beforeDataSetName.trim() },
         );
     }
 
@@ -60,17 +58,14 @@ export class Rename {
         beforeMemberName: string,
         afterMemberName: string,
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeNullOrUndefined(beforeMemberName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(beforeMemberName, "", ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeNullOrUndefined(afterMemberName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(afterMemberName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(beforeMemberName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(afterMemberName, ZosFilesMessages.missingDatasetName.message);
 
         return this.rename(
             session,
-            `${dataSetName}(${afterMemberName})`,
-            { dataSetName, memberName: beforeMemberName },
+            `${dataSetName.trim()}(${afterMemberName.trim()})`,
+            { dataSetName: dataSetName.trim(), memberName: beforeMemberName.trim() },
         );
     }
 
@@ -85,7 +80,6 @@ export class Rename {
         afterDataSetName: string,
         { dataSetName: beforeDataSetName, memberName: beforeMemberName }: IDataSet,
     ): Promise<IZosFilesResponse> {
-
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,

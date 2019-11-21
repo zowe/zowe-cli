@@ -300,7 +300,7 @@ describe("Copy", () => {
                     error = err;
                 }
 
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required object must be defined");
             });
         });
     });
