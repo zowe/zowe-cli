@@ -75,7 +75,7 @@ describe("Rename", () => {
                 }
 
                 expect(putExpectStringSpy).toHaveBeenCalledTimes(0);
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required object must be defined");
             });
             it("Should throw an error if the after data set name is missing", async () => {
                 let error;
@@ -86,7 +86,7 @@ describe("Rename", () => {
                 }
 
                 expect(putExpectStringSpy).toHaveBeenCalledTimes(0);
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required object must be defined");
             });
             it("Should fail if the zOSMF REST client fails", async () => {
                 const errorMessage = "Dummy error message";
@@ -172,7 +172,7 @@ describe("Rename", () => {
                 }
 
                 expect(putExpectStringSpy).toHaveBeenCalledTimes(0);
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required object must be defined");
             });
             it("Should fail if the zOSMF REST client fails", async () => {
                 const errorMessage = "Dummy error message";
