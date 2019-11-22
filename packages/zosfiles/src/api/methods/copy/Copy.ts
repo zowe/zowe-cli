@@ -44,8 +44,8 @@ export class Copy {
         { dataSetName: toDataSetName, memberName: toMemberName }: IDataSet,
         options: ICopyDatasetOptions = {}
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toBeDefinedAndNonBlank(fromDataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(fromDataSetName, "fromDataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,

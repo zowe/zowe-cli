@@ -285,7 +285,7 @@ describe("Copy", () => {
                     error = err;
                 }
 
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required parameter 'fromDataSetName' must not be blank");
             });
             it("should fail if an undefined data set name is supplied", async () => {
                 let error;
