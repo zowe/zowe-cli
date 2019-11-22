@@ -66,6 +66,17 @@ describe("Rename", () => {
             });
         });
         describe("Failure Scenarios", () => {
+            it("Should throw an error if a data set name is empty", async () => {
+                let error;
+                try {
+                    await Rename.dataSet(dummySession, "", afterDataSetName);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(putExpectStringSpy).toHaveBeenCalledTimes(0);
+                expect(error.message).toContain("Required parameter 'beforeDataSetName' must not be blank");
+            });
             it("Should throw an error if the before data set name is missing", async () => {
                 let error;
                 try {
@@ -163,6 +174,17 @@ describe("Rename", () => {
             });
         });
         describe("Failure Scenarios", () => {
+            it("Should throw an error if a member name is empty", async () => {
+                let error;
+                try {
+                    await Rename.dataSetMember(dummySession, dataSetName, beforeMemberName, "");
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(putExpectStringSpy).toHaveBeenCalledTimes(0);
+                expect(error.message).toContain("Required parameter 'afterMemberName' must not be blank");
+            });
             it("Should throw an error if a member name is missing", async () => {
                 let error;
                 try {

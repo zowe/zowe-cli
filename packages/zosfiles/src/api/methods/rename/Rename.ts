@@ -34,8 +34,8 @@ export class Rename {
         beforeDataSetName: string,
         afterDataSetName: string,
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toBeDefinedAndNonBlank(beforeDataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toBeDefinedAndNonBlank(afterDataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(beforeDataSetName, "beforeDataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(afterDataSetName, "afterDataSetName");
 
         return this.rename(
             session,
@@ -58,9 +58,9 @@ export class Rename {
         beforeMemberName: string,
         afterMemberName: string,
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toBeDefinedAndNonBlank(dataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toBeDefinedAndNonBlank(beforeMemberName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toBeDefinedAndNonBlank(afterMemberName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(dataSetName, "dataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(beforeMemberName, "beforeMemberName");
+        ImperativeExpect.toBeDefinedAndNonBlank(afterMemberName, "afterMemberName");
 
         return this.rename(
             session,

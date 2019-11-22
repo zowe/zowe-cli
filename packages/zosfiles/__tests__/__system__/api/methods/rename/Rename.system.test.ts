@@ -158,7 +158,7 @@ describe("Rename", () => {
                 }
 
                 expect(error).toBeTruthy();
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required parameter 'beforeDataSetName' must not be blank");
                 expect(response).toBeFalsy();
             });
             it("Shouldn't be able to rename a data set with an undefined name", async () => {
@@ -190,7 +190,7 @@ describe("Rename", () => {
                 }
 
                 expect(error).toBeTruthy();
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required parameter 'afterDataSetName' must not be blank");
                 expect(response).toBeFalsy();
             });
             it("Shouldn't be able to rename a data set to an undefined name", async () => {
