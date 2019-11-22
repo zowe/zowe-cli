@@ -18,6 +18,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { IDataSet } from "../../doc/IDataSet";
+import { ICopyDatasetOptions } from "./doc/ICopyDatasetOptions";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -41,6 +42,7 @@ export class Copy {
         session: AbstractSession,
         { dataSetName: fromDataSetName, memberName: fromMemberName }: IDataSet,
         { dataSetName: toDataSetName, memberName: toMemberName }: IDataSet,
+        options: ICopyDatasetOptions = {}
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(fromDataSetName, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
@@ -59,6 +61,10 @@ export class Copy {
                 member: fromMemberName,
             },
         };
+
+        if (options.replace !== undefined) {
+            payload.replace = options.replace;
+        }
 
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
