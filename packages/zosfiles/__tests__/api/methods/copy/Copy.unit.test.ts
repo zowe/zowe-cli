@@ -189,6 +189,46 @@ describe("Copy", () => {
                     );
                 });
             });
+            describe("Replace option", () => {
+                it("should not contain replace in payload", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: fromDataSetName },
+                        { dataSetName: toDataSetName }
+                    );
+
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).not.toHaveProperty("replace");
+                });
+                it("should contain replace with value true in payload", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: fromDataSetName },
+                        { dataSetName: toDataSetName },
+                        { replace: true }
+                    );
+
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).toHaveProperty("replace", true);
+                });
+                it("should contain replace with value false in payload", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: fromDataSetName },
+                        { dataSetName: toDataSetName },
+                        { replace: false }
+                    );
+
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).toHaveProperty("replace", false);
+                });
+            });
         });
         describe("Failure Scenarios", () => {
             it("should fail if the zOSMF REST client fails", async () => {
@@ -245,7 +285,7 @@ describe("Copy", () => {
                     error = err;
                 }
 
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required parameter 'fromDataSetName' must not be blank");
             });
             it("should fail if an undefined data set name is supplied", async () => {
                 let error;
@@ -254,13 +294,13 @@ describe("Copy", () => {
                     await Copy.dataSet(
                         dummySession,
                         { dataSetName: fromDataSetName },
-                        { dataSetName: undefined},
+                        { dataSetName: undefined },
                     );
                 } catch (err) {
                     error = err;
                 }
 
-                expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+                expect(error.message).toContain("Required object must be defined");
             });
         });
     });

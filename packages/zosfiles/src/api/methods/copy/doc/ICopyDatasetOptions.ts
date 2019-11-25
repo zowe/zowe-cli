@@ -9,4 +9,13 @@
 *
 */
 
-export * from "./Copy";
+/**
+ * This interface defines the options that can be sent into the copy data set function.
+ */
+export interface ICopyDatasetOptions {
+    /**
+     * Replace option
+     * @type {boolean}
+     */
+    replace?: boolean;
+}

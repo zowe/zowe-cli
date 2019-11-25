@@ -10,12 +10,11 @@
 */
 
 /**
- * Interface for the copy dataset API
- *  zOSMF REST API information:
- *    https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
+ * Interface for data sets
+ *
  * @export
  */
-export interface ICopyDataSet {
+export interface IDataSet {
     /**
      * The name of the data set
      * @type {string}
