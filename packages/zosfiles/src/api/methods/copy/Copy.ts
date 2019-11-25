@@ -62,6 +62,10 @@ export class Copy {
             },
         };
 
+        if (options.enq !== undefined) {
+            payload.enq = options.enq;
+        }
+
         if (options.replace !== undefined) {
             payload.replace = options.replace;
         }

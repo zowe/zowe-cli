@@ -14,6 +14,13 @@
  */
 export interface ICopyDatasetOptions {
     /**
+     * Enq option
+     * Allow values are: SHR, SHRW, EXCLU.
+     * @type {string}
+     */
+    enq?: string;
+
+    /**
      * Replace option
      * @type {boolean}
      */

@@ -189,6 +189,46 @@ describe("Copy", () => {
                     );
                 });
             });
+            describe("enq option", () => {
+                it("should not contain enq in payload", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: fromDataSetName },
+                        { dataSetName: toDataSetName }
+                    );
+
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).not.toHaveProperty("enq");
+                });
+                it("should contain valid enq value in payload", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: fromDataSetName },
+                        { dataSetName: toDataSetName },
+                        { enq: "SHR" }
+                    );
+
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).toHaveProperty("enq", "SHR");
+                });
+                it("should contain invalid enq value in payload", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: fromDataSetName },
+                        { dataSetName: toDataSetName },
+                        { enq: "AnyThing" }
+                    );
+
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).toHaveProperty("enq", "AnyThing");
+                });
+            });
             describe("Replace option", () => {
                 it("should not contain replace in payload", async () => {
                     await Copy.dataSet(
