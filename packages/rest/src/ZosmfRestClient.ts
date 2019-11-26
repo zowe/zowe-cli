@@ -13,6 +13,7 @@ import { IImperativeError, Logger, RestClient, TextUtils, Session, HTTP_VERB } f
 import { isNullOrUndefined } from "util";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 import { IBufferWithEtag } from "../../zosfiles/src/api/doc/IBufferWithEtagResponse";
+import { IStringWithEtag } from "../../zosfiles/src/api/doc/IStringWithEtagResponse";
 
 /**
  * Wrapper for invoke z/OSMF API through the RestClient to perform common error
@@ -47,6 +48,28 @@ export class ZosmfRestClient extends RestClient {
         const client = new this(session);
         await client.performRest(resource, HTTP_VERB.GET, reqHeaders);
         const returnValue: IBufferWithEtag = {data: client.data, etag: client.response.headers.etag};
+        return returnValue;
+    }
+
+    /**
+     * REST HTTP PUT operation
+     * @static
+     * @param {AbstractSession} session - representing connection to this api
+     * @param {string} resource - URI for which this request should go against
+     * @param {object[]} reqHeaders - headers to include in the REST request
+     * @param {any} data - payload data
+     * @returns {Promise<IStringWithEtag>} - response body content from http(s) call
+     * @throws  if the request gets a status code outside of the 200 range
+     *          or other connection problems occur (e.g. connection refused)
+     * @memberof RestClient
+     */
+    public static async putExpectStringAndEtag(session: Session, resource: string, reqHeaders: any[] = [], data: any): Promise<IStringWithEtag> {
+        const client = new this(session);
+        await client.performRest(resource, HTTP_VERB.PUT, reqHeaders, data);
+        const returnValue: IStringWithEtag = {
+            data: client.response ,
+            etag: client.response.headers.etag
+        };
         return returnValue;
     }
 
