@@ -17,7 +17,8 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
-import { ICopyDataSet } from ".";
+import { IDataSet } from "../../doc/IDataSet";
+import { ICopyDatasetOptions } from "./doc/ICopyDatasetOptions";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -27,8 +28,8 @@ export class Copy {
      * Copy the contents of a dataset
      *
      * @param {AbstractSession}   session        - z/OSMF connection info
-     * @param {ICopyDataSet}      fromDataSet    - The data set to copy from
-     * @param {ICopyDataSet}      toDataSet      - The data set to copy to
+     * @param {IDataSet}          fromDataSet    - The data set to copy from
+     * @param {IDataSet}          toDataSet      - The data set to copy to
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the status of the copying
      *
@@ -39,13 +40,12 @@ export class Copy {
      */
     public static async dataSet(
         session: AbstractSession,
-        { dataSetName: fromDataSetName, memberName: fromMemberName }: ICopyDataSet,
-        { dataSetName: toDataSetName, memberName: toMemberName }: ICopyDataSet,
+        { dataSetName: fromDataSetName, memberName: fromMemberName }: IDataSet,
+        { dataSetName: toDataSetName, memberName: toMemberName }: IDataSet,
+        options: ICopyDatasetOptions = {}
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toNotBeNullOrUndefined(fromDataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(fromDataSetName, "", ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeNullOrUndefined(toDataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(toDataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toBeDefinedAndNonBlank(fromDataSetName, "fromDataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
@@ -58,11 +58,12 @@ export class Copy {
             "request": "copy",
             "from-dataset": {
                 dsn: fromDataSetName,
-            },
+                member: fromMemberName,
+            }
         };
 
-        if(fromMemberName != null) {
-            payload["from-dataset"].member = fromMemberName;
+        if (options.replace !== undefined) {
+            payload.replace = options.replace;
         }
 
         const reqHeaders: IHeaderContent[] = [
