@@ -28,6 +28,7 @@ import { IUploadDir } from "./doc/IUploadDir";
 import { asyncPool } from "../../../../../utils";
 import { ZosFilesAttributes, TransferMode } from "../../utils/ZosFilesAttributes";
 import { Utilities, Tag } from "../utilities";
+import { IStringWithEtag } from "../../doc/IStringWithEtagResponse";
 
 export class Upload {
 
@@ -192,12 +193,22 @@ export class Upload {
                 reqHeader.push({"If-Match" : options.etag});
             }
 
-            await ZosmfRestClient.putExpectString(session, endpoint, reqHeader, fileBuffer);
+            let uploadResponse: IZosFilesResponse;
+            let response: string | IStringWithEtag;
+            if (options.returnEtag) {
+                reqHeader.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                response = await ZosmfRestClient.putExpectStringAndEtag(session, endpoint, reqHeader, fileBuffer);
+            } else {
+                response = await ZosmfRestClient.putExpectString(session, endpoint, reqHeader, fileBuffer);
+            }
 
-            return {
+            uploadResponse = {
                 success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
+                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+                apiResponse: response
             };
+
+            return uploadResponse;
         } catch (error) {
             throw error;
         }
@@ -335,14 +346,17 @@ export class Upload {
                     try {
                         // read payload from file
                         payload = fs.readFileSync(uploadingFile);
-
                         const result = await this.bufferToDataSet(session, payload, uploadingDsn, options);
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
-                        results.push({
+                        const toBePushed: IUploadResult = {
                             success: result.success,
                             from: uploadingFile,
-                            to: uploadingDsn
-                        });
+                            to: uploadingDsn,
+                        };
+                        if (options.returnEtag) {
+                            toBePushed.etag = result.apiResponse.etag;
+                        }
+                        results.push(toBePushed);
                     } catch (err) {
                         this.log.error(`Failure Uploading data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
@@ -413,13 +427,50 @@ export class Upload {
         }
         return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
     }
+    /**
+     * Upload content to USS file and returns the new Etag value set
+     * It has an implicit returnEtag = true
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} ussname          - Name of the USS file to write to
+     * @param {Buffer} buffer           - Data to be written
+     * @param {boolean} binary          - The indicator to upload the file in binary mode
+     * @param {string} etag             - ETag value
+     * @returns {Promise<object>}
+     */
+    public static async bufferToUSSFileWithEtag(session: AbstractSession,
+                                                ussname: string,
+                                                buffer: Buffer,
+                                                binary: boolean = false,
+                                                localEncoding?: string,
+                                                etag?: string): Promise<IStringWithEtag> {
+        ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
+        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
+        const headers: any[] = [];
+        // implicit returnEtag = true
+        headers.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+        if (binary) {
+            headers.push(ZosmfHeaders.OCTET_STREAM);
+            headers.push(ZosmfHeaders.X_IBM_BINARY);
+        } else if (localEncoding) {
+            headers.push({"Content-Type": localEncoding});
+            headers.push(ZosmfHeaders.X_IBM_TEXT);
+        } else {
+            headers.push(ZosmfHeaders.TEXT_PLAIN);
+        }
+        if (etag) {
+            headers.push({"If-Match" : etag});
+        }
+        return ZosmfRestClient.putExpectStringAndEtag(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
+    }
 
     public static async fileToUSSFile(session: AbstractSession,
                                       inputFile: string,
                                       ussname: string,
                                       binary: boolean = false,
                                       localEncoding?: string,
-                                      etag?: string): Promise<IZosFilesResponse> {
+                                      etag?: string,
+                                      returnEtag?: boolean): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
@@ -450,16 +501,25 @@ export class Upload {
 
         let payload;
         let result: IUploadResult;
-
         // read payload from file
         payload = fs.readFileSync(inputFile);
-
-        await this.bufferToUSSFile(session, ussname, payload, binary, localEncoding, etag);
+        let response: string | IStringWithEtag;
+        let uploadEtag: string;
+        if (returnEtag) {
+            response = await this.bufferToUSSFileWithEtag(session, ussname, payload, binary, localEncoding, etag);
+            uploadEtag = response.etag;
+        } else {
+            response = await this.bufferToUSSFile(session, ussname, payload, binary, localEncoding, etag);
+        }
         result = {
             success: true,
             from: inputFile,
             to: ussname
         };
+        if (uploadEtag) {
+            result.etag = uploadEtag;
+        }
+
         return {
             success: true,
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
