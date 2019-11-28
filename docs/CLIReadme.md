@@ -70,19 +70,19 @@ For Zowe CLI support, visit https://zowe.org
 		* [data-set-classic](#command-data-set-classic)
 		* [data-set-vsam](#command-data-set-vsam)
 	* [delete | del](#module-delete)
-		* [data-set](#command-data-set)
+		* [data-set](#command-delete-data-set)
 		* [data-set-vsam](#command-data-set-vsam)
 		* [uss-file](#command-uss-file)
 	* [invoke | call](#module-invoke)
 		* [ams-statements](#command-ams-statements)
 		* [ams-file](#command-ams-file)
 	* [download | dl](#module-download)
-		* [data-set](#command-data-set)
+		* [data-set](#command-download-data-set)
 		* [all-members](#command-all-members)
 		* [uss-file](#command-uss-file)
 	* [list | ls](#module-list)
 		* [all-members](#command-all-members)
-		* [data-set](#command-data-set)
+		* [data-set](#command-list-data-set)
 		* [uss-files](#command-uss-files)
 	* [upload | ul](#module-upload)
 		* [file-to-data-set](#command-file-to-data-set)
@@ -664,11 +664,11 @@ z/OS SSH server at host 'zos123' and port 13022:
       * `$  zowe profiles create ssh-profile ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss`
 
 *  Create a ssh profile called 'ssh333' to connect to
-z/OS SSH server at host 'zos123' using a privatekey '/path/to/privatkey'
+z/OS SSH server at host 'zos123' using a privatekey '/path/to/privatekey'
 and its decryption passphrase 'privateKeyPassphrase' for privatekey
 authentication:
 
-      * `$  zowe profiles create ssh-profile ssh333 --host sshhost --user ibmuser --priavetKey /path/to/privatekey --keyPassphrase privateKeyPassphrase`
+      * `$  zowe profiles create ssh-profile ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase`
 
 ## update | upd<a name="module-update"></a>
 Update a  profile.You can update any property present within the profile configuration. The updated profile  will be printed so that you can review the result of the updates.
@@ -2737,7 +2737,7 @@ which is retained for 100 days:
 
 ## delete | del<a name="module-delete"></a>
 Delete a data set or Unix System Services file
-### data-set<a name="command-data-set"></a>
+### data-set<a name="command-delete-data-set"></a>
 Delete a data set permanently
 
 #### Usage
@@ -3125,7 +3125,7 @@ statements:
 
 ## download | dl<a name="module-download"></a>
 Download content from z/OS data sets and USS files to your PC
-### data-set<a name="command-data-set"></a>
+### data-set<a name="command-download-data-set"></a>
 Download content from a z/OS data set to a local file
 
 #### Usage
@@ -3487,7 +3487,7 @@ Options section of this help text\.
 
       * `$  zowe zos-files list all-members "ibmuser.cntl" --max 5`
 
-### data-set<a name="command-data-set"></a>
+### data-set<a name="command-list-data-set"></a>
 List data sets that match a pattern in the data set name
 
 #### Usage
