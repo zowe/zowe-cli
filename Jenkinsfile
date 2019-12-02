@@ -155,7 +155,7 @@ node('ca-jenkins-agent') {
 
     // Perform sonar qube operations
     pipeline.createStage(
-        name: "SonarQube",
+        name: "Code Analysis",
         stage: {
             // append sonar.links.ci, sonar.branch.name or sonar.pullrequest to sonar-project.properties
             def sonarProjectFile = 'sonar-project.properties'
