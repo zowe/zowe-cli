@@ -145,7 +145,14 @@ const doc: ITaskFunction = async () => {
             commandNameSummary += " (experimental)";
         }
 
-        const anchorTag = "module-" + definition.name;
+        // create anchor tag that matches full command
+        var anchorTag = "";
+        if (oldCommandName !== "") {
+            anchorTag = oldCommandName + "-" + definition.name;
+        } else {
+            anchorTag = definition.name;
+        }
+        
         tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel), commandNameSummary, anchorTag);
 
         markdownContent += util.format("#%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), commandNameSummary, anchorTag);
@@ -158,7 +165,15 @@ const doc: ITaskFunction = async () => {
                 continue;
             }
             totalCommands++;
-            const childAnchorTag = "command-" + child.name.replace(/\s/g, "-");
+
+            // create anchor tag that matches full command
+            var childAnchorTag = ""
+            if (oldCommandName !== "") {
+                childAnchorTag = oldCommandName + "-" + definition.name +"-" + child.name.replace(/\s/g, "-");
+            } else {
+                childAnchorTag = definition.name + "-" + child.name.replace(/\s/g, "-");
+            }
+            
             let childNameSummary = child.name;
             if (child.experimental) {
                 childNameSummary += " (experimental)";
