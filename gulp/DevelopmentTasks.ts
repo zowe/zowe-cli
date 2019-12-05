@@ -146,9 +146,9 @@ const doc: ITaskFunction = async () => {
         }
 
         // create anchor tag that matches full command
-        var anchorTag = "";
+        let anchorTag = "";
         if (oldCommandName !== "") {
-            anchorTag = oldCommandName + "-" + definition.name;
+            anchorTag = `${oldCommandName}-${definition.name}`;
         } else {
             anchorTag = definition.name;
         }
@@ -167,11 +167,11 @@ const doc: ITaskFunction = async () => {
             totalCommands++;
 
             // create anchor tag that matches full command
-            var childAnchorTag = ""
+            let childAnchorTag = "";
             if (oldCommandName !== "") {
-                childAnchorTag = oldCommandName + "-" + definition.name +"-" + child.name.replace(/\s/g, "-");
+                childAnchorTag = `${oldCommandName}-${definition.name}-${child.name.replace(/\s/g, "-")}`;
             } else {
-                childAnchorTag = definition.name + "-" + child.name.replace(/\s/g, "-");
+                childAnchorTag = `${definition.name}-${child.name.replace(/\s/g, "-")}`;
             }
             
             let childNameSummary = child.name;
