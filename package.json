@@ -74,8 +74,6 @@
     "string-width": "2.1.1"
   },
   "devDependencies": {
-    "@types/chai": "^4.0.1",
-    "@types/chai-string": "^1.1.30",
     "@types/fs-extra": "^5.0.5",
     "@types/jest": "^22.2.3",
     "@types/js-yaml": "^3.11.1",
@@ -84,8 +82,6 @@
     "@types/sinon": "2.3.3",
     "@types/ssh2": "^0.5.38",
     "@types/yargs": "8.0.2",
-    "chai": "^4.1.2",
-    "chai-string": "^1.4.0",
     "chalk": "2.3.0",
     "clear-require": "^2.0.0",
     "codepage": "^1.10.1",
