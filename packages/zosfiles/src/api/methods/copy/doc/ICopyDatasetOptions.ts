@@ -1,3 +1,5 @@
+import { IDataSet } from "../../../doc/IDataSet";
+
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -13,6 +15,19 @@
  * This interface defines the options that can be sent into the copy data set function.
  */
 export interface ICopyDatasetOptions {
+    /**
+     * The dataset to copy from.
+     * @type {IDataSet}
+     */
+    fromDataSet: IDataSet;
+
+    /**
+     * Enq option
+     * Allow values are: SHR, SHRW, EXCLU.
+     * @type {string}
+     */
+    enq?: string;
+
     /**
      * Replace option
      * @type {boolean}
