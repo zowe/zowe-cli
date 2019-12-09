@@ -657,10 +657,10 @@ server at host 'zos123' and port 13022:
       * `$  zowe profiles create ssh-profile ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss`
 
 *  Create a ssh profile called 'ssh333' to connect to z/OS SSH
-server at host 'zos123' using a privatekey '/path/to/privatkey' and its
+server at host 'zos123' using a privatekey '/path/to/privatekey' and its
 decryption passphrase 'privateKeyPassphrase' for privatekey authentication:
 
-      * `$  zowe profiles create ssh-profile ssh333 --host sshhost --user ibmuser --priavetKey /path/to/privatekey --keyPassphrase privateKeyPassphrase`
+      * `$  zowe profiles create ssh-profile ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase`
 
 ## update | upd<a name=" profiles-update"></a>
 Update a  profile. You can update any property present within the profile configuration. The updated profile will be printed so that you can review the result of the updates.
