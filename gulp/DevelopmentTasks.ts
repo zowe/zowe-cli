@@ -153,9 +153,9 @@ const doc: ITaskFunction = async () => {
             anchorTag = definition.name;
         }
         
-        tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel), commandNameSummary, anchorTag);
+        tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel), commandNameSummary, anchorTag.trim());
 
-        markdownContent += util.format("#%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), commandNameSummary, anchorTag);
+        markdownContent += util.format("#%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), commandNameSummary, anchorTag.trim());
         markdownContent += definition.description ? definition.description.trim() + "\n" : "";
 
         for (const child of definition.children) {
@@ -179,8 +179,8 @@ const doc: ITaskFunction = async () => {
                 childNameSummary += " (experimental)";
             }
 
-            tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel + 1), childNameSummary, childAnchorTag);
-            markdownContent += util.format("##%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), childNameSummary, childAnchorTag);
+            tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel + 1), childNameSummary, childAnchorTag.trim());
+            markdownContent += util.format("##%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), childNameSummary, childAnchorTag.trim());
 
             const helpGen = new DefaultHelpGenerator({
                 produceMarkdown: true,

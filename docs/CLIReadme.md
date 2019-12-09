@@ -23,136 +23,136 @@ For Zowe CLI support, visit https://zowe.org
 	* [update](#plugins-update)
 	* [validate](#plugins-validate)
 * [profiles](#profiles)
-	* [create | cre](# profiles-create)
-		* [zosmf-profile](# profiles-create-zosmf-profile)
-		* [tso-profile](# profiles-create-tso-profile)
-		* [ssh-profile](# profiles-create-ssh-profile)
-	* [update | upd](# profiles-update)
-		* [zosmf-profile](# profiles-update-zosmf-profile)
-		* [tso-profile](# profiles-update-tso-profile)
-		* [ssh-profile](# profiles-update-ssh-profile)
-	* [delete | rm](# profiles-delete)
-		* [zosmf-profile](# profiles-delete-zosmf-profile)
-		* [tso-profile](# profiles-delete-tso-profile)
-		* [ssh-profile](# profiles-delete-ssh-profile)
-	* [list | ls](# profiles-list)
-		* [zosmf-profiles](# profiles-list-zosmf-profiles)
-		* [tso-profiles](# profiles-list-tso-profiles)
-		* [ssh-profiles](# profiles-list-ssh-profiles)
-	* [set-default | set](# profiles-set-default)
-		* [zosmf-profile](# profiles-set-default-zosmf-profile)
-		* [tso-profile](# profiles-set-default-tso-profile)
-		* [ssh-profile](# profiles-set-default-ssh-profile)
+	* [create | cre](#profiles-create)
+		* [zosmf-profile](#profiles-create-zosmf-profile)
+		* [tso-profile](#profiles-create-tso-profile)
+		* [ssh-profile](#profiles-create-ssh-profile)
+	* [update | upd](#profiles-update)
+		* [zosmf-profile](#profiles-update-zosmf-profile)
+		* [tso-profile](#profiles-update-tso-profile)
+		* [ssh-profile](#profiles-update-ssh-profile)
+	* [delete | rm](#profiles-delete)
+		* [zosmf-profile](#profiles-delete-zosmf-profile)
+		* [tso-profile](#profiles-delete-tso-profile)
+		* [ssh-profile](#profiles-delete-ssh-profile)
+	* [list | ls](#profiles-list)
+		* [zosmf-profiles](#profiles-list-zosmf-profiles)
+		* [tso-profiles](#profiles-list-tso-profiles)
+		* [ssh-profiles](#profiles-list-ssh-profiles)
+	* [set-default | set](#profiles-set-default)
+		* [zosmf-profile](#profiles-set-default-zosmf-profile)
+		* [tso-profile](#profiles-set-default-tso-profile)
+		* [ssh-profile](#profiles-set-default-ssh-profile)
 * [provisioning | pv](#provisioning)
-	* [list | ls](# provisioning-list)
-		* [template-info](# provisioning-list-template-info)
-		* [catalog-templates](# provisioning-list-catalog-templates)
-		* [instance-info](# provisioning-list-instance-info)
-		* [instance-variables](# provisioning-list-instance-variables)
-		* [registry-instances](# provisioning-list-registry-instances)
-	* [provision | prov](# provisioning-provision)
-		* [template](# provisioning-provision-template)
-	* [perform | perf](# provisioning-perform)
-		* [action](# provisioning-perform-action)
-	* [delete | del](# provisioning-delete)
-		* [instance](# provisioning-delete-instance)
+	* [list | ls](#provisioning-list)
+		* [template-info](#provisioning-list-template-info)
+		* [catalog-templates](#provisioning-list-catalog-templates)
+		* [instance-info](#provisioning-list-instance-info)
+		* [instance-variables](#provisioning-list-instance-variables)
+		* [registry-instances](#provisioning-list-registry-instances)
+	* [provision | prov](#provisioning-provision)
+		* [template](#provisioning-provision-template)
+	* [perform | perf](#provisioning-perform)
+		* [action](#provisioning-perform-action)
+	* [delete | del](#provisioning-delete)
+		* [instance](#provisioning-delete-instance)
 * [zos-console | console](#zos-console)
-	* [collect](# zos-console-collect)
-		* [sync-responses](# zos-console-collect-sync-responses)
-	* [issue](# zos-console-issue)
-		* [command](# zos-console-issue-command)
+	* [collect](#zos-console-collect)
+		* [sync-responses](#zos-console-collect-sync-responses)
+	* [issue](#zos-console-issue)
+		* [command](#zos-console-issue-command)
 * [zos-files | files](#zos-files)
-	* [create | cre](# zos-files-create)
-		* [data-set-sequential](# zos-files-create-data-set-sequential)
-		* [data-set-partitioned](# zos-files-create-data-set-partitioned)
-		* [data-set-binary](# zos-files-create-data-set-binary)
-		* [data-set-c](# zos-files-create-data-set-c)
-		* [data-set-classic](# zos-files-create-data-set-classic)
-		* [data-set-vsam](# zos-files-create-data-set-vsam)
-		* [zos-file-system](# zos-files-create-zos-file-system)
-		* [uss-file](# zos-files-create-uss-file)
-		* [uss-directory](# zos-files-create-uss-directory)
-	* [delete | del](# zos-files-delete)
-		* [data-set](# zos-files-delete-data-set)
-		* [data-set-vsam](# zos-files-delete-data-set-vsam)
-		* [uss-file](# zos-files-delete-uss-file)
-		* [zos-file-system](# zos-files-delete-zos-file-system)
-	* [invoke | call](# zos-files-invoke)
-		* [ams-statements](# zos-files-invoke-ams-statements)
-		* [ams-file](# zos-files-invoke-ams-file)
-	* [download | dl](# zos-files-download)
-		* [data-set](# zos-files-download-data-set)
-		* [all-members](# zos-files-download-all-members)
-		* [uss-file](# zos-files-download-uss-file)
-	* [list | ls](# zos-files-list)
-		* [all-members](# zos-files-list-all-members)
-		* [data-set](# zos-files-list-data-set)
-		* [uss-files](# zos-files-list-uss-files)
-		* [file-system](# zos-files-list-file-system)
-	* [upload | ul](# zos-files-upload)
-		* [file-to-data-set](# zos-files-upload-file-to-data-set)
-		* [stdin-to-data-set](# zos-files-upload-stdin-to-data-set)
-		* [dir-to-pds](# zos-files-upload-dir-to-pds)
-		* [file-to-uss](# zos-files-upload-file-to-uss)
-		* [dir-to-uss](# zos-files-upload-dir-to-uss)
-	* [mount](# zos-files-mount)
-		* [file-system](# zos-files-mount-file-system)
-	* [unmount | umount](# zos-files-unmount)
-		* [file-system](# zos-files-unmount-file-system)
+	* [create | cre](#zos-files-create)
+		* [data-set-sequential](#zos-files-create-data-set-sequential)
+		* [data-set-partitioned](#zos-files-create-data-set-partitioned)
+		* [data-set-binary](#zos-files-create-data-set-binary)
+		* [data-set-c](#zos-files-create-data-set-c)
+		* [data-set-classic](#zos-files-create-data-set-classic)
+		* [data-set-vsam](#zos-files-create-data-set-vsam)
+		* [zos-file-system](#zos-files-create-zos-file-system)
+		* [uss-file](#zos-files-create-uss-file)
+		* [uss-directory](#zos-files-create-uss-directory)
+	* [delete | del](#zos-files-delete)
+		* [data-set](#zos-files-delete-data-set)
+		* [data-set-vsam](#zos-files-delete-data-set-vsam)
+		* [uss-file](#zos-files-delete-uss-file)
+		* [zos-file-system](#zos-files-delete-zos-file-system)
+	* [invoke | call](#zos-files-invoke)
+		* [ams-statements](#zos-files-invoke-ams-statements)
+		* [ams-file](#zos-files-invoke-ams-file)
+	* [download | dl](#zos-files-download)
+		* [data-set](#zos-files-download-data-set)
+		* [all-members](#zos-files-download-all-members)
+		* [uss-file](#zos-files-download-uss-file)
+	* [list | ls](#zos-files-list)
+		* [all-members](#zos-files-list-all-members)
+		* [data-set](#zos-files-list-data-set)
+		* [uss-files](#zos-files-list-uss-files)
+		* [file-system](#zos-files-list-file-system)
+	* [upload | ul](#zos-files-upload)
+		* [file-to-data-set](#zos-files-upload-file-to-data-set)
+		* [stdin-to-data-set](#zos-files-upload-stdin-to-data-set)
+		* [dir-to-pds](#zos-files-upload-dir-to-pds)
+		* [file-to-uss](#zos-files-upload-file-to-uss)
+		* [dir-to-uss](#zos-files-upload-dir-to-uss)
+	* [mount](#zos-files-mount)
+		* [file-system](#zos-files-mount-file-system)
+	* [unmount | umount](#zos-files-unmount)
+		* [file-system](#zos-files-unmount-file-system)
 * [zos-jobs | jobs](#zos-jobs)
-	* [submit | sub](# zos-jobs-submit)
-		* [data-set](# zos-jobs-submit-data-set)
-		* [local-file](# zos-jobs-submit-local-file)
-		* [stdin](# zos-jobs-submit-stdin)
-	* [download | dl](# zos-jobs-download)
-		* [output](# zos-jobs-download-output)
-	* [view | vw](# zos-jobs-view)
-		* [job-status-by-jobid](# zos-jobs-view-job-status-by-jobid)
-		* [spool-file-by-id](# zos-jobs-view-spool-file-by-id)
-	* [list | ls](# zos-jobs-list)
-		* [spool-files-by-jobid](# zos-jobs-list-spool-files-by-jobid)
-		* [jobs](# zos-jobs-list-jobs)
-	* [delete | del](# zos-jobs-delete)
-		* [job](# zos-jobs-delete-job)
-	* [cancel | can](# zos-jobs-cancel)
-		* [job](# zos-jobs-cancel-job)
+	* [submit | sub](#zos-jobs-submit)
+		* [data-set](#zos-jobs-submit-data-set)
+		* [local-file](#zos-jobs-submit-local-file)
+		* [stdin](#zos-jobs-submit-stdin)
+	* [download | dl](#zos-jobs-download)
+		* [output](#zos-jobs-download-output)
+	* [view | vw](#zos-jobs-view)
+		* [job-status-by-jobid](#zos-jobs-view-job-status-by-jobid)
+		* [spool-file-by-id](#zos-jobs-view-spool-file-by-id)
+	* [list | ls](#zos-jobs-list)
+		* [spool-files-by-jobid](#zos-jobs-list-spool-files-by-jobid)
+		* [jobs](#zos-jobs-list-jobs)
+	* [delete | del](#zos-jobs-delete)
+		* [job](#zos-jobs-delete-job)
+	* [cancel | can](#zos-jobs-cancel)
+		* [job](#zos-jobs-cancel-job)
 * [zos-tso | tso](#zos-tso)
-	* [send](# zos-tso-send)
-		* [address-space](# zos-tso-send-address-space)
-	* [start | st](# zos-tso-start)
-		* [address-space](# zos-tso-start-address-space)
-	* [ping](# zos-tso-ping)
-		* [address-space](# zos-tso-ping-address-space)
-	* [stop | sp](# zos-tso-stop)
-		* [address-space](# zos-tso-stop-address-space)
-	* [issue](# zos-tso-issue)
-		* [command](# zos-tso-issue-command)
+	* [send](#zos-tso-send)
+		* [address-space](#zos-tso-send-address-space)
+	* [start | st](#zos-tso-start)
+		* [address-space](#zos-tso-start-address-space)
+	* [ping](#zos-tso-ping)
+		* [address-space](#zos-tso-ping-address-space)
+	* [stop | sp](#zos-tso-stop)
+		* [address-space](#zos-tso-stop-address-space)
+	* [issue](#zos-tso-issue)
+		* [command](#zos-tso-issue-command)
 * [zos-uss | uss](#zos-uss)
-	* [issue | iss](# zos-uss-issue)
-		* [ssh](# zos-uss-issue-ssh)
+	* [issue | iss](#zos-uss-issue)
+		* [ssh](#zos-uss-issue-ssh)
 * [zos-workflows | wf](#zos-workflows)
-	* [create | cre](# zos-workflows-create)
-		* [workflow-from-data-set](# zos-workflows-create-workflow-from-data-set)
-		* [workflow-from-uss-file](# zos-workflows-create-workflow-from-uss-file)
-		* [workflow-from-local-file](# zos-workflows-create-workflow-from-local-file)
-	* [start | sta](# zos-workflows-start)
-		* [workflow-full](# zos-workflows-start-workflow-full)
-		* [workflow-step](# zos-workflows-start-workflow-step)
-	* [list | ls](# zos-workflows-list)
-		* [active-workflows](# zos-workflows-list-active-workflows)
-		* [active-workflow-details](# zos-workflows-list-active-workflow-details)
-		* [definition-file-details](# zos-workflows-list-definition-file-details)
-		* [archived-workflows](# zos-workflows-list-archived-workflows)
-	* [archive](# zos-workflows-archive)
-		* [active-workflow](# zos-workflows-archive-active-workflow)
-	* [delete | del](# zos-workflows-delete)
-		* [active-workflow](# zos-workflows-delete-active-workflow)
-		* [archived-workflow](# zos-workflows-delete-archived-workflow)
+	* [create | cre](#zos-workflows-create)
+		* [workflow-from-data-set](#zos-workflows-create-workflow-from-data-set)
+		* [workflow-from-uss-file](#zos-workflows-create-workflow-from-uss-file)
+		* [workflow-from-local-file](#zos-workflows-create-workflow-from-local-file)
+	* [start | sta](#zos-workflows-start)
+		* [workflow-full](#zos-workflows-start-workflow-full)
+		* [workflow-step](#zos-workflows-start-workflow-step)
+	* [list | ls](#zos-workflows-list)
+		* [active-workflows](#zos-workflows-list-active-workflows)
+		* [active-workflow-details](#zos-workflows-list-active-workflow-details)
+		* [definition-file-details](#zos-workflows-list-definition-file-details)
+		* [archived-workflows](#zos-workflows-list-archived-workflows)
+	* [archive](#zos-workflows-archive)
+		* [active-workflow](#zos-workflows-archive-active-workflow)
+	* [delete | del](#zos-workflows-delete)
+		* [active-workflow](#zos-workflows-delete-active-workflow)
+		* [archived-workflow](#zos-workflows-delete-archived-workflow)
 * [zosmf](#zosmf)
-	* [check](# zosmf-check)
-		* [status](# zosmf-check-status)
-	* [list](# zosmf-list)
-		* [systems](# zosmf-list-systems)
+	* [check](#zosmf-check)
+		* [status](#zosmf-check-status)
+	* [list](#zosmf-list)
+		* [systems](#zosmf-list-systems)
 
 
 # config<a name="config"></a>
@@ -444,9 +444,9 @@ Validate a plug\-in that has been installed\.
 
 # profiles<a name="profiles"></a>
 Create and manage configuration profiles
-## create | cre<a name=" profiles-create"></a>
+## create | cre<a name="profiles-create"></a>
 Create new configuration profiles.
-### zosmf-profile<a name=" profiles-create-zosmf-profile"></a>
+### zosmf-profile<a name="profiles-create-zosmf-profile"></a>
 z/OSMF Profile
 
 #### Usage
@@ -515,7 +515,7 @@ at the host zos124 (default port - 443) and allow self-signed certificates:
 
       * `$  zowe profiles create zosmf-profile zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath`
 
-### tso-profile<a name=" profiles-create-tso-profile"></a>
+### tso-profile<a name="profiles-create-tso-profile"></a>
 z/OS TSO/E User Profile
 
 #### Usage
@@ -591,7 +591,7 @@ of 8192, a logon procedure of MYPROC, and JES accounting information of '1234':
 
       * `$  zowe profiles create tso-profile largeregion -a 1234 --rs 8192`
 
-### ssh-profile<a name=" profiles-create-ssh-profile"></a>
+### ssh-profile<a name="profiles-create-ssh-profile"></a>
 z/OS SSH Profile
 
 #### Usage
@@ -662,9 +662,9 @@ decryption passphrase 'privateKeyPassphrase' for privatekey authentication:
 
       * `$  zowe profiles create ssh-profile ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase`
 
-## update | upd<a name=" profiles-update"></a>
+## update | upd<a name="profiles-update"></a>
 Update a  profile. You can update any property present within the profile configuration. The updated profile will be printed so that you can review the result of the updates.
-### zosmf-profile<a name=" profiles-update-zosmf-profile"></a>
+### zosmf-profile<a name="profiles-update-zosmf-profile"></a>
 z/OSMF Profile
 
 #### Usage
@@ -713,7 +713,7 @@ and password:
 
       * `$  zowe profiles update zosmf-profile zos123 --user newuser --password newp4ss`
 
-### tso-profile<a name=" profiles-update-tso-profile"></a>
+### tso-profile<a name="profiles-update-tso-profile"></a>
 z/OS TSO/E User Profile
 
 #### Usage
@@ -766,7 +766,7 @@ information:
 
       * `$  zowe profiles update tso-profile myprof -a NEWACCT`
 
-### ssh-profile<a name=" profiles-update-ssh-profile"></a>
+### ssh-profile<a name="profiles-update-ssh-profile"></a>
 z/OS SSH Profile
 
 #### Usage
@@ -811,9 +811,9 @@ z/OS SSH Profile
 
 	* How long in milliseconds to wait for the SSH handshake to complete\.
 
-## delete | rm<a name=" profiles-delete"></a>
+## delete | rm<a name="profiles-delete"></a>
 Delete existing profiles.
-### zosmf-profile<a name=" profiles-delete-zosmf-profile"></a>
+### zosmf-profile<a name="profiles-delete-zosmf-profile"></a>
 Delete a zosmf profile\. You must specify a profile name to be deleted\. To find
 a list of available profiles for deletion, issue the profiles list command\. By
 default, you will be prompted to confirm the profile removal\.
@@ -843,7 +843,7 @@ default, you will be prompted to confirm the profile removal\.
 
       * `$  zowe profiles delete zosmf-profile profilename`
 
-### tso-profile<a name=" profiles-delete-tso-profile"></a>
+### tso-profile<a name="profiles-delete-tso-profile"></a>
 Delete a tso profile\. You must specify a profile name to be deleted\. To find a
 list of available profiles for deletion, issue the profiles list command\. By
 default, you will be prompted to confirm the profile removal\.
@@ -873,7 +873,7 @@ default, you will be prompted to confirm the profile removal\.
 
       * `$  zowe profiles delete tso-profile profilename`
 
-### ssh-profile<a name=" profiles-delete-ssh-profile"></a>
+### ssh-profile<a name="profiles-delete-ssh-profile"></a>
 Delete a ssh profile\. You must specify a profile name to be deleted\. To find a
 list of available profiles for deletion, issue the profiles list command\. By
 default, you will be prompted to confirm the profile removal\.
@@ -903,9 +903,9 @@ default, you will be prompted to confirm the profile removal\.
 
       * `$  zowe profiles delete ssh-profile profilename`
 
-## list | ls<a name=" profiles-list"></a>
+## list | ls<a name="profiles-list"></a>
 List profiles of the type 
-### zosmf-profiles<a name=" profiles-list-zosmf-profiles"></a>
+### zosmf-profiles<a name="profiles-list-zosmf-profiles"></a>
 z/OSMF Profile
 
 #### Usage
@@ -929,7 +929,7 @@ z/OSMF Profile
 
       * `$  zowe profiles list zosmf-profiles --sc`
 
-### tso-profiles<a name=" profiles-list-tso-profiles"></a>
+### tso-profiles<a name="profiles-list-tso-profiles"></a>
 z/OS TSO/E User Profile
 
 #### Usage
@@ -953,7 +953,7 @@ z/OS TSO/E User Profile
 
       * `$  zowe profiles list tso-profiles --sc`
 
-### ssh-profiles<a name=" profiles-list-ssh-profiles"></a>
+### ssh-profiles<a name="profiles-list-ssh-profiles"></a>
 z/OS SSH Profile
 
 #### Usage
@@ -977,9 +977,9 @@ z/OS SSH Profile
 
       * `$  zowe profiles list ssh-profiles --sc`
 
-## set-default | set<a name=" profiles-set-default"></a>
+## set-default | set<a name="profiles-set-default"></a>
 Set which profiles are loaded by default.
-### zosmf-profile<a name=" profiles-set-default-zosmf-profile"></a>
+### zosmf-profile<a name="profiles-set-default-zosmf-profile"></a>
 The zosmf set default\-profiles command allows you to set the default profiles
 for this command group\. When a zosmf command is issued and no profile override
 options are specified, the default profiles for the command group are
@@ -1006,7 +1006,7 @@ requirements\.
 
       * `$  zowe profiles set-default zosmf-profile profilename`
 
-### tso-profile<a name=" profiles-set-default-tso-profile"></a>
+### tso-profile<a name="profiles-set-default-tso-profile"></a>
 The tso set default\-profiles command allows you to set the default profiles for
 this command group\. When a tso command is issued and no profile override
 options are specified, the default profiles for the command group are
@@ -1033,7 +1033,7 @@ requirements\.
 
       * `$  zowe profiles set-default tso-profile profilename`
 
-### ssh-profile<a name=" profiles-set-default-ssh-profile"></a>
+### ssh-profile<a name="profiles-set-default-ssh-profile"></a>
 The ssh set default\-profiles command allows you to set the default profiles for
 this command group\. When a ssh command is issued and no profile override
 options are specified, the default profiles for the command group are
@@ -1062,9 +1062,9 @@ requirements\.
 
 # provisioning | pv<a name="provisioning"></a>
 Perform z/OSMF provisioning tasks on Published Templates in the Service Catalog and Provisioned Instances in the Service Registry.
-## list | ls<a name=" provisioning-list"></a>
+## list | ls<a name="provisioning-list"></a>
 Lists z/OSMF provisioning information such as the provisioned instances from the registry, the provisioned instance details, the available provisioning templates and provisioning template details.
-### template-info<a name=" provisioning-list-template-info"></a>
+### template-info<a name="provisioning-list-template-info"></a>
 List details about a template published with z/OSMF Cloud Provisioning\.
 
 #### Usage
@@ -1128,7 +1128,7 @@ List details about a template published with z/OSMF Cloud Provisioning\.
 
       * `$  zowe provisioning list template-info template1`
 
-### catalog-templates<a name=" provisioning-list-catalog-templates"></a>
+### catalog-templates<a name="provisioning-list-catalog-templates"></a>
 Lists the z/OSMF service catalog published templates\.
 
 #### Usage
@@ -1187,7 +1187,7 @@ Lists the z/OSMF service catalog published templates\.
 
       * `$  zowe provisioning list catalog-templates --all-info`
 
-### instance-info<a name=" provisioning-list-instance-info"></a>
+### instance-info<a name="provisioning-list-instance-info"></a>
 List details about an instance provisioned with z/OSMF\.
 
 #### Usage
@@ -1265,7 +1265,7 @@ provisioned instance with the name "instance1":
 
       * `$  zowe provisioning list instance-info instance1 --display extended`
 
-### instance-variables<a name=" provisioning-list-instance-variables"></a>
+### instance-variables<a name="provisioning-list-instance-variables"></a>
 List a set of variables and their values for a given name\.
 
 #### Usage
@@ -1357,7 +1357,7 @@ List a set of variables and their values for a given name\.
 
       * `$  zowe provisioning list instance-variables instance1`
 
-### registry-instances<a name=" provisioning-list-registry-instances"></a>
+### registry-instances<a name="provisioning-list-registry-instances"></a>
 List the provisioned instances from the z/OSMF software registry\.
 
 #### Usage
@@ -1427,9 +1427,9 @@ List the provisioned instances from the z/OSMF software registry\.
 
       * `$  zowe provisioning list registry-instances --all-info`
 
-## provision | prov<a name=" provisioning-provision"></a>
+## provision | prov<a name="provisioning-provision"></a>
 Using z/OSMF cloud provisioning services provision available templates.
-### template<a name=" provisioning-provision-template"></a>
+### template<a name="provisioning-provision-template"></a>
 Using z/OSMF cloud provisioning services, provision available templates\.
 You can view available templates using the zowe provisioning list
 catalog\-templates command\.
@@ -1533,9 +1533,9 @@ catalog\-templates command\.
 
       * `$  zowe provisioning provision template template1`
 
-## perform | perf<a name=" provisioning-perform"></a>
+## perform | perf<a name="provisioning-perform"></a>
 Perform actions against instances provisioned with z/OSMF.
-### action<a name=" provisioning-perform-action"></a>
+### action<a name="provisioning-perform-action"></a>
 Perform actions on instances previously provisioned with z/OSMF cloud
 provisioning services\. To view the list of provisioned instances, use the
 "zowe provisioning list registry\-instances" command\. Once you have
@@ -1602,9 +1602,9 @@ instance\-info <name>" command to view the available instance actions\.
 
       * `$  zowe provisioning perform action instance1 start`
 
-## delete | del<a name=" provisioning-delete"></a>
+## delete | del<a name="provisioning-delete"></a>
 Deletes instance previously provisioned with z/OSMF cloud provisioning services.
-### instance<a name=" provisioning-delete-instance"></a>
+### instance<a name="provisioning-delete-instance"></a>
 Deletes selected deprovisioned instance\.
 
 #### Usage
@@ -1665,9 +1665,9 @@ Deletes selected deprovisioned instance\.
 Interact with z/OSMF console services. Issue z/OS console commands and collect responses. z/OS console services establishes extended MCS (EMCS) consoles on behalf of the user, which are used to issue the commands and collect responses.
 
 Important! Before you use commands in the zos-console command group, ensure that you understand the implications of issuing z/OS console commands in your environment.
-## collect<a name=" zos-console-collect"></a>
+## collect<a name="zos-console-collect"></a>
 z/OSMF console services provides a command response key upon successful issue of a console command. You can use this key to collect additional console message responses.
-### sync-responses<a name=" zos-console-collect-sync-responses"></a>
+### sync-responses<a name="zos-console-collect-sync-responses"></a>
 The z/OSMF console REST APIs return a "solicited response key" after
 successfully issuing a synchronous console command that produces solicited
 responses\. You can use the "solicited response key"on the "sync\-responses"
@@ -1753,9 +1753,9 @@ messages:
 
       * `$  zowe zos-console collect sync-responses C4866969`
 
-## issue<a name=" zos-console-issue"></a>
+## issue<a name="zos-console-issue"></a>
 Issue z/OS console commands and optionally collect responses.
-### command<a name=" zos-console-issue-command"></a>
+### command<a name="zos-console-issue-command"></a>
 Issue a z/OS console command and print command responses (known as "solicited
 command responses")\.
 
@@ -1903,9 +1903,9 @@ coordinated universal time and date:
 
 # zos-files | files<a name="zos-files"></a>
 Manage z/OS data sets, create data sets, and more
-## create | cre<a name=" zos-files-create"></a>
+## create | cre<a name="zos-files-create"></a>
 Create data sets
-### data-set-sequential<a name=" zos-files-create-data-set-sequential"></a>
+### data-set-sequential<a name="zos-files-create-data-set-sequential"></a>
 Create physical sequential data sets (PS)
 
 #### Usage
@@ -2026,7 +2026,7 @@ parameters:
 
       * `$  zowe zos-files create data-set-sequential NEW.PS.DATASET`
 
-### data-set-partitioned<a name=" zos-files-create-data-set-partitioned"></a>
+### data-set-partitioned<a name="zos-files-create-data-set-partitioned"></a>
 Create partitioned data sets (PDS)
 
 #### Usage
@@ -2152,7 +2152,7 @@ Create partitioned data sets (PDS)
 
       * `$  zowe zos-files create data-set-partitioned NEW.PDS.DATASET`
 
-### data-set-binary<a name=" zos-files-create-data-set-binary"></a>
+### data-set-binary<a name="zos-files-create-data-set-binary"></a>
 Create executable data sets
 
 #### Usage
@@ -2279,7 +2279,7 @@ default parameters:
 
       * `$  zowe zos-files create data-set-binary NEW.BINARY.DATASET`
 
-### data-set-c<a name=" zos-files-create-data-set-c"></a>
+### data-set-c<a name="zos-files-create-data-set-c"></a>
 Create data sets for C code programming
 
 #### Usage
@@ -2405,7 +2405,7 @@ Create data sets for C code programming
 
       * `$  zowe zos-files create data-set-c NEW.CCODE.DATASET`
 
-### data-set-classic<a name=" zos-files-create-data-set-classic"></a>
+### data-set-classic<a name="zos-files-create-data-set-classic"></a>
 Create classic data sets (JCL, HLASM, CBL, etc\.\.\.)
 
 #### Usage
@@ -2531,7 +2531,7 @@ Create classic data sets (JCL, HLASM, CBL, etc\.\.\.)
 
       * `$  zowe zos-files create data-set-classic NEW.CLASSIC.DATASET`
 
-### data-set-vsam<a name=" zos-files-create-data-set-vsam"></a>
+### data-set-vsam<a name="zos-files-create-data-set-vsam"></a>
 Create a VSAM cluster
 
 #### Usage
@@ -2661,7 +2661,7 @@ retained for 100 days:
 
       * `$  zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --retain-for 100 `
 
-### zos-file-system<a name=" zos-files-create-zos-file-system"></a>
+### zos-file-system<a name="zos-files-create-zos-file-system"></a>
 Create a z/OS file system\.
 
 #### Usage
@@ -2784,7 +2784,7 @@ allocated:
 
       * `$  zowe zos-files create zos-file-system HLQ.MYNEW.ZFS -v ZFS001 ZFS002`
 
-### uss-file<a name=" zos-files-create-uss-file"></a>
+### uss-file<a name="zos-files-create-uss-file"></a>
 Create a UNIX file\.
 
 #### Usage
@@ -2851,7 +2851,7 @@ Create a UNIX file\.
 
       * `$  zowe zos-files create uss-file text.txt -m rwxrwxrwx`
 
-### uss-directory<a name=" zos-files-create-uss-directory"></a>
+### uss-directory<a name="zos-files-create-uss-directory"></a>
 Create a UNIX directory\.
 
 #### Usage
@@ -2919,9 +2919,9 @@ Create a UNIX directory\.
 
       * `$  zowe zos-files create uss-directory testDir -m rwxrwxrwx`
 
-## delete | del<a name=" zos-files-delete"></a>
+## delete | del<a name="zos-files-delete"></a>
 Delete a data set or Unix System Services file
-### data-set<a name=" zos-files-delete-data-set"></a>
+### data-set<a name="zos-files-delete-data-set"></a>
 Delete a data set permanently
 
 #### Usage
@@ -2992,7 +2992,7 @@ Delete a data set permanently
 
       * `$  zowe zos-files delete data-set "ibmuser.cntl" -f`
 
-### data-set-vsam<a name=" zos-files-delete-data-set-vsam"></a>
+### data-set-vsam<a name="zos-files-delete-data-set-vsam"></a>
 Delete a VSAM cluster permanently
 
 #### Usage
@@ -3084,7 +3084,7 @@ overwriting the components with zeros:
 
       * `$  zowe zos-files delete data-set-vsam "ibmuser.cntl.vsam" -f --erase`
 
-### uss-file<a name=" zos-files-delete-uss-file"></a>
+### uss-file<a name="zos-files-delete-uss-file"></a>
 Delete a Unix Systems Services (USS) File or directory permanently
 
 #### Usage
@@ -3163,7 +3163,7 @@ Delete a Unix Systems Services (USS) File or directory permanently
 
       * `$  zowe zos-files delete uss-file "/a/ibmuser/testcases" -rf`
 
-### zos-file-system<a name=" zos-files-delete-zos-file-system"></a>
+### zos-file-system<a name="zos-files-delete-zos-file-system"></a>
 Delete a z/OS file system permanently\.
 
 #### Usage
@@ -3226,9 +3226,9 @@ Delete a z/OS file system permanently\.
 
       * `$  zowe zos-files delete zos-file-system "HLQ.MYNEW.ZFS" -f`
 
-## invoke | call<a name=" zos-files-invoke"></a>
+## invoke | call<a name="zos-files-invoke"></a>
 Invoke z/OS utilities such as Access Method Services (AMS)
-### ams-statements<a name=" zos-files-invoke-ams-statements"></a>
+### ams-statements<a name="zos-files-invoke-ams-statements"></a>
 Submit control statements for execution by Access Method Services (IDCAMS)\. You
 can use IDCAMS to create VSAM data sets (CSI, ZFS, etc\.\.\.), delete data sets,
 and more\. You must format the control statements exactly as the IDCAMS utility
@@ -3294,7 +3294,7 @@ expects\. For more information about control statements, see the IBM publication
 
       * `$  zowe zos-files invoke ams-statements "DELETE DUMMY.VSAM.CLUSTER CLUSTER"`
 
-### ams-file<a name=" zos-files-invoke-ams-file"></a>
+### ams-file<a name="zos-files-invoke-ams-file"></a>
 Submit control statements for execution by Access Method Services (IDCAMS)\. You
 can use IDCAMS to create VSAM data sets (CSI, ZFS, etc\.\.\.), delete data sets,
 and more\. You must format the control statements exactly as the IDCAMS utility
@@ -3358,9 +3358,9 @@ statements:
 
       * `$  zowe zos-files invoke ams-file "./path/to/file/MyControlStatements.idcams"`
 
-## download | dl<a name=" zos-files-download"></a>
+## download | dl<a name="zos-files-download"></a>
 Download content from z/OS data sets and USS files to your PC
-### data-set<a name=" zos-files-download-data-set"></a>
+### data-set<a name="zos-files-download-data-set"></a>
 Download content from a z/OS data set to a local file
 
 #### Usage
@@ -3443,7 +3443,7 @@ to the local file "main.obj":
 
       * `$  zowe zos-files download data-set "ibmuser.loadlib(main)" -b -f main.obj`
 
-### all-members<a name=" zos-files-download-all-members"></a>
+### all-members<a name="zos-files-download-all-members"></a>
 Download all members from a partitioned data set to a local folder
 
 #### Usage
@@ -3546,7 +3546,7 @@ mode to the directory "jcl/":
 
       * `$  zowe zos-files download all-members "ibmuser.cntl" -d jcl`
 
-### uss-file<a name=" zos-files-download-uss-file"></a>
+### uss-file<a name="zos-files-download-uss-file"></a>
 Download content from a USS file to a local file on your PC
 
 #### Usage
@@ -3621,9 +3621,9 @@ Download content from a USS file to a local file on your PC
 
       * `$  zowe zos-files download uss-file "/a/ibmuser/MyJava.class" -b -f "java/MyJava.class"`
 
-## list | ls<a name=" zos-files-list"></a>
+## list | ls<a name="zos-files-list"></a>
 List data sets and data set members. Optionally, you can list their details and attributes.
-### all-members<a name=" zos-files-list-all-members"></a>
+### all-members<a name="zos-files-list-all-members"></a>
 List all members of a partitioned data set\. To view additional information
 about each member, use the \-\-attributes option under the Options section of
 this help text\.
@@ -3705,7 +3705,7 @@ this help text\.
 
       * `$  zowe zos-files list all-members "ibmuser.cntl" --max 5`
 
-### data-set<a name=" zos-files-list-data-set"></a>
+### data-set<a name="zos-files-list-data-set"></a>
 List data sets that match a pattern in the data set name
 
 #### Usage
@@ -3793,7 +3793,7 @@ List data sets that match a pattern in the data set name
 
       * `$  zowe zos-files list data-set "ibmuser.cntl" --max 5`
 
-### uss-files<a name=" zos-files-list-uss-files"></a>
+### uss-files<a name="zos-files-list-uss-files"></a>
 List USS files and directories in a UNIX file path
 
 #### Usage
@@ -3903,7 +3903,7 @@ displaying the headers associated with the file detail:
 
       * `$  zowe zos-files list uss-files "/u/ibmuser" --rfh`
 
-### file-system<a name=" zos-files-list-file-system"></a>
+### file-system<a name="zos-files-list-file-system"></a>
 List all mounted filesystems, or the specific filesystem mounted at a given
 path, or the filesystem with a given filesystem name\.
 
@@ -4016,9 +4016,9 @@ path, or the filesystem with a given filesystem name\.
 
       * `$  zowe zos-files list file-system -f MY.ZFS`
 
-## upload | ul<a name=" zos-files-upload"></a>
+## upload | ul<a name="zos-files-upload"></a>
 Upload the contents of a file to z/OS data sets
-### file-to-data-set<a name=" zos-files-upload-file-to-data-set"></a>
+### file-to-data-set<a name="zos-files-upload-file-to-data-set"></a>
 Upload the contents of a file to a z/OS data set
 
 #### Usage
@@ -4112,7 +4112,7 @@ to be recalled:
 
       * `$  zowe zos-files upload file-to-data-set "file.txt" "ibmuser.ps" --mr wait`
 
-### stdin-to-data-set<a name=" zos-files-upload-stdin-to-data-set"></a>
+### stdin-to-data-set<a name="zos-files-upload-stdin-to-data-set"></a>
 Upload the content of a stdin to a z/OS data set
 
 #### Usage
@@ -4202,7 +4202,7 @@ for it to be recalled from a Windows console:
 
       * `$  echo "hello world" |  zowe zos-files upload stdin-to-data-set "ibmuser.ps" --mr wait`
 
-### dir-to-pds<a name=" zos-files-upload-dir-to-pds"></a>
+### dir-to-pds<a name="zos-files-upload-dir-to-pds"></a>
 Upload files from a local directory to a partitioned data set (PDS)
 
 #### Usage
@@ -4290,7 +4290,7 @@ Upload files from a local directory to a partitioned data set (PDS)
 
       * `$  zowe zos-files upload dir-to-pds "src" "ibmuser.src" --mr wait`
 
-### file-to-uss<a name=" zos-files-upload-file-to-uss"></a>
+### file-to-uss<a name="zos-files-upload-file-to-uss"></a>
 Upload content to a USS file from local file
 
 #### Usage
@@ -4360,7 +4360,7 @@ file "file.txt":
 
       * `$  zowe zos-files upload file-to-uss "file.txt" "/a/ibmuser/my_text.txt"`
 
-### dir-to-uss<a name=" zos-files-upload-dir-to-uss"></a>
+### dir-to-uss<a name="zos-files-upload-dir-to-uss"></a>
 Upload a local directory to a USS directory\.
 
 An optional \.zosattributes file in the source directory can be used to control
@@ -4529,9 +4529,9 @@ encodings in the local file my_global_attributes::
 
       * `$  zowe zos-files upload dir-to-uss "local_dir" "/a/ibmuser/my_dir" --recursive --attributes my_global_attributes`
 
-## mount<a name=" zos-files-mount"></a>
+## mount<a name="zos-files-mount"></a>
 Mount z/OS UNIX file systems, such as HFS, ZFS, and more. This connects you to USS file systems.
-### file-system<a name=" zos-files-mount-file-system"></a>
+### file-system<a name="zos-files-mount-file-system"></a>
 Mount a UNIX file system on a specified directory\.
 
 #### Usage
@@ -4614,9 +4614,9 @@ Mount a UNIX file system on a specified directory\.
 
       * `$  zowe zos-files mount file-system MY.HFS /a/ibmuser/mountdir --ft HFS -m rdwr`
 
-## unmount | umount<a name=" zos-files-unmount"></a>
+## unmount | umount<a name="zos-files-unmount"></a>
 Unmount file systems, such as HFS, ZFS, and more. This disconnects you from USS file systems.
-### file-system<a name=" zos-files-unmount-file-system"></a>
+### file-system<a name="zos-files-unmount-file-system"></a>
 Unmount a UNIX file system\.
 
 #### Usage
@@ -4675,9 +4675,9 @@ Unmount a UNIX file system\.
 
 # zos-jobs | jobs<a name="zos-jobs"></a>
 Manage z/OS jobs.
-## submit | sub<a name=" zos-jobs-submit"></a>
+## submit | sub<a name="zos-jobs-submit"></a>
 Submit jobs (JCL) contained in data sets.
-### data-set<a name=" zos-jobs-submit-data-set"></a>
+### data-set<a name="zos-jobs-submit-data-set"></a>
 Submit a job (JCL) contained in a data set\. The data set may be of type
 physical sequential or a PDS member\. The command does not pre\-validate the
 data set name\. The command presents errors verbatim from the z/OSMF Jobs REST
@@ -4810,7 +4810,7 @@ for the job to complete and print all output from the job:
 
       * `$  zowe zos-jobs submit data-set "ibmuser.cntl(deploy)" --vasc`
 
-### local-file<a name=" zos-jobs-submit-local-file"></a>
+### local-file<a name="zos-jobs-submit-local-file"></a>
 Submit a job (JCL) contained in a local file\. The command presents errors
 verbatim from the z/OSMF Jobs REST endpoints\. For more information about z/OSMF
 Jobs API errors, see the z/OSMF Jobs API REST documentation\.
@@ -4929,7 +4929,7 @@ Jobs API errors, see the z/OSMF Jobs API REST documentation\.
 
       * `$  zowe zos-jobs submit local-file "iefbr14.txt"`
 
-### stdin<a name=" zos-jobs-submit-stdin"></a>
+### stdin<a name="zos-jobs-submit-stdin"></a>
 Submit a job (JCL) passed to the command via the stdin stream\. The command
 presents errors verbatim from the z/OSMF Jobs REST endpoints\. For more
 information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST
@@ -5037,9 +5037,9 @@ documentation\.
 	* If "\-\-response\-format\-type table" is specified, include the column headers
       in the output\.
 
-## download | dl<a name=" zos-jobs-download"></a>
+## download | dl<a name="zos-jobs-download"></a>
 Download the output of a job as separate files.
-### output<a name=" zos-jobs-download-output"></a>
+### output<a name="zos-jobs-download-output"></a>
 Download all job output to a local directory\. Each spool DD will be downloaded
 to its own file in the directory\.
 
@@ -5114,9 +5114,9 @@ an automatically generated directory.:
 
       * `$  zowe zos-jobs download output JOB00234`
 
-## view | vw<a name=" zos-jobs-view"></a>
+## view | vw<a name="zos-jobs-view"></a>
 View details of z/OS jobs on spool/JES queues.
-### job-status-by-jobid<a name=" zos-jobs-view-job-status-by-jobid"></a>
+### job-status-by-jobid<a name="zos-jobs-view-job-status-by-jobid"></a>
 View status details of a single z/OS job on spool/JES queues\. The command does
 not prevalidate the JOBID\. The command presents errors verbatim from the z/OSMF
 Jobs REST endpoints (expect for "no jobs found")\.
@@ -5217,7 +5217,7 @@ the job with the job ID JOB00123:
 
       * `$  zowe zos-jobs view job-status-by-jobid j123 --rff status --rft string`
 
-### spool-file-by-id<a name=" zos-jobs-view-spool-file-by-id"></a>
+### spool-file-by-id<a name="zos-jobs-view-spool-file-by-id"></a>
 View the contents of a spool file from a z/OS job on spool/JES queues\. The
 command does not pre\-validate the JOBID or spool ID\. The command presents
 errors verbatim from the z/OSMF Jobs REST endpoints\.
@@ -5284,9 +5284,9 @@ JOB00123:
 
       * `$  zowe zos-jobs view spool-file-by-id JOB00123 4`
 
-## list | ls<a name=" zos-jobs-list"></a>
+## list | ls<a name="zos-jobs-list"></a>
 List z/OS jobs and list the spool files (DDs) for a z/OS job on the JES/spool queues.
-### spool-files-by-jobid<a name=" zos-jobs-list-spool-files-by-jobid"></a>
+### spool-files-by-jobid<a name="zos-jobs-list-spool-files-by-jobid"></a>
 Given a z/OS job JOBID, list the spool files (DDs) for a z/OS job on the
 JES/spool queues\. The command does not pre\-validate the JOBID\. The command
 presents errors verbatim from the z/OSMF Jobs REST endpoints\.
@@ -5381,7 +5381,7 @@ presents errors verbatim from the z/OSMF Jobs REST endpoints\.
 
       * `$  zowe zos-jobs list spool-files-by-jobid job00123`
 
-### jobs<a name=" zos-jobs-list-jobs"></a>
+### jobs<a name="zos-jobs-list-jobs"></a>
 List jobs on JES spool/queues\. By default, the command lists jobs owned (owner)
 by the user specified in your z/OSMF profile\. The default for prefix is "\*"\.
 The command does not prevalidate your user ID\. The command surfaces errors
@@ -5497,9 +5497,9 @@ displaying only the job ID of each job:
 
       * `$  zowe zos-jobs list jobs --rff jobid --rft table`
 
-## delete | del<a name=" zos-jobs-delete"></a>
+## delete | del<a name="zos-jobs-delete"></a>
 Delete a single job by job ID in OUTPUT status. This cancels the job if it is running and purges its output from the system
-### job<a name=" zos-jobs-delete-job"></a>
+### job<a name="zos-jobs-delete-job"></a>
 Delete a single job by job ID
 
 #### Usage
@@ -5559,9 +5559,9 @@ Delete a single job by job ID
 
       * `$  zowe zos-jobs delete job JOB03456`
 
-## cancel | can<a name=" zos-jobs-cancel"></a>
+## cancel | can<a name="zos-jobs-cancel"></a>
 Cancel a single job by job ID. This cancels the job if it is running or on input.
-### job<a name=" zos-jobs-cancel-job"></a>
+### job<a name="zos-jobs-cancel-job"></a>
 Cancel a single job by job ID
 
 #### Usage
@@ -5623,9 +5623,9 @@ Cancel a single job by job ID
 
 # zos-tso | tso<a name="zos-tso"></a>
 Issue TSO commands and interact with TSO address spaces
-## send<a name=" zos-tso-send"></a>
+## send<a name="zos-tso-send"></a>
 Send data to TSO and collect responses until the prompt is reached
-### address-space<a name=" zos-tso-send-address-space"></a>
+### address-space<a name="zos-tso-send-address-space"></a>
 Send data to the TSO address space, from which you previously started and
 received a token (a\.k\.a 'servlet\-key')\.
 
@@ -5691,9 +5691,9 @@ identified by IBMUSER-329-aafkaaoc":
 
       * `$  zowe zos-tso send address-space IBMUSER-329-aafkaaoc --data "TIME"`
 
-## start | st<a name=" zos-tso-start"></a>
+## start | st<a name="zos-tso-start"></a>
 Start TSO/E address space
-### address-space<a name=" zos-tso-start-address-space"></a>
+### address-space<a name="zos-tso-start-address-space"></a>
 Start a TSO address space, from which you will receive a token (a\.k\.a
 'servlet\-key') for further address space interaction (e\.g\. termination)\.
 
@@ -5808,9 +5808,9 @@ format:
 
       * `$  zowe zos-tso start address-space --sko`
 
-## ping<a name=" zos-tso-ping"></a>
+## ping<a name="zos-tso-ping"></a>
 Ping a TSO address space, from which you previously started and received a token (a.k.a 'servelet-key').
-### address-space<a name=" zos-tso-ping-address-space"></a>
+### address-space<a name="zos-tso-ping-address-space"></a>
 Ping a TSO address space, from which you previously started and received a token
 (a\.k\.a 'servlet\-key')\.
 
@@ -5869,9 +5869,9 @@ IBMUSER-329-aafkaaoc:
 
       * `$  zowe zos-tso ping address-space IBMUSER-329-aafkaaoc`
 
-## stop | sp<a name=" zos-tso-stop"></a>
+## stop | sp<a name="zos-tso-stop"></a>
 Stop TSO/E address space
-### address-space<a name=" zos-tso-stop-address-space"></a>
+### address-space<a name="zos-tso-stop-address-space"></a>
 Stop a TSO address space, from which you previously started and received a token
 (a\.k\.a 'servlet\-key')\.
 
@@ -5930,9 +5930,9 @@ IBMUSER-329-aafkaaoc:
 
       * `$  zowe zos-tso stop address-space IBMUSER-329-aafkaaoc`
 
-## issue<a name=" zos-tso-issue"></a>
+## issue<a name="zos-tso-issue"></a>
 Issue TSO commands
-### command<a name=" zos-tso-issue-command"></a>
+### command<a name="zos-tso-issue-command"></a>
 Creates a TSO address space, issues a TSO command through the newly created
 address space, waits for the READY prompt to print the response, and terminates
 the TSO address space\. All response data are returned to the user up to (but
@@ -6049,9 +6049,9 @@ jobs for your user ID.:
 
 # zos-uss | uss<a name="zos-uss"></a>
 Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.
-## issue | iss<a name=" zos-uss-issue"></a>
+## issue | iss<a name="zos-uss-issue"></a>
 Issue a z/OS USS command
-### ssh<a name=" zos-uss-issue-ssh"></a>
+### ssh<a name="zos-uss-issue-ssh"></a>
 Issue a z/OS USS command
 
 #### Usage
@@ -6117,9 +6117,9 @@ Issue a z/OS USS command
 
 # zos-workflows | wf<a name="zos-workflows"></a>
 Create and manage z/OSMF workflows on a z/OS system
-## create | cre<a name=" zos-workflows-create"></a>
+## create | cre<a name="zos-workflows-create"></a>
 Create a z/OSMF workflow on a z/OS system.
-### workflow-from-data-set<a name=" zos-workflows-create-workflow-from-data-set"></a>
+### workflow-from-data-set<a name="zos-workflows-create-workflow-from-data-set"></a>
 Create a z/OSMF workflow on a z/OS system using a Data set
 
 #### Usage
@@ -6282,7 +6282,7 @@ DUMMYVAL. Assign it to the owner:
 
       * `$  zowe zos-workflows create workflow-from-data-set "testworkflow" --data-set "TESTID.WKFLOW" --system-name "TESTM1" --owner "MYSYSID" --variables DUMMYVAR=DUMMYVAL --assign-to-owner`
 
-### workflow-from-uss-file<a name=" zos-workflows-create-workflow-from-uss-file"></a>
+### workflow-from-uss-file<a name="zos-workflows-create-workflow-from-uss-file"></a>
 Create a workflow instance in z/OSMF using a USS file
 
 #### Usage
@@ -6445,7 +6445,7 @@ DUMMYVAL2, and assign it to the owner:
 
       * `$  zowe zos-workflows create workflow-from-uss-file "testworkflow" --uss-file "/path/workflow.xml" --system-name "TESTM1"--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 --owner "MYSYSID" --assign-to-owner`
 
-### workflow-from-local-file<a name=" zos-workflows-create-workflow-from-local-file"></a>
+### workflow-from-local-file<a name="zos-workflows-create-workflow-from-local-file"></a>
 Create a z/OSMF workflow on a z/OS system using a Local file
 
 #### Usage
@@ -6598,9 +6598,9 @@ already exist in z/OSMF:
 
       * `$  zowe zos-workflows create workflow-from-local-file "testworkflow" --local-file "TESTID_WKFLOW.xml" --system-name "TESTM1" --owner "OTHERID" --overwrite`
 
-## start | sta<a name=" zos-workflows-start"></a>
+## start | sta<a name="zos-workflows-start"></a>
 Start a z/OSMF workflow on a z/OS system.
-### workflow-full<a name=" zos-workflows-start-workflow-full"></a>
+### workflow-full<a name="zos-workflows-start-workflow-full"></a>
 Will run workflow from the beginning to the end or to the first manual step\.
 
 #### Usage
@@ -6695,7 +6695,7 @@ value use the value that is in output file:
 
       * `$  zowe zos-workflows start workflow-full --workflow-name "testWorkflow"`
 
-### workflow-step<a name=" zos-workflows-start-workflow-step"></a>
+### workflow-step<a name="zos-workflows-start-workflow-step"></a>
 Will run given step of workflow instance plus following steps if specified by
 \-\-perform\-following\-steps option\.
 
@@ -6797,9 +6797,9 @@ with workflow name "testWorkflow":
 
       * `$  zowe zos-workflows start workflow-step "Step1" --workflow-name "testWorkflow"`
 
-## list | ls<a name=" zos-workflows-list"></a>
+## list | ls<a name="zos-workflows-list"></a>
 List the z/OSMF workflows for a system or a sysplex with filter options.
-### active-workflows<a name=" zos-workflows-list-active-workflows"></a>
+### active-workflows<a name="zos-workflows-list-active-workflows"></a>
 List active workflow instance(s) in z/OSMF\.
 Multiple filters can be used together\.
 Omitting all options will list all workflows on the sysplex
@@ -6926,7 +6926,7 @@ beginnig with "testW" that are in status "complete":
 
       * `$  zowe zos-workflows list active-workflows --wn "test.*" --sys "IBMSYS" --sn "complete"`
 
-### active-workflow-details<a name=" zos-workflows-list-active-workflow-details"></a>
+### active-workflow-details<a name="zos-workflows-list-active-workflow-details"></a>
 Get the details of an active z/OSMF workflow
 
 #### Usage
@@ -7009,7 +7009,7 @@ Get the details of an active z/OSMF workflow
 
       * `$  zowe zos-workflows list active-workflow-details --workflow-name "testWorkflow" --list-steps --list-variables`
 
-### definition-file-details<a name=" zos-workflows-list-definition-file-details"></a>
+### definition-file-details<a name="zos-workflows-list-definition-file-details"></a>
 Retrieve the contents of a z/OSMF workflow definition from a z/OS system\.
 
 #### Usage
@@ -7083,7 +7083,7 @@ z/OS data set "USER.DATA.SET.XML" including its steps and variables:
 
       * `$  zowe zos-workflows list definition-file-details --workflow-name "testWorkflow" --list-steps --list-variables`
 
-### archived-workflows<a name=" zos-workflows-list-archived-workflows"></a>
+### archived-workflows<a name="zos-workflows-list-archived-workflows"></a>
 List the archived z/OSMF workflows for a system or sysplex\.
 
 #### Usage
@@ -7163,9 +7163,9 @@ List the archived z/OSMF workflows for a system or sysplex\.
 	* If "\-\-response\-format\-type table" is specified, include the column headers
       in the output\.
 
-## archive<a name=" zos-workflows-archive"></a>
+## archive<a name="zos-workflows-archive"></a>
 Archive workflow instance in z/OSMF
-### active-workflow<a name=" zos-workflows-archive-active-workflow"></a>
+### active-workflow<a name="zos-workflows-archive-active-workflow"></a>
 Archive an active workflow instance in z/OSMF\.
 
 #### Usage
@@ -7270,9 +7270,9 @@ Archive an active workflow instance in z/OSMF\.
 
       * `$  zowe zos-workflows archive active-workflow --wk "123-456-abv-xyz" `
 
-## delete | del<a name=" zos-workflows-delete"></a>
+## delete | del<a name="zos-workflows-delete"></a>
 Delete an active workflow or an archived workflow from z/OSMF.
-### active-workflow<a name=" zos-workflows-delete-active-workflow"></a>
+### active-workflow<a name="zos-workflows-delete-active-workflow"></a>
 Delete an active workflow instance in z/OSMF
 
 #### Usage
@@ -7344,7 +7344,7 @@ starting with "test":
 
       * `$  zowe zos-workflows delete active-workflow --workflow-name "test.*"`
 
-### archived-workflow<a name=" zos-workflows-delete-archived-workflow"></a>
+### archived-workflow<a name="zos-workflows-delete-archived-workflow"></a>
 Delete an archived workflow from z/OSMF
 
 #### Usage
@@ -7418,9 +7418,9 @@ beginnig with "test":
 
 # zosmf<a name="zosmf"></a>
 Retrieve and show the properties of a z/OSMF web server
-## check<a name=" zosmf-check"></a>
+## check<a name="zosmf-check"></a>
 Confirm that z/OSMF is running on a specified system and gather information about the z/OSMF server for diagnostic purposes.
-### status<a name=" zosmf-check-status"></a>
+### status<a name="zosmf-check-status"></a>
 Confirm that z/OSMF is running on a system specified in your profile and gather
 information about the z/OSMF server for diagnostic purposes\. The command
 outputs properties of the z/OSMF server such as version, hostname, and installed
@@ -7485,9 +7485,9 @@ manually via command line:
 
       * `$  zowe zosmf check status --host myhost --port 443 --user myuser --password mypass`
 
-## list<a name=" zosmf-list"></a>
+## list<a name="zosmf-list"></a>
 Obtain a list of systems that are defined to a z/OSMF instance.
-### systems<a name=" zosmf-list-systems"></a>
+### systems<a name="zosmf-list-systems"></a>
 Obtain a list of systems that are defined to a z/OSMF instance\.
 
 #### Usage
