@@ -13,6 +13,7 @@ import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Copy, IZosFilesResponse, IDataSet, List } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { getDataSet } from "../../ZosFiles.utils";
+import { ICopyDatasetOptions } from "../../../api/methods/copy/doc/ICopyDatasetOptions";
 
 /**
  * Handler to copy a data set.
@@ -21,6 +22,8 @@ export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const fromDataSet: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
         const toDataSet: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
-        return Copy.dataSet(session, fromDataSet, toDataSet);
+        const options: ICopyDatasetOptions = { fromDataSet };
+
+        return Copy.dataSet(session, toDataSet, options);
     }
 }

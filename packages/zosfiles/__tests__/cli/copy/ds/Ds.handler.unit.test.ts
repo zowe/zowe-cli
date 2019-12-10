@@ -48,8 +48,8 @@ describe("DsHandler", () => {
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
-            { dataSetName: commandParameters.arguments.fromDataSetName },
             { dataSetName: commandParameters.arguments.toDataSetName },
+            { fromDataSet: { dataSetName: commandParameters.arguments.fromDataSetName } },
         );
         expect(response).toBe(defaultReturn);
     });
@@ -78,8 +78,8 @@ describe("DsHandler", () => {
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
-            { dataSetName: fromDataSetName, memberName: fromMemberName },
             { dataSetName: toDataSetName, memberName: toMemberName },
+            { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName } },
         );
         expect(response).toBe(defaultReturn);
     });
