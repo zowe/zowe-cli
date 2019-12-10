@@ -59,8 +59,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName } }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName } }
                     );
 
                     expect(response).toEqual({
@@ -97,8 +97,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName, memberName: toMemberName },
-                        { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName } }
+                        { dsn: toDataSetName, member: toMemberName },
+                        { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
                     );
 
                     expect(response).toEqual({
@@ -134,8 +134,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName, memberName: toMemberName },
-                        { fromDataSet: { dataSetName: fromDataSetName} }
+                        { dsn: toDataSetName, member: toMemberName },
+                        { "from-dataset": { dsn: fromDataSetName} }
                     );
 
                     expect(response).toEqual({
@@ -172,8 +172,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName } }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
                     );
 
                     expect(response).toEqual({
@@ -193,8 +193,8 @@ describe("Copy", () => {
                 it("should not contain enq in payload", async () => {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName } }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName } }
                     );
 
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -205,10 +205,10 @@ describe("Copy", () => {
                 it("should contain valid enq value in payload", async () => {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
+                        { dsn: toDataSetName },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName },
-                            enq: "SHR"
+                            "from-dataset": { dsn: fromDataSetName },
+                            "enq": "SHR"
                         }
                     );
 
@@ -220,10 +220,10 @@ describe("Copy", () => {
                 it("should contain invalid enq value in payload", async () => {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
+                        { dsn: toDataSetName },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName },
-                            enq: "AnyThing"
+                            "from-dataset": { dsn: fromDataSetName },
+                            "enq": "AnyThing"
                         }
                     );
 
@@ -237,8 +237,8 @@ describe("Copy", () => {
                 it("should not contain replace in payload", async () => {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName } }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName } }
                     );
 
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -249,10 +249,10 @@ describe("Copy", () => {
                 it("should contain replace with value true in payload", async () => {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
+                        { dsn: toDataSetName },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName },
-                            replace: true
+                            "from-dataset": { dsn: fromDataSetName },
+                            "replace": true
                         }
                     );
 
@@ -264,10 +264,10 @@ describe("Copy", () => {
                 it("should contain replace with value false in payload", async () => {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
+                        { dsn: toDataSetName },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName },
-                            replace: false
+                            "from-dataset": { dsn: fromDataSetName },
+                            "replace": false
                         }
                     );
 
@@ -305,8 +305,8 @@ describe("Copy", () => {
                 try {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName } }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName } }
                     );
                 } catch (err) {
                     error = err;
@@ -326,8 +326,8 @@ describe("Copy", () => {
                 try {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: "" } }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: "" } }
                     );
                 } catch (err) {
                     error = err;
@@ -341,8 +341,8 @@ describe("Copy", () => {
                 try {
                     await Copy.dataSet(
                         dummySession,
-                        { dataSetName: undefined },
-                        { fromDataSet: { dataSetName: fromDataSetName } }
+                        { dsn: undefined },
+                        { "from-dataset": { dsn: fromDataSetName } }
                     );
                 } catch (err) {
                     error = err;

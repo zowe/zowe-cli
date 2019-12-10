@@ -40,10 +40,10 @@ export class Copy {
      */
     public static async dataSet(
         session: AbstractSession,
-        { dataSetName: toDataSetName, memberName: toMemberName }: IDataSet,
+        { dsn: toDataSetName, member: toMemberName }: IDataSet,
         options: ICopyDatasetOptions
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toBeDefinedAndNonBlank(options.fromDataSet.dataSetName, "fromDataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const endpoint: string = posix.join(
@@ -53,15 +53,10 @@ export class Copy {
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const payload: any = {
-            "request": "copy",
-            "from-dataset": {
-                dsn: options.fromDataSet.dataSetName,
-                member: options.fromDataSet.memberName,
-            },
+        const payload = {
+            request: "copy",
             ...options
         };
-        delete payload.fromDataSet;
 
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
