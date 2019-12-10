@@ -28,8 +28,8 @@ export class Copy {
      * Copy the contents of a dataset
      *
      * @param {AbstractSession}   session        - z/OSMF connection info
-     * @param {IDataSet}          fromDataSet    - The data set to copy from
      * @param {IDataSet}          toDataSet      - The data set to copy to
+     * @param {IDataSetOptions}   options        - Options
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the status of the copying
      *
@@ -40,11 +40,10 @@ export class Copy {
      */
     public static async dataSet(
         session: AbstractSession,
-        { dataSetName: fromDataSetName, memberName: fromMemberName }: IDataSet,
         { dataSetName: toDataSetName, memberName: toMemberName }: IDataSet,
-        options: ICopyDatasetOptions = {}
+        options: ICopyDatasetOptions
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toBeDefinedAndNonBlank(fromDataSetName, "fromDataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(options.fromDataSet.dataSetName, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const endpoint: string = posix.join(
@@ -57,14 +56,12 @@ export class Copy {
         const payload: any = {
             "request": "copy",
             "from-dataset": {
-                dsn: fromDataSetName,
-                member: fromMemberName,
+                dsn: options.fromDataSet.dataSetName,
+                member: options.fromDataSet.memberName,
             },
+            ...options
         };
-
-        if (options.replace !== undefined) {
-            payload.replace = options.replace;
-        }
+        delete payload.fromDataSet;
 
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,

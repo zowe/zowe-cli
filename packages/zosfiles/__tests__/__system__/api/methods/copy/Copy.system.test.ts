@@ -70,8 +70,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: fromDataSetName },
                             { dataSetName: toDataSetName },
+                            { fromDataSet: { dataSetName: fromDataSetName } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
@@ -111,8 +111,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: fromDataSetName, memberName: file1 },
                             { dataSetName: toDataSetName, memberName: file2 },
+                            { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
@@ -152,8 +152,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: fromDataSetName },
                             { dataSetName: toDataSetName, memberName: file2 },
+                            { fromDataSet: { dataSetName: fromDataSetName } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
@@ -193,8 +193,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: fromDataSetName, memberName: file1 },
                             { dataSetName: toDataSetName },
+                            { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
@@ -216,6 +216,72 @@ describe("Copy", () => {
                 });
             });
         });
+        describe("Enq option", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("Should succeed with enq SHR", async () => {
+                let error;
+                let response;
+                let contents1;
+                let contents2;
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dataSetName: toDataSetName, memberName: file2 },
+                        {
+                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
+                            enq: "SHR"
+                        }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                expect(contents1).toBeTruthy();
+                expect(contents2).toBeTruthy();
+                expect(contents1.toString()).toEqual(contents2.toString());
+            });
+            it("Should result in error with invalid enq value", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dataSetName: toDataSetName, memberName: file2 },
+                        {
+                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
+                            enq: "invalid"
+                        }
+                    );
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeTruthy();
+                expect(response).toBeFalsy();
+            });
+        });
         describe("Replace option", () => {
             beforeEach(async () => {
                 try {
@@ -224,8 +290,8 @@ describe("Copy", () => {
                     await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                     await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: fromDataSetName, memberName: file1 },
                         { dataSetName: toDataSetName, memberName: file2 },
+                        { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
                     );
                 } catch (err) {
                     Imperative.console.info(`Error: ${inspect(err)}`);
@@ -238,9 +304,11 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: fromDataSetName, memberName: file1 },
                         { dataSetName: toDataSetName, memberName: file2 },
-                        { replace: false }
+                        {
+                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
+                            replace: false
+                        }
                     );
                     Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
@@ -261,9 +329,11 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: fromDataSetName, memberName: file1 },
                         { dataSetName: toDataSetName, memberName: file2 },
-                        { replace: true }
+                        {
+                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
+                            replace: true
+                        }
                     );
                     contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                     contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
