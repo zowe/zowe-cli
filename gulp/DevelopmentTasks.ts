@@ -19,8 +19,9 @@ import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@zowe/impera
 // without globally installing.
 const npx = "npx" + (require("os").platform() === "win32" ? ".cmd" : ""); // platform dependent extension for npx command
 
+const ansiColors = require("ansi-colors");
 const childProcess = require("child_process");
-const gutil = require("gulp-util");
+const fancylog = require("fancy-log");
 const rimraf = require("rimraf").sync;
 const fs = require("fs");
 const compileDir = "lib";
@@ -34,23 +35,23 @@ const lint: ITaskFunction = (done) => {
             "--format", "verbose", "packages/**/*.ts"], {stdio: "inherit"});
 
     } catch (e) {
-        gutil.log(gutil.colors.red("Error encountered trying to run tslint"));
+        fancylog(ansiColors.red("Error encountered trying to run tslint"));
         done(e);
         return;
     }
     try {
         if (lintProcess.status !== 0) {
             const lintWarning: IGulpError =
-                new Error(gutil.colors.yellow("Linting failed. Please correct the issues above."));
+                new Error(ansiColors.yellow("Linting failed. Please correct the issues above."));
             lintWarning.showStack = false;
             done(lintWarning);
         } else {
-            gutil.log(gutil.colors.blue("No style problems"));
+            fancylog(ansiColors.blue("No style problems"));
             done();
         }
     }
     catch (e) {
-        gutil.log(gutil.colors.red("Error encountered trying to check CLI definitions for consistency"));
+        fancylog(ansiColors.red("Error encountered trying to check CLI definitions for consistency"));
         done(e);
         return;
     }
@@ -96,7 +97,7 @@ const license: ITaskFunction = (done: (err: Error) => void) => {
                 result = usedShebang + result; // add the shebang back
                 fs.writeFileSync(filePath, result);
             }
-            gutil.log(gutil.colors.blue("Ensured that %d files had copyright information" +
+            fancylog(ansiColors.blue("Ensured that %d files had copyright information" +
                 " (%d already did)."), filePaths.length, alreadyContainedCopyright);
         } catch (e) {
             done(e);
@@ -212,7 +213,7 @@ const doc: ITaskFunction = async () => {
 
     markdownContent = mustache.render(markdownContent, {tableOfContents: tableOfContentsText});
     fs.writeFileSync("docs/CLIReadme.md", markdownContent);
-    gutil.log(gutil.colors.blue("Updated docs/CLIReadme.md with definitions of " + totalCommands + " commands"));
+    fancylog(ansiColors.blue("Updated docs/CLIReadme.md with definitions of " + totalCommands + " commands"));
 
     process.env.FORCE_COLOR = undefined;
 };
