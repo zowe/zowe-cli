@@ -180,7 +180,7 @@ node('ca-jenkins-agent') {
     )
 
     // Check Vulnerabilities
-    // pipeline.checkVulnerabilities()
+    pipeline.checkVulnerabilities()
 
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
