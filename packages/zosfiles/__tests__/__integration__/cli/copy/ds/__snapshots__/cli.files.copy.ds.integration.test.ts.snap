@@ -27,7 +27,8 @@ exports[`Copy Data Set should display the help 1`] = `
 
    toDataSetName		 (string)
 
-      The name of the data set that you want to copy to
+      The name of the data set that you want to copy to (data set must be
+      preallocated)
 
  ZOSMF CONNECTION OPTIONS
  ------------------------
@@ -96,18 +97,18 @@ exports[`Copy Data Set should display the help 1`] = `
 
       $ zowe zos-files copy data-set \\"USER.FROM.SET\\" \\"USER.TO.SET\\"
 
-   - Copy the data set named 'USER.FROM.SET(MEM1)' to the data
-   set named 'USER.TO.SET(MEM2)':
+   - Copy the data set member named 'USER.FROM.SET(MEM1)' to the
+   data set member named 'USER.TO.SET(MEM2)':
 
       $ zowe zos-files copy data-set \\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET(mem2)\\"
 
    - Copy the data set named 'USER.FROM.SET' to the data set
-   named 'USER.TO.SET(MEM2)':
+   member named 'USER.TO.SET(MEM2)':
 
       $ zowe zos-files copy data-set \\"USER.FROM.SET\\" \\"USER.TO.SET(mem2)\\"
 
-   - Copy the data set named 'USER.FROM.SET(MEM1)' to the data
-   set named 'USER.TO.SET':
+   - Copy the data set member named 'USER.FROM.SET(MEM1)' to the
+   data set named 'USER.TO.SET':
 
       $ zowe zos-files copy data-set \\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET\\"
 

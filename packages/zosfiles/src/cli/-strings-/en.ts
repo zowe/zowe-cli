@@ -169,15 +169,15 @@ export default {
                 DESCRIPTION: "Copy a data set to another data set",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
-                    TODSNAME: "The name of the data set that you want to copy to",
+                    TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)",
                 },
                 OPTIONS: {
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
-                    EX2: "Copy the data set named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET(MEM2)'",
-                    EX3: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET(MEM2)'",
-                    EX4: "Copy the data set named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
+                    EX2: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
+                    EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
+                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
                 }
             },
         },
