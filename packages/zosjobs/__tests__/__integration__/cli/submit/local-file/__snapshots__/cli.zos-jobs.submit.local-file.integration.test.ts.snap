@@ -80,7 +80,7 @@ exports[`zos-jobs submit local-file command syntax errors should occur if an ext
 "Command Error:
 Unknown argument: blah
 Command failed due to improper syntax
-Command entered: \\"zowe zos-jobs submit local-file C:\\\\Users\\\\tj891237\\\\Projects\\\\zowe-cli\\\\packages\\\\zosjobs\\\\__tests__\\\\__integration__\\\\cli\\\\submit\\\\local-file/testFileOfLocalJCL.txt blah\\"
+Command entered: \\"zowe zos-jobs submit local-file ../../../../packages/zosjobs/__tests__/__integration__/cli/submit/local-file/testFileOfLocalJCL.txt blah\\"
 Available commands are \\"data-set, local-file, stdin\\".
 Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
 Error Details:
