@@ -79,7 +79,7 @@ describe("Migrate Dataset", () => {
             expect(listResponse.apiResponse.items[0].migr).toBe("YES");
             expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
         });
-        it("should migrate a partioned dataset", async () => {
+        it("should migrate a partitioned dataset", async () => {
             const migrateOptions: IMigrateOptions = { wait: true };
             let error;
             let migrateResponse;
