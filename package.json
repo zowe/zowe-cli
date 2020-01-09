@@ -106,7 +106,7 @@
     "rimraf": "2.6.3",
     "shebang-regex": "2.0.0",
     "ts-jest": "^24.2.0",
-    "ts-node": "8.5.4",
+    "ts-node": "7.0.1",
     "tslint": "5.20.1",
     "typedoc": "^0.15.0",
     "typescript": "3.7.4",
