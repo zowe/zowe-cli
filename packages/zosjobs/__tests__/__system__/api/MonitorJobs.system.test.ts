@@ -119,7 +119,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(trimmedErrorMessage).toContain("rc: 4");
                 expect(trimmedErrorMessage).toContain("status 400");
                 expect(trimmedErrorMessage).toContain("No job found for reference");
-            });
+            }, LONG_TIMEOUT);
         });
 
         // Single polling situation - the majority are tested via the common method (which this method invokes)
