@@ -114,6 +114,11 @@ describe("Upload Data Set", () => {
             });
 
             it("should upload a file to a physical sequential data set using Windows relative path", async () => {
+                if (process.platform !== "win32") {
+                    // TODO These tests cannot run on Linux, how should we handle this?
+                    return;
+                }
+
                 let error;
                 let response: IZosFilesResponse;
 
@@ -234,6 +239,11 @@ describe("Upload Data Set", () => {
             });
 
             it("should upload a file to a partitioned data set member using Windows relative path", async () => {
+                if (process.platform !== "win32") {
+                    // TODO These tests cannot run on Linux, how should we handle this?
+                    return;
+                }
+
                 let error;
                 let response: IZosFilesResponse;
 
