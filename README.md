@@ -47,26 +47,6 @@ npm install --registry https://registry.npmjs.org
 
 **Note:** When necessary, you can run the `npm install --registry https://registry.npmjs.org` command again to update dependencies that were changed in package.json.
 
-If you have credentials to connect to gizaartifactory.jfrog.io, you can issue `npm install` without the `--registry` option. 
-
-**Note:** If you see `npm ERR! code E401` during execution of `npm install` you need to issue `npm login` and provide username, password and email address to connect to gizaartifactory.jfrog.io.
-  
-  <details><summary>Example of E401 message</summary>
-  <p>
-
-  ```
-    npm install
-    npm ERR! code E401
-    npm ERR! 404 401 Unauthorized: js-yaml@3.9.0
-
-    npm ERR! A complete log of this run can be found in:
-    npm ERR!     xxxx\npm-cache\_logs\2018-09-20T12_53_07_651Z-debug.log
-
-  ```
-
-  </p>
-  </details>
-
 To build your code changes, issue the following command:
 
 ```

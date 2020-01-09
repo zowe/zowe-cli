@@ -91,7 +91,7 @@ def GIT_REVISION_LOOKUP = 'git log -n 1 --pretty=format:%h'
 /**
  * The credentials id field for the artifactory username and password
  */
-def ARTIFACTORY_CREDENTIALS_ID = 'GizaArtifactory'
+def ARTIFACTORY_CREDENTIALS_ID = 'zowe.jfrog.io'
 
 /**
  * The email address for the artifactory
