@@ -332,7 +332,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(jobInfo.status).toBe("INPUT");
 
                 // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn((session, parms) => {
+                const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -368,7 +368,7 @@ describe("System Tests - Monitor Jobs", () => {
                 } while (jobCheck.status !== "ACTIVE");
 
                 // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn((session, parms) => {
+                const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -404,7 +404,7 @@ describe("System Tests - Monitor Jobs", () => {
                 } while (jobCheck.status !== "OUTPUT");
 
                 // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn((session, parms) => {
+                const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -435,7 +435,7 @@ describe("System Tests - Monitor Jobs", () => {
                     {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
 
                 // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn((session, parms) => {
+                const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
@@ -493,7 +493,7 @@ describe("System Tests - Monitor Jobs", () => {
                     {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
 
                 // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn((session, parms) => {
+                const mockedGetJobs = jest.fn(async (session, parms) => {
                     return ORIG_JOBS_STATUS(session, parms);
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
