@@ -34,7 +34,7 @@
     "web-help/logo.png"
   ],
   "publishConfig": {
-    "registry": "https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/"
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
   "imperative": {
     "configurationModule": "lib/imperative.js"
@@ -65,7 +65,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@zowe/imperative": "4.4.5",
+    "@zowe/imperative": "4.4.6",
     "@zowe/perf-timing": "^1.0.3",
     "get-stdin": "^7.0.0",
     "js-yaml": "3.13.1",
