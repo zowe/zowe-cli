@@ -181,7 +181,7 @@ describe("Download Data Set", () => {
 
         it("should fail due to specified data set name does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["dummy." + dsname]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");
         });

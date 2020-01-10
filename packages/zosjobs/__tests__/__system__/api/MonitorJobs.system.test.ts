@@ -119,7 +119,7 @@ describe("System Tests - Monitor Jobs", () => {
                 expect(trimmedErrorMessage).toContain("rc: 4");
                 expect(trimmedErrorMessage).toContain("status 400");
                 expect(trimmedErrorMessage).toContain("No job found for reference");
-            }, LONG_TIMEOUT);
+            });
         });
 
         // Single polling situation - the majority are tested via the common method (which this method invokes)
@@ -373,7 +373,7 @@ describe("System Tests - Monitor Jobs", () => {
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
 
-                // check that the status is input
+                // check that the status is active
                 const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
                     {
                         jobname: jobInfo.jobname,
@@ -409,7 +409,7 @@ describe("System Tests - Monitor Jobs", () => {
                 });
                 GetJobs.getStatusCommon = mockedGetJobs;
 
-                // check that the status is input
+                // check that the status is output
                 const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
                     {
                         jobname: jobInfo.jobname,
