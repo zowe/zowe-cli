@@ -989,7 +989,7 @@ describe("Get spool APIs", () => {
 /**********************************************/
 // API methods "getJcl..." system tests
 describe("Get JCL APIs", () => {
-    describe("invalid request error handling", async () => {
+    describe("invalid request error handling", () => {
         it("should detect and surface an error for getting JCL that doesnt exist", async () => {
             const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
             await DeleteJobs.deleteJobForJob(REAL_SESSION, job);

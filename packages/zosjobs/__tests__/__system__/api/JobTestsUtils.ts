@@ -17,11 +17,17 @@ export class JobTestsUtils {
      * @param account - jes accounting info for the user
      * @returns {string} - the jcl to submit
      */
-    public static getIefbr14JCL(jobnamePrefix: string = "IEFBR", account: string) {
+    public static getIefbr14JCL(jobnamePrefix: string = "IEFBR", account: string, steps: number = 1) {
         const maxJobNamePrefixLength = 5;
         return "//" + jobnamePrefix.substring(0, maxJobNamePrefixLength).toUpperCase() + "D JOB '" + account +
             "','Zowe Test',MSGLEVEL=(1,1),\n" +
             "// MSGCLASS=A,CLASS=C\n" +
-            "//STEP1 EXEC PGM=IEFBR14";
+            this.getIefbr14Steps(steps);
+    }
+
+    private static getIefbr14Steps(steps: number): string {
+        return [...Array(steps).keys()]
+            .map((stepNum: number) => `//STEP${stepNum + 1} EXEC PGM=IEFBR14`)
+            .join("\n");
     }
 }

@@ -42,8 +42,9 @@ describe("CancelJobs System tests", () => {
         });
 
         const ACCOUNT = systemProps.tso.account;
+        const maxStepNum = 255;  // Use lots of steps to make the job stay in INPUT status longer
 
-        iefbr14JCL = JobTestsUtils.getIefbr14JCL(REAL_SESSION.ISession.user, ACCOUNT);
+        iefbr14JCL = JobTestsUtils.getIefbr14JCL(REAL_SESSION.ISession.user, ACCOUNT, maxStepNum);
     });
 
     describe("Positive tests", () => {
@@ -67,6 +68,7 @@ describe("CancelJobs System tests", () => {
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
+            expect(job.retcode).toBeNull(); // job is not complete, no CC
             await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
         }, LONG_TIMEOUT);
     });

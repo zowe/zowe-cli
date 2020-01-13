@@ -34,7 +34,7 @@ describe("zos-jobs submit command", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    describe("Syntax errors", async () => {
+    describe("Syntax errors", () => {
         it("should occur if --wfa and --directory are both specified", async () => {
 
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_directory.sh",
@@ -43,6 +43,7 @@ describe("zos-jobs submit command", () => {
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
         });
+
         it("should occur if --wfa and --vasc are both specified ", async () => {
 
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_vasc.sh",
