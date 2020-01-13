@@ -77,40 +77,14 @@ Use \\"zowe zos-jobs submit local-file --help\\" to view command description, us
 `;
 
 exports[`zos-jobs submit local-file command syntax errors should occur if an extra unknown option is specified 1`] = `
-"
-Syntax Error:
-You specified the following unknown values: \\"blah\\".
-
- Could not interpret them as a group, command name, or positional option.
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---password (--pass,--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
-
-Example:
-
- - Submit the JCL in the file \\"iefbr14.txt\\":
-
-      $ zowe zos-jobs submit local-file \\"iefbr14.txt\\"
-
-Use \\"zowe zos-jobs submit local-file blah --help\\" to view command description, usage, and options.
+"Command Error:
+Unknown argument: blah
+Command failed due to improper syntax
+Command entered: \\"zowe zos-jobs submit local-file /home/andrew/GitHub/external/zowe-cli/packages/zosjobs/__tests__/__integration__/cli/submit/local-file/testFileOfLocalJCL.txt blah\\"
+Available commands are \\"data-set, local-file, stdin\\".
+Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
+Error Details:
+Unknown argument: blah
 "
 `;
 
