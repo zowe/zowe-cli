@@ -47,8 +47,9 @@ describe("zos-jobs submit local-file command", () => {
 
         it("should occur if an extra unknown option is specified", async () => {
 
+            const relDirname = require("path").relative(TEST_ENVIRONMENT.workingDir, __dirname).replace(/\\/g, "/");
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_invalid_parm.sh",
-                TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
+                TEST_ENVIRONMENT, [relDirname + "/testFileOfLocalJCL.txt"]);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toMatchSnapshot();
