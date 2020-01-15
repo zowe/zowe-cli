@@ -12,8 +12,7 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { HMigrate } from "../../../api/methods/hMigrate";
-import { IMigrateOptions } from "../../../api/methods/hMigrate/doc/IMigrateOptions";
+import { HMigrate, IMigrateOptions } from "../../../api/methods/hMigrate";
 
 /**
  * Handler to rename a Data Set
@@ -22,7 +21,8 @@ export default class DSHandler extends ZosFilesBaseHandler {
   public async processWithSession(
     commandParameters: IHandlerParameters,
     session: AbstractSession,
-    ): Promise<IZosFilesResponse> {
-    return HMigrate.dataSet(session, commandParameters.arguments.dataSetName);
+    options: Partial<IMigrateOptions>): Promise<IZosFilesResponse> {
+
+    return HMigrate.dataSet(session, commandParameters.arguments.dataSetName, options);
   }
 }

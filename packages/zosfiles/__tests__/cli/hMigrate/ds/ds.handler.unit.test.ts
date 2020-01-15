@@ -12,6 +12,7 @@
 import { IZosFilesResponse, HMigrate } from "../../../../src/api";
 import DSHandler from "../../../../src/cli/hMigrate/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
+import { IMigrateOptions } from "../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -46,12 +47,47 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
+        const response = await handler.processWithSession(commandParameters, dummySession as any, {});
 
         expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
         expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.dataSetName,
+            {},
+        );
+        expect(response).toBe(defaultReturn);
+    });
+    it("should call HMigrate.dataSet with wait = true", async () => {
+        const handler = new DSHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const options: IMigrateOptions = { wait : true }
+
+        const commandParameters: any = {
+            arguments: {
+                dataSetName: "ABCD",
+            },
+            options,
+        };
+
+        const dummySession = {
+            user: "dummy",
+            password: "dummy",
+            hostname: "machine",
+            port: 443,
+            protocol: "https",
+            type: "basic"
+        };
+
+        const expectedOptions: IMigrateOptions = { wait : true };
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any, { wait: true });
+
+        expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
+        expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            commandParameters.arguments.dataSetName,
+            expectedOptions
         );
         expect(response).toBe(defaultReturn);
     });
