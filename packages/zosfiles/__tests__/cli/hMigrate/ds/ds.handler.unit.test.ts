@@ -61,7 +61,7 @@ describe("DsHandler", () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IMigrateOptions = { wait : true }
+        const options: IMigrateOptions = { wait : true };
 
         const commandParameters: any = {
             arguments: {
