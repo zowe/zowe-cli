@@ -204,9 +204,9 @@ const config: IImperativeConfig = {
                     description: "Create a ssh profile called 'ssh222' to connect to z/OS SSH server at host 'zos123' and port 13022"
                 },
                 {
-                    options: "ssh333 --host sshhost --user ibmuser --priavetKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
+                    options: "ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
                     description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
-                                 "using a privatekey '/path/to/privatkey' and its decryption passphrase 'privateKeyPassphrase' " +
+                                 "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
                                  "for privatekey authentication"
                 },
             ]

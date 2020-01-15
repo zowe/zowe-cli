@@ -46,7 +46,7 @@ node('ca-jenkins-agent') {
     // npm publish configuration
     pipeline.publishConfig = [
         email: pipeline.gitConfig.email,
-        credentialsId: 'GizaArtifactory',
+        credentialsId: 'zowe.jfrog.io',
         scope: '@zowe'
     ]
 
@@ -54,7 +54,7 @@ node('ca-jenkins-agent') {
         [
             email: pipeline.publishConfig.email,
             credentialsId: pipeline.publishConfig.credentialsId,
-            url: 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
+            url: 'https://zowe.jfrog.io/zowe/api/npm/npm-release/',
             scope: pipeline.publishConfig.scope
         ]
     ]
@@ -155,10 +155,25 @@ node('ca-jenkins-agent') {
 
     // Perform sonar qube operations
     pipeline.createStage(
-        name: "SonarQube",
+        name: "Code Analysis",
         stage: {
-            def scannerHome = tool 'sonar-scanner-maven-install'
-            withSonarQubeEnv('sonar-default-server') {
+            // append sonar.links.ci, sonar.branch.name or sonar.pullrequest to sonar-project.properties
+            def sonarProjectFile = 'sonar-project.properties'
+            sh "echo sonar.links.ci=${env.BUILD_URL} >> ${sonarProjectFile}"
+            if (env.CHANGE_BRANCH) { // is pull request
+                sh "echo sonar.pullrequest.key=${env.CHANGE_ID} >> ${sonarProjectFile}"
+                // we may see warnings like these
+                //  WARN: Parameter 'sonar.pullrequest.branch' can be omitted because the project on SonarCloud is linked to the source repository.
+                //  WARN: Parameter 'sonar.pullrequest.base' can be omitted because the project on SonarCloud is linked to the source repository.
+                // if we provide parameters below
+                sh "echo sonar.pullrequest.branch=${env.CHANGE_BRANCH} >> ${sonarProjectFile}"
+                sh "echo sonar.pullrequest.base=${env.CHANGE_TARGET} >> ${sonarProjectFile}"
+            } else {
+                sh "echo sonar.branch.name=${env.BRANCH_NAME} >> ${sonarProjectFile}"
+            }
+
+            def scannerHome = tool 'sonar-scanner-4.0.0'
+            withSonarQubeEnv('sonarcloud-server') {
                 sh "${scannerHome}/bin/sonar-scanner"
             }
         }

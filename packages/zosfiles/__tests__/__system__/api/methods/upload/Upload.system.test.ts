@@ -113,7 +113,9 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
-            it("should upload a file to a physical sequential data set using Windows relative path", async () => {
+            // Since this test is platform specific, only run it on Windows
+            (process.platform === "win32" ? it : it.skip)("should upload a file to a physical sequential data set using Windows relative path",
+            async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -233,7 +235,9 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
-            it("should upload a file to a partitioned data set member using Windows relative path", async () => {
+            // Since this test is platform specific, only run it on Windows
+            (process.platform === "win32" ? it : it.skip)("should upload a file to a partitioned data set member using Windows relative path",
+            async () => {
                 let error;
                 let response: IZosFilesResponse;
 

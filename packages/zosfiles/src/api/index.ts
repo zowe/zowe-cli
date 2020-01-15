@@ -26,6 +26,7 @@ export * from "./methods/copy";
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
 
+export * from "./doc/IDataSet";
 export * from "./doc/IZosFilesResponse";
 export * from "./doc/types/ZosmfMigratedRecallOptions";
 

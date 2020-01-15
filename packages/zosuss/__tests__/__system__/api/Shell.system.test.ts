@@ -142,7 +142,13 @@ describe("zowe uss issue ssh api call test", () => {
             error = err;
         }
         expect(error).toBeTruthy();
-        expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
+
+        // Error message from SSH is different between Windows and Linux
+        if (process.platform === "win32") {
+            expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
+        } else {
+            expect(error.toString()).toContain(ZosUssMessages.allAuthMethodsFailed.message);
+        }
 
     }, TIME_OUT);
 

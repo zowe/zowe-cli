@@ -20,6 +20,7 @@ import { MountDefinition } from "./mount/Mount.definition";
 import { ZosmfSession } from "../../../zosmf";
 import { UnmountDefinition } from "./unmount/Unmount.definition";
 import { HMigrateDefinition } from "./hMigrate/HMigrate.definintion";
+import { CopyDefinition } from "./copy/Copy.definition";
 
 /**
  * This object defines the top level command group for zosfiles. This is not
@@ -42,7 +43,8 @@ const definition: ICommandDefinition = {
         ListDefinition,
         UploadDefinition,
         MountDefinition,
-        UnmountDefinition
+        UnmountDefinition,
+        CopyDefinition,
     ],
     passOn: [
         {
