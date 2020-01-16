@@ -146,19 +146,14 @@ exports[`zos-jobs view job-status-by-jobid command should display the help 1`] =
 `;
 
 exports[`zos-jobs view job-status-by-jobid command syntax errors should occur if an extra unknown option is specified 1`] = `
-"
-Syntax Error:
-You specified the following unknown values: \\"blah\\".
-
- Could not interpret them as a group, command name, or positional option.
-
-Example:
-
- - View status and other details of the job with the job ID JOB00123:
-
-      $ zowe zos-jobs view job-status-by-jobid j123
-
-Use \\"zowe zos-jobs view job-status-by-jobid blah --help\\" to view command description, usage, and options.
+"Command Error:
+Unknown argument: blah
+Command failed due to improper syntax
+Command entered: \\"zowe zos-jobs view job-status-by-jobid JOB123 blah --host fakehost --user fakeuser --password fakepass\\"
+Available commands are \\"job-status-by-jobid, spool-file-by-id\\".
+Use \\"zowe zos-jobs view --help\\" to view groups, commands, and options.
+Error Details:
+Unknown argument: blah
 "
 `;
 

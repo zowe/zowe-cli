@@ -54,12 +54,12 @@ exports[`zos-tso should display the help 1`] = `
 
 exports[`zos-tso should fail with invalid option 1`] = `
 "Command Error:
-Unknown argument: not-valid-option
+Unknown arguments: not-valid-option, notValidOption
 Command failed due to improper syntax
-Command entered: \\"zowe zos-tso --not-valid-option true --notValidOption true\\"
+Command entered: \\"zowe zos-tso --not-valid-option\\"
 Use \\"zowe zos-tso --help\\" to view groups, commands, and options.
 Error Details:
-Unknown argument: not-valid-option
+Unknown arguments: not-valid-option, notValidOption
 "
 `;
 
