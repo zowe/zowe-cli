@@ -77,7 +77,7 @@ describe("Migrate Dataset", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toContain("Data set migrated successfully.");
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };
@@ -89,7 +89,7 @@ describe("Migrate Dataset", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toContain("Data set migrated successfully.");
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
     });
     describe("Partitioned Data Set", () => {
@@ -109,7 +109,7 @@ describe("Migrate Dataset", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toContain("Data set migrated successfully.");
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };
@@ -121,7 +121,7 @@ describe("Migrate Dataset", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toContain("Data set migrated successfully.");
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
     });
   });
@@ -140,7 +140,7 @@ describe("Migrate Dataset", () => {
         expect(response.stderr.toString()).toBeTruthy();
         expect(response.status).toBe(1);
         expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).not.toContain("Data set migrated successfully.");
+        expect(response.stdout.toString()).not.toContain("Data set migraton requested.");
       });
     });
   });
