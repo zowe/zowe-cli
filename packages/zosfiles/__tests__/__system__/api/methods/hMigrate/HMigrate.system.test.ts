@@ -57,7 +57,7 @@ describe("Migrate Dataset", () => {
                     Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
-            it("should migrate a sequential data set", async () => {
+            it("should migrate a sequential data set with wait = true", async () => {
                 const migrateOptions: IMigrateOptions = { wait: true };
                 let error;
                 let migrateResponse;
@@ -88,7 +88,7 @@ describe("Migrate Dataset", () => {
                     Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
-            it("should migrate a partitioned dataset", async () => {
+            it("should migrate a partitioned dataset with wait = true", async () => {
                 const migrateOptions: IMigrateOptions = { wait: true };
                 let error;
                 let migrateResponse;

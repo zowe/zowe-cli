@@ -68,17 +68,6 @@ describe("Migrate Dataset", () => {
           Imperative.console.info(`Error: ${inspect(err)}`);
       }
       });
-      it("Should migrate a data set", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName1]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
-
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
-      });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };
         const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName1, migrateOptions]);
@@ -99,17 +88,6 @@ describe("Migrate Dataset", () => {
       } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
       }
-      });
-      it("Should migrated a data set", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName2]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
-
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };

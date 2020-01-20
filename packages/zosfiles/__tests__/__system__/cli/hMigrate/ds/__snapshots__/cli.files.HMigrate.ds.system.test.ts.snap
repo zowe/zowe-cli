@@ -4,3 +4,15 @@ exports[`Migrate Dataset Failure scenarios Sequential Data Set Should throw an e
 "================Z/OS FILES MIGRATE DATA SET===============
 "
 `;
+
+exports[`Migrate Dataset Success scenarios Partitioned Data Set Should migrate a data set with wait = true 1`] = `
+"================Z/OS FILES MIGRATE DATA SET===============
+Data set migraton requested.
+"
+`;
+
+exports[`Migrate Dataset Success scenarios Sequential Data Set Should migrate a data set with wait = true 1`] = `
+"================Z/OS FILES MIGRATE DATA SET===============
+Data set migraton requested.
+"
+`;
