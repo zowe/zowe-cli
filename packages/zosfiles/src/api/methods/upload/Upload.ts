@@ -29,6 +29,10 @@ import { asyncPool } from "../../../../../utils";
 import { ZosFilesAttributes, TransferMode } from "../../utils/ZosFilesAttributes";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
+import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
+import { IRestClientResponse } from "../../doc/IRestClientResponse";
+import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
+
 
 export class Upload {
 
@@ -137,13 +141,13 @@ export class Upload {
     }
 
     /**
-     * Writting data buffer to a data set.
+     * Writing data buffer to a data set.
      * @param {AbstractSession} session      - z/OS connection info
      * @param {Buffer}          fileBuffer   - Data buffer to be written
      * @param {string}          dataSetName  - Name of the data set to write to
      * @param {IUploadOptions}  [options={}] - Uploading options
      *
-     * @return {Promise<IZosFilesResponse>} A response indicating the out come
+     * @return {Promise<IZosFilesResponse>} A response indicating the outcome
      *
      * @throws {ImperativeError} When encounter error scenarios.
      */
@@ -163,11 +167,11 @@ export class Upload {
             endpoint = path.posix.join(endpoint, dataSetName);
 
             // Construct request header parameters
-            const reqHeader: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [];
             if (options.binary) {
-                reqHeader.push(ZosmfHeaders.X_IBM_BINARY);
+                reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
             } else {
-                reqHeader.push(ZosmfHeaders.X_IBM_TEXT);
+                reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
                 fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
             }
 
@@ -175,25 +179,50 @@ export class Upload {
             if (options.recall) {
                 switch (options.recall.toLowerCase()) {
                     case "wait":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
                         break;
                     case "nowait":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
                         break;
                     case "error":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
                         break;
                     default:
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
                         break;
                 }
             }
 
-            await ZosmfRestClient.putExpectString(session, endpoint, reqHeader, fileBuffer);
+            if (options.etag) {
+                reqHeaders.push({"If-Match" : options.etag});
+            }
+
+        // Options to use the buffer to write a file
+            const requestOptions: IOptionsFullResponse = {
+                resource: endpoint,
+                reqHeaders,
+                writeData: fileBuffer
+            };
+
+            // If requestor needs etag, add header + get "response" back
+            if (options.returnEtag) {
+                requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+            }
+            const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
+
+            // By default, apiResponse is empty when uploading
+            const apiResponse: any = {};
+
+            // Return Etag in apiResponse, if requested
+            if (options.returnEtag) {
+                apiResponse.etag = uploadRequest.response.headers.etag;
+            }
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
+                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+                apiResponse
             };
         } catch (error) {
             throw error;
@@ -201,7 +230,7 @@ export class Upload {
     }
 
     /**
-     * Writting data buffer to a data set.
+     * Writing data buffer to a data set.
      * @param {AbstractSession} session      - z/OS connection info
      * @param {Buffer}          fileBuffer   - Data buffer to be written
      * @param {string}          dataSetName  - Name of the data set to write to
@@ -227,39 +256,66 @@ export class Upload {
             endpoint = path.posix.join(endpoint, dataSetName);
 
             // Construct request header parameters
-            const reqHeader: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [];
             if (options.binary) {
-                reqHeader.push(ZosmfHeaders.X_IBM_BINARY);
+                reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
             } else {
-                reqHeader.push(ZosmfHeaders.X_IBM_TEXT);
+                reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
             }
 
             // Migrated recall options
             if (options.recall) {
                 switch (options.recall.toLowerCase()) {
                     case "wait":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
                         break;
                     case "nowait":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
                         break;
                     case "error":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
                         break;
                     default:
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
                         break;
                 }
             }
 
+            if (options.etag) {
+                reqHeaders.push({"If-Match" : options.etag});
+            }
 
-            await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeader, fileStream,
-                !options.binary /* only normalize newlines if we are not uploading in binary*/,
-                options.task);
+            const requestOptions: IOptionsFullResponse = {
+                resource: endpoint,
+                reqHeaders,
+                requestStream: fileStream,
+                normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not uploading in binary*/,
+                task: options.task
+            };
+
+            // If requestor needs etag, add header + get "response" back
+            if (options.returnEtag) {
+                requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+            }
+
+            const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
+            // await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeaders, fileStream,
+            //     !options.binary /* only normalize newlines if we are not uploading in binary*/,
+            //     options.task);
+
+            // By default, apiResponse is empty when uploading
+            const apiResponse: any = {};
+
+            // Return Etag in apiResponse, if requested
+            if (options.returnEtag) {
+                apiResponse.etag = uploadRequest.response.headers.etag;
+            }
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
+                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+                apiResponse
             };
         } catch (error) {
             throw error;
@@ -285,7 +341,7 @@ export class Upload {
      *
      * Note:
      * This method does everything needed to do from checking if path is file or directory
-     * and if data set is sequential file or PDS to determind what name to be used when
+     * and if data set is sequential file or PDS to determine what name to be used when
      * upload content to data set.  All you have to specify is a directory and a dsname.
      */
     public static async pathToDataSet(session: AbstractSession,
@@ -407,6 +463,14 @@ export class Upload {
                         }
                         const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, streamUploadOptions);
                         this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
+                        const toBePushed: IUploadResult = {
+                            success: result.success,
+                            from: uploadingFile,
+                            to: uploadingDsn
+                        };
+                        if (options.returnEtag) {
+                            toBePushed.etag = result.apiResponse.etag;
+                        }
                         results.push({
                             success: result.success,
                             from: uploadingFile,
@@ -454,6 +518,40 @@ export class Upload {
      * @param {AbstractSession} session - z/OS connection info
      * @param {string} ussname          - Name of the USS file to write to
      * @param {Buffer} buffer          - Data to be written
+     * @param {IUploadOptions}  [options={}] - Uploading options
+     * @returns {Promise<object>}
+     */
+    public static async bufferToUssFile(session: AbstractSession,
+                                        ussname: string,
+                                        buffer: Buffer,
+                                        options: IUploadOptions = {}) {
+        options.binary = false;
+        ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
+        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
+        const headers: any[] = [];
+        if (options.binary) {
+            headers.push(ZosmfHeaders.OCTET_STREAM);
+            headers.push(ZosmfHeaders.X_IBM_BINARY);
+        } else if (options.localEncoding) {
+            headers.push({"Content-Type": options.localEncoding});
+            headers.push(ZosmfHeaders.X_IBM_TEXT);
+        } else {
+            headers.push(ZosmfHeaders.TEXT_PLAIN);
+        }
+
+        if (options.etag) {
+            headers.push({"If-Match" : options.etag});
+        }
+
+        return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
+    }
+    /**
+     * Upload content to USS file
+     * @deprecated In favor of bufferToUssFile() which implements IUploadOptions
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} ussname          - Name of the USS file to write to
+     * @param {Buffer} buffer          - Data to be written
      * @param {boolean} binary          - The indicator to upload the file in binary mode
      * @returns {Promise<object>}
      */
@@ -461,26 +559,82 @@ export class Upload {
                                         ussname: string,
                                         buffer: Buffer,
                                         binary: boolean = false,
-                                        localEncoding?: string) {
+                                        localEncoding?: string,
+                                        etag?: string,
+                                        returnEtag?: boolean) {
+        return this.bufferToUssFile(session, ussname, buffer, {
+            binary,
+            localEncoding,
+            etag,
+            returnEtag
+        });
+    }
+
+    /**
+     * Upload content to USS file
+     * @param {AbstractSession} session - z/OS connection info
+     * @param {string} ussname          - Name of the USS file to write to
+     * @param {Buffer} uploadStream          - Data to be written
+     * @param {IUploadOptions}  [options={}] - Uploading options
+     * @returns {Promise<IZosFilesResponse>} - A response indicating the outcome
+     */
+
+    public static async streamToUssFile(session: AbstractSession,
+                                        ussname: string,
+                                        uploadStream: Readable,
+                                        options: IUploadOptions = {}) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        ussname = path.posix.normalize(ussname);
+        ussname = ZosFilesUtils.formatUnixFilepath(ussname);
+        ussname = encodeURIComponent(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const headers: any[] = [];
-        if (binary) {
+        if (options.binary) {
             headers.push(ZosmfHeaders.OCTET_STREAM);
             headers.push(ZosmfHeaders.X_IBM_BINARY);
-        } else if (localEncoding) {
-            headers.push({"Content-Type": localEncoding});
+        } else if (options.localEncoding) {
+            headers.push({"Content-Type": options.localEncoding});
             headers.push(ZosmfHeaders.X_IBM_TEXT);
         } else {
             headers.push(ZosmfHeaders.TEXT_PLAIN);
         }
 
-        return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
+        if (options.etag) {
+            headers.push({"If-Match" : options.etag});
+        }
+
+        // Options to use the stream to write a file
+        const restOptions: IOptionsFullResponse = {
+            resource: ZosFilesConstants.RESOURCE + parameters,
+            reqHeaders: headers,
+            requestStream: uploadStream,
+            normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not in binary mode*/
+        };
+
+        // If requestor needs etag, add header + get "response" back
+        if (options.returnEtag) {
+            restOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+            restOptions.dataToReturn = [CLIENT_PROPERTY.response];
+        }
+        const uploadRequest: IRestClientResponse =  await ZosmfRestClient.putExpectFullResponse(session, restOptions);
+
+        // By default, apiResponse is empty when uploading
+        const apiResponse: any = {};
+
+        // Return Etag in apiResponse, if requested
+        if (options.returnEtag) {
+            apiResponse.etag = uploadRequest.response.headers.etag;
+        }
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+            apiResponse
+        };
     }
 
     /**
      * Upload content to USS file
+     * @deprecated - In favor of streamToUssFile() which implements IUploadOptions
      * @param {AbstractSession} session - z/OS connection info
      * @param {string} ussname          - Name of the USS file to write to
      * @param {Buffer} uploadStream          - Data to be written
@@ -492,34 +646,28 @@ export class Upload {
                                         uploadStream: Readable,
                                         binary: boolean = false,
                                         localEncoding?: string,
-                                        task?: ITaskWithStatus) {
-        ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
-        ussname = path.posix.normalize(ussname);
-        ussname = ZosFilesUtils.formatUnixFilepath(ussname);
-        ussname = encodeURIComponent(ussname);
-        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
-        const headers: any[] = [];
-        if (binary) {
-            headers.push(ZosmfHeaders.OCTET_STREAM);
-            headers.push(ZosmfHeaders.X_IBM_BINARY);
-        } else if (localEncoding) {
-            headers.push({"Content-Type": localEncoding});
-            headers.push(ZosmfHeaders.X_IBM_TEXT);
-        } else {
-            headers.push(ZosmfHeaders.TEXT_PLAIN);
-        }
-
-        await ZosmfRestClient.putStreamedRequestOnly(session, ZosFilesConstants.RESOURCE + parameters, headers, uploadStream,
-            !binary /* only normalize newlines if we are not in binary mode*/,
-            task);
+                                        task?: ITaskWithStatus,
+                                        etag?: string) {
+        return this.streamToUssFile(session, ussname, uploadStream, {
+            binary,
+            localEncoding,
+            task,
+            etag
+        });
     }
 
-    public static async fileToUSSFile(session: AbstractSession,
+    /**
+     * Upload content from a local file to remote USS file
+     * @param session   - z/OS connection info
+     * @param inputFile - Path to local file
+     * @param ussname   - Name of USS file to write to
+     * @param options   - Uploading options
+     * @returns {Promise<IZosFilesResponse>} - A response indicating the outcome
+     */
+    public static async fileToUssFile(session: AbstractSession,
                                       inputFile: string,
                                       ussname: string,
-                                      binary: boolean = false,
-                                      localEncoding?: string,
-                                      task?: ITaskWithStatus): Promise<IZosFilesResponse> {
+                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
@@ -551,17 +699,50 @@ export class Upload {
         let result: IUploadResult;
         // read payload from file
         const uploadStream = IO.createReadStream(inputFile);
-        await this.streamToUSSFile(session, ussname, uploadStream, binary, localEncoding, task);
+
+        const request = await this.streamToUssFile(session, ussname, uploadStream, options);
         result = {
             success: true,
             from: inputFile,
             to: ussname
         };
+
+        // Return Etag in apiResponse, if requested
+        if (options.returnEtag) {
+            result.etag = request.apiResponse.etag;
+        }
         return {
             success: true,
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
             apiResponse: result
         };
+    }
+
+    /**
+     * @deprecated In favor of fileToUssFile() which implements IUploadOptions
+     * @param session
+     * @param inputFile
+     * @param ussname
+     * @param binary
+     * @param localEncoding
+     * @param task
+     * @param etag
+     */
+    public static async fileToUSSFile(session: AbstractSession,
+                                      inputFile: string,
+                                      ussname: string,
+                                      binary: boolean = false,
+                                      localEncoding?: string,
+                                      task?: ITaskWithStatus,
+                                      etag?: string,
+                                      returnEtag?: boolean): Promise<IZosFilesResponse> {
+        return this.fileToUssFile(session, inputFile, ussname, {
+            binary,
+            localEncoding,
+            task,
+            etag,
+            returnEtag
+        });
     }
 
     /**
@@ -826,7 +1007,7 @@ export class Upload {
             else {
                 tempBinary = options.binary;
             }
-            await this.fileToUSSFile(session, localPath, ussPath, tempBinary);
+            await this.fileToUssFile(session, localPath, ussPath, {binary: tempBinary});
         }
     }
 
@@ -837,9 +1018,9 @@ export class Upload {
         if (attributes.fileShouldBeUploaded(localPath)) {
             const binary = attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
             if (binary) {
-                await this.fileToUSSFile(session, localPath, ussPath, binary);
+                await this.fileToUssFile(session, localPath, ussPath, {binary});
             } else {
-                await this.fileToUSSFile(session, localPath, ussPath, binary, attributes.getLocalEncoding(localPath));
+                await this.fileToUssFile(session, localPath, ussPath, {binary, localEncoding: attributes.getLocalEncoding(localPath)});
             }
 
             const tag = attributes.getRemoteEncoding(localPath);
