@@ -60,6 +60,10 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX1,
             options: `"ibmuser.cntl" -f`
+        },
+        {
+            description: strings.EXAMPLES.EX2,
+            options: `"ibmuser.cntl(mem)" -f`
         }
     ],
 };
