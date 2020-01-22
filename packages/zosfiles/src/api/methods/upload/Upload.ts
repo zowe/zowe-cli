@@ -471,11 +471,7 @@ export class Upload {
                         if (options.returnEtag) {
                             toBePushed.etag = result.apiResponse.etag;
                         }
-                        results.push({
-                            success: result.success,
-                            from: uploadingFile,
-                            to: uploadingDsn
-                        });
+                        results.push(toBePushed);
                     } catch (err) {
                         this.log.error(`Failure Uploading data From ${uploadingFile} To ${uploadingDsn}`);
                         results.push({
@@ -525,7 +521,7 @@ export class Upload {
                                         ussname: string,
                                         buffer: Buffer,
                                         options: IUploadOptions = {}) {
-        options.binary = false;
+        options.binary = options.binary? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
