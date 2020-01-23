@@ -19,7 +19,7 @@ export interface ICopyDatasetOptions {
      * The dataset to copy from.
      * @type {IDataSet}
      */
-    fromDataSet: IDataSet;
+    "from-dataset": IDataSet;
 
     /**
      * Enq option

@@ -70,8 +70,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: toDataSetName },
-                            { fromDataSet: { dataSetName: fromDataSetName } }
+                            { dsn: toDataSetName },
+                            { "from-dataset": { dsn: fromDataSetName } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
@@ -111,8 +111,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: toDataSetName, memberName: file2 },
-                            { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
+                            { dsn: toDataSetName, member: file2 },
+                            { "from-dataset": { dsn: fromDataSetName, member: file1 } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
@@ -152,8 +152,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: toDataSetName, memberName: file2 },
-                            { fromDataSet: { dataSetName: fromDataSetName } }
+                            { dsn: toDataSetName, member: file2 },
+                            { "from-dataset": { dsn: fromDataSetName } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
@@ -193,8 +193,8 @@ describe("Copy", () => {
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
-                            { dataSetName: toDataSetName },
-                            { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
+                            { dsn: toDataSetName },
+                            { "from-dataset": { dsn: fromDataSetName, member: file1 } }
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
@@ -235,10 +235,10 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: toDataSetName, memberName: file2 },
+                        { dsn: toDataSetName, member: file2 },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
-                            enq: "SHR"
+                            "from-dataset": { dsn: fromDataSetName, member: file1 },
+                            "enq": "SHR"
                         }
                     );
                     contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
@@ -266,10 +266,10 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: toDataSetName, memberName: file2 },
+                        { dsn: toDataSetName, member: file2 },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
-                            enq: "invalid"
+                            "from-dataset": { dsn: fromDataSetName, member: file1 },
+                            "enq": "invalid"
                         }
                     );
                     Imperative.console.info(`Response: ${inspect(response)}`);
@@ -290,8 +290,8 @@ describe("Copy", () => {
                     await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
                     await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: toDataSetName, memberName: file2 },
-                        { fromDataSet: { dataSetName: fromDataSetName, memberName: file1 } }
+                        { dsn: toDataSetName, member: file2 },
+                        { "from-dataset": { dsn: fromDataSetName, member: file1 } }
                     );
                 } catch (err) {
                     Imperative.console.info(`Error: ${inspect(err)}`);
@@ -304,10 +304,10 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: toDataSetName, memberName: file2 },
+                        { dsn: toDataSetName, member: file2 },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
-                            replace: false
+                            "from-dataset": { dsn: fromDataSetName, member: file1 },
+                            "replace": false
                         }
                     );
                     Imperative.console.info(`Response: ${inspect(response)}`);
@@ -329,10 +329,10 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: toDataSetName, memberName: file2 },
+                        { dsn: toDataSetName, member: file2 },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
-                            replace: true
+                            "from-dataset": { dsn: fromDataSetName, member: file1 },
+                            "replace": true
                         }
                     );
                     contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
