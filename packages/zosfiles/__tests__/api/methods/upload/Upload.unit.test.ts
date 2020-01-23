@@ -920,8 +920,9 @@ describe("z/OS Files - Upload", () => {
         const getFileListFromPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const getFileListWithFsSpy = jest.spyOn(fs, "readdirSync");
         const createUssDirSpy = jest.spyOn(Create, "uss");
-        const fileToUSSFileSpy = jest.spyOn(Upload, "fileToUSSFile");
+        const fileToUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
@@ -932,7 +933,7 @@ describe("z/OS Files - Upload", () => {
         beforeEach(() => {
             USSresponse = undefined;
             error = undefined;
-            fileToUSSFileSpy.mockClear();
+            fileToUssFileSpy.mockClear();
             createUssDirSpy.mockClear();
             isDirectoryExistsSpy.mockClear();
             getFileListFromPathSpy.mockClear();
@@ -941,8 +942,10 @@ describe("z/OS Files - Upload", () => {
             pathJoinSpy.mockClear();
             pathNormalizeSpy.mockClear();
             zosmfExpectSpy.mockClear();
+            zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectFullSpy.mockImplementation(() => null);
         });
 
         it("should upload recursively if option is specified", async () => {
@@ -953,7 +956,7 @@ describe("z/OS Files - Upload", () => {
             getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
-            fileToUSSFileSpy.mockReturnValue({});
+            fileToUssFileSpy.mockReturnValue({});
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
             } catch (err) {
@@ -1034,8 +1037,8 @@ describe("z/OS Files - Upload", () => {
             getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
             filterDirectoriesSpy.mockReturnValueOnce([]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -1057,8 +1060,9 @@ describe("z/OS Files - Upload", () => {
         const getFileListFromPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const getFileListWithFsSpy = jest.spyOn(fs, "readdirSync");
         const createUssDirSpy = jest.spyOn(Create, "uss");
-        const fileToUSSFileSpy = jest.spyOn(Upload, "fileToUSSFile");
+        const fileToUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const promiseSpy = jest.spyOn(Promise, "all");
@@ -1069,7 +1073,7 @@ describe("z/OS Files - Upload", () => {
         beforeEach(() => {
             USSresponse = undefined;
             error = undefined;
-            fileToUSSFileSpy.mockClear();
+            fileToUssFileSpy.mockClear();
             createUssDirSpy.mockClear();
             isDirectoryExistsSpy.mockClear();
             getFileListFromPathSpy.mockClear();
@@ -1078,8 +1082,10 @@ describe("z/OS Files - Upload", () => {
             pathJoinSpy.mockClear();
             pathNormalizeSpy.mockClear();
             zosmfExpectSpy.mockClear();
+            zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectFullSpy.mockImplementation(() => null);
         });
 
         it("should throw an error if local directory is not specified", async () => {
@@ -1148,8 +1154,8 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -1176,7 +1182,7 @@ describe("z/OS Files - Upload", () => {
                 isDirSpy.mockReturnValueOnce(true)
                 .mockReturnValue(false);
                 isDirectoryExistsSpy.mockReturnValue(true);
-                fileToUSSFileSpy.mockReturnValue(testReturn);
+                fileToUssFileSpy.mockReturnValue(testReturn);
 
                 attributesMock.getFileTransferMode = jest.fn((filePath: string) => {
                     if (filePath.endsWith("textfile")) {
@@ -1215,10 +1221,10 @@ describe("z/OS Files - Upload", () => {
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploadme")));
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"ignoreme")));
 
-                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath,"uploadme")),
-                                                             `${dsName}/uploadme`, true);
+                                                             `${dsName}/uploadme`, {binary: true});
             });
 
             it("should not upload ignored directories", async () => {
@@ -1262,10 +1268,10 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploaddir")));
-                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath, "uploaddir", "uploadedfile")),
-                                                              `${dsName}/uploaddir/uploadedfile`, true);
+                                                              `${dsName}/uploaddir/uploadedfile`, {binary: true});
             });
             it("should upload files in text or binary according to attributes", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
@@ -1275,15 +1281,15 @@ describe("z/OS Files - Upload", () => {
 
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
-                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                expect(fileToUssFileSpy).toHaveBeenCalledTimes(2);
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                              path.normalize(path.join(testPath,"textfile")),
                                                              `${dsName}/textfile`,
-                                                              false,
-                                                              "ISO8859-1");
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                                                              {binary: false,
+                                                               localEncoding: "ISO8859-1"});
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath,"binaryfile")),
-                                                             `${dsName}/binaryfile`, true);
+                                                             `${dsName}/binaryfile`, {binary: true});
             });
 
             it("should call API to tag files accord to remote encoding", async () => {
