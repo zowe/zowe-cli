@@ -186,7 +186,7 @@ export default {
         DESCRIPTION: "Delete a data set or Unix System Services file",
         ACTIONS: {
             DATA_SET: {
-                DESCRIPTION: "Delete a data set permanently",
+                DESCRIPTION: "Delete a data set or data set member permanently",
                 POSITIONALS: {
                     DSNAME: "The name of the data set that you want to delete"
                 },
@@ -196,7 +196,8 @@ export default {
                     FOR_SURE: "Specify this option to confirm that you want to delete the data set permanently."
                 },
                 EXAMPLES: {
-                    EX1: "Delete the data set named 'ibmuser.cntl'"
+                    EX1: "Delete the data set named 'ibmuser.cntl'",
+                    EX2: "Delete the data set member named 'ibmuser.cntl(mem)'"
                 }
             },
             VSAM: {
