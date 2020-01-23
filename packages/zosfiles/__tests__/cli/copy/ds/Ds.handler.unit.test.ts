@@ -113,8 +113,8 @@ describe("DsHandler", () => {
             { dsn: commandParameters.arguments.toDataSetName },
             {
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
-                enq: commandParameters.arguments.enq,
-                replace: commandParameters.arguments.replace
+                "enq": commandParameters.arguments.enq,
+                "replace": commandParameters.arguments.replace
             },
         );
         expect(response).toBe(defaultReturn);

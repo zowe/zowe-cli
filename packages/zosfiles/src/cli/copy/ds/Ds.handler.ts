@@ -24,8 +24,8 @@ export default class DsHandler extends ZosFilesBaseHandler {
         const toDataSet: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
         const options: ICopyDatasetOptions = {
             "from-dataset": fromDataSet,
-            enq: commandParameters.arguments.enq,
-            replace: commandParameters.arguments.replace
+            "enq": commandParameters.arguments.enq,
+            "replace": commandParameters.arguments.replace
         };
 
         return Copy.dataSet(session, toDataSet, options);
