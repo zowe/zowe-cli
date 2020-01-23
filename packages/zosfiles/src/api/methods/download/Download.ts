@@ -100,7 +100,6 @@ export class Download {
             IO.createDirsSyncFromFilePath(destination);
 
             const writeStream = IO.createWriteStream(destination);
-            // await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, options.task);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -289,7 +288,6 @@ export class Download {
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
 
-            // const test = await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, options.task);
             const request = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
 
             // By default, apiResponse is empty when downloading

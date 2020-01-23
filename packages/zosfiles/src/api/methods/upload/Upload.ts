@@ -300,9 +300,6 @@ export class Upload {
             }
 
             const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
-            // await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeaders, fileStream,
-            //     !options.binary /* only normalize newlines if we are not uploading in binary*/,
-            //     options.task);
 
             // By default, apiResponse is empty when uploading
             const apiResponse: any = {};
