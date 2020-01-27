@@ -41,12 +41,9 @@ export const CPDSDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        {
-            ...ZosFilesCreateExtraOptions.size,
-            defaultValue: CreateDefaults.DATA_SET.C.primary + CreateDefaults.DATA_SET.C.alcunit
-        },
+        ZosFilesCreateExtraOptions.size,
         ZosFilesCreateOptions.volser,
-        ZosFilesCreateOptions.primary,
+        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.C.primary},
         ZosFilesCreateOptions.secondary,
         {...ZosFilesCreateOptions.dirblk, defaultValue: CreateDefaults.DATA_SET.C.dirblk},
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.C.recfm},
