@@ -228,10 +228,12 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(dummySession,
                 endpoint,
                 [],
-                JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED),
-            {
-                secondary: 1
-            }
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...{
+                        secondary: 1
+                    }
+                }),
             );
         });
 
