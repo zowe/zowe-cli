@@ -54,6 +54,15 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ps",
+    ],
+    "defaultValue": 1,
+    "description": "The primary space allocation (for example, 5)",
+    "name": "primary-space",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
       "rf",
     ],
     "defaultValue": "VB",
@@ -74,7 +83,6 @@ Array [
     "aliases": Array [
       "ss",
     ],
-    "defaultValue": 1,
     "description": "The secondary space allocation (for example, 1)",
     "name": "secondary-space",
     "type": "number",
@@ -91,7 +99,6 @@ Array [
     "aliases": Array [
       "sz",
     ],
-    "defaultValue": "1CYL",
     "description": "The size of the data set (specified as nCYL or nTRK - where n is the number of cylinders or tracks). Sets the primary allocation (the secondary allocation becomes ~10% of the primary).",
     "name": "size",
     "type": "string",
