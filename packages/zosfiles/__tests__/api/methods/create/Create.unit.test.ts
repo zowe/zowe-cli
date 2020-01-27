@@ -37,7 +37,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.PARTITIONED, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
         });
 
         it("should be able to create an extended partitioned data set (PDSE) - test with LIBRARY", async () => {
@@ -48,7 +59,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.PARTITIONED, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
             dsOptions.dsntype = undefined;
         });
 
@@ -60,7 +82,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.PARTITIONED, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
             dsOptions.dsntype = undefined;
         });
 
@@ -92,7 +125,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.SEQUENTIAL, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
         });
 
         it("should be able to create a classic data set", async () => {
@@ -100,7 +144,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.CLASSIC, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.CLASSIC,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
         });
 
         it("should be able to create a classic data set and override multiple options", async () => {
@@ -134,7 +189,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.C, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.C,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
         });
 
         it("should be able to create a C data set and override multiple options", async () => {
@@ -167,7 +233,18 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.BINARY, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.BINARY,
+                    ...dsOptions,
+                    ...{
+                        secondary: 10
+                    }
+                })
+            );
         });
 
         it("should be able to create a binary data set and override multiple options. Secondary will be set to 10% (rounded up)", async () => {
@@ -254,10 +331,13 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(dummySession,
                 endpoint,
                 [],
-                JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED),
-                {
-                    secondary: 1
-                });
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
         });
 
         it("should be able to create a partinioned data set and print all the attributes", async () => {
@@ -274,7 +354,17 @@ describe("Create data set", () => {
             expect(response.commandResponse).toContain("created successfully");
             expect(response.commandResponse).toMatch(/alcunit.*CYL/);
             expect(response.commandResponse).toMatch(/dsorg.*PO/);
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
         });
     });
 
@@ -292,7 +382,18 @@ describe("Create data set", () => {
                 error = err.message;
             }
 
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({...CreateDefaults.DATA_SET.PARTITIONED, ...dsOptions}));
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
             expect(error).toContain(errorMsg);
         });
 
