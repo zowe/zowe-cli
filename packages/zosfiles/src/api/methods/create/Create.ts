@@ -90,7 +90,7 @@ export class Create {
                     if (!isNullOrUndefined(tPrimary)) {
                         tempOptions.primary = +(tPrimary.join(""));
 
-                        if (!isNullOrUndefined(tempOptions.secondary)) {
+                        if (isNullOrUndefined(tempOptions.secondary)) {
                             const TEN_PERCENT = 0.10;
                             tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
                         }
