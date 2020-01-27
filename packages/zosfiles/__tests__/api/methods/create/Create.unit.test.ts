@@ -225,7 +225,14 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED));
+            expect(mySpy).toHaveBeenCalledWith(dummySession,
+                endpoint,
+                [],
+                JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED),
+            {
+                secondary: 1
+            }
+            );
         });
 
         it("should be able to create a partinioned data set without printing the attributes", async () => {
@@ -242,7 +249,13 @@ describe("Create data set", () => {
             expect(response.commandResponse).toContain("created successfully");
             expect(response.commandResponse).not.toMatch(/alcunit.*CYL/);
             expect(response.commandResponse).not.toMatch(/dsorg.*PO/);
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED));
+            expect(mySpy).toHaveBeenCalledWith(dummySession,
+                endpoint,
+                [],
+                JSON.stringify(CreateDefaults.DATA_SET.PARTITIONED),
+                {
+                    secondary: 1
+                });
         });
 
         it("should be able to create a partinioned data set and print all the attributes", async () => {
