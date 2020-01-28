@@ -21,6 +21,36 @@ exports[`Create Classic Data Set Success scenarios should create a classic parti
 }"
 `;
 
+exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with specified primary allocation 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC===============
+alcunit:   CYL
+dsorg:     PO
+primary:   20
+recfm:     FB
+blksize:   6160
+lrecl:     80
+dirblk:    25
+secondary: 1
+
+Data set created successfully.
+"
+`;
+
+exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with specified primary and secondary allocation 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC===============
+alcunit:   CYL
+dsorg:     PO
+primary:   20
+recfm:     FB
+blksize:   6160
+lrecl:     80
+dirblk:    25
+secondary: 5
+
+Data set created successfully.
+"
+`;
+
 exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with specified size 1`] = `
 "================Z/OS FILES CREATE DATA-SET-CLASSIC===============
 Data set created successfully.
