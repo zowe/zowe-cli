@@ -120,4 +120,4 @@ export function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms) );
 }
 
-export const delTime = 2000;
+export const delTime = 500;
