@@ -131,6 +131,24 @@ describe("Create Binary Data Set", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
+        it("should create a binary partitioned data set with specified primary allocation", () => {
+            dsnameSuffix = "binary.primary";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_with_primary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should create a binary partitioned data set with specified primary and secondary allocation", () => {
+            dsnameSuffix = "binary.second";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_with_primary_secondary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Expected failures", () => {

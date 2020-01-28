@@ -134,6 +134,24 @@ describe("Create Partitioned Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should create a partitioned data set with specified primary allocation", () => {
+            dsnameSuffix = "pds.primary";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_with_primary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should create a partitioned data set with specified primary and secondary allocation", () => {
+            dsnameSuffix = "pds.second";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_with_primary_secondary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should create a partitioned data set extended (PDSE)", () => {
             dsnameSuffix = "pdse";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_pdse.sh",
