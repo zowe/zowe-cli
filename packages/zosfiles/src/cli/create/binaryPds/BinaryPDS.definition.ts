@@ -41,12 +41,10 @@ export const BinaryPDSDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        {
-            ...ZosFilesCreateExtraOptions.size,
-            defaultValue: CreateDefaults.DATA_SET.BINARY.primary + CreateDefaults.DATA_SET.BINARY.alcunit
-        },
+        ZosFilesCreateExtraOptions.size,
+        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.BINARY.primary},
         ZosFilesCreateOptions.volser,
-        {...ZosFilesCreateOptions.secondary, defaultValue: CreateDefaults.DATA_SET.BINARY.secondary},
+        ZosFilesCreateOptions.secondary,
         {...ZosFilesCreateOptions.dirblk, defaultValue: CreateDefaults.DATA_SET.BINARY.dirblk},
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.BINARY.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.BINARY.blksize},

@@ -10,6 +10,7 @@ exports[`Create Binary Data Set Success scenarios should create a binary partiti
 "================Z/OS FILES CREATE DATA-SET-BINARY ===============
 {
   \\"success\\": true,
+  \\"exitCode\\": 0,
   \\"message\\": \\"\\",
   \\"stdout\\": \\"Data set created successfully.\\\\n\\",
   \\"stderr\\": \\"\\",
@@ -20,8 +21,47 @@ exports[`Create Binary Data Set Success scenarios should create a binary partiti
 }"
 `;
 
+exports[`Create Binary Data Set Success scenarios should create a binary partitioned data set with specified primary allocation 1`] = `
+"================Z/OS FILES CREATE DATA-SET-BINARY===============
+dsorg:     PO
+alcunit:   CYL
+primary:   20
+recfm:     U
+blksize:   27998
+lrecl:     27998
+dirblk:    25
+secondary: 10
+
+Data set created successfully.
+"
+`;
+
+exports[`Create Binary Data Set Success scenarios should create a binary partitioned data set with specified primary and secondary allocation 1`] = `
+"================Z/OS FILES CREATE DATA-SET-BINARY===============
+dsorg:     PO
+alcunit:   CYL
+primary:   20
+recfm:     U
+blksize:   27998
+lrecl:     27998
+dirblk:    25
+secondary: 5
+
+Data set created successfully.
+"
+`;
+
 exports[`Create Binary Data Set Success scenarios should create a binary partitioned data set with specified size 1`] = `
 "================Z/OS FILES CREATE DATA-SET-BINARY===============
+alcunit:   CYL
+dsorg:     PO
+primary:   2
+dirblk:    5
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 0
+
 Data set created successfully.
 "
 `;

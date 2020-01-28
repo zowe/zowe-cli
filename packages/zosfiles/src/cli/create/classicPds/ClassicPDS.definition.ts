@@ -41,12 +41,10 @@ export const ClassicPDSDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        {
-            ...ZosFilesCreateExtraOptions.size,
-            defaultValue: CreateDefaults.DATA_SET.CLASSIC.primary + CreateDefaults.DATA_SET.CLASSIC.alcunit
-        },
+        ZosFilesCreateExtraOptions.size,
+        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.CLASSIC.primary},
         ZosFilesCreateOptions.volser,
-        {...ZosFilesCreateOptions.secondary, defaultValue: CreateDefaults.DATA_SET.CLASSIC.secondary},
+        ZosFilesCreateOptions.secondary,
         {...ZosFilesCreateOptions.dirblk, defaultValue: CreateDefaults.DATA_SET.CLASSIC.dirblk},
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.CLASSIC.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.CLASSIC.blksize},

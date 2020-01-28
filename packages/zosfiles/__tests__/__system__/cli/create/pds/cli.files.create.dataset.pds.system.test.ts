@@ -10,7 +10,7 @@
 */
 
 import { Session } from "@brightside/imperative";
-import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript, stripNewLines, delay, delTime } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -68,6 +68,7 @@ describe("Create Partitioned Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
+                await delay(delTime);
                 const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
@@ -103,6 +104,7 @@ describe("Create Partitioned Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
+                await delay(delTime);
                 const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
@@ -128,6 +130,24 @@ describe("Create Partitioned Data Set", () => {
         it("should create a partitioned data set with specified size", () => {
             dsnameSuffix = "pds.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_with_size.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should create a partitioned data set with specified primary allocation", () => {
+            dsnameSuffix = "pds.primary";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_with_primary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should create a partitioned data set with specified primary and secondary allocation", () => {
+            dsnameSuffix = "pds.second";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_with_primary_secondary.sh",
                 TEST_ENVIRONMENT, [user]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
