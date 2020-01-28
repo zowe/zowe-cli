@@ -159,8 +159,8 @@ describe("Create data set", () => {
                 [],
                 JSON.stringify({
                     ...{
-                        dsorg: "PS",
                         alcunit: "CYL",
+                        dsorg: "PS",
                         primary: 20,
                         recfm: "FB",
                         blksize: 6160,
@@ -190,8 +190,8 @@ describe("Create data set", () => {
                 [],
                 JSON.stringify({
                     ...{
-                        dsorg: "PS",
                         alcunit: "CYL",
+                        dsorg: "PS",
                         primary: 20,
                         recfm: "FB",
                         blksize: 6160,
@@ -268,8 +268,8 @@ describe("Create data set", () => {
                 [],
                 JSON.stringify({
                     ...{
-                        dsorg: "PO",
                         alcunit: "CYL",
+                        dsorg: "PO",
                         primary: 20,
                         recfm: "FB",
                         blksize: 6160,
@@ -301,8 +301,8 @@ describe("Create data set", () => {
                 [],
                 JSON.stringify({
                     ...{
-                        dsorg: "PO",
                         alcunit: "CYL",
+                        dsorg: "PO",
                         primary: 20,
                         recfm: "FB",
                         blksize: 6160,
@@ -653,8 +653,8 @@ describe("Create data set", () => {
             [],
             JSON.stringify({
                 ...{
-                    dsorg: "PO",
                     alcunit: "CYL",
+                    dsorg: "PO",
                     primary: 20,
                     dirblk: 5,
                     recfm: "FB",
@@ -668,8 +668,8 @@ describe("Create data set", () => {
 
     it("should be able to create a partitioned data set using the primary allocation and default the secondary allocation", async () => {
         const custOptions = {
-            dsorg: "PO",
             alcunit: "CYL",
+            dsorg: "PO",
             primary: 20,
             dirblk: 5,
             recfm: "FB",
