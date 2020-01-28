@@ -132,6 +132,24 @@ describe("Create Classic Data Set", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
+        it("should create a classic partitioned data set with specified primary allocation", () => {
+            dsnameSuffix = "classic.primary";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_with_primary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should create a classic partitioned data set with specified primary and secondary allocation", () => {
+            dsnameSuffix = "classic.second";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_with_primary_secondary.sh",
+                TEST_ENVIRONMENT, [user]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
 });
