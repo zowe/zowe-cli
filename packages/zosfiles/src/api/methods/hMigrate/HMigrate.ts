@@ -49,7 +49,7 @@ export class HMigrate {
 
             const payload = { request: "hmigrate" } as any;
 
-            if(!options.wait != null) {
+            if(options.wait != null) {
                 payload.wait = options.wait;
             }
 
