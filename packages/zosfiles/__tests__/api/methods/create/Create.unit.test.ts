@@ -149,7 +149,7 @@ describe("Create data set", () => {
                 blksize: 6160,
                 lrecl: 80
             };
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
@@ -162,10 +162,10 @@ describe("Create data set", () => {
                         dsorg: "PS",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 10,
                         recfm: "FB",
                         blksize: 6160,
-                        lrecl: 80
+                        lrecl: 80,
+                        secondary: 10
                     }
                 })
             );
@@ -180,7 +180,7 @@ describe("Create data set", () => {
                 blksize: 6160,
                 lrecl: 80
             };
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
@@ -193,10 +193,10 @@ describe("Create data set", () => {
                         dsorg: "PS",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 1,
                         recfm: "FB",
                         blksize: 6160,
-                        lrecl: 80
+                        lrecl: 80,
+                        secondary: 1
                     }
                 })
             );
@@ -258,7 +258,7 @@ describe("Create data set", () => {
                 lrecl: 80,
                 dirblk: 25
             };
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dataSetName, custOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
@@ -271,11 +271,11 @@ describe("Create data set", () => {
                         dsorg: "PO",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 10,
                         recfm: "FB",
                         blksize: 6160,
                         lrecl: 80,
-                        dirblk: 25
+                        dirblk: 25,
+                        secondary: 10
                     }
                 })
             );
@@ -291,7 +291,7 @@ describe("Create data set", () => {
                 lrecl: 80,
                 dirblk: 25
             };
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dataSetName, custOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
@@ -304,11 +304,11 @@ describe("Create data set", () => {
                         dsorg: "PO",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 1,
                         recfm: "FB",
                         blksize: 6160,
                         lrecl: 80,
-                        dirblk: 25
+                        dirblk: 25,
+                        secondary: 1
                     }
                 })
             );
@@ -369,7 +369,7 @@ describe("Create data set", () => {
                 lrecl: 260,
                 dirblk: 25
             };
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_C, dataSetName, custOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
@@ -382,11 +382,11 @@ describe("Create data set", () => {
                         dsorg: "PO",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 10,
                         recfm: "VB",
                         blksize: 32760,
                         lrecl: 260,
-                        dirblk: 25
+                        dirblk: 25,
+                        secondary: 10
                     }
                 })
             );
@@ -402,7 +402,7 @@ describe("Create data set", () => {
                 lrecl: 260,
                 dirblk: 25
             };
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_C, dataSetName, custOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
@@ -415,11 +415,11 @@ describe("Create data set", () => {
                         dsorg: "PO",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 1,
                         recfm: "VB",
                         blksize: 32760,
                         lrecl: 260,
-                        dirblk: 25
+                        dirblk: 25,
+                        secondary: 1
                     }
                 })
             );
@@ -518,11 +518,11 @@ describe("Create data set", () => {
                         dsorg: "PO",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 20,
                         recfm: "U",
                         blksize: 27998,
                         lrecl: 27998,
-                        dirblk: 25
+                        dirblk: 25,
+                        secondary: 20
                     }
                 })
             );
@@ -551,11 +551,11 @@ describe("Create data set", () => {
                         dsorg: "PO",
                         alcunit: "CYL",
                         primary: 20,
-                        secondary: 10,
                         recfm: "U",
                         blksize: 27998,
                         lrecl: 27998,
-                        dirblk: 25
+                        dirblk: 25,
+                        secondary: 10
                     }
                 })
             );
@@ -656,11 +656,11 @@ describe("Create data set", () => {
                     dsorg: "PO",
                     alcunit: "CYL",
                     primary: 20,
-                    secondary: 10,
                     dirblk: 5,
                     recfm: "FB",
                     blksize: 6160,
-                    lrecl: 80
+                    lrecl: 80,
+                    secondary: 10
                 }
             })
         );
@@ -676,7 +676,7 @@ describe("Create data set", () => {
             blksize: 6160,
             lrecl: 80
         };
-        const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+        const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName, custOptions);
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain("created successfully");
@@ -689,11 +689,11 @@ describe("Create data set", () => {
                     dsorg: "PO",
                     alcunit: "CYL",
                     primary: 20,
-                    secondary: 1,
                     dirblk: 5,
                     recfm: "FB",
                     blksize: 6160,
-                    lrecl: 80
+                    lrecl: 80,
+                    secondary: 1
                 }
             })
         );
