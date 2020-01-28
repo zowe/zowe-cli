@@ -53,6 +53,15 @@ Data set created successfully.
 
 exports[`Create Binary Data Set Success scenarios should create a binary partitioned data set with specified size 1`] = `
 "================Z/OS FILES CREATE DATA-SET-BINARY===============
+alcunit:   CYL
+dsorg:     PO
+primary:   2
+dirblk:    5
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 0
+
 Data set created successfully.
 "
 `;
