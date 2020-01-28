@@ -21,8 +21,44 @@ exports[`Create Physical Sequential Data Set Success scenarios should create a p
 }"
 `;
 
+exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set with specified primary allocation 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
+alcunit:   CYL
+dsorg:     PS
+primary:   20
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 1
+
+Data set created successfully.
+"
+`;
+
+exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set with specified primary and secondary allocation 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
+alcunit:   CYL
+dsorg:     PS
+primary:   20
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 5
+
+Data set created successfully.
+"
+`;
+
 exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set with specified size 1`] = `
 "================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
+alcunit:   CYL
+dsorg:     PS
+primary:   2
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 0
+
 Data set created successfully.
 "
 `;

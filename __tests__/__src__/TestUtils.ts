@@ -116,3 +116,8 @@ export async function getTag(session: AbstractSession, ussPath: string) {
     return response.stdout[0];
 }
 
+export function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms) );
+}
+
+export const delTime = 500;
