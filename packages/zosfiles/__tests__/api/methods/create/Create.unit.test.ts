@@ -139,6 +139,69 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
+            const custOptions = {
+                dsorg: "PS",
+                alcunit: "CYL",
+                primary: 20,
+                secondary: 10,
+                recfm: "FB",
+                blksize: 6160,
+                lrecl: 80
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PS",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 10,
+                        recfm: "FB",
+                        blksize: 6160,
+                        lrecl: 80
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a sequential data set using the primary allocation and default the secondary allocation", async () => {
+            const custOptions = {
+                dsorg: "PS",
+                alcunit: "CYL",
+                primary: 20,
+                recfm: "FB",
+                blksize: 6160,
+                lrecl: 80
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PS",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 1,
+                        recfm: "FB",
+                        blksize: 6160,
+                        lrecl: 80
+                    }
+                })
+            );
+        });
+
         it("should be able to create a classic data set", async () => {
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dataSetName, dsOptions);
 
@@ -184,6 +247,73 @@ describe("Create data set", () => {
             }));
         });
 
+        it("should be able to create a classic data set using the primary allocation and secondary allocation options", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 20,
+                secondary: 10,
+                recfm: "FB",
+                blksize: 6160,
+                lrecl: 80,
+                dirblk: 25
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 10,
+                        recfm: "FB",
+                        blksize: 6160,
+                        lrecl: 80,
+                        dirblk: 25
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a classic data set using the primary allocation and default the secondary allocation", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 20,
+                recfm: "FB",
+                blksize: 6160,
+                lrecl: 80,
+                dirblk: 25
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 1,
+                        recfm: "FB",
+                        blksize: 6160,
+                        lrecl: 80,
+                        dirblk: 25
+                    }
+                })
+            );
+        });
+
         it("should be able to create a C data set", async () => {
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_C, dataSetName, dsOptions);
 
@@ -226,6 +356,73 @@ describe("Create data set", () => {
                     alcunit: "TRK"
                 }
             }));
+        });
+
+        it("should be able to create a C data set using the primary allocation and secondary allocation options", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 20,
+                secondary: 10,
+                recfm: "VB",
+                blksize: 32760,
+                lrecl: 260,
+                dirblk: 25
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 10,
+                        recfm: "VB",
+                        blksize: 32760,
+                        lrecl: 260,
+                        dirblk: 25
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a C data set using the primary allocation and default the secondary allocation", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 20,
+                recfm: "VB",
+                blksize: 32760,
+                lrecl: 260,
+                dirblk: 25
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 1,
+                        recfm: "VB",
+                        blksize: 32760,
+                        lrecl: 260,
+                        dirblk: 25
+                    }
+                })
+            );
         });
 
         it("should be able to create a binary data set", async () => {
@@ -297,6 +494,73 @@ describe("Create data set", () => {
             }));
         });
 
+        it("should be able to create a binary data set using the primary allocation and secondary allocation options", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 20,
+                secondary: 20,
+                recfm: "U",
+                blksize: 27998,
+                lrecl: 27998,
+                dirblk: 25
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 20,
+                        recfm: "U",
+                        blksize: 27998,
+                        lrecl: 27998,
+                        dirblk: 25
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a binary data set using the primary allocation and default the secondary allocation", async () => {
+            const custOptions = {
+                dsorg: "PO",
+                alcunit: "CYL",
+                primary: 20,
+                recfm: "U",
+                blksize: 27998,
+                lrecl: 27998,
+                dirblk: 25
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...{
+                        dsorg: "PO",
+                        alcunit: "CYL",
+                        primary: 20,
+                        secondary: 10,
+                        recfm: "U",
+                        blksize: 27998,
+                        lrecl: 27998,
+                        dirblk: 25
+                    }
+                })
+            );
+        });
+
         it("should be able to create a partinioned data set without specifying an options object", async () => {
             const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName);
 
@@ -366,6 +630,73 @@ describe("Create data set", () => {
                 })
             );
         });
+    });
+
+    it("should be able to create a partitioned data set using the primary allocation and secondary allocation options", async () => {
+        const custOptions = {
+            dsorg: "PO",
+            alcunit: "CYL",
+            primary: 20,
+            secondary: 10,
+            dirblk: 5,
+            recfm: "FB",
+            blksize: 6160,
+            lrecl: 80
+        };
+        const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName, custOptions);
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain("created successfully");
+        expect(mySpy).toHaveBeenCalledWith(
+            dummySession,
+            endpoint,
+            [],
+            JSON.stringify({
+                ...{
+                    dsorg: "PO",
+                    alcunit: "CYL",
+                    primary: 20,
+                    secondary: 10,
+                    dirblk: 5,
+                    recfm: "FB",
+                    blksize: 6160,
+                    lrecl: 80
+                }
+            })
+        );
+    });
+
+    it("should be able to create a partitioned data set using the primary allocation and default the secondary allocation", async () => {
+        const custOptions = {
+            dsorg: "PO",
+            alcunit: "CYL",
+            primary: 20,
+            dirblk: 5,
+            recfm: "FB",
+            blksize: 6160,
+            lrecl: 80
+        };
+        const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BINARY, dataSetName, custOptions);
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain("created successfully");
+        expect(mySpy).toHaveBeenCalledWith(
+            dummySession,
+            endpoint,
+            [],
+            JSON.stringify({
+                ...{
+                    dsorg: "PO",
+                    alcunit: "CYL",
+                    primary: 20,
+                    secondary: 1,
+                    dirblk: 5,
+                    recfm: "FB",
+                    blksize: 6160,
+                    lrecl: 80
+                }
+            })
+        );
     });
 
     describe("Expected failures", () => {
