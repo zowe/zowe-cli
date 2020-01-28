@@ -10,13 +10,14 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript, delay } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../../src/api/methods/delete";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+const delTime = 1000;
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -67,6 +68,7 @@ describe("Create Binary Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
+                await delay(delTime);
                 const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
@@ -101,6 +103,7 @@ describe("Create Binary Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
+                await delay(delTime);
                 const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
