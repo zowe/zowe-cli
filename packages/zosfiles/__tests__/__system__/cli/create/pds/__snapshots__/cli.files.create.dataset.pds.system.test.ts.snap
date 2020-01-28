@@ -59,6 +59,15 @@ Data set created successfully.
 
 exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with specified size 1`] = `
 "================Z/OS FILES CREATE PDS===============
+alcunit:   CYL
+dsorg:     PO
+primary:   2
+dirblk:    5
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 0
+
 Data set created successfully.
 "
 `;

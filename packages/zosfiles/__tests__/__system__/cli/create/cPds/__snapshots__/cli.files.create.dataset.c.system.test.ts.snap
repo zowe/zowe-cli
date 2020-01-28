@@ -53,6 +53,15 @@ Data set created successfully.
 
 exports[`Create C Data Set Success scenarios should create a c partitioned data set with specified size 1`] = `
 "================Z/OS FILES CREATE DATA-SET-C===============
+dsorg:     PO
+alcunit:   CYL
+primary:   2
+recfm:     VB
+blksize:   32760
+lrecl:     260
+dirblk:    25
+secondary: 0
+
 Data set created successfully.
 "
 `;

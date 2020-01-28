@@ -53,6 +53,15 @@ Data set created successfully.
 
 exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with specified size 1`] = `
 "================Z/OS FILES CREATE DATA-SET-CLASSIC===============
+alcunit:   CYL
+dsorg:     PO
+primary:   2
+recfm:     FB
+blksize:   6160
+lrecl:     80
+dirblk:    25
+secondary: 0
+
 Data set created successfully.
 "
 `;
