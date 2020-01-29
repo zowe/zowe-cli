@@ -543,7 +543,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetMigratedSuccessfully: {
-        message: "Data set migrated successfully.",
+        message: "Data set migraton requested.",
     },
 
     /**

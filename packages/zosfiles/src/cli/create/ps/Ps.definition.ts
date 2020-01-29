@@ -41,12 +41,10 @@ export const PsDefinition: ICommandDefinition = {
         },
     ],
     options: [
-        {
-            ...ZosFilesCreateExtraOptions.size,
-            defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.primary + CreateDefaults.DATA_SET.SEQUENTIAL.alcunit
-        },
+        ZosFilesCreateExtraOptions.size,
         ZosFilesCreateOptions.volser,
-        {...ZosFilesCreateOptions.secondary, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.secondary},
+        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.primary},
+        ZosFilesCreateOptions.secondary,
         ZosFilesCreateOptions.dirblk,
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.blksize},

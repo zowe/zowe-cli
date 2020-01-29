@@ -186,7 +186,7 @@ export default {
         DESCRIPTION: "Delete a data set or Unix System Services file",
         ACTIONS: {
             DATA_SET: {
-                DESCRIPTION: "Delete a data set permanently",
+                DESCRIPTION: "Delete a data set or data set member permanently",
                 POSITIONALS: {
                     DSNAME: "The name of the data set that you want to delete"
                 },
@@ -196,7 +196,8 @@ export default {
                     FOR_SURE: "Specify this option to confirm that you want to delete the data set permanently."
                 },
                 EXAMPLES: {
-                    EX1: "Delete the data set named 'ibmuser.cntl'"
+                    EX1: "Delete the data set named 'ibmuser.cntl'",
+                    EX2: "Delete the data set member named 'ibmuser.cntl(mem)'"
                 }
             },
             VSAM: {
@@ -598,5 +599,22 @@ export default {
             Constants.DISPLAY_NAME + " attempts to upload all members at once" +
             " without a maximum number of concurrent requests. "
         }
-    }
+    },
+    HMIGRATE: {
+        DESCRIPTION: "Migrate data sets.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Migrate a data set.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to migrate.",
+                },
+                EXAMPLES: {
+                    EX1: `Migrate a data set using default options`,
+                },
+            }
+        },
+        OPTIONS: {
+            WAIT: "If true then the function waits for completion of the request. If false the request is queued.",
+        },
+    },
 };
