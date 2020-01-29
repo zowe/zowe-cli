@@ -47,7 +47,6 @@ export class Create {
 
         // Removes undefined properties
         let tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
-        const secondarySpecified = !isNullOrUndefined(tempOptions.secondary);
 
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(cmdType, ZosFilesMessages.missingDatasetType.message);
@@ -91,14 +90,22 @@ export class Create {
                     if (!isNullOrUndefined(tPrimary)) {
                         tempOptions.primary = +(tPrimary.join(""));
 
-                        if (!secondarySpecified) {
+                        if (isNullOrUndefined(tempOptions.secondary)) {
                             const TEN_PERCENT = 0.10;
                             tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
                         }
                     }
-
-                    delete tempOptions.size;
+                } else {
+                    if (isNullOrUndefined(tempOptions.secondary)) {
+                        if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
+                            tempOptions.secondary = 1;
+                        } else {
+                            // tslint:disable-next-line:no-magic-numbers
+                            tempOptions.secondary = 10;
+                        }
+                    }
                 }
+                delete tempOptions.size;
 
                 let response = "";
                 // Handle the print attributes option

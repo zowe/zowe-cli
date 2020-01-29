@@ -1,9 +1,9 @@
 #!/bin/bash
-hlq=$1
+hlq1=$1
 set -e
 
 echo "================Z/OS FILES CREATE DATA-SET-CLASSIC==============="
-zowe zos-files create data-set-classic "$1.test.data.set.classic.size" --size 2CYL --pa
+zowe zos-files create data-set-classic "$1.test.data.set.classic.second" --ps 20 --ss 5 --pa
 if [ $? -gt 0 ]
 then
     exit $?
