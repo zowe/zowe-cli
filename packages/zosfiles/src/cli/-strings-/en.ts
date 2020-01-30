@@ -617,4 +617,34 @@ export default {
             WAIT: "If true then the function waits for completion of the request. If false the request is queued.",
         },
     },
+    RENAME: {
+        DESCRIPTION: "Rename a data set or member.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Rename a data set",
+                POSITIONALS: {
+                    BEFOREDSNAME: "The name of the data set that you want to rename",
+                    AFTERDSNAME: "The name you want to rename the data set to",
+                },
+                OPTIONS: {
+                },
+                EXAMPLES: {
+                    EX1: "Rename the data set named 'USER.BEFORE.SET' to 'USER.AFTER.SET'",
+                },
+            },
+            DATA_SET_MEMBER: {
+                DESCRIPTION: "Rename a data set member",
+                POSITIONALS: {
+                    DSNAME: "The name of the data set the member belongs to",
+                    BEFOREMEMBERNAME: "The name of the data set member that you want to rename",
+                    AFTERMEMBERNAME: "The name you want to rename the data set member to",
+                },
+                OPTIONS: {
+                },
+                EXAMPLES: {
+                    EX1: "In the data set 'USER.DATA.SET', rename the member named 'MEM1' to 'MEM2'",
+                },
+            },
+        },
+    },
 };
