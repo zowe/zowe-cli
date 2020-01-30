@@ -10,8 +10,8 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { DsDefinition } from "./ds/ds.definition";
-import { DsmDefinition } from "./dsm/dsm.definition";
+import { DsDefinition } from "./ds/Ds.definition";
+import { DsmDefinition } from "./dsm/Dsm.definition";
 
 import i18nTypings from "../-strings-/en";
 
