@@ -19,7 +19,7 @@ import { Rename } from "../../../api/methods/rename";
  */
 export default class DsmHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const { dataSetName, beforeMemberName, afterMemberName } = commandParameters.arguments
+        const { dataSetName, beforeMemberName, afterMemberName } = commandParameters.arguments;
         return Rename.dataSetMember(session, dataSetName, beforeMemberName, afterMemberName);
     }
 }
