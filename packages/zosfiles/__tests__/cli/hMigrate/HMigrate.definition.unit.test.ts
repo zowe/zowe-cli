@@ -10,12 +10,12 @@
 */
 
 import i18nEnglish from "../../../src/cli/-strings-/en";
-import { HMigrateDefinition } from "../../../src/cli/hMigrate/HMigrate.definintion";
+import { HMigrateDefinition } from "../../../src/cli/hMigrate/HMigrate.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files migrate group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/hMigrate/HMigrate.definintion").HMigrateDefinition;
+        const definition: ICommandDefinition = require("../../../src/cli/hMigrate/HMigrate.definition").HMigrateDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.options).toBeUndefined();
