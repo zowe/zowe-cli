@@ -528,9 +528,10 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetRecalledSuccessfully: {
-        message: "Data set recalled successfully.",
+        message: "Data set recall requested.",
     },
-     /**    
+
+    /**
      * Message indicating that the data set has been renamed successfully.
      * @type {IMessageDefinition}
      */
