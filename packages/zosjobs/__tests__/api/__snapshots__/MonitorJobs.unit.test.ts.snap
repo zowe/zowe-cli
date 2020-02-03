@@ -36,6 +36,6 @@ exports[`MonitorJobs Public Methods waitForStatusCommon expects should error if 
 
 exports[`MonitorJobs constant defaults should have a job status 1`] = `"OUTPUT"`;
 
-exports[`MonitorJobs constant defaults should have a max attempts 1`] = `100`;
+exports[`MonitorJobs constant defaults should have a max attempts 1`] = `Infinity`;
 
 exports[`MonitorJobs constant defaults should have a watch delay interval 1`] = `3000`;

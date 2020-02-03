@@ -471,6 +471,41 @@ describe("MonitorJobs", () => {
                 expect(sleep).toHaveBeenLastCalledWith(parmObject.watchDelay);
             });
 
+            it("should allow a lot of attempts when the max attempts is infinity", async () => {
+                const maxAttempts = 1000;
+                const errMsg = "Too many attempts";
+                let attempts = 0;
+
+                const parmObject = {
+                    ...dummyParms,
+                    attempts: Infinity,
+                    watchDelay: 123456
+                };
+
+                checkStatusSpy.mockReturnValue([false, dummyJob]);
+                sleepMock.mockImplementation(() => {
+                    attempts++;
+                    if (attempts === maxAttempts) {
+                        throw Error(errMsg);
+                    }
+                });
+
+                let error: Error;
+
+                try {
+                    await privateMonitorJobs.pollForStatus({}, parmObject);
+                } catch (e) {
+                    error = e;
+                }
+
+                expect(error).toBeDefined();
+                expect(error.message).toBe(errMsg);
+
+                expect(checkStatusSpy).toHaveBeenCalledTimes(attempts);
+                expect(sleep).toHaveBeenCalledTimes(attempts);
+                expect(sleep).toHaveBeenLastCalledWith(parmObject.watchDelay);
+            });
+
             it("should throw the error thrown from checkStatus", async () => {
                 const error = new Error("WE SHOULD SEE THIS");
                 checkStatusSpy.mockImplementation(() => {
