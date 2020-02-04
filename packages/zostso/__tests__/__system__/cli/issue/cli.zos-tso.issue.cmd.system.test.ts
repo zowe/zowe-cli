@@ -104,5 +104,31 @@ describe("zos-tso issue command", () => {
             expect(response.status).toBe(0);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         });
+
+        it("should successfully issue command = \"time\" with an account with an # in it", async () => {
+            const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (SYSTEM_PROPS.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = SYSTEM_PROPS.zosmf.basePath;
+            }
+
+            const response = runCliScript(__dirname + "/__scripts__/as/issue_command_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    SYSTEM_PROPS.zosmf.host,
+                    SYSTEM_PROPS.zosmf.port,
+                    SYSTEM_PROPS.zosmf.user,
+                    SYSTEM_PROPS.zosmf.pass,
+                    "ACCT#"
+                ]
+            );
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+        });
     });
 });
