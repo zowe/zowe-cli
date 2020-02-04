@@ -31,7 +31,7 @@ export const ZfsDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "zfs.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -39,7 +39,7 @@ export const ZfsDefinition: ICommandDefinition = {
             type: "string",
             description: strings.POSITIONALS.FILESYSTEMNAME,
             required: true
-        },
+        }
     ],
     options: ([
         {

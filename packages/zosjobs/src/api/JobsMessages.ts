@@ -41,5 +41,5 @@ export const ZosJobsMessages: { [key: string]: IMessageDefinition } = {
      */
     missingJcl: {
         message: "No JCL provided"
-    },
+    }
 };

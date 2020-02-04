@@ -46,7 +46,7 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
             workflowKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
             if(!workflowKey) {
                 throw new ImperativeError({
-                    msg: `No workflows match the provided workflow name.`,
+                    msg: `No workflows match the provided workflow name.`
                 });
             }
         }

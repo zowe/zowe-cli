@@ -27,6 +27,6 @@ export const HMigrateDefinition: ICommandDefinition = {
     type: "group",
     description: DESCRIPTION,
     children: [
-        DsDefinition,
-    ],
+        DsDefinition
+    ]
 };

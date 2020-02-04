@@ -116,5 +116,5 @@ export const ZosFilesConstants: { [key: string]: any } = {
      * The set of allocation unit choices for VSAM files
      * @type {[string]}
      */
-    VSAM_ALCUNIT_CHOICES: ["CYL", "TRK", "MB", "KB", "REC"],
+    VSAM_ALCUNIT_CHOICES: ["CYL", "TRK", "MB", "KB", "REC"]
 };

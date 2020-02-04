@@ -104,7 +104,7 @@ describe("Upload directory to USS", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass,
+                    defaultSys.zosmf.pass
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -133,7 +133,7 @@ describe("Upload directory to USS", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
                 [
                     localDirName,
-                    ussname,
+                    ussname
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -221,7 +221,7 @@ describe("Upload directory to USS", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
                 [
                     localDirName,
-                    ussname,
+                    ussname
                 ]);
             expect(response.stderr.toString()).toContain("Rest API failure with HTTP(S) status 500");
             expect(response.status).toBe(1);

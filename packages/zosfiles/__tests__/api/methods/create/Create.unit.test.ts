@@ -574,7 +574,7 @@ describe("Create data set", () => {
                     ...{
                         secondary: 1
                     }
-                }),
+                })
             );
         });
 
@@ -771,7 +771,7 @@ describe("Create data set  Validator", () => {
 
         it("alcunit should default to 'TRK' if not specified", async () => {
             const testOptioins: any = {
-                alcunit: undefined,
+                alcunit: undefined
             };
 
             Create.dataSetValidateOptions(testOptioins);
@@ -792,7 +792,7 @@ describe("Create data set  Validator", () => {
 
         it("secondary should default to 0 if not specified", async () => {
             const testOptioins: any = {
-                secondary: undefined,
+                secondary: undefined
             };
 
             Create.dataSetValidateOptions(testOptioins);
@@ -802,7 +802,7 @@ describe("Create data set  Validator", () => {
 
         it("recfm should default to 'F' if not specified", async () => {
             const testOptioins: any = {
-                recfm: undefined,
+                recfm: undefined
             };
 
             Create.dataSetValidateOptions(testOptioins);

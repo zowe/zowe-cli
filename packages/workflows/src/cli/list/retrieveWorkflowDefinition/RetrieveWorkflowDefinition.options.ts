@@ -28,7 +28,7 @@ export const RetrieveWorkflowDefinitionCommonOptions: { [key: string]: ICommandO
         type: "string",
         required: true,
         absenceImplications: ["workflow-key"],
-        conflictsWith: ["workflow-key"],
+        conflictsWith: ["workflow-key"]
     },
 
 
@@ -54,5 +54,5 @@ export const RetrieveWorkflowDefinitionCommonOptions: { [key: string]: ICommandO
         description: "Optional parameter for listing variables and their properties.",
         type: "boolean",
         required: false
-    },
+    }
 };

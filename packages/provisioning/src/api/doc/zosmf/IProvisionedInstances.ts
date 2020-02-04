@@ -35,7 +35,7 @@ export interface IProvisionedInstances {
 export const explainProvisionedInstancesSummary: IExplanationMap = {
     "scr-list": explainProvisionedInstanceSummary,
     "explainedParentKey": null,
-    "ignoredKeys": null,
+    "ignoredKeys": null
 };
 
 /**
@@ -46,5 +46,5 @@ export const explainProvisionedInstancesSummary: IExplanationMap = {
 export const explainProvisionedInstancesFull: IExplanationMap = {
     "scr-list": explainProvisionedInstanceFull,
     "explainedParentKey": null,
-    "ignoredKeys": null,
+    "ignoredKeys": null
 };

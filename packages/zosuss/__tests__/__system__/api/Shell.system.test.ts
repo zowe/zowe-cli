@@ -24,7 +24,7 @@ describe("zowe uss issue ssh api call test", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "issue_ssh_system_api",
+            testName: "issue_ssh_system_api"
         });
         SSH_SESSION = TestEnvironment.createSshSession(TEST_ENVIRONMENT);
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;

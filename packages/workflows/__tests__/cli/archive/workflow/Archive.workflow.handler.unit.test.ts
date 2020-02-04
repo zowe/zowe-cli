@@ -58,7 +58,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -68,7 +68,7 @@ describe("List workflow details handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"],
-                        workflowKey,
+                        workflowKey
                     },
                     response: {
                         data: {
@@ -136,7 +136,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -217,7 +217,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -291,7 +291,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -369,7 +369,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -440,7 +440,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 

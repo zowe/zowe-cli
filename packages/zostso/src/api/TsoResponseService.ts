@@ -36,7 +36,7 @@ export class TsoResponseService {
         const startResponse: IStartStopResponse = {
             success: false,
             zosmfTsoResponse: zosmfResponse,
-            servletKey: zosmfResponse.servletKey,
+            servletKey: zosmfResponse.servletKey
         };
 
         if (isNullOrUndefined(zosmfResponse.servletKey) && zosmfResponse.msgData) {
@@ -86,7 +86,7 @@ export class TsoResponseService {
         const PingResponse: IPingResponse = {
             success: false,
             zosmfPingResponse: null,
-            servletKey: null,
+            servletKey: null
         };
 
         if (!isNullOrUndefined(zosmfResponse.servletKey)) {

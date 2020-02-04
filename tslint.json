@@ -6,7 +6,7 @@
     "one-line": false,
     "space-within-parens": false,
     "no-var-requires": false,
-    "trailing-comma": false,
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
     "no-submodule-imports": [
       true,
       "csv-parse/lib/sync"

@@ -21,7 +21,7 @@ const PRETEND_SESSION = new Session({
     port: 3000,
     protocol: "http",
     type: "basic",
-    rejectUnauthorized: false,
+    rejectUnauthorized: false
 });
 
 describe("Create Dataset", () => {
@@ -64,7 +64,7 @@ describe("Create Dataset", () => {
             hostname: PRETEND_SESSION.ISession.hostname,
             port: PRETEND_SESSION.ISession.port,
             method: "DELETE",
-            path: "/mock/clear/all",
+            path: "/mock/clear/all"
         }, () => {
             done();
         });

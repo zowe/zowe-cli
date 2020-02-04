@@ -68,7 +68,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                     getWfKey = await ListWorkflows.listWorkflows(this.mSession, undefined, this.arguments.workflowName);
                     if (getWfKey === null || getWfKey.workflows.length === 0) {
                         throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`,
+                            msg: `No workflows match the provided workflow name.`
                         });
                     }
                     const successWfs: IWorkflowsInfo[] = [];
@@ -90,7 +90,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                             fields: ["workflowName", "workflowKey"],
                             output: successWfs,
                             format: "table",
-                            header: true,
+                            header: true
                         });
                     }
 
@@ -100,7 +100,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                             fields: ["workflowName", "workflowKey"],
                             output: failedWfs,
                             format: "table",
-                            header: true,
+                            header: true
                         });
                         throw new ImperativeError({
                             msg: `Some workflows were not archived, please check the message above.`

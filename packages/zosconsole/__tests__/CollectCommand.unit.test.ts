@@ -21,7 +21,7 @@ const PRETEND_SESSION = new Session({
     hostname: "host.com",
     port: 443,
     type: "basic",
-    rejectUnauthorized: false,
+    rejectUnauthorized: false
 });
 
 const CUSTOM_CONSOLE: string = "custcons";

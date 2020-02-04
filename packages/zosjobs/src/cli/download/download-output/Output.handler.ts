@@ -39,7 +39,7 @@ export default class OutputHandler extends ZosmfBaseHandler {
             jobid,
             outDir,
             omitJobidDirectory,
-            extension,
+            extension
         };
         // Download 'em all
         await DownloadJobs.downloadAllSpoolContentCommon(this.mSession, options);

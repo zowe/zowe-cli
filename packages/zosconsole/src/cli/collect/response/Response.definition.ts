@@ -30,7 +30,7 @@ export const SyncResponseCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Response.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -40,8 +40,8 @@ export const SyncResponseCommandDefinition: ICommandDefinition = {
             `Used by the z/OSMF console API to collect any additional outstanding solicited responses from a ` +
             `previously issued console command.`,
             regex: "^[a-zA-Z0-9]+$",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         {
@@ -56,12 +56,12 @@ export const SyncResponseCommandDefinition: ICommandDefinition = {
                 values: [/^[a-zA-Z0-9]+$/.source],
                 caseSensitive: false
             }
-        },
+        }
     ],
     examples: [
         {
             description: "Collect any outstanding additional solicited response messages",
-            options: "C4866969",
+            options: "C4866969"
         }
-    ],
+    ]
 };

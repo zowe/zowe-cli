@@ -164,7 +164,7 @@ const prettyFull: {
     "command-detect-time": "Command Detect Time",
     "workflow-definition-file": "Workflow Definition File",
     "workflow-variable-input-file": "Workflow Variable Input File",
-    "workflow-clean-after-complete": "Workflow Clean After Complete",
+    "workflow-clean-after-complete": "Workflow Clean After Complete"
 };
 
 /**

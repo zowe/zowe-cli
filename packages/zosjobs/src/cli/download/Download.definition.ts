@@ -20,6 +20,6 @@ export const DownloadDefinition: ICommandDefinition = {
     summary: "Download job output",
     description: "Download the output of a job as separate files.",
     children: [
-        OutputDefinition,
-    ],
+        OutputDefinition
+    ]
 };

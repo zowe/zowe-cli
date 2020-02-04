@@ -27,11 +27,11 @@ export const DeleteArchivedWorkflow: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "../Delete.archived.common.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ([
         DeleteArchivedWorkflowOptions.workflowKey,
-        DeleteArchivedWorkflowOptions.workflowName,
+        DeleteArchivedWorkflowOptions.workflowName
 
     ]),
     examples: [
@@ -46,6 +46,6 @@ export const DeleteArchivedWorkflow: ICommandDefinition = {
         {
             description: "To delete multiple archived workflows from z/OSMF with names beginnig with \"test\"",
             options: "--workflow-name \"test.*\""
-        },
-    ],
+        }
+    ]
 };

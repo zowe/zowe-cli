@@ -27,11 +27,11 @@ export const DeleteActiveWorkflow: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "../Delete.common.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ([
         DeleteWorkflowOptions.workflowKey,
-        DeleteWorkflowOptions.workflowName,
+        DeleteWorkflowOptions.workflowName
 
     ]),
     examples: [
@@ -47,5 +47,5 @@ export const DeleteActiveWorkflow: ICommandDefinition = {
             description: "To delete multiple workflow instances in z/OSMF with names starting with \"test\"",
             options: "--workflow-name \"test.*\""
         }
-    ],
+    ]
 };

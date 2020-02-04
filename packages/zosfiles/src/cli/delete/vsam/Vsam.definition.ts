@@ -30,7 +30,7 @@ export const VsamDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "Vsam.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -38,7 +38,7 @@ export const VsamDefinition: ICommandDefinition = {
             type: "string",
             description: strings.POSITIONALS.DSNAME,
             required: true
-        },
+        }
     ],
     options: ([
         {

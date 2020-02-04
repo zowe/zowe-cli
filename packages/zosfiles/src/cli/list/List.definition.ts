@@ -35,5 +35,5 @@ export const ListDefinition: ICommandDefinition = {
         DataSetDefinition,
         USSFileDefinition,
         FsDefinition
-    ],
+    ]
 };
