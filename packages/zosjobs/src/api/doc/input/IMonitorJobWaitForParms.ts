@@ -34,7 +34,7 @@ export interface IMonitorJobWaitForParms {
      */
     jobname: string;
     /**
-     * Watch delay is the polling delay in milliseconds. MonitorJobs will poll ever "watchDelay" milliseconds for the
+     * Watch delay is the polling delay in milliseconds. MonitorJobs will poll every "watchDelay" milliseconds for the
      * status of the job that is being monitored. Use in conjunction with "attempts" to specify your maximum wait
      * for the expected status.
      * Default: MonitorJobs.DEFAULT_WATCHER_DELAY
