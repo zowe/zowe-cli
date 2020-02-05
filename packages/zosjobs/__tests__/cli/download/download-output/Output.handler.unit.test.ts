@@ -95,7 +95,7 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
-            omitJobidDirectory: false,
+            omitJobidDirectory: false
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -121,7 +121,7 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: outputDir,
-            omitJobidDirectory: false,
+            omitJobidDirectory: false
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -148,7 +148,7 @@ describe("download output handler tests", () => {
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
             omitJobidDirectory: false,
-            extension,
+            extension
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -173,7 +173,7 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
-            omitJobidDirectory: true,
+            omitJobidDirectory: true
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);

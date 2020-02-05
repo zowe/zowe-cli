@@ -27,7 +27,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         type: "string",
         required: false,
         absenceImplications: ["workflow-key"],
-        conflictsWith: ["workflow-key"],
+        conflictsWith: ["workflow-key"]
     },
 
     /**
@@ -39,7 +39,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["wk"],
         description: "List active workflow details by specified workflow key.",
         type: "string",
-        required: false,
+        required: false
         // absenceImplications: ["workflow-name"]
         // conflictsWith: ["workflow-name"],
     },
@@ -53,7 +53,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["ls"],
         description: "Optional parameter for listing steps and their properties.",
         type: "boolean",
-        required: false,
+        required: false
     },
 
     /**
@@ -66,7 +66,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         description: "Optional parameter that lists steps summary only.",
         type: "boolean",
         required: false,
-        conflictsWith: ["list-steps"],
+        conflictsWith: ["list-steps"]
     },
 
     /**
@@ -79,7 +79,7 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         description: "Optional parameter that skips the default workflow summary.",
         type: "boolean",
         required: false,
-        impliesOneOf: ["steps-summary-only", "list-steps", "list-variables"],
+        impliesOneOf: ["steps-summary-only", "list-steps", "list-variables"]
     },
 
     /**
@@ -91,6 +91,6 @@ export const ActiveWorkflowDetailsCommonOptions: { [key: string]: ICommandOption
         aliases: ["lv"],
         description: "Optional parameter for listing variables and their properties.",
         type: "boolean",
-        required: false,
-    },
+        required: false
+    }
 };

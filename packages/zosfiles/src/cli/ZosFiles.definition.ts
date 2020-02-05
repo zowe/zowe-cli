@@ -44,7 +44,7 @@ const definition: ICommandDefinition = {
         UploadDefinition,
         MountDefinition,
         UnmountDefinition,
-        CopyDefinition,
+        CopyDefinition
     ],
     passOn: [
         {

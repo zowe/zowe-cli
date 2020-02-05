@@ -31,15 +31,15 @@ export const UssDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "Uss.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "fileName",
             type: "string",
             description: strings.POSITIONALS.FILENAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
         {
@@ -69,6 +69,6 @@ export const UssDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX3,
             options: `"/a/ibmuser/testcases" -rf`
-        },
-    ],
+        }
+    ]
 };

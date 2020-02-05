@@ -45,7 +45,7 @@ describe("Create PS data set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 

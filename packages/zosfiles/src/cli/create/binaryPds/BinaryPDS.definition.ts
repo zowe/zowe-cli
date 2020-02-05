@@ -30,15 +30,15 @@ export const BinaryPDSDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/BinaryPDS.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: strings.POSITIONALS.DATASETNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         ZosFilesCreateExtraOptions.size,
@@ -54,12 +54,12 @@ export const BinaryPDSDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
+        ZosFilesCreateExtraOptions.showAttributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_BINARY.EXAMPLES.EX1,
-            options: "NEW.BINARY.DATASET",
+            options: "NEW.BINARY.DATASET"
         }
     ]
 };

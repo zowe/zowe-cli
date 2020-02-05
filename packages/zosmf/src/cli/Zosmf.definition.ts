@@ -20,7 +20,7 @@ const definition: ICommandDefinition = {
     description: "Retrieve and show the properties of a z/OSMF web server",
     children: [
         CheckCommand,
-        ListCommand,
+        ListCommand
     ]
 };
 

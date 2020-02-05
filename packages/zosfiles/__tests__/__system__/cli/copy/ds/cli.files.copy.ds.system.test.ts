@@ -47,7 +47,7 @@ describe("Copy data set", () => {
     afterEach(async () => {
         await Promise.all([
             Delete.dataSet(REAL_SESSION, fromDataSetName),
-            Delete.dataSet(REAL_SESSION, toDataSetName),
+            Delete.dataSet(REAL_SESSION, toDataSetName)
         ]);
     });
     describe("success scenarios", () => {
@@ -56,7 +56,7 @@ describe("Copy data set", () => {
             beforeEach(async () => {
                 await Promise.all([
                     Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName),
-                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName),
+                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName)
                 ]);
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), fromDataSetName);
             });
@@ -69,7 +69,7 @@ describe("Copy data set", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
                         TEST_ENVIRONMENT,
-                        [fromDataSetName, toDataSetName],
+                        [fromDataSetName, toDataSetName]
                     );
                     contents = await Get.dataSet(REAL_SESSION, toDataSetName);
                 } catch(err) {
@@ -86,7 +86,7 @@ describe("Copy data set", () => {
             beforeEach(async () => {
                 await Promise.all([
                     Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName),
-                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName),
+                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName)
                 ]);
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), `${fromDataSetName}(${fromMemberName})`);
             });
@@ -99,7 +99,7 @@ describe("Copy data set", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
                         TEST_ENVIRONMENT,
-                        [`${fromDataSetName}(${fromMemberName})`, `${toDataSetName}(${toMemberName})`],
+                        [`${fromDataSetName}(${fromMemberName})`, `${toDataSetName}(${toMemberName})`]
                     );
                     contents = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${toMemberName})`);
                 } catch(err) {
@@ -116,7 +116,7 @@ describe("Copy data set", () => {
             beforeEach(async () => {
                 await Promise.all([
                     Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName),
-                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName),
+                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName)
                 ]);
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), fromDataSetName);
             });
@@ -129,7 +129,7 @@ describe("Copy data set", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
                         TEST_ENVIRONMENT,
-                        [fromDataSetName, `${toDataSetName}(${toMemberName})`],
+                        [fromDataSetName, `${toDataSetName}(${toMemberName})`]
                     );
                     contents = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${toMemberName})`);
                 } catch(err) {
@@ -146,7 +146,7 @@ describe("Copy data set", () => {
             beforeEach(async () => {
                 await Promise.all([
                     Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName),
-                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName),
+                    Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName)
                 ]);
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), `${fromDataSetName}(${fromMemberName})`);
             });
@@ -159,7 +159,7 @@ describe("Copy data set", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
                         TEST_ENVIRONMENT,
-                        [`${fromDataSetName}(${fromMemberName})`, toDataSetName],
+                        [`${fromDataSetName}(${fromMemberName})`, toDataSetName]
                     );
                     contents = await Get.dataSet(REAL_SESSION, toDataSetName);
                 } catch(err) {

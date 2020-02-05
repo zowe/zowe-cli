@@ -19,7 +19,7 @@ export const JobDefinition: ICommandDefinition = {
     description: "Delete a single job by job ID",
     handler: __dirname + "/Job.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -29,12 +29,12 @@ export const JobDefinition: ICommandDefinition = {
                 "the job ID if desired. You can use, for example \"J123\".",
             type: "string",
             required: true
-        },
+        }
     ],
     examples: [
         {
             description: "Delete job with job ID JOB03456.",
-            options: "JOB03456",
-        },
-    ],
+            options: "JOB03456"
+        }
+    ]
 };

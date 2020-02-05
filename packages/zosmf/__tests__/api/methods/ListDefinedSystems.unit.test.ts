@@ -18,7 +18,7 @@ describe("List Defined Systems api", () => {
     const endpoint = ZosmfConstants.RESOURCE + ZosmfConstants.TOPOLOGY + ZosmfConstants.SYSTEMS;
     const dummyResponse: IZosmfListDefinedSystemsResponse = {
         numRows: 2,
-        items: [],
+        items: []
     };
     let mySpy: any;
     const restErrMsgText = "The error message thrown by our Rest API";

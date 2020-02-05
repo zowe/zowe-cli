@@ -34,7 +34,7 @@ describe("DsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                dataSetName: "ABCD",
+                dataSetName: "ABCD"
             }
         };
 
@@ -53,7 +53,7 @@ describe("DsHandler", () => {
         expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.dataSetName,
-            {},
+            {}
         );
         expect(response).toBe(defaultReturn);
     });
@@ -65,9 +65,9 @@ describe("DsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                dataSetName: "ABCD",
+                dataSetName: "ABCD"
             },
-            options,
+            options
         };
 
         const dummySession = {

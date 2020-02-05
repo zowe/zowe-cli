@@ -41,7 +41,7 @@ const PRETEND_SESSION = new Session({
     hostname: "host.com",
     port: 443,
     type: "basic",
-    rejectUnauthorized: false,
+    rejectUnauthorized: false
 });
 
 const IPL_CMD_ZOSMF_PARMS: IZosmfIssueParms = {

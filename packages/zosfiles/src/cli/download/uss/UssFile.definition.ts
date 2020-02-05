@@ -30,7 +30,7 @@ export const UssFileDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/UssFile.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -38,7 +38,7 @@ export const UssFileDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.USSFILENAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         DownloadOptions.file,

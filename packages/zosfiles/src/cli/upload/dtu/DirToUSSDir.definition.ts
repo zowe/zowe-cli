@@ -31,7 +31,7 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/DirToUSSDir.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -45,7 +45,7 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.USSDIR,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         UploadOptions.binary,

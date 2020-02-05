@@ -23,5 +23,5 @@ export const ListCommand: ICommandDefinition = {
     summary: "List Provisioning Information",
     description: "Lists z/OSMF provisioning information such as the provisioned " +
     "instances from the registry, the provisioned instance details, the available provisioning templates and provisioning template details.",
-    children: [templateInfo, catalogTemplates, instanceInfo, instanceVariables, registryInstances],
+    children: [templateInfo, catalogTemplates, instanceInfo, instanceVariables, registryInstances]
 };

@@ -20,5 +20,5 @@ export const IssueCommand: ICommandDefinition = {
     summary: "Issue a command",
     description: "Issue a z/OS USS command",
     type: "group",
-    children: [SshDefinition],
+    children: [SshDefinition]
 };

@@ -20,6 +20,6 @@ export const CancelDefinition: ICommandDefinition = {
     description: "Cancel a single job by job ID." +
         " This cancels the job if it is running or on input.",
     children: [
-        JobDefinition,
-    ],
+        JobDefinition
+    ]
 };

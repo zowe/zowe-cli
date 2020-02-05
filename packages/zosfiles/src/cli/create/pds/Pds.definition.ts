@@ -30,15 +30,15 @@ export const PdsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Pds.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: strings.POSITIONALS.DATASETNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         ZosFilesCreateExtraOptions.size,
@@ -54,12 +54,12 @@ export const PdsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
+        ZosFilesCreateExtraOptions.showAttributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_PARTITIONED.EXAMPLES.EX1,
-            options: "NEW.PDS.DATASET",
+            options: "NEW.PDS.DATASET"
         }
 
     ]

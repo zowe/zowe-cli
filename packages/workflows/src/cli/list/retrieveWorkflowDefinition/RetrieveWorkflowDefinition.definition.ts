@@ -26,7 +26,7 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "./RetrieveWorkflowDefinition.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -34,12 +34,12 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
             description:
             "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
             type: "string",
-            required: true,
+            required: true
         }
     ],
     options: ([
         RetrieveWorkflowDefinitionCommonOptions.listSteps,
-        RetrieveWorkflowDefinitionCommonOptions.listVariables,
+        RetrieveWorkflowDefinitionCommonOptions.listVariables
     ]),
     examples: [
         {
@@ -52,5 +52,5 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
             " including its steps and variables",
             options: "--workflow-name \"testWorkflow\" --list-steps --list-variables"
         }
-    ],
+    ]
 };

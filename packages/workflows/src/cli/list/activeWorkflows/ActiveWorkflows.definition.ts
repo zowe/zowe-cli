@@ -30,7 +30,7 @@ export const ActiveWorkflows: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "ActiveWorkflows.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ([
         ListActiveWorkflowsOptions.workflowName,
@@ -38,7 +38,7 @@ export const ActiveWorkflows: ICommandDefinition = {
         ListActiveWorkflowsOptions.system,
         ListActiveWorkflowsOptions.owner,
         ListActiveWorkflowsOptions.vendor,
-        ListActiveWorkflowsOptions.statusName,
+        ListActiveWorkflowsOptions.statusName
     ]),
     outputFormatOptions: true,
     examples: [
@@ -54,5 +54,5 @@ export const ActiveWorkflows: ICommandDefinition = {
             description: "List multiple active workflows on system \"IBMSYS\" with names beginnig with \"testW\" that are in status \"complete\"",
             options: "--wn \"test.*\" --sys \"IBMSYS\" --sn \"complete\""
         }
-    ],
+    ]
 };

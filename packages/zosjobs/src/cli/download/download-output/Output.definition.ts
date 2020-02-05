@@ -30,33 +30,33 @@ export const OutputDefinition: ICommandDefinition = {
             "No pre-validation of the JOBID is performed.",
             type: "string",
             required: true
-        },
+        }
     ],
     options: ([
         {
             name: "directory",
             aliases: ["d", "dir"],
             description: "The local directory you would like to download the output for the job to.",
-            type: "string",
+            type: "string"
         },
         {
             name: "extension",
             aliases: ["e"],
             description: "A file extension to save the job output with. Defaults to '.txt'.",
-            type: "string",
+            type: "string"
         },
         {
             name: "omit-jobid-directory",
             aliases: ["ojd"],
             description: "If specified, job output will be saved directly to the specified " +
                 "directory rather than creating a subdirectory named after the ID of the job.",
-            type: "boolean",
-        },
+            type: "boolean"
+        }
     ] as ICommandOptionDefinition[]),
     examples: [
         {
             description: "Download all the output of the job with job ID JOB00234 to an automatically generated directory.",
-            options: "JOB00234",
-        },
-    ],
+            options: "JOB00234"
+        }
+    ]
 };

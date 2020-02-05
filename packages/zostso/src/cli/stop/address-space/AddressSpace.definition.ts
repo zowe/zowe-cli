@@ -19,7 +19,7 @@ export const AddressSpaceDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AddressSpace.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -33,6 +33,6 @@ export const AddressSpaceDefinition: ICommandDefinition = {
         {
             description: "Stop the TSO address space identified by IBMUSER-329-aafkaaoc",
             options: "IBMUSER-329-aafkaaoc"
-        },
-    ],
+        }
+    ]
 };

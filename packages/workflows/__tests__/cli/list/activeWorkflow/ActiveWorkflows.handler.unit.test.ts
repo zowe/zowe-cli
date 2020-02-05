@@ -56,7 +56,7 @@ describe("List workflows handler", () => {
                             workflowDescription: "Test wf",
                             workflowKey: "Some-key-here"
                         }
-                    ],
+                    ]
                 };
             });
 
@@ -68,7 +68,7 @@ describe("List workflows handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -83,7 +83,7 @@ describe("List workflows handler", () => {
                         system,
                         owner,
                         vendor,
-                        statusName,
+                        statusName
                     },
                     response: {
                         format: {
@@ -123,7 +123,7 @@ describe("List workflows handler", () => {
                 system,
                 owner,
                 vendor,
-                statusName,);
+                statusName);
         });
     });
 });

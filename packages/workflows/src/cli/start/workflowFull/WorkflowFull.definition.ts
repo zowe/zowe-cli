@@ -27,13 +27,13 @@ export const WorkflowFull: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "./WorkflowFull.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ([
         StartCommonOptions.workflowKey,
         StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
-        StartCommonOptions.wait,
+        StartCommonOptions.wait
         // StartCommonOptions.zosmfVersion,
     ]),
     examples: [
@@ -54,6 +54,6 @@ export const WorkflowFull: ICommandDefinition = {
         {
             description: "To start a workflow instance in z/OSMF with workflow name \"testWorkflow\"",
             options: "--workflow-name \"testWorkflow\""
-        },
-    ],
+        }
+    ]
 };

@@ -104,7 +104,7 @@ const prettySummary: {
     "state": "State",
     "description": "Description",
     "generated-name": "Generated Name",
-    "object-id": "Object Id",
+    "object-id": "Object Id"
 };
 
 /**
@@ -116,7 +116,7 @@ const prettyFull: {
 } = {
     ...prettySummary,
     "domain-name": "Domain Name",
-    "software-name": "Software Name",
+    "software-name": "Software Name"
 };
 
 /**

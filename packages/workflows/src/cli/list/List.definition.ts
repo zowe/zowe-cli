@@ -31,6 +31,6 @@ export const ListDefinition: ICommandDefinition = {
         ActiveWorkflows,
         ActiveWorkflowDetails,
         RetrieveWorkflowDefinition,
-        ArchivedWorkflows,
+        ArchivedWorkflows
     ]
 };

@@ -45,7 +45,7 @@ describe("Rename", () => {
     afterEach(async () => {
         await Promise.all([
             Delete.dataSet(REAL_SESSION, beforeDataSetName),
-            Delete.dataSet(REAL_SESSION, afterDataSetName),
+            Delete.dataSet(REAL_SESSION, afterDataSetName)
         ].map((p) => p.catch((err) => err)));
     });
 

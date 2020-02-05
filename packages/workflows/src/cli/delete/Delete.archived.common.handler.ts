@@ -92,7 +92,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
 
                 if (listWorkflows.archivedWorkflows.length === 0) {
                     throw new ImperativeError({
-                        msg: `No workflows match the provided workflow name.`,
+                        msg: `No workflows match the provided workflow name.`
                     });                    }
 
                 if(listWorkflows.archivedWorkflows.length > 0){
@@ -101,7 +101,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                         fields: ["workflowName", "workflowKey"],
                         output: successWfs,
                         format: "table",
-                        header: true,
+                        header: true
                     });
                 }
 
@@ -111,7 +111,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                         fields: ["workflowName", "workflowKey"],
                         output: failedWfs,
                         format: "table",
-                        header: true,
+                        header: true
                     });
                     throw new ImperativeError({
                         msg: `Some workflows were not deleted, please check the message above.`
