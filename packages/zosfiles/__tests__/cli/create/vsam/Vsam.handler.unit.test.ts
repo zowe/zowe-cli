@@ -47,7 +47,7 @@ describe("Create VSAM data set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -131,7 +131,7 @@ describe("Create VSAM data set handler", () => {
                 user: "fake",
                 password: "fake",
                 auth: "fake",
-                rejectUnauthorized: "fake",
+                rejectUnauthorized: "fake"
             };
         });
 

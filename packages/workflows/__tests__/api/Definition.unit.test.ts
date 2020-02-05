@@ -287,7 +287,7 @@ const PRETEND_ZOSMF_RESPONSE: IWorkflowDefinition = {
     category: "general",
     productID: "CA",
     productName: "ZOWE",
-    productVersion: "1.0",
+    productVersion: "1.0"
     // steps
     // variables
 };

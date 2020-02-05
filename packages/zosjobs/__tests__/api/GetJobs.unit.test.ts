@@ -51,7 +51,7 @@ function mockGetJobsServerError(errorCode: string, causeErrors: string) {
                     "Request: " + "GET" +
                     "Headers: " + JSON.stringify(headers) +
                     "Payload: " + undefined,
-                    errorCode,
+                    errorCode
                 }));
             });
         });

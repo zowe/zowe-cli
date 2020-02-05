@@ -52,7 +52,7 @@ describe("PingTsoCommand Test", () => {
             codePage: "1047",
             rows: "24",
             columns: "80",
-            regionSize: "4096",
+            regionSize: "4096"
         };
 
         // start an address space for us to ping

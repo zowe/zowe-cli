@@ -44,7 +44,7 @@ describe("Download uss file handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -95,8 +95,8 @@ describe("Download uss file handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Downloading USS file",
-                },
+                    statusMessage: "Downloading USS file"
+                }
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();

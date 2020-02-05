@@ -27,15 +27,15 @@ export const LocalFile: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "workflowName",
             type: "string",
             description: "Name of the workflow",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
         CreateCommonOptions.localFile,
@@ -48,7 +48,7 @@ export const LocalFile: ICommandDefinition = {
         CreateCommonOptions.deleteCompleted,
         CreateCommonOptions.overwrite,
         CreateCommonOptions.remoteDirectory,
-        CreateCommonOptions.keepFiles,
+        CreateCommonOptions.keepFiles
     ]),
     outputFormatOptions: true,
     examples: [
@@ -57,5 +57,5 @@ export const LocalFile: ICommandDefinition = {
             "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF",
             options: "\"testworkflow\" --local-file \"TESTID_WKFLOW.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite"
         }
-    ],
+    ]
 };

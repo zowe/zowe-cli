@@ -35,6 +35,6 @@ export const UploadDefinition: ICommandDefinition = {
         StdinToDataSetDefinition,
         DirToPdsDefinition,
         FileToUSSDefinition,
-        DirToUSSDirDefinition,
-    ],
+        DirToUSSDirDefinition
+    ]
 };

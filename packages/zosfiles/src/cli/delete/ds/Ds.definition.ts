@@ -31,15 +31,15 @@ export const DsDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "Ds.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: strings.POSITIONALS.DSNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
         {
@@ -54,7 +54,7 @@ export const DsDefinition: ICommandDefinition = {
             aliases: ["vol"],
             description: strings.OPTIONS.VOLUME,
             type: "string"
-        },
+        }
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
@@ -65,5 +65,5 @@ export const DsDefinition: ICommandDefinition = {
             description: strings.EXAMPLES.EX2,
             options: `"ibmuser.cntl(mem)" -f`
         }
-    ],
+    ]
 };

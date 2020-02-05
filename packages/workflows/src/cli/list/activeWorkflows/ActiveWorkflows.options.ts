@@ -73,7 +73,7 @@ export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefiniti
         aliases: ["vd"],
         description: "Filter by the name of the vendor that provided the workflow(s) definition file.",
         type: "string",
-        required: false,
+        required: false
     },
 
     /**
@@ -89,7 +89,7 @@ export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefiniti
         allowableValues: {
             values : ["in-progress", "complete", "automation-in-progress", "canceled"],
             caseSensitive: true
-        },
+        }
     },
 
     /**
@@ -102,5 +102,5 @@ export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefiniti
         description: "Identifies the version of the zOSMF workflow service.",
         type: "string",
         required: false
-    },
+    }
 };

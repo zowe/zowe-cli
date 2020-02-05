@@ -21,7 +21,7 @@ describe("zosmf list systems", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_list_systems_integration",
-            skipProperties: true,
+            skipProperties: true
         });
     });
 

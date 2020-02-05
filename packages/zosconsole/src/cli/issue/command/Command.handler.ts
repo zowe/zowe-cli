@@ -31,7 +31,7 @@ export default class Handler extends ZosmfBaseHandler {
             consoleName: commandParameters.arguments["console-name"],
             solicitedKeyword: commandParameters.arguments["solicited-keyword"],
             sysplexSystem: commandParameters.arguments["sysplex-system"],
-            async: commandParameters.arguments["key-only"] === true ? "Y" : "N",
+            async: commandParameters.arguments["key-only"] === true ? "Y" : "N"
         };
 
         if (isNullOrUndefined(commandParameters.arguments["wait-to-collect"])) {
@@ -41,7 +41,7 @@ export default class Handler extends ZosmfBaseHandler {
                 commandResponseKey: "",
                 consoleName: commandParameters.arguments["console-name"],
                 waitToCollect: commandParameters.arguments["wait-to-collect"],
-                followUpAttempts: commandParameters.arguments["follow-up-attempts"],
+                followUpAttempts: commandParameters.arguments["follow-up-attempts"]
             };
             response = await IssueCommand.issueAndCollect(this.mSession, issueParms, collectParms);
         }
@@ -58,7 +58,7 @@ export default class Handler extends ZosmfBaseHandler {
                     responseKey: response.lastResponseKey,
                     cmdResponseUrl: response.cmdResponseUrl || undefined,
                     keywordDetected: response.keywordDetected ||
-                        ((!isNullOrUndefined(commandParameters.arguments["solicited-keyword"])) ? false : undefined),
+                        ((!isNullOrUndefined(commandParameters.arguments["solicited-keyword"])) ? false : undefined)
                 };
                 commandParameters.response.console.log("Additional details:");
                 commandParameters.response.console.log("-------------------");

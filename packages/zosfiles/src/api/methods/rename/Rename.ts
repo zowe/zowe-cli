@@ -32,7 +32,7 @@ export class Rename {
     public static async dataSet(
         session: AbstractSession,
         beforeDataSetName: string,
-        afterDataSetName: string,
+        afterDataSetName: string
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(beforeDataSetName, "beforeDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(afterDataSetName, "afterDataSetName");
@@ -40,7 +40,7 @@ export class Rename {
         return this.rename(
             session,
             afterDataSetName.trim(),
-            { dataSetName: beforeDataSetName.trim() },
+            { dataSetName: beforeDataSetName.trim() }
         );
     }
 
@@ -56,7 +56,7 @@ export class Rename {
         session: AbstractSession,
         dataSetName: string,
         beforeMemberName: string,
-        afterMemberName: string,
+        afterMemberName: string
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(dataSetName, "dataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(beforeMemberName, "beforeMemberName");
@@ -65,7 +65,7 @@ export class Rename {
         return this.rename(
             session,
             `${dataSetName.trim()}(${afterMemberName.trim()})`,
-            { dataSetName: dataSetName.trim(), memberName: beforeMemberName.trim() },
+            { dataSetName: dataSetName.trim(), memberName: beforeMemberName.trim() }
         );
     }
 
@@ -78,12 +78,12 @@ export class Rename {
     private static async rename(
         session: AbstractSession,
         afterDataSetName: string,
-        { dataSetName: beforeDataSetName, memberName: beforeMemberName }: IDataSet,
+        { dataSetName: beforeDataSetName, memberName: beforeMemberName }: IDataSet
     ): Promise<IZosFilesResponse> {
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
-            afterDataSetName,
+            afterDataSetName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -91,13 +91,13 @@ export class Rename {
             "request": "rename",
             "from-dataset": {
                 dsn: beforeDataSetName,
-                member: beforeMemberName,
-            },
+                member: beforeMemberName
+            }
         };
 
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
-            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
+            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() }
         ];
 
         try {

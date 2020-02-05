@@ -25,7 +25,7 @@ export default class Handler extends ZosmfBaseHandler {
 
         const collectParms: ICollectParms = {
             commandResponseKey: commandParameters.arguments.responsekey,
-            consoleName: commandParameters.arguments["console-name"],
+            consoleName: commandParameters.arguments["console-name"]
         };
 
         const response: IConsoleResponse = await CollectCommand.collect(this.mSession, collectParms);

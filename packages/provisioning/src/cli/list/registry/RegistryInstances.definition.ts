@@ -46,12 +46,12 @@ export const registryInstances: ICommandDefinition = {
             aliases: ["t"],
             description: "Display a list of all types for provisioned instances (e.g. DB2 or CICS).",
             type: "boolean"
-        },
+        }
     ],
     examples: [
         {
             description: "List all provisioned instances (with full detail)",
-            options: "--all-info",
+            options: "--all-info"
         }
     ]
 };
