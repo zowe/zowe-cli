@@ -69,7 +69,7 @@ const ZOSMF_RESPONSE: IProvisionedInstance = {
     "account-info": null,
     "runAsUser-audit": true,
     "workflow-start-time": "2017-04-17T14:52:03.537Z",
-    "workflow-stop-time": "2017-04-17T14:52:03.568Z",
+    "workflow-stop-time": "2017-04-17T14:52:03.568Z"
 };
 
 function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {

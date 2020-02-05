@@ -35,7 +35,7 @@ export interface IPublishedTemplates {
 export const explainPublishedTemplatesSummary: IExplanationMap = {
     "psc-list": explainPublishedTemplateSummary,
     "explainedParentKey": null,
-    "ignoredKeys": null,
+    "ignoredKeys": null
 };
 
 /**
@@ -46,5 +46,5 @@ export const explainPublishedTemplatesSummary: IExplanationMap = {
 export const explainPublishedTemplatesFull: IExplanationMap = {
     "psc-list": explainPublishedTemplateFull,
     "explainedParentKey": null,
-    "ignoredKeys": null,
+    "ignoredKeys": null
 };

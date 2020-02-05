@@ -114,15 +114,15 @@ export class Shell {
                 // throw error only when authentication didn't fail.
                 else if( !hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
                     reject(new ImperativeError({
-                        msg: ZosUssMessages.handshakeTimeout.message,
+                        msg: ZosUssMessages.handshakeTimeout.message
                     }));
                 } else if ( err.message.includes("ECONNREFUSED")) {
                     reject(new ImperativeError({
-                        msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message,
+                        msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
                     }));
                 } else {
                     reject(new ImperativeError({
-                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message,
+                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message
                     }));
                 }
             });

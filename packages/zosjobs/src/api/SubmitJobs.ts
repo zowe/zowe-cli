@@ -229,7 +229,7 @@ export class SubmitJobs {
                     ddName: file.ddname,
                     stepName: file.stepname,
                     procName: file.procstep,
-                    data: spoolContent,
+                    data: spoolContent
                 });
             }
             return arrOfSpoolFile;
@@ -285,7 +285,7 @@ export class SubmitJobs {
                 jobname: job.jobname,
                 jobid: job.jobid,
                 status,
-                watchDelay,
+                watchDelay
             });
     }
 

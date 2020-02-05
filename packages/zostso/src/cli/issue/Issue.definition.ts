@@ -21,6 +21,6 @@ export const IssueCommand: ICommandDefinition = {
     summary: "Issue TSO commands",
     description: "Issue TSO commands",
     children: [
-        CommandDefinition,
-    ],
+        CommandDefinition
+    ]
 };

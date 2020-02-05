@@ -19,6 +19,6 @@ export const CollectCommand: ICommandDefinition = {
     description: "z/OSMF console services provides a command response key upon successful issue of a console command. " +
     "You can use this key to collect additional console message responses.",
     children: [
-        SyncResponseCommandDefinition,
-    ],
+        SyncResponseCommandDefinition
+    ]
 };

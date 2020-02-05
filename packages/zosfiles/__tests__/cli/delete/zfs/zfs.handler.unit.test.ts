@@ -33,7 +33,7 @@ describe("ZfsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                fileSystemName: "ABCD",
+                fileSystemName: "ABCD"
             }
         };
 
@@ -46,7 +46,7 @@ describe("ZfsHandler", () => {
         expect(deleteZfs).toHaveBeenCalledTimes(1);
         expect(deleteZfs).toHaveBeenLastCalledWith(
             dummySession,
-            commandParameters.arguments.fileSystemName,
+            commandParameters.arguments.fileSystemName
         );
         expect(response).toBe(defaultReturn);
     });

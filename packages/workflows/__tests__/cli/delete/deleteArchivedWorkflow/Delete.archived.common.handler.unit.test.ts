@@ -46,7 +46,7 @@ describe("Delete workflow common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -123,7 +123,7 @@ describe("Delete workflow common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -195,7 +195,7 @@ describe("Delete workflow common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -272,7 +272,7 @@ describe("Delete workflow common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -350,7 +350,7 @@ describe("Delete workflow common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -429,7 +429,7 @@ describe("Delete workflow common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 

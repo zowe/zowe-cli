@@ -55,7 +55,7 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         commandParameters.response.format.output({
             fields: ["workflowDefaultName", "workflowDescription", "workflowID"],
             output: response,
-            format: "object",
+            format: "object"
         });
 
         if(this.arguments.listSteps && response.steps){

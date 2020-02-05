@@ -30,7 +30,7 @@ export const AllMembersDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AllMembers.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -38,7 +38,7 @@ export const AllMembersDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         DownloadOptions.volume,

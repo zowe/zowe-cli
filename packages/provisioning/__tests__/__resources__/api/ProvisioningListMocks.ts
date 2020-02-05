@@ -32,7 +32,7 @@ export class ProvisioningListMocks {
                     "generated-name": "cics_empty_wait.3.TeaCoffeeDomain",
                     "object-id": "cd4ad08e-3d40-4ed8-87f1-f77aae2dfef7",
                     "domain-name": "TeaCoffeeDomain",
-                    "software-name": "CICS Transaction Server for z/OS",
+                    "software-name": "CICS Transaction Server for z/OS"
                 }
             ]
         };
@@ -71,7 +71,7 @@ export class ProvisioningListMocks {
                     "tenant-name": "ProvisionTenant",
                     "domain-id": "IYU3",
                     "domain-name": "ProvisionDomain",
-                    "system-nickname": "CA32",
+                    "system-nickname": "CA32"
                 }]
         };
 

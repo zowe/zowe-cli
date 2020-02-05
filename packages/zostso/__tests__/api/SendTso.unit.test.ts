@@ -38,7 +38,7 @@ const ZOSMF_RESPONSE: IZosmfTsoResponse = {
             VERSION: "0100",
             DATA: "some response"
         }
-    }],
+    }]
 };
 
 describe("TsoSend sendDataToTSOCollect - failing scenarios", () => {

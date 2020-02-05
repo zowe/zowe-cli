@@ -22,23 +22,23 @@ const PRETEND_SESSION = new Session({
     hostname: "host.com",
     port: 443,
     type: "basic",
-    rejectUnauthorized: false,
+    rejectUnauthorized: false
 });
 
 const ZOSMF_ISSUE_PARAMETERS: IZosmfIssueParms = {
     "cmd": "command",
     "sol-key": "solkey",
-    "system": "sys1",
+    "system": "sys1"
 };
 
 const ISSUE_PARAMETERS: IIssueParms = {
-    command: IPLINFO,
+    command: IPLINFO
 };
 
 const COLLECT_PARAMETERS: ICollectParms = {
     commandResponseKey: RESPONSE_KEY,
     followUpAttempts: 2,
-    waitToCollect: 2,
+    waitToCollect: 2
 };
 
 describe("ConsoleValidator", () => {

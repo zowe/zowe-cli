@@ -29,7 +29,7 @@ export default class Handler extends ZosmfBaseHandler {
             fields: ["systemNickName", "systemName", "url", "jesMemberName" ],
             output: zosResponse.items,
             format: "table",
-            header: true,
+            header: true
         });
 
         // Return the original zosResponse when using --response-format-json

@@ -55,14 +55,14 @@ export class HMigrate {
 
             const headers: IHeaderContent[] = [
               Headers.APPLICATION_JSON,
-              { "Content-Length": JSON.stringify(payload).length.toString() },
+              { "Content-Length": JSON.stringify(payload).length.toString() }
             ];
 
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
                 success        : true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message,
+                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);

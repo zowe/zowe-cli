@@ -83,7 +83,7 @@ describe("Download Jobs - System tests", () => {
         it("should be able to download a single DD from job output", async () => {
 
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
-                jesJCLJobFile,
+                jesJCLJobFile
             );
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
             expect(IO.existsSync(expectedFile)).toEqual(true);

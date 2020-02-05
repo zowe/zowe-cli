@@ -20,7 +20,7 @@ import {
     noSessionProvisioning,
     nozOSMFVersion,
     PerformAction,
-    ProvisioningConstants,
+    ProvisioningConstants
 } from "../../../";
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 

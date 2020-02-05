@@ -30,20 +30,20 @@ export const ActionDefinition: ICommandDefinition = {
             name: "name",
             type: "string",
             description: "Provisioned Instance name.",
-            required: true,
+            required: true
         },
         {
             name: "actionname",
             type: "string",
             description: "The action name. Use the \"zowe provisioning list instance-info <name>\"\n" +
             "      command to view available instance actions.",
-            required: true,
+            required: true
         }
     ],
     examples: [
         {
             description: `Perform the "start" action on the provisioned instance "instance1"`,
-            options: "instance1 start",
+            options: "instance1 start"
         }
     ]
 };
