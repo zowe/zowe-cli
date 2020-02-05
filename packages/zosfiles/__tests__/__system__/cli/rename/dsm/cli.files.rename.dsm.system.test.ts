@@ -58,7 +58,7 @@ describe("Rename data set member", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_rename_data_set_member.sh"),
                         TEST_ENVIRONMENT,
-                        [dataSetName, beforeMemberName, afterMemberName],
+                        [dataSetName, beforeMemberName, afterMemberName]
                     );
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {

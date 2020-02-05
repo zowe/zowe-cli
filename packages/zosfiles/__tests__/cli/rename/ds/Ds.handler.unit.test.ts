@@ -35,7 +35,7 @@ describe("DsHandler", () => {
         const afterDataSetName = "AFTER.NAME";
 
         const commandParameters: any = {
-            arguments: { beforeDataSetName, afterDataSetName },
+            arguments: { beforeDataSetName, afterDataSetName }
         };
 
         const dummySession = {};

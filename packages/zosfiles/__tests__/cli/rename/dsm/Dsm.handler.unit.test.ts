@@ -36,7 +36,7 @@ describe("DsmHandler", () => {
         const afterMemberName = "AFTER";
 
         const commandParameters: any = {
-            arguments: { dataSetName, beforeMemberName, afterMemberName },
+            arguments: { dataSetName, beforeMemberName, afterMemberName }
         };
 
         const dummySession = {};

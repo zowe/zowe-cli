@@ -24,32 +24,32 @@ export const DsmDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/dsm.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: dsmStrings.POSITIONALS.DSNAME,
-            required: true,
+            required: true
         },
         {
             name: "beforeMemberName",
             type: "string",
             description: dsmStrings.POSITIONALS.BEFOREMEMBERNAME,
-            required: true,
+            required: true
         },
         {
             name: "afterMemberName",
             type: "string",
             description: dsmStrings.POSITIONALS.AFTERMEMBERNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     examples: [
         {
             description: dsmStrings.EXAMPLES.EX1,
-            options: '"USER.DATA.SET" "MEM1" "MEM2',
+            options: '"USER.DATA.SET" "MEM1" "MEM2'
         }
     ]
 };

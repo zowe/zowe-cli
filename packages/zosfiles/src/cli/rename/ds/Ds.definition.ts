@@ -24,26 +24,26 @@ export const DsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/ds.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "beforeDataSetName",
             type: "string",
             description: dsStrings.POSITIONALS.BEFOREDSNAME,
-            required: true,
+            required: true
         },
         {
             name: "afterDataSetName",
             type: "string",
             description: dsStrings.POSITIONALS.AFTERDSNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     examples: [
         {
             description: dsStrings.EXAMPLES.EX1,
-            options: '"USER.BEFORE.SET" "USER.AFTER.SET"',
+            options: '"USER.BEFORE.SET" "USER.AFTER.SET"'
         }
     ]
 };

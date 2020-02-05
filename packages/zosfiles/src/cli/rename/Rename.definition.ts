@@ -29,6 +29,6 @@ export const RenameDefinition: ICommandDefinition = {
     description: strings.DESCRIPTION,
     children: [
         DsDefinition,
-        DsmDefinition,
-    ],
+        DsmDefinition
+    ]
 };

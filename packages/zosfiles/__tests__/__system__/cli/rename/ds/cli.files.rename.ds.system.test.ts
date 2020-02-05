@@ -45,7 +45,7 @@ describe("Rename data set", () => {
     afterEach(async () => {
         await Promise.all([
             Delete.dataSet(REAL_SESSION, beforeDataSetName),
-            Delete.dataSet(REAL_SESSION, afterDataSetName),
+            Delete.dataSet(REAL_SESSION, afterDataSetName)
         ].map((p) => p.catch((err) => err)));
     });
     describe("success scenarios", () => {
@@ -64,7 +64,7 @@ describe("Rename data set", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_rename_data_set.sh"),
                         TEST_ENVIRONMENT,
-                        [beforeDataSetName, afterDataSetName],
+                        [beforeDataSetName, afterDataSetName]
                     );
                     contents = await Get.dataSet(REAL_SESSION, afterDataSetName);
                 } catch(err) {
@@ -91,7 +91,7 @@ describe("Rename data set", () => {
                     response = runCliScript(
                         join(__dirname, "__scripts__", "command", "command_rename_data_set.sh"),
                         TEST_ENVIRONMENT,
-                        [beforeDataSetName, afterDataSetName],
+                        [beforeDataSetName, afterDataSetName]
                     );
                     contents = await Get.dataSet(REAL_SESSION, `${afterDataSetName}(${memberName})`);
                 } catch(err) {
