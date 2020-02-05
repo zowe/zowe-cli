@@ -11,7 +11,7 @@ exports[`Rename Data Set should display the help 1`] = `
  DESCRIPTION
  -----------
 
-   Rename a data set
+   Rename a data set.
 
  USAGE
  -----
@@ -23,11 +23,11 @@ exports[`Rename Data Set should display the help 1`] = `
 
    beforeDataSetName		 (string)
 
-      The name of the data set that you want to rename
+      The name of the data set that you want to rename.
 
    afterDataSetName		 (string)
 
-      The name you want to rename the data set to
+      The name you want to rename the data set to.
 
  ZOSMF CONNECTION OPTIONS
  ------------------------
@@ -92,7 +92,7 @@ exports[`Rename Data Set should display the help 1`] = `
  --------
 
    - Rename the data set named 'USER.BEFORE.SET' to
-   'USER.AFTER.SET':
+   'USER.AFTER.SET.':
 
       $ zowe zos-files rename data-set \\"USER.BEFORE.SET\\" \\"USER.AFTER.SET\\"
 

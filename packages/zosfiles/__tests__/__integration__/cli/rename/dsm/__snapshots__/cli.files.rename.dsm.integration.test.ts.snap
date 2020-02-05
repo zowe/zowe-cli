@@ -11,7 +11,7 @@ exports[`Rename Data Set Member should display the help 1`] = `
  DESCRIPTION
  -----------
 
-   Rename a data set member
+   Rename a data set member.
 
  USAGE
  -----
@@ -23,15 +23,15 @@ exports[`Rename Data Set Member should display the help 1`] = `
 
    dataSetName		 (string)
 
-      The name of the data set the member belongs to
+      The name of the data set the member belongs to.
 
    beforeMemberName		 (string)
 
-      The name of the data set member that you want to rename
+      The name of the data set member that you want to rename.
 
    afterMemberName		 (string)
 
-      The name you want to rename the data set member to
+      The name you want to rename the data set member to.
 
  ZOSMF CONNECTION OPTIONS
  ------------------------
@@ -96,7 +96,7 @@ exports[`Rename Data Set Member should display the help 1`] = `
  --------
 
    - In the data set 'USER.DATA.SET', rename the member named
-   'MEM1' to 'MEM2':
+   'MEM1' to 'MEM2'.:
 
       $ zowe zos-files rename data-set-member \\"USER.DATA.SET\\" \\"MEM1\\" \\"MEM2
 
