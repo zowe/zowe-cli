@@ -48,7 +48,7 @@ describe("Mount file system handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -134,7 +134,7 @@ describe("Mount file system handler", () => {
                 user: "fake",
                 password: "fake",
                 auth: "fake",
-                rejectUnauthorized: "fake",
+                rejectUnauthorized: "fake"
             };
         });
 

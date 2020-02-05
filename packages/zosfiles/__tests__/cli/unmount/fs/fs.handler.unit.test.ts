@@ -33,7 +33,7 @@ describe("FsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                fileSystemName: "ABCD",
+                fileSystemName: "ABCD"
             }
         };
 
@@ -46,7 +46,7 @@ describe("FsHandler", () => {
         expect(unmountFs).toHaveBeenCalledTimes(1);
         expect(unmountFs).toHaveBeenLastCalledWith(
             dummySession,
-            commandParameters.arguments.fileSystemName,
+            commandParameters.arguments.fileSystemName
         );
         expect(response).toBe(defaultReturn);
     });

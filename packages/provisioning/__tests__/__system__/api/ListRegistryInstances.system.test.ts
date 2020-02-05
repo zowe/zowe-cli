@@ -18,7 +18,7 @@ import {
     ListRegistryInstances,
     noSessionProvisioning,
     nozOSMFVersion,
-    ProvisioningConstants,
+    ProvisioningConstants
 } from "../../../";
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 

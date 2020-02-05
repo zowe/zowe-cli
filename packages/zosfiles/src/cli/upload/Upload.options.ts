@@ -113,5 +113,5 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         type: "number",
         defaultValue: 1,
         numericValueRange: [0, maxConcurrentRequestsMaxValue]
-    },
+    }
 };

@@ -25,7 +25,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         aliases: ["ds"],
         type: "string",
         description: "Data set that contains a workflow definiton.",
-        required: true,
+        required: true
     },
 
     /**
@@ -37,7 +37,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         aliases: ["uf"],
         type: "string",
         description: "Uss file that contains workflow definiton.",
-        required: true,
+        required: true
     },
 
     /**
@@ -49,7 +49,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         aliases: ["lf"],
         type: "string",
         description: "Local file that contains workflow definiton.",
-        required: true,
+        required: true
     },
 
     /**
@@ -128,7 +128,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         allowableValues: {
             values : ["Public", "Restricted", "Private"],
             caseSensitive: true
-        },
+        }
     },
 
     /**
@@ -190,5 +190,5 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         description: "Identifies the version of the zOSMF workflow service.",
         type: "boolean",
         required: false
-    },
+    }
 };

@@ -30,15 +30,15 @@ export const ZfsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/zfs.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "fileSystemName",
             type: "string",
             description: zfsStrings.POSITIONALS.FILESYSTEMNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         ZfsCreateOptions.owner,

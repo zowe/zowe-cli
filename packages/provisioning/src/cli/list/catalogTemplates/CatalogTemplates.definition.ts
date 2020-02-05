@@ -34,7 +34,7 @@ export const catalogTemplates: ICommandDefinition = {
     examples: [
         {
             description: "List all published templates in the z/OSMF service catalog (with full detail)",
-            options: "--all-info",
+            options: "--all-info"
         }
     ]
 };

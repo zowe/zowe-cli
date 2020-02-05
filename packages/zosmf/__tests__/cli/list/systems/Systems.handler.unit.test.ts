@@ -40,7 +40,7 @@ describe("check status behavior", () => {
                     {
                         systemNickName: "SYS1",
                         systemName: "SYS1_001",
-                        url: "some.zosmf.url",
+                        url: "some.zosmf.url"
                     }
                 ]
             };

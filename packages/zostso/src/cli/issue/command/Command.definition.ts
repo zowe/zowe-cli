@@ -22,15 +22,15 @@ export const CommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Command.handler",
     profile: {
-        optional: ["zosmf", "tso"],
+        optional: ["zosmf", "tso"]
     },
     positionals: [
         {
             name: "commandText",
             type: "string",
             description: "The TSO command to issue.",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
         {
@@ -43,7 +43,7 @@ export const CommandDefinition: ICommandDefinition = {
     examples: [
         {
             description: 'Issue the TSO command "status" to display information about jobs for your user ID.',
-            options: "\"status\"",
+            options: "\"status\""
         }
-    ],
+    ]
 };

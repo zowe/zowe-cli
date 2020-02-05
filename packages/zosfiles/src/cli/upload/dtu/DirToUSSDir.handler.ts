@@ -148,13 +148,13 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         if (commandParameters.arguments.binaryFiles) {
             filesMap = {
                 binary: true,
-                fileNames: commandParameters.arguments.binaryFiles.split(",").map((fileName: string) => fileName.trim()),
+                fileNames: commandParameters.arguments.binaryFiles.split(",").map((fileName: string) => fileName.trim())
             };
         }
         if (commandParameters.arguments.asciiFiles) {
             filesMap = {
                 binary: false,
-                fileNames: commandParameters.arguments.asciiFiles.split(",").map((fileName: string) => fileName.trim()),
+                fileNames: commandParameters.arguments.asciiFiles.split(",").map((fileName: string) => fileName.trim())
             };
         }
         return filesMap;

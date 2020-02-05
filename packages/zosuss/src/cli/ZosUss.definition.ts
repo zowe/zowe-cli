@@ -20,7 +20,7 @@ export const definition: ICommandDefinition = {
     summary: "Issue z/OS USS commands and receive responses",
     description: "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",
     children: [
-        IssueCommand,
+        IssueCommand
     ],
     passOn: [
         {

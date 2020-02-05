@@ -24,15 +24,15 @@ export const DsDefinition: ICommandDefinition = {
   type: "command",
   handler: __dirname + "/Ds.handler",
   profile: {
-    optional: ["zosmf"],
+    optional: ["zosmf"]
   },
   positionals: [
     {
       name: "dataSetName",
       type: "string",
       description: dSStrings.POSITIONALS.DATASETNAME,
-      required: true,
-    },
+      required: true
+    }
   ],
   options: [
     {
@@ -41,11 +41,12 @@ export const DsDefinition: ICommandDefinition = {
       description: strings.HMIGRATE.OPTIONS.WAIT,
       type: "boolean",
       required: false
-    },],
+    }
+  ],
   examples: [
     {
       description: dSStrings.EXAMPLES.EX1,
       options: `"USER.DATA.SET"`
-    },
+    }
   ]
 };

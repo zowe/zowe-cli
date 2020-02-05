@@ -26,13 +26,13 @@ export const DeleteInstanceDefinition: ICommandDefinition = {
             name: "name",
             type: "string",
             description: "Deprovisioned Instance name.",
-            required: true,
+            required: true
         }
     ],
     examples: [
         {
             description: `Delete deprovisioned instance "instance1"`,
-            options: "instance1",
+            options: "instance1"
         }
     ]
 };

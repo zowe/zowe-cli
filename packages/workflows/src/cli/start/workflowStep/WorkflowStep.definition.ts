@@ -27,7 +27,7 @@ export const WorkflowStep: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "./WorkflowStep.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -35,13 +35,13 @@ export const WorkflowStep: ICommandDefinition = {
             description: "Specifies the step name that will be run.",
             type: "string",
             required: true
-        },
+        }
     ],
     options: ([
         StartCommonOptions.workflowKey,
         StartCommonOptions.workflowName,
         StartCommonOptions.resolveConflict,
-        StartCommonOptions.performFollowingSteps,
+        StartCommonOptions.performFollowingSteps
         // StartCommonOptions.zosmfVersion,
     ]),
     examples: [
@@ -61,6 +61,6 @@ export const WorkflowStep: ICommandDefinition = {
         {
             description: "To start step \"Step1\" only in a workflow instance in z/OSMF with workflow name \"testWorkflow\"",
             options: "\"Step1\" --workflow-name \"testWorkflow\""
-        },
-    ],
+        }
+    ]
 };

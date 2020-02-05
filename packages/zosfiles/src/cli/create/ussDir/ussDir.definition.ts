@@ -30,15 +30,15 @@ export const UssDirDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/ussDir.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "ussPath",
             type: "string",
             description: ussStrings.POSITIONALS.PATH,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         UssCreateOptions.mode

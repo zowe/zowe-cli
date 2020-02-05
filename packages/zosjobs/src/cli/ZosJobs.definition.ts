@@ -30,7 +30,7 @@ export const definition: ICommandDefinition = {
         ViewDefinition,
         ListDefinition,
         DeleteDefinition,
-        CancelDefinition,
+        CancelDefinition
     ],
     passOn: [
         {

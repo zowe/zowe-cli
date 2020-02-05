@@ -31,13 +31,13 @@ const START_PARAMS: IStartTsoParms = {
     codePage: "1047",
     rows: "24",
     columns: "80",
-    regionSize: "4096",
+    regionSize: "4096"
 };
 
 const BAD_START_PARMS = {
     characterSet: "697",
     codePage: "1047",
-    regionSize: "4096",
+    regionSize: "4096"
 };
 
 function expectStartResponseSucceeded(response: IStartStopResponse, error: ImperativeError) {
