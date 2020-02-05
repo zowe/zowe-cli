@@ -44,19 +44,19 @@ describe("hRecall data set", () => {
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
-                dataSetName,
+                dataSetName
             );
 
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             const response = await HRecall.dataSet(dummySession, dataSetName);
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message,
+                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
             });
 
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ describe("hRecall data set", () => {
                 dummySession,
                 expectedEndpoint,
                 expectedHeaders,
-                expectedPayload,
+                expectedPayload
             );
         });
         it("should send a request with wait = true", async () => {
@@ -72,7 +72,7 @@ describe("hRecall data set", () => {
 
             const expectedPayload = {
                 request: "hrecall",
-                wait: true,
+                wait: true
             };
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -81,7 +81,7 @@ describe("hRecall data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             const response = await HRecall.dataSet(dummySession, dataSetName, options);
@@ -103,7 +103,7 @@ describe("hRecall data set", () => {
 
             const expectedPayload = {
                 request: "hrecall",
-                nowait: true,
+                nowait: true
             };
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -112,7 +112,7 @@ describe("hRecall data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             const response = await HRecall.dataSet(dummySession, dataSetName, options);
@@ -147,7 +147,7 @@ describe("hRecall data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             let error;

@@ -59,14 +59,14 @@ export class HRecall {
 
             const headers: IHeaderContent[] = [
               Headers.APPLICATION_JSON,
-              { "Content-Length": JSON.stringify(payload).length.toString() },
+              { "Content-Length": JSON.stringify(payload).length.toString() }
             ];
 
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
                 success        : true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message,
+                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
