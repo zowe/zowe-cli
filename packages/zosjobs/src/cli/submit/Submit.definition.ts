@@ -23,6 +23,6 @@ export const SubmitDefinition: ICommandDefinition = {
     children: [
         DataSetDefinition,
         LocalFileDefinition,
-        StdinDefinition,
+        StdinDefinition
     ]
 };

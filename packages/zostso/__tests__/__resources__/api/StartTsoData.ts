@@ -36,7 +36,7 @@ export class StartTsoData {
                     VERSION: "0100",
                     DATA: "ZOSMFAD LOGON IN PROGRESS AT 01:12:04 ON JULY 17, 2017"
                 }
-            }],
+            }]
         },
         servletKey: "ZOSMFAD-SYS2-55-aaakaaac"
     };
@@ -61,6 +61,6 @@ export class StartTsoData {
                 reused: false,
                 timeout: false
             },
-        servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
+        servletKey: "ZOSMFAD-SYS2-55-aaakaaac"
     };
 }

@@ -44,7 +44,7 @@ describe("Download data set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -95,8 +95,8 @@ describe("Download data set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Downloading data set",
-                },
+                    statusMessage: "Downloading data set"
+                }
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();

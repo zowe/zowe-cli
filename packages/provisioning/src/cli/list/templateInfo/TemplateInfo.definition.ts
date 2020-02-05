@@ -27,7 +27,7 @@ export const templateInfo: ICommandDefinition = {
             name: "name",
             type: "string",
             description: "The name of a z/OSMF cloud provisioning template.",
-            required: true,
+            required: true
         }
     ],
     options: [
@@ -42,7 +42,7 @@ export const templateInfo: ICommandDefinition = {
     examples: [
         {
             description: "List summary information for template \"template1\"",
-            options: "template1",
+            options: "template1"
         }
     ]
 };

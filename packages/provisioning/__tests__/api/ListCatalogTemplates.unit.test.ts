@@ -80,7 +80,7 @@ const ZOSMF_RESPONSE: any = {
             "last-modified-time": "2016-11-18T20:28:43.951Z",
             "template-type": "standard",
             "composite-parents": []
-        },
+        }
     ]
 };
 

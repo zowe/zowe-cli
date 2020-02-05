@@ -26,7 +26,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "./ActiveWorkflowDetails.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ([
         ActiveWorkflowDetailsCommonOptions.workflowName,
@@ -34,7 +34,7 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
         ActiveWorkflowDetailsCommonOptions.listSteps,
         ActiveWorkflowDetailsCommonOptions.stepsSummaryOnly,
         ActiveWorkflowDetailsCommonOptions.listVariables,
-        ActiveWorkflowDetailsCommonOptions.skipWorkflowSummary,
+        ActiveWorkflowDetailsCommonOptions.skipWorkflowSummary
     ]),
     examples: [
         {
@@ -45,5 +45,5 @@ export const ActiveWorkflowDetails: ICommandDefinition = {
             description: "To list the details of an active workflow with name \"testWorkflow\" including its steps and variables",
             options: "--workflow-name \"testWorkflow\" --list-steps --list-variables"
         }
-    ],
+    ]
 };

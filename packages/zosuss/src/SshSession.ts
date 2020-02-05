@@ -94,7 +94,7 @@ export class SshSession {
         aliases: ["key", "pk"],
         description: "Path to a file containing your private key, that must match a public key stored in the server for authentication",
         type: "string",
-        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
 
     /**
@@ -105,7 +105,7 @@ export class SshSession {
         aliases: ["passphrase", "kp"],
         description: "Private key passphrase, which unlocks the private key.",
         type: "string",
-        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
 
     /**
@@ -116,7 +116,7 @@ export class SshSession {
         aliases: ["timeout", "to"],
         description: "How long in milliseconds to wait for the SSH handshake to complete.",
         type: "number",
-        group: SshSession.SSH_CONNECTION_OPTION_GROUP,
+        group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
 
     /**

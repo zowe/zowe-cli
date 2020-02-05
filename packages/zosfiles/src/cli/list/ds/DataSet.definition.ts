@@ -31,7 +31,7 @@ export const DataSetDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "DataSet.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -39,7 +39,7 @@ export const DataSetDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         ListOptions.attributes,

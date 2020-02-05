@@ -58,7 +58,7 @@ export const LocalFileDefinition: ICommandDefinition = {
             name: "extension", aliases: ["e"],
             description: "A file extension to save the job output with. Default is '.txt'.",
             type: "string"
-        },
+        }
     ]as ICommandOptionDefinition[]),
     profile: {
         optional: ["zosmf"]

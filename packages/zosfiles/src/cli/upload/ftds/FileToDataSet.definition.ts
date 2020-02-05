@@ -30,7 +30,7 @@ export const FileToDataSetDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/FileToDataSet.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -44,7 +44,7 @@ export const FileToDataSetDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         UploadOptions.volume,
@@ -63,6 +63,6 @@ export const FileToDataSetDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX3,
             options: `"file.txt" "ibmuser.ps" --mr wait`
-        },
+        }
     ]
 };

@@ -44,19 +44,19 @@ describe("hMigrate data set", () => {
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
-                dataSetName,
+                dataSetName
             );
 
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             const response = await HMigrate.dataSet(dummySession, dataSetName);
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message,
+                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
             });
 
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ describe("hMigrate data set", () => {
                 dummySession,
                 expectedEndpoint,
                 expectedHeaders,
-                expectedPayload,
+                expectedPayload
             );
         });
         it("should send a request with wait = true", async () => {
@@ -72,7 +72,7 @@ describe("hMigrate data set", () => {
 
             const expectedPayload = {
                 request: "hmigrate",
-                wait: true,
+                wait: true
             };
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -81,7 +81,7 @@ describe("hMigrate data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             const response = await HMigrate.dataSet(dummySession, dataSetName, options);
@@ -116,7 +116,7 @@ describe("hMigrate data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
             let error;

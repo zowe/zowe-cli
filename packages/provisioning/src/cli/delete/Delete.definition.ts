@@ -19,5 +19,5 @@ export const DeleteCommand: ICommandDefinition = {
     type: "group",
     summary: "Delete instance.",
     description: "Deletes instance previously provisioned with z/OSMF cloud provisioning services.",
-    children: [DeleteInstanceDefinition],
+    children: [DeleteInstanceDefinition]
 };

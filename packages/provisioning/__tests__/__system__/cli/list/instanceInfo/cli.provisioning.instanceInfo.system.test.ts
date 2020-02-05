@@ -56,7 +56,7 @@ describe("provisioning list instance-info", () => {
         // Create a separate test environment for no profiles
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "provisioning_list_instance_info_no_profile",
+                testName: "provisioning_list_instance_info_no_profile"
             });
             zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;
         });

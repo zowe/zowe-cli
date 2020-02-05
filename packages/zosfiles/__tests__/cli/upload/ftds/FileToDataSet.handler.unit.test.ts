@@ -48,7 +48,7 @@ describe("Upload file-to-data-set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -100,7 +100,7 @@ describe("Upload file-to-data-set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Uploading to data set",
+                    statusMessage: "Uploading to data set"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
@@ -141,7 +141,7 @@ describe("Upload file-to-data-set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -194,8 +194,8 @@ describe("Upload file-to-data-set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Uploading to data set",
-                },
+                    statusMessage: "Uploading to data set"
+                }
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();

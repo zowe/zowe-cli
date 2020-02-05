@@ -19,7 +19,7 @@ import {
     noTemplateName,
     nozOSMFVersion,
     ProvisioningConstants,
-    ProvisionPublishedTemplate,
+    ProvisionPublishedTemplate
 } from "../../../";
 import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
 

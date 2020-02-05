@@ -426,7 +426,7 @@ export class Upload {
                     results.push({
                         success: undefined,
                         from: uploadingFile,
-                        to: uploadingDsn,
+                        to: uploadingDsn
                     });
                 }
             }

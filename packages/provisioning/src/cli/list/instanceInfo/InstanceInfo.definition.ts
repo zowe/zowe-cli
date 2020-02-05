@@ -27,7 +27,7 @@ export const instanceInfo: ICommandDefinition = {
             name: "name",
             type: "string",
             description: "Provisioned Instance Name",
-            required: true,
+            required: true
         }
     ],
     options: [
@@ -49,11 +49,11 @@ export const instanceInfo: ICommandDefinition = {
     examples: [
         {
             description: "List summary information with a list of actions for an instance with the name \"instance1\"",
-            options: "instance1",
+            options: "instance1"
         },
         {
             description: "Show extended general information with actions for a provisioned instance with the name \"instance1\"",
-            options: "instance1 --display extended",
+            options: "instance1 --display extended"
         }
     ]
 };

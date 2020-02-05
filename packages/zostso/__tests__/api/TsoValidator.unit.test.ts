@@ -57,7 +57,7 @@ const ZOSMF_RESPONSE: IZosmfTsoResponse = {
             VERSION: "0100",
             DATA: "ZOSMFAD LOGON IN PROGRESS AT 01:12:04 ON JULY 17, 2017"
         }
-    }],
+    }]
 };
 
 const ZOSMF_PING_RESPONSE: IZosmfPingResponse = {

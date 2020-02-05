@@ -536,7 +536,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     dataSetRenamedSuccessfully: {
-        message: "Data set renamed successfully.",
+        message: "Data set renamed successfully."
     },
 
     /**
@@ -544,7 +544,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetMigratedSuccessfully: {
-        message: "Data set migraton requested.",
+        message: "Data set migraton requested."
     },
 
     /**
@@ -553,5 +553,5 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     datasetCopiedSuccessfully: {
         message: "Data set copied successfully."
-    },
+    }
 };

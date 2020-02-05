@@ -32,6 +32,6 @@ export class StopTsoData {
                 reused: false,
                 timeout: false
             },
-        servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
+        servletKey: "ZOSMFAD-SYS2-55-aaakaaac"
     };
 }

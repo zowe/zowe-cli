@@ -32,7 +32,7 @@ export const FsDefinition: ICommandDefinition = {
     outputFormatOptions: true,
     handler: path.join(__dirname, "Fs.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: [
         ListOptions.maxLength,

@@ -30,21 +30,21 @@ export const DsDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "Ds.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "fromDataSetName",
             type: "string",
             description: strings.POSITIONALS.FROMDSNAME,
-            required: true,
+            required: true
         },
         {
             name: "toDataSetName",
             type: "string",
             description: strings.POSITIONALS.TODSNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
@@ -64,6 +64,6 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX4,
             options: `"USER.FROM.SET(mem1)" "USER.TO.SET"`
-        },
-    ],
+        }
+    ]
 };

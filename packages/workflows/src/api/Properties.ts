@@ -93,7 +93,7 @@ export class PropertiesWorkflow {
                 optional: step.optional,
                 runAsUser: step.runAsUser,
                 title: step.title,
-                userDefined: step.userDefined,
+                userDefined: step.userDefined
             };
 
             stepSummaries.push(stepSummary);

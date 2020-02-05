@@ -36,7 +36,7 @@ const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
-        _: ["zos-tso", "stop", "address-space"],
+        _: ["zos-tso", "stop", "address-space"]
     },
     response: {
         data: {
