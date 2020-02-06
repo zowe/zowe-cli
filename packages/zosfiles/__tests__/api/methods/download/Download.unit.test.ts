@@ -548,7 +548,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             const firstItem = listApiResponse.items[0];
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: `${dsFolder}/${firstItem.member.toLowerCase()}.txt`,
+                file: `${dsFolder}/${firstItem.member.toLowerCase()}.txt`
             });
         });
 

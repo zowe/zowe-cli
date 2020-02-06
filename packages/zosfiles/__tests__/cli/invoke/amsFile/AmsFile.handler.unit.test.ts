@@ -27,7 +27,7 @@ describe("Invoke AMS files handler", () => {
                 user: "fake",
                 password: "fake",
                 auth: "fake",
-                rejectUnauthorized: "fake",
+                rejectUnauthorized: "fake"
             };
         });
 

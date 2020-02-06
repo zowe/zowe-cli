@@ -59,7 +59,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -71,7 +71,7 @@ describe("List workflow details handler", () => {
                         _: ["fake"],
                         workflowKey,
                         listSteps,
-                        listVariables,
+                        listVariables
                     },
                     response: {
                         format: {
@@ -145,7 +145,7 @@ describe("List workflow details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -157,7 +157,7 @@ describe("List workflow details handler", () => {
                         _: ["fake"],
                         workflowName,
                         listSteps,
-                        listVariables,
+                        listVariables
                     },
                     response: {
                         format: {

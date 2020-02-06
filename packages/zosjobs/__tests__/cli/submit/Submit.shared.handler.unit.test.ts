@@ -85,7 +85,7 @@ const LOCALFILE_PARAMETERS: IHandlerParameters = {
             _: ["zos-jobs", "submit", "local-file"],
             ...ZOSMF_PROF_OPTS
         }
-    },
+    }
 };
 
 describe("submit shared handler", () => {

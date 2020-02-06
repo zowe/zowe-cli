@@ -42,7 +42,7 @@ describe("List archived workflows common handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 

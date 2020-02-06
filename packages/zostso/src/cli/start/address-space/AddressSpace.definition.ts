@@ -21,7 +21,7 @@ export const AddressSpaceDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/AddressSpace.handler",
     profile: {
-        optional: ["zosmf", "tso"],
+        optional: ["zosmf", "tso"]
     },
     options: TSO_PROFILE_OPTIONS.concat([
         {
@@ -43,5 +43,5 @@ export const AddressSpaceDefinition: ICommandDefinition = {
             description: "Start TSO/E address space, and print only the servlet key",
             options: "--sko"
         }
-    ],
+    ]
 };

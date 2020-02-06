@@ -34,7 +34,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
         allowableValues: {
             values: ["outputFileValue", "existingValue", "leaveConflict"],
             caseSensitive: true
-        },
+        }
     },
 
     /**
@@ -59,7 +59,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "workflow-name",
         aliases: ["wn"],
         type: "string",
-        description: "Workflow name of workflow instance to be started",
+        description: "Workflow name of workflow instance to be started"
         // absenceImplications: ["with-workflow-key"],
         // conflictsWith: ["with-workflow-key"]
     },
@@ -100,5 +100,5 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
         description: "Identifies the version of the zOSMF workflow service.",
         type: "boolean",
         required: false
-    },
+    }
 };

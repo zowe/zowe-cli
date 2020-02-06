@@ -53,15 +53,15 @@ export const VsamDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/vsam.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: vsamStrings.POSITIONALS.DATASETNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         vsamDsOrg,
@@ -73,7 +73,7 @@ export const VsamDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         vsamRetainFor,
         VsamCreateOptions.retainTo,
-        ZosFilesCreateExtraOptions.showAttributes,
+        ZosFilesCreateExtraOptions.showAttributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {

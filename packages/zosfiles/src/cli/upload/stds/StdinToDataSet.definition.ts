@@ -30,7 +30,7 @@ export const StdinToDataSetDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/StdinToDataSet.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -38,7 +38,7 @@ export const StdinToDataSetDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         UploadOptions.volume,

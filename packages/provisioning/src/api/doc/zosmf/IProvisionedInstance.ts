@@ -386,7 +386,7 @@ const prettyFull: {
 export const explainProvisionedInstanceSummary: IExplanationMap = {
     ...prettySummary,
     ignoredKeys: "variables,actions",
-    explainedParentKey: null,
+    explainedParentKey: null
 };
 
 /**

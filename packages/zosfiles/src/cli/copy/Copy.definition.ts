@@ -28,6 +28,6 @@ export const CopyDefinition: ICommandDefinition = {
     type: "group",
     description: strings.DESCRIPTION,
     children: [
-        DsDefinition,
-    ],
+        DsDefinition
+    ]
 };

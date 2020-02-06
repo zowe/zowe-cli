@@ -29,5 +29,5 @@ export const UnmountDefinition: ICommandDefinition = {
     description: strings.DESCRIPTION,
     children: [
         FsDefinition
-    ],
+    ]
 };

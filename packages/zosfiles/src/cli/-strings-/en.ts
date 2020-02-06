@@ -114,7 +114,7 @@ export default {
                     PATH: "The name of the file that you want to create."
                 },
                 OPTIONS: {
-                    MODE: "Specifies the file permission bits to use when creating the file. ",
+                    MODE: "Specifies the file permission bits to use when creating the file. "
                 },
                 EXAMPLES: {
                     CREATE_FILE: `Create a USS file named "test.ext" `,
@@ -128,7 +128,7 @@ export default {
                     PATH: "The name of the directory that you want to create."
                 },
                 OPTIONS: {
-                    MODE: "Specifies the file permission bits to use when creating the directory.",
+                    MODE: "Specifies the file permission bits to use when creating the directory."
                 },
                 EXAMPLES: {
                     CREATE_DIRECTORY: `Create a USS directory named "testDir" `,
@@ -159,8 +159,8 @@ export default {
                 "differs from a partitioned data set (PDS) because it cannot contain members, only file contents.",
             SHOWATTRIBUTES: "Show the full allocation attributes",
             SIZE: "The size of the data set (specified as nCYL or nTRK - where n is the number of cylinders or tracks). Sets the primary " +
-                "allocation (the secondary allocation becomes ~10% of the primary).",
-        },
+                "allocation (the secondary allocation becomes ~10% of the primary)."
+        }
     },
     COPY: {
         DESCRIPTION: "Copy a data set ",
@@ -169,7 +169,7 @@ export default {
                 DESCRIPTION: "Copy a data set to another data set",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
-                    TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)",
+                    TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)"
                 },
                 OPTIONS: {
                 },
@@ -177,10 +177,10 @@ export default {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
                     EX2: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
                     EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
-                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
+                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'"
                 }
-            },
-        },
+            }
+        }
     },
     DELETE: {
         DESCRIPTION: "Delete a data set or Unix System Services file",
@@ -225,7 +225,7 @@ export default {
                 },
                 OPTIONS: {
                     FOR_SURE: "Specify this option to confirm that you want to delete the file or directory permanently.",
-                    RECURSIVE: "Delete directories recursively.",
+                    RECURSIVE: "Delete directories recursively."
                 },
                 EXAMPLES: {
                     EX1: "Delete the empty directory '/u/ibmuser/testcases'",
@@ -301,7 +301,7 @@ export default {
                     "ibmuser.jcl.very.old")
                     However, the pattern cannot begin with any of these sequences.You can specify
                     multiple patterns separated by commas, for example
-                    "ibmuser.**.cntl,ibmuser.**.jcl"`,
+                    "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },
                 EXAMPLES: {
                     EX1: `Download all data sets beginning with "ibmuser" and ending with
@@ -311,7 +311,7 @@ export default {
                     directory "project", providing a custom mapping of data set low level qualifier
                     to local file extension`
                 }
-            },
+            }
         },
         OPTIONS: {
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
@@ -354,7 +354,7 @@ export default {
                     POSITIONAL: "The path to a file that contains IDCAMS control statements. Ensure that your file does not contain " +
                         "statements that are longer than 255 characters (maximum allowed length).",
                     EXAMPLES: {
-                        EX1: "Reads the specified file and submits the controls statements",
+                        EX1: "Reads the specified file and submits the controls statements"
                     }
                 },
                 STATEMENTS_CMD: {
@@ -364,7 +364,7 @@ export default {
                         "statement at 255 characters.",
                     EXAMPLES: {
                         EX1: "Defines a cluster named 'DUMMY.VSAM.CLUSTER'",
-                        EX2: "Deletes a cluster named 'DUMMY.VSAM.CLUSTER'",
+                        EX2: "Deletes a cluster named 'DUMMY.VSAM.CLUSTER'"
                     }
                 }
             }
@@ -472,7 +472,7 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: "Unmount a mounted file system"
-                },
+                }
             }
         }
     },
@@ -567,7 +567,7 @@ export default {
                     EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
                     `specifying files to ignore and file encodings in the local file my_global_attributes:`
                 }
-            },
+            }
         },
         OPTIONS: {
             VOLUME: "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required " +
@@ -606,15 +606,15 @@ export default {
             DATA_SET: {
                 DESCRIPTION: "Migrate a data set.",
                 POSITIONALS: {
-                    DATASETNAME: "The name of the data set you want to migrate.",
+                    DATASETNAME: "The name of the data set you want to migrate."
                 },
                 EXAMPLES: {
-                    EX1: `Migrate a data set using default options`,
-                },
+                    EX1: `Migrate a data set using default options`
+                }
             }
         },
         OPTIONS: {
-            WAIT: "If true then the function waits for completion of the request. If false the request is queued.",
-        },
-    },
+            WAIT: "If true then the function waits for completion of the request. If false the request is queued."
+        }
+    }
 };

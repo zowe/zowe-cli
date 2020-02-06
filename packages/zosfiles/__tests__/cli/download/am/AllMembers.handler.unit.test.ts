@@ -44,7 +44,7 @@ describe("Download AllMembers handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 

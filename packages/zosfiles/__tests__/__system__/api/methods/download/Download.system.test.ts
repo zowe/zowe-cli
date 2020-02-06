@@ -189,7 +189,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
 
                 const options: IDownloadOptions = {
-                    extension: "dat",
+                    extension: "dat"
                 };
 
                 // TODO - convert to UPLOAD APIs when available
@@ -324,7 +324,7 @@ describe("Download Data Set", () => {
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
 
                 const options: IDownloadOptions = {
-                    extension: "dat",
+                    extension: "dat"
                 };
 
                 try {

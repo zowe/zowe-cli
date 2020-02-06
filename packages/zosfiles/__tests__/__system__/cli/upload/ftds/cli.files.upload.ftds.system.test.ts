@@ -136,7 +136,7 @@ describe("Upload file to data set", () => {
             const dsnOptions: ICreateDataSetOptions = {
                 dsntype: "LIBRARY",
                 primary: 1,
-                lrecl: 80,
+                lrecl: 80
             };
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
