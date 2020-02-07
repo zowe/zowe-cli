@@ -24,5 +24,5 @@ export const CLIENT_PROPERTY = {
     dataString: "dataString" as CLIENT_PROPERTY,
     response: "response" as CLIENT_PROPERTY,
     session: "session" as CLIENT_PROPERTY,
-    log: "log" as CLIENT_PROPERTY,
+    log: "log" as CLIENT_PROPERTY
 };

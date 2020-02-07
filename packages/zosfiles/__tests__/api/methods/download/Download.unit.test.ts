@@ -672,7 +672,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                                                                         reqHeaders: [],
                                                                         responseStream: fakeStream,
-                                                                        normalizeResponseNewLines: true,
+                                                                        normalizeResponseNewLines: true
                                                                         });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);

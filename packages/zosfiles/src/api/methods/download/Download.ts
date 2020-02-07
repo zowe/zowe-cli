@@ -107,7 +107,7 @@ export class Download {
                 reqHeaders,
                 responseStream: writeStream,
                 normalizeResponseNewLines: !options.binary,
-                task: options.task,
+                task: options.task
             };
 
             // If requestor needs etag, add header + get "response" back
@@ -279,7 +279,7 @@ export class Download {
                 reqHeaders,
                 responseStream: writeStream,
                 normalizeResponseNewLines: !options.binary,
-                task: options.task,
+                task: options.task
             };
 
             // If requestor needs etag, add header + get "response" back
