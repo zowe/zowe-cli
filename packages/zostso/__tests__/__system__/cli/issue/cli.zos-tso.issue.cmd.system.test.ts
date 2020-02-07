@@ -15,6 +15,12 @@ import * as fs from "fs";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import * as nodePath from "path";
+
+const yaml = require("js-yaml");
+const propfilename: string = process.env.propfile || "custom_properties.yaml";
+const propfiledir: string = process.env.propdirectory || nodePath.resolve(__dirname + "/../../../../../../__tests__/__resources__/properties/") + "/";
+const propfile: string = propfiledir + propfilename;
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -23,6 +29,9 @@ let REAL_SESSION: Session;
 let acc: string;
 
 describe("zos-tso issue command", () => {
+
+    const jsonObject = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
+    acc = jsonObject.tso.account;
 
     // Create the unique test environment
     beforeAll(async () => {
@@ -34,7 +43,7 @@ describe("zos-tso issue command", () => {
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        acc = systemProps.tso.account;
+        acc = systemProps.tso.account.toString();
     });
 
     afterAll(async () => {
@@ -105,7 +114,7 @@ describe("zos-tso issue command", () => {
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         });
 
-        it("should successfully issue command = \"time\" with an account with an # in it", async () => {
+        (acc.includes("#") ? it : it.skip)("should successfully issue command = \"time\" with an account with an # in it", async () => {
             const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
