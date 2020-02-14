@@ -26,4 +26,8 @@ export interface IUploadResult {
      * Optional, any error encounter while uploading the data
      */
     error?: any;
+    /**
+     * Optional, etag set when writing the file
+     */
+    etag?: string;
 }

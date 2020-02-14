@@ -14,7 +14,7 @@ jest.mock("fs");
 import * as path from "path";
 import * as fs from "fs";
 
-import { ImperativeError, IO, Session } from "@zowe/imperative";
+import { ImperativeError, IO, Session, IHeaderContent } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { IZosFilesResponse } from "../../../../../zosfiles";
@@ -28,10 +28,13 @@ import { ZosFilesUtils } from "../../../../src/api/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/api/methods/create";
 import { ZosFilesAttributes, TransferMode, Tag } from "../../../../src/api";
+import { CLIENT_PROPERTY } from "../../../../src/api/doc/types/ZosmfRestClientProperties";
+import { Readable } from "stream";
 
 describe("z/OS Files - Upload", () => {
 
     const dsName = "UNIT.TEST";
+    const etagValue = "123ABC";
     const dummySession = new Session({
         user: "fake",
         password: "fake",
@@ -246,12 +249,17 @@ describe("z/OS Files - Upload", () => {
 
     describe("bufferToDataSet", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        const zosmfPutFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
+        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
 
         beforeEach(() => {
             response = undefined;
             error = undefined;
             zosmfExpectSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => null);
+
+            zosmfPutFullSpy.mockClear();
+            zosmfPutFullSpy.mockImplementation(() => null);
         });
 
         it("should throw error if data set name is not specified", async () => {
@@ -273,7 +281,7 @@ describe("z/OS Files - Upload", () => {
                 msg: "test error"
             });
 
-            zosmfExpectSpy.mockRejectedValueOnce(testError);
+            zosmfPutFullSpy.mockRejectedValueOnce(testError);
 
             try {
                 response = await Upload.bufferToDataSet(dummySession, buffer, dsName);
@@ -288,7 +296,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload buffer to a data set", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            const options = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
 
             try {
                 response = await Upload.bufferToDataSet(dummySession, buffer, dsName);
@@ -299,14 +307,16 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders,
+                                                                        writeData: buffer});
         });
         it("return with proper response when upload buffer to a PDS member", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const testDsName = `${dsName}(member)`;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, testDsName);
-            const options = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
 
             try {
                 response = await Upload.bufferToDataSet(dummySession, buffer, testDsName);
@@ -317,101 +327,166 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource:endpoint,
+                                                                        reqHeaders,
+                                                                        writeData: buffer});
         });
-        it("return with proper response when upload buffer to a data set with optional parameters", async () => {
-            const buffer: Buffer = Buffer.from("testing");
-            const uploadOptions: IUploadOptions = {
-                binary: true
-            };
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            let options = [ZosmfHeaders.X_IBM_BINARY];
+        describe("Using optional parameters", () => {
+            let buffer: Buffer;
+            let uploadOptions: IUploadOptions;
+            let reqHeaders: IHeaderContent[];
+            let endpoint: string;
+            beforeAll(() => {
+                buffer = Buffer.from("testing");
+                endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
+            });
 
-            try {
-                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
-            } catch (err) {
-                error = err;
-            }
+            beforeEach(() => {
+                uploadOptions = {};
+                reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+                zosmfPutFullSpy.mockClear();
+            });
 
-            expect(error).toBeUndefined();
-            expect(response).toBeDefined();
+            it("return with proper response when uploading with 'binary' option", async () => {
+                uploadOptions.binary = true;
+                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
-            zosmfExpectSpy.mockClear();
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
 
-            // Unit test for wait option
-            uploadOptions.recall = "wait";
-            options = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
 
-            try {
-                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
-            } catch (err) {
-                error = err;
-            }
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+                });
+            it("return with proper response when uploading with 'recall wait' option", async () => {
 
-            expect(error).toBeUndefined();
-            expect(response).toBeDefined();
+                // Unit test for wait option
+                uploadOptions.recall = "wait";
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
-            zosmfExpectSpy.mockClear();
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
 
-            // Unit test for no wait option
-            uploadOptions.recall = "nowait";
-            options = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
 
-            try {
-                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
-            } catch (err) {
-                error = err;
-            }
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+            });
+            it("return with proper response when uploading with 'recall nowait' option", async () => {
+                // Unit test for no wait option
+                uploadOptions.recall = "nowait";
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
 
-            expect(error).toBeUndefined();
-            expect(response).toBeDefined();
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
-            zosmfExpectSpy.mockClear();
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
 
-            // Unit test for no error option
-            uploadOptions.recall = "error";
-            options = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+            });
+            it("return with proper response when uploading with 'recall error' option", async () => {
+                // Unit test for no error option
+                uploadOptions.recall = "error";
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
 
-            try {
-                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
-            } catch (err) {
-                error = err;
-            }
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
 
-            expect(error).toBeUndefined();
-            expect(response).toBeDefined();
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
-            zosmfExpectSpy.mockClear();
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+            });
+            it("return with proper response when uploading with non-exiting recall option", async () => {
+                // Unit test default value
+                uploadOptions.recall = "non-existing";
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
 
-            // Unit test default value
-            uploadOptions.recall = "non-existing";
-            options = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
 
-            try {
-                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
-            } catch (err) {
-                error = err;
-            }
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
 
-            expect(error).toBeUndefined();
-            expect(response).toBeDefined();
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+            });
+            it("return with proper response when uploading with pass 'etag' option", async () => {
+                // Unit test for pass etag option
+                uploadOptions.etag = etagValue;
+                reqHeaders.push({"If-Match" : uploadOptions.etag});
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
+
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+            });
+            it("return with proper response when uploading with return 'etag' option", async () => {
+                zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+                // Unit test for return etag option
+                reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                uploadOptions.returnEtag = true;
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
+
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer,
+                                                                            dataToReturn: [CLIENT_PROPERTY.response]});
+            });
         });
         it("return with proper response when upload dataset with specify volume option", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(TEST)`, dsName);
-            const options = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
             const uploadOptions: IUploadOptions = {
                 volume: "TEST"
             };
@@ -424,11 +499,262 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders,
+                                                                        writeData: buffer});
         });
     });
+    describe("streamToDataSet", () => {
+        const zosmfPutFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
+        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const inputStream = new Readable();
+        inputStream.push("testing");
+        inputStream.push(null);
 
+        beforeEach(() => {
+            response = undefined;
+            error = undefined;
+
+            zosmfPutFullSpy.mockClear();
+            zosmfPutFullSpy.mockImplementation(() => null);
+        });
+
+        it("should throw error if data set name is not specified", async () => {
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
+        });
+        it("return error that throw by the ZosmfRestClient", async () => {
+            const testError = new ImperativeError({
+                msg: "test error"
+            });
+
+            zosmfPutFullSpy.mockRejectedValueOnce(testError);
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error).toBe(testError);
+        });
+        it("return with proper response when upload stream to a data set", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: true,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+        });
+        it("return with proper response when upload stream to a PDS member", async () => {
+            const testDsName = `${dsName}(member)`;
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, testDsName);
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, testDsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource:endpoint,
+                                                                        normalizeRequestNewLines: true,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+        });
+        it("return with proper response when upload stream to a data set with optional parameters", async () => {
+            const uploadOptions: IUploadOptions = {
+                binary: true
+            };
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
+            let reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+            zosmfPutFullSpy.mockClear();
+
+            // Unit test for wait option
+            uploadOptions.recall = "wait";
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+            zosmfPutFullSpy.mockClear();
+
+            // Unit test for no wait option
+            uploadOptions.recall = "nowait";
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+            zosmfPutFullSpy.mockClear();
+
+            // Unit test for no error option
+            uploadOptions.recall = "error";
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+            zosmfPutFullSpy.mockClear();
+
+            // Unit test default value
+            uploadOptions.recall = "non-existing";
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+            zosmfPutFullSpy.mockClear();
+
+            // Unit test for pass etag option
+            uploadOptions.etag = etagValue;
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT, {"If-Match" : uploadOptions.etag}];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+            zosmfPutFullSpy.mockClear();
+            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+
+            // Unit test for return etag option
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                {"If-Match" : uploadOptions.etag},
+                ZosmfHeaders.X_IBM_RETURN_ETAG];
+            uploadOptions.returnEtag = true;
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream,
+                                                                        dataToReturn: [CLIENT_PROPERTY.response]});
+        });
+        it("return with proper response when upload dataset with specify volume option", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(TEST)`, dsName);
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const uploadOptions: IUploadOptions = {
+                volume: "TEST"
+            };
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: true,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream});
+        });
+    });
     describe("pathToDataSet", () => {
         const listDatasetSpy = jest.spyOn(List, "dataSet");
         const getFileListSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
@@ -530,6 +856,40 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeDefined();
             expect(error.message).toContain(ZosFilesMessages.uploadDirectoryToDatasetMember.message);
         });
+        it("should throw error when trying to upload multiple files to a PS data set", async () => {
+            const mockFileList = ["file1", "file2"];
+            const mockListResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: "dummy response",
+                apiResponse: {
+                    items: [{
+                        dsname: dsName,
+                        dsorg: "PS"
+                    }],
+                    returnedRows: 1
+                }
+            };
+            listDatasetSpy.mockResolvedValueOnce(mockListResponse);
+            getFileListSpy.mockReturnValueOnce(mockFileList);
+            writeZosmfDatasetSpy.mockResolvedValueOnce({
+                success: true,
+                CommandResponse: "dummy"
+            });
+            writeZosmfDatasetSpy.mockResolvedValueOnce({
+                success: true,
+                CommandResponse: "dummy"
+            });
+
+            try {
+                response = await Upload.pathToDataSet(dummySession, "dummyPath", dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeDefined();
+            expect(response).toBeUndefined();
+            expect(error.message).toContain(ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message);
+        });
         it("should return information when successfully uploaded multiple files", async () => {
             const mockFileList = ["file1", "file2"];
             const mockListResponse: IZosFilesResponse = {
@@ -596,6 +956,44 @@ describe("z/OS Files - Upload", () => {
             expect(response).toBeDefined();
             expect(response.success).toBeTruthy();
             expect(response.apiResponse[0].success).toBeTruthy();
+        });
+        it("should return etag when requested", async () => {
+            const mockFileList = ["file1"];
+            const mockListResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: "dummy response",
+                apiResponse: {
+                    items: [{
+                        dsname: dsName,
+                        dsorg: "PS"
+                    }],
+                    returnedRows: 1
+                }
+            };
+            listDatasetSpy.mockResolvedValueOnce(mockListResponse);
+            getFileListSpy.mockReturnValueOnce(mockFileList);
+            writeZosmfDatasetSpy.mockResolvedValueOnce({
+                success: true,
+                CommandResponse: "dummy",
+                apiResponse: {
+                    etag: etagValue
+                }
+            });
+            const uploadOptions: IUploadOptions = {
+                returnEtag: true
+            };
+
+            try {
+                response = await Upload.pathToDataSet(dummySession, "dummyPath", dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBeTruthy();
+            expect(response.apiResponse[0].success).toBeTruthy();
+            expect(response.apiResponse[0].etag).toBeDefined();
+            expect(response.apiResponse[0].etag).toEqual(etagValue);
         });
         it("should return information when successfully uploaded to a PDS member", async () => {
             const mockFileList = ["file1"];
@@ -775,7 +1173,23 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
         });
+        it("return with proper response when upload USS file with Etag", async () => {
+            const data: Buffer = Buffer.from("testing");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const headers = [ZosmfHeaders.TEXT_PLAIN, {"If-Match": etagValue}];
 
+            try {
+                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, undefined, etagValue);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
+        });
         it("should set local encoding if specified", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
@@ -795,6 +1209,295 @@ describe("z/OS Files - Upload", () => {
         });
     });
 
+    describe("streamToUssFile", () => {
+        let USSresponse: IZosFilesResponse;
+        const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
+        const fakeResponseWithEtag = {data: dsName, response:{headers:{etag: etagValue}}};
+        const inputStream = new Readable();
+        inputStream.push("testing");
+        inputStream.push(null);
+
+        beforeEach(() => {
+            USSresponse = undefined;
+            error = undefined;
+
+            zosmfExpectFullSpy.mockClear();
+            zosmfExpectFullSpy.mockImplementation(() => null);
+        });
+
+        afterAll(() => {
+            zosmfExpectFullSpy.mockRestore();
+        });
+
+        it("should throw an error if USS file name is not specified", async () => {
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, undefined, inputStream);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+        it("return error that is thrown by the ZosmfRestClient", async () => {
+            const testError = new ImperativeError({
+                msg: "test error"
+            });
+
+            zosmfExpectFullSpy.mockRejectedValueOnce(testError);
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error).toBe(testError);
+        });
+        it("return with proper response when upload USS file", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN];
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                           reqHeaders,
+                                                                           requestStream: inputStream,
+                                                                           normalizeRequestNewLines: true});
+                                                                        });
+        it("return with proper response when upload USS file in binary", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY];
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {binary: true});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders,
+                requestStream: inputStream,
+                normalizeRequestNewLines: false});
+        });
+        it("return with proper response when upload USS file with Etag", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, {"If-Match": etagValue}];
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {etag: etagValue});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders,
+                requestStream: inputStream,
+                normalizeRequestNewLines: true});
+        });
+        it("return with proper response when upload USS file and request Etag back", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.X_IBM_RETURN_ETAG];
+            zosmfExpectFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {returnEtag: true});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(USSresponse.apiResponse.etag).toBeDefined();
+            expect(USSresponse.apiResponse.etag).toEqual(etagValue);
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders,
+                requestStream: inputStream,
+                normalizeRequestNewLines: true,
+                dataToReturn: [CLIENT_PROPERTY.response]});
+        });
+        it("should set local encoding if specified", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT];
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {localEncoding: "UCS-2"});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders,
+                requestStream: inputStream,
+                normalizeRequestNewLines: true});
+        });
+    });
+
+    describe("fileToUssFile", () => {
+        let USSresponse: IZosFilesResponse;
+        const createReadStreamSpy = jest.spyOn(IO, "createReadStream");
+        const streamToUssFileSpy = jest.spyOn(Upload, "streamToUssFile");
+        const lsStatSpy = jest.spyOn(fs, "lstat");
+        const inputFile = "/path/to/file1.txt";
+
+        beforeEach(() => {
+            USSresponse = undefined;
+            error = undefined;
+
+            createReadStreamSpy.mockReset();
+            createReadStreamSpy.mockImplementation(() => null);
+
+            streamToUssFileSpy.mockReset();
+            streamToUssFileSpy.mockImplementation(() => null);
+
+            lsStatSpy.mockClear();
+            lsStatSpy.mockImplementation((somePath, callback) => {
+                callback(null, {isFile: () => true});
+            });
+        });
+
+        it("should throw an error if local file name is not specified", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
+        });
+        it("should throw an error if USS file name is not specified", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+        it("should throw an error if USS file name is an empty string", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+        it("should throw underlying fs error", async () => {
+            const rootError = {
+                code: "test",
+                toString() {
+                    return this.code;
+                }
+            };
+
+            lsStatSpy.mockImplementationOnce((somePath, callback) => {
+                callback(rootError);
+            });
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.nodeJsFsError.message);
+            expect(error.additionalDetails).toEqual(rootError.toString());
+            expect(error.causeErrors).toBe(rootError);
+        });
+        it("return with proper response when upload USS file", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {});
+        });
+        it("return with proper response when upload USS file including Etag", async () => {
+            const streamResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: undefined,
+                apiResponse: {etag: etagValue}};
+            streamToUssFileSpy.mockImplementationOnce(() => streamResponse);
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", {returnEtag: true});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(USSresponse.apiResponse.etag).toEqual(etagValue);
+
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {returnEtag: true});
+        });
+        it("should throw an error if local file name is not a valid file path", async () => {
+            lsStatSpy.mockImplementationOnce((somePath, callback) => {
+                callback(null, {isFile: () => false});
+            });
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
+            lsStatSpy.mockClear();
+        });
+    });
     describe("dirToUSSDirRecursive", () => {
         let USSresponse: IZosFilesResponse;
         const isDirSpy = jest.spyOn(IO, "isDir");
@@ -802,8 +1505,9 @@ describe("z/OS Files - Upload", () => {
         const getFileListFromPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const getFileListWithFsSpy = jest.spyOn(fs, "readdirSync");
         const createUssDirSpy = jest.spyOn(Create, "uss");
-        const fileToUSSFileSpy = jest.spyOn(Upload, "fileToUSSFile");
+        const fileToUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const filterDirectoriesSpy = jest.spyOn(Array.prototype, "filter");
@@ -814,7 +1518,7 @@ describe("z/OS Files - Upload", () => {
         beforeEach(() => {
             USSresponse = undefined;
             error = undefined;
-            fileToUSSFileSpy.mockClear();
+            fileToUssFileSpy.mockClear();
             createUssDirSpy.mockClear();
             isDirectoryExistsSpy.mockClear();
             getFileListFromPathSpy.mockClear();
@@ -823,8 +1527,14 @@ describe("z/OS Files - Upload", () => {
             pathJoinSpy.mockClear();
             pathNormalizeSpy.mockClear();
             zosmfExpectSpy.mockClear();
+            zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectFullSpy.mockImplementation(() => null);
+        });
+
+        afterAll(() => {
+            zosmfExpectFullSpy.mockRestore();
         });
 
         it("should upload recursively if option is specified", async () => {
@@ -835,7 +1545,7 @@ describe("z/OS Files - Upload", () => {
             getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
-            fileToUSSFileSpy.mockReturnValue({});
+            fileToUssFileSpy.mockReturnValue({});
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
             } catch (err) {
@@ -916,8 +1626,8 @@ describe("z/OS Files - Upload", () => {
             getFileListWithFsSpy.mockReturnValueOnce(["file1", "file2"]);
             filterDirectoriesSpy.mockReturnValueOnce([]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -939,8 +1649,9 @@ describe("z/OS Files - Upload", () => {
         const getFileListFromPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
         const getFileListWithFsSpy = jest.spyOn(fs, "readdirSync");
         const createUssDirSpy = jest.spyOn(Create, "uss");
-        const fileToUSSFileSpy = jest.spyOn(Upload, "fileToUSSFile");
+        const fileToUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        const zosmfExpectFullSpy = jest.spyOn(ZosmfRestClient, "putExpectFullResponse");
         const pathJoinSpy = jest.spyOn(path, "join");
         const pathNormalizeSpy = jest.spyOn(path, "normalize");
         const promiseSpy = jest.spyOn(Promise, "all");
@@ -951,7 +1662,7 @@ describe("z/OS Files - Upload", () => {
         beforeEach(() => {
             USSresponse = undefined;
             error = undefined;
-            fileToUSSFileSpy.mockClear();
+            fileToUssFileSpy.mockClear();
             createUssDirSpy.mockClear();
             isDirectoryExistsSpy.mockClear();
             getFileListFromPathSpy.mockClear();
@@ -960,8 +1671,14 @@ describe("z/OS Files - Upload", () => {
             pathJoinSpy.mockClear();
             pathNormalizeSpy.mockClear();
             zosmfExpectSpy.mockClear();
+            zosmfExpectFullSpy.mockClear();
             filterDirectoriesSpy.mockClear();
             zosmfExpectSpy.mockImplementation(() => null);
+            zosmfExpectFullSpy.mockImplementation(() => null);
+        });
+
+        afterAll(() => {
+            zosmfExpectFullSpy.mockRestore();
         });
 
         it("should throw an error if local directory is not specified", async () => {
@@ -1030,8 +1747,8 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValueOnce(true);
             isDirectoryExistsSpy.mockReturnValueOnce(true);
             getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
-            fileToUSSFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
             promiseSpy.mockReturnValueOnce({});
 
             try {
@@ -1058,7 +1775,7 @@ describe("z/OS Files - Upload", () => {
                 isDirSpy.mockReturnValueOnce(true)
                 .mockReturnValue(false);
                 isDirectoryExistsSpy.mockReturnValue(true);
-                fileToUSSFileSpy.mockReturnValue(testReturn);
+                fileToUssFileSpy.mockReturnValue(testReturn);
 
                 attributesMock.getFileTransferMode = jest.fn((filePath: string) => {
                     if (filePath.endsWith("textfile")) {
@@ -1097,10 +1814,10 @@ describe("z/OS Files - Upload", () => {
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploadme")));
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"ignoreme")));
 
-                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath,"uploadme")),
-                                                             `${dsName}/uploadme`, true);
+                                                             `${dsName}/uploadme`, {binary: true});
             });
 
             it("should not upload ignored directories", async () => {
@@ -1144,10 +1861,10 @@ describe("z/OS Files - Upload", () => {
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
                 expect(attributesMock.fileShouldBeUploaded).toHaveBeenCalledWith(path.normalize(path.join(testPath,"uploaddir")));
-                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(1);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath, "uploaddir", "uploadedfile")),
-                                                              `${dsName}/uploaddir/uploadedfile`, true);
+                                                              `${dsName}/uploaddir/uploadedfile`, {binary: true});
             });
             it("should upload files in text or binary according to attributes", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
@@ -1157,15 +1874,15 @@ describe("z/OS Files - Upload", () => {
 
                 expect(USSresponse).toBeDefined();
                 expect(USSresponse.success).toBeTruthy();
-                expect(fileToUSSFileSpy).toHaveBeenCalledTimes(2);
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                expect(fileToUssFileSpy).toHaveBeenCalledTimes(2);
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                              path.normalize(path.join(testPath,"textfile")),
                                                              `${dsName}/textfile`,
-                                                              false,
-                                                              "ISO8859-1");
-                expect(fileToUSSFileSpy).toHaveBeenCalledWith(dummySession,
+                                                              {binary: false,
+                                                               localEncoding: "ISO8859-1"});
+                expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                                                               path.normalize(path.join(testPath,"binaryfile")),
-                                                             `${dsName}/binaryfile`, true);
+                                                             `${dsName}/binaryfile`, {binary: true});
             });
 
             it("should call API to tag files accord to remote encoding", async () => {
@@ -1191,6 +1908,68 @@ describe("z/OS Files - Upload", () => {
                 expect(chtagSpy).toHaveBeenCalledTimes(1);
                 expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1");
             });
+        });
+    });
+
+    describe("Deprecated Functions", () => {
+        let USSresponse: IZosFilesResponse;
+        const streamToUssFileSpy = jest.spyOn(Upload, "streamToUssFile");
+        const fileToUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
+
+        beforeEach(() => {
+            USSresponse = undefined;
+            error = undefined;
+
+            streamToUssFileSpy.mockReset();
+            streamToUssFileSpy.mockImplementation(() => null);
+
+            fileToUssFileSpy.mockClear();
+            fileToUssFileSpy.mockImplementation(() => null);
+        });
+
+        it("return with proper response when upload USS file using deprecated function - streamToUSSFile", async () => {
+            const inputStream = new Readable();
+            inputStream.push("testing");
+            inputStream.push(null);
+            const streamResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: undefined,
+                apiResponse: undefined };
+            streamToUssFileSpy.mockReturnValueOnce(streamResponse);
+            try {
+                USSresponse = await Upload.streamToUSSFile(dummySession, dsName, inputStream);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, dsName, inputStream, {
+                binary: false});
+        });
+        it("return with proper response when upload USS file using deprecated function - fileToUSSFile", async () => {
+            const inputFile = "/path/to/file1.txt";
+            const streamResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: undefined,
+                apiResponse: undefined };
+            fileToUssFileSpy.mockReturnValueOnce(streamResponse);
+            try {
+                USSresponse = await Upload.fileToUSSFile(dummySession, dsName, inputFile);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession, dsName, inputFile, {
+                binary: false});
         });
     });
 });
