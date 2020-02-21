@@ -10,3 +10,4 @@
 */
 
 export * from "./Copy";
+export * from "./doc/ICopyDatasetOptions";
