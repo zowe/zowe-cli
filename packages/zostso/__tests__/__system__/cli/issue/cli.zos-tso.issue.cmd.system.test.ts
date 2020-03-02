@@ -21,17 +21,15 @@ const yaml = require("js-yaml");
 const propfilename: string = process.env.propfile || "custom_properties.yaml";
 const propfiledir: string = process.env.propdirectory || nodePath.resolve(__dirname + "/../../../../../../__tests__/__resources__/properties/") + "/";
 const propfile: string = propfiledir + propfilename;
+const jsonObject = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
-let acc: string;
+let acc: string = jsonObject.tso.account;
 
 describe("zos-tso issue command", () => {
-
-    const jsonObject = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
-    acc = jsonObject.tso.account;
 
     // Create the unique test environment
     beforeAll(async () => {
