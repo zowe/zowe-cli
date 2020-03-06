@@ -22,6 +22,7 @@ let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let dataSet1: string;
 let dataSet2: string;
+let dataSet3: string;
 
 const listOptions: IListOptions = { attributes: true };
 
@@ -33,6 +34,7 @@ describe("Recall Dataset", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.SET`;
         dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.SET`;
+        dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.SET`;
     });
 
     afterAll(async () => {
@@ -41,8 +43,10 @@ describe("Recall Dataset", () => {
 
     afterEach(async () => {
         try {
-            await Delete.dataSet(REAL_SESSION, dataSet1);
-            await Delete.dataSet(REAL_SESSION, dataSet2);
+            await Promise.all([
+                Delete.dataSet(REAL_SESSION, dataSet1),
+                Delete.dataSet(REAL_SESSION, dataSet2),
+                Delete.dataSet(REAL_SESSION, dataSet3)]);
         } catch (err) {
             Imperative.console.info(`Error: ${inspect(err)}`);
         }
@@ -110,14 +114,13 @@ describe("Recall Dataset", () => {
                     Imperative.console.info(`Error: ${inspect(err)}`);
                 }
             });
-            it("should recall a partitioned dataset with nowait = true", async () => {
-                const recallOptions: IRecallOptions = { nowait: true };
+            it("should recall a partitioned dataset", async () => {
                 let error;
                 let recallResponse;
                 let listResponse;
 
                 try {
-                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet2, recallOptions);
+                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet2);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
                     Imperative.console.info(`Response: ${inspect(recallResponse)}`);
                 } catch (err) {
@@ -137,8 +140,8 @@ describe("Recall Dataset", () => {
     describe("Failure Scenarios", () => {
         beforeEach(async () => {
             try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
-                await HMigrate.dataSet(REAL_SESSION, dataSet1);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet3);
+                await HMigrate.dataSet(REAL_SESSION, dataSet3);
             } catch (err) {
                 Imperative.console.info(`Error: ${inspect(err)}`);
             }

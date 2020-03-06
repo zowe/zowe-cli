@@ -19,10 +19,4 @@ export interface IRecallOptions {
    * If false the request is queued.
    */
   wait?: boolean;
-
-  /**
-   * If true then the function waits for completion of the request.
-   * If false the request is queued.
-   */
-  nowait?: boolean;
 }

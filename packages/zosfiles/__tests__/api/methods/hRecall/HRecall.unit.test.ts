@@ -98,37 +98,6 @@ describe("hRecall data set", () => {
                 expectedPayload
             );
         });
-        it("should send a request with nowait = true", async () => {
-            const options: IRecallOptions = { nowait: true };
-
-            const expectedPayload = {
-                request: "hrecall",
-                nowait: true
-            };
-            const expectedEndpoint = posix.join(
-                ZosFilesConstants.RESOURCE,
-                ZosFilesConstants.RES_DS_FILES,
-                dataSetName
-            );
-            const expectedHeaders = [
-                { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
-            ];
-
-            const response = await HRecall.dataSet(dummySession, dataSetName, options);
-
-            expect(response).toEqual({
-                success: true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
-            });
-            expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
-            expect(putExpectStringSpy).toHaveBeenLastCalledWith(
-                dummySession,
-                expectedEndpoint,
-                expectedHeaders,
-                expectedPayload
-            );
-        });
     });
     describe("Failure Scenarios", () => {
         const dataSetName: string = "EFGH";

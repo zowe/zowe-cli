@@ -28,6 +28,7 @@ export class HRecall {
      *
      * @param {AbstractSession}       session      z/OSMF connection info
      * @param {string}                dataSetName  The name of the data set to recall
+     * @param {boolean}               wait If true then the function waits for completion of the request. If false (default) the request is queued.
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the status of the recalling
      *
@@ -51,10 +52,6 @@ export class HRecall {
 
             if(options.wait != null) {
                 payload.wait = options.wait;
-            }
-
-            if(options.nowait != null) {
-                payload.nowait = options.nowait;
             }
 
             const headers: IHeaderContent[] = [
