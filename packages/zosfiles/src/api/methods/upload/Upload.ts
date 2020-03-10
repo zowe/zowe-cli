@@ -210,6 +210,7 @@ export class Upload {
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
      * @throws {ImperativeError} When encounter error scenarios.
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
     public static async streamToDataSet(session: AbstractSession,
                                         fileStream: Readable,
@@ -218,7 +219,6 @@ export class Upload {
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
-        try {
             // Construct zOSMF REST endpoint.
             let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
             if (options.volume) {
@@ -261,9 +261,6 @@ export class Upload {
                 success: true,
                 commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
             };
-        } catch (error) {
-            throw error;
-        }
     }
 
     /**
@@ -277,6 +274,7 @@ export class Upload {
      * @return {Promise<IZosFilesResponse>} A response indicating the out come
      *
      * @throws {ImperativeError} When encounter error scenarios.
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
      *
      * @example pathToDataSet(session, "file.txt", "ps.name")
      * @example pathToDataset(session, "file.txt", "psd.name(member)")
@@ -367,7 +365,6 @@ export class Upload {
         // result will random errors when trying to upload to multiple member of the same PDS at the same time.
         // This also allow us to break out as soon as the first error is encounter instead of wait until the
         // entire list is processed.
-        try {
             let uploadError;
             let uploadsInitiated = 0;
             for (const file of uploadFileList) {
@@ -439,14 +436,6 @@ export class Upload {
                 commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
                 apiResponse: results
             };
-
-        } catch (error) {
-            return {
-                success: false,
-                commandResponse: error.message,
-                apiResponse: results
-            };
-        }
     }
 
     /**
