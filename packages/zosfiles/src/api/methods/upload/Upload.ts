@@ -219,48 +219,48 @@ export class Upload {
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
-            // Construct zOSMF REST endpoint.
-            let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-            if (options.volume) {
-                endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+        // Construct zOSMF REST endpoint.
+        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        if (options.volume) {
+            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+        }
+        endpoint = path.posix.join(endpoint, dataSetName);
+
+        // Construct request header parameters
+        const reqHeader: IHeaderContent[] = [];
+        if (options.binary) {
+            reqHeader.push(ZosmfHeaders.X_IBM_BINARY);
+        } else {
+            reqHeader.push(ZosmfHeaders.X_IBM_TEXT);
+        }
+
+        // Migrated recall options
+        if (options.recall) {
+            switch (options.recall.toLowerCase()) {
+                case "wait":
+                    reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                    break;
+                case "nowait":
+                    reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                    break;
+                case "error":
+                    reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                    break;
+                default:
+                    reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                    break;
             }
-            endpoint = path.posix.join(endpoint, dataSetName);
-
-            // Construct request header parameters
-            const reqHeader: IHeaderContent[] = [];
-            if (options.binary) {
-                reqHeader.push(ZosmfHeaders.X_IBM_BINARY);
-            } else {
-                reqHeader.push(ZosmfHeaders.X_IBM_TEXT);
-            }
-
-            // Migrated recall options
-            if (options.recall) {
-                switch (options.recall.toLowerCase()) {
-                    case "wait":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
-                        break;
-                    case "nowait":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                        break;
-                    case "error":
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
-                        break;
-                    default:
-                        reqHeader.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                        break;
-                }
-            }
+        }
 
 
-            await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeader, fileStream,
-                !options.binary /* only normalize newlines if we are not uploading in binary*/,
-                options.task);
+        await ZosmfRestClient.putStreamedRequestOnly(session, endpoint, reqHeader, fileStream,
+            !options.binary /* only normalize newlines if we are not uploading in binary*/,
+            options.task);
 
-            return {
-                success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
-            };
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message
+        };
     }
 
     /**
@@ -365,77 +365,77 @@ export class Upload {
         // result will random errors when trying to upload to multiple member of the same PDS at the same time.
         // This also allow us to break out as soon as the first error is encounter instead of wait until the
         // entire list is processed.
-            let uploadError;
-            let uploadsInitiated = 0;
-            for (const file of uploadFileList) {
-                uploadingFile = file;
-                uploadingDsn = dataSetName;
+        let uploadError;
+        let uploadsInitiated = 0;
+        for (const file of uploadFileList) {
+            uploadingFile = file;
+            uploadingDsn = dataSetName;
 
-                if (isUploadToPds) {
+            if (isUploadToPds) {
 
-                    if (memberName.length === 0) {
-                        uploadingDsn = `${uploadingDsn}(${ZosFilesUtils.generateMemberName(uploadingFile)})`;
-                    } else {
-                        uploadingDsn = `${uploadingDsn}(${memberName})`;
-                    }
-                }
-                uploadingDsn = uploadingDsn.toUpperCase();
-
-                if (options.task != null) {
-                    // update the progress bar if any
-                    const LAST_FIFTEEN_CHARS = -15;
-                    const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
-                    options.task.statusMessage = "Uploading ..." + abbreviatedFile;
-                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
-                        (uploadsInitiated / uploadFileList.length));
-                    uploadsInitiated++;
-                }
-
-                if (uploadError === undefined) {
-                    try {
-                        // read payload from file
-                        const uploadStream = IO.createReadStream(uploadingFile);
-
-                        const streamUploadOptions = JSON.parse(JSON.stringify(options)); // copy the options
-                        if (uploadFileList.length > 1) {
-                            // don't update the progress bar in the streamToDataSet function if we
-                            // are uploading more than one file because we already update it  with the member name
-                            delete streamUploadOptions.task;
-                        }
-                        const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, streamUploadOptions);
-                        this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
-                        results.push({
-                            success: result.success,
-                            from: uploadingFile,
-                            to: uploadingDsn
-                        });
-                    } catch (err) {
-                        this.log.error(`Failure Uploading data From ${uploadingFile} To ${uploadingDsn}`);
-                        results.push({
-                            success: false,
-                            from: uploadingFile,
-                            to: uploadingDsn,
-                            error: err
-                        });
-                        uploadError = err;
-                    }
+                if (memberName.length === 0) {
+                    uploadingDsn = `${uploadingDsn}(${ZosFilesUtils.generateMemberName(uploadingFile)})`;
                 } else {
+                    uploadingDsn = `${uploadingDsn}(${memberName})`;
+                }
+            }
+            uploadingDsn = uploadingDsn.toUpperCase();
+
+            if (options.task != null) {
+                // update the progress bar if any
+                const LAST_FIFTEEN_CHARS = -15;
+                const abbreviatedFile = uploadingFile.slice(LAST_FIFTEEN_CHARS);
+                options.task.statusMessage = "Uploading ..." + abbreviatedFile;
+                options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                    (uploadsInitiated / uploadFileList.length));
+                uploadsInitiated++;
+            }
+
+            if (uploadError === undefined) {
+                try {
+                    // read payload from file
+                    const uploadStream = IO.createReadStream(uploadingFile);
+
+                    const streamUploadOptions = JSON.parse(JSON.stringify(options)); // copy the options
+                    if (uploadFileList.length > 1) {
+                        // don't update the progress bar in the streamToDataSet function if we
+                        // are uploading more than one file because we already update it  with the member name
+                        delete streamUploadOptions.task;
+                    }
+                    const result = await this.streamToDataSet(session, uploadStream, uploadingDsn, streamUploadOptions);
+                    this.log.info(`Success Uploaded data From ${uploadingFile} To ${uploadingDsn}`);
                     results.push({
-                        success: undefined,
+                        success: result.success,
+                        from: uploadingFile,
+                        to: uploadingDsn
+                    });
+                } catch (err) {
+                    this.log.error(`Failure Uploading data From ${uploadingFile} To ${uploadingDsn}`);
+                    results.push({
+                        success: false,
                         from: uploadingFile,
                         to: uploadingDsn,
+                        error: err
                     });
+                    uploadError = err;
                 }
+            } else {
+                results.push({
+                    success: undefined,
+                    from: uploadingFile,
+                    to: uploadingDsn
+                });
             }
-            if (uploadError) {
-                throw uploadError;
-            }
+        }
+        if (uploadError) {
+            throw uploadError;
+        }
 
-            return {
-                success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
-                apiResponse: results
-            };
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+            apiResponse: results
+        };
     }
 
     /**
