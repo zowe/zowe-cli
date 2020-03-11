@@ -17,20 +17,20 @@ import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { IMigrateOptions } from "./doc/IMigrateOptions";
+import { IRecallOptions } from "./doc/IRecallOptions";
 
 /**
  * This class holds helper functions that are used to recall files through the
  * z/OSMF APIs.
  */
-export class HMigrate {
+export class HRecall {
     /**
      *
      * @param {AbstractSession}       session      z/OSMF connection info
      * @param {string}                dataSetName  The name of the data set to recall
      * @param {boolean}               wait If true then the function waits for completion of the request. If false (default) the request is queued.
      *
-     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the migrating
+     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the recalling
      *
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
@@ -39,7 +39,7 @@ export class HMigrate {
      */
     public static async dataSet(session: AbstractSession,
                                 dataSetName: string,
-                                options: Partial<IMigrateOptions> = {}): Promise<IZosFilesResponse> {
+                                options: Partial<IRecallOptions> = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
@@ -48,7 +48,7 @@ export class HMigrate {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const payload = { request: "hmigrate" } as any;
+            const payload = { request: "hrecall" } as any;
 
             if(options.wait != null) {
                 payload.wait = options.wait;
@@ -63,7 +63,7 @@ export class HMigrate {
 
             return {
                 success        : true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
