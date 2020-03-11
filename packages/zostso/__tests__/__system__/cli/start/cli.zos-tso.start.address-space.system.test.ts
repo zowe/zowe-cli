@@ -112,5 +112,32 @@ describe("zos-tso start address-space", () => {
             StopTso.stop(REAL_SESSION, key);
             expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
         });
+
+        it("should successfully issue the command with an account with an # in it", async () => {
+            const regex = fs.readFileSync(__dirname + "/__regex__/address_space_response.regex").toString();
+
+            const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+
+            // if API Mediation layer is being used (basePath has a value) then
+            // set an ENVIRONMENT variable to be used by zowe.
+            if (SYSTEM_PROPS.zosmf.basePath != null) {
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = SYSTEM_PROPS.zosmf.basePath;
+            }
+
+            const response = runCliScript(__dirname + "/__scripts__/address-space/address_space_fully_qualified.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    "ACCT#",
+                    SYSTEM_PROPS.zosmf.host,
+                    SYSTEM_PROPS.zosmf.port,
+                    SYSTEM_PROPS.zosmf.user,
+                    SYSTEM_PROPS.zosmf.pass
+                ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const key = response.stdout.toString().split("\n")[0].split(" ")[seven];
+            StopTso.stop(REAL_SESSION, key);
+            expect(new RegExp(regex, "g").test(response.stdout.toString())).toBe(true);
+        });
     });
 });
