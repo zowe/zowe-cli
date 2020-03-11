@@ -58,9 +58,9 @@ export class StartTso {
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         let customParms: IStartTsoParms;
         if (isNullOrUndefined(parms)) {
-            customParms = this.setDefaultAddressSpaceParams({}, accountNumber);
+            customParms = this.setDefaultAddressSpaceParams({}, encodeURIComponent(accountNumber));
         } else {
-            customParms = this.setDefaultAddressSpaceParams(parms, accountNumber);
+            customParms = this.setDefaultAddressSpaceParams(parms, encodeURIComponent(accountNumber));
         }
 
         const zosmfResponse = await this.startCommon(session, customParms);
