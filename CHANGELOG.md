@@ -42,7 +42,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `3.0.0`
 
 - Rename package from "@brightside/core" to "@zowe/cli".
-- Change behavior of `Shell.executeSsh` to use `stdoutHandler` instead of `streamCallBack`. This eliminates dependency on the `ClientChannel` type of the ssh2 package.
+- Change behavior of the method `Shell.executeSsh` to use `stdoutHandler` instead of `streamCallBack`. This eliminates dependency on the `ClientChannel` type of the ssh2 package.
 
 ## [2.0.0] prerelease -2019-1-11
 
