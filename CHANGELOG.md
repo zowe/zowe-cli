@@ -8,7 +8,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.9.1`
 
-- Support `#` in account name supplied to TSO commands. Thanks @awharn
+- Support `#` character in account number supplied to TSO commands. Thanks @awharn
 
 ## `6.9.0`
 
