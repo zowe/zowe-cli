@@ -29,7 +29,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.0.0`
 
-- Rename `files list zfs` command to `files list fs` since it is not specific to ZFS filesystems.
+- Rename `files list zfs` command to `files list fs` since it is not specific to zFS file systems.
 
 ## `5.0.0`
 
