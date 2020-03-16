@@ -82,7 +82,7 @@ const config: IImperativeConfig = {
                         secure: true,
                     }
                 },
-                required: ["host"],
+                // required: ["host"],
             },
             createProfileExamples: [
                 {

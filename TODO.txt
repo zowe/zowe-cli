@@ -1,0 +1,5 @@
+right now zosmf is an optional profile, everything using apiml would need be added as an optional profile
+session objects would need to use apiml token if it is there
+this is a major hack for now
+insert basepath automatically
+depends on same profile named entities 

@@ -244,3 +244,18 @@ Object {
 `;
 
 exports[`list jobs handler tests should not transform an error from the zosmf rest client 1`] = `"You fail"`;
+
+exports[`list jobs handler tests should not transform an error from the zosmf rest client 2`] = `"List of jobs returned for prefix \\"*\\" and owner \\"null\\""`;
+
+exports[`list jobs handler tests should not transform an error from the zosmf rest client 3`] = `
+Object {
+  "fields": Array [
+    "jobid",
+    "retcode",
+    "jobname",
+    "status",
+  ],
+  "format": "table",
+  "output": undefined,
+}
+`;

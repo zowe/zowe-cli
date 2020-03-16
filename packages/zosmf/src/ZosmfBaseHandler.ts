@@ -46,6 +46,14 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     protected mZosmfLoadedProfile: IProfileLoaded;
 
     /**
+     * API ML profile if needed
+     * @protected
+     * @type {IProfile}
+     * @memberof ZosmfBaseHandler
+     */
+    protected mAPIMLProfile: IProfile;
+
+    /**
      * Command line arguments passed
      */
     protected mArguments: ICommandArguments;
@@ -67,6 +75,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         this.mHandlerParams = commandParameters;
         this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
         this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
+        this.mAPIMLProfile = commandParameters.profiles.get("apiml", false);
         this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);

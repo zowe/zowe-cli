@@ -27,7 +27,7 @@ export class ZosmfSession {
         aliases: ["H"],
         description: "The z/OSMF server host name.",
         type: "string",
-        required: true,
+        // required: true,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
