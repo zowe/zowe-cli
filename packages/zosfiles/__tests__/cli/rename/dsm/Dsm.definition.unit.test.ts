@@ -19,7 +19,7 @@ describe("DsDefinition", () => {
         expect(DsmDefinition.description).toBe(strings.DESCRIPTION);
         expect(DsmDefinition.children).toBeUndefined();
         expect(DsmDefinition.profile.optional).toEqual(["zosmf"]);
-        expect(DsmDefinition.options).toMatchSnapshot();
+        expect(DsmDefinition.options).toBeUndefined();
         expect(DsmDefinition.examples).toMatchSnapshot();
         expect(DsmDefinition.description).toBe(strings.DESCRIPTION);
     });
