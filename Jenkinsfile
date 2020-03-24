@@ -189,7 +189,7 @@ node('ca-jenkins-agent') {
         name: "Changelog Verification",
         stage: {
             sh "git --no-pager fetch"
-            sh "git --no-pager branch -r"
+            sh "git config --get-all remote.origin.fetch"
             def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
             if (changedFiles.contains("CHANGELOG.md")) {
                 changelog_updated = true
