@@ -22,6 +22,8 @@ def PRODUCT_NAME = "Zowe CLI"
 node('ca-jenkins-agent') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
+    def changelog_updated
+    changelog_updated = false
 
     // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.
@@ -183,11 +185,26 @@ node('ca-jenkins-agent') {
     // Check Vulnerabilities
     pipeline.checkVulnerabilities()
 
+    pipeline.createStage(
+        name: "Changelog Verification"
+        stage: {
+            def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
+            if (changedFiles.contains("CHANGELOG.md")) {
+                changelog_updated = true
+                echo "Changelog has been modified. Version change and deployment stages will run on a protected branch."
+            } else {
+                echo "Changelog has not been modified. Version change and deployment stages will be skipped on a protected branch."
+            }
+        }
+    )
+
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
-    pipeline.deploy(
-        versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
-    )
+    if (changelog_updated == true) {
+        pipeline.deploy(
+            versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+        )
+    }
 
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.
