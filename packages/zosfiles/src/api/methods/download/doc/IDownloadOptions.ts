@@ -82,4 +82,12 @@ export interface IDownloadOptions {
      * which is at least 8MB.
      */
     returnEtag?: boolean;
+
+    /**
+     * Indicates if the created directories and files use the original letter case, which is for data sets always uppercase.
+     * The default value is false for backward compability.
+     * If the option "directory" or "file" is provided, this option doesn't have any effect.
+     * This option has only effect on automatically generated directories and files.
+     */
+    preserveOriginalLetterCase?: boolean;
 }
