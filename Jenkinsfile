@@ -211,6 +211,7 @@ node('ca-jenkins-agent') {
             def packageJSON = readJSON file: 'package.json'
             def packageJSONVersion = packageJSON.version
             sh "sed -i 's/Recent Changes/`${packgeJSONVersion}`/' CHANGELOG.md"
+            sh "cat CHANGELOG.md"
             // sh "git add CHANGELOG.md"
             // sh "git commit -m 'Update Changelog [ci skip]'"
             // sh "git push"
