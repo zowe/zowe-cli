@@ -183,7 +183,7 @@ node('ca-jenkins-agent') {
     )
 
     // Check Vulnerabilities
-    pipeline.checkVulnerabilities()
+    // pipeline.checkVulnerabilities()
 
     pipeline.createStage(
         name: "Changelog Verification",
