@@ -193,7 +193,6 @@ node('ca-jenkins-agent') {
             sh "git --no-pager fetch"
             def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
             sh "git config remote.origin.fetch $original_config"
-            sh "git config --get-all remote.origin.fetch"
             if (changedFiles.contains("CHANGELOG.md")) {
                 changelog_updated = true
                 echo "Changelog has been modified. Version change and deployment stages will run on a protected branch."
