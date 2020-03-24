@@ -204,6 +204,18 @@ node('ca-jenkins-agent') {
         versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
     )
 
+    pipeline.createStage(
+        name: "Update Changelog Version",
+        stage: {
+            def package_version = sh(returnStdout: true, script: "cat package.json | grep version | head -1 | awk -F: '{ print \$2 }' | sed 's/[\",]//g'").trim()
+            echo $package_version
+        },
+        shouldExecute: {
+            true
+            //return protectedBranches.isProtected(BRANCH_NAME)
+        }
+    )
+
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.
     pipeline.end()
