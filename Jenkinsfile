@@ -181,10 +181,9 @@ node('ca-jenkins-agent') {
     )
 
     // Check Vulnerabilities
-    // pipeline.checkVulnerabilities()   FIXME
+    pipeline.checkVulnerabilities()
 
-    //if (env.CHANGE_BRANCH) {  FIXME
-    if (false) {
+    if (env.CHANGE_BRANCH) {
         pipeline.createStage(
             name: "Changelog Verification",
             stage: {
@@ -214,16 +213,15 @@ node('ca-jenkins-agent') {
                 def packageJSONVersion = packageJSON.version
                 sh "sed -i 's/Recent Changes/`${packageJSONVersion}`/' CHANGELOG.md"
                 sh "cat CHANGELOG.md"
-                //sh "git add CHANGELOG.md"
-                //sh "git commit -m 'Update Changelog [ci skip]'"
-                //sh "git push"
+                sh "git add CHANGELOG.md"
+                sh "git commit -m 'Update Changelog [ci skip]'"
+                sh "git push"
             } else {
                 error "Changelog version update could not be completed: Could not find 'Recent Changes'"
             }
         },
         shouldExecute: {
-            true
-            //return protectedBranches.isProtected(BRANCH_NAME)
+            return protectedBranches.isProtected(BRANCH_NAME)
         }
     )
 
