@@ -187,12 +187,8 @@ node('ca-jenkins-agent') {
         pipeline.createStage(
             name: "Changelog Verification",
             stage: {
-                def original_config = sh(returnStdout: true, script: "git config --get-all remote.origin.fetch").trim()
-                sh "git config --get-all remote.origin.fetch"
-                sh "git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
                 sh "git --no-pager fetch"
                 def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
-                sh "git config remote.origin.fetch $original_config"
                 if (changedFiles.contains("CHANGELOG.md")) {
                     echo "Changelog has been modified from origin/master."
                 } else {
