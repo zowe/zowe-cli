@@ -208,13 +208,18 @@ node('ca-jenkins-agent') {
     pipeline.createStage(
         name: "Update Changelog Version",
         stage: {
-            def packageJSON = readJSON file: 'package.json'
-            def packageJSONVersion = packageJSON.version
-            sh "sed -i 's/Recent Changes/`${packageJSONVersion}`/' CHANGELOG.md"
-            sh "cat CHANGELOG.md"
-            // sh "git add CHANGELOG.md"
-            // sh "git commit -m 'Update Changelog [ci skip]'"
-            // sh "git push"
+            def firstTen = sh(returnStdout: true, script: "head -10 CHANGELOG.md")
+            if (firstTen.contains("Recent Changes")) {
+                def packageJSON = readJSON file: 'package.json'
+                def packageJSONVersion = packageJSON.version
+                sh "sed -i 's/Recent Changes/`${packageJSONVersion}`/' CHANGELOG.md"
+                sh "cat CHANGELOG.md"
+                //sh "git add CHANGELOG.md"
+                //sh "git commit -m 'Update Changelog [ci skip]'"
+                //sh "git push"
+            } else {
+                error "Changelog version update could not be completed: Could not find 'Recent Changes'"
+            }
         },
         shouldExecute: {
             true
