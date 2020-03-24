@@ -2,8 +2,6 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-Test
-
 ## `6.10.0`
 
 - Add `files rename ds` and `files rename dsm` commands to rename data sets and data set members. Thanks @CForrest97
