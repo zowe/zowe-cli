@@ -22,8 +22,6 @@ def PRODUCT_NAME = "Zowe CLI"
 node('ca-jenkins-agent') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
-    def changelog_updated
-    changelog_updated = false
 
     // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.
@@ -185,30 +183,29 @@ node('ca-jenkins-agent') {
     // Check Vulnerabilities
     // pipeline.checkVulnerabilities()
 
-    pipeline.createStage(
-        name: "Changelog Verification",
-        stage: {
-            def original_config = sh(returnStdout: true, script: "git config --get-all remote.origin.fetch").trim()
-            sh "git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
-            sh "git --no-pager fetch"
-            def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
-            sh "git config remote.origin.fetch $original_config"
-            if (changedFiles.contains("CHANGELOG.md")) {
-                changelog_updated = true
-                echo "Changelog has been modified. Version change and deployment stages will run on a protected branch."
-            } else {
-                echo "Changelog has not been modified. Version change and deployment stages will be skipped on a protected branch."
+    if (env.CHANGE_BRANCH) {
+        pipeline.createStage(
+            name: "Changelog Verification",
+            stage: {
+                def original_config = sh(returnStdout: true, script: "git config --get-all remote.origin.fetch").trim()
+                sh "git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
+                sh "git --no-pager fetch"
+                def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
+                sh "git config remote.origin.fetch $original_config"
+                if (changedFiles.contains("CHANGELOG.md")) {
+                    echo "Changelog has been modified from origin/master."
+                } else {
+                    error "Changelog has not been modified from origin/master."
+                }
             }
-        }
-    )
+        )
+    }
 
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
-    if (changelog_updated == true) {
-        pipeline.deploy(
-            versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
-        )
-    }
+    pipeline.deploy(
+        versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+    )
 
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.
