@@ -188,9 +188,12 @@ node('ca-jenkins-agent') {
     pipeline.createStage(
         name: "Changelog Verification",
         stage: {
+            def original_config = sh(returnStdout: true, script: "git config --get-all remote.origin.fetch").trim()
+            sh "git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*"
             sh "git --no-pager fetch"
-            sh "git config --get-all remote.origin.fetch"
             def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
+            sh "git config remote.origin.fetch $original_config"
+            sh "git config --get-all remote.origin.fetch"
             if (changedFiles.contains("CHANGELOG.md")) {
                 changelog_updated = true
                 echo "Changelog has been modified. Version change and deployment stages will run on a protected branch."
