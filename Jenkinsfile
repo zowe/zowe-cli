@@ -186,7 +186,7 @@ node('ca-jenkins-agent') {
     pipeline.checkVulnerabilities()
 
     pipeline.createStage(
-        name: "Changelog Verification"
+        name: "Changelog Verification",
         stage: {
             def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
             if (changedFiles.contains("CHANGELOG.md")) {
