@@ -181,7 +181,7 @@ node('ca-jenkins-agent') {
     )
 
     // Check Vulnerabilities
-    pipeline.checkVulnerabilities()
+    // pipeline.checkVulnerabilities()
 
     pipeline.checkChangelog(
         file: "CHANGELOG.md",
