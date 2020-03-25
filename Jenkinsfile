@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
+@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline@test-changelog-pipelines
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
@@ -183,26 +183,11 @@ node('ca-jenkins-agent') {
     // Check Vulnerabilities
     pipeline.checkVulnerabilities()
 
-    if (env.CHANGE_BRANCH) {
-        pipeline.createStage(
-            name: "Changelog Verification",
-            stage: {
-                sh "git --no-pager fetch"
-                def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
-                if (changedFiles.contains("CHANGELOG.md")) {
-                    echo "Changelog has been modified from origin/master. Checking Contents."
-                    def firstTen = sh(returnStdout: true, script: "head -10 CHANGELOG.md").trim()
-                    if (firstTen.contains("## Recent Changes")) {
-                        echo "Recent Changes header found."
-                    } else {
-                        error "Changelog missing valid Recent Changes header. Please see CONTRIBUTING.md for changelog format."
-                    }
-                } else {
-                    error "Changelog has not been modified from origin/master. Please see CONTRIBUTING.md for changelog format."
-                }
-            }
-        )
-    }
+    pipeline.checkChangelog(
+        file: "CHANGELOG.md",
+        lines: 10,
+        header: "## Recent Changes"
+    )
 
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
@@ -210,25 +195,10 @@ node('ca-jenkins-agent') {
         versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
     )
 
-    pipeline.createStage(
-        name: "Update Changelog Version",
-        stage: {
-            def firstTen = sh(returnStdout: true, script: "head -10 CHANGELOG.md").trim()
-            if (firstTen.contains("## Recent Changes")) {
-                def packageJSON = readJSON file: 'package.json'
-                def packageJSONVersion = packageJSON.version
-                sh "sed -i 's/Recent Changes/`${packageJSONVersion}`/' CHANGELOG.md"
-                sh "cat CHANGELOG.md"
-                sh "git add CHANGELOG.md"
-                sh "git commit -m 'Update Changelog [ci skip]'"
-                sh "git push"
-            } else {
-                error "Changelog version update could not be completed: Could not find Recent Changes header"
-            }
-        },
-        shouldExecute: {
-            return protectedBranches.isProtected(BRANCH_NAME)
-        }
+    pipeline.updateChangelog(
+        file: "CHANGELOG.md",
+        lines: 10,
+        header: "## Recent Changes"
     )
 
     // Once called, no stages can be added and all added stages will be executed. On completion
