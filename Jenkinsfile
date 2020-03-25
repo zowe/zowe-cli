@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline@test-changelog-pipelines
+@Library('shared-pipelines@test-changelog-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
