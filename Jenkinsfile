@@ -190,9 +190,15 @@ node('ca-jenkins-agent') {
                 sh "git --no-pager fetch"
                 def changedFiles = sh(returnStdout: true, script: "git --no-pager diff origin/master --name-only").trim()
                 if (changedFiles.contains("CHANGELOG.md")) {
-                    echo "Changelog has been modified from origin/master."
+                    echo "Changelog has been modified from origin/master. Checking Contents."
+                    def firstTen = sh(returnStdout: true, script: "head -10 CHANGELOG.md").trim()
+                    if (firstTen.contains("## Recent Changes")) {
+                        echo "Recent Changes header found."
+                    } else {
+                        error "Changelog missing valid Recent Changes header. Please see CONTRIBUTING.md for changelog format."
+                    }
                 } else {
-                    error "Changelog has not been modified from origin/master."
+                    error "Changelog has not been modified from origin/master. Please see CONTRIBUTING.md for changelog format."
                 }
             }
         )
@@ -207,8 +213,8 @@ node('ca-jenkins-agent') {
     pipeline.createStage(
         name: "Update Changelog Version",
         stage: {
-            def firstTen = sh(returnStdout: true, script: "head -10 CHANGELOG.md")
-            if (firstTen.contains("Recent Changes")) {
+            def firstTen = sh(returnStdout: true, script: "head -10 CHANGELOG.md").trim()
+            if (firstTen.contains("## Recent Changes")) {
                 def packageJSON = readJSON file: 'package.json'
                 def packageJSONVersion = packageJSON.version
                 sh "sed -i 's/Recent Changes/`${packageJSONVersion}`/' CHANGELOG.md"
@@ -217,7 +223,7 @@ node('ca-jenkins-agent') {
                 sh "git commit -m 'Update Changelog [ci skip]'"
                 sh "git push"
             } else {
-                error "Changelog version update could not be completed: Could not find 'Recent Changes'"
+                error "Changelog version update could not be completed: Could not find Recent Changes header"
             }
         },
         shouldExecute: {
