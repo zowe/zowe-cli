@@ -2,7 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-Stuff
+## Recent Changes
+
+- Stuff
 
 ## `6.10.0`
 
