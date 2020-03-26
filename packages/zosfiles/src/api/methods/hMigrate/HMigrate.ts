@@ -28,8 +28,9 @@ export class HMigrate {
      *
      * @param {AbstractSession}       session      z/OSMF connection info
      * @param {string}                dataSetName  The name of the data set to recall
+     * @param {boolean}               wait If true then the function waits for completion of the request. If false (default) the request is queued.
      *
-     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the recalling
+     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the migrating
      *
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
@@ -49,20 +50,20 @@ export class HMigrate {
 
             const payload = { request: "hmigrate" } as any;
 
-            if(!options.wait != null) {
+            if(options.wait != null) {
                 payload.wait = options.wait;
             }
 
             const headers: IHeaderContent[] = [
               Headers.APPLICATION_JSON,
-              { "Content-Length": JSON.stringify(payload).length.toString() },
+              { "Content-Length": JSON.stringify(payload).length.toString() }
             ];
 
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
                 success        : true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message,
+                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);

@@ -55,7 +55,7 @@ describe("Mount and unmount a file system", () => {
             hostname:defaultSystem.ssh.host,
             port:defaultSystem.ssh.port,
             user:defaultSystem.ssh.user,
-            password:defaultSystem.ssh.password,
+            password:defaultSystem.ssh.password
         });
         volume = defaultSystem.datasets.vol;
 
@@ -95,7 +95,7 @@ describe("Mount and unmount a file system", () => {
             hostname:defaultSystem.ssh.host,
             port:defaultSystem.ssh.port,
             user:defaultSystem.ssh.user,
-            password:defaultSystem.ssh.password,
+            password:defaultSystem.ssh.password
         });
 
         // Delete the ZFS

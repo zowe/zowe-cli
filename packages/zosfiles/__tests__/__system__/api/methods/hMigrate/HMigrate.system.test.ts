@@ -40,14 +40,6 @@ describe("Migrate Dataset", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    beforeEach(async () => {
-        try {
-            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
-            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSet2);
-        } catch (err) {
-            Imperative.console.info(`Error: ${inspect(err)}`);
-        }
-    });
     afterEach(async () => {
         try {
             await Delete.dataSet(REAL_SESSION, dataSet1);
@@ -57,52 +49,77 @@ describe("Migrate Dataset", () => {
         }
     });
     describe("Success Scenarios", () => {
-        it("should migrate a sequential data set", async () => {
-            const migrateOptions: IMigrateOptions = { wait: true };
-            let error;
-            let migrateResponse;
-            let listResponse;
+        describe("Sequential Data Set", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("should migrate a sequential data set with wait = true", async () => {
+                const migrateOptions: IMigrateOptions = { wait: true };
+                let error;
+                let migrateResponse;
+                let listResponse;
 
-            try {
-                migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, migrateOptions);
-                listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
-                Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
-            } catch (err) {
-                error = err;
-                Imperative.console.info(`Error: ${inspect(err)}`);
-            }
+                try {
+                    migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, migrateOptions);
+                    listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
+                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
 
-            expect(error).toBeFalsy();
+                expect(error).toBeFalsy();
 
-            expect(migrateResponse).toBeTruthy();
-            expect(migrateResponse.success).toBe(true);
-            expect(listResponse.apiResponse.items[0].migr).toBe("YES");
-            expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+                expect(migrateResponse).toBeTruthy();
+                expect(migrateResponse.success).toBe(true);
+                expect(listResponse.apiResponse.items[0].migr).toBe("YES");
+                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+            });
         });
-        it("should migrate a partitioned dataset", async () => {
-            const migrateOptions: IMigrateOptions = { wait: true };
-            let error;
-            let migrateResponse;
-            let listResponse;
+        describe("Partitioned Data Set", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSet2);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("should migrate a partitioned dataset with wait = true", async () => {
+                const migrateOptions: IMigrateOptions = { wait: true };
+                let error;
+                let migrateResponse;
+                let listResponse;
 
-            try {
-                migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, migrateOptions);
-                listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
-                Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
-            } catch (err) {
-                error = err;
-                Imperative.console.info(`Error: ${inspect(err)}`);
-            }
+                try {
+                    migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, migrateOptions);
+                    listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
+                    Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
 
-            expect(error).toBeFalsy();
+                expect(error).toBeFalsy();
 
-            expect(migrateResponse).toBeTruthy();
-            expect(migrateResponse.success).toBe(true);
-            expect(listResponse.apiResponse.items[0].migr).toBe("YES");
-            expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+                expect(migrateResponse).toBeTruthy();
+                expect(migrateResponse.success).toBe(true);
+                expect(listResponse.apiResponse.items[0].migr).toBe("YES");
+                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+            });
         });
     });
     describe("Failure Scenarios", () => {
+        beforeEach(async () => {
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
+            } catch (err) {
+                Imperative.console.info(`Error: ${inspect(err)}`);
+            }
+        });
         it("should throw an error if data set name is undefined", async () => {
             let error;
             let migrateResponse;

@@ -27,7 +27,7 @@ export const definition: ICommandDefinition = {
         "the implications of issuing z/OS console commands in your environment.",
     children: [
         CollectCommand,
-        IssueCommand,
+        IssueCommand
     ],
     passOn: [
         {

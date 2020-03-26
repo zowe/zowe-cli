@@ -48,7 +48,7 @@ describe("Upload file-to-data-set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -100,7 +100,7 @@ describe("Upload file-to-data-set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Uploading to data set",
+                    statusMessage: "Uploading to data set"
                 }
             });
             expect(jsonObj).toMatchSnapshot();
@@ -125,7 +125,7 @@ describe("Upload file-to-data-set handler", () => {
             Upload.fileToDataset = jest.fn((session) => {
                 fakeSession = session;
                 return {
-                    success: true,
+                    success: false,
                     commandResponse: "uploaded",
                     apiResponse: [
                         {success: false, from: inputfile, to: dataSetName}
@@ -141,7 +141,7 @@ describe("Upload file-to-data-set handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -185,7 +185,8 @@ describe("Upload file-to-data-set handler", () => {
                 error = e;
             }
 
-            expect(error).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toBe("uploaded");
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
             expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {
@@ -194,8 +195,8 @@ describe("Upload file-to-data-set handler", () => {
                 task: {
                     percentComplete: 0,
                     stageName: 0,
-                    statusMessage: "Uploading to data set",
-                },
+                    statusMessage: "Uploading to data set"
+                }
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();

@@ -27,7 +27,7 @@ describe("Invoke AMS statements handler", () => {
                 user: "fake",
                 password: "fake",
                 auth: "fake",
-                rejectUnauthorized: "fake",
+                rejectUnauthorized: "fake"
             };
         });
 

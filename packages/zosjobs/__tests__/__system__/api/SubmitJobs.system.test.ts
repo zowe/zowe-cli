@@ -115,7 +115,7 @@ describe("Submit Jobs - System Tests", () => {
                     {
                         jcl,
                         internalReaderLrecl: "256",
-                        internalReaderRecfm: "F",
+                        internalReaderRecfm: "F"
                     }
                 );
                 expect(job.jobid).toBeDefined();
@@ -269,7 +269,7 @@ describe("Submit Jobs - System Tests", () => {
                         {
                             jcl,
                             internalReaderLrecl: "256",
-                            internalReaderRecfm: "F",
+                            internalReaderRecfm: "F"
                         }
                     );
                 } catch (e) {

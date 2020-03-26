@@ -29,7 +29,7 @@ export const USSFileDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/UssFile.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -37,7 +37,7 @@ export const USSFileDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.PATH,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         ListOptions.maxLength

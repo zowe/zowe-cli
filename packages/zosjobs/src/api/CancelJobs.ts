@@ -76,7 +76,7 @@ export class CancelJobs {
         // build request
         const request: ICancelJob = {
             request: JobsConstants.REQUEST_CANCEL,
-            version: parms.version,
+            version: parms.version
         };
 
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;

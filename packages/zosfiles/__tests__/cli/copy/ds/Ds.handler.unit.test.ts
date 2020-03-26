@@ -37,8 +37,8 @@ describe("DsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 fromDataSetName,
-                toDataSetName,
-            },
+                toDataSetName
+            }
         };
 
         const dummySession = {};
@@ -67,7 +67,7 @@ describe("DsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
-                toDataSetName: `${toDataSetName}(${toMemberName})`,
+                toDataSetName: `${toDataSetName}(${toMemberName})`
             }
         };
 

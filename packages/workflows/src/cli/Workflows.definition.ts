@@ -35,7 +35,7 @@ const definition: ICommandDefinition = {
         StartDefinition,
         ListDefinition,
         ArchiveDefinition,
-        DeleteDefinition,
+        DeleteDefinition
     ],
     passOn: [
         {

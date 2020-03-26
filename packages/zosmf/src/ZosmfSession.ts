@@ -122,7 +122,7 @@ export class ZosmfSession {
             password: profile.password,
             base64EncodedAuth: profile.auth,
             rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath,
+            basePath: profile.basePath
         });
     }
 
@@ -142,7 +142,7 @@ export class ZosmfSession {
             password: args.password,
             base64EncodedAuth: args.auth,
             rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath,
+            basePath: args.basePath
         });
     }
 

@@ -18,6 +18,6 @@ export const IssueCommand: ICommandDefinition = {
     summary: "Issue z/OS Console Commands",
     description: "Issue z/OS console commands and optionally collect responses.",
     children: [
-        IssueCommandDefinition,
-    ],
+        IssueCommandDefinition
+    ]
 };

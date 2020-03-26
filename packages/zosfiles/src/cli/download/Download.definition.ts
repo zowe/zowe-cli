@@ -32,6 +32,6 @@ export const DownloadDefinition: ICommandDefinition = {
     children: [
         DatasetDefinition,
         AllMembersDefinition,
-        UssFileDefinition,
-    ],
+        UssFileDefinition
+    ]
 };

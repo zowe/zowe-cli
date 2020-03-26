@@ -157,4 +157,27 @@ export class ZosmfHeaders {
     public static readonly X_IBM_MIGRATED_RECALL_NO_WAIT: IHeaderContent = {"X-IBM-Migrated-Recall": "nowait"};
     public static readonly X_IBM_MIGRATED_RECALL_ERROR: IHeaderContent = {"X-IBM-Migrated-Recall": "error"};
 
+    /**
+     * Header to check ETag on read
+     * Request returns HTTP 304 if not modified
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly IF_NONE_MATCH = "If-None-Match";
+
+    /**
+     * Header to check ETag on write
+     * Request returns HTTP 412 if not matched
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly IF_MATCH = "If-Match";
+
+    /**
+     * Header to force return of ETag in response regardless of file size
+     * By default Etag is returned only for files smaller than a system determined value (which is at least 8mb)
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RETURN_ETAG: IHeaderContent = {"X-IBM-Return-Etag": "true"};
 }

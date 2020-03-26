@@ -44,8 +44,8 @@ describe("Copy", () => {
                     const expectedPayload = {
                         "request": "copy",
                         "from-dataset": {
-                            dsn: fromDataSetName,
-                        },
+                            dsn: fromDataSetName
+                        }
                     };
                     const expectedEndpoint = posix.join(
                         ZosFilesConstants.RESOURCE,
@@ -54,7 +54,7 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                     ];
 
                     const response = await Copy.dataSet(
@@ -72,7 +72,7 @@ describe("Copy", () => {
                         dummySession,
                         expectedEndpoint,
                         expectedHeaders,
-                        expectedPayload,
+                        expectedPayload
                     );
                 });
             });
@@ -82,17 +82,17 @@ describe("Copy", () => {
                         "request": "copy",
                         "from-dataset": {
                             dsn: fromDataSetName,
-                            member: fromMemberName,
-                        },
+                            member: fromMemberName
+                        }
                     };
                     const expectedEndpoint = posix.join(
                         ZosFilesConstants.RESOURCE,
                         ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`,
+                        `${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                     ];
 
                     const response = await Copy.dataSet(
@@ -119,17 +119,17 @@ describe("Copy", () => {
                     const expectedPayload = {
                         "request": "copy",
                         "from-dataset": {
-                            dsn: fromDataSetName,
-                        },
+                            dsn: fromDataSetName
+                        }
                     };
                     const expectedEndpoint = posix.join(
                         ZosFilesConstants.RESOURCE,
                         ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`,
+                        `${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                     ];
 
                     const response = await Copy.dataSet(
@@ -157,17 +157,17 @@ describe("Copy", () => {
                         "request": "copy",
                         "from-dataset": {
                             dsn: fromDataSetName,
-                            member: fromMemberName,
-                        },
+                            member: fromMemberName
+                        }
                     };
                     const expectedEndpoint = posix.join(
                         ZosFilesConstants.RESOURCE,
                         ZosFilesConstants.RES_DS_FILES,
-                        toDataSetName,
+                        toDataSetName
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                     ];
 
                     const response = await Copy.dataSet(
@@ -290,8 +290,8 @@ describe("Copy", () => {
                 const expectedPayload = {
                     "request": "copy",
                     "from-dataset": {
-                        dsn: fromDataSetName,
-                    },
+                        dsn: fromDataSetName
+                    }
                 };
                 const expectedEndpoint = posix.join(
                     ZosFilesConstants.RESOURCE,
@@ -300,7 +300,7 @@ describe("Copy", () => {
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                 ];
                 try {
                     await Copy.dataSet(

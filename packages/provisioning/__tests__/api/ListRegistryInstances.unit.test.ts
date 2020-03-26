@@ -63,7 +63,7 @@ const ZOSMF_RESPONSE: IProvisionedInstances = {
             "tenant-name": "",
             "domain-id": "",
             "domain-name": "",
-            "system-nickname": "",
+            "system-nickname": ""
         },
         {
             "system": "system2",
@@ -93,7 +93,7 @@ const ZOSMF_RESPONSE: IProvisionedInstances = {
             "tenant-name": "",
             "domain-id": "",
             "domain-name": "",
-            "system-nickname": "",
+            "system-nickname": ""
         }
     ]
 };

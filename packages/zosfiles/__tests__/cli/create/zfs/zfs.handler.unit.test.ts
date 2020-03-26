@@ -47,7 +47,7 @@ describe("Create z/OS file system handler", () => {
                     user: "fake",
                     password: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -131,7 +131,7 @@ describe("Create z/OS file system handler", () => {
                 user: "fake",
                 password: "fake",
                 auth: "fake",
-                rejectUnauthorized: "fake",
+                rejectUnauthorized: "fake"
             };
         });
 

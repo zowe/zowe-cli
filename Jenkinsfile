@@ -32,9 +32,10 @@ node('ca-jenkins-agent') {
 
     // Protected branch property definitions
     pipeline.protectedBranches.addMap([
-        [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "latest", "@zowe/perf-timing": "latest"]],
+        [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "latest", "@zowe/perf-timing": "latest"], aliasTags: ["zowe-v1-lts"]],
         [name: "next", tag: "next", prerelease: "next", dependencies: ["@zowe/imperative": "next", "@zowe/perf-timing": "latest"]],
-        [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.MINOR, dependencies: ["@brightside/imperative": "lts-incremental"]],
+        //[name: "zowe-v1-lts", tag: "zowe-v1-lts", level: SemverLevel.MINOR, dependencies: ["@zowe/imperative": "zowe-v1-lts", "@zowe/perf-timing": "zowe-v1-lts"]],
+        [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-incremental"]],
         [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]]
     ])
 
@@ -183,10 +184,20 @@ node('ca-jenkins-agent') {
     // Check Vulnerabilities
     pipeline.checkVulnerabilities()
 
+    pipeline.checkChangelog(
+        file: "CHANGELOG.md",
+        header: "## Recent Changes"
+    )
+
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
     pipeline.deploy(
         versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+    )
+
+    pipeline.updateChangelog(
+        file: "CHANGELOG.md",
+        header: "## Recent Changes"
     )
 
     // Once called, no stages can be added and all added stages will be executed. On completion
