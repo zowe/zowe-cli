@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Update Imperative dependency to fix vulnerability.
+
 ## `6.10.0`
 
 - Add `files rename ds` and `files rename dsm` commands to rename data sets and data set members. Thanks @CForrest97
