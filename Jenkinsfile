@@ -183,10 +183,20 @@ node('ca-jenkins-agent') {
     // Check Vulnerabilities
     pipeline.checkVulnerabilities()
 
+    pipeline.checkChangelog(
+        file: "CHANGELOG.md",
+        header: "## Recent Changes"
+    )
+
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
     pipeline.deploy(
         versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+    )
+
+    pipeline.updateChangelog(
+        file: "CHANGELOG.md",
+        header: "## Recent Changes"
     )
 
     // Once called, no stages can be added and all added stages will be executed. On completion
