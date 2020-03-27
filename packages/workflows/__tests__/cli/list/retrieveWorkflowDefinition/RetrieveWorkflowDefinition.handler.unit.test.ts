@@ -54,7 +54,7 @@ describe("List workflow definition file details handler", () => {
                     category: "general",
                     productID: "CA",
                     productName: "ZOWE",
-                    productVersion: "1.0",
+                    productVersion: "1.0"
                 };
             });
 
@@ -66,7 +66,7 @@ describe("List workflow definition file details handler", () => {
                     user: "fake",
                     pass: "fake",
                     auth: "fake",
-                    rejectUnauthorized: "fake",
+                    rejectUnauthorized: "fake"
                 };
             });
 
@@ -76,7 +76,7 @@ describe("List workflow definition file details handler", () => {
                     arguments: {
                         $0: "zowe",
                         _: ["zos-workflows", "list", "definition-file-details" ],
-                        definitionFilePath,
+                        definitionFilePath
                     },
                     response: {
                         format: {
@@ -113,7 +113,7 @@ describe("List workflow definition file details handler", () => {
                 undefined,
                 definitionFilePath,
                 undefined,
-                undefined,);
+                undefined);
         });
     });
 });

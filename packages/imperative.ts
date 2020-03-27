@@ -36,7 +36,7 @@ const config: IImperativeConfig = {
     logging: {
         appLogging: {
             logFile: Constants.LOG_LOCATION
-        },
+        }
     },
     profiles: [
         {
@@ -48,32 +48,32 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST
                     },
                     port: {
                         type: "number",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT
                     },
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD
                     },
                     rejectUnauthorized: {
                         type: "boolean",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED
                     },
                     basePath: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH,
-                    },
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
+                    }
                 },
-                required: ["host"],
+                required: ["host"]
             },
             createProfileExamples: [
                 {
@@ -107,34 +107,34 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_ACCOUNT,
+                        optionDefinition: TSO_OPTION_ACCOUNT
                     },
                     characterSet: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_CHAR_SET,
+                        optionDefinition: TSO_OPTION_CHAR_SET
                     },
                     codePage: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_CODE_PAGE,
+                        optionDefinition: TSO_OPTION_CODE_PAGE
                     },
                     columns: {
                         type: "number",
-                        optionDefinition: TSO_OPTION_COLUMNS,
+                        optionDefinition: TSO_OPTION_COLUMNS
                     },
                     logonProcedure: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
+                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE
                     },
                     regionSize: {
                         type: "number",
-                        optionDefinition: TSO_OPTION_REGION_SIZE,
+                        optionDefinition: TSO_OPTION_REGION_SIZE
                     },
                     rows: {
                         type: "number",
-                        optionDefinition: TSO_OPTION_ROWS,
-                    },
+                        optionDefinition: TSO_OPTION_ROWS
+                    }
                 },
-                required: ["account"],
+                required: ["account"]
             },
             createProfileExamples: [
                 {
@@ -163,36 +163,36 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST,
+                        optionDefinition: SshSession.SSH_OPTION_HOST
                     },
                     port: {
                         type: "number",
-                        optionDefinition: SshSession.SSH_OPTION_PORT,
+                        optionDefinition: SshSession.SSH_OPTION_PORT
                     },
                     user: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_USER,
+                        optionDefinition: SshSession.SSH_OPTION_USER
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: SshSession.SSH_OPTION_PASSWORD,
+                        optionDefinition: SshSession.SSH_OPTION_PASSWORD
                     },
                     privateKey: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_PRIVATEKEY,
+                        optionDefinition: SshSession.SSH_OPTION_PRIVATEKEY
                     },
                     keyPassphrase: {
                         type: "string",
                         secure: true,
-                        optionDefinition: SshSession.SSH_OPTION_KEYPASSPHRASE,
+                        optionDefinition: SshSession.SSH_OPTION_KEYPASSPHRASE
                     },
                     handshakeTimeout: {
                         type: "number",
-                        optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT,
-                    },
+                        optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT
+                    }
                 },
-                required: ["host", "user"],
+                required: ["host", "user"]
             },
             createProfileExamples: [
                 {
@@ -208,9 +208,9 @@ const config: IImperativeConfig = {
                     description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
                                  "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
                                  "for privatekey authentication"
-                },
+                }
             ]
-        },
+        }
 
     ]
 };

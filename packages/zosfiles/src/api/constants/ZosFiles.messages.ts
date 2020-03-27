@@ -524,11 +524,19 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set was recalled successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetRecalledSuccessfully: {
+        message: "Data set recall requested."
+    },
+
+    /**
      * Message indicating that the data set has been renamed successfully.
      * @type {IMessageDefinition}
      */
     dataSetRenamedSuccessfully: {
-        message: "Data set renamed successfully.",
+        message: "Data set renamed successfully."
     },
 
     /**
@@ -536,7 +544,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetMigratedSuccessfully: {
-        message: "Data set migrated successfully.",
+        message: "Data set migraton requested."
     },
 
     /**
@@ -545,5 +553,5 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     datasetCopiedSuccessfully: {
         message: "Data set copied successfully."
-    },
+    }
 };

@@ -20,20 +20,20 @@ export const PingAddressSpaceCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/PingAddressSpace.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "servletKey",
             type: "string",
             description: "The servlet key from a previously started TSO address space.",
-            required: true,
-        },
+            required: true
+        }
     ],
     examples: [
         {
             description: "Ping the TSO address space identified by IBMUSER-329-aafkaaoc",
-            options: "IBMUSER-329-aafkaaoc",
+            options: "IBMUSER-329-aafkaaoc"
         }
-    ],
+    ]
 };

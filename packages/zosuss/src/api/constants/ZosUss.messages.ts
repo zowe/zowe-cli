@@ -25,12 +25,12 @@ export const ZosUssMessages: { [key: string]: IMessageDefinition } = {
         message: "All configured authentication methods failed"
     },
     connectionRefused: {
-        message: "Connection was refused",
+        message: "Connection was refused"
     },
     handshakeTimeout: {
         message: "Timed out while waiting for handshake"
     },
     unexpected: {
         message: "Connection failed because of an unexpected error"
-    },
+    }
 };

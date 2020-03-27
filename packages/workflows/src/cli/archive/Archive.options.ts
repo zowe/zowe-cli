@@ -27,7 +27,7 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
         description: "The name of the workflow to be archived.",
         required: false,
         absenceImplications: ["workflow-key"],
-        conflictsWith: ["workflow-key"],
+        conflictsWith: ["workflow-key"]
     },
 
     /**
@@ -39,7 +39,7 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["wk"],
         type: "string",
         description: "The workflow key of the workflow to be archived.",
-        required: false,
+        required: false
     },
 
     /**
@@ -52,5 +52,5 @@ export const ArchiveOptions: { [key: string]: ICommandOptionDefinition } = {
         description: "Identifies the version of the zOSMF workflow service.",
         type: "boolean",
         required: false
-    },
+    }
 };

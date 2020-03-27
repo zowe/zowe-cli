@@ -79,7 +79,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                 fields: ["workflowName", "workflowKey",
                         response.automationStatus? "automationStatus.messageText" : "automationStatus"],
                 output: response,
-                format: "object",
+                format: "object"
             });
         }
 

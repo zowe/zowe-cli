@@ -26,21 +26,21 @@ export const FsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/fs.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "fileSystemName",
             type: "string",
             description: fsStrings.POSITIONALS.FILESYSTEMNAME,
-            required: true,
+            required: true
         },
         {
             name: "mountPoint",
             type: "string",
             description: fsStrings.POSITIONALS.MOUNTPOINT,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         FsMountOptions.fsType,

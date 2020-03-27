@@ -58,7 +58,7 @@ export default class ListArchivedWorkflowsHandler extends ZosmfBaseHandler {
                 fields: ["workflowName", "workflowKey"],
                 output: response.archivedWorkflows,
                 format: "table",
-                header: true,
+                header: true
            });
      } else {
           commandParameters.response.console.log("No workflows match the requested query");

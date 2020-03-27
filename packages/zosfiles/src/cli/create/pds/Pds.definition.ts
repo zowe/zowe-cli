@@ -30,23 +30,21 @@ export const PdsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Pds.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: strings.POSITIONALS.DATASETNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
-        {
-            ...ZosFilesCreateExtraOptions.size,
-            defaultValue: CreateDefaults.DATA_SET.PARTITIONED.primary + CreateDefaults.DATA_SET.PARTITIONED.alcunit
-        },
+        ZosFilesCreateExtraOptions.size,
         ZosFilesCreateOptions.volser,
-        {...ZosFilesCreateOptions.secondary, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.secondary},
+        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.primary},
+        ZosFilesCreateOptions.secondary,
         {...ZosFilesCreateOptions.dirblk, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.dirblk},
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.PARTITIONED.blksize},
@@ -56,12 +54,12 @@ export const PdsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
+        ZosFilesCreateExtraOptions.showAttributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_PARTITIONED.EXAMPLES.EX1,
-            options: "NEW.PDS.DATASET",
+            options: "NEW.PDS.DATASET"
         }
 
     ]

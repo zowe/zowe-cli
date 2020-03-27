@@ -64,7 +64,7 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
                 fields: ["workflowName", "workflowKey", "workflowDescription"],
                 output: response.workflows,
                 format: "table",
-                header: true,
+                header: true
             });
         } else {
             commandParameters.response.console.log("No workflows match the requested querry");

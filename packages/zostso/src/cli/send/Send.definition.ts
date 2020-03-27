@@ -21,6 +21,6 @@ export const SendCommand: ICommandDefinition = {
     summary: "Send data to TSO",
     description: "Send data to TSO and collect responses until the prompt is reached",
     children: [
-        SendToAddressSpaceCommandDefinition,
-    ],
+        SendToAddressSpaceCommandDefinition
+    ]
 };

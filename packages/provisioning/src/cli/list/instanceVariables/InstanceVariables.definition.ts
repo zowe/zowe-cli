@@ -27,13 +27,13 @@ export const instanceVariables: ICommandDefinition = {
             name: "name",
             type: "string",
             description: "Provisioned Instance Name",
-            required: true,
+            required: true
         }
     ],
     examples: [
         {
             description: "List instance variables of \"instance1\"",
-            options: "instance1",
+            options: "instance1"
         }
     ],
     outputFormatOptions: true

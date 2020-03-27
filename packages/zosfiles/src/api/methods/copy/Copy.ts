@@ -49,7 +49,7 @@ export class Copy {
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
-            toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`,
+            toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -60,7 +60,7 @@ export class Copy {
 
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
-            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
+            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() }
         ];
 
         try {
@@ -68,7 +68,7 @@ export class Copy {
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);

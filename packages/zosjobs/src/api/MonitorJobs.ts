@@ -44,11 +44,11 @@ export class MonitorJobs {
      * @static
      * @memberof MonitorJobs
      */
-    public static readonly DEFAULT_ATTEMPTS = 100;
+    public static readonly DEFAULT_ATTEMPTS = Infinity;
 
     /**
      * Given an IJob (has jobname/jobid), waits for the status of the job to be "OUTPUT". This API will poll for
-     * the OUTPUT status once every 3 seconds for 100 attempts. If the polling interval/duration is NOT sufficient, use
+     * the OUTPUT status once every 3 seconds indefinitely. If the polling interval/duration is NOT sufficient, use
      * "waitForStatusCommon" to adjust.
      *
      * See JSDoc for "waitForStatusCommon" for full details on polling and other logic.
@@ -59,14 +59,14 @@ export class MonitorJobs {
      * @returns {Promise<IJob>} - the promise to be fulfilled with IJob object (or rejected with an ImperativeError)
      * @memberof MonitorJobs
      */
-    public static async waitForJobOutputStatus(session: AbstractSession, job: IJob): Promise<IJob> {
+    public static waitForJobOutputStatus(session: AbstractSession, job: IJob): Promise<IJob> {
         ImperativeExpect.toNotBeNullOrUndefined(job, "IJob object (containing jobname and jobid) required");
         return MonitorJobs.waitForStatusCommon(session, {jobname: job.jobname, jobid: job.jobid, status: JOB_STATUS.OUTPUT});
     }
 
     /**
      * Given the jobname/jobid, waits for the status of the job to be "OUTPUT". This API will poll for the OUTPUT status
-     * once every 3 seconds for 100 attempts. If the polling interval/duration is NOT sufficient, use
+     * once every 3 seconds indefinitely. If the polling interval/duration is NOT sufficient, use
      * "waitForStatusCommon" to adjust.
      *
      * See JSDoc for "waitForStatusCommon" for full details on polling and other logic.

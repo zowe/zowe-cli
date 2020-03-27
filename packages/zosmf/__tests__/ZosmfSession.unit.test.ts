@@ -20,7 +20,7 @@ describe("zosmf utils", () => {
             user: "fake",
             password: "fake",
             auth: "fake",
-            rejectUnauthorized: "fake",
+            rejectUnauthorized: "fake"
         });
         expect(session.ISession).toMatchSnapshot();
     });

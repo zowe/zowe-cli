@@ -23,6 +23,6 @@ export const ArchiveDefinition: ICommandDefinition = {
     type: "group",
     description: "Archive workflow instance in z/OSMF",
     children: [
-        Workflow,
+        Workflow
     ]
 };

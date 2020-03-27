@@ -25,15 +25,15 @@ export const FsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/fs.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "fileSystemName",
             type: "string",
             description: fsStrings.POSITIONALS.FILESYSTEMNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     examples: [
         {

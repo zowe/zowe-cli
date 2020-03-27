@@ -44,17 +44,17 @@ describe("Rename", () => {
                 const expectedEndpoint = posix.join(
                     ZosFilesConstants.RESOURCE,
                     ZosFilesConstants.RES_DS_FILES,
-                    afterDataSetName,
+                    afterDataSetName
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                 ];
                 const response = await Rename.dataSet(dummySession, beforeDataSetName, afterDataSetName);
 
                 expect(response).toEqual({
                     success: true,
-                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message,
+                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message
                 });
                 expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
@@ -109,11 +109,11 @@ describe("Rename", () => {
                 const expectedEndpoint = posix.join(
                     ZosFilesConstants.RESOURCE,
                     ZosFilesConstants.RES_DS_FILES,
-                    afterDataSetName,
+                    afterDataSetName
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                 ];
 
                 let error;
@@ -146,23 +146,23 @@ describe("Rename", () => {
                     "from-dataset": {
                         dsn: dataSetName,
                         member: beforeMemberName
-                    },
+                    }
                 };
                 const expectedEndpoint = posix.join(
                     ZosFilesConstants.RESOURCE,
                     ZosFilesConstants.RES_DS_FILES,
-                    `${dataSetName}(${afterMemberName})`,
+                    `${dataSetName}(${afterMemberName})`
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                 ];
 
                 const response = await Rename.dataSetMember(dummySession, dataSetName, beforeMemberName, afterMemberName);
 
                 expect(response).toEqual({
                     success: true,
-                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message,
+                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message
                 });
                 expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
@@ -206,11 +206,11 @@ describe("Rename", () => {
                 const expectedEndpoint = posix.join(
                     ZosFilesConstants.RESOURCE,
                     ZosFilesConstants.RES_DS_FILES,
-                    `${dataSetName}(${afterMemberName})`,
+                    `${dataSetName}(${afterMemberName})`
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
                 ];
 
                 let error;

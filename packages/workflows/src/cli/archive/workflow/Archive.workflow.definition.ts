@@ -27,11 +27,11 @@ export const Workflow: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "../Archive.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ([
         ArchiveOptions.workflowName,
-        ArchiveOptions.workflowKey,
+        ArchiveOptions.workflowKey
     ]),
     outputFormatOptions: true,
     examples: [
@@ -46,6 +46,6 @@ export const Workflow: ICommandDefinition = {
         {
             description: "Archive a workflow with workflow key \"123-456-abv-xyz\"",
             options: "--wk \"123-456-abv-xyz\" "
-        },
-    ],
+        }
+    ]
 };
