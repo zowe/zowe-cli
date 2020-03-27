@@ -70,7 +70,7 @@ describe("Recall Dataset", () => {
           Imperative.console.info(`Error: ${inspect(err)}`);
       }
       });
-      it.only("Should recall a data set with wait = true", async () => {
+      it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { wait: true };
         const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
         const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
