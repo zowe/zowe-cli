@@ -185,7 +185,6 @@ node('ca-jenkins-agent') {
 
     pipeline.checkChangelog(
         file: "CHANGELOG.md",
-        lines: 10,
         header: "## Recent Changes"
     )
 
@@ -197,7 +196,6 @@ node('ca-jenkins-agent') {
 
     pipeline.updateChangelog(
         file: "CHANGELOG.md",
-        lines: 10,
         header: "## Recent Changes"
     )
 
