@@ -49,7 +49,7 @@ describe("DsHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: commandParameters.arguments.toDataSetName },
-            { "from-dataset": { dsn: commandParameters.arguments.fromDataSetName } },
+            { "from-dataset": { dsn: commandParameters.arguments.fromDataSetName } }
         );
         expect(response).toBe(defaultReturn);
     });
@@ -79,7 +79,7 @@ describe("DsHandler", () => {
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
             { dsn: toDataSetName, member: toMemberName },
-            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } },
+            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
         );
         expect(response).toBe(defaultReturn);
     });
@@ -100,7 +100,7 @@ describe("DsHandler", () => {
                 toDataSetName,
                 enq,
                 replace
-            },
+            }
         };
 
         const dummySession = {};
@@ -115,7 +115,7 @@ describe("DsHandler", () => {
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
                 "enq": commandParameters.arguments.enq,
                 "replace": commandParameters.arguments.replace
-            },
+            }
         );
         expect(response).toBe(defaultReturn);
     });
