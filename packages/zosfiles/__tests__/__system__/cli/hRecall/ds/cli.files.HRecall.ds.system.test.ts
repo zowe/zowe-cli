@@ -54,8 +54,10 @@ describe("Recall Dataset", () => {
 
   afterEach(async () => {
     try {
-      await Delete.dataSet(REAL_SESSION, dataSetName1);
-      await Delete.dataSet(REAL_SESSION, dataSetName2);
+      await Promise.all([
+        Delete.dataSet(REAL_SESSION, dataSetName1),
+        Delete.dataSet(REAL_SESSION, dataSetName2),
+        Delete.dataSet(REAL_SESSION, dataSetName3)]);
     } catch (err) {
       Imperative.console.info(`Error: ${inspect(err)}`);
     }
@@ -66,9 +68,9 @@ describe("Recall Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { wait: true };
@@ -86,9 +88,9 @@ describe("Recall Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { wait: true };
@@ -108,9 +110,9 @@ describe("Recall Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should throw an error if a missing data set name is selected", async () => {
         const response = runCliScript(recallScript, TEST_ENVIRONMENT, ["MISSING.DATA.SET", dataSetName3]);
