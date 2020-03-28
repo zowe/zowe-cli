@@ -22,11 +22,11 @@ Object {
       "allowableValues": Object {
         "caseSensitive": false,
         "values": Array [
-          "extended",
-          "summary",
-          "vars",
-          "actions",
-          "full",
+          "^extended$",
+          "^summary$",
+          "^vars$",
+          "^actions$",
+          "^full$",
         ],
       },
       "description": "Level of information to display for the provisioned instance. Possible values:

@@ -41,7 +41,7 @@ export const instanceInfo: ICommandDefinition = {
             "full \t- all available information\n",
             type: "string",
             allowableValues: {
-                values: ["extended", "summary", "vars", "actions", "full"],
+                values: ["^extended$", "^summary$", "^vars$", "^actions$", "^full$"],
                 caseSensitive: false
             }
         }

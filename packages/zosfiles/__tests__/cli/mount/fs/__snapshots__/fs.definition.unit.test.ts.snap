@@ -18,8 +18,8 @@ Array [
     "allowableValues": Object {
       "caseSensitive": true,
       "values": Array [
-        "rdonly",
-        "rdwr",
+        "^rdonly$",
+        "^rdwr$",
       ],
     },
     "defaultValue": "rdonly",

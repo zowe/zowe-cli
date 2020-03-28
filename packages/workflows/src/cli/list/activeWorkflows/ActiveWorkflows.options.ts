@@ -87,7 +87,7 @@ export const ListActiveWorkflowsOptions: { [key: string]: ICommandOptionDefiniti
         type: "string",
         required: false,
         allowableValues: {
-            values : ["in-progress", "complete", "automation-in-progress", "canceled"],
+            values : ["^in-progress$", "^complete$", "^automation-in-progress$", "^canceled$"],
             caseSensitive: true
         }
     },

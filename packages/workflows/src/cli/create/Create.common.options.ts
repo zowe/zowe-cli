@@ -126,7 +126,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         type: "string",
         required: false,
         allowableValues: {
-            values : ["Public", "Restricted", "Private"],
+            values : ["^Public$", "^Restricted$", "^Private$"],
             caseSensitive: true
         }
     },

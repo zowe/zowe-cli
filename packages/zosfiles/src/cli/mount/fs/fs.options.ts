@@ -43,7 +43,7 @@ export const FsMountOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "string",
         defaultValue: "rdonly",
         allowableValues: {
-            values: ["rdonly", "rdwr"],
+            values: ["^rdonly$", "^rdwr$"],
             caseSensitive: true
         }
     }

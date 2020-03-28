@@ -32,7 +32,7 @@ export const StartCommonOptions: { [key: string]: ICommandOptionDefinition } = {
         required: false,
         defaultValue: "outputFileValue",
         allowableValues: {
-            values: ["outputFileValue", "existingValue", "leaveConflict"],
+            values: ["^outputFileValue$", "^existingValue$", "^leaveConflict$"],
             caseSensitive: true
         }
     },

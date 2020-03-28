@@ -75,9 +75,9 @@ Object {
       "allowableValues": Object {
         "caseSensitive": true,
         "values": Array [
-          "Public",
-          "Restricted",
-          "Private",
+          "^Public$",
+          "^Restricted$",
+          "^Private$",
         ],
       },
       "description": "Specifies the access type for the workflow. Public, Restricted or Private.",

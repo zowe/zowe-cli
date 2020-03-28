@@ -28,7 +28,7 @@ vsamDsOrg.description +=
     ".";
 vsamDsOrg.defaultValue = CreateDefaults.VSAM.dsorg;
 vsamDsOrg.allowableValues = {
-    values: ZosFilesConstants.VSAM_DSORG_CHOICES,
+    values: ZosFilesConstants.VSAM_DSORG_CHOICES.map((v: string) => `^${v}$`),
     caseSensitive: false
 };
 

@@ -56,9 +56,9 @@ Object {
       "allowableValues": Object {
         "caseSensitive": true,
         "values": Array [
-          "outputFileValue",
-          "existingValue",
-          "leaveConflict",
+          "^outputFileValue$",
+          "^existingValue$",
+          "^leaveConflict$",
         ],
       },
       "defaultValue": "outputFileValue",
