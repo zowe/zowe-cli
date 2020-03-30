@@ -100,7 +100,7 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-junit": "^6.3.0",
     "jest-sonar-reporter": "^2.0.0",
-    "jest-stare": "^1.11.1",
+    "jest-stare": "^1.26.0",
     "jsonfile": "^4.0.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
