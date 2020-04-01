@@ -179,40 +179,14 @@ exports[`zos-jobs submit data-set command should display the help 1`] = `
 `;
 
 exports[`zos-jobs submit data-set command syntax errors should occur if an extra unknown option is specified 1`] = `
-"
-Syntax Error:
-You specified the following unknown values: \\"blah\\".
-
- Could not interpret them as a group, command name, or positional option.
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---password (--pass,--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
-
-Example:
-
- - Submit the JCL in the data set \\"ibmuser.cntl(deploy)\\":
-
-      $ zowe zos-jobs submit data-set \\"ibmuser.cntl(deploy)\\"
-
-Use \\"zowe zos-jobs submit data-set blah --help\\" to view command description, usage, and options.
+"Command Error:
+Unknown argument: blah
+Command failed due to improper syntax
+Command entered: \\"zowe zos-jobs submit data-set DATA.SET blah\\"
+Available commands are \\"data-set, local-file, stdin\\".
+Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
+Error Details:
+Unknown argument: blah
 "
 `;
 

@@ -30,7 +30,7 @@ export const DirToPdsDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/DirToPds.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -44,7 +44,7 @@ export const DirToPdsDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         UploadOptions.volume,

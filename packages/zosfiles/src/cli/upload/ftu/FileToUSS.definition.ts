@@ -30,7 +30,7 @@ export const FileToUSSDefinition: ICommandDefinition = {
     type: "command",
     handler: path.join(__dirname, "/FileToUSS.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -44,10 +44,10 @@ export const FileToUSSDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.USSFILENAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
-        UploadOptions.binary,
+        UploadOptions.binary
     ],
     examples: [
         {

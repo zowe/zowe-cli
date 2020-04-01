@@ -21,7 +21,7 @@ export const JOB_STATUS = {
     // Output indicates that the job has finished/failed (and potentially has spool output).
     OUTPUT: "OUTPUT" as JOB_STATUS,
     // Input indicates that the job is awaiting execution.
-    INPUT: "INPUT" as JOB_STATUS,
+    INPUT: "INPUT" as JOB_STATUS
 };
 
 // The "order" indicates the logical order of job progression within the system. Used to determine if the job will

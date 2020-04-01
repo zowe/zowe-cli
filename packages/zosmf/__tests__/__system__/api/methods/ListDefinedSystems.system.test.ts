@@ -77,7 +77,7 @@ describe("List Defined Systems Api", () => {
                 hostname: badHostName,
                 port: defaultSystem.zosmf.port,
                 type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
             });
 
             let error;
@@ -103,7 +103,7 @@ describe("List Defined Systems Api", () => {
                 hostname: defaultSystem.zosmf.host,
                 port: badPort,
                 type: "basic",
-                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized,
+                rejectUnauthorized: defaultSystem.zosmf.rejectUnauthorized
             });
 
             let error;

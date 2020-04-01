@@ -74,7 +74,7 @@ describe("provisioning delete instance without profiles", () => {
     // Create a separate test environment for no profiles
     beforeAll(async () => {
         TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-            testName: "provisioning_delete_instance_no_profile",
+            testName: "provisioning_delete_instance_no_profile"
         });
 
         zOSMF = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.zosmf;

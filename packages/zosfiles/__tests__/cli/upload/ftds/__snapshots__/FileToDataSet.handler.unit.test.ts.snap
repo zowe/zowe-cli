@@ -10,7 +10,7 @@ Object {
     },
   ],
   "commandResponse": "uploaded",
-  "success": true,
+  "success": false,
 }
 `;
 

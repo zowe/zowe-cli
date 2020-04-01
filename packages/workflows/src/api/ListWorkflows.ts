@@ -47,7 +47,7 @@ export class ListWorkflows {
                 {key: WorkflowConstants.system, value : system},
                 {key: WorkflowConstants.owner, value : owner},
                 {key: WorkflowConstants.vendor, value : vendor},
-                {key: WorkflowConstants.statusName, value : statusName},
+                {key: WorkflowConstants.statusName, value : statusName}
             ]
         );
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
@@ -95,7 +95,7 @@ export class ListWorkflows {
         // Check if there was more than one workflows found
         if (result.workflows.length > 1){
             throw new ImperativeError({
-                msg: `More than one workflows found with name ` + workflowName,
+                msg: `More than one workflows found with name ` + workflowName
             });
         }
         return result.workflows.length !== 0 ? result.workflows[0].workflowKey : null;

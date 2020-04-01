@@ -74,7 +74,7 @@ describe("Upload dir-to-uss handler", () => {
                         user: "fake",
                         password: "fake",
                         auth: "fake",
-                        rejectUnauthorized: "fake",
+                        rejectUnauthorized: "fake"
                     };
                 })
             }
@@ -101,7 +101,7 @@ describe("Upload dir-to-uss handler", () => {
         });
         it("should upload a directory to a USS directory if requested", async () => {
 
-            await testHanlderWorksWithDefaultParameters();
+            await testHandlerWorksWithDefaultParameters();
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
             expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, {
                 binary: undefined,
@@ -120,7 +120,7 @@ describe("Upload dir-to-uss handler", () => {
             const attributesContents = "foo.stuff -";
             jest.spyOn(fs, "readFileSync").mockReturnValueOnce(Buffer.from(attributesContents));
 
-            await testHanlderWorksWithDefaultParameters();
+            await testHandlerWorksWithDefaultParameters();
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
             expect((Upload.dirToUSSDir as jest.Mock).mock.calls[0][UPLOAD_OPTIONS_ARG_INDEX].attributes).toBeInstanceOf(ZosFilesAttributes);
         });
@@ -166,19 +166,19 @@ describe("Upload dir-to-uss handler", () => {
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
             params.arguments.attributes = "real file";
 
-            await testHanlderWorksWithParameters(params);
+            await testHandlerWorksWithParameters(params);
 
             expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
             expect((Upload.dirToUSSDir as jest.Mock).mock.calls[0][UPLOAD_OPTIONS_ARG_INDEX].attributes).toBe(mockAttributesFromParam);
 
         });
 
-        async function testHanlderWorksWithDefaultParameters() {
+        async function testHandlerWorksWithDefaultParameters() {
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-            await testHanlderWorksWithParameters(params);
+            await testHandlerWorksWithParameters(params);
         }
 
-        async function testHanlderWorksWithParameters(params: any) {
+        async function testHandlerWorksWithParameters(params: any) {
             error = undefined;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -187,7 +187,7 @@ describe("Upload dir-to-uss handler", () => {
                 error = e;
             }
 
-            expect(error).toBeUndefined();
+            expect(error).toBeDefined();
             expect(params.profiles.get).toHaveBeenCalledWith("zosmf", false);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();

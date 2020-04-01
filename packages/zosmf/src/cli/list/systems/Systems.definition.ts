@@ -18,7 +18,7 @@ export const SystemsDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Systems.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
@@ -35,6 +35,6 @@ export const SystemsDefinition: ICommandDefinition = {
         {
             description: "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
             options: "--host myhost --port 443 --user myuser --password mypass"
-        },
+        }
     ]
 };

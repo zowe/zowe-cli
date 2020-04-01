@@ -27,7 +27,7 @@ export class ZosmfSession {
         aliases: ["H"],
         description: "The z/OSMF server host name.",
         type: "string",
-        // required: true,
+        // TODO(Kelosky) required: true,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
@@ -62,7 +62,7 @@ export class ZosmfSession {
         aliases: ["pass", "pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
-        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
     /**
@@ -125,7 +125,7 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
         ZosmfSession.ZOSMF_OPTION_BASE_PATH,
         ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE,
-        ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE,
+        ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE
     ];
 
 
@@ -144,7 +144,7 @@ export class ZosmfSession {
             user: profile.user,
             password: profile.password,
             rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath,
+            basePath: profile.basePath
         });
     }
 
@@ -161,7 +161,7 @@ export class ZosmfSession {
             hostname: args.host,
             port: args.port,
             rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath,
+            basePath: args.basePath
         };
 
         this.log.debug("Using basic authentication");

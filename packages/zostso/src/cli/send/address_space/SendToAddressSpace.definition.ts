@@ -20,15 +20,15 @@ export const SendToAddressSpaceCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/SendToAddressSpace.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "servletKey",
             type: "string",
             description: "The servlet key from a previously started TSO address space.",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         {
@@ -42,7 +42,7 @@ export const SendToAddressSpaceCommandDefinition: ICommandDefinition = {
     examples: [
         {
             description: `"Send the TIME TSO command to the TSO address space identified by IBMUSER-329-aafkaaoc"`,
-            options: "IBMUSER-329-aafkaaoc --data \"TIME\"",
+            options: "IBMUSER-329-aafkaaoc --data \"TIME\""
         }
-    ],
+    ]
 };

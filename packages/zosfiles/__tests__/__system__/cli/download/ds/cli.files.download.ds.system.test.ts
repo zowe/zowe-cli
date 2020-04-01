@@ -179,8 +179,9 @@ describe("Download Data Set", () => {
             expect(response.stderr.toString()).toContain("dataSetName");
         });
 
-        it("should fail due to specified data set name does not existed", async () => {
+        it("should fail due to specified data set name does not exist", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
+            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Data set not found.");

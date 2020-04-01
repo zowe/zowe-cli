@@ -128,6 +128,6 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      *
      */
     public abstract async processCmd(
-        commandParameters: IHandlerParameters,
+        commandParameters: IHandlerParameters
     ): Promise<void>;
 }

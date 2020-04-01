@@ -36,15 +36,15 @@ export const IssueCommandDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Command.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "commandtext",
             type: "string",
             description: "The z/OS console command to issue",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
         {
@@ -65,7 +65,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
             aliases: ["id", "i"],
             description: `Include additional details at the end of the ${Constants.DISPLAY_NAME} command response, ` +
             `such as the "command response key" and the z/OSMF command response URL.`,
-            type: "boolean",
+            type: "boolean"
         },
         {
             name: "key-only",
@@ -76,7 +76,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
             `Note that when using this option, you will not be presented ` +
             `with the "first set" of command response messages (if present in the API response). ` +
             `However, you can view them by using the --response-format-json option.`,
-            type: "boolean",
+            type: "boolean"
         },
         {
             name: "return-first",
@@ -88,7 +88,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
             `the first set of console command responses, i.e you will normally receive at least one set of ` +
             `response messages.`,
             type: "boolean",
-            conflictsWith: ["wait-to-collect"],
+            conflictsWith: ["wait-to-collect"]
         },
         {
             name: "solicited-keyword",
@@ -97,14 +97,14 @@ export const IssueCommandDefinition: ICommandDefinition = {
             "the keyword specified is present. If the keyword is detected, the command will immediately " +
             "return, meaning the full command response may not be provided. The key only applies to " +
             "the first request issued, follow up requests do not support searching for the keyword.",
-            type: "string",
+            type: "string"
         },
         {
             name: "sysplex-system",
             aliases: ["ss", "sys"],
             description: `Specifies the z/OS system (LPAR) in the current SYSPLEX ` +
             `(where your target z/OSMF resides) to route the z/OS console command.`,
-            type: "string",
+            type: "string"
         },
         {
             name: "wait-to-collect",
@@ -114,24 +114,24 @@ export const IssueCommandDefinition: ICommandDefinition = {
             `are collected on "follow-up" requests, the timer is reset until an attempt is made that results ` +
             `in no additional response messages.`,
             type: "number",
-            conflictsWith: ["return-first"],
+            conflictsWith: ["return-first"]
         },
         {
             name: "follow-up-attempts",
             aliases: ["fua", "a"],
             description: "Number of request attempts if no response returned",
             type: "number",
-            defaultValue: "1",
-        },
+            defaultValue: "1"
+        }
     ],
     examples: [
         {
             description: "Issue a z/OS console command to display the IPL information for the system",
-            options: "\"D IPLINFO\"",
+            options: "\"D IPLINFO\""
         },
         {
             description: "Issue a z/OS console command to display the local and coordinated universal time and date",
-            options: "\"D T\"",
-        },
-    ],
+            options: "\"D T\""
+        }
+    ]
 };

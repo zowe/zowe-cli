@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfSession } from "../src/ZosmfSession";
+import { ZosmfSession } from "../src/api/ZosmfSession";
 import { Session } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
@@ -20,7 +20,7 @@ describe("zosmf utils", () => {
             user: "fake",
             password: "fake",
             auth: "fake",
-            rejectUnauthorized: "fake",
+            rejectUnauthorized: "fake"
         });
         expect(session.ISession).toMatchSnapshot();
     });

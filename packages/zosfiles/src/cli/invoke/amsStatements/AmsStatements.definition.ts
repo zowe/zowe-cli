@@ -30,7 +30,7 @@ export const AmsStatementsDefinition: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "AmsStatements.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -38,7 +38,7 @@ export const AmsStatementsDefinition: ICommandDefinition = {
             description: strings.STATEMENTS_CMD.POSITIONAL,
             type: "string",
             required: true
-        },
+        }
     ],
     examples: [
         {
@@ -47,7 +47,7 @@ export const AmsStatementsDefinition: ICommandDefinition = {
         },
         {
             description: strings.STATEMENTS_CMD.EXAMPLES.EX2,
-            options: `"DELETE DUMMY.VSAM.CLUSTER CLUSTER"`,
+            options: `"DELETE DUMMY.VSAM.CLUSTER CLUSTER"`
         }
     ]
 };

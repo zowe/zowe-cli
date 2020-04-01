@@ -20,6 +20,6 @@ export const PingCommand: ICommandDefinition = {
     description: "Ping a TSO address space, from which " +
     "you previously started and received a token (a.k.a 'servelet-key').",
     children: [
-        PingAddressSpaceCommandDefinition,
-    ],
+        PingAddressSpaceCommandDefinition
+    ]
 };

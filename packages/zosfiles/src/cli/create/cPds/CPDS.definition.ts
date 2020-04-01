@@ -30,23 +30,21 @@ export const CPDSDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/CPDS.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "dataSetName",
             type: "string",
             description: strings.POSITIONALS.DATASETNAME,
-            required: true,
-        },
+            required: true
+        }
     ],
     options: [
-        {
-            ...ZosFilesCreateExtraOptions.size,
-            defaultValue: CreateDefaults.DATA_SET.C.primary + CreateDefaults.DATA_SET.C.alcunit
-        },
+        ZosFilesCreateExtraOptions.size,
         ZosFilesCreateOptions.volser,
-        {...ZosFilesCreateOptions.secondary, defaultValue: CreateDefaults.DATA_SET.C.secondary},
+        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.C.primary},
+        ZosFilesCreateOptions.secondary,
         {...ZosFilesCreateOptions.dirblk, defaultValue: CreateDefaults.DATA_SET.C.dirblk},
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.C.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.C.blksize},
@@ -56,12 +54,12 @@ export const CPDSDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
+        ZosFilesCreateExtraOptions.showAttributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_C.EXAMPLES.EX1,
-            options: "NEW.CCODE.DATASET",
+            options: "NEW.CCODE.DATASET"
         }
     ]
 };

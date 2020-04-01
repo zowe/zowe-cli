@@ -22,7 +22,7 @@ const definition: ICommandDefinition = {
     children: [
         CheckCommand,
         ListCommand,
-        LoginCommand,
+        LoginCommand
     ]
 };
 

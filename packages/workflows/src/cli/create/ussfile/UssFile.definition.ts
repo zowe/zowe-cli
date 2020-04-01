@@ -27,15 +27,15 @@ export const UssFile: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "workflowName",
             type: "string",
             description: "Name of the workflow instance to create",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
         CreateCommonOptions.ussFile,
@@ -46,7 +46,7 @@ export const UssFile: ICommandDefinition = {
         CreateCommonOptions.assignToOwner,
         CreateCommonOptions.accessType,
         CreateCommonOptions.deleteCompleted,
-        CreateCommonOptions.overwrite,
+        CreateCommonOptions.overwrite
         // CreateCommonOptions.zosmfVersion
     ]),
     outputFormatOptions: true,
@@ -75,5 +75,5 @@ export const UssFile: ICommandDefinition = {
                 "--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 " +
                 "--owner \"MYSYSID\" --assign-to-owner"
         }
-    ],
+    ]
 };

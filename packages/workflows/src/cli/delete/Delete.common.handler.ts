@@ -88,7 +88,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                             fields: ["workflowName", "workflowKey"],
                             output: successWfs,
                             format: "table",
-                            header: true,
+                            header: true
                         });
                     }
 
@@ -98,7 +98,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                             fields: ["workflowName", "workflowKey"],
                             output: failedWfs,
                             format: "table",
-                            header: true,
+                            header: true
                         });
                         throw new ImperativeError({
                             msg: `Some workflows were not deleted, please check the message above.`

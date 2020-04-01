@@ -29,5 +29,5 @@ export const MountDefinition: ICommandDefinition = {
     description: strings.DESCRIPTION,
     children: [
         FsDefinition
-    ],
+    ]
 };

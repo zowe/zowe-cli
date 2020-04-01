@@ -73,7 +73,7 @@ export class CreateWorkflow{
     public static createWorkflow(session: AbstractSession, WorkflowName: string, WorkflowDefinitionFile: string,
                                  systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
                                  AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
-                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
+                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION
                                     // add job statement, account info, comments and resolveGlobalConflictByUsing,
                                     ): Promise<ICreatedWorkflow> {
         WorkflowValidator.validateSession(session);
@@ -95,7 +95,7 @@ export class CreateWorkflow{
             owner: Owner,
             assignToOwner: AssignToOwner,
             accessType: AccessType,
-            deleteCompletedJobs: DeleteCompletedJobs,
+            deleteCompletedJobs: DeleteCompletedJobs
         };
         if (!isNullOrUndefined(VariableInputFile)){
             if (VariableInputFile.charAt(0) === "/" && VariableInputFile.charAt(1) === "/") {
@@ -211,7 +211,7 @@ export class CreateWorkflow{
             await Upload.fileToUSSFile(session, localFile, remoteFile, true);
         } catch (error) {
             throw new ImperativeError({
-                msg : "Failed to create temporary uss file\n" + (error.message) + "\n" + (error.additionalDetails),
+                msg : "Failed to create temporary uss file\n" + (error.message) + "\n" + (error.additionalDetails)
             });
         }
     }

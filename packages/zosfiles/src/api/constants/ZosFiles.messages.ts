@@ -113,7 +113,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the data set was deleted successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     datasetDeletedSuccessfully: {
         message: "Data set deleted successfully."
@@ -121,7 +121,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the data set was downloaded successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     datasetDownloadedSuccessfully: {
         message: "Data set downloaded successfully.\nDestination: %s"
@@ -129,7 +129,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the uss file was downloaded successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     ussFileDownloadedSuccessfully: {
         message: "USS file downloaded successfully.\nDestination: %s"
@@ -137,7 +137,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the uss file was uploaded successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     ussFileUploadedSuccessfully: {
         message: "USS file uploaded successfully."
@@ -145,7 +145,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the uss directory was uploaded successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     ussDirUploadedSuccessfully: {
         message: "Directory uploaded successfully."
@@ -153,7 +153,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the USS file or directory was deleted successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     ussFileDeletedSuccessfully: {
         message: "USS File or directory deleted successfully."
@@ -161,7 +161,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the data sets matching pattern was downloaded successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     datasetsDownloadedSuccessfully: {
         message: "Data sets matching pattern downloaded successfully.\nDestination: %s"
@@ -169,7 +169,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that file is uploaded to data set successfully
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     dataSetUploadedSuccessfully: {
         message: "Data set uploaded successfully."
@@ -177,7 +177,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
 
     /**
      * Message indicating that the no members were found
-     * @type {string}
+     * @type {IMessageDefinition}
      */
     noMembersFound: {
         message: "No members found!"
@@ -521,6 +521,37 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     ussCreatedSuccessfully: {
         message: "USS file or directory created successfully."
+    },
+
+    /**
+     * Message indicating that the data set was recalled successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetRecalledSuccessfully: {
+        message: "Data set recall requested."
+    },
+
+    /**
+     * Message indicating that the data set has been renamed successfully.
+     * @type {IMessageDefinition}
+     */
+    dataSetRenamedSuccessfully: {
+        message: "Data set renamed successfully."
+    },
+
+    /**
+     * Message indicating that the data set was recalled successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetMigratedSuccessfully: {
+        message: "Data set migraton requested."
+    },
+
+    /**
+     * Message indicating that the data set was copied successfully
+     * @type {IMessageDefinition}
+     */
+    datasetCopiedSuccessfully: {
+        message: "Data set copied successfully."
     }
 };
-

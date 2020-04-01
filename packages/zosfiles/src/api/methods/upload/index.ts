@@ -10,5 +10,6 @@
 */
 
 export * from "./doc/IUploadOptions";
+export * from "./doc/IUploadResult";
 
 export * from "./Upload";

@@ -36,7 +36,7 @@ export class Login {
         const client = new ZosmfRestClient(session);
         await client.request({
             request: "GET",
-            resource: LoginConstants.RESOURCE,
+            resource: LoginConstants.RESOURCE
         });
 
         // NOTE(Kelosky): since this endpoint doesn't require authentication, we treat a missing LTPA2 token

@@ -352,7 +352,7 @@ const PRETEND_ZOSMF_RESPONSE: IWorkflowInfo = {
     domainID: "null",
     tenantID: "null",
     softwareServiceInstanceName: "Instance1",
-    templateName: "null",
+    templateName: "null"
     // steps
     // variables
 };
@@ -507,7 +507,7 @@ const STEP_WITH_SUBSTEPS: IStepInfo[] = [
                 optional: true,
                 runAsUser: "step.runAsUser",
                 title: "step.title",
-                userDefined: true,
+                userDefined: true
             },
             {
                 stepNumber: "step.stepNumber",
@@ -519,8 +519,8 @@ const STEP_WITH_SUBSTEPS: IStepInfo[] = [
                 optional: true,
                 runAsUser: "step.runAsUser",
                 title: "step.title",
-                userDefined: true,
-            }],
+                userDefined: true
+            }]
         },
         {
             stepNumber: "step.stepNumber",
@@ -532,8 +532,8 @@ const STEP_WITH_SUBSTEPS: IStepInfo[] = [
             optional: true,
             runAsUser: "step.runAsUser",
             title: "step.title",
-            userDefined: true,
-        }],
+            userDefined: true
+        }]
     },
     {
         stepNumber: "step.stepNumber",
@@ -545,8 +545,8 @@ const STEP_WITH_SUBSTEPS: IStepInfo[] = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
-    },
+        userDefined: true
+    }
 ];
 
 const FLATTEN_STEP = [
@@ -561,7 +561,7 @@ const FLATTEN_STEP = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
+        userDefined: true
     },
     {
         stepNumber: "step.stepNumber",
@@ -574,7 +574,7 @@ const FLATTEN_STEP = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
+        userDefined: true
     },
     {
         stepNumber: "step.stepNumber",
@@ -587,7 +587,7 @@ const FLATTEN_STEP = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
+        userDefined: true
     },
     {
         stepNumber: "step.stepNumber",
@@ -600,7 +600,7 @@ const FLATTEN_STEP = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
+        userDefined: true
     },
     {
         stepNumber: "step.stepNumber",
@@ -613,7 +613,7 @@ const FLATTEN_STEP = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
+        userDefined: true
     },
     {
         stepNumber: "step.stepNumber",
@@ -626,8 +626,8 @@ const FLATTEN_STEP = [
         optional: true,
         runAsUser: "step.runAsUser",
         title: "step.title",
-        userDefined: true,
-    },
+        userDefined: true
+    }
 ];
 
 function expectZosmfResponseSucceeded(response: any, error: ImperativeError) {

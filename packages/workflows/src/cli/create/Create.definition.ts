@@ -29,6 +29,6 @@ export const CreateDefinition: ICommandDefinition = {
     children: [
         DataSet,
         UssFile,
-        LocalFile,
+        LocalFile
     ]
 };

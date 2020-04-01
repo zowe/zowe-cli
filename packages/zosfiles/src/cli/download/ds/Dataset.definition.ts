@@ -30,7 +30,7 @@ export const DatasetDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Dataset.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
@@ -38,7 +38,7 @@ export const DatasetDefinition: ICommandDefinition = {
             description: strings.POSITIONALS.DATASETNAME,
             type: "string",
             required: true
-        },
+        }
     ],
     options: [
         DownloadOptions.volume,

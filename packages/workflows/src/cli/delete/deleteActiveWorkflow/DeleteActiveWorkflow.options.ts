@@ -27,7 +27,7 @@ export const DeleteWorkflowOptions: { [key: string]: ICommandOptionDefinition } 
         type: "string",
         required: false,
         absenceImplications: ["workflow-key"],
-        conflictsWith: ["workflow-key"],
+        conflictsWith: ["workflow-key"]
     },
 
     /**
@@ -39,8 +39,8 @@ export const DeleteWorkflowOptions: { [key: string]: ICommandOptionDefinition } 
         aliases: ["wk"],
         description: "Delete active workflow by specified workflow key",
         type: "string",
-        required: false,
+        required: false
         // absenceImplications: ["by-name"]
         // conflictsWith: ["by-name"],
-    },
+    }
 };

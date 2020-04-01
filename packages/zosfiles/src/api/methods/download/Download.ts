@@ -22,6 +22,9 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions } from "./doc/IDownloadOptions";
 import { asyncPool } from "../../../../../utils";
+import { IRestClientResponse } from "../../doc/IRestClientResponse";
+import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
+import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
@@ -92,11 +95,36 @@ export class Download {
             IO.createDirsSyncFromFilePath(destination);
 
             const writeStream = IO.createWriteStream(destination);
-            await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, options.task);
+
+            // Use specific options to mimic ZosmfRestClient.getStreamed()
+            const requestOptions: IOptionsFullResponse = {
+                resource: endpoint,
+                reqHeaders,
+                responseStream: writeStream,
+                normalizeResponseNewLines: !options.binary,
+                task: options.task
+            };
+
+            // If requestor needs etag, add header + get "response" back
+            if (options.returnEtag) {
+                requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+            }
+
+            const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
+
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
+
+            // Return Etag in apiResponse, if requested
+            if (options.returnEtag) {
+                apiResponse.etag = request.response.headers.etag;
+            }
+
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse: {}
+                apiResponse
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -240,11 +268,34 @@ export class Download {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
             }
 
-            await ZosmfRestClient.getStreamed(session, endpoint, reqHeaders, writeStream, !options.binary, options.task);
+            // Use specific options to mimic ZosmfRestClient.getStreamed()
+            const requestOptions: IOptionsFullResponse = {
+                resource: endpoint,
+                reqHeaders,
+                responseStream: writeStream,
+                normalizeResponseNewLines: !options.binary,
+                task: options.task
+            };
+
+            // If requestor needs etag, add header + get "response" back
+            if (options.returnEtag) {
+                requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
+                requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+            }
+
+            const request = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
+
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
+
+            // Return Etag in apiResponse, if requested
+            if (options.returnEtag) {
+                apiResponse.etag = request.response.headers.etag;
+            }
             return {
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
-                apiResponse: {}
+                apiResponse
             };
         } catch (error) {
             Logger.getAppLogger().error(error);

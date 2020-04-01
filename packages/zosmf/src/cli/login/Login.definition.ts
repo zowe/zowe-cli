@@ -21,7 +21,7 @@ export const LoginCommand: ICommandDefinition = {
     " See a specific command's help via \"--help\" for more information.",
     handler: __dirname + "/Login.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: [
         ...ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
@@ -29,13 +29,13 @@ export const LoginCommand: ICommandDefinition = {
             name: "json-web-token", aliases: ["jwt"],
             description: "Login and obtain JWT token instead of default LTPA2.",
             type: "boolean"
-        },
+        }
     ],
     examples: [
         {
             description: "Login to an instance of z/OSMF in order to obtain or update they " +
                 "token value stored into your z/OSMF profile",
             options: ""
-        },
+        }
     ]
 };

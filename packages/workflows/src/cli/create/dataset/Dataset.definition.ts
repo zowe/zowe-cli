@@ -27,15 +27,15 @@ export const DataSet: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     positionals: [
         {
             name: "workflowName",
             type: "string",
             description: "Name of the workflow",
-            required: true,
-        },
+            required: true
+        }
     ],
     options: ([
         CreateCommonOptions.dataSet,
@@ -46,7 +46,7 @@ export const DataSet: ICommandDefinition = {
         CreateCommonOptions.assignToOwner,
         CreateCommonOptions.accessType,
         CreateCommonOptions.deleteCompleted,
-        CreateCommonOptions.overwrite,
+        CreateCommonOptions.overwrite
         // CreateCommonOptions.zosmfVersion
     ]),
     outputFormatOptions: true,
@@ -73,5 +73,5 @@ export const DataSet: ICommandDefinition = {
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --owner \"MYSYSID\" --variables DUMMYVAR=DUMMYVAL " +
                 "--assign-to-owner"
         }
-    ],
+    ]
 };

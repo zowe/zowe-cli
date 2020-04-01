@@ -20,7 +20,7 @@ export const StatusDefinition: ICommandDefinition = {
     type: "command",
     handler: __dirname + "/Status.handler",
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
     options: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
     examples: [
@@ -37,6 +37,6 @@ export const StatusDefinition: ICommandDefinition = {
         {
             description: "Report the status of the z/OSMF server that you specified manually via command line",
             options: "--host myhost --port 443 --user myuser --password mypass"
-        },
+        }
     ]
 };

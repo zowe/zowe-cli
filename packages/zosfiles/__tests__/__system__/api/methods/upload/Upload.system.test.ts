@@ -9,7 +9,7 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse, Upload, ZosFilesMessages } from "../../../../../";
+import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse, Upload, ZosFilesMessages, Download } from "../../../../../";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
@@ -19,6 +19,7 @@ import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__test
 import { Get, ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../../rest";
 import { IUploadMap } from "../../../../../src/api/methods/upload/doc/IUploadMap";
+import * as fs from "fs";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -55,6 +56,8 @@ describe("Upload Data Set", () => {
             beforeEach(async () => {
                 let error;
                 let response;
+                uploadOptions.etag = undefined;
+                uploadOptions.returnEtag = undefined;
 
                 try {
                     response = await Create.dataSet(REAL_SESSION,
@@ -94,6 +97,54 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
+            it("should upload a file to a physical sequential data set while passing correct Etag", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // first we have to get the Etag, so we can compare it. We do it by preemtively downloading the file and requesting Etag
+                await Upload.fileToDataset(REAL_SESSION, __dirname + "/testfiles/upload.txt", dsname);
+                const downloadOptions = {file: __dirname + "/testfiles/upload.txt", returnEtag: true};
+                const downloadResponse = await Download.dataSet(REAL_SESSION, dsname, downloadOptions);
+                expect(downloadResponse.success).toBeTruthy();
+                expect(downloadResponse.apiResponse.etag).toBeDefined();
+
+                try {
+                    uploadOptions.etag = downloadResponse.apiResponse.etag;
+                    // packages/zosfiles/__tests__/__system__/api/methods/upload/
+                    response = await Upload.fileToDataset(REAL_SESSION, __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+            });
+
+            it("should upload a file to a physical sequential data set and return the Etag", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                uploadOptions.returnEtag = true;
+
+                try {
+                    // packages/zosfiles/__tests__/__system__/api/methods/upload/
+                    response = await Upload.fileToDataset(REAL_SESSION,
+                        __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+                expect(response.apiResponse[0].etag).toBeDefined();
+            });
+
             it("should upload a file to a physical sequential data set using relative path", async () => {
                 let error;
                 let response: IZosFilesResponse;
@@ -113,7 +164,9 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
-            it("should upload a file to a physical sequential data set using Windows relative path", async () => {
+            // Since this test is platform specific, only run it on Windows
+            (process.platform === "win32" ? it : it.skip)("should upload a file to a physical sequential data set using Windows relative path",
+            async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -233,7 +286,9 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
-            it("should upload a file to a partitioned data set member using Windows relative path", async () => {
+            // Since this test is platform specific, only run it on Windows
+            (process.platform === "win32" ? it : it.skip)("should upload a file to a partitioned data set member using Windows relative path",
+            async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -444,6 +499,11 @@ describe("Upload USS file", () => {
 
     describe("Success Scenarios", () => {
 
+        beforeEach(async () => {
+            uploadOptions.etag = undefined;
+            fs.writeFileSync(inputfile, testdata);
+        });
+
         afterEach(async () => {
             let error;
             let response;
@@ -498,7 +558,6 @@ describe("Upload USS file", () => {
             let uploadResponse;
             let getResponse;
 
-
             try {
                 uploadResponse = await Upload.fileToUSSFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
@@ -528,6 +587,47 @@ describe("Upload USS file", () => {
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(testdata));
 
+        });
+        it("should upload a USS file while passing correct Etag", async () => {
+            let error;
+            let uploadResponse;
+
+            // first we have to get the Etag, so we can compare it. We do it by preemtively downloading the file and requesting Etag
+            await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {returnEtag: false});
+            const downloadResponse = await Download.ussFile(REAL_SESSION, ussname, {file: inputfile, returnEtag: true});
+            expect(downloadResponse.success).toBeTruthy();
+            expect(downloadResponse.apiResponse.etag).toBeDefined();
+
+            try {
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {etag: downloadResponse.apiResponse.etag});
+                Imperative.console.info("Response: " + inspect(uploadResponse));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeTruthy();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(uploadResponse.commandResponse).toContain(ZosFilesMessages.ussFileUploadedSuccessfully.message);
+        });
+        it("should upload a USS file and return Etag", async () => {
+            let error;
+            let uploadResponse;
+            let getResponse;
+
+            try {
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {returnEtag: true});
+                getResponse = await Get.USSFile(REAL_SESSION, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeTruthy();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(uploadResponse.apiResponse.etag).toBeDefined();
         });
     });
 });

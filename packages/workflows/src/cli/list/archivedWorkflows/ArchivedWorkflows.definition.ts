@@ -26,7 +26,7 @@ export const ArchivedWorkflows: ICommandDefinition = {
     type: "command",
     handler: join(__dirname, "ArchivedWorkflows.handler"),
     profile: {
-        optional: ["zosmf"],
+        optional: ["zosmf"]
     },
-    outputFormatOptions: true,
+    outputFormatOptions: true
 };

@@ -59,12 +59,12 @@ exports[`zos-console should display the help 1`] = `
 
 exports[`zos-console should fail with invalid option 1`] = `
 "Command Error:
-Unknown argument: foo-bar
+Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
-Command entered: \\"zowe zos-console --foo-bar true --fooBar true\\"
+Command entered: \\"zowe zos-console --foo-bar\\"
 Use \\"zowe zos-console --help\\" to view groups, commands, and options.
 Error Details:
-Unknown argument: foo-bar
+Unknown arguments: foo-bar, fooBar
 "
 `;
 

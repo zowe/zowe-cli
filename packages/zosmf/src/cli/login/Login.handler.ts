@@ -53,7 +53,7 @@ export default class LoginHandler extends ZosmfBaseHandler {
             name: this.mZosmfLoadedProfile.name,
             args: {
                 "token-type": sessionConfig.tokenType,
-                "token-value": tokenValue,
+                "token-value": tokenValue
             },
             merge: true
         });
