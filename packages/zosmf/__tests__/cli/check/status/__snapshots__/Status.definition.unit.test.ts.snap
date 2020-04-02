@@ -26,7 +26,6 @@ Object {
       "description": "The z/OSMF server host name.",
       "group": "Zosmf Connection Options",
       "name": "host",
-      "required": true,
       "type": "string",
     },
     Object {
@@ -46,7 +45,6 @@ Object {
       "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
       "group": "Zosmf Connection Options",
       "name": "user",
-      "required": true,
       "type": "string",
     },
     Object {
@@ -57,7 +55,6 @@ Object {
       "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
       "group": "Zosmf Connection Options",
       "name": "password",
-      "required": true,
       "type": "string",
     },
     Object {
@@ -77,6 +74,24 @@ Object {
       "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
       "group": "Zosmf Connection Options",
       "name": "base-path",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "tt",
+      ],
+      "description": "The token type for z/OSMF returned in the HTTP Cookie header, for example: 'LtpaToken2'. The existence of a 'tokenType' indicates that basic authentication will not be used after a token has been obtained.",
+      "group": "Zosmf Connection Options",
+      "name": "token-type",
+      "type": "stringOrEmpty",
+    },
+    Object {
+      "aliases": Array [
+        "tv",
+      ],
+      "description": "The token value associated with the token type.",
+      "group": "Zosmf Connection Options",
+      "name": "token-value",
       "type": "string",
     },
   ],
