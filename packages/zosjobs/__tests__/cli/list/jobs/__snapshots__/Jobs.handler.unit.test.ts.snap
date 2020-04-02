@@ -116,7 +116,7 @@ Array [
 ]
 `;
 
-exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 2`] = `"List of jobs returned for prefix \\"TESTPRFX\\" and owner \\"someone\\""`;
+exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 2`] = `"List of jobs returned for prefix \\"TESTPRFX\\" and owner \\"null\\""`;
 
 exports[`list jobs handler tests should be able to get a list of jobs for a specific prefix 3`] = `
 Object {
@@ -197,7 +197,7 @@ Array [
 ]
 `;
 
-exports[`list jobs handler tests should be able to get a list of jobs using defaults 2`] = `"List of jobs returned for prefix \\"*\\" and owner \\"someone\\""`;
+exports[`list jobs handler tests should be able to get a list of jobs using defaults 2`] = `"List of jobs returned for prefix \\"*\\" and owner \\"null\\""`;
 
 exports[`list jobs handler tests should be able to get a list of jobs using defaults 3`] = `
 Object {
@@ -244,18 +244,3 @@ Object {
 `;
 
 exports[`list jobs handler tests should not transform an error from the zosmf rest client 1`] = `"You fail"`;
-
-exports[`list jobs handler tests should not transform an error from the zosmf rest client 2`] = `"List of jobs returned for prefix \\"*\\" and owner \\"null\\""`;
-
-exports[`list jobs handler tests should not transform an error from the zosmf rest client 3`] = `
-Object {
-  "fields": Array [
-    "jobid",
-    "retcode",
-    "jobname",
-    "status",
-  ],
-  "format": "table",
-  "output": undefined,
-}
-`;
