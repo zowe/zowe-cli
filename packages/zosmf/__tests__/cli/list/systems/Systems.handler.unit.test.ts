@@ -15,7 +15,7 @@ import CmdHandler from "../../../../src/cli/list/systems/Systems.handler";
 import * as cmdDef from "../../../../src/cli/list/systems/Systems.definition";
 import { getMockedResponse, UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-jest.mock("../../../../src/api/methods/ListDefinedSystems");
+jest.mock("../../../../src/api/ListDefinedSystems");
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {
