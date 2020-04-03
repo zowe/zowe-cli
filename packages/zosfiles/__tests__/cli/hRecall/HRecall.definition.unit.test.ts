@@ -10,12 +10,12 @@
 */
 
 import i18nEnglish from "../../../src/cli/-strings-/en";
-import { HMigrateDefinition } from "../../../src/cli/hMigrate/HMigrate.definition";
+import { HRecallDefinition } from "../../../src/cli/hRecall/HRecall.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files migrate group definition", () => {
+describe("zos-files recall group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/hMigrate/HMigrate.definition").HMigrateDefinition;
+        const definition: ICommandDefinition = require("../../../src/cli/hRecall/HRecall.definition").HRecallDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.options).toBeUndefined();
@@ -24,6 +24,6 @@ describe("zos-files migrate group definition", () => {
     });
 
     it("should be using the correct string field in the object", () => {
-        expect(HMigrateDefinition.description).toBe(i18nEnglish.HMIGRATE.DESCRIPTION);
+        expect(HRecallDefinition.description).toBe(i18nEnglish.HRECALL.DESCRIPTION);
     });
 });

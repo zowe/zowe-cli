@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Recall Data Set should display the help 1`] = `
-"================Z/OS FILES MIGRATE DATA-SET-SEQUENTIAL HELP===============
+"================Z/OS FILES RECALL DATA-SET-SEQUENTIAL HELP===============
 
  COMMAND NAME
  ------------
