@@ -64,8 +64,10 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
+  "delete_before_npm_publish": "Delete the dependency of imperative from GitHub. Restore the standard version number dependency.",
+  "restore_before_npm_publish_@zowe/imperative": "4.5.6",
   "dependencies": {
-    "@zowe/imperative": "4.5.4",
+    "@zowe/imperative": "git+https://github.com/zowe/imperative.git#tokens",
     "@zowe/perf-timing": "1.0.6",
     "get-stdin": "7.0.0",
     "js-yaml": "3.13.1",
