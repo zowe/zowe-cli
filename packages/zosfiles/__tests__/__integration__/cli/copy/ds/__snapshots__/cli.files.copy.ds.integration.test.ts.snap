@@ -63,6 +63,16 @@ exports[`Copy Data Set should display the help 1`] = `
       prepend the base path to all z/OSMF resources when making REST requests. Do not
       specify this option if you are not using an API mediation layer.
 
+   --token-type  | --tt (string)
+
+      The token type for z/OSMF returned in the HTTP Cookie header, for example:
+      'LtpaToken2'. The existence of a 'tokenType' indicates that basic authentication
+      will not be used after a token has been obtained.
+
+   --token-value  | --tv (string)
+
+      The token value associated with the token type.
+
  PROFILE OPTIONS
  ---------------
 
