@@ -22,8 +22,8 @@ const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTyping
  * @type {ICommandDefinition}
  */
 export const HMigrateDefinition: ICommandDefinition = {
-    name: "hMigrate",
-    aliases: ["hmigr"],
+    name: "migrate",
+    aliases: ["hmigr", "hMigrate"],
     type: "group",
     description: DESCRIPTION,
     children: [
