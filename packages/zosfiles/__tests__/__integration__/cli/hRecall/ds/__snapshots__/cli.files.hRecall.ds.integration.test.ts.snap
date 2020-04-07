@@ -16,7 +16,7 @@ exports[`Recall Data Set should display the help 1`] = `
  USAGE
  -----
 
-   zowe zos-files hRecall data-set <dataSetName> [options]
+   zowe zos-files recall data-set <dataSetName> [options]
 
  POSITIONAL ARGUMENTS
  --------------------
@@ -97,7 +97,7 @@ exports[`Recall Data Set should display the help 1`] = `
 
    - Recall a data set using default options:
 
-      $ zowe zos-files hRecall data-set \\"USER.DATA.SET\\"
+      $ zowe zos-files recall data-set \\"USER.DATA.SET\\"
 
 "
 `;
