@@ -66,7 +66,7 @@ describe("DsHandler", () => {
             arguments: {
                 dataSetName: "ABCD",
                 options
-            },
+            }
         };
 
         const dummySession = {

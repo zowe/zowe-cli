@@ -12,7 +12,7 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { HMigrate, IMigrateOptions } from "../../../api/methods/hMigrate";
+import { HMigrate } from "../../../api/methods/hMigrate";
 
 /**
  * Handler to rename a Data Set
