@@ -46,13 +46,13 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any, {});
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(recallDataSetSpy).toHaveBeenCalledTimes(1);
         expect(recallDataSetSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.dataSetName,
-            {}
+            undefined
         );
         expect(response).toBe(defaultReturn);
     });
@@ -64,9 +64,9 @@ describe("DsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                dataSetName: "ABCD"
+                dataSetName: "ABCD",
+                options
             },
-            options
         };
 
         const dummySession = {
@@ -80,7 +80,7 @@ describe("DsHandler", () => {
 
         const expectedOptions: IRecallOptions = { wait : true };
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any, { wait: true });
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(recallDataSetSpy).toHaveBeenCalledTimes(1);
         expect(recallDataSetSpy).toHaveBeenLastCalledWith(

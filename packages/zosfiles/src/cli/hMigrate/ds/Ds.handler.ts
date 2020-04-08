@@ -20,8 +20,10 @@ import { HMigrate, IMigrateOptions } from "../../../api/methods/hMigrate";
 export default class DSHandler extends ZosFilesBaseHandler {
   public async processWithSession(
     commandParameters: IHandlerParameters,
-    session: AbstractSession,
-    options: Partial<IMigrateOptions>): Promise<IZosFilesResponse> {
+    session: AbstractSession
+  ): Promise<IZosFilesResponse> {
+
+    const { options } = commandParameters.arguments;
 
     return HMigrate.dataSet(session, commandParameters.arguments.dataSetName, options);
   }

@@ -72,6 +72,16 @@ describe("Recall Dataset", () => {
           Imperative.console.info(`Error: ${inspect(err)}`);
         }
       });
+      it("Should recall a data set", async () => {
+        const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName1]);
+        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
+
+        expect(list1.apiResponse.items[0].migr).toBe("NO");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set recall requested.");
+      });
       it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { wait: true };
         const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
@@ -91,6 +101,16 @@ describe("Recall Dataset", () => {
         } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
         }
+      });
+      it("Should recall a data set", async () => {
+        const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName2]);
+        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+        expect(list1.apiResponse.items[0].migr).toBe("NO");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set recall requested.");
       });
       it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { wait: true };

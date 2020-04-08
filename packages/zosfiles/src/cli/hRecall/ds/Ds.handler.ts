@@ -21,7 +21,9 @@ export default class DSHandler extends ZosFilesBaseHandler {
   public async processWithSession(
     commandParameters: IHandlerParameters,
     session: AbstractSession,
-    options: Partial<IRecallOptions>): Promise<IZosFilesResponse> {
+    ): Promise<IZosFilesResponse> {
+
+      const { options } = commandParameters.arguments;
 
     return HRecall.dataSet(session, commandParameters.arguments.dataSetName, options);
   }
