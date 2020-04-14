@@ -104,9 +104,9 @@ describe("Migrate Dataset", () => {
       });
       it("Should migrate a data set", async () => {
         const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName2]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
+        expect(list2.apiResponse.items[0].migr).toBe("YES");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -115,9 +115,9 @@ describe("Migrate Dataset", () => {
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };
         const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName2, migrateOptions]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
+        expect(list2.apiResponse.items[0].migr).toBe("YES");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);

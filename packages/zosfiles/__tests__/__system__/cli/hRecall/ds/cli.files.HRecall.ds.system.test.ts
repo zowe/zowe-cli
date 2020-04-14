@@ -104,9 +104,9 @@ describe("Recall Dataset", () => {
       });
       it("Should recall a data set", async () => {
         const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName2]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
-        expect(list1.apiResponse.items[0].migr).toBe("NO");
+        expect(list2.apiResponse.items[0].migr).toBe("NO");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -115,9 +115,9 @@ describe("Recall Dataset", () => {
       it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { wait: true };
         const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName2, recallOptions]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
-        expect(list1.apiResponse.items[0].migr).toBe("NO");
+        expect(list2.apiResponse.items[0].migr).toBe("NO");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
