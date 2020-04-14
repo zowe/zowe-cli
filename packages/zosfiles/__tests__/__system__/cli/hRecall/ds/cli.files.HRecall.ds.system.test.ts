@@ -43,9 +43,9 @@ describe("Recall Dataset", () => {
     REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
     user = defaultSystem.zosmf.user.trim().toUpperCase();
-    dataSetName1 = `${user}.SDATAC.SET`;
-    dataSetName2 = `${user}.PDATAC.SET`;
-    dataSetName3 = `${user}.FAIL.SET`;
+    dataSetName1 = `${user}.SDATAC.REC`;
+    dataSetName2 = `${user}.PDATAC.REC`;
+    dataSetName3 = `${user}.FAIL.REC`;
   });
 
   afterAll(async () => {
