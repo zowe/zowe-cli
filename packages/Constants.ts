@@ -51,7 +51,7 @@ export class Constants {
      * @static
      * @memberof Constants
      */
-    public static readonly SUPPORT_LINK = "https://www.zowe.org/";
+    public static readonly SUPPORT_LINK = "https://www.zowe.org";
 
     /**
      * Description of product
