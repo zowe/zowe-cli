@@ -22,43 +22,57 @@ import { Login } from "../../api/Login";
 export default class LoginHandler extends ZosmfBaseHandler {
 
     /**
-     * Handler for the "zosmf login" command. Produces a tabular list of jobs on spool based on
-     * the input parameters.
+     * Handler for the "zosmf login" command.
      * @param {IHandlerParameters} params - see interface for details
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
-     * @memberof JobsHandler
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
 
-        // get a default built session
-        const sessionConfig = this.mSession.ISession;
+        // modify our current session for use with the login command
+        // removing tokenValue, will require a user & password for login
+        delete this.mSession.ISession.tokenValue;
 
-        // set users requested token type
-        sessionConfig.tokenType = (params.arguments.jsonWebToken) ? "jwtToken" : "LtpaToken2";
+        // we want to receive a token in our response
+        this.mSession.ISession.type = "token";
 
-        // force it to be a token connection
-        sessionConfig.type = "token";
+        // set the type of token we expect to receive
+        if (params.arguments.tokenType) {
+            // use the token type requested by the user
+            this.mSession.ISession.tokenType = params.arguments.tokenType;
+        } else {
+            // use our default APIML token
+            this.mSession.ISession.tokenType = "LtpaToken2"; // Todo:Gene: replace this zosmf hack with "apimlAuthenticationToken"
+        }
 
-        // remove any existing token value
-        delete sessionConfig.tokenValue;
+        // Create a new session to validate user's values with our modifications
+        let loginSess;
+        try {
+            loginSess = new Session(this.mSession.ISession);
+        }
+        catch (impErr) {
+            // remove error text about allowing a token - not applicable for login command itself
+            throw new ImperativeError({
+                msg: impErr.message.replace(" OR tokenType & tokenValue", ""),
+                additionalDetails: impErr.additionalDetails
+            });
+        }
 
-        // establish a new session object
-        const session = new Session(sessionConfig);
-
-        // login to obtain a obtain token
-        const tokenValue = await Login.login(session);
+        // login to obtain a token
+        const tokenValue = await Login.login(loginSess);
 
         // update the profile given
         await Imperative.api.profileManager(`zosmf`).update({
             name: this.mZosmfLoadedProfile.name,
             args: {
-                "token-type": sessionConfig.tokenType,
+                "token-type": loginSess.ISession.tokenType,
                 "token-value": tokenValue
             },
             merge: true
         });
 
-        // TODO(Kelosky): build other response stuff and do NOT print token
-        this.console.log(`Login complete!`);
+        params.response.console.log(
+            "Login successful.\nReceived a token of type = " + loginSess.ISession.tokenType +
+            ".\nThe following token was stored in your profile:\n" + tokenValue
+        );
     }
 }
