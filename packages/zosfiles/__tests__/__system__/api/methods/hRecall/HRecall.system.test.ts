@@ -32,9 +32,9 @@ describe("Recall Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.SET`;
-        dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.SET`;
-        dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.SET`;
+        dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.REC`;
+        dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.REC`;
+        dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.REC`;
     });
 
     afterAll(async () => {
