@@ -136,7 +136,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
             });
             it("should recall a partitioned dataset with wait = true", async () => {
-                const recallOptions: IRecallOptions = { wait: true }
+                const recallOptions: IRecallOptions = { wait: true };
                 let error;
                 let recallResponse;
                 let listResponse;
