@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.10.2`
 
 - Update Imperative to 4.6.
 - Update top-level doc links in help description.
