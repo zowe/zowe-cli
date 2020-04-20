@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Update Migrate and Recall data set APIs to have a base handler function.
+
 ## `6.10.2`
 
 - Update Imperative to 4.6.
