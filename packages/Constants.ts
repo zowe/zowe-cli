@@ -43,7 +43,7 @@ export class Constants {
      * @static
      * @memberof Constants
      */
-    public static readonly DOCUMENTATION_LINK = "https://zowe.github.io/docs-site";
+    public static readonly DOCUMENTATION_LINK = "https://docs.zowe.org";
 
     /**
      *
@@ -51,7 +51,7 @@ export class Constants {
      * @static
      * @memberof Constants
      */
-    public static readonly SUPPORT_LINK = "https://zowe.org";
+    public static readonly SUPPORT_LINK = "https://www.zowe.org";
 
     /**
      * Description of product
