@@ -23,6 +23,7 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let dataSetName1: string;
 let dataSetName2: string;
+let dataSetName3: string;
 let user: string;
 let REAL_SESSION: Session;
 
@@ -44,6 +45,7 @@ describe("Migrate Dataset", () => {
     user = defaultSystem.zosmf.user.trim().toUpperCase();
     dataSetName1 = `${user}.SDATAC.SET`;
     dataSetName2 = `${user}.PDATAC.SET`;
+    dataSetName3 = `${user}.FAIL.SET`;
   });
 
   afterAll(async () => {
@@ -52,12 +54,14 @@ describe("Migrate Dataset", () => {
 
   afterEach(async () => {
     try {
-      await Delete.dataSet(REAL_SESSION, dataSetName1);
-      await Delete.dataSet(REAL_SESSION, dataSetName2);
+        await Promise.all([
+            Delete.dataSet(REAL_SESSION, dataSetName1),
+            Delete.dataSet(REAL_SESSION, dataSetName2),
+            Delete.dataSet(REAL_SESSION, dataSetName3)]);
     } catch (err) {
-      Imperative.console.info(`Error: ${inspect(err)}`);
+        Imperative.console.info(`Error: ${inspect(err)}`);
     }
-  });
+});
 
   describe("Success scenarios", () => {
     describe("Sequential Data Set", () => {
@@ -105,13 +109,13 @@ describe("Migrate Dataset", () => {
     describe("Sequential Data Set", () => {
       beforeEach(async () => {
         try {
-          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
+          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
       } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
       }
       });
       it("Should throw an error if a missing data set name is selected", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, ["MISSING.DATA.SET", dataSetName1]);
+        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, ["MISSING.DATA.SET", dataSetName3]);
 
         expect(response.stderr.toString()).toBeTruthy();
         expect(response.status).toBe(1);
