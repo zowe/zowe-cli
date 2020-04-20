@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent changes
+
+- Update Imperative to 4.6.
+- Update top-level doc links in help description.
+
 ## `6.10.1`
 
 - Update Imperative dependency to fix vulnerability.
