@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.11.0`
 
 - Add preserve-original-letter-case option for download to keep generated folders and files in original uppercase.
 
