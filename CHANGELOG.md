@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Add preserve-original-letter-case option for download to keep generated folders and files in original uppercase.
+
 ## `6.10.3`
 
 - Update Migrate and Recall data set APIs to have a base handler function.

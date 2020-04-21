@@ -45,7 +45,8 @@ export const AllMembersDefinition: ICommandDefinition = {
         DownloadOptions.directory,
         DownloadOptions.binary,
         DownloadOptions.extension,
-        DownloadOptions.maxConcurrentRequests
+        DownloadOptions.maxConcurrentRequests,
+        DownloadOptions.preserveOriginalLetterCase
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
