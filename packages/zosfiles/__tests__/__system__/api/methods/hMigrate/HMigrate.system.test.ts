@@ -9,20 +9,20 @@
 *
 */
 
-import { Create, Delete, CreateDataSetTypeEnum, HMigrate, ZosFilesMessages } from "../../../../..";
+import { Create, Delete, CreateDataSetTypeEnum, ZosFilesMessages } from "../../../../..";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List, IListOptions } from "../../../../../src/api";
-import { IMigrateOptions } from "../../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
+import { List, IListOptions, IMigrateOptions, HMigrate } from "../../../../../src/api";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let dataSet1: string;
 let dataSet2: string;
+let dataSet3: string;
 
 const listOptions: IListOptions = { attributes: true };
 
@@ -32,8 +32,9 @@ describe("Migrate Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.SET`;
-        dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.SET`;
+        dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.MIGR`;
+        dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.MIGR`;
+        dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.MIGR`;
     });
 
     afterAll(async () => {
@@ -42,8 +43,10 @@ describe("Migrate Dataset", () => {
 
     afterEach(async () => {
         try {
-            await Delete.dataSet(REAL_SESSION, dataSet1);
-            await Delete.dataSet(REAL_SESSION, dataSet2);
+            await Promise.all([
+                Delete.dataSet(REAL_SESSION, dataSet1),
+                Delete.dataSet(REAL_SESSION, dataSet2),
+                Delete.dataSet(REAL_SESSION, dataSet3)]);
         } catch (err) {
             Imperative.console.info(`Error: ${inspect(err)}`);
         }
@@ -157,7 +160,7 @@ describe("Migrate Dataset", () => {
     describe("Failure Scenarios", () => {
         beforeEach(async () => {
             try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet1);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSet3);
             } catch (err) {
                 Imperative.console.info(`Error: ${inspect(err)}`);
             }

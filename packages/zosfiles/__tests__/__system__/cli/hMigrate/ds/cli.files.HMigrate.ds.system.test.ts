@@ -68,9 +68,9 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should migrate a data set", async () => {
         const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName1]);
@@ -98,9 +98,9 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should migrate a data set", async () => {
         const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName2]);
@@ -130,9 +130,9 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should throw an error if a missing data set name is selected", async () => {
         const response = runCliScript(migrateScript, TEST_ENVIRONMENT, ["MISSING.DATA.SET", dataSetName3]);
