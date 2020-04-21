@@ -111,5 +111,13 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "number",
         defaultValue: 1,
         numericValueRange: [0, maxConcurrentRequestsMaxValue]
+    },
+
+    preserveOriginalLetterCase: {
+        name: "preserve-original-letter-case",
+        aliases: ["po"],
+        description: strings.PRESERVE_ORIGINAL_LETTER_CASE,
+        type: "boolean",
+        defaultValue: false
     }
 };

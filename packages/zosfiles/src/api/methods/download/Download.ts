@@ -94,8 +94,20 @@ export class Download {
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the data set name
             // Note that the "extension" options do not affect the destination if the "file" options were provided
-            const destination = options.file || ZosFilesUtils.getDirsFromDataSet(dataSetName) +
-                IO.normalizeExtension(extension);
+            const destination = (() => {
+                if (options.file) {
+                    return options.file;
+                }
+
+                let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
+                // Method above lowercased characters.
+                // In case of preserving original letter case, uppercase all characters.
+                if (options.preserveOriginalLetterCase) {
+                    generatedFilePath = generatedFilePath.toUpperCase();
+                }
+
+                return generatedFilePath + IO.normalizeExtension(extension);
+            })();
 
             IO.createDirsSyncFromFilePath(destination);
 
@@ -181,7 +193,23 @@ export class Download {
                 };
             }
 
-            const baseDir = options.directory || ZosFilesUtils.getDirsFromDataSet(dataSetName);
+            // If the "directory" option is provided, use it.
+            // Otherwise use default directory generated from data set name.
+            const baseDir = (() => {
+                if (options.directory) {
+                    return options.directory;
+                }
+
+                let generatedDirectory = ZosFilesUtils.getDirsFromDataSet(dataSetName);
+                // Method above lowercased characters.
+                // In case of preserving original letter case, uppercase all characters.
+                if (options.preserveOriginalLetterCase) {
+                    generatedDirectory = generatedDirectory.toUpperCase();
+                }
+
+                return generatedDirectory;
+            })();
+
             let downloadsInitiated = 0;
 
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -201,10 +229,11 @@ export class Download {
                         (downloadsInitiated / memberList.length));
                     downloadsInitiated++;
                 }
+
+                const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: baseDir + IO.FILE_DELIM + mem.member.toLowerCase() +
-                        IO.normalizeExtension(extension),
+                    file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
                     binary: options.binary
                 });
             };
