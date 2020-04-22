@@ -86,6 +86,11 @@ const config: IImperativeConfig = {
                         "and allow self-signed certificates"
                 },
                 {
+                    options: "zos125 --host zos125 --port 1443",
+                    description: "Create a zosmf profile called 'zos125' to connect to z/OSMF at the host zos125 and port 1443. " +
+                        "and not specify a username or password so they are not stored on disk. These will need to be specified on every command."
+                },
+                {
                     options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
