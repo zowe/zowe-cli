@@ -57,12 +57,12 @@ const config: IImperativeConfig = {
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER_PROFILE
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD_PROFILE
                     },
                     rejectUnauthorized: {
                         type: "boolean",

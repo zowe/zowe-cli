@@ -46,6 +46,7 @@ Object {
       "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
       "group": "Zosmf Connection Options",
       "name": "user",
+      "required": true,
       "type": "string",
     },
     Object {
@@ -56,6 +57,7 @@ Object {
       "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
       "group": "Zosmf Connection Options",
       "name": "password",
+      "required": true,
       "type": "string",
     },
     Object {

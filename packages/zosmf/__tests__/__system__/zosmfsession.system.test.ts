@@ -120,8 +120,9 @@ describe("zosmf create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/zosmf_create_profile.sh",
                 TEST_ENVIRONMENT, opts
             );
-            expect(response.stderr.toString()).toContain('Errors located in profile \"CreateProfileSystemTest\" of type \"zosmf\"');
-            expect(response.stderr.toString()).toContain('profile requires property \"host\"');
+            expect(response.stderr.toString()).toContain("Missing Required Option");
+            expect(response.stderr.toString()).toContain("--host");
+            expect(response.stderr.toString()).toContain("The z/OSMF server host name");
             expect(response.status).toBe(1);
         });
     });

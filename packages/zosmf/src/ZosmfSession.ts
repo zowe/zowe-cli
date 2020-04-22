@@ -51,7 +51,13 @@ export class ZosmfSession {
         aliases: ["u"],
         description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
         type: "string",
+        required: true,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_USER_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_USER,
+        required: false
     };
 
     /**
@@ -62,7 +68,13 @@ export class ZosmfSession {
         aliases: ["pass", "pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
+        required: true,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_PASSWORD_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_PASSWORD,
+        required: false
     };
 
     /**
