@@ -51,7 +51,6 @@ export class ZosmfSession {
         aliases: ["u"],
         description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
         type: "string",
-        required: true,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
@@ -63,8 +62,7 @@ export class ZosmfSession {
         aliases: ["pass", "pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
-        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
-        required: true
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
     /**

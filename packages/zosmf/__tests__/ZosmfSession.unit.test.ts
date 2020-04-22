@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../src/ZosmfSession";
-import { Session } from "@zowe/imperative";
+import { Session, ImperativeExpect } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
     it("should create a session object", () => {
@@ -23,5 +23,18 @@ describe("zosmf utils", () => {
             rejectUnauthorized: "fake"
         });
         expect(session.ISession).toMatchSnapshot();
+    });
+    it("should fail to create a session object when username and password are not present", () => {
+        let error;
+        try {
+            const session: Session = ZosmfSession.createBasicZosmfSession({
+                host: "fake",
+                port: "fake",
+                rejectUnauthorized: "fake"
+            });
+        } catch (err) {
+            error = err;
+        }
+        expect(error.toString()).toContain("Must have user & password OR base64 encoded credentials");
     });
 });
