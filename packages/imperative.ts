@@ -87,13 +87,13 @@ const config: IImperativeConfig = {
                 },
                 {
                     options: "zos125 --host zos125 --port 1443",
-                    description: "Create a zosmf profile called 'zos125' to connect to z/OSMF at the host zos125 and port 1443. " +
-                        "and not specify a username or password so they are not stored on disk. These will need to be specified on every command."
+                    description: "Create a zosmf profile called 'zos125' to connect to z/OSMF at the host zos125 and port 1443, " +
+                        " not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
                 },
                 {
                     options: "zos126 --reject-unauthorized false",
-                    description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates. " +
-                    "Username, password, and host are not stored on disk. These will need to be specified on every command."
+                    description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates, " +
+                    "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
                 },
                 {
                     options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
