@@ -9,9 +9,11 @@
 *
 */
 
-import { IHandlerParameters, ProfilesConstants, Imperative, Session, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, CliUtils, Imperative, Session, ImperativeError } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "../../ZosmfBaseHandler";
 import { Login } from "../../api/Login";
+import { isNullOrUndefined } from "util";
+import { ZosmfSession } from "../../..";
 
 /**
  * Handler to login to z/OSMF
@@ -27,9 +29,28 @@ export default class LoginHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
+        // if no user name was supplied, we must ask for user name
+        let answer: string;
+        if (isNullOrUndefined(params.arguments.user)) {
+            answer = await CliUtils.promptWithTimeout("Enter user name: ");
+            if (answer === null) {
+                throw new ImperativeError({msg: "We timed-out waiting for user name."});
+            }
+            params.arguments.user = answer;
+        }
 
-        // modify our current session for use with the login command
-        // removing tokenValue, will require a user & password for login
+        // if no password was supplied, we must ask for password
+        if (isNullOrUndefined(params.arguments.password)) {
+            answer = await CliUtils.promptWithTimeout("Enter password: ", true);
+            if (answer === null) {
+                throw new ImperativeError({msg: "We timed-out waiting for password."});
+            }
+            params.arguments.password = answer;
+        }
+
+        this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(params.arguments);
+
+        // removing tokenValue, will ensure that user & password are used for authentication
         delete this.mSession.ISession.tokenValue;
 
         // we want to receive a token in our response
@@ -40,38 +61,25 @@ export default class LoginHandler extends ZosmfBaseHandler {
             // use the token type requested by the user
             this.mSession.ISession.tokenType = params.arguments.tokenType;
         } else {
-            // use our default APIML token
-            this.mSession.ISession.tokenType = "LtpaToken2"; // Todo:Gene: replace this zosmf hack with "apimlAuthenticationToken"
-        }
-
-        // Create a new session to validate user's values with our modifications
-        let loginSess;
-        try {
-            loginSess = new Session(this.mSession.ISession);
-        }
-        catch (impErr) {
-            // remove error text about allowing a token - not applicable for login command itself
-            throw new ImperativeError({
-                msg: impErr.message.replace(" OR tokenType & tokenValue", ""),
-                additionalDetails: impErr.additionalDetails
-            });
+            // use our default token
+            this.mSession.ISession.tokenType = "LtpaToken2";
         }
 
         // login to obtain a token
-        const tokenValue = await Login.login(loginSess);
+        const tokenValue = await Login.login(this.mSession);
 
         // update the profile given
         await Imperative.api.profileManager(`zosmf`).update({
             name: this.mZosmfLoadedProfile.name,
             args: {
-                "token-type": loginSess.ISession.tokenType,
+                "token-type": this.mSession.ISession.tokenType,
                 "token-value": tokenValue
             },
             merge: true
         });
 
         params.response.console.log(
-            "Login successful.\nReceived a token of type = " + loginSess.ISession.tokenType +
+            "Login successful.\nReceived a token of type = " +this.mSession.ISession.tokenType +
             ".\nThe following token was stored in your profile:\n" + tokenValue
         );
     }

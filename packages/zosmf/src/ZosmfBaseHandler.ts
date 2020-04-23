@@ -76,7 +76,15 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
         this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
         this.mAPIMLProfile = commandParameters.profiles.get("apiml", false);
-        this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+
+        /* The login command will create the session in the login's processCmd function,
+         * because login can prompt for missing user and password.
+         * Any other command will create the session now.
+         */
+        if (commandParameters.definition.name !== "login") {
+            this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+        }
+
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);
     }
