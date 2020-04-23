@@ -31,6 +31,11 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
+    public static ZOSMF_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_HOST,
+        required: false
+    };
+
     /**
      * Option used in profile creation and commands for port for z/OSMF
      */

@@ -9,11 +9,10 @@
 *
 */
 
-import { runCliScript, stripNewLines } from "../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IO } from "@zowe/imperative";
+import { runCliScript, stripNewLines } from "../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let testEnvironment: ITestEnvironment;
 let host: string;
@@ -22,7 +21,7 @@ let user: string;
 let pass: string;
 let systemProps: ITestPropertiesSchema;
 
-describe("zosmf create profile", () => {
+describe("imperative zosmf create profile", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
@@ -63,7 +62,7 @@ describe("zosmf create profile", () => {
         afterEach(async () => {
             const opts = ["CreateProfileSystemTest"];
             try {
-                runCliScript(__dirname + "/__scripts__/zosmf_delete_profile.sh", TEST_ENVIRONMENT, opts);
+                runCliScript(__dirname + "/__scripts__/imperative_zosmf_delete_profile.sh", TEST_ENVIRONMENT, opts);
             // tslint:disable-next-line: no-empty
             } catch (err) { }
         });
@@ -78,7 +77,7 @@ describe("zosmf create profile", () => {
                 "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 
-            const response = runCliScript(__dirname + "/__scripts__/zosmf_create_profile.sh",
+            const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
                 TEST_ENVIRONMENT, opts
             );
             expect(response.stderr.toString()).toBe("");
@@ -90,40 +89,20 @@ describe("zosmf create profile", () => {
             expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.pass);
         });
 
-        it("should successfully create a profile without username or password", async () => {
+        it("should successfully create a profile without username, password, or host", async () => {
             const opts = [
                 "CreateProfileSystemTest",
-                "--host", SYSTEM_PROPS.zosmf.host,
                 "--port", SYSTEM_PROPS.zosmf.port,
                 "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 
-            const response = runCliScript(__dirname + "/__scripts__/zosmf_create_profile.sh",
+            const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
                 TEST_ENVIRONMENT, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.host);
             expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.port);
-        });
-
-        it("should fail to create a profile without host", async () => {
-            const opts = [
-                "CreateProfileSystemTest",
-                "--port", SYSTEM_PROPS.zosmf.port,
-                "--user", SYSTEM_PROPS.zosmf.user,
-                "--password", SYSTEM_PROPS.zosmf.pass,
-                "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
-            ];
-
-            const response = runCliScript(__dirname + "/__scripts__/zosmf_create_profile.sh",
-                TEST_ENVIRONMENT, opts
-            );
-            expect(response.stderr.toString()).toContain("Missing Required Option");
-            expect(response.stderr.toString()).toContain("--host");
-            expect(response.stderr.toString()).toContain("The z/OSMF server host name");
-            expect(response.status).toBe(1);
         });
     });
 });
