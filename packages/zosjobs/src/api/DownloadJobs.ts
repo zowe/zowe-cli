@@ -68,12 +68,23 @@ export class DownloadJobs {
         this.log.debug("Downloading all spool content for job %s(%s)", parms.jobname, parms.jobid);
 
         const jobFiles = await GetJobs.getSpoolFiles(session, parms.jobname, parms.jobid);
+        // Maintain a mapping of step names and associated DD names to detect duplicate step names
+        const usedStepNames: {[key: string]: string[]} = {};
         for (const file of jobFiles) {
+            let uniqueDDName = file.ddname;
+            if (usedStepNames[file.stepname] != null) {
+                let index = 1;
+                while (usedStepNames[file.stepname].indexOf(uniqueDDName) !== -1) {
+                    uniqueDDName = `${file.ddname}(${index})`;
+                    index++;
+                }
+            }
             await DownloadJobs.downloadSpoolContentCommon(session, {
-                jobFile: file,
+                jobFile: {...file, ddname: uniqueDDName},
                 outDir: parms.outDir,
                 omitJobidDirectory: parms.omitJobidDirectory
             });
+            usedStepNames[file.stepname] = [...usedStepNames[file.stepname] || [], uniqueDDName];
         }
     }
 

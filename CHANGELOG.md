@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Make username, password, and host optional on z/OSMF profiles and update profile creation doc to reflect the change.
+- Don't overwrite files when downloading spool output from job with duplicate step names.
 
 ## `6.11.0`
 
