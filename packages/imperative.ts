@@ -82,7 +82,6 @@ const config: IImperativeConfig = {
                         secure: true
                     }
                 }
-                // TODO(Kelosky) required: ["host"],
             },
             createProfileExamples: [
                 {
