@@ -1,5 +1,4 @@
 #!/bin/bash
-profile=$1
 set -e
 
 echo "================ZOSMF HELP==============="

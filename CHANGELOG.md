@@ -5,7 +5,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Make username, password, and host optional on z/OSMF profiles and update profile creation doc to reflect the change.
-- Create z/OSMF profile creation system tests.
 
 ## `6.11.0`
 
