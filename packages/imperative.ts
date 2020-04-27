@@ -48,7 +48,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST_PROFILE
                     },
                     port: {
                         type: "number",
@@ -57,12 +57,12 @@ const config: IImperativeConfig = {
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER_PROFILE
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD_PROFILE
                     },
                     rejectUnauthorized: {
                         type: "boolean",
@@ -73,7 +73,7 @@ const config: IImperativeConfig = {
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
                     }
                 },
-                required: ["host"]
+                required: []
             },
             createProfileExamples: [
                 {
@@ -84,6 +84,16 @@ const config: IImperativeConfig = {
                     options: "zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
+                },
+                {
+                    options: "zos125 --host zos125 --port 1443",
+                    description: "Create a zosmf profile called 'zos125' to connect to z/OSMF at the host zos125 and port 1443, " +
+                        " not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+                },
+                {
+                    options: "zos126 --reject-unauthorized false",
+                    description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates, " +
+                    "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
                 },
                 {
                     options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
