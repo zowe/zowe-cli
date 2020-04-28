@@ -9,7 +9,7 @@
 *
 */
 
-import { runCliScript, stripNewLines } from "../__src__/TestUtils";
+import { runCliScript } from "../__src__/TestUtils";
 import { TestEnvironment } from "../__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../__src__/environment/doc/response/ITestEnvironment";
 
@@ -20,7 +20,8 @@ describe("imperative create profile", () => {
     // Create the unique test environment
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "imperative_create_profile"
+            testName: "imperative_create_profile",
+            skipProperties: true
         });
     });
 
