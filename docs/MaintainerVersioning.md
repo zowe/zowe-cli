@@ -42,29 +42,35 @@ We use the following terms for the three digits (instead of `major.minor.patch`)
 
 We tag various releases of our product in an NPM registry. End users install the product using these tags. The tag names are as follows:
 
-* **`daily`**
+* **`next`**
 
-   This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
+  This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
+
+  **Note:** This version (what the tag points to) is pre-release so it may be unstable and published sporadically.
 
 * **`latest`**
 
    This tag points to the latest community edition version of the product. This version is intended for public consumption.
 
-* **`lts-incremental`**
+* **`zowe-v1-lts`**
 
    This tag points to a Long Term Support (LTS) Incremental version of the product.
 
    **Note:** This version (what the tag points to) can and will be updated to introduce new backward-compatible enhancements as well as bug fixes.
 
-* **`lts-stable`**
+* **`lts-incremental`**
 
-  This tag points to a Long Term Support (LTS) Stable version of the product.
+   This tag points to a Long Term Support (LTS) Stable version of the product.
 
-  **Note:** This version (what the tag points to) can and will be updated only when there are bug fixes.
+   **Note:** This version (what the tag points to) can and will be updated only when there are bug fixes.
 
-* **`next` *DEPRECATED***
+* **`lts-stable` *DEPRECATED***
 
   This tag is deprecated.
+
+* **`daily` *DEPRECATED***
+
+   This tag is deprecated.
 
 See the [example timeline](#example-timeline) for examples that show how the above versions will be updated.
 
@@ -73,7 +79,7 @@ See the [example timeline](#example-timeline) for examples that show how the abo
 Our versioning scheme has the following requirements:
 
 * New features are not introduced for bug fixes.
-* Support two stable releases: `@lts-incremental` and `@lts-stable`
+* Support two stable releases: `@zowe-v1-lts` and `@lts-incremental`
 * Each release must be supported for a minimum of one calendar year.
 
 ## Tentative Release Schedule
@@ -102,11 +108,11 @@ The following is a list of commands that users issue to install product versions
 
 * To obtain the supported incremental version:
 
-  `npm install -g @brightside/core@lts-incremental`
+  `npm install -g @zowe/cli@zowe-v1-lts`
 
 * To obtain the supported stable version:
 
-  `npm install -g @brightside/core@lts-stable`
+  `npm install -g @brightside/core@lts-incremental`
 
 
 ## Example timeline
