@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "================SSH HELP==============="
+echo "================SSH DELETE PROFILE==============="
 zowe profiles delete ssh $*
 if [ $? -gt 0 ]
 then

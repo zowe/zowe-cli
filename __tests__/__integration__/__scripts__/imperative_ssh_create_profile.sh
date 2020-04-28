@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "================SSH HELP==============="
+echo "================SSH CREATE PROFILE==============="
 zowe profiles create ssh $*
 if [ $? -gt 0 ]
 then

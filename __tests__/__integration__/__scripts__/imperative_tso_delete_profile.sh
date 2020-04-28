@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "================TSO HELP==============="
+echo "================TSO DELETE PROFILE==============="
 zowe profiles delete tso $*
 if [ $? -gt 0 ]
 then

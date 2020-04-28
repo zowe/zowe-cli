@@ -26,8 +26,7 @@ describe("imperative create profile", () => {
     // Create the unique test environment
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            tempProfileTypes: ["zosmf"],
-            testName: "zos_check_status"
+            testName: "imperative_create_profile"
         });
 
         systemProps = testEnvironment.systemTestProperties;
@@ -43,26 +42,10 @@ describe("imperative create profile", () => {
 
     describe("create zosmf profile", () => {
 
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT: ITestEnvironment;
-        let SYSTEM_PROPS: ITestPropertiesSchema;
-
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                testName: "zosmf_create_profile"
-            });
-
-            SYSTEM_PROPS = TEST_ENVIRONMENT.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        });
-
         afterEach(async () => {
             const opts = ["CreateProfileSystemTest"];
             try {
-                runCliScript(__dirname + "/__scripts__/imperative_zosmf_delete_profile.sh", TEST_ENVIRONMENT, opts);
+                runCliScript(__dirname + "/__scripts__/imperative_zosmf_delete_profile.sh", testEnvironment, opts);
             // tslint:disable-next-line: no-empty
             } catch (err) { }
         });
@@ -70,64 +53,48 @@ describe("imperative create profile", () => {
         it("should successfully create a profile", async () => {
             const opts = [
                 "CreateProfileSystemTest",
-                "--host", SYSTEM_PROPS.zosmf.host,
-                "--port", SYSTEM_PROPS.zosmf.port,
-                "--user", SYSTEM_PROPS.zosmf.user,
-                "--password", SYSTEM_PROPS.zosmf.pass,
-                "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
+                "--host", "FAKEHOST",
+                "--port", "443",
+                "--user", "FAKEUSER",
+                "--password", "FAKEPASS",
+                "--reject-unauthorized", "false"
             ];
 
             const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
-                TEST_ENVIRONMENT, opts
+                testEnvironment, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.host);
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.port);
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.user);
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.pass);
+            expect(response.stdout.toString()).toContain("FAKEHOST");
+            expect(response.stdout.toString()).toContain("443");
+            expect(response.stdout.toString()).toContain("FAKEUSER");
+            expect(response.stdout.toString()).toContain("FAKEPASS");
         });
 
         it("should successfully create a profile without username, password, or host", async () => {
             const opts = [
                 "CreateProfileSystemTest",
-                "--port", SYSTEM_PROPS.zosmf.port,
-                "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
+                "--port", "443",
+                "--reject-unauthorized", "false"
             ];
 
             const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
-                TEST_ENVIRONMENT, opts
+                testEnvironment, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.zosmf.port);
+            expect(response.stdout.toString()).toContain("443");
         });
     });
 
     describe("create ssh profile", () => {
 
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT: ITestEnvironment;
-        let SYSTEM_PROPS: ITestPropertiesSchema;
-
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                testName: "ssh_create_profile"
-            });
-
-            SYSTEM_PROPS = TEST_ENVIRONMENT.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        });
-
         afterEach(async () => {
             const opts = ["CreateProfileSystemTest"];
             try {
-                runCliScript(__dirname + "/__scripts__/imperative_ssh_delete_profile.sh", TEST_ENVIRONMENT, opts);
+                runCliScript(__dirname + "/__scripts__/imperative_ssh_delete_profile.sh", testEnvironment, opts);
             // tslint:disable-next-line: no-empty
             } catch (err) { }
         });
@@ -135,62 +102,46 @@ describe("imperative create profile", () => {
         it("should successfully create a profile", async () => {
             const opts = [
                 "CreateProfileSystemTest",
-                "--host", SYSTEM_PROPS.ssh.host,
-                "--port", SYSTEM_PROPS.ssh.port,
-                "--user", SYSTEM_PROPS.ssh.user,
-                "--password", SYSTEM_PROPS.ssh.password
+                "--host", "FAKEHOST",
+                "--port", "22",
+                "--user", "FAKEUSER",
+                "--password", "FAKEPASS"
             ];
 
             const response = runCliScript(__dirname + "/__scripts__/imperative_ssh_create_profile.sh",
-                TEST_ENVIRONMENT, opts
+                testEnvironment, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.ssh.host);
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.ssh.port);
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.ssh.user);
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.ssh.password);
+            expect(response.stdout.toString()).toContain("FAKEHOST");
+            expect(response.stdout.toString()).toContain("22");
+            expect(response.stdout.toString()).toContain("FAKEUSER");
+            expect(response.stdout.toString()).toContain("FAKEPASS");
         });
 
         it("should successfully create a profile without username, password, or host", async () => {
             const opts = [
                 "CreateProfileSystemTest",
-                "--port", SYSTEM_PROPS.ssh.port
+                "--port", "22"
             ];
 
             const response = runCliScript(__dirname + "/__scripts__/imperative_ssh_create_profile.sh",
-                TEST_ENVIRONMENT, opts
+                testEnvironment, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
-            expect(response.stdout.toString()).toContain(SYSTEM_PROPS.ssh.port);
+            expect(response.stdout.toString()).toContain("22");
         });
     });
 
     describe("create tso profile", () => {
 
-        // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT: ITestEnvironment;
-        let SYSTEM_PROPS: ITestPropertiesSchema;
-
-        beforeAll(async () => {
-            TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                testName: "tso_create_profile"
-            });
-
-            SYSTEM_PROPS = TEST_ENVIRONMENT.systemTestProperties;
-        });
-
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        });
-
         afterEach(async () => {
             const opts = ["CreateProfileSystemTest"];
             try {
-                runCliScript(__dirname + "/__scripts__/imperative_tso_delete_profile.sh", TEST_ENVIRONMENT, opts);
+                runCliScript(__dirname + "/__scripts__/imperative_tso_delete_profile.sh", testEnvironment, opts);
             // tslint:disable-next-line: no-empty
             } catch (err) { }
         });
@@ -198,11 +149,11 @@ describe("imperative create profile", () => {
         it("should successfully create a profile", async () => {
             const opts = [
                 "CreateProfileSystemTest",
-                "--account", SYSTEM_PROPS.tso.account
+                "--account", "FAKEACCT"
             ];
 
             const response = runCliScript(__dirname + "/__scripts__/imperative_tso_create_profile.sh",
-                TEST_ENVIRONMENT, opts
+                testEnvironment, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -215,12 +166,12 @@ describe("imperative create profile", () => {
             ];
 
             const response = runCliScript(__dirname + "/__scripts__/imperative_tso_create_profile.sh",
-                TEST_ENVIRONMENT, opts
+                testEnvironment, opts
             );
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
-            expect(response.stdout.toString()).not.toContain(SYSTEM_PROPS.tso.account);
+            expect(response.stdout.toString()).not.toContain("FAKEACCT");
         });
     });
 });
