@@ -12,14 +12,8 @@
 import { runCliScript, stripNewLines } from "../__src__/TestUtils";
 import { TestEnvironment } from "../__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../__src__/properties/ITestPropertiesSchema";
 
 let testEnvironment: ITestEnvironment;
-let host: string;
-let port: number;
-let user: string;
-let pass: string;
-let systemProps: ITestPropertiesSchema;
 
 describe("imperative create profile", () => {
 
@@ -28,12 +22,6 @@ describe("imperative create profile", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "imperative_create_profile"
         });
-
-        systemProps = testEnvironment.systemTestProperties;
-        host = systemProps.zosmf.host;
-        port = systemProps.zosmf.port;
-        user = systemProps.zosmf.user;
-        pass = systemProps.zosmf.pass;
     });
 
     afterAll(async () => {
