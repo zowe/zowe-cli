@@ -9,10 +9,10 @@
 *
 */
 
-import { runCliScript, stripNewLines } from "../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { runCliScript, stripNewLines } from "../__src__/TestUtils";
+import { TestEnvironment } from "../__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../__src__/properties/ITestPropertiesSchema";
 
 let testEnvironment: ITestEnvironment;
 let host: string;
@@ -21,7 +21,7 @@ let user: string;
 let pass: string;
 let systemProps: ITestPropertiesSchema;
 
-describe("imperative zosmf create profile", () => {
+describe("imperative create profile", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
