@@ -10,17 +10,27 @@
 */
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../../";
-import { ImperativeError, IO, Session } from "@zowe/imperative";
+import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "../../../../zosfiles/src/api/methods/get";
+import { MonitorJobs } from "../../../src/api/MonitorJobs";
+import { IJob } from "../../../src/api/doc/response/IJob";
+import * as fs from "fs";
+import { TEST_RESOURCES_DIR } from "../../__src__/ZosJobsTestConstants";
+import { join } from "path";
 
 let outputDirectory: string;
 let REAL_SESSION: Session;
-let account: string;
+let ACCOUNT: string;
+let DOWNLOAD_JOB_NAME: string;
+let JOBCLASS: string;
+let SYSAFF: string;
 let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment;
+
+const LONG_TIMEOUT = 200000;
 
 describe("Download Jobs - System tests", () => {
     let jobid: string;
@@ -36,8 +46,6 @@ describe("Download Jobs - System tests", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        account = defaultSystem.tso.account;
-        const maxJobNamePrefix = 5;
         // download the valid IEFBR14 from the data set specified in the properties file
         const iefbr14DataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14Member;
         const iefbr14JCL = (await Get.dataSet(REAL_SESSION, iefbr14DataSet)).toString();
@@ -54,6 +62,13 @@ describe("Download Jobs - System tests", () => {
                 jesJCLJobFile = file;
             }
         }
+
+        ACCOUNT = defaultSystem.tso.account;
+        const JOB_LENGTH = 6;
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+
+        JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
+        SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
 
     afterEach((done: any) => {
@@ -102,8 +117,36 @@ describe("Download Jobs - System tests", () => {
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
             }
-
         });
+
+        it("should be able to download all DDs from job output containing duplicate step names", async () => {
+            // Construct the JCL
+            const templateJcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/duplicate_steps.jcl")).toString();
+            const renderedJcl = TextUtils.renderWithMustache(templateJcl,
+                {JOBNAME: DOWNLOAD_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+            const job: IJob = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
+
+            await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, job);
+
+            const downloadDir = outputDirectory + "/downloadsteps/";
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: downloadDir,
+                jobid: job.jobid,
+                jobname: job.jobname
+            });
+
+            const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+            for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
+                const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
+                expect(IO.existsSync(expectedFile)).toEqual(true);
+
+                if (file.stepname !== "JES2") {
+                    expect(IO.existsSync(expectedFile.slice(0, -expectedExt.length) + "(1)" + expectedExt)).toEqual(true);
+                    expect(IO.existsSync(expectedFile.slice(0, -expectedExt.length) + "(2)" + expectedExt)).toEqual(true);
+                }
+            }
+        }, LONG_TIMEOUT);
     });
 
 

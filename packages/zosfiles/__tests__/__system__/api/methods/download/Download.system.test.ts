@@ -26,7 +26,7 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
-import { readFileSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { ZosmfHeaders } from "../../../../../../rest/src/api/ZosmfHeaders";
 import { posix } from "path";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -118,6 +118,45 @@ describe("Download Data Set", () => {
                 const regex = /\./gi;
                 file = dsname.replace(regex, "/") + ".txt";
                 file = file.toLowerCase();
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`${file}`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a data set and create folders and file in original letter case", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.replace(regex, "/") + ".txt";
+
+                // Check if folders and file are created in original uppercase
+                file.split("/").reduce((path, pathSegment) => {
+                    const pathExists = readdirSync(path).indexOf(pathSegment) !== -1;
+                    expect(pathExists).toBeTruthy();
+                    return [path, pathSegment].join("/");
+                }, ".");
+
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}`).toString());
                 expect(fileContents).toEqual(data);
@@ -278,6 +317,45 @@ describe("Download Data Set", () => {
                 file = file.toLowerCase();
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}/member.txt`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download a data set and create folders and file in original letter case", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.replace(regex, "/") + "/MEMBER.txt";
+
+                // Check if folders and file are created in original uppercase
+                file.split("/").reduce((path, pathSegment) => {
+                    const pathExists = readdirSync(path).indexOf(pathSegment) !== -1;
+                    expect(pathExists).toBeTruthy();
+                    return [path, pathSegment].join("/");
+                }, ".");
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(file).toString());
                 expect(fileContents).toEqual(data);
             });
 

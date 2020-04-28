@@ -27,7 +27,13 @@ export class ZosmfSession {
         aliases: ["H"],
         description: "The z/OSMF server host name.",
         type: "string",
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_HOST,
+        required: false
     };
 
     /**
@@ -50,7 +56,13 @@ export class ZosmfSession {
         aliases: ["u"],
         description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
         type: "string",
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_USER_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_USER,
+        required: false
     };
 
     /**
@@ -61,7 +73,13 @@ export class ZosmfSession {
         aliases: ["pass", "pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_PASSWORD_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_PASSWORD,
+        required: false
     };
 
     /**
@@ -98,6 +116,7 @@ export class ZosmfSession {
         description: "The token type for z/OSMF returned in the HTTP Cookie header, for example: 'LtpaToken2'." +
             " The existence of a 'tokenType' indicates that basic authentication will not be used after a token has been obtained.",
         type: "stringOrEmpty",
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
@@ -109,6 +128,7 @@ export class ZosmfSession {
         aliases: ["tv"],
         description: "The token value associated with the token type.",
         type: "string",
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 

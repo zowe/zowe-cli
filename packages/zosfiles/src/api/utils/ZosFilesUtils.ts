@@ -11,7 +11,13 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO } from "@zowe/imperative";
+import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import { ZosFilesConstants } from "../../../src/api/constants/ZosFiles.constants";
+import { ZosFilesMessages } from "../../../src/api/constants/ZosFiles.messages";
+import { IZosFilesResponse } from "../doc/IZosFilesResponse";
+import { ZosmfRestClient } from "../../../../rest/src/api/ZosmfRestClient";
+import { IRecallOptions } from "../methods/hRecall/doc/IRecallOptions";
+import { IMigrateOptions } from "../methods/hMigrate/doc/IMigrateOptions";
 
 /**
  * Common IO utilities
@@ -83,8 +89,8 @@ export class ZosFilesUtils {
             const fileList = fs.readdirSync(fullpath);
             fileList.forEach((file) => {
                 const tempPath = path.resolve(fullpath, file);
-                if (fs.lstatSync(tempPath).isFile()){
-                    if (!(isIgnoreHidden && path.basename(file).startsWith("."))){
+                if (fs.lstatSync(tempPath).isFile()) {
+                    if (!(isIgnoreHidden && path.basename(file).startsWith("."))) {
                         if (inFullPathFormat) {
                             returnFileList.push(tempPath);
                         } else {
@@ -177,5 +183,50 @@ export class ZosFilesUtils {
         }
         return usspath;
     }
-}
 
+    /**
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} dataSetName -The name of the data set to recall|migrate
+     * @param {string} returnMessage - Message to rtuern based upon command request
+     * @param {any} hsmCommand - HsmCommand requested
+     *  - If true then the function waits for completion of the request. If false (default) the request is queued.
+     * @param {IRecallOptions | IMigrateOptions} options
+     */
+    public static async dfsmsHsmCommand(
+        session: AbstractSession,
+        dataSetName: string,
+        returnMessage: string,
+        hsmCommand: any,
+        options: Partial<IRecallOptions> | Partial<IMigrateOptions> = {}
+    ): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+
+        try {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
+
+            Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
+
+            const payload = hsmCommand;
+
+            if (options.wait != null) {
+                payload.wait = options.wait;
+            }
+
+            const headers: IHeaderContent[] = [
+                Headers.APPLICATION_JSON,
+                { "Content-Length": JSON.stringify(payload).length.toString() }
+            ];
+
+            await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
+
+            return {
+                success: true,
+                commandResponse: returnMessage
+            };
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
+}

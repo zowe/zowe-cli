@@ -245,6 +245,40 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
 
+        it("should download a data set specifying preserveOriginalLetterCase", async () => {
+            let response;
+            let caughtError;
+            const binary = true;
+            const destination = dsFolder.toUpperCase() + ".txt";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { preserveOriginalLetterCase: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [],
+                                                                        responseStream: fakeWriteStream,
+                                                                        normalizeResponseNewLines: true,
+                                                                        task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+        });
+
         it("should download a data set and return Etag", async () => {
             zosmfGetFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
             let response;
@@ -496,6 +530,34 @@ describe("z/OS Files - Download", () => {
                     volume,
                     file: `${directory}/${mem.member.toLowerCase()}${extension}`,
                     binary
+                });
+            });
+        });
+
+        it("should download all members specifying preserveOriginalLetterCase", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { preserveOriginalLetterCase: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, dsFolder.toUpperCase()),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    file: `${dsFolder.toUpperCase()}/${mem.member}.txt`
                 });
             });
         });
