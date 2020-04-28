@@ -10,7 +10,6 @@
 */
 
 import { ICommandOptionDefinition } from "@zowe/imperative";
-import { TsoConstants } from "../../api/TsoConstants";
 
 export const TSO_OPTION_GROUP: string = "TSO ADDRESS SPACE OPTIONS";
 
