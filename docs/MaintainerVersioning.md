@@ -44,9 +44,9 @@ We tag various releases of our product in an NPM registry. End users install the
 
 * **`next`**
 
-  This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
+   This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
 
-  **Note:** This version (what the tag points to) is pre-release. It may be unstable and is published sporadically. Breaking changes can be introduced to this version at any time.
+   **Note:** This version (what the tag points to) is pre-release. It may be unstable and is published sporadically. Breaking changes can be introduced to this version at any time.
 
 * **`latest`**
 
