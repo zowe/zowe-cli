@@ -50,6 +50,10 @@ export class SshSession {
         required: true,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
+    public static SSH_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
+        ...SshSession.SSH_OPTION_HOST,
+        required: false
+    };
 
     /**
      * Option used in profile creation and commands for port for z/OS SSH
@@ -73,6 +77,10 @@ export class SshSession {
         type: "string",
         required: true,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
+    };
+    public static SSH_OPTION_USER_PROFILE: ICommandOptionDefinition = {
+        ...SshSession.SSH_OPTION_USER,
+        required: false
     };
 
     /**

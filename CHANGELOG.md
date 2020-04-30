@@ -4,6 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Make account optional in TSO profiles
+- Make user and host optional in SSH profiles
 - Add `files hrec ds` command to recall data sets.
 
 ## `6.12.0`

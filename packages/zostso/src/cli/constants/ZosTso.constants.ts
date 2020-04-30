@@ -22,6 +22,11 @@ export const TSO_OPTION_ACCOUNT: ICommandOptionDefinition = {
     group: TSO_OPTION_GROUP
 };
 
+export const TSO_OPTION_ACCOUNT_PROFILE: ICommandOptionDefinition = {
+    ...TSO_OPTION_ACCOUNT,
+    required: false
+};
+
 export const TSO_OPTION_CHAR_SET: ICommandOptionDefinition = {
     name: "character-set",
     aliases: ["cs"],

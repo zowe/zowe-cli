@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "================ZOSMF HELP==============="
+echo "================ZOSMF CREATE PROFILE==============="
 zowe profiles create zosmf $*
 if [ $? -gt 0 ]
 then

@@ -16,7 +16,7 @@ import { IImperativeConfig } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { ZosmfSession } from "./zosmf";
 import {
-    TSO_OPTION_ACCOUNT,
+    TSO_OPTION_ACCOUNT_PROFILE,
     TSO_OPTION_CHAR_SET,
     TSO_OPTION_CODE_PAGE,
     TSO_OPTION_COLUMNS,
@@ -117,7 +117,7 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_ACCOUNT
+                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE
                     },
                     characterSet: {
                         type: "string",
@@ -144,7 +144,7 @@ const config: IImperativeConfig = {
                         optionDefinition: TSO_OPTION_ROWS
                     }
                 },
-                required: ["account"]
+                required: []
             },
             createProfileExamples: [
                 {
@@ -155,6 +155,10 @@ const config: IImperativeConfig = {
                     description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
                         "JES accounting information of '1234'",
                     options: "largeregion -a 1234 --rs 8192"
+                },
+                {
+                    description: "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user account on disk",
+                    options: "myprof2 --rs 8192"
                 }
             ],
             updateProfileExamples: [
@@ -173,7 +177,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST
+                        optionDefinition: SshSession.SSH_OPTION_HOST_PROFILE
                     },
                     port: {
                         type: "number",
@@ -181,7 +185,7 @@ const config: IImperativeConfig = {
                     },
                     user: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_USER
+                        optionDefinition: SshSession.SSH_OPTION_USER_PROFILE
                     },
                     password: {
                         type: "string",
@@ -202,7 +206,7 @@ const config: IImperativeConfig = {
                         optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT
                     }
                 },
-                required: ["host", "user"]
+                required: []
             },
             createProfileExamples: [
                 {
@@ -218,6 +222,11 @@ const config: IImperativeConfig = {
                     description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
                                  "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
                                  "for privatekey authentication"
+                },
+                {
+                    options: "ssh444 --privateKey /path/to/privatekey",
+                    description: "Create a ssh profile called 'ssh444' to connect to z/OS SSH server on default port 22, without specifying " +
+                    "username, host, or password, preventing those values from being stored on disk"
                 }
             ]
         }
