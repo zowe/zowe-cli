@@ -82,28 +82,28 @@ describe("Recall Dataset", () => {
                 expect(listResponse.apiResponse.items[0].migr).toBe("NO");
                 expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
             });
-            // it("should recall a sequential data set with wait = true", async () => {
-            //     const recallOptions: IRecallOptions = { wait: true };
-            //     let error;
-            //     let recallResponse;
-            //     let listResponse;
+            it("should recall a sequential data set with wait = true", async () => {
+                const recallOptions: IRecallOptions = { wait: true };
+                let error;
+                let recallResponse;
+                let listResponse;
 
-            //     try {
-            //         recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet1, recallOptions);
-            //         listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
-            //         Imperative.console.info(`Response: ${inspect(recallResponse)}`);
-            //     } catch (err) {
-            //         error = err;
-            //         Imperative.console.info(`Error: ${inspect(err)}`);
-            //     }
+                try {
+                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet1, recallOptions);
+                    listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
+                    Imperative.console.info(`Response: ${inspect(recallResponse)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
 
-            //     expect(error).toBeFalsy();
+                expect(error).toBeFalsy();
 
-            //     expect(recallResponse).toBeTruthy();
-            //     expect(recallResponse.success).toBe(true);
-            //     expect(listResponse.apiResponse.items[0].migr).toBe("NO");
-            //     expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
-            // });
+                expect(recallResponse).toBeTruthy();
+                expect(recallResponse.success).toBe(true);
+                expect(listResponse.apiResponse.items[0].migr).toBe("NO");
+                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
+            });
         });
         describe("Partitioned Data Set", () => {
             beforeEach(async () => {
@@ -121,6 +121,28 @@ describe("Recall Dataset", () => {
 
                 try {
                     recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet2);
+                    listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
+                    Imperative.console.info(`Response: ${inspect(recallResponse)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(recallResponse).toBeTruthy();
+                expect(recallResponse.success).toBe(true);
+                expect(listResponse.apiResponse.items[0].migr).toBe("NO");
+                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
+            });
+            it("should recall a partitioned dataset with wait = true", async () => {
+                const recallOptions: IRecallOptions = { wait: true };
+                let error;
+                let recallResponse;
+                let listResponse;
+
+                try {
+                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet2, recallOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
                     Imperative.console.info(`Response: ${inspect(recallResponse)}`);
                 } catch (err) {

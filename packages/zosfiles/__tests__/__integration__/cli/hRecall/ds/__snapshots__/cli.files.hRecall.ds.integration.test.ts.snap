@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Migrate Data Set should display the help 1`] = `
-"================Z/OS FILES MIGRATE DATA-SET-SEQUENTIAL HELP===============
+exports[`Recall Data Set should display the help 1`] = `
+"================Z/OS FILES RECALL DATA-SET-SEQUENTIAL HELP===============
 
  COMMAND NAME
  ------------
@@ -11,19 +11,19 @@ exports[`Migrate Data Set should display the help 1`] = `
  DESCRIPTION
  -----------
 
-   Migrate a data set.
+   Recall a migrated data set.
 
  USAGE
  -----
 
-   zowe zos-files migrate data-set <dataSetName> [options]
+   zowe zos-files recall data-set <dataSetName> [options]
 
  POSITIONAL ARGUMENTS
  --------------------
 
    dataSetName		 (string)
 
-      The name of the data set you want to migrate.
+      The name of the data set you want to recall.
 
  OPTIONS
  -------
@@ -95,9 +95,9 @@ exports[`Migrate Data Set should display the help 1`] = `
  EXAMPLES
  --------
 
-   - Migrate a data set using default options:
+   - Recall a data set using default options:
 
-      $ zowe zos-files migrate data-set \\"USER.DATA.SET\\"
+      $ zowe zos-files recall data-set \\"USER.DATA.SET\\"
 
 "
 `;

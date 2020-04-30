@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Add `files hrec ds` command to recall data sets.
+
 ## `6.12.0`
 
 - Make username, password, and host optional on z/OSMF profiles and update profile creation doc to reflect the change.
