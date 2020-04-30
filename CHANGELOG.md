@@ -2,10 +2,20 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Make account optional in TSO profiles
+- Make user and host optional in SSH profiles
+- Add `files hrec ds` command to recall data sets.
+
 ## `6.12.0`
 
 - Make username, password, and host optional on z/OSMF profiles and update profile creation doc to reflect the change.
 - Don't overwrite files when downloading spool output from job with duplicate step names.
+
+## `6.11.1`
+
+- Update imperative version
 
 ## `6.11.0`
 

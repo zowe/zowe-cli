@@ -9,25 +9,24 @@
 *
 */
 
-import { IZosFilesResponse, HMigrate } from "../../../../src/api";
-import DSHandler from "../../../../src/cli/hMigrate/ds/Ds.handler";
+import { IZosFilesResponse, IRecallOptions, HRecall } from "../../../../src/api";
+import DSHandler from "../../../../src/cli/hRecall/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
-import { IMigrateOptions } from "../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
-        success: true,
+        success        : true,
         commandResponse: "THIS IS A TEST"
     };
 
-    const migrateDataSetSpy = jest.spyOn(HMigrate, "dataSet");
+    const recallDataSetSpy = jest.spyOn(HRecall, "dataSet");
 
     beforeEach(() => {
-        migrateDataSetSpy.mockClear();
-        migrateDataSetSpy.mockImplementation(async () => defaultReturn);
+        recallDataSetSpy.mockClear();
+        recallDataSetSpy.mockImplementation(async () => defaultReturn);
     });
 
-    it("should call HMigrate.dataSet", async () => {
+    it("should call HRecall.dataSet", async () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
@@ -49,19 +48,19 @@ describe("DsHandler", () => {
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
-        expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
-        expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
+        expect(recallDataSetSpy).toHaveBeenCalledTimes(1);
+        expect(recallDataSetSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.dataSetName,
             undefined
         );
         expect(response).toBe(defaultReturn);
     });
-    it("should call HMigrate.dataSet with wait = true", async () => {
+    it("should call HRecall.dataSet with wait = true", async () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IMigrateOptions = { wait: true };
+        const options: IRecallOptions = { wait : true };
 
         const commandParameters: any = {
             arguments: {
@@ -79,12 +78,12 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IMigrateOptions = { wait: true };
+        const expectedOptions: IRecallOptions = { wait : true };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
-        expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
-        expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
+        expect(recallDataSetSpy).toHaveBeenCalledTimes(1);
+        expect(recallDataSetSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.dataSetName,
             expectedOptions
