@@ -20,6 +20,7 @@ import { MountDefinition } from "./mount/Mount.definition";
 import { ZosmfSession } from "../../../zosmf";
 import { UnmountDefinition } from "./unmount/Unmount.definition";
 import { HMigrateDefinition } from "./hMigrate/HMigrate.definition";
+import { HRecallDefinition } from "./hRecall/HRecall.definition";
 import { CopyDefinition } from "./copy/Copy.definition";
 import { RenameDefinition } from "./rename/Rename.definition";
 
@@ -40,6 +41,7 @@ const definition: ICommandDefinition = {
         DeleteDefinition,
         InvokeDefinition,
         HMigrateDefinition,
+        HRecallDefinition,
         DownloadDefinition,
         ListDefinition,
         UploadDefinition,
