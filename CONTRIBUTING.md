@@ -5,6 +5,7 @@ This document is a living summary of conventions and best practices for developm
   - [Pull Requests](#pull-requests)
   - [Contributing to Core Functionality](#contributing-to-core-functionality)
   - [General Guidelines](#general-guidelines)
+  - [Changelog Update Guidelines](#changelog-update-guidelines)
   - [Code Guidelines](#code-guidelines)
   - [Programmatic API Guidelines](#programmatic-api-guidelines)
   - [File Naming Guidelines](#file-naming-guidelines)
