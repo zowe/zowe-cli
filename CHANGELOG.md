@@ -4,7 +4,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Update imperative version
+- Update imperative version (again) in order to fix vulnerabilities
+
+## `6.11.1`
+
+- Update imperative version (to fix EPERM issues on Windows)
 
 ## `6.11.0`
 
