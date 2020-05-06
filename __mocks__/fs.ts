@@ -9,19 +9,18 @@
 *
 */
 
-// __mocks__/fs.js
-'use strict';
+const path = require("path");
 
-const path = require('path');
-
-const fs = jest.genMockFromModule('fs');
+const fs = jest.genMockFromModule("fs") as any;
+const oldReadFileSync = require.requireActual("fs").readFileSync;
 
 // This is a custom function that our tests can use during setup to specify
 // what the files on the "mock" filesystem should look like when any of the
 // `fs` APIs are used.
 let mockFiles = Object.create(null);
-function __setMockFiles(newMockFiles) {
+function __setMockFiles(newMockFiles: { [key: string]: string }) {
     mockFiles = Object.create(null);
+    // tslint:disable-next-line forin
     for (const file in newMockFiles) {
         const dir = path.dirname(file);
         if (!mockFiles[dir]) {
@@ -33,13 +32,13 @@ function __setMockFiles(newMockFiles) {
 
 // A custom version of `readdirSync` that reads from the special mocked out
 // file list set via __setMockFiles
-function readdirSync(filePath) {
+function readdirSync(filePath: string) {
     return mockFiles[filePath] || {};
 }
 
 // A custom version of `existsSync` that reads from the special mocked out
 // file list set via __setMockFiles
-function existsSync(filePath) {
+function existsSync(filePath: string) {
     const fileContents = readdirSync(path.dirname(filePath))[path.basename(filePath)];
     if (typeof fileContents === "undefined") {
         return false;
@@ -49,19 +48,24 @@ function existsSync(filePath) {
 
 // A custom version of `readFileSync` that reads from the special mocked out
 // file list set via __setMockFiles
-function readFileSync(filePath) {
+function readFileSync(filePath: string, encoding?: string) {
+    // Don't mock if yargs is trying to load a locale json file
+    if (filePath.match(/node_modules.yargs/)) {
+        return oldReadFileSync(filePath, encoding);
+    }
+
     if (!existsSync(filePath)) {
         throw new Error("File not found");
     }
     return readdirSync(path.dirname(filePath))[path.basename(filePath)];
 }
 
-// A custom version of `readFileSync` that reads from the special mocked out
+// A custom version of `lstatSync` that reads from the special mocked out
 // file list set via __setMockFiles
-function lstatSync(filePath) {
+function lstatSync(filePath: string) {
     return {
         isFile: () => false
-    }
+    };
 }
 
 fs.__setMockFiles = __setMockFiles;
