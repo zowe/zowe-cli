@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.13.0`
 
 - Add `files hrec ds` command to recall data sets.
 - Make account optional in TSO profiles.
