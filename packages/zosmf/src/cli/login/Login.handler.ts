@@ -9,7 +9,11 @@
 *
 */
 
-import { IHandlerParameters, CliUtils, Imperative, Session, ImperativeError } from "@zowe/imperative";
+import {
+    IHandlerParameters,
+    Imperative,
+    SessConstants
+} from "@zowe/imperative";
 import { ZosmfBaseHandler } from "../../ZosmfBaseHandler";
 import { Login } from "../../api/Login";
 import { isNullOrUndefined } from "util";
@@ -29,32 +33,8 @@ export default class LoginHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
-        // if no user name was supplied, we must ask for user name
-        let answer: string;
-        if (isNullOrUndefined(params.arguments.user)) {
-            answer = await CliUtils.promptWithTimeout("Enter user name: ");
-            if (answer === null) {
-                throw new ImperativeError({msg: "We timed-out waiting for user name."});
-            }
-            params.arguments.user = answer;
-        }
-
-        // if no password was supplied, we must ask for password
-        if (isNullOrUndefined(params.arguments.password)) {
-            answer = await CliUtils.promptWithTimeout("Enter password: ", true);
-            if (answer === null) {
-                throw new ImperativeError({msg: "We timed-out waiting for password."});
-            }
-            params.arguments.password = answer;
-        }
-
-        this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(params.arguments);
-
-        // removing tokenValue, will ensure that user & password are used for authentication
-        delete this.mSession.ISession.tokenValue;
-
         // we want to receive a token in our response
-        this.mSession.ISession.type = "token";
+        this.mSession.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
 
         // set the type of token we expect to receive
         if (params.arguments.tokenType) {
@@ -62,7 +42,7 @@ export default class LoginHandler extends ZosmfBaseHandler {
             this.mSession.ISession.tokenType = params.arguments.tokenType;
         } else {
             // use our default token
-            this.mSession.ISession.tokenType = "LtpaToken2";
+            this.mSession.ISession.tokenType = SessConstants.TOKEN_TYPE_LTPA;
         }
 
         // login to obtain a token
