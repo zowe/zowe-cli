@@ -116,6 +116,8 @@ describe("start address-space handler tests", () => {
     it("should be able respond with error message, if required z/OSMF parameters were not passed", async () => {
         const handler = new AddressSpaceHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        params.arguments.user = "FakeUser";
+        params.arguments.password = "FakePassword";
         let error;
         try {
             await handler.process(params);
