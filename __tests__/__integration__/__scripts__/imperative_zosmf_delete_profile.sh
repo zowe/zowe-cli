@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "================ZOSMF HELP==============="
+echo "================ZOSMF DELETE PROFILE==============="
 zowe profiles delete zosmf $*
 if [ $? -gt 0 ]
 then

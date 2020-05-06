@@ -618,6 +618,23 @@ export default {
             WAIT: "If true then the function waits for completion of the request. If false the request is queued."
         }
     },
+    HRECALL: {
+        DESCRIPTION: "Recall migrated data sets.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Recall a migrated data set.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to recall."
+                },
+                EXAMPLES: {
+                    EX1: `Recall a data set using default options`
+                }
+            }
+        },
+        OPTIONS: {
+            WAIT: "If true then the function waits for completion of the request. If false the request is queued."
+        }
+    },
     RENAME: {
         DESCRIPTION: "Rename a data set or member.",
         ACTIONS: {

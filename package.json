@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "6.12.0",
+  "version": "6.14.0",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -65,7 +65,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "delete_before_npm_publish": "Delete the dependency of imperative from GitHub. Restore the standard version number dependency.",
-  "restore_before_npm_publish_@zowe/imperative": "4.5.6",
+  "restore_before_npm_publish_@zowe/imperative": "4.7.0",
   "dependencies": {
     "@zowe/imperative": "git+https://github.com/zowe/imperative.git#tokens",
     "@zowe/perf-timing": "1.0.7",
