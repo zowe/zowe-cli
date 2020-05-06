@@ -9,7 +9,13 @@
 *
 */
 
-import { AbstractSession, ICommandHandler, IHandlerParameters, IProfile, ImperativeError } from "@zowe/imperative";
+import { AbstractSession,
+    ICommandHandler,
+    IHandlerParameters,
+    IProfile,
+    PromptingSession,
+    ImperativeError
+} from "@zowe/imperative";
 import { IZosFilesResponse } from "../api/doc/IZosFilesResponse";
 import { ZosmfSession } from "../../../zosmf";
 
@@ -33,7 +39,9 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         const profile = commandParameters.profiles.get("zosmf", false);
-        const session = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+        const session = await PromptingSession.createSessFromCmdArgsOrPrompt(
+            commandParameters.arguments, commandParameters.response, false
+        );
 
         const response = await this.processWithSession(commandParameters, session, profile);
 

@@ -290,7 +290,9 @@ export class Create {
      * @example
      * ```typescript
      *
-     *     session = ZosmfSession.createBasicZosmfSession(profile);
+     *     session = await PromptingSession.createSessFromCmdArgsOrPrompt(
+     *               commandParameters.arguments, commandParameters.response, false
+     *     );
      *
      *     // The option keys are defined in ZosFilesCreateOptions,
      *     // ZosFilesCreateExtraOptions and VsamCreateOptions.

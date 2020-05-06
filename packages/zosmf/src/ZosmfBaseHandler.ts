@@ -11,6 +11,7 @@
 
 import {
     AbstractSession,
+    PromptingSession,
     ICommandArguments,
     ICommandHandler,
     IHandlerParameters,
@@ -77,14 +78,13 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
         this.mAPIMLProfile = commandParameters.profiles.get("apiml", false);
 
-        /* The login command will create the session in the login's processCmd function,
-         * because login can prompt for missing user and password.
-         * Any other command will create the session now.
-         */
-        if (commandParameters.definition.name !== "login") {
-            this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+        let forceUserPass = false;
+        if (commandParameters.definition.name === "login") {
+            forceUserPass = true;
         }
-
+        this.mSession = await PromptingSession.createSessFromCmdArgsOrPrompt(
+            commandParameters.arguments, commandParameters.response, forceUserPass
+        );
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);
     }
