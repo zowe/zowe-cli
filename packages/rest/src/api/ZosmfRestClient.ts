@@ -9,8 +9,7 @@
 *
 */
 
-import { IImperativeError, Logger, RestClient, TextUtils, RestConstants } from "@zowe/imperative";
-import { isNullOrUndefined } from "util";
+import { IImperativeError, Logger, RestClient, TextUtils, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
 /**
@@ -38,7 +37,7 @@ export class ZosmfRestClient extends RestClient {
      * @memberof ZosmfRestClient
      */
     protected appendHeaders(headers: any[] | undefined): any[] {
-        if (isNullOrUndefined(headers)) {
+        if (headers === undefined || headers === null) {
             return [ZosmfHeaders.X_CSRF_ZOSMF_HEADER];
         } else {
             headers.push(ZosmfHeaders.X_CSRF_ZOSMF_HEADER);
@@ -87,11 +86,11 @@ export class ZosmfRestClient extends RestClient {
                 "\n"
                 ;
 
-            if (this.session.ISession.type === "basic") {
+            if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                 original.additionalDetails = "Username or password are not valid or expired.\n\n" +
                     "For CLI usage, see `zowe zosmf login --help`";
             }
-            if (this.session.ISession.type === "token") {
+            if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
                 original.additionalDetails = "Token is not valid or expired.\n\n" +
                     "For CLI usage, see `zowe zosmf login --help`";
             }

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstants } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { LoginConstants } from "./LoginConstants";
 
@@ -46,12 +46,12 @@ export class Login {
 
             // pretend it was a basic auth error with 401 when obtaining the token
             client.response.statusCode = RestConstants.HTTP_STATUS_401;
-            (session as any).mISession.type = "basic";
+            (session as any).mISession.type = SessConstants.AUTH_TYPE_BASIC;
 
             // throw as HTTP(S) error
             throw (client as any).populateError({
                 msg: "Rest API failure with HTTP(S) status 401",
-                source: "http"
+                source: SessConstants.HTTP_PROTOCOL
             });
         }
 
