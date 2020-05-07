@@ -527,7 +527,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * Message indicating that the data set was recalled successfully.
      * @type {IMessageDefinition}
      */
-    datasetRecalledSuccessfully: {
+    datasetRecallRequested: {
         message: "Data set recall requested."
     },
 
@@ -540,10 +540,18 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that the data set was recalled successfully.
+     * Message indicating that the data set was deleted successfully.
      * @type {IMessageDefinition}
      */
-    datasetMigratedSuccessfully: {
+    datasetDeletionRequested: {
+        message: "Data set deletion requested."
+    },
+
+    /**
+     * Message indicating that the data set was migrated successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetMigrationRequested: {
         message: "Data set migraton requested."
     },
 

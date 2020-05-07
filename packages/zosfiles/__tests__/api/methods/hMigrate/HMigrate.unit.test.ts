@@ -56,7 +56,7 @@ describe("hMigrate data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetMigrationRequested.message
             });
 
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -88,7 +88,7 @@ describe("hMigrate data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetMigratedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetMigrationRequested.message
             });
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(

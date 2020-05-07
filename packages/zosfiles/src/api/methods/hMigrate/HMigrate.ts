@@ -31,7 +31,7 @@ export class HMigrate {
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      *
-     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.4.0/com.ibm.zos.v2r4.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async dataSet(
         session: AbstractSession,
@@ -41,7 +41,7 @@ export class HMigrate {
         return ZosFilesUtils.dfsmsHsmCommand(
             session,
             dataSetName,
-            ZosFilesMessages.datasetMigratedSuccessfully.message,
+            ZosFilesMessages.datasetMigrationRequested.message,
             { request: "hmigrate" },
             options
         );

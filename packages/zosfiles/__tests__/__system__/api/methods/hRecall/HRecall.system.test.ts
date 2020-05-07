@@ -80,7 +80,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse).toBeTruthy();
                 expect(recallResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("NO");
-                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
+                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
             it("should recall a sequential data set with wait = true", async () => {
                 const recallOptions: IRecallOptions = { wait: true };
@@ -102,7 +102,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse).toBeTruthy();
                 expect(recallResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("NO");
-                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
+                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
         });
         describe("Partitioned Data Set", () => {
@@ -133,7 +133,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse).toBeTruthy();
                 expect(recallResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("NO");
-                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
+                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
             it("should recall a partitioned dataset with wait = true", async () => {
                 const recallOptions: IRecallOptions = { wait: true };
@@ -155,7 +155,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse).toBeTruthy();
                 expect(recallResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("NO");
-                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecalledSuccessfully.message);
+                expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
         });
     });

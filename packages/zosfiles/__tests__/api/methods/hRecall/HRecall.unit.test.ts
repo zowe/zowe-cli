@@ -56,7 +56,7 @@ describe("hRecall data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetRecallRequested.message
             });
 
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -88,7 +88,7 @@ describe("hRecall data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetRecallRequested.message
             });
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
