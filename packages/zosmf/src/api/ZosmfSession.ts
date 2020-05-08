@@ -155,10 +155,23 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE
     ];
 
+    /**
+     * Given command line arguments, create an session configuration object.
+     * @param {IProfile} args - The arguments specified by the user
+     * @returns {ISession} - A session configuration to be used for a session.
+     */
+    public static createSessCfgFromArgs(args: ICommandArguments): ISession {
+        return {
+            hostname: args.host,
+            port: args.port,
+            rejectUnauthorized: args.rejectUnauthorized,
+            basePath: args.basePath
+        };
+    }
 
     /**
      * Given a z/OSMF profile, create a REST Client Session.
-     * @deprecated Use PromptingSession.createSessFromCmdArgsOrPrompt
+     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
      * @static
      * @param {IProfile} profile - The z/OSMF profile contents
      * @returns {Session} - A session for usage in the z/OSMF REST Client
@@ -179,7 +192,7 @@ export class ZosmfSession {
     /**
      * Given command line arguments, create a REST Client Session.
      * @static
-     * @deprecated Use PromptingSession.createSessFromCmdArgsOrPrompt
+     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
      * @param {IProfile} args - The arguments specified by the user
      * @returns {Session} - A session for usage in the z/OSMF REST Client
      */

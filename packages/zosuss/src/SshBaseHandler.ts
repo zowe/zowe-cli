@@ -20,9 +20,12 @@ import {
     IHandlerResponseDataApi,
     IHandlerProgressApi,
     IImperativeError,
-    ImperativeError
+    ImperativeError,
+    CredsForSesscfg
 } from "@zowe/imperative";
 import { SshSession } from "../index";
+import { ISshSession } from "./api/doc/ISshSession";
+
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -60,7 +63,13 @@ export abstract class SshBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
         this.mSshProfile = commandParameters.profiles.get("ssh", false);
-        this.mSession = SshSession.createBasicSshSessionFromArguments(commandParameters.arguments);
+
+        const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
+        const sshSessCfgWithCreds = await CredsForSesscfg.addCredsOrPrompt<ISshSession>(
+            sshSessCfg, commandParameters.arguments
+        );
+        this.mSession = new SshSession(sshSessCfgWithCreds);
+
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);
     }

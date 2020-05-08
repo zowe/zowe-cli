@@ -11,7 +11,6 @@
 
 import {
     AbstractSession,
-    PromptingSession,
     ICommandArguments,
     ICommandHandler,
     IHandlerParameters,
@@ -22,9 +21,13 @@ import {
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError,
-    IProfileLoaded
+    IProfileLoaded,
+    ISession,
+    Session,
+    CredsForSesscfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "../index";
+import { ISshSession } from "../../zosuss/src/api/doc/ISshSession";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -78,13 +81,19 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
         this.mAPIMLProfile = commandParameters.profiles.get("apiml", false);
 
+        const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
+            commandParameters.arguments
+        );
+
         let forceUserPass = false;
         if (commandParameters.definition.name === "login") {
             forceUserPass = true;
         }
-        this.mSession = await PromptingSession.createSessFromCmdArgsOrPrompt(
-            commandParameters.arguments, commandParameters.response, forceUserPass
+        const sessCfgWithCreds = await CredsForSesscfg.addCredsOrPrompt<ISession>(
+            sessCfg, commandParameters.arguments, forceUserPass
         );
+
+        this.mSession = new Session(sessCfgWithCreds);
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);
     }

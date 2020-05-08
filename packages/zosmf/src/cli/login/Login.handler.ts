@@ -59,7 +59,7 @@ export default class LoginHandler extends ZosmfBaseHandler {
         });
 
         params.response.console.log(
-            "Login successful.\nReceived a token of type = " +this.mSession.ISession.tokenType +
+            "Login successful.\nReceived a token of type = " + this.mSession.ISession.tokenType +
             ".\nThe following token was stored in your profile:\n" + tokenValue
         );
     }

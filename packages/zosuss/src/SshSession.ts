@@ -9,9 +9,15 @@
 *
 */
 
-import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger } from "@zowe/imperative";
+import {
+    ICommandArguments,
+    ICommandOptionDefinition,
+    IProfile,
+    Logger,
+    ISession,
+    Session
+} from "@zowe/imperative";
 import { ISshSession } from "./api/doc/ISshSession";
-import { isNullOrUndefined } from "util";
 
 
 /**
@@ -75,7 +81,7 @@ export class SshSession {
         aliases: ["u"],
         description: "Mainframe user name, which can be the same as your TSO login.",
         type: "string",
-        required: true,
+        required: false,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
     public static SSH_OPTION_USER_PROFILE: ICommandOptionDefinition = {
@@ -142,8 +148,24 @@ export class SshSession {
     ];
 
     /**
+     * Given command line arguments, create an SSH session configuration object.
+     * @param {IProfile} args - The arguments specified by the user
+     * @returns {ISshSession} - A session configuration to be used for an SSH session.
+     */
+    public static createSshSessCfgFromArgs(args: ICommandArguments): ISshSession {
+        return {
+            hostname: args.host,
+            port: args.port,
+            privateKey: args.privateKey,
+            keyPassphrase: args.keyPassphrase,
+            handshakeTimeout: args.handshakeTimeout
+        };
+    }
+
+    /**
      * Given a z/OS SSH profile, create a SSH Client Session.
      * @static
+     * @deprecated Use SshSession.createSshSessCfgFromArgs & others
      * @param {IProfile} profile - The SSH profile contents
      * @returns {Session} - A session for usage in the SSH Client
      */
@@ -163,6 +185,7 @@ export class SshSession {
     /**
      * Given command line arguments, create a SSH Client Session.
      * @static
+     * @deprecated Use SshSession.createSshSessCfgFromArgs & others
      * @param {IProfile} args - The arguments specified by the user
      * @returns {SshSession} - A session for usage in the SSH Client
      */
@@ -201,7 +224,7 @@ export class SshSession {
         const populatedSession = session;
 
         // set port if not set
-        if (isNullOrUndefined(populatedSession.port)) {
+        if (populatedSession.port === undefined || populatedSession.port === null) {
             populatedSession.port = SshSession.DEFAULT_SSH_PORT;
         }
         return populatedSession;

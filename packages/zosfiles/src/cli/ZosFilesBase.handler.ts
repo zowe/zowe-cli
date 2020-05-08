@@ -9,12 +9,15 @@
 *
 */
 
-import { AbstractSession,
+import {
+    AbstractSession,
     ICommandHandler,
     IHandlerParameters,
     IProfile,
-    PromptingSession,
-    ImperativeError
+    ImperativeError,
+    CredsForSesscfg,
+    ISession,
+    Session
 } from "@zowe/imperative";
 import { IZosFilesResponse } from "../api/doc/IZosFilesResponse";
 import { ZosmfSession } from "../../../zosmf";
@@ -39,10 +42,15 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         const profile = commandParameters.profiles.get("zosmf", false);
-        const session = await PromptingSession.createSessFromCmdArgsOrPrompt(
-            commandParameters.arguments, commandParameters.response, false
+
+        const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
+            commandParameters.arguments
+        );
+        const sessCfgWithCreds = await CredsForSesscfg.addCredsOrPrompt<ISession>(
+            sessCfg, commandParameters.arguments
         );
 
+        const session = new Session(sessCfgWithCreds);
         const response = await this.processWithSession(commandParameters, session, profile);
 
         commandParameters.response.progress.endBar(); // end any progress bars

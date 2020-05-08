@@ -290,9 +290,11 @@ export class Create {
      * @example
      * ```typescript
      *
-     *     session = await PromptingSession.createSessFromCmdArgsOrPrompt(
-     *               commandParameters.arguments, commandParameters.response, false
+     *     sessCfg: ISession = yourFunctionToCreateSessCfgFromArgs(commandParameters.arguments);
+     *     sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
+     *         sessCfg, commandParameters.arguments, commandParameters.response
      *     );
+     *     session = new Session(sessCfgWithCreds);
      *
      *     // The option keys are defined in ZosFilesCreateOptions,
      *     // ZosFilesCreateExtraOptions and VsamCreateOptions.
