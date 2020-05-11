@@ -24,7 +24,7 @@ import {
     IProfileLoaded,
     ISession,
     Session,
-    CredsForSesscfg
+    CredsForSessCfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "../index";
 import { ISshSession } from "../../zosuss/src/api/doc/ISshSession";
@@ -89,7 +89,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         if (commandParameters.definition.name === "login") {
             requestToken = true;
         }
-        const sessCfgWithCreds = await CredsForSesscfg.addCredsOrPrompt<ISession>(
+        const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
             sessCfg, commandParameters.arguments, requestToken
         );
 
