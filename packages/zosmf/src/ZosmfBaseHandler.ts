@@ -24,6 +24,7 @@ import {
     IProfileLoaded,
     ISession,
     Session,
+    IOptionsForAddCreds,
     CredsForSessCfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "../index";
@@ -85,12 +86,14 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
             commandParameters.arguments
         );
 
-        let requestToken = false;
+        let addCredsOpts: IOptionsForAddCreds = {};
         if (commandParameters.definition.name === "login") {
-            requestToken = true;
+            addCredsOpts = {
+                requestToken: true
+            }
         }
         const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments, requestToken
+            sessCfg, commandParameters.arguments, addCredsOpts
         );
 
         this.mSession = new Session(sessCfgWithCreds);

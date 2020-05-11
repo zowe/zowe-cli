@@ -292,7 +292,7 @@ export class Create {
      *
      *     sessCfg: ISession = yourFunctionToCreateSessCfgFromArgs(commandParameters.arguments);
      *     sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
-     *         sessCfg, commandParameters.arguments, commandParameters.response
+     *         sessCfg, commandParameters.arguments
      *     );
      *     session = new Session(sessCfgWithCreds);
      *
