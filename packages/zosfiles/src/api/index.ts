@@ -21,6 +21,7 @@ export * from "./methods/mount";
 export * from "./methods/unmount";
 export * from "./methods/hRecall";
 export * from "./methods/rename";
+export * from "./methods/hDelete"
 export * from "./methods/hMigrate";
 export * from "./methods/copy";
 
