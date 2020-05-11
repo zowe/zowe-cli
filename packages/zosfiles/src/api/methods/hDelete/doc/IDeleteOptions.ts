@@ -9,16 +9,12 @@
 *
 */
 
+import { IMigrateOptions } from "../../hMigrate";
+
 /**
  * This interface defines the options that can be sent into the delete data set function.
  */
-export interface IDeleteOptions {
-
-    /**
-     * If true then the function waits for completion of the request.
-     * If false (default) the request is queued.
-     */
-    wait?: boolean;
+export interface IDeleteOptions extends IMigrateOptions {
 
     /**
      * If true then the function uses the PURGE=YES on ARCHDEL request.

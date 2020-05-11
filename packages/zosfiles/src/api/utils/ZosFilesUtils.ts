@@ -16,8 +16,7 @@ import { ZosFilesConstants } from "../../../src/api/constants/ZosFiles.constants
 import { ZosFilesMessages } from "../../../src/api/constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
 import { ZosmfRestClient } from "../../../../rest/src/ZosmfRestClient";
-import { IRecallOptions } from "../methods/hRecall/doc/IRecallOptions";
-import { IMigrateOptions } from "../methods/hMigrate/doc/IMigrateOptions";
+import { IDeleteOptions } from "../methods/hDelete";
 
 /**
  * Common IO utilities
@@ -197,7 +196,7 @@ export class ZosFilesUtils {
         dataSetName: string,
         returnMessage: string,
         hsmCommand: any,
-        options: Partial<IRecallOptions> | Partial<IMigrateOptions> = {}
+        options: Partial<IDeleteOptions> = {}
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -211,6 +210,10 @@ export class ZosFilesUtils {
 
             if (options.wait != null) {
                 payload.wait = options.wait;
+            }
+
+            if (options.purge != null) {
+                payload.purge = options.purge;
             }
 
             const headers: IHeaderContent[] = [

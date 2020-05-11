@@ -56,7 +56,7 @@ describe("hDelete data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetDeletionRequested.message
             });
 
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -88,7 +88,7 @@ describe("hDelete data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetDeletionRequested.message
             });
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
@@ -119,7 +119,7 @@ describe("hDelete data set", () => {
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetDeletionRequested.message
             });
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
