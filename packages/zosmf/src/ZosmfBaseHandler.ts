@@ -85,12 +85,12 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
             commandParameters.arguments
         );
 
-        let forceUserPass = false;
+        let requestToken = false;
         if (commandParameters.definition.name === "login") {
-            forceUserPass = true;
+            requestToken = true;
         }
         const sessCfgWithCreds = await CredsForSesscfg.addCredsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments, forceUserPass
+            sessCfg, commandParameters.arguments, requestToken
         );
 
         this.mSession = new Session(sessCfgWithCreds);
