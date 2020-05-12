@@ -90,7 +90,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         if (commandParameters.definition.name === "login") {
             addCredsOpts = {
                 requestToken: true
-            }
+            };
         }
         const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
             sessCfg, commandParameters.arguments, addCredsOpts
