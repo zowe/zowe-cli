@@ -15,7 +15,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List, IListOptions, IDeleteOptions, HDelete, HMigrate } from "../../../../../src/api";
+import { IDeleteOptions, HDelete, HMigrate } from "../../../../../src/api";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -23,8 +23,6 @@ let defaultSystem: ITestPropertiesSchema;
 let dataSet1: string;
 let dataSet2: string;
 let dataSet3: string;
-
-const listOptions: IListOptions = { attributes: true };
 
 describe("Delete Migrated Dataset", () => {
     beforeAll(async () => {
