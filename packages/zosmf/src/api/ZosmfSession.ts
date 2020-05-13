@@ -151,9 +151,10 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_USER,
         ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
-        ZosmfSession.ZOSMF_OPTION_BASE_PATH,
+        ZosmfSession.ZOSMF_OPTION_BASE_PATH /* Todo:TokensNotReady,
         ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE,
         ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE
+        Todo:TokensNotReady */
     ];
 
     /**
