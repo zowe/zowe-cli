@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Upgrade Zowe commands to prompt for missing user and password.
+- Add an inoperative placeholder for the 'zowe auth login apiml' command.
 
 ## `6.13.0`
 

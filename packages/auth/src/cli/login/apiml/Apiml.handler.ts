@@ -31,6 +31,12 @@ export default class ApimlHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
+        // todo:Gene: Remove this when we correctly implement the login command
+        params.response.console.log(
+            "The 'zowe auth login apiml' command is coming soon to PC near you."
+        );
+        return;
+
         // we want to receive a token in our response
         this.mSession.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
 
