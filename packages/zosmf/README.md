@@ -1,7 +1,7 @@
 # zOSMF Package
 Contains utilities to work with z/OSMF.
-# Utils Examples
-**Create a z/OSMF REST client session From profile:** 
+# Example
+**Create a z/OSMF REST client session from properties in profile, environment, or command line:** 
 ```
 // Load the profile contents
 const zosmfProfile = await new BasicProfileManager({
@@ -9,6 +9,20 @@ const zosmfProfile = await new BasicProfileManager({
     type: "zosmf"
 }).load({loadDefault: true});
 
+// Create your session configuration
+const sessCfg: ISession =  {
+    hostname: commandParameters.arguments.host,
+    port: commandParameters.arguments.port,
+    rejectUnauthorized: commandParameters.arguments.rejectUnauthorized,
+    basePath: commandParameters.arguments.basePath,
+    // any other stuff for your session configuration
+};
+
+// add credentials to your session configuration
+const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
+    sessCfg, commandParameters.arguments
+);
+
 // Create the session for the REST client
-const session: Session = utils.createZosmfSession(zosmfProfile);
+mySession = new Session(sessCfgWithCreds);
 ```

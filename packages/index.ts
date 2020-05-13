@@ -10,6 +10,7 @@
 */
 
 export { Constants } from "./Constants";
+export * from "./auth";
 export * from "./rest";
 export * from "./utils";
 export * from "./zosconsole";

@@ -14,10 +14,8 @@ import {
     Imperative,
     SessConstants
 } from "@zowe/imperative";
-import { ZosmfBaseHandler } from "../../ZosmfBaseHandler";
-import { Login } from "../../api/Login";
-import { isNullOrUndefined } from "util";
-import { ZosmfSession } from "../../..";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { Login } from "../../../api/Login";
 
 /**
  * Handler to login to z/OSMF
@@ -25,7 +23,7 @@ import { ZosmfSession } from "../../..";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class LoginHandler extends ZosmfBaseHandler {
+export default class ApimlHandler extends ZosmfBaseHandler {
 
     /**
      * Handler for the "zosmf login" command.

@@ -10,16 +10,16 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { ZosmfSession } from "../../api/ZosmfSession";
+import { ZosmfSession } from "../../../../../zosmf/src/api/ZosmfSession";
 
-export const LoginCommand: ICommandDefinition = {
-    name: "login",
+export const ApimlCommand: ICommandDefinition = {
+    name: "apiml",
     type: "command",
-    description: "Login to to z/OSMF and obtain or update a token value. " +
+    description: "Login to API Mediation Layer and obtain or update a token value. " +
     "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
     " Alternatively, you may provide \"user\" and \"password\" on a command, in an environmental variable, or in a profile." +
     " See a specific command's help via \"--help\" for more information.",
-    handler: __dirname + "/Login.handler",
+    handler: __dirname + "/Apiml.handler",
     profile: {
         optional: ["zosmf"]
     },
@@ -33,7 +33,7 @@ export const LoginCommand: ICommandDefinition = {
     ],
     examples: [
         {
-            description: "Login to an instance of z/OSMF in order to obtain or update they " +
+            description: "Login to an instance of API ML in order to obtain or update the " +
                 "token value stored into your z/OSMF profile",
             options: ""
         }

@@ -10,18 +10,13 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { CheckCommand } from "./check/Check.definition";
-import { ListCommand } from "./list/List.definition";
+import { ApimlCommand } from "./apiml/Apiml.definition";
 
-const definition: ICommandDefinition = {
-    name: "zosmf",
+export const LoginDefinition: ICommandDefinition = {
+    name: "login",
     type: "group",
-    summary: "Interact with z/OSMF",
-    description: "Retrieve and show the properties of a z/OSMF web server",
+    description: "Login to an authentication server",
     children: [
-        CheckCommand,
-        ListCommand
+        ApimlCommand
     ]
 };
-
-export = definition;

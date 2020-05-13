@@ -121,8 +121,9 @@ export class ZosmfSession {
     public static ZOSMF_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
         name: "token-type",
         aliases: ["tt"],
-        description: "The token type for z/OSMF returned in the HTTP Cookie header, for example: 'LtpaToken2'." +
-            " The existence of a 'tokenType' indicates that basic authentication will not be used after a token has been obtained.",
+        description: "The token type for API Mediation Layer, which is returned in the HTTP Cookie header, " +
+            "for example: 'apimlAuthenticationToken'. " +
+            "The 'tokenType' is kept with the token value for future authentication.",
         type: "stringOrEmpty",
         required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
