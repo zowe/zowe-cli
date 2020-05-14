@@ -67,12 +67,15 @@ const config: IImperativeConfig = {
                     type: "boolean",
                     optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                 },
-                token: {
-                    type: ["string", "null"],
+                tokenType: {
+                    type: "string"
+                },
+                tokenValue: {
+                    type: "string",
                     secure: true
                 },
                 serviceIds: {
-                    type: ["object", "null"]
+                    type: "object"
                 }
             },
             required: []
