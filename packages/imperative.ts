@@ -71,7 +71,7 @@ const config: IImperativeConfig = {
                     basePath: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
-                    } /* Todo:TokensNotReady,
+                    },
                     tokenType: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE
@@ -81,7 +81,6 @@ const config: IImperativeConfig = {
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE,
                         secure: true
                     }
-                    Todo:TokensNotReady */
                 },
                 required: []
             },
