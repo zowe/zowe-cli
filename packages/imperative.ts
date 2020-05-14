@@ -38,6 +38,73 @@ const config: IImperativeConfig = {
             logFile: Constants.LOG_LOCATION
         }
     },
+    baseProfile: {
+        type: "base",
+        schema: {
+            type: "object",
+            title: "Base Profile",
+            description: "Base Profile that contains user and password for other ",
+            properties: {
+                host: {
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_HOST
+                },
+                port: {
+                    type: "number",
+                    optionDefinition: Constants.BASE_OPTION_PORT
+                },
+                user: {
+                    type: "string",
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_USER
+                },
+                password: {
+                    type: "string",
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_PASSWORD
+                },
+                rejectUnauthorized: {
+                    type: "boolean",
+                    optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                },
+                token: {
+                    type: ["string", "null"],
+                    secure: true
+                },
+                serviceIds: {
+                    type: ["object", "null"]
+                }
+            },
+            required: []
+        },
+        createProfileExamples: [
+            {
+                options: "base1 --host example.com --port 443 --user admin --password 123456",
+                description: "Create a profile called 'base1' to connect to host example.com and port 443"
+            },
+            {
+                options: "base2 --host example.com --user admin --password 123456 --reject-unauthorized false",
+                description: "Create a profile called 'base2' to connect to host example.com (default port - 443) " +
+                    "and allow self-signed certificates"
+            },
+            {
+                options: "base3 --host example.com --port 1443",
+                description: "Create a profile called 'base3' to connect to host example.com and port 1443, " +
+                    " not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+            },
+            {
+                options: "base4 --reject-unauthorized false",
+                description: "Create a zosmf profile called 'base4' to connect to default port 443 and allow self-signed certificates, " +
+                "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+            }
+        ],
+        updateProfileExamples: [
+            {
+                options: "base1 --user newuser --password newp4ss",
+                description: "Update a base profile named 'base1' with a new username and password"
+            }
+        ]
+    },
     profiles: [
         {
             type: "zosmf",

@@ -9,6 +9,8 @@
 *
 */
 
+import { ICommandOptionDefinition } from "@zowe/imperative";
+
 /**
  * Class to contain  constants
  * @export
@@ -90,4 +92,63 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      * @memberof Constants
      */
     public static readonly HOME_DIR = "~/.zowe";
+
+    public static BASE_CONNECTION_OPTION_GROUP = "Base Connection Options";
+
+    /**
+     * Option used in profile creation and commands for hostname
+     */
+    public static BASE_OPTION_HOST: ICommandOptionDefinition = {
+        name: "host",
+        aliases: ["H"],
+        description: "Host name of service on the mainframe.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for port
+     */
+    public static BASE_OPTION_PORT: ICommandOptionDefinition = {
+        name: "port",
+        aliases: ["P"],
+        description: "Port number of service on the mainframe.",
+        type: "number",
+        defaultValue: 443,
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for username / ID
+     */
+    public static BASE_OPTION_USER: ICommandOptionDefinition = {
+        name: "user",
+        aliases: ["u"],
+        description: "User name to authenticate to service on the mainframe.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for password/passphrase
+     */
+    public static BASE_OPTION_PASSWORD: ICommandOptionDefinition = {
+        name: "password",
+        aliases: ["pass", "pw"],
+        description: "Password to authenticate to service on the mainframe.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF
+     */
+    public static BASE_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
+        name: "reject-unauthorized",
+        aliases: ["ru"],
+        description: "Reject self-signed certificates.",
+        type: "boolean",
+        defaultValue: true,
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
 }
