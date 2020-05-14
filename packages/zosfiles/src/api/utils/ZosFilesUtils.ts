@@ -188,7 +188,8 @@ export class ZosFilesUtils {
      * @param {string} dataSetName -The name of the data set to recall|migrate
      * @param {string} returnMessage - Message to return based upon command request
      * @param {any} hsmCommand - HsmCommand requested
-     * @param {IRecallOptions | IMigrateOptions | IDeleteOptions} options - If true then the function waits for completion of the request. If false (default) the request is queued.
+     * @param {IRecallOptions | IMigrateOptions | IDeleteOptions} options
+     * * - If true then the function waits for completion of the request. If false (default) the request is queued.
      */
     public static async dfsmsHsmCommand(
         session: AbstractSession,
