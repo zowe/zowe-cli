@@ -45,7 +45,6 @@ describe("ZosFilesBaseHandler", () => {
             port: zosmfProfile.port,
             user: zosmfProfile.user,
             password: zosmfProfile.password,
-            base64EncodedAuth: zosmfProfile.auth,
             rejectUnauthorized: zosmfProfile.rejectUnauthorized
         };
         const expectedSession = new Session(sessionArgs);
