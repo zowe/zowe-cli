@@ -24,7 +24,7 @@ import { Login } from "../../../api/Login";
  * @implements {ICommandHandler}
  */
 export default class ApimlHandler extends ZosmfBaseHandler {
-
+    // Todo:Gene Do not extend ZosmfBaseHandler after implementing apiml login
     /**
      * Handler for the "zosmf login" command.
      * @param {IHandlerParameters} params - see interface for details

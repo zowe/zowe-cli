@@ -87,7 +87,8 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         );
 
         let addCredsOpts: IOptionsForAddCreds = {};
-        if (commandParameters.definition.name === "login") {
+        // Todo:Gene Remove this after login converted to apiml
+        if (commandParameters.definition.name === "apiml") {
             addCredsOpts = {
                 requestToken: true
             };
