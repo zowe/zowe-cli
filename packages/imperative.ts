@@ -43,7 +43,7 @@ const config: IImperativeConfig = {
         schema: {
             type: "object",
             title: "Base Profile",
-            description: "Base Profile that contains user and password for other ",
+            description: "Base profile that stores values shared by multiple service profiles",
             properties: {
                 host: {
                     type: "string",
