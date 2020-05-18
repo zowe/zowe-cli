@@ -63,16 +63,6 @@ exports[`Copy Data Set should display the help 1`] = `
       prepend the base path to all z/OSMF resources when making REST requests. Do not
       specify this option if you are not using an API mediation layer.
 
-   --token-type  | --tt (string)
-
-      The token type for API Mediation Layer, which is returned in the HTTP Cookie
-      header, for example: 'apimlAuthenticationToken'. The 'tokenType' is kept with
-      the token value for future authentication.
-
-   --token-value  | --tv (string)
-
-      The token value associated with the token type.
-
  PROFILE OPTIONS
  ---------------
 
