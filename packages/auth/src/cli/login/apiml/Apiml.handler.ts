@@ -58,8 +58,14 @@ export default class ApimlHandler extends ZosmfBaseHandler {
         });
 
         params.response.console.log(
-            "Login successful.\nReceived a token of type = " + this.mSession.ISession.tokenType +
-            ".\nThe following token was stored in your profile:\n" + tokenValue
+            "Login successful.\n"
         );
+
+        if (params.arguments.showToken) {
+            params.response.console.log(
+                "Received a token of type = " + this.mSession.ISession.tokenType +
+                ".\nThe following token was stored in your profile:\n" + tokenValue
+            );
+        }
     }
 }
