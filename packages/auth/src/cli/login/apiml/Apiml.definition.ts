@@ -29,6 +29,11 @@ export const ApimlCommand: ICommandDefinition = {
             name: "json-web-token", aliases: ["jwt"],
             description: "Login and obtain JWT token instead of default APIML.",
             type: "boolean"
+        },
+        {
+            name: "show-token", aliases: ["st"],
+            description: "Show the token when login is successful.",
+            type: "boolean"
         }
     ],
     examples: [
