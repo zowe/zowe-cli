@@ -27,7 +27,7 @@ export const ApimlCommand: ICommandDefinition = {
         ...ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
         {
             name: "json-web-token", aliases: ["jwt"],
-            description: "Login and obtain JWT token instead of default LTPA2.",
+            description: "Login and obtain JWT token instead of default APIML.",
             type: "boolean"
         }
     ],
