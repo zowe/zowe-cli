@@ -9,9 +9,8 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstants, SessConstants } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstants, SessConstants, HTTP_VERB } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { LoginConstants } from "./LoginConstants";
 
 /**
  * Class to handle logging onto z/OSMF.
@@ -27,7 +26,7 @@ export class Login {
      * @returns
      * @memberof Login
      */
-    public static async login(session: AbstractSession) {
+    public static async login(session: AbstractSession, request: HTTP_VERB, resource: string) {
         Logger.getAppLogger().trace("Login.login()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
 
@@ -35,8 +34,8 @@ export class Login {
         // get client instance and perform a get on /zosmf/info
         const client = new ZosmfRestClient(session);
         await client.request({
-            request: "GET",
-            resource: LoginConstants.RESOURCE
+            request,
+            resource
         });
 
         // NOTE(Kelosky): since this endpoint doesn't require authentication, we treat a missing LTPA2 token
