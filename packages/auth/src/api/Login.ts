@@ -37,6 +37,9 @@ export class Login {
             request,
             resource
         });
+        // TODO Is a more generic login function possible on Imperative's RestClient?
+        // Seems like not necessarily, as APIML auth endpoint uses POST instead of GET
+        // await client.login(LoginConstants.RESOURCE);
 
         // NOTE(Kelosky): since this endpoint doesn't require authentication, we treat a missing LTPA2 token
         // as unauthorized and simulate a 401 (so that the error messaging will not change when we have a
