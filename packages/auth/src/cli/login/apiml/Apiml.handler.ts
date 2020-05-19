@@ -15,6 +15,7 @@ import {
     SessConstants
 } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { LoginConstants } from "../../../api/LoginConstants";
 import { Login } from "../../../api/Login";
 
 /**
@@ -40,11 +41,11 @@ export default class ApimlHandler extends ZosmfBaseHandler {
             this.mSession.ISession.tokenType = params.arguments.tokenType;
         } else {
             // use our default token
-            this.mSession.ISession.tokenType = SessConstants.TOKEN_TYPE_LTPA;
+            this.mSession.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
         }
 
         // login to obtain a token
-        const tokenValue = await Login.login(this.mSession);
+        const tokenValue = await Login.login(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
 
         // update the profile given
         await Imperative.api.profileManager(`zosmf`).update({
