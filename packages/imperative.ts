@@ -187,17 +187,19 @@ const config: IImperativeConfig = {
                     description: "Update a zosmf profile named 'zos123' with a new username and password"
                 }
             ],
-            authConfig: {
-                serviceName: "apiml",
-                login: {
-                    description: AuthConstants.APIML_LOGIN_DESCRIPTION,
-                    examples: [AuthConstants.APIML_LOGIN_EXAMPLE],
-                    handler: __dirname + "/auth/src/cli/apiml/Login.handler"
-                },
-                logout: {
-                    handler: __dirname + "/auth/src/cli/apiml/Logout.handler"
+            authConfig: [
+                {
+                    serviceName: "apiml",
+                    login: {
+                        description: AuthConstants.APIML_LOGIN_DESCRIPTION,
+                        examples: [AuthConstants.APIML_LOGIN_EXAMPLE],
+                        handler: __dirname + "/auth/src/cli/apiml/Login.handler"
+                    },
+                    logout: {
+                        handler: __dirname + "/auth/src/cli/apiml/Logout.handler"
+                    }
                 }
-            }
+            ]
         },
         {
             type: "tso",
