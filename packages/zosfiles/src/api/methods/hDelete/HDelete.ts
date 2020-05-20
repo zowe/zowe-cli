@@ -16,7 +16,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
 /**
- * This class holds helper functions that are used to recall files through the
+ * This class holds helper functions that are used to delete data sets through the
  * z/OSMF APIs.
  */
 export class HDelete {
