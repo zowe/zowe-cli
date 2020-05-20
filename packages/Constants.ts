@@ -167,7 +167,7 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      * Option used in profile creation and commands for tokenValue to be used to interact with APIs
      */
     public static BASE_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
-        name: "token_value",
+        name: "token-value",
         aliases: ["tv"],
         description: "The value of the token to pass to the API.",
         type: "string",
