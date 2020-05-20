@@ -151,4 +151,26 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         defaultValue: true,
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
+
+    /**
+     * Option used in profile creation and commands for tokenType
+     */
+    public static BASE_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
+        name: "token-type",
+        aliases: ["tt"],
+        description: "Type of token to get and use for the API.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenValue to be used to interact with APIs
+     */
+    public static BASE_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
+        name: "token_value",
+        aliases: ["tv"],
+        description: "The value of the token to pass to the API.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
 }

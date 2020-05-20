@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandExampleDefinition } from "@zowe/imperative";
+import { ICommandExampleDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 
 /**
  * Class to contain auth constants
@@ -37,5 +37,17 @@ export class AuthConstants {
         description: "Login to an instance of API ML in order to obtain or update the " +
             "token value stored into your base profile",
         options: ""
+    };
+
+    public static readonly APIML_LOGIN_OPTION_JSON_WEB_TOKEN: ICommandOptionDefinition = {
+        name: "json-web-token", aliases: ["jwt"],
+        description: "Login and obtain JWT token instead of default APIML.",
+        type: "boolean"
+    };
+
+    public static readonly APIML_LOGIN_OPTION_SHOW_TOKEN: ICommandOptionDefinition = {
+        name: "show-token", aliases: ["st"],
+        description: "Show the token when login is successful.",
+        type: "boolean"
     };
 }

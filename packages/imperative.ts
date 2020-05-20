@@ -69,11 +69,13 @@ const config: IImperativeConfig = {
                     optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                 },
                 tokenType: {
-                    type: "string"
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_TOKEN_TYPE
                 },
                 tokenValue: {
                     type: "string",
-                    secure: true
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_TOKEN_VALUE
                 },
                 serviceIds: {
                     type: "object"
@@ -99,13 +101,30 @@ const config: IImperativeConfig = {
             {
                 options: "base4 --reject-unauthorized false",
                 description: "Create a zosmf profile called 'base4' to connect to default port 443 and allow self-signed certificates, " +
-                "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+                    "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
             }
         ],
         updateProfileExamples: [
             {
                 options: "base1 --user newuser --password newp4ss",
                 description: "Update a base profile named 'base1' with a new username and password"
+            }
+        ],
+        authConfig: [
+            {
+                serviceName: "apiml",
+                login: {
+                    description: AuthConstants.APIML_LOGIN_DESCRIPTION,
+                    examples: [AuthConstants.APIML_LOGIN_EXAMPLE],
+                    handler: __dirname + "/auth/src/cli/apiml/Login.handler",
+                    options: [
+                        AuthConstants.APIML_LOGIN_OPTION_JSON_WEB_TOKEN,
+                        AuthConstants.APIML_LOGIN_OPTION_SHOW_TOKEN
+                    ]
+                },
+                logout: {
+                    handler: __dirname + "/auth/src/cli/apiml/Logout.handler"
+                }
             }
         ]
     },
@@ -142,15 +161,6 @@ const config: IImperativeConfig = {
                     basePath: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
-                    },
-                    tokenType: {
-                        type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE
-                    },
-                    tokenValue: {
-                        type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE,
-                        secure: true
                     }
                 },
                 required: []
@@ -185,19 +195,6 @@ const config: IImperativeConfig = {
                 {
                     options: "zos123 --user newuser --password newp4ss",
                     description: "Update a zosmf profile named 'zos123' with a new username and password"
-                }
-            ],
-            authConfig: [
-                {
-                    serviceName: "apiml",
-                    login: {
-                        description: AuthConstants.APIML_LOGIN_DESCRIPTION,
-                        examples: [AuthConstants.APIML_LOGIN_EXAMPLE],
-                        handler: __dirname + "/auth/src/cli/apiml/Login.handler"
-                    },
-                    logout: {
-                        handler: __dirname + "/auth/src/cli/apiml/Logout.handler"
-                    }
                 }
             ]
         },

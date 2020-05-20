@@ -12,11 +12,17 @@
 import {
     IHandlerParameters,
     Imperative,
-    SessConstants
+    SessConstants,
+    ICommandHandler,
+    ISession,
+    IOptionsForAddCreds,
+    CredsForSessCfg,
+    AbstractSession,
+    Session
 } from "@zowe/imperative";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
-import { LoginConstants } from "../../../api/LoginConstants";
-import { Login } from "../../../api/Login";
+import { LoginConstants } from "../../api/LoginConstants";
+import { Login } from "../../api/Login";
+import { ZosmfSession } from "../../../../zosmf/src/api/ZosmfSession";
 
 /**
  * Handler to login to z/OSMF
@@ -24,14 +30,30 @@ import { Login } from "../../../api/Login";
  * @class Handler
  * @implements {ICommandHandler}
  */
-export default class ApimlHandler extends ZosmfBaseHandler {
-    // Todo:Gene Do not extend ZosmfBaseHandler after implementing apiml login
+export default class ApimlHandler implements ICommandHandler {
     /**
-     * Handler for the "zosmf login" command.
+     * The session creating from the command line arguments / profile
+     */
+    protected mSession: AbstractSession;
+
+    /**
+     * Handler for the "auth login apiml" command.
      * @param {IHandlerParameters} params - see interface for details
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      */
-    public async processCmd(params: IHandlerParameters): Promise<void> {
+    public async process(params: IHandlerParameters): Promise<void> {
+        const baseLoadedProfile = params.profiles.getMeta("base", false);
+
+        const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
+            params.arguments
+        );
+
+        const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
+            sessCfg, params.arguments, { requestToken: true }
+        );
+
+        this.mSession = new Session(sessCfgWithCreds);
+
         // we want to receive a token in our response
         this.mSession.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
 
@@ -48,8 +70,8 @@ export default class ApimlHandler extends ZosmfBaseHandler {
         const tokenValue = await Login.login(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
 
         // update the profile given
-        await Imperative.api.profileManager(`zosmf`).update({
-            name: this.mZosmfLoadedProfile.name,
+        await Imperative.api.profileManager(`base`).update({
+            name: baseLoadedProfile.name,
             args: {
                 "token-type": this.mSession.ISession.tokenType,
                 "token-value": tokenValue
