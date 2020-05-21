@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Added API to delete migrated data sets
+- Added API to delete migrated data sets.
 
 ## `6.13.0`
 
