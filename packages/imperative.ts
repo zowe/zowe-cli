@@ -76,9 +76,6 @@ const config: IImperativeConfig = {
                     type: "string",
                     secure: true,
                     optionDefinition: Constants.BASE_OPTION_TOKEN_VALUE
-                },
-                serviceIds: {
-                    type: "object"
                 }
             },
             required: []
@@ -118,6 +115,11 @@ const config: IImperativeConfig = {
                     examples: [AuthConstants.APIML_LOGIN_EXAMPLE],
                     handler: __dirname + "/auth/src/cli/apiml/Login.handler",
                     options: [
+                        Constants.BASE_OPTION_HOST,
+                        Constants.BASE_OPTION_PORT,
+                        Constants.BASE_OPTION_USER,
+                        Constants.BASE_OPTION_PASSWORD,
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
                         AuthConstants.APIML_LOGIN_OPTION_JSON_WEB_TOKEN,
                         AuthConstants.APIML_LOGIN_OPTION_SHOW_TOKEN
                     ]
