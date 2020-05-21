@@ -79,13 +79,11 @@ export default class ApimlHandler implements ICommandHandler {
             merge: true
         });
 
-        params.response.console.log(
-            "Login successful.\n"
-        );
+        params.response.console.log("Login successful.");
 
         if (params.arguments.showToken) {
             params.response.console.log(
-                "Received a token of type = " + this.mSession.ISession.tokenType +
+                "\nReceived a token of type = " + this.mSession.ISession.tokenType +
                 ".\nThe following token was stored in your profile:\n" + tokenValue
             );
         }

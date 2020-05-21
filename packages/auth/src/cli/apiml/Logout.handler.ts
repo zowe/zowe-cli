@@ -30,6 +30,6 @@ export default class ApimlHandler implements ICommandHandler {
      * @returns {Promise<void>} - promise to fulfill or reject when the command is complete
      */
     public async process(params: IHandlerParameters): Promise<void> {
-        /* Do nothing */
+        params.response.console.log("Not yet implemented.");
     }
 }
