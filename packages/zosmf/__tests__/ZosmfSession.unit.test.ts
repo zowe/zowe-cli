@@ -32,7 +32,6 @@ describe("zosmf utils", () => {
             port: "fake",
             rejectUnauthorized: false,
             basePath: "fake",
-            tokenType: "fake",
             tokenValue: "fake"
         };
         const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
@@ -74,7 +73,6 @@ describe("zosmf utils", () => {
             port: "fake",
             rejectUnauthorized: false,
             basePath: undefined,
-            tokenType: undefined,
             tokenValue: undefined
         };
         let error;

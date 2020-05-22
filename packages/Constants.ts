@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition, ICommandExampleDefinition } from "@zowe/imperative";
 
 /**
  * Class to contain  constants
@@ -172,5 +172,32 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         description: "The value of the token to pass to the API.",
         type: "string",
         group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Description of APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_DESCRIPTION = "Login to API Mediation Layer and obtain or update a token value. " +
+        "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
+        " Alternatively, you may provide \"user\" and \"password\" on a command, in an environmental variable, or in a profile." +
+        " See a specific command's help via \"--help\" for more information.";
+
+    /**
+     * Example definition for APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_EXAMPLE: ICommandExampleDefinition = {
+        description: "Login to an instance of API ML in order to obtain or update the " +
+            "token value stored into your base profile",
+        options: ""
+    };
+
+    public static readonly APIML_LOGIN_OPTION_JSON_WEB_TOKEN: ICommandOptionDefinition = {
+        name: "json-web-token", aliases: ["jwt"],
+        description: "Login and obtain JWT token instead of default APIML.",
+        type: "boolean"
     };
 }

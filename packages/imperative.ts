@@ -25,7 +25,6 @@ import {
     TSO_OPTION_ROWS
 } from "./zostso/src/cli/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
-import { AuthConstants } from "./auth/src/cli/AuthConstants";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -68,10 +67,6 @@ const config: IImperativeConfig = {
                     type: "boolean",
                     optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                 },
-                tokenType: {
-                    type: "string",
-                    optionDefinition: Constants.BASE_OPTION_TOKEN_TYPE
-                },
                 tokenValue: {
                     type: "string",
                     secure: true,
@@ -110,23 +105,20 @@ const config: IImperativeConfig = {
         authConfig: [
             {
                 serviceName: "apiml",
+                handler: __dirname + "/auth/src/cli/ApimlAuthHandler",
                 login: {
-                    description: AuthConstants.APIML_LOGIN_DESCRIPTION,
-                    examples: [AuthConstants.APIML_LOGIN_EXAMPLE],
-                    handler: __dirname + "/auth/src/cli/apiml/Login.handler",
+                    description: Constants.APIML_LOGIN_DESCRIPTION,
+                    examples: [Constants.APIML_LOGIN_EXAMPLE],
                     options: [
                         Constants.BASE_OPTION_HOST,
                         Constants.BASE_OPTION_PORT,
                         Constants.BASE_OPTION_USER,
                         Constants.BASE_OPTION_PASSWORD,
                         Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
-                        AuthConstants.APIML_LOGIN_OPTION_JSON_WEB_TOKEN,
-                        AuthConstants.APIML_LOGIN_OPTION_SHOW_TOKEN
+                        // TODO Should this option be removed? Was it only meaningful for the z/OSMF tests?
+                        Constants.APIML_LOGIN_OPTION_JSON_WEB_TOKEN
                     ]
                 },
-                logout: {
-                    handler: __dirname + "/auth/src/cli/apiml/Logout.handler"
-                }
             }
         ]
     },

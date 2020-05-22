@@ -57,14 +57,8 @@ export default class ApimlHandler implements ICommandHandler {
         // we want to receive a token in our response
         this.mSession.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
 
-        // set the type of token we expect to receive
-        if (params.arguments.tokenType) {
-            // use the token type requested by the user
-            this.mSession.ISession.tokenType = params.arguments.tokenType;
-        } else {
-            // use our default token
-            this.mSession.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
-        }
+        // use our default token
+        this.mSession.ISession.tokenType = SessConstants.TOKEN_TYPE_APIML;
 
         // login to obtain a token
         const tokenValue = await Login.login(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
