@@ -10,10 +10,10 @@
 */
 
 import { ZosmfSession } from "../src/api/ZosmfSession";
-import { Session, ImperativeExpect } from "@zowe/imperative";
+import { Session, ImperativeExpect, ICommandArguments } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
-    it("should create a session object", () => {
+    it("should create a basic session object", () => {
         const session: Session = ZosmfSession.createBasicZosmfSession({
             host: "fake",
             port: "fake",
@@ -24,7 +24,21 @@ describe("zosmf utils", () => {
         });
         expect(session.ISession).toMatchSnapshot();
     });
-    it("should fail to create a session object when username, and password are not present", () => {
+    it("Should create a session object when tokenValue and tokenType are present", () => {
+        const args: ICommandArguments = {
+            $0: "zowe",
+            _: [""],
+            host: "fake",
+            port: "fake",
+            rejectUnauthorized: false,
+            basePath: "fake",
+            tokenType: "fake",
+            tokenValue: "fake"
+        };
+        const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
+        expect(session.ISession).toMatchSnapshot();
+    });
+    it("should fail to create a basic session object when username and password are not present", () => {
         let error;
         try {
             const session: Session = ZosmfSession.createBasicZosmfSession({
@@ -37,8 +51,7 @@ describe("zosmf utils", () => {
         }
         expect(error.toString()).toContain("Must have user & password OR base64 encoded credentials");
     });
-
-    it("should fail to create a session object when host is not present", () => {
+    it("should fail to create a basic session object when host is not present", () => {
         let error;
         try {
             const session: Session = ZosmfSession.createBasicZosmfSession({
@@ -52,5 +65,24 @@ describe("zosmf utils", () => {
             error = err;
         }
         expect(error.toString()).toContain("Required parameter 'hostname' must be defined");
+    });
+    it("should fail to create a session object when tokenValue and tokenType are undefined", () => {
+        const args: ICommandArguments = {
+            $0: "zowe",
+            _: [""],
+            host: "fake",
+            port: "fake",
+            rejectUnauthorized: false,
+            basePath: undefined,
+            tokenType: undefined,
+            tokenValue: undefined
+        };
+        let error;
+        try {
+            const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
+        } catch (err) {
+            error = err;
+        }
+        expect(error.toString()).toContain("Must have user & password OR base64 encoded credentials");
     });
 });

@@ -1,6 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zosmf utils should create a session object 1`] = `
+exports[`zosmf utils Should create a session object when tokenValue and tokenType are present 1`] = `
+Object {
+  "basePath": "fake",
+  "hostname": "fake",
+  "password": undefined,
+  "port": "fake",
+  "protocol": "https",
+  "rejectUnauthorized": false,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "tokenType": "fake",
+  "tokenValue": "fake",
+  "type": "token",
+  "user": undefined,
+}
+`;
+
+exports[`zosmf utils should create a basic session object 1`] = `
 Object {
   "base64EncodedAuth": "ZmFrZTpmYWtl",
   "basePath": "",
