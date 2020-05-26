@@ -9,15 +9,15 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "../../../../cmd";
-import { Constants } from "../../../../constants";
-import { Logger } from "../../../../Logger";
 import { ZosmfSession } from "../../../zosmf";
+import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession } from "@zowe/imperative";
+import { LoginConstants } from "../api/LoginConstants";
+import { Login } from "../api/Login";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
  */
-export class ApimlAuthHandler extends BaseAuthHandler {
+export default class ApimlAuthHandler extends BaseAuthHandler {
     protected mProfileType: string = "base";
 
     /**
@@ -39,11 +39,11 @@ export class ApimlAuthHandler extends BaseAuthHandler {
         return ZosmfSession.createSessCfgFromArgs(args);
     }
 
-    public async doLogin(session: ISession) {
-        return Login.login(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
-    };
+    public async doLogin(session: AbstractSession) {
+        return Login.apimlLogin(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
+    }
 
-    public async doLogout(session: ISession) {
+    public async doLogout(session: AbstractSession) {
         /* Not implemented yet */
-    };
+    }
 }

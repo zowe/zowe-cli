@@ -26,7 +26,7 @@ export class Login {
      * @returns
      * @memberof Login
      */
-    public static async login(session: AbstractSession, request: HTTP_VERB, resource: string) {
+    public static async apimlLogin(session: AbstractSession, request: HTTP_VERB, resource: string) {
         Logger.getAppLogger().trace("Login.login()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
 
