@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../../../zosmf";
-import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession } from "@zowe/imperative";
+import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/imperative";
 import { LoginConstants } from "../api/LoginConstants";
 import { Login } from "../api/Login";
 
@@ -19,6 +19,8 @@ import { Login } from "../api/Login";
  */
 export default class ApimlAuthHandler extends BaseAuthHandler {
     protected mProfileType: string = "base";
+
+    protected mDefaultTokenType: SessConstants.TOKEN_TYPE_CHOICES = "apimlAuthenticationToken";
 
     /**
      * The session creating from the command line arguments / profile
