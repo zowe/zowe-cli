@@ -13,14 +13,14 @@ import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstan
 import { ZosmfRestClient } from "../../../rest";
 
 /**
- * Class to handle logging onto z/OSMF.
+ * Class to handle logging onto APIML.
  * @export
  * @class Login
  */
 export class Login {
 
     /**
-     * Perform z/OSMF login to obtain LTPA2 or other token types.
+     * Perform APIML login to obtain LTPA2 or other token types.
      * @static
      * @param {AbstractSession} session
      * @returns
@@ -30,8 +30,6 @@ export class Login {
         Logger.getAppLogger().trace("Login.login()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
 
-        // TODO(Kelosky): we eventually will hope to use a real z/OSMF authentication endpoint
-        // get client instance and perform a get on /zosmf/info
         const client = new ZosmfRestClient(session);
         await client.request({
             request,

@@ -120,6 +120,17 @@ const config: IImperativeConfig = {
                         Constants.BASE_OPTION_PASSWORD,
                         Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                     ]
+                },
+                logout: {
+                    description: Constants.APIML_LOGOUT_DESCRIPTION,
+                    examples: [Constants.APIML_LOGOUT_EXAMPLE],
+                    options: [
+                        Constants.BASE_OPTION_HOST,
+                        Constants.BASE_OPTION_PORT,
+                        Constants.BASE_OPTION_TOKEN_TYPE,
+                        Constants.BASE_OPTION_TOKEN_VALUE,
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    ]
                 }
             }
         ]

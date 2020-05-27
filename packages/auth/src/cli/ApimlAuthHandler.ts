@@ -10,9 +10,11 @@
 */
 
 import { ZosmfSession } from "../../../zosmf";
-import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/imperative";
+import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants, logoutAuthCommandDesc } from "@zowe/imperative";
 import { LoginConstants } from "../api/LoginConstants";
 import { Login } from "../api/Login";
+import { LogoutConstants } from "../api/LogoutConstants";
+import { Logout } from "../api/Logout";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -53,6 +55,6 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
      * @param {AbstractSession} session The session object to use to connect to the auth service
      */
     protected async doLogout(session: AbstractSession) {
-        /* Not implemented yet */
+        return Logout.apimlLogout(this.mSession, "POST", LogoutConstants.APIML_V1_RESOURCE);
     }
 }
