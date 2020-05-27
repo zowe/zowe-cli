@@ -194,10 +194,4 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
             "token value stored into your base profile",
         options: ""
     };
-
-    public static readonly APIML_LOGIN_OPTION_JSON_WEB_TOKEN: ICommandOptionDefinition = {
-        name: "json-web-token", aliases: ["jwt"],
-        description: "Login and obtain JWT token instead of default APIML.",
-        type: "boolean"
-    };
 }
