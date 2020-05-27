@@ -120,7 +120,7 @@ const config: IImperativeConfig = {
                         Constants.BASE_OPTION_PASSWORD,
                         Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                     ]
-                },
+                }
             }
         ]
     },

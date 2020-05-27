@@ -18,34 +18,41 @@ import { Login } from "../api/Login";
  * This class is used by the auth command handlers as the base class for their implementation.
  */
 export default class ApimlAuthHandler extends BaseAuthHandler {
+    /**
+     * The profile type where token type and value should be stored
+     */
     protected mProfileType: string = "base";
 
-    protected mDefaultTokenType: SessConstants.TOKEN_TYPE_CHOICES = "apimlAuthenticationToken";
+    /**
+     * The default token type to use if not specified as a command line option
+     */
+    protected mDefaultTokenType: SessConstants.TOKEN_TYPE_CHOICES = SessConstants.TOKEN_TYPE_APIML;
 
     /**
-     * The session creating from the command line arguments / profile
+     * This is called by the {@link BaseAuthHandler#process} when it needs a
+     * session. Should be used to create a session to connect to the auth
+     * service.
+     * @param {ICommandArguments} args The command line arguments to use for building the session
+     * @returns {ISession} The session object built from the command line arguments.
      */
-    protected mSession: AbstractSession;
+    protected createSessCfgFromArgs: (args: ICommandArguments) => ISession = ZosmfSession.createSessCfgFromArgs;
 
     /**
-     * This is called by the {@link ZosFilesBaseHandler#process} after it creates a session. Should
-     * be used so that every class under files does not have to instantiate the session object.
-     *
-     * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
-     * @param {AbstractSession} session The session object generated from the zosmf profile.
-     * @param {IProfile} zosmfProfile The zosmf profile that was loaded for the command.
-     *
-     * @returns {Promise<IZosFilesResponse>} The response from the underlying zos-files api call.
+     * This is called by the "auth login" command after it creates a session, to
+     * obtain a token that can be stored in a profile.
+     * @param {AbstractSession} session The session object to use to connect to the auth service
+     * @returns {Promise<string>} The response from the auth service containing a token
      */
-    public createSessCfgFromArgs(args: ICommandArguments): ISession {
-        return ZosmfSession.createSessCfgFromArgs(args);
-    }
-
-    public async doLogin(session: AbstractSession) {
+    protected async doLogin(session: AbstractSession) {
         return Login.apimlLogin(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
     }
 
-    public async doLogout(session: AbstractSession) {
+    /**
+     * This is called by the "auth logout" command after it creates a session, to
+     * revoke a token before removing it from a profile.
+     * @param {AbstractSession} session The session object to use to connect to the auth service
+     */
+    protected async doLogout(session: AbstractSession) {
         /* Not implemented yet */
     }
 }
