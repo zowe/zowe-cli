@@ -29,6 +29,13 @@ export interface IUploadOptions {
     binary?: boolean;
 
     /**
+     * Code page encoding
+     * @example 1047
+     * @example 037
+     */
+    encoding?: number;
+
+    /**
      * The migrated recall option
      * @example "wait, nowait, error"
      */

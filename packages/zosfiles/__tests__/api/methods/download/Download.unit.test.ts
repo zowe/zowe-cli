@@ -531,6 +531,41 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download all members specifying directory, volume, extension, and encoding mode", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path/";
+            const extension = ".xyz";
+            const encoding = 285;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    encoding
+                });
+            });
+        });
+
         it("should download all members with specified \"\" extension", async () => {
             let response;
             let caughtError;

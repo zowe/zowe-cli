@@ -241,7 +241,8 @@ export class Download {
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
-                    binary: options.binary
+                    binary: options.binary,
+                    encoding: options.encoding
                 });
             };
 

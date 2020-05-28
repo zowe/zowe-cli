@@ -1019,7 +1019,15 @@ export class Upload {
                     reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
                 } else if (options.localEncoding) {
                     reqHeaders.push({"Content-Type": options.localEncoding});
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    if (options.encoding) {
+                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                        const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                        const header = ZosmfHeaders.X_IBM_TEXT;
+                        header[keys[0]] = value;
+                        reqHeaders.push(header);
+                    } else {
+                        reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    }
                 } else {
                     reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
                 }
@@ -1028,7 +1036,15 @@ export class Upload {
                 if (options.binary) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
                 } else {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    if (options.encoding) {
+                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                        const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                        const header = ZosmfHeaders.X_IBM_TEXT;
+                        header[keys[0]] = value;
+                        reqHeaders.push(header);
+                    } else {
+                        reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    }
                 }
                 break;
         }

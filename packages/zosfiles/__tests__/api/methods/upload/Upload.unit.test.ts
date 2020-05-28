@@ -754,6 +754,26 @@ describe("z/OS Files - Upload", () => {
                                                                         reqHeaders,
                                                                         requestStream: inputStream});
         });
+
+        it("should allow uploading a data set with encoding", async () => {
+            const buffer: Buffer = Buffer.from("testing");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
+            const options = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }];
+            const uploadOptions: IUploadOptions = {
+                encoding: 285
+            };
+            try {
+                response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+        });
     });
     describe("pathToDataSet", () => {
         const listDatasetSpy = jest.spyOn(List, "dataSet");
