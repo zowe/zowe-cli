@@ -297,6 +297,8 @@ export default {
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each line as-is, without translation. No delimiters are added between records.",
+            ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " + 
+                "specified.",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
             EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension.  When no extension " +
@@ -553,6 +555,7 @@ export default {
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Data content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each record as-is, without translation. No delimiters are added between records.",
+            ENCODING: "Data content in encoding mode, which means that data conversion is performed according to the encoding specified.",
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
                 "specify the following values: wait, nowait, error",
             RECURSIVE: "Upload all directories recursively.",

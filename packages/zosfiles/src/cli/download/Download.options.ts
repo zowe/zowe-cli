@@ -45,6 +45,17 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
+     * The encoding option
+     * @type {ICommandOptionDefinition}
+     */
+    encoding: {
+        name: "encoding",
+        aliases: ["ec"],
+        description: strings.ENCODING,
+        type: "number"
+    },
+
+    /**
      * The local file to download the data set to
      * @type {ICommandOptionDefinition}
      */

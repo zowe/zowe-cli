@@ -29,6 +29,7 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
         return Download.allMembers(session, commandParameters.arguments.dataSetName, {
             volume: commandParameters.arguments.volumeSerial,
             binary: commandParameters.arguments.binary,
+            encoding: commandParameters.arguments.encoding,
             directory: commandParameters.arguments.directory,
             extension: commandParameters.arguments.extension,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,

@@ -45,6 +45,17 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
     },
 
     /**
+     * The encoding option
+     * @type {ICommandOptionDefinition}
+     */
+    encoding: {
+        name: "encoding",
+        aliases: ["ec"],
+        description: strings.ENCODING,
+        type: "number"
+    },
+
+    /**
      * The migrated recall option
      * @type {ICommandOptionDefinition}
      */
