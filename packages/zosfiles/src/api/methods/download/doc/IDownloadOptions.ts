@@ -27,6 +27,13 @@ export interface IDownloadOptions {
     binary?: boolean;
 
     /**
+     * Code page encoding
+     * @example 1047
+     * @example 037
+     */
+    encoding?: number;
+
+    /**
      * The local file to download the data set to
      * @example "./path/to/file.txt"
      */
@@ -38,13 +45,6 @@ export interface IDownloadOptions {
      * @example .c
      */
     extension?: string;
-
-    /**
-     * Code page encoding
-     * @example 1047
-     * @example 037
-     */
-    encoding?: number;
 
     /**
      * The local directory to download all members from a pds

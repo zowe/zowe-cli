@@ -24,16 +24,16 @@ export interface IGetOptions {
     binary?: boolean;
 
     /**
-     * The volume on which the data set is stored
-     * @type {string}
-     */
-    volume?: string;
-
-    /**
      * Code page encoding
      * @type {number}
      */
     encoding?: number;
+
+    /**
+     * The volume on which the data set is stored
+     * @type {string}
+     */
+    volume?: string;
 
     /**
      * Task status object used by CLI handlers to create progress bars
