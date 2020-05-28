@@ -184,7 +184,8 @@ export class Download {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + mem.member.toLowerCase() +
                         IO.normalizeExtension(extension),
-                    binary: options.binary
+                    binary: options.binary,
+                    encoding: options.encoding
                 });
             };
 
