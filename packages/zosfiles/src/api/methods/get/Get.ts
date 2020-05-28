@@ -46,6 +46,14 @@ export class Get {
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
         }
 
+        if (options.encoding) {
+            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+            const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+            const header = ZosmfHeaders.X_IBM_TEXT;
+            header[keys[0]] = value;
+            reqHeaders = [header];
+        }
+
         if (options.volume) {
             endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
         }
