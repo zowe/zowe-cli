@@ -50,7 +50,7 @@ export const FileToDataSetDefinition: ICommandDefinition = {
         UploadOptions.volume,
         UploadOptions.binary,
         UploadOptions.recall,
-        UploadOptions.encoding,
+        UploadOptions.encoding
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
