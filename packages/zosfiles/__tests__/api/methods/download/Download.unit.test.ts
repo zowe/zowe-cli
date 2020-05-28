@@ -277,6 +277,7 @@ describe("z/OS Files - Download", () => {
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+        });
 
         it("should download a data set to the given file in encoding requested mode", async () => {
             let response;
