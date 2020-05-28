@@ -32,7 +32,8 @@ describe("zosmf utils", () => {
             port: "fake",
             rejectUnauthorized: false,
             basePath: "fake",
-            tokenValue: "fake"
+            tokenValue: "fake",
+            tokenType: "fake"
         };
         const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
         expect(session.ISession).toMatchSnapshot();
@@ -73,7 +74,8 @@ describe("zosmf utils", () => {
             port: "fake",
             rejectUnauthorized: false,
             basePath: undefined,
-            tokenValue: undefined
+            tokenValue: undefined,
+            tokenType: undefined
         };
         let error;
         try {
