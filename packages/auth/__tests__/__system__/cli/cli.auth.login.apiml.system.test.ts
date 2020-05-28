@@ -13,7 +13,6 @@ import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/d
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
 import { ITestBaseSchema } from "../../../../../__tests__/__src__/properties/ITestBaseSchema";
-import { ImperativeExpect } from "@zowe/imperative";
 
 describe("auth login/logout apiml with profile", () => {
     let TEST_ENVIRONMENT: ITestEnvironment;
@@ -82,30 +81,5 @@ describe("auth login/logout apiml without profiles", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful.");
-    });
-});
-
-describe("auth login/logout apiml help", () => {
-    let TEST_ENVIRONMENT: ITestEnvironment;
-
-    beforeAll(async () => {
-        TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "auth_login_logout_apiml",
-            tempProfileTypes: ["base"]
-        });
-    });
-
-    it("should display the login help", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
-
-    it("should display the logout help", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_help.sh", TEST_ENVIRONMENT);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toMatchSnapshot();
     });
 });
