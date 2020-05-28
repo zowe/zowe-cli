@@ -42,16 +42,20 @@ export class Get {
         let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
 
         let reqHeaders: IHeaderContent[] = [];
+
         if (options.binary) {
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        }
 
-        if (options.encoding) {
+        } else if (options.encoding) {
+
             const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
             const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
             const header = ZosmfHeaders.X_IBM_TEXT;
             header[keys[0]] = value;
             reqHeaders = [header];
+
+        } else {
+            // do nothing
         }
 
         if (options.volume) {
