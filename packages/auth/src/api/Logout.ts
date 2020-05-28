@@ -11,6 +11,7 @@
 
 import { AbstractSession, ImperativeExpect, Logger, ImperativeError, HTTP_VERB, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
+import { LogoutConstants } from "./LogoutConstants";
 
 /**
  * Class to handle logging out of APIML.
@@ -29,20 +30,28 @@ export class Logout {
     public static async apimlLogout(session: AbstractSession, request: HTTP_VERB, resource: string) {
         Logger.getAppLogger().trace("Logout.logout()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-
-        const client = new ZosmfRestClient(session);
-        await client.request({
-            request,
-            resource
-        });
-
         ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Session token not populated. Unable to logout.");
 
-        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
-            throw (client as any).populateError({
-                msg: `REST API Failure with HTTP(S) Status ${client.response.statusCode}`,
-                source: SessConstants.HTTP_PROTOCOL
+        const client = new ZosmfRestClient(session);
+        try{
+            await client.request({
+                request,
+                resource
             });
+        } catch (err) {
+            if (!err.message.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR)) {
+                throw new ImperativeError(err);
+            }
+        }
+
+        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
+            if (!(client.response.statusCode === RestConstants.HTTP_STATUS_500 &&
+                  client.dataString.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR))) {
+                throw new ImperativeError((client as any).populateError({
+                    msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
+                    source: SessConstants.HTTP_PROTOCOL
+                }));
+            }
         }
     }
 }

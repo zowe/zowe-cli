@@ -26,4 +26,12 @@ export class LogoutConstants {
      */
     public static readonly APIML_V1_RESOURCE: string = "/api/v1/gateway/auth/logout";
 
+    /**
+     * Zowe Token Expired Error Code
+     * @static
+     * @type {string}
+     * @memberof LogoutConstants
+     */
+    public static readonly APIML_V1_TOKEN_EXP_ERR: string = "ZWEAM701E";
+
 }
