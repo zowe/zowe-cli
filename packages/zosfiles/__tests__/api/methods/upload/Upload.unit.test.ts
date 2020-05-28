@@ -771,8 +771,8 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
 
-            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
         });
     });
     describe("pathToDataSet", () => {
