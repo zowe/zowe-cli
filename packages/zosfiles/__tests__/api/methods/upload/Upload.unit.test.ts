@@ -758,7 +758,7 @@ describe("z/OS Files - Upload", () => {
         it("should allow uploading a data set with encoding", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            const options = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }];
+            const reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }];
             const uploadOptions: IUploadOptions = {
                 encoding: 285
             };
@@ -772,7 +772,9 @@ describe("z/OS Files - Upload", () => {
             expect(response).toBeDefined();
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, endpoint, options, buffer);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders,
+                                                                        writeData: buffer});
         });
     });
     describe("pathToDataSet", () => {
