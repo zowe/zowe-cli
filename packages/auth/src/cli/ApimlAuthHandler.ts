@@ -10,10 +10,8 @@
 */
 
 import { ZosmfSession } from "../../../zosmf";
-import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants, logoutAuthCommandDesc } from "@zowe/imperative";
-import { LoginConstants } from "../api/LoginConstants";
+import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/imperative";
 import { Login } from "../api/Login";
-import { LogoutConstants } from "../api/LogoutConstants";
 import { Logout } from "../api/Logout";
 
 /**
@@ -46,7 +44,7 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
      * @returns {Promise<string>} The response from the auth service containing a token
      */
     protected async doLogin(session: AbstractSession) {
-        return Login.apimlLogin(this.mSession, "POST", LoginConstants.APIML_V1_RESOURCE);
+        return Login.apimlLogin(session);
     }
 
     /**
@@ -55,6 +53,6 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
      * @param {AbstractSession} session The session object to use to connect to the auth service
      */
     protected async doLogout(session: AbstractSession) {
-        return Logout.apimlLogout(this.mSession, "POST", LogoutConstants.APIML_V1_RESOURCE);
+        return Logout.apimlLogout(session);
     }
 }

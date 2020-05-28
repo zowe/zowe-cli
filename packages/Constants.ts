@@ -215,10 +215,4 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
             "before deleting the token from your base profile",
         options: ""
     };
-
-    public static readonly APIML_LOGIN_OPTION_JSON_WEB_TOKEN: ICommandOptionDefinition = {
-        name: "json-web-token", aliases: ["jwt"],
-        description: "Login and obtain JWT token instead of default APIML.",
-        type: "boolean"
-    };
 }

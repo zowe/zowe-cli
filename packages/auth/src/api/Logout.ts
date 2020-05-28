@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, ImperativeError, HTTP_VERB, RestConstants, SessConstants } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { LogoutConstants } from "./LogoutConstants";
 
@@ -27,20 +27,20 @@ export class Logout {
      * @returns
      * @memberof Login
      */
-    public static async apimlLogout(session: AbstractSession, request: HTTP_VERB, resource: string) {
+    public static async apimlLogout(session: AbstractSession) {
         Logger.getAppLogger().trace("Logout.logout()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        ImperativeExpect.toNotBeNullOrUndefined(session.ISession.tokenValue, "Session token not populated. Unable to logout.");
+        ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.tokenValue, "Session token not populated. Unable to logout.");
 
         const client = new ZosmfRestClient(session);
         try{
             await client.request({
-                request,
-                resource
+                request: "POST",
+                resource: LogoutConstants.APIML_V1_RESOURCE
             });
         } catch (err) {
             if (!err.message.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR)) {
-                throw new ImperativeError(err);
+                throw err;
             }
         }
 
