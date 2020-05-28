@@ -300,10 +300,12 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
-            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [{ "X-IBM-Data-Type": "text;fileEncoding=285" }], fakeWriteStream,
-                true, /* normalizing new lines, encoding mode*/
-                undefined /*no progress task*/);
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }],
+                                                                        responseStream: fakeWriteStream,
+                                                                        normalizeResponseNewLines: true,
+                                                                        task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
