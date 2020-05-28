@@ -23,6 +23,7 @@ const goodCmdParms: IHandlerParameters = {
         _: ["zosmf", "check", "status"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["zosmf", "check", "status"],
     response: getMockedResponse(),
     definition: cmdDef.StatusDefinition,
     fullDefinition: cmdDef.StatusDefinition,

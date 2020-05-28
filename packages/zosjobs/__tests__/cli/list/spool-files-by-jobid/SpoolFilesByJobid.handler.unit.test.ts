@@ -26,6 +26,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["zos-jobs", "list", "spool-files"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["zos-jobs", "list", "spool-files"],
     response: getMockedResponse(),
     definition: SpoolFilesByJobidDefinition,
     fullDefinition: SpoolFilesByJobidDefinition,

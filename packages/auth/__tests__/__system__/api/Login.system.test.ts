@@ -11,8 +11,7 @@
 
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { Session, ImperativeError, Imperative, ImperativeExpect } from "@zowe/imperative";
-import { LoginConstants } from "../../../src/api/LoginConstants";
+import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../../src/api/Login";
 
 let testEnvironment: ITestEnvironment;
@@ -34,7 +33,7 @@ describe("Login system test", () => {
         let response: any;
         let error: ImperativeError;
         try {
-            response = await Login.apimlLogin(REAL_SESSION, "POST", LoginConstants.APIML_V1_RESOURCE);
+            response = await Login.apimlLogin(REAL_SESSION);
             REAL_SESSION.ISession.tokenValue = response;
             Imperative.console.info(`Got token: ${response}`);
         } catch (thrownError) {

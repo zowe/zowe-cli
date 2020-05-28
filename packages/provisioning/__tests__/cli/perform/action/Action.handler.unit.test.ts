@@ -24,6 +24,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["provisioning", "perform", "action"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["provisioning", "perform", "action"],
     response: getMockedResponse(),
     definition: ActionDefinition.ActionDefinition,
     fullDefinition: ActionDefinition.ActionDefinition,

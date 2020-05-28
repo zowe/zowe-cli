@@ -43,6 +43,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         _: ["zos-jobs", "view", "job"],
         ...ZOSMF_PROF_OPTS
     },
+    positionals: ["zos-jobs", "view", "job"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {

@@ -23,6 +23,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["provisioning", "provision", "template"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["provisioning", "provision", "template"],
     response: getMockedResponse(),
     definition: TemplateDefinition.TemplateDefinition,
     fullDefinition: TemplateDefinition.TemplateDefinition,

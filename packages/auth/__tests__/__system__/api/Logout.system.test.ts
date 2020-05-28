@@ -11,10 +11,8 @@
 
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { Session, ImperativeError, Imperative, ImperativeExpect } from "@zowe/imperative";
-import { LoginConstants } from "../../../src/api/LoginConstants";
+import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../../src/api/Login";
-import { LogoutConstants } from "../../../src/api/LogoutConstants";
 import { Logout } from "../../../src/api/Logout";
 import { ZosmfRestClient } from "../../../../rest";
 
@@ -33,7 +31,7 @@ describe("Logout system test", () => {
         REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
 
         try {
-            token = await Login.apimlLogin(REAL_SESSION, "POST", LoginConstants.APIML_V1_RESOURCE);
+            token = await Login.apimlLogin(REAL_SESSION);
             if (token === null || token === undefined) {
                 throw new ImperativeError({msg: "Unable to retrieve token for test."});
             }
@@ -70,7 +68,7 @@ describe("Logout system test", () => {
         expect(error).not.toBeDefined();
 
         try {
-            await Logout.apimlLogout(REAL_SESSION, "POST", LogoutConstants.APIML_V1_RESOURCE);
+            await Logout.apimlLogout(REAL_SESSION);
 
             client.session.ISession.type = "token";
             client.session.ISession.tokenType = "apimlAuthenticationToken";
