@@ -30,6 +30,12 @@ export interface IGetOptions {
     volume?: string;
 
     /**
+     * Code page encoding
+     * @type {number}
+     */
+    encoding?: number;
+
+    /**
      * Task status object used by CLI handlers to create progress bars
      * Optional
      * @type {ITaskWithStatus}

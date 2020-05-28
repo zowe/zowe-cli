@@ -40,6 +40,13 @@ export interface IDownloadOptions {
     extension?: string;
 
     /**
+     * Code page encoding
+     * @example 1047
+     * @example 037
+     */
+    encoding?: number;
+
+    /**
      * The local directory to download all members from a pds
      * @example "./path/to/dir"
      */
@@ -57,7 +64,6 @@ export interface IDownloadOptions {
      * @example cpgm=c,asmpgm=asm
      */
     extensionMap?: { [key: string]: string };
-
 
     /**
      * The maximum REST requests to perform at once
