@@ -95,8 +95,8 @@ export default {
                     CYLS_PRI: "The number of primary cylinders to allocate for the ZFS.",
                     CYLS_SEC: "The number of secondary cylinders to allocate for the ZFS.",
                     VOLUMES: "The storage volumes on which to allocate the z/OS file system. Specify a single volume by its volume serial " +
-                        "(VOLSER). To specify more than one volume, separate each VOLSER with a space. You must specify the volumes option when your " +
-                        "cluster is not SMS-managed.",
+                        "(VOLSER). To specify more than one volume, separate each VOLSER with a space. You must specify the volumes option " +
+                        "when your cluster is not SMS-managed.",
                     TIMEOUT: `The number of seconds to wait for the underlying "zfsadm format" command to complete. If this command times out, ` +
                         `the ZFS may have been created but not formatted correctly.`
                 },
@@ -542,8 +542,8 @@ export default {
                     "*.profile        ISO8859-1             EBCDIC{{space}}{{space}}\n\n" +
                     "Lines starting with the ‘#’ character are comments. Each line can specify up to three positional attributes:\n" +
 
-                    "{{bullet}} A pattern to match a set of files. Pattern-matching syntax follows the same rules as those that apply in .gitignore " +
-                    "files (note that negated patterns that begin with ‘!’ are not supported). " +
+                    "{{bullet}} A pattern to match a set of files. Pattern-matching syntax follows the same rules as those that apply " +
+                    "in .gitignore files (note that negated patterns that begin with ‘!’ are not supported). " +
                     "See https://git-scm.com/docs/gitignore#_pattern_format.\n" +
                     "{{bullet}} A local-encoding to identify a file’s encoding on the local workstation. If '-' is specified for local-encoding," +
                     "files that match the pattern are not transferred.\n" +
