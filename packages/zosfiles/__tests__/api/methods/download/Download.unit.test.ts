@@ -277,6 +277,38 @@ describe("z/OS Files - Download", () => {
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+
+        it("should download a data set to the given file in encoding requested mode", async () => {
+            let response;
+            let caughtError;
+            const encoding = 285;
+            const file = "my/test/file.xyz";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {encoding, file});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, file),
+                apiResponse: {}
+            });
+
+            expect(zosmfStreamSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [{ "X-IBM-Data-Type": "text;fileEncoding=285" }], fakeWriteStream,
+                true, /* normalizing new lines, encoding mode*/
+                undefined /*no progress task*/);
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
 
         it("should download a data set and return Etag", async () => {

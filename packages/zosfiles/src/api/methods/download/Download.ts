@@ -84,8 +84,15 @@ export class Download {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
             }
 
-            // Get contents of the data set
+            if (options.encoding) {
+                const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                const header = ZosmfHeaders.X_IBM_TEXT;
+                header[keys[0]] = value;
+                reqHeaders = [header];
+            }
 
+            // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
                 extension = options.extension;
