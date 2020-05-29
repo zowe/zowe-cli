@@ -18,8 +18,7 @@ describe("auth login/logout apiml help", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "auth_login_logout_apiml",
-            tempProfileTypes: ["base"]
+            testName: "auth_login_logout_apiml"
         });
     });
 
