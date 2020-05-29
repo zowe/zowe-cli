@@ -13,13 +13,21 @@ import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/d
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
 
-describe("auth login/logout apiml help", () => {
-    let TEST_ENVIRONMENT: ITestEnvironment;
+// Test Environment populated in the beforeAll();
+let TEST_ENVIRONMENT: ITestEnvironment;
 
+describe("auth login/logout apiml help", () => {
+
+    // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "auth_login_logout_apiml"
+            testName: "auth_login_logout_apiml",
+            skipProperties: true
         });
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
     it("should display the login help", () => {
