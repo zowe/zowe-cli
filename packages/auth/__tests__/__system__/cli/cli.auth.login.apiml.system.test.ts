@@ -42,14 +42,18 @@ describe("auth login/logout apiml with profile", () => {
 describe("auth login/logout apiml without profiles", () => {
     let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
     let base: ITestBaseSchema;
-    const token: string = "";
+    let token: string[];
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
             testName: "auth_login_logout_apiml_no_profile"
         });
 
         base = TEST_ENVIRONMENT_NO_PROF.systemTestProperties.base;
+    });
+
+    afterEach(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 
     it("should successfully issue the login command without profiles", () => {
@@ -63,6 +67,7 @@ describe("auth login/logout apiml without profiles", () => {
             base.rejectUnauthorized,
             "true"
         ]);
+        token = response.stdout.toString().trim().split("\n");
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
@@ -75,7 +80,7 @@ describe("auth login/logout apiml without profiles", () => {
             base.host,
             base.port,
             "apimlAuthenticationToken",
-            base.tokenValue,
+            token[token.length-1],
             base.rejectUnauthorized
         ]);
         expect(response.stderr.toString()).toBe("");

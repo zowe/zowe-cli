@@ -32,6 +32,6 @@ export class LogoutConstants {
      * @type {string}
      * @memberof LogoutConstants
      */
-    public static readonly APIML_V1_TOKEN_EXP_ERR: string = "ZWEAM701E";
+    public static readonly APIML_V1_TOKEN_EXP_ERR: string = "TokenExpireException";
 
 }

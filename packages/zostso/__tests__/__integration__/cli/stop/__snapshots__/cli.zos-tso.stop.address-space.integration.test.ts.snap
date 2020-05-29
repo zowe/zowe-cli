@@ -175,7 +175,17 @@ exports[`zos-tso stop address-space should display the help 1`] = `
 `;
 
 exports[`zos-tso stop address-space should throw an error if servlet key parameter is not provided 1`] = `
-"Command Error:
-Expect Error: Required parameter 'hostname' must be defined
+"
+Syntax Error:
+Missing Positional Argument: servletkey
+Argument Description: The servlet key from a previously started TSO address space.
+
+Example:
+
+ - Stop the TSO address space identified by IBMUSER-329-aafkaaoc:
+
+      $ zowe zos-tso stop address-space IBMUSER-329-aafkaaoc
+
+Use \\"zowe zos-tso stop address-space --help\\" to view command description, usage, and options.
 "
 `;
