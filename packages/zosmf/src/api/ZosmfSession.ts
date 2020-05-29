@@ -135,8 +135,6 @@ export class ZosmfSession {
      */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
         return {
-            hostname: args.host,
-            port: args.port,
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath
         };
