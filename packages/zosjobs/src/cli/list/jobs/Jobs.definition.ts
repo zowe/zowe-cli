@@ -42,7 +42,7 @@ export const JobsDefinition: ICommandDefinition = {
         }
     ] as ICommandOptionDefinition[]),
     profile: {
-        optional: ["zosmf", "apiml"] // TODO(Kelosky)
+        optional: ["zosmf"]
     },
     examples:
         [
