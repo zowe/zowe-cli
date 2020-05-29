@@ -26,6 +26,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         _: ["zos-jobs", "view", "job"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["zos-jobs", "view", "job"],
     response: getMockedResponse(),
     definition: JobStatusByJobidDefinition.JobStatusByJobidDefinition,
     fullDefinition: JobStatusByJobidDefinition.JobStatusByJobidDefinition,

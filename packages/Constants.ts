@@ -194,9 +194,24 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         options: ""
     };
 
-    public static readonly APIML_LOGIN_OPTION_JSON_WEB_TOKEN: ICommandOptionDefinition = {
-        name: "json-web-token", aliases: ["jwt"],
-        description: "Login and obtain JWT token instead of default APIML.",
-        type: "boolean"
+    /**
+     * Description of APIML logout command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_DESCRIPTION = "Logout of the API Mediation Layer and remove token from profile. " +
+        "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
+        " Logout invalidates the token from the API Mediation Layer and deletes it from the user profile." +
+        " See a specific command's help via \"--help\" for more information.";
+
+    /**
+     * Example definition for APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_EXAMPLE: ICommandExampleDefinition = {
+        description: "Logout of an instance of the API ML and invalidate the token that was in use " +
+            "before deleting the token from your base profile",
+        options: ""
     };
 }

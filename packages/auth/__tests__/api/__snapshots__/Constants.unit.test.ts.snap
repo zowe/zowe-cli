@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginConstants Unit Test Should not have changed 1`] = `[Function]`;
+
+exports[`LogoutConstants Unit Test Should not have changed 1`] = `[Function]`;

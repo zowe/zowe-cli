@@ -23,6 +23,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["provisioning", "delete", "instance"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["provisioning", "delete", "instance"],
     response: getMockedResponse(),
     definition: DeleteInstanceDefinition.DeleteInstanceDefinition,
     fullDefinition: DeleteInstanceDefinition.DeleteInstanceDefinition,

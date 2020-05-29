@@ -118,11 +118,20 @@ const config: IImperativeConfig = {
                         Constants.BASE_OPTION_PORT,
                         Constants.BASE_OPTION_USER,
                         Constants.BASE_OPTION_PASSWORD,
-                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
-                        // TODO Should this option be removed? Was it only meaningful for the z/OSMF tests?
-                        Constants.APIML_LOGIN_OPTION_JSON_WEB_TOKEN
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                     ]
                 },
+                logout: {
+                    description: Constants.APIML_LOGOUT_DESCRIPTION,
+                    examples: [Constants.APIML_LOGOUT_EXAMPLE],
+                    options: [
+                        Constants.BASE_OPTION_HOST,
+                        Constants.BASE_OPTION_PORT,
+                        Constants.BASE_OPTION_TOKEN_TYPE,
+                        Constants.BASE_OPTION_TOKEN_VALUE,
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    ]
+                }
             }
         ]
     },

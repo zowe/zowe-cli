@@ -11,4 +11,5 @@
 
 export * from "./src/api/Login";
 export * from "./src/api/LoginConstants";
-
+export * from "./src/api/Logout";
+export * from "./src/api/LogoutConstants";
