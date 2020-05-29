@@ -114,7 +114,6 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         aliases: ["P"],
         description: "Port number of service on the mainframe.",
         type: "number",
-        defaultValue: 443,
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
 
