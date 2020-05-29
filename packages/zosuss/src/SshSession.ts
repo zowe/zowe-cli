@@ -53,7 +53,7 @@ export class SshSession {
         aliases: ["H"],
         description: "The z/OS SSH server host name.",
         type: "string",
-        required: true,
+        required: false,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
     public static SSH_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
@@ -154,8 +154,6 @@ export class SshSession {
      */
     public static createSshSessCfgFromArgs(args: ICommandArguments): ISshSession {
         return {
-            hostname: args.host,
-            port: args.port,
             privateKey: args.privateKey,
             keyPassphrase: args.keyPassphrase,
             handshakeTimeout: args.handshakeTimeout
