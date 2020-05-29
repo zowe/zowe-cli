@@ -21,7 +21,7 @@ import {
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError,
-    CredsForSessCfg
+    ConnectionPropsForSessCfg
 } from "@zowe/imperative";
 import { SshSession } from "../index";
 import { ISshSession } from "./api/doc/ISshSession";
@@ -65,7 +65,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
         this.mSshProfile = commandParameters.profiles.get("ssh", false);
 
         const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
-        const sshSessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISshSession>(
+        const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
             sshSessCfg, commandParameters.arguments
         );
         this.mSession = new SshSession(sshSessCfgWithCreds);

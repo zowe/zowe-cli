@@ -291,7 +291,7 @@ export class Create {
      * ```typescript
      *
      *     sessCfg: ISession = yourFunctionToCreateSessCfgFromArgs(commandParameters.arguments);
-     *     sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
+     *     sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
      *         sessCfg, commandParameters.arguments
      *     );
      *     session = new Session(sessCfgWithCreds);

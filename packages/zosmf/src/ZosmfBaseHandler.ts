@@ -24,8 +24,8 @@ import {
     IProfileLoaded,
     ISession,
     Session,
-    IOptionsForAddCreds,
-    CredsForSessCfg
+    IOptionsForAddConnProps,
+    ConnectionPropsForSessCfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "../index";
 import { ISshSession } from "../../zosuss/src/api/doc/ISshSession";
@@ -77,15 +77,8 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
             commandParameters.arguments
         );
 
-        let addCredsOpts: IOptionsForAddCreds = {};
-        // Todo:Gene Remove this after login converted to apiml
-        if (commandParameters.definition.name === "apiml") {
-            addCredsOpts = {
-                requestToken: true
-            };
-        }
-        const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments, addCredsOpts
+        const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            sessCfg, commandParameters.arguments
         );
 
         this.mSession = new Session(sessCfgWithCreds);
