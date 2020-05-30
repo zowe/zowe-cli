@@ -43,7 +43,6 @@ Object {
   "profile": Object {
     "optional": Array [
       "zosmf",
-      "apiml",
     ],
   },
   "summary": "List z/OS jobs on JES spool/queues",
