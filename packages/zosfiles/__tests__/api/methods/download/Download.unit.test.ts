@@ -850,6 +850,39 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
         });
 
+        it("should download uss file with encoding mode", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+            try {
+                response = await Download.ussFile(dummySession, ussname, {encoding: 285});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }],
+                                                                        responseStream: fakeStream,
+                                                                        normalizeResponseNewLines: true,
+                                                                        task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
         it("should download uss file content to a local file in binary mode", async () => {
             let response;
             let caughtError;

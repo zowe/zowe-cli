@@ -348,7 +348,7 @@ describe("z/OS Files - Upload", () => {
                 zosmfPutFullSpy.mockClear();
             });
 
-            it("return with proper response when uploading with 'binary' option", async () => {
+            it("should return with proper response when uploading with 'binary' option", async () => {
                 uploadOptions.binary = true;
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
 
@@ -366,7 +366,26 @@ describe("z/OS Files - Upload", () => {
                                                                             reqHeaders,
                                                                             writeData: buffer});
                 });
-            it("return with proper response when uploading with 'recall wait' option", async () => {
+            it("should return with proper response when uploading with 'encoding' option", async () => {
+                const anotherEncoding = 285;
+                uploadOptions.encoding = anotherEncoding;
+                reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }];
+
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
+
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+                });
+            it("should return with proper response when uploading with 'recall wait' option", async () => {
 
                 // Unit test for wait option
                 uploadOptions.recall = "wait";

@@ -50,7 +50,7 @@ export class Get {
 
             const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
             const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-            const header = ZosmfHeaders.X_IBM_TEXT;
+            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
             header[keys[0]] = value;
             reqHeaders = [header];
 

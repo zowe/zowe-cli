@@ -88,7 +88,7 @@ export class Download {
 
                 const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
                 const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                const header = ZosmfHeaders.X_IBM_TEXT;
+                const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
                 header[keys[0]] = value;
                 reqHeaders = [header];
 
@@ -312,6 +312,16 @@ export class Download {
             let reqHeaders: IHeaderContent[] = [];
             if (options.binary) {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+            } else if (options.encoding) {
+
+                const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+                header[keys[0]] = value;
+                reqHeaders = [header];
+
+            } else {
+                // do nothing
             }
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()

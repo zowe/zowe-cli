@@ -47,7 +47,8 @@ export const FileToUSSDefinition: ICommandDefinition = {
         }
     ],
     options: [
-        UploadOptions.binary
+        UploadOptions.binary,
+        UploadOptions.encoding
     ],
     examples: [
         {
