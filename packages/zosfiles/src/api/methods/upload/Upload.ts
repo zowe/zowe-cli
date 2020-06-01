@@ -1031,17 +1031,7 @@ export class Upload {
                 }
                 break;
             default:
-                if (options.binary) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
-                } else if (options.encoding) {
-                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                    const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                    header[keys[0]] = value;
-                    reqHeaders.push(header);
-                } else {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                }
+                reqHeaders.push(...ZosFilesUtils.generateHeadersBasedOnOptions(options));
                 break;
         }
 

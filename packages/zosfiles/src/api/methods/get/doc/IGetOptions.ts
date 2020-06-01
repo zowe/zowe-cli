@@ -10,35 +10,15 @@
 */
 
 import { ITaskWithStatus } from "@zowe/imperative";
+import { IOptions } from "../../../doc/IOptions";
 
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
  * @export
  * @interface IGetOptions
  */
-export interface IGetOptions {
-    /**
-     * The indicator to view the data set or USS file in binary mode
-     * @type {boolean}
-     */
-    binary?: boolean;
+// NOTE(Kelosky): allow empty interface for backwards compatibility
+// tslint:disable-next-line
+export interface IGetOptions extends IOptions {
 
-    /**
-     * Code page encoding
-     * @type {number}
-     */
-    encoding?: number;
-
-    /**
-     * The volume on which the data set is stored
-     * @type {string}
-     */
-    volume?: string;
-
-    /**
-     * Task status object used by CLI handlers to create progress bars
-     * Optional
-     * @type {ITaskWithStatus}
-     */
-    task?: ITaskWithStatus;
 }

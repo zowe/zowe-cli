@@ -79,7 +79,7 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+            const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
             // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -294,7 +294,7 @@ export class Download {
             ussFileName = encodeURIComponent(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+            const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -329,34 +329,6 @@ export class Download {
             Logger.getAppLogger().error(error);
             throw error;
         }
-    }
-
-    /**
-     * Common method to build headers given input download options object
-     * @private
-     * @static
-     * @param {IDownloadOptions} options - various download options
-     * @returns {IHeaderContent[]}
-     * @memberof Download
-     */
-    private static generateHeadersBasedOnOptions(options: IDownloadOptions): IHeaderContent[] {
-        let reqHeaders: IHeaderContent[] = [];
-
-        if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        } else if (options.encoding) {
-
-            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-            const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-            header[keys[0]] = value;
-            reqHeaders = [header];
-
-        } else {
-            // do nothing
-        }
-
-        return reqHeaders;
     }
 
 }

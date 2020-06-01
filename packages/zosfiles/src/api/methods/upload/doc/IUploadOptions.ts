@@ -12,40 +12,18 @@
 import { ITaskWithStatus } from "@zowe/imperative";
 import { IUploadMap } from "./IUploadMap";
 import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
+import { IOptions } from "../../../doc/IOptions";
 
 /**
  * This interface defines the options that can be sent into the upload data set function
  */
-export interface IUploadOptions {
-
-    /**
-     * The volume where the data set resides
-     */
-    volume?: string;
-
-    /**
-     * The indicator to upload the data set in binary mode
-     */
-    binary?: boolean;
-
-    /**
-     * Code page encoding
-     * @example 1047
-     * @example 037
-     */
-    encoding?: number;
+export interface IUploadOptions extends IOptions {
 
     /**
      * The migrated recall option
      * @example "wait, nowait, error"
      */
     recall?: string;
-
-    /**
-     * Task status object used by CLI handlers to create progress bars
-     * Optional
-     */
-    task?: ITaskWithStatus;
 
     /**
      * The indicator to upload the directories recursively
