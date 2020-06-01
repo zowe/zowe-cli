@@ -1031,7 +1031,12 @@ export class Upload {
                 }
                 break;
             default:
-                reqHeaders.push(...ZosFilesUtils.generateHeadersBasedOnOptions(options));
+                const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+                if (headers.length === 0) {
+                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                } else {
+                    reqHeaders.push(...headers);
+                }
                 break;
         }
 
