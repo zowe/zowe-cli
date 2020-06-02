@@ -10,6 +10,14 @@ Array [
     "name": "binary",
     "type": "boolean",
   },
+  Object {
+    "aliases": Array [
+      "ec",
+    ],
+    "description": "Data content in encoding mode, which means that data conversion is performed according to the encoding specified.",
+    "name": "encoding",
+    "type": "number",
+  },
 ]
 `;
 

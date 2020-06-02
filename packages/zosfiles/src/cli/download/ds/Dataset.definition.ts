@@ -45,7 +45,8 @@ export const DatasetDefinition: ICommandDefinition = {
         DownloadOptions.file,
         DownloadOptions.extension,
         DownloadOptions.binary,
-        DownloadOptions.preserveOriginalLetterCase
+        DownloadOptions.preserveOriginalLetterCase,
+        DownloadOptions.encoding
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {

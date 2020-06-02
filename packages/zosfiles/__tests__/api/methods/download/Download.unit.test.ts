@@ -279,6 +279,41 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
+        it("should download a data set to the given file in encoding requested mode", async () => {
+            let response;
+            let caughtError;
+            const encoding = 285;
+            const file = "my/test/file.xyz";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {encoding, file});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, file),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }],
+                                                                        responseStream: fakeWriteStream,
+                                                                        normalizeResponseNewLines: true,
+                                                                        task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+        });
+
         it("should download a data set and return Etag", async () => {
             zosmfGetFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
             let response;
@@ -495,6 +530,41 @@ describe("z/OS Files - Download", () => {
                     volume,
                     file: `${directory}/${mem.member.toLowerCase()}${extension}`,
                     binary
+                });
+            });
+        });
+
+        it("should download all members specifying directory, volume, extension, and encoding mode", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path/";
+            const extension = ".xyz";
+            const encoding = 285;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    encoding
                 });
             });
         });
@@ -771,6 +841,39 @@ describe("z/OS Files - Download", () => {
                                                                         reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                                                                         responseStream: fakeStream,
                                                                         normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
+                                                                        task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
+        it("should download uss file with encoding mode", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+            try {
+                response = await Download.ussFile(dummySession, ussname, {encoding: 285});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }],
+                                                                        responseStream: fakeStream,
+                                                                        normalizeResponseNewLines: true,
                                                                         task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
