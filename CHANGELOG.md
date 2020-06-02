@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.14.0`
 
 - Add encoding / code page support for data set upload and download operations in library and CLI.
 
