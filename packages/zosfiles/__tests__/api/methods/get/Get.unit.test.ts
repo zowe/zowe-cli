@@ -124,6 +124,26 @@ describe("z/OS Files - View", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
         });
 
+        it("should get data set content with encoding", async () => {
+            let response;
+            let caughtError;
+            const encoding = 285;
+
+            try {
+                response = await Get.dataSet(dummySession, dsname, {encoding});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [{ "X-IBM-Data-Type": "text;fileEncoding=285" }]);
+        });
+
         it("should get data set content with volume option", async () => {
             let response;
             let caughtError;

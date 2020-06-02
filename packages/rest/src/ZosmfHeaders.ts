@@ -38,49 +38,49 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_INTRDR_CLASS_A: IHeaderContent = {"X-IBM-Intrdr-Class": "A"};
+    public static readonly X_IBM_INTRDR_CLASS_A: IHeaderContent = { "X-IBM-Intrdr-Class": "A" };
 
     /**
      * fixed recfm header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_INTRDR_RECFM_F: IHeaderContent = {"X-IBM-Intrdr-Recfm": "F"};
+    public static readonly X_IBM_INTRDR_RECFM_F: IHeaderContent = { "X-IBM-Intrdr-Recfm": "F" };
 
     /**
      * 80 lrecl header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_INTRDR_LRECL_80: IHeaderContent = {"X-IBM-Intrdr-Lrecl": "80"};
+    public static readonly X_IBM_INTRDR_LRECL_80: IHeaderContent = { "X-IBM-Intrdr-Lrecl": "80" };
 
     /**
      * 256 lrecl header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_INTRDR_LRECL_256: IHeaderContent = {"X-IBM-Intrdr-Lrecl": "256"};
+    public static readonly X_IBM_INTRDR_LRECL_256: IHeaderContent = { "X-IBM-Intrdr-Lrecl": "256" };
 
     /**
      * text type header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_INTRDR_MODE_TEXT: IHeaderContent = {"X-IBM-Intrdr-Mode": "TEXT"};
+    public static readonly X_IBM_INTRDR_MODE_TEXT: IHeaderContent = { "X-IBM-Intrdr-Mode": "TEXT" };
 
     /**
      * n/a header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_NOTIFICATION_URL: IHeaderContent = {"X-IBM-Notification-URL": ""};
+    public static readonly X_IBM_NOTIFICATION_URL: IHeaderContent = { "X-IBM-Notification-URL": "" };
 
     /**
      * base header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_ATTRIBUTES_BASE: IHeaderContent = {"X-IBM-Attributes": "base"};
+    public static readonly X_IBM_ATTRIBUTES_BASE: IHeaderContent = { "X-IBM-Attributes": "base" };
 
     /**
      * If you use this header, delete job API will be asynchronous.
@@ -88,56 +88,63 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_JOB_MODIFY_VERSION_1: IHeaderContent = {"X-IBM-Job-Modify-Version": "1.0"};
+    public static readonly X_IBM_JOB_MODIFY_VERSION_1: IHeaderContent = { "X-IBM-Job-Modify-Version": "1.0" };
     /**
      * If you use this header, delete job API will be synchronous.
      * But using it may cause problems for some users depending on their maintenance level and configuration.
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_JOB_MODIFY_VERSION_2: IHeaderContent = {"X-IBM-Job-Modify-Version": "2.0"};
+    public static readonly X_IBM_JOB_MODIFY_VERSION_2: IHeaderContent = { "X-IBM-Job-Modify-Version": "2.0" };
 
     /**
      * security header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_CSRF_ZOSMF_HEADER: object = {"X-CSRF-ZOSMF-HEADER": true}; // "the value does not matter"
+    public static readonly X_CSRF_ZOSMF_HEADER: object = { "X-CSRF-ZOSMF-HEADER": true }; // "the value does not matter"
 
     /**
      * binary transfer header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_BINARY: IHeaderContent = {"X-IBM-Data-Type": "binary"};
+    public static readonly X_IBM_BINARY: IHeaderContent = { "X-IBM-Data-Type": "binary" };
 
     /**
      * binary by record header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_BINARY_BY_RECORD: IHeaderContent = {"X-IBM-Data-Type": "record"};
+    public static readonly X_IBM_BINARY_BY_RECORD: IHeaderContent = { "X-IBM-Data-Type": "record" };
 
     /**
      * text transfer header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_TEXT: IHeaderContent = {"X-IBM-Data-Type": "text"};
+    public static readonly X_IBM_TEXT: IHeaderContent = { "X-IBM-Data-Type": "text" };
+
+    /**
+     * encoding value for text headers
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_TEXT_ENCODING: string = ";fileEncoding=";
 
     /**
      * octet stream header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly OCTET_STREAM: IHeaderContent = {"Content-Type": "application/octet-stream"};
+    public static readonly OCTET_STREAM: IHeaderContent = { "Content-Type": "application/octet-stream" };
 
     /**
      * plain text header
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly TEXT_PLAIN: IHeaderContent = {"Content-Type": "text/plain"};
+    public static readonly TEXT_PLAIN: IHeaderContent = { "Content-Type": "text/plain" };
 
     /**
      * This header value specifies the maximum number of items to return.
@@ -146,16 +153,16 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_MAX_ITEMS: IHeaderContent = {"X-IBM-Max-Items": "0"};
+    public static readonly X_IBM_MAX_ITEMS: IHeaderContent = { "X-IBM-Max-Items": "0" };
 
     /**
      * data set migrated recall headers
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_IBM_MIGRATED_RECALL_WAIT: IHeaderContent = {"X-IBM-Migrated-Recall": "wait"};
-    public static readonly X_IBM_MIGRATED_RECALL_NO_WAIT: IHeaderContent = {"X-IBM-Migrated-Recall": "nowait"};
-    public static readonly X_IBM_MIGRATED_RECALL_ERROR: IHeaderContent = {"X-IBM-Migrated-Recall": "error"};
+    public static readonly X_IBM_MIGRATED_RECALL_WAIT: IHeaderContent = { "X-IBM-Migrated-Recall": "wait" };
+    public static readonly X_IBM_MIGRATED_RECALL_NO_WAIT: IHeaderContent = { "X-IBM-Migrated-Recall": "nowait" };
+    public static readonly X_IBM_MIGRATED_RECALL_ERROR: IHeaderContent = { "X-IBM-Migrated-Recall": "error" };
 
     /**
      * Header to check ETag on read

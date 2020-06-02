@@ -17,6 +17,7 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 /**
  * This class holds helper functions that are used to get the content of data sets or USS files through the z/OSMF APIs
@@ -41,15 +42,11 @@ export class Get {
 
         let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
 
-        let reqHeaders: IHeaderContent[] = [];
-        if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-        }
+        const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
         if (options.volume) {
             endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataSetName);
         }
-
 
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 
