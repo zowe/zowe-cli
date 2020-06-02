@@ -24,6 +24,10 @@ describe("auth login/logout apiml with profile", () => {
         });
     });
 
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
     it("should successfully issue the login command", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
@@ -86,5 +90,117 @@ describe("auth login/logout apiml without profiles", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful.");
+    });
+});
+
+describe("auth login/logout apiml create profile", () => {
+    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment;
+    let base: ITestBaseSchema;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_CREATE_PROF = await TestEnvironment.setUp({
+            testName: "auth_login_logout_apiml_create_profile"
+        });
+
+        base = TEST_ENVIRONMENT_CREATE_PROF.systemTestProperties.base;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
+    });
+
+    it("should successfully issue the login command and create a profile", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
+        TEST_ENVIRONMENT_CREATE_PROF,
+        [
+            base.host,
+            base.port,
+            base.user,
+            base.pass,
+            base.rejectUnauthorized,
+            "y"
+        ]);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Profile created successfully");
+        expect(response.stdout.toString()).toContain("Login successful.");
+    });
+
+    it("should successfully issue the logout command with a created profile", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh",
+        TEST_ENVIRONMENT_CREATE_PROF);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Logout successful.");
+    });
+});
+
+describe("auth login/logout apiml do not create profile", () => {
+    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment;
+    let base: ITestBaseSchema;
+
+    beforeAll(async () => {
+        TEST_ENVIRONMENT_CREATE_PROF = await TestEnvironment.setUp({
+            testName: "auth_login_logout_apiml_do_not_create_profile"
+        });
+
+        base = TEST_ENVIRONMENT_CREATE_PROF.systemTestProperties.base;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
+    });
+
+    it("should successfully issue the login command and not create a profile 1", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
+        TEST_ENVIRONMENT_CREATE_PROF,
+        [
+            base.host,
+            base.port,
+            base.user,
+            base.pass,
+            base.rejectUnauthorized,
+            "n"
+        ]);
+        expect(response.stderr.toString()).toContain("A login command was issued, but no base profiles exist, " +
+                "the show token flag was not specified, or we were not given permission to create a profile.");
+        expect(response.status).not.toBe(0);
+        expect(response.stdout.toString()).not.toContain("Profile created successfully");
+        expect(response.stdout.toString()).not.toContain("Login successful.");
+    });
+
+    it("should successfully issue the login command and not create a profile 2", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
+        TEST_ENVIRONMENT_CREATE_PROF,
+        [
+            base.host,
+            base.port,
+            base.user,
+            base.pass,
+            base.rejectUnauthorized,
+            "q"
+        ]);
+        expect(response.stderr.toString()).toContain("A login command was issued, but no base profiles exist, " +
+                "the show token flag was not specified, or we were not given permission to create a profile.");
+        expect(response.status).not.toBe(0);
+        expect(response.stdout.toString()).not.toContain("Profile created successfully");
+        expect(response.stdout.toString()).not.toContain("Login successful.");
+    });
+
+    it("should successfully issue the login command and timeout while creating a profile", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create_timeout.sh",
+        TEST_ENVIRONMENT_CREATE_PROF,
+        [
+            base.host,
+            base.port,
+            base.user,
+            base.pass,
+            base.rejectUnauthorized
+        ]);
+        expect(response.stderr.toString()).toContain("A login command was issued, but no base profiles exist, " +
+                "the show token flag was not specified, or we were not given permission to create a profile.");
+        expect(response.status).not.toBe(0);
+        expect(response.stdout.toString()).not.toContain("Profile created successfully");
+        expect(response.stdout.toString()).not.toContain("Login successful.");
     });
 });
