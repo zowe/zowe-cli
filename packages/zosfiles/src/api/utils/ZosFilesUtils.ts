@@ -18,6 +18,8 @@ import { IZosFilesResponse } from "../doc/IZosFilesResponse";
 import { ZosmfRestClient } from "../../../../rest/src/api/ZosmfRestClient";
 import { IRecallOptions } from "../methods/hRecall/doc/IRecallOptions";
 import { IMigrateOptions } from "../methods/hMigrate/doc/IMigrateOptions";
+import { IOptions } from "../doc/IOptions";
+import { ZosmfHeaders } from "../../../../rest";
 
 /**
  * Common IO utilities
@@ -110,6 +112,34 @@ export class ZosFilesUtils {
         }
 
         return returnFileList;
+    }
+
+    /**
+     * Common method to build headers given input options object
+     * @private
+     * @static
+     * @param {IOptions} options - various options
+     * @returns {IHeaderContent[]}
+     * @memberof ZosFilesUtils
+     */
+    public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
+        let reqHeaders: IHeaderContent[] = [];
+
+        if (options.binary) {
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+        } else if (options.encoding) {
+
+            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+            const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+            header[keys[0]] = value;
+            reqHeaders = [header];
+
+        } else {
+            // do nothing
+        }
+
+        return reqHeaders;
     }
 
     /**

@@ -42,7 +42,8 @@ export const UssFileDefinition: ICommandDefinition = {
     ],
     options: [
         DownloadOptions.file,
-        DownloadOptions.binary
+        DownloadOptions.binary,
+        DownloadOptions.encoding
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {

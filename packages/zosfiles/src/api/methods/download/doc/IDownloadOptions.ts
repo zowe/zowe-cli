@@ -10,21 +10,12 @@
 */
 
 import { ITaskWithStatus } from "@zowe/imperative";
+import { IOptions } from "../../../doc/IOptions";
 
 /**
  * This interface defines the options that can be sent into the download data set function
  */
-export interface IDownloadOptions {
-
-    /**
-     * The volume where the data set resides
-     */
-    volume?: string;
-
-    /**
-     * The indicator to download the data set in binary mode
-     */
-    binary?: boolean;
+export interface IDownloadOptions extends IOptions {
 
     /**
      * The local file to download the data set to
@@ -58,7 +49,6 @@ export interface IDownloadOptions {
      */
     extensionMap?: { [key: string]: string };
 
-
     /**
      * The maximum REST requests to perform at once
      * Increasing this value results in faster downloads but increases resource consumption
@@ -67,13 +57,6 @@ export interface IDownloadOptions {
      * Default: 1
      */
     maxConcurrentRequests?: number;
-
-    /**
-     * Task status object used by CLI handlers to create progress bars
-     * for certain download requests such as downloading all members
-     * Optional
-     */
-    task?: ITaskWithStatus;
 
     /**
      * The indicator to force return of ETag.
