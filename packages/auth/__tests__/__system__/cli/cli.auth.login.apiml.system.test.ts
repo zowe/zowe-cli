@@ -43,7 +43,7 @@ describe("auth login/logout apiml with profile", () => {
     });
 });
 
-describe("auth login/logout apiml without profiles", () => {
+describe("auth login/logout apiml show token", () => {
     let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
     let base: ITestBaseSchema;
     let token: string[];
@@ -60,8 +60,8 @@ describe("auth login/logout apiml without profiles", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 
-    it("should successfully issue the login command without profiles", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_no_profiles.sh",
+    it("should successfully issue the login command and show token", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token.sh",
         TEST_ENVIRONMENT_NO_PROF,
         [
             base.host,
@@ -77,8 +77,26 @@ describe("auth login/logout apiml without profiles", () => {
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 
+    it("should successfully issue the login command with rfj and show token", () => {
+        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token_rfj.sh",
+        TEST_ENVIRONMENT_NO_PROF,
+        [
+            base.host,
+            base.port,
+            base.user,
+            base.pass,
+            base.rejectUnauthorized,
+            "true"
+        ]);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(JSON.parse(response.stdout.toString()).data).toMatchObject({
+            tokenType: "apimlAuthenticationToken",
+            tokenValue: token[token.length-1]});
+    });
+
     it("should successfully issue the logout command without profiles", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_no_profiles.sh",
+        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_show_token.sh",
         TEST_ENVIRONMENT_NO_PROF,
         [
             base.host,
