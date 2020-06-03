@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`LoginConstants Unit Test Should not have changed 1`] = `[Function]`;
+exports[`LoginConstants Unit Test Should not have changed 1`] = `"/api/v1/gateway/auth/login"`;
 
-exports[`LogoutConstants Unit Test Should not have changed 1`] = `[Function]`;
+exports[`LogoutConstants Unit Test Should not have changed 1`] = `"/api/v1/gateway/auth/logout"`;
+
+exports[`LogoutConstants Unit Test Should not have changed 2`] = `"TokenExpireException"`;

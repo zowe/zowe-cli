@@ -34,4 +34,12 @@ describe("Copy Data Set", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toMatchSnapshot();
     });
+
+    it("should display the help in json format", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/copy_data_set_help_rfj.sh",
+            TEST_ENVIRONMENT);
+        expect(response.status).toBe(0);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.stdout.toString()).toMatchSnapshot();
+    });
 });

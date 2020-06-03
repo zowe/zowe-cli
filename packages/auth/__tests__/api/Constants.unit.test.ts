@@ -14,12 +14,13 @@ import { LogoutConstants } from "../../src/api/LogoutConstants";
 
 describe("LoginConstants Unit Test", () => {
     it("Should not have changed", () => {
-        expect(LoginConstants).toMatchSnapshot();
+        expect(LoginConstants.APIML_V1_RESOURCE).toMatchSnapshot();
     });
 });
 
 describe("LogoutConstants Unit Test", () => {
     it("Should not have changed", () => {
-        expect(LogoutConstants).toMatchSnapshot();
+        expect(LogoutConstants.APIML_V1_RESOURCE).toMatchSnapshot();
+        expect(LogoutConstants.APIML_V1_TOKEN_EXP_ERR).toMatchSnapshot();
     });
 });
