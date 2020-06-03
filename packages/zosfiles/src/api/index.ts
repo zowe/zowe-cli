@@ -32,6 +32,7 @@ export * from "./doc/IDataSet";
 export * from "./doc/IZosFilesResponse";
 export * from "./doc/IOptionsFullResponse";
 export * from "./doc/IRestClientResponse";
+export * from "./doc/IOptions";
 export * from "./doc/types/ZosmfMigratedRecallOptions";
 export * from "./doc/types/ZosmfRestClientProperties";
 

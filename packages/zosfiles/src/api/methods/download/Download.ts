@@ -79,13 +79,9 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            let reqHeaders: IHeaderContent[] = [];
-            if (options.binary) {
-                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
             // Get contents of the data set
-
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
                 extension = options.extension;
@@ -234,7 +230,8 @@ export class Download {
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
-                    binary: options.binary
+                    binary: options.binary,
+                    encoding: options.encoding
                 });
             };
 
@@ -297,10 +294,7 @@ export class Download {
             ussFileName = encodeURIComponent(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            let reqHeaders: IHeaderContent[] = [];
-            if (options.binary) {
-                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesUtils.generateHeadersBasedOnOptions(options);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {

@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Added API to delete migrated data sets.
 
+## `6.14.0`
+
+- Add encoding / code page support for data set upload and download operations in library and CLI.
+
 ## `6.13.0`
 
 - Add `files hrec ds` command to recall data sets.
