@@ -11,16 +11,16 @@
 
 import { LoginConstants } from "../../src/api/LoginConstants";
 import { LogoutConstants } from "../../src/api/LogoutConstants";
+import { inspect } from "util";
 
 describe("LoginConstants Unit Test", () => {
     it("Should not have changed", () => {
-        expect(LoginConstants.APIML_V1_RESOURCE).toMatchSnapshot();
+        expect(inspect(LoginConstants)).toMatchSnapshot();
     });
 });
 
 describe("LogoutConstants Unit Test", () => {
     it("Should not have changed", () => {
-        expect(LogoutConstants.APIML_V1_RESOURCE).toMatchSnapshot();
-        expect(LogoutConstants.APIML_V1_TOKEN_EXP_ERR).toMatchSnapshot();
+        expect(inspect(LogoutConstants)).toMatchSnapshot();
     });
 });
