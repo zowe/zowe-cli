@@ -35,7 +35,7 @@ describe("hMigrate data set", () => {
         type: "basic"
     });
 
-    describe("Success Scenario", () => {
+    describe("Success Scenarios", () => {
         const dataSetName: string = "EFGH";
 
         it("should send a request", async () => {
