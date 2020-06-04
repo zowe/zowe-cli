@@ -12,13 +12,32 @@
 import { Logout } from "../../src/api/Logout";
 import { ZosmfRestClient } from "../../../rest";
 import { ImperativeError, RestConstants } from "@zowe/imperative";
+import { ImperativeExpect } from "@zowe/imperative/packages";
 
 const returnEmpty = async () => {
     return;
 };
+
 const goodResponse: any = {
     statusCode: RestConstants.HTTP_STATUS_204
 };
+const badResponse401: any = {
+    statusCode: RestConstants.HTTP_STATUS_401
+};
+const badResponse500: any = {
+    statusCode: RestConstants.HTTP_STATUS_500
+};
+const badDataExpired = {
+    messages: [
+    {
+        messageType: "ERROR",
+        messageNumber: "ZWEAM701E",
+        messageContent: "The request to the URL '/api/v1/gateway/auth/logout' has failed: TokenExpireException: Token is expired. caused by: TokenExpireException: Token is expired.",
+        messageKey: "org.zowe.apiml.common.internalRequestError"
+    }
+]};
+
+
 const mockErrorText = "Fake error for Auth Logout APIML unit tests";
 const throwImperativeError = async () => {
     throw new ImperativeError({msg: mockErrorText});
@@ -35,6 +54,22 @@ describe("Auth Logout APIML unit tests", () => {
             ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
             (ZosmfRestClient.prototype as any).mResponse = goodResponse;
             await Logout.apimlLogout(fakeSession);
+        });
+    });
+
+    describe("Error handling tests - HTTP 401", () => {
+        it("should be able to raise an error with HTTP 401", async () => {
+            ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            (ZosmfRestClient.prototype as any).mResponse = badResponse401;
+            let caughtError;
+            try{
+                await Logout.apimlLogout(fakeSession);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError instanceof ImperativeError).toEqual(true);
+            expect(caughtError.mDetails).toMatchSnapshot();
         });
     });
 

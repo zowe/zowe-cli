@@ -11,10 +11,16 @@
 
 import { Login } from "../../src/api/Login";
 import { ZosmfRestClient } from "../../../rest";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError, RestConstants } from "@zowe/imperative";
 
 const returnEmpty = async () => {
     return;
+};
+const goodResponse: any = {
+    statusCode: RestConstants.HTTP_STATUS_204
+};
+const badResponse: any = {
+    statusCode: RestConstants.HTTP_STATUS_401
 };
 const mockErrorText = "Fake error for Auth Login APIML unit tests";
 const throwImperativeError = async () => {
@@ -30,7 +36,24 @@ describe("Auth Login APIML unit tests", () => {
     describe("Positive tests", () => {
         it("should allow users to call apimlLogin with correct parameters", async () => {
             ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            (ZosmfRestClient.prototype as any).mResponse = goodResponse;
             await Login.apimlLogin(fakeSession);
+        });
+    });
+
+    describe("Error handling tests - HTTP 401", () => {
+        it("should be able to raise an error with HTTP 401", async () => {
+            ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
+            (ZosmfRestClient.prototype as any).mResponse = badResponse;
+            let caughtError;
+            try{
+                await Login.apimlLogin(fakeSession);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError instanceof ImperativeError).toEqual(true);
+            expect(caughtError.mDetails).toMatchSnapshot();
         });
     });
 

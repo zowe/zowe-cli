@@ -49,6 +49,7 @@ export class Logout {
                   client.dataString.includes(LogoutConstants.APIML_V1_TOKEN_EXP_ERR))) {
                 throw new ImperativeError((client as any).populateError({
                     msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
+                    causeErrors: client.dataString,
                     source: SessConstants.HTTP_PROTOCOL
                 }));
             }

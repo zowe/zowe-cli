@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, RestConstants, SessConstants } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, RestConstants, SessConstants, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
 import { LoginConstants } from "./LoginConstants";
 
@@ -36,6 +36,14 @@ export class Login {
             request: "POST",
             resource: LoginConstants.APIML_V1_RESOURCE
         });
+
+        if (client.response.statusCode !== RestConstants.HTTP_STATUS_204) {
+            throw new ImperativeError((client as any).populateError({
+                msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
+                causeErrors: client.dataString,
+                source: SessConstants.HTTP_PROTOCOL
+            }));
+        }
 
         // return token to the caller
         return session.ISession.tokenValue;
