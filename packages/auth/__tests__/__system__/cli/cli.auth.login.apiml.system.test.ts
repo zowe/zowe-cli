@@ -92,7 +92,7 @@ describe("auth login/logout apiml show token", () => {
         expect(response.status).toBe(0);
         expect(JSON.parse(response.stdout.toString()).data).toMatchObject({
             tokenType: "apimlAuthenticationToken",
-            tokenValue: token[token.length-1]});
+            tokenValue: token[token.length-2]});
     });
 
     it("should successfully issue the logout command without profiles", () => {
@@ -102,7 +102,7 @@ describe("auth login/logout apiml show token", () => {
             base.host,
             base.port,
             "apimlAuthenticationToken",
-            token[token.length-1],
+            token[token.length-2],
             base.rejectUnauthorized
         ]);
         expect(response.stderr.toString()).toBe("");
