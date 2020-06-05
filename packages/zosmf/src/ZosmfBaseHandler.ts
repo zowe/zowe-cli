@@ -24,11 +24,9 @@ import {
     IProfileLoaded,
     ISession,
     Session,
-    IOptionsForAddConnProps,
     ConnectionPropsForSessCfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "../index";
-import { ISshSession } from "../../zosuss/src/api/doc/ISshSession";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
