@@ -15,7 +15,7 @@ import {
     IHandlerParameters,
     IProfile,
     ImperativeError,
-    CredsForSessCfg,
+    ConnectionPropsForSessCfg,
     ISession,
     Session
 } from "@zowe/imperative";
@@ -46,7 +46,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
         const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
             commandParameters.arguments
         );
-        const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
+        const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
             sessCfg, commandParameters.arguments
         );
 

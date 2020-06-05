@@ -9,14 +9,13 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
-import { ApimlCommand } from "./apiml/Apiml.definition";
-
-export const LoginDefinition: ICommandDefinition = {
-    name: "login",
-    type: "group",
-    description: "Login to an authentication server",
-    children: [
-        ApimlCommand
-    ]
-};
+export interface ITestBaseSchema {
+    user: string;
+    pass: string;
+    host: string;
+    port: number;
+    rejectUnauthorized: boolean;
+    basePath?: string;
+    tokenType?: string;
+    tokenValue?: string;
+}

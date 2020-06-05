@@ -87,8 +87,7 @@ export class ZosmfRestClient extends RestClient {
                 ;
 
             if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
-                original.additionalDetails = "Username or password are not valid or expired.\n\n" +
-                    "For CLI usage, see `zowe auth login apiml --help`";
+                original.additionalDetails = "Username or password are not valid or expired.\n\n";
             }
             if (this.session.ISession.type === SessConstants.AUTH_TYPE_TOKEN) {
                 original.additionalDetails = "Token is not valid or expired.\n\n" +

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginConstants Unit Test Should not have changed 1`] = `"{ [Function: LoginConstants] APIML_V1_RESOURCE: '/api/v1/gateway/auth/login' }"`;
+
+exports[`LogoutConstants Unit Test Should not have changed 1`] = `
+"{ [Function: LogoutConstants]
+  APIML_V1_RESOURCE: '/api/v1/gateway/auth/logout',
+  APIML_V1_TOKEN_EXP_ERR: 'TokenExpireException' }"
+`;

@@ -116,32 +116,6 @@ export class ZosmfSession {
     };
 
     /**
-     * Option used in profile creation and commands to indicate token-based connection to z/OSMF
-     */
-    public static ZOSMF_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
-        name: "token-type",
-        aliases: ["tt"],
-        description: "The token type for API Mediation Layer, which is returned in the HTTP Cookie header, " +
-            "for example: 'apimlAuthenticationToken'. " +
-            "The 'tokenType' is kept with the token value for future authentication.",
-        type: "stringOrEmpty",
-        required: false,
-        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands to indicate the token value for connecting to z/OSMF
-     */
-    public static ZOSMF_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
-        name: "token-value",
-        aliases: ["tv"],
-        description: "The token value associated with the token type.",
-        type: "string",
-        required: false,
-        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-    };
-
-    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -151,9 +125,7 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_USER,
         ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
-        ZosmfSession.ZOSMF_OPTION_BASE_PATH,
-        ZosmfSession.ZOSMF_OPTION_TOKEN_TYPE,
-        ZosmfSession.ZOSMF_OPTION_TOKEN_VALUE
+        ZosmfSession.ZOSMF_OPTION_BASE_PATH
     ];
 
     /**
@@ -163,8 +135,6 @@ export class ZosmfSession {
      */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
         return {
-            hostname: args.host,
-            port: args.port,
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath
         };

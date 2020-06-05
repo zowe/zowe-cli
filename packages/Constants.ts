@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition, ICommandExampleDefinition } from "@zowe/imperative";
 
 /**
  * Class to contain  constants
@@ -114,7 +114,6 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         aliases: ["P"],
         description: "Port number of service on the mainframe.",
         type: "number",
-        defaultValue: 443,
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
 
@@ -150,5 +149,69 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         type: "boolean",
         defaultValue: true,
         group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenType
+     */
+    public static BASE_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
+        name: "token-type",
+        aliases: ["tt"],
+        description: "Type of token to get and use for the API.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenValue to be used to interact with APIs
+     */
+    public static BASE_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
+        name: "token-value",
+        aliases: ["tv"],
+        description: "The value of the token to pass to the API.",
+        type: "string",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Description of APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_DESCRIPTION = "Login to API Mediation Layer and obtain or update a token value. " +
+        "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
+        " Alternatively, you may provide \"user\" and \"password\" on a command, in an environmental variable, or in a profile." +
+        " See a specific command's help via \"--help\" for more information.";
+
+    /**
+     * Example definition for APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_EXAMPLE: ICommandExampleDefinition = {
+        description: "Login to an instance of API ML in order to obtain or update the " +
+            "token value stored into your base profile",
+        options: ""
+    };
+
+    /**
+     * Description of APIML logout command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_DESCRIPTION = "Logout of the API Mediation Layer and remove token from profile. " +
+        "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
+        " Logout invalidates the token from the API Mediation Layer and deletes it from the user profile." +
+        " See a specific command's help via \"--help\" for more information.";
+
+    /**
+     * Example definition for APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_EXAMPLE: ICommandExampleDefinition = {
+        description: "Logout of an instance of the API ML and invalidate the token that was in use " +
+            "before deleting the token from your base profile",
+        options: ""
     };
 }

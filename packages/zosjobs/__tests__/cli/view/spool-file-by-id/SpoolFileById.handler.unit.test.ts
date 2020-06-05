@@ -29,6 +29,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["zos-jobs", "view", "spool-file-by-id"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["zos-jobs", "view", "spool-file-by-id"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {

@@ -31,6 +31,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         ...UNIT_TEST_ZOSMF_PROF_OPTS,
         ...UNIT_TEST_TSO_PROF_OPTS
     },
+    positionals: ["zos-tso", "issue", "address-space"],
     response: getMockedResponse(),
     definition: CommandDefinition,
     fullDefinition: CommandDefinition,
