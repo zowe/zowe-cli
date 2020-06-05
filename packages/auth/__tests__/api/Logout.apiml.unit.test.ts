@@ -11,8 +11,7 @@
 
 import { Logout } from "../../src/api/Logout";
 import { ZosmfRestClient } from "../../../rest";
-import { ImperativeError, RestConstants } from "@zowe/imperative";
-import { ImperativeExpect } from "@zowe/imperative/packages";
+import { ImperativeError, ImperativeExpect, RestConstants } from "@zowe/imperative";
 
 const returnEmpty = async () => {
     return;
