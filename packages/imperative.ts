@@ -111,6 +111,7 @@ const config: IImperativeConfig = {
                 serviceName: "apiml",
                 handler: __dirname + "/auth/src/cli/ApimlAuthHandler",
                 login: {
+                    summary: Constants.APIML_LOGIN_SUMMARY,
                     description: Constants.APIML_LOGIN_DESCRIPTION,
                     examples: [Constants.APIML_LOGIN_EXAMPLE],
                     options: [
@@ -122,6 +123,7 @@ const config: IImperativeConfig = {
                     ]
                 },
                 logout: {
+                    summary: Constants.APIML_LOGOUT_SUMMARY,
                     description: Constants.APIML_LOGOUT_DESCRIPTION,
                     examples: [Constants.APIML_LOGOUT_EXAMPLE],
                     options: [
@@ -134,6 +136,12 @@ const config: IImperativeConfig = {
                 }
             }
         ]
+    },
+    authGroupConfig: {
+        authGroup: {
+            summary: Constants.AUTH_GROUP_SUMMARY,
+            description: Constants.AUTH_GROUP_DESCRIPTION
+        }
     },
     profiles: [
         {
