@@ -219,9 +219,19 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      * @static
      * @memberof AuthConstants
      */
-    public static readonly APIML_LOGIN_EXAMPLE: ICommandExampleDefinition = {
+    public static readonly APIML_LOGIN_EXAMPLE1: ICommandExampleDefinition = {
         description: "Log in to an API ML instance to obtain or update the token stored in your base profile",
         options: ""
+    };
+
+    /**
+     * Example definition for APIML login command with show-token
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_EXAMPLE2: ICommandExampleDefinition = {
+        description: "Log in to an API ML instance to obtain a token without storing it in a profile",
+        options: "--show-token"
     };
 
     /**
@@ -244,8 +254,18 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      * @static
      * @memberof AuthConstants
      */
-    public static readonly APIML_LOGOUT_EXAMPLE: ICommandExampleDefinition = {
+    public static readonly APIML_LOGOUT_EXAMPLE1: ICommandExampleDefinition = {
         description: "Log out of an API ML instance to revoke the token that was in use and remove it from your base profile",
         options: ""
+    };
+
+    /**
+     * Example definition for APIML login command with token-value
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_EXAMPLE2: ICommandExampleDefinition = {
+        description: "Log out of an API ML instance to revoke a token that was not stored in a profile",
+        options: "--token-value <token>"
     };
 }
