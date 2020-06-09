@@ -32,14 +32,17 @@ describe("auth login/logout apiml with profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Login successful.");
+        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("the authentication token has been stored");
+        expect(response.stdout.toString()).toContain("To revoke this token and remove it from your profile, please review the 'zowe auth logout' command.");
     });
 
     it("should successfully issue the logout command", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Logout successful.");
+        expect(response.stdout.toString()).toContain("Log out successful.");
+        expect(response.stdout.toString()).toContain("The authentication token has been revoked and removed");
     });
 });
 
@@ -74,7 +77,8 @@ describe("auth login/logout apiml show token", () => {
         token = response.stdout.toString().trim().split("\n");
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Login successful.");
+        expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
+        expect(response.stdout.toString()).toContain("Log in successful. To revoke this token, please review the 'zowe auth logout' command.");
     });
 
     it("should successfully issue the login command with rfj and show token", () => {
@@ -92,7 +96,8 @@ describe("auth login/logout apiml show token", () => {
         expect(response.status).toBe(0);
         expect(JSON.parse(response.stdout.toString()).data).toMatchObject({
             tokenType: "apimlAuthenticationToken",
-            tokenValue: token[token.length-2]});
+            // tslint:disable-next-line: no-magic-numbers
+            tokenValue: token[token.length-3]});
     });
 
     it("should successfully issue the logout command without profiles", () => {
@@ -102,12 +107,13 @@ describe("auth login/logout apiml show token", () => {
             base.host,
             base.port,
             "apimlAuthenticationToken",
-            token[token.length-2],
+            // tslint:disable-next-line: no-magic-numbers
+            token[token.length-3],
             base.rejectUnauthorized
         ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Logout successful.");
+        expect(response.stdout.toString()).toContain("Log out successful. The authentication token has been revoked");
     });
 });
 
@@ -140,8 +146,8 @@ describe("auth login/logout apiml create profile", () => {
         ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Profile created successfully");
-        expect(response.stdout.toString()).toContain("Login successful.");
+        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("the authentication token has been stored to the 'default' base profile.");
     });
 
     it("should successfully issue the logout command with a created profile", () => {
@@ -149,7 +155,7 @@ describe("auth login/logout apiml create profile", () => {
         TEST_ENVIRONMENT_CREATE_PROF);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Logout successful.");
+        expect(response.stdout.toString()).toContain("Log out successful. The authentication token has been revoked and removed");
     });
 });
 
@@ -180,11 +186,11 @@ describe("auth login/logout apiml do not create profile", () => {
             base.rejectUnauthorized,
             "n"
         ]);
-        expect(response.stderr.toString()).toContain("A login command was issued, but no base profiles exist, " +
-                "the show token flag was not specified, or we were not given permission to create a profile.");
-        expect(response.status).not.toBe(0);
-        expect(response.stdout.toString()).not.toContain("Profile created successfully");
-        expect(response.stdout.toString()).not.toContain("Login successful.");
+
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("Log in successful.");
     });
 
     it("should successfully issue the login command and not create a profile 2", () => {
@@ -198,11 +204,11 @@ describe("auth login/logout apiml do not create profile", () => {
             base.rejectUnauthorized,
             "q"
         ]);
-        expect(response.stderr.toString()).toContain("A login command was issued, but no base profiles exist, " +
-                "the show token flag was not specified, or we were not given permission to create a profile.");
-        expect(response.status).not.toBe(0);
-        expect(response.stdout.toString()).not.toContain("Profile created successfully");
-        expect(response.stdout.toString()).not.toContain("Login successful.");
+
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("Log in successful.");
     });
 
     it("should successfully issue the login command and timeout while creating a profile", () => {
@@ -215,10 +221,9 @@ describe("auth login/logout apiml do not create profile", () => {
             base.pass,
             base.rejectUnauthorized
         ]);
-        expect(response.stderr.toString()).toContain("A login command was issued, but no base profiles exist, " +
-                "the show token flag was not specified, or we were not given permission to create a profile.");
-        expect(response.status).not.toBe(0);
-        expect(response.stdout.toString()).not.toContain("Profile created successfully");
-        expect(response.stdout.toString()).not.toContain("Login successful.");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("Log in successful.");
     });
 });
