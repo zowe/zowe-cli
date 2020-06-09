@@ -71,6 +71,16 @@ const config: IImperativeConfig = {
                     basePath: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
+                    },
+                    encoding: {
+                        type: "number",
+                        optionDefinition: {
+                            name: "encoding",
+                            aliases: ["ec"],
+                            description: "The encoding for download and upload of z/OS data set and USS files." +
+                                " The default encoding if not specified is 1047.",
+                            type: "number"
+                        }
                     }
                 },
                 required: []
@@ -93,7 +103,7 @@ const config: IImperativeConfig = {
                 {
                     options: "zos126 --reject-unauthorized false",
                     description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates, " +
-                    "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+                        "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
                 },
                 {
                     options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
@@ -220,13 +230,13 @@ const config: IImperativeConfig = {
                 {
                     options: "ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
                     description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
-                                 "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
-                                 "for privatekey authentication"
+                        "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
+                        "for privatekey authentication"
                 },
                 {
                     options: "ssh444 --privateKey /path/to/privatekey",
                     description: "Create a ssh profile called 'ssh444' to connect to z/OS SSH server on default port 22, without specifying " +
-                    "username, host, or password, preventing those values from being stored on disk"
+                        "username, host, or password, preventing those values from being stored on disk"
                 }
             ]
         }
