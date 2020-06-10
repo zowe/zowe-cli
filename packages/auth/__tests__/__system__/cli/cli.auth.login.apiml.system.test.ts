@@ -32,7 +32,7 @@ describe("auth login/logout apiml with profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("Login successful.");
         expect(response.stdout.toString()).toContain("the authentication token has been stored");
         expect(response.stdout.toString()).toContain("To revoke this token and remove it from your profile, please review the 'zowe auth logout' command.");
     });
@@ -78,7 +78,7 @@ describe("auth login/logout apiml show token", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("Log in successful. To revoke this token, please review the 'zowe auth logout' command.");
+        expect(response.stdout.toString()).toContain("Login successful. To revoke this token, please review the 'zowe auth logout' command.");
     });
 
     it("should successfully issue the login command with rfj and show token", () => {
@@ -146,7 +146,7 @@ describe("auth login/logout apiml create profile", () => {
         ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("Login successful.");
         expect(response.stdout.toString()).toContain("the authentication token has been stored to the 'default' base profile.");
     });
 
@@ -190,7 +190,7 @@ describe("auth login/logout apiml do not create profile", () => {
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
         expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
-        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("Login successful.");
     });
 
     it("should successfully issue the login command and not create a profile 2", () => {
@@ -208,7 +208,7 @@ describe("auth login/logout apiml do not create profile", () => {
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
         expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
-        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("Login successful.");
     });
 
     it("should successfully issue the login command and timeout while creating a profile", () => {
@@ -224,6 +224,6 @@ describe("auth login/logout apiml do not create profile", () => {
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
         expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
-        expect(response.stdout.toString()).toContain("Log in successful.");
+        expect(response.stdout.toString()).toContain("Login successful.");
     });
 });
