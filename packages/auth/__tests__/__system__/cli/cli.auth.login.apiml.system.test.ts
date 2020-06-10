@@ -33,7 +33,7 @@ describe("auth login/logout apiml with profile", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
-        expect(response.stdout.toString()).toContain("the authentication token has been stored");
+        expect(response.stdout.toString()).toContain("the authentication token is stored");
         expect(response.stdout.toString()).toContain("To revoke this token and remove it from your profile, please review the 'zowe auth logout' command.");
     });
 
@@ -147,7 +147,7 @@ describe("auth login/logout apiml create profile", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
-        expect(response.stdout.toString()).toContain("the authentication token has been stored to the 'default' base profile.");
+        expect(response.stdout.toString()).toContain("the authentication token is stored to the 'default' base profile.");
     });
 
     it("should successfully issue the logout command with a created profile", () => {
