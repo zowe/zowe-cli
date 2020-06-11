@@ -43,6 +43,7 @@ const throwImperativeError = async () => {
 };
 const fakeSession: any = {
     ISession: {
+        tokenType: "apimlAuthenticationToken",
         tokenValue: "fakeToken"
     }
 };
@@ -115,11 +116,32 @@ describe("Auth Logout APIML unit tests", () => {
             expect(caughtError.message).toContain("session");
         });
 
+        it("should reject calls to apimlLogout that omit token type in session", async () => {
+            ZosmfRestClient.prototype.request = jest.fn(throwImperativeError);
+            let caughtError;
+            try {
+                await Logout.apimlLogout({
+                    ISession: {
+                        tokenValue: "fakeToken"
+                    }
+                } as any);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError instanceof ImperativeError).toEqual(true);
+            expect(caughtError.message).toContain("apimlAuthenticationToken");
+        });
+
         it("should reject calls to apimlLogout that omit token value in session", async () => {
             ZosmfRestClient.prototype.request = jest.fn(throwImperativeError);
             let caughtError;
             try {
-                await Logout.apimlLogout({} as any);
+                await Logout.apimlLogout({
+                    ISession: {
+                        tokenType: "apimlAuthenticationToken"
+                    }
+                } as any);
             } catch (error) {
                 caughtError = error;
             }

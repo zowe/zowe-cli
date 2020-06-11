@@ -11,7 +11,7 @@
 
 import { LoginConstants } from "../../src/api/LoginConstants";
 import { LogoutConstants } from "../../src/api/LogoutConstants";
-import { inspect } from "util";
+import { inspect } from "../../../../__tests__/__src__/TestUtils";
 
 describe("LoginConstants Unit Test", () => {
     it("Should not have changed", () => {

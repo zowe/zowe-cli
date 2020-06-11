@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`start address-space handler tests should be able respond with error message, if required z/OSMF parameters were not passed 1`] = `"We timed-out waiting for host name."`;
+exports[`start address-space handler tests should be able respond with error message, if required z/OSMF parameters were not passed 1`] = `"Timed out waiting for host name."`;
 
 exports[`start address-space handler tests should be able to start address-space 1`] = `
 Object {

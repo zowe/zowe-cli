@@ -28,6 +28,7 @@ const throwImperativeError = async () => {
 };
 const fakeSession: any = {
     ISession: {
+        tokenType: "apimlAuthenticationToken",
         tokenValue: "fakeToken"
     }
 };
@@ -98,6 +99,23 @@ describe("Auth Login APIML unit tests", () => {
             expect(caughtError).toBeDefined();
             expect(caughtError instanceof ImperativeError).toEqual(true);
             expect(caughtError.message).toContain("session");
+        });
+
+        it("should reject calls to apimlLogin that omit token type in session", async () => {
+            ZosmfRestClient.prototype.request = jest.fn(throwImperativeError);
+            let caughtError;
+            try {
+                await Login.apimlLogin({
+                    ISession: {
+                        tokenValue: "fakeToken"
+                    }
+                } as any);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError instanceof ImperativeError).toEqual(true);
+            expect(caughtError.message).toContain("apimlAuthenticationToken");
         });
     });
 });

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition, ICommandExampleDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition, ICommandExampleDefinition, SessConstants } from "@zowe/imperative";
 
 /**
  * Class to contain  constants
@@ -157,8 +157,10 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     public static BASE_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
         name: "token-type",
         aliases: ["tt"],
-        description: "Type of token to get and use for the API.",
+        description: "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by " +
+            "'zowe auth login'.",
         type: "string",
+        allowableValues: { values: SessConstants.ALL_TOKEN_TYPES },
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
 
@@ -174,44 +176,96 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     };
 
     /**
+     * Summary of auth command group
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly AUTH_GROUP_SUMMARY = "Connect to Zowe API ML authentication service";
+
+    /**
+     * Description of auth command group
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly AUTH_GROUP_DESCRIPTION = "Connect to Zowe API Mediation Layer authentication service and obtain a token, or disconnect " +
+        "from the authentication service and revoke the token.\n" +
+        "\n" +
+        "The token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is " +
+        "stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., " +
+        "z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, " +
+        "you should omit username and password in service profiles so that the token in the base profile is used.";
+
+    /**
+     * Summary of APIML login command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_SUMMARY = "Log in to API ML authentication service";
+
+    /**
      * Description of APIML login command
      * @static
      * @memberof AuthConstants
      */
-    public static readonly APIML_LOGIN_DESCRIPTION = "Login to API Mediation Layer and obtain or update a token value. " +
-        "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
-        " Alternatively, you may provide \"user\" and \"password\" on a command, in an environmental variable, or in a profile." +
-        " See a specific command's help via \"--help\" for more information.";
+    public static readonly APIML_LOGIN_DESCRIPTION = "Log in to Zowe API Mediation Layer authentication service and obtain or update a token.\n" +
+        "\n" +
+        "The token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is " +
+        "stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., " +
+        "z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, " +
+        "you should omit username and password in service profiles so that the token in the base profile is used.";
 
     /**
      * Example definition for APIML login command
      * @static
      * @memberof AuthConstants
      */
-    public static readonly APIML_LOGIN_EXAMPLE: ICommandExampleDefinition = {
-        description: "Login to an instance of API ML in order to obtain or update the " +
-            "token value stored into your base profile",
+    public static readonly APIML_LOGIN_EXAMPLE1: ICommandExampleDefinition = {
+        description: "Log in to an API ML instance to obtain or update the token stored in your base profile",
         options: ""
     };
+
+    /**
+     * Example definition for APIML login command with show-token
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGIN_EXAMPLE2: ICommandExampleDefinition = {
+        description: "Log in to an API ML instance to obtain a token without storing it in a profile",
+        options: "--show-token"
+    };
+
+    /**
+     * Summary of APIML logout command
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_SUMMARY = "Log out of API ML authentication service";
 
     /**
      * Description of APIML logout command
      * @static
      * @memberof AuthConstants
      */
-    public static readonly APIML_LOGOUT_DESCRIPTION = "Logout of the API Mediation Layer and remove token from profile. " +
-        "The token allows for a faster server-side request and cannot be transformed into native mainframe user credentials." +
-        " Logout invalidates the token from the API Mediation Layer and deletes it from the user profile." +
-        " See a specific command's help via \"--help\" for more information.";
+    public static readonly APIML_LOGOUT_DESCRIPTION = "Log out of the Zowe API Mediation Layer authentication service and revoke the token so it " +
+        "can no longer authenticate. Also remove the token from the default base profile, if it is stored on disk.";
 
     /**
      * Example definition for APIML login command
      * @static
      * @memberof AuthConstants
      */
-    public static readonly APIML_LOGOUT_EXAMPLE: ICommandExampleDefinition = {
-        description: "Logout of an instance of the API ML and invalidate the token that was in use " +
-            "before deleting the token from your base profile",
+    public static readonly APIML_LOGOUT_EXAMPLE1: ICommandExampleDefinition = {
+        description: "Log out of an API ML instance to revoke the token that was in use and remove it from your base profile",
         options: ""
+    };
+
+    /**
+     * Example definition for APIML login command with token-value
+     * @static
+     * @memberof AuthConstants
+     */
+    public static readonly APIML_LOGOUT_EXAMPLE2: ICommandExampleDefinition = {
+        description: "Log out of an API ML instance to revoke a token that was not stored in a profile",
+        options: "--token-value <token>"
     };
 }
