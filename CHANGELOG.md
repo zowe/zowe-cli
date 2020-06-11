@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Remove temporary build modifications that were used to enable zowe-cli to build with an unpublished imperative.
 - Upgrade Zowe commands to prompt for missing user and password.
 - Add ability to log into and out of the APIML, getting and using a token
 - Add `--base-profile` option to all commands that use profiles, allowing them to make use of base profiles containing shared values.
