@@ -61,12 +61,18 @@ node('ca-jenkins-agent') {
     ]
 
     // Initialize the pipeline library, should create 5 steps.
-    // We need lots of time to install imperative, since imperative
-    // is also built when installing from a Git Repo.
-    pipeline.setup(installDependencies: [
-        time: 15,
-        unit: 'MINUTES'
-    ])
+    pipeline.setup()
+    
+    // When we need to build the CLI with imperative from Github repo source,
+    // we need lots of time to install imperative, since imperative
+    // is also built from source during the NPM install.
+    // When building from GitHub source, commment out the setup
+    // command above, and uncomment the setup command below:
+    //
+    // pipeline.setup(installDependencies: [
+    //     time: 15,
+    //     unit: 'MINUTES'
+    // ])
 
     // Create a custom lint stage that runs immediately after the setup.
     pipeline.createStage(
