@@ -8,6 +8,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Add ability to log into and out of the APIML, getting and using a token
 - Add `--base-profile` option to all commands that use profiles, allowing them to make use of base profiles containing shared values.
 
+## `6.15.0`
+
+- Add `encoding` option to `zosmf` profile type.
+
 ## `6.14.0`
 
 - Add encoding / code page support for data set upload and download operations in library and CLI.
