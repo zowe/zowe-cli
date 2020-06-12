@@ -141,8 +141,7 @@ export class TestEnvironment {
             port: SYSTEM_PROPS.base.port,
             type: "token",
             tokenType: "apimlAuthenticationToken",
-            rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized,
-            basePath: SYSTEM_PROPS.base.basePath
+            rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized
         });
     }
 
