@@ -211,10 +211,7 @@ export class TempTestProfiles {
             `${baseProperties.pass} --ru ${baseProperties.rejectUnauthorized}` +
             ` --host ${baseProperties.host} --port ${baseProperties.port}`;
         // if basePath has been entered in custom_properties, add it to the
-        // create zosmf profile arguments
-        if (baseProperties.basePath != null) {
-            createProfileScript += ` --base-path ${baseProperties.basePath}`;
-        }
+        // create base profile arguments
         if (baseProperties.tokenType != null) {
             createProfileScript += ` --token-type ${baseProperties.tokenType}`;
         }

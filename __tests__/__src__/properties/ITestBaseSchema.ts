@@ -15,7 +15,6 @@ export interface ITestBaseSchema {
     host: string;
     port: number;
     rejectUnauthorized: boolean;
-    basePath?: string;
     tokenType?: string;
     tokenValue?: string;
 }
