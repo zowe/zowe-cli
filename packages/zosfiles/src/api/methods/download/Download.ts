@@ -14,19 +14,14 @@ import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress } from "@zo
 import { posix } from "path";
 import * as util from "util";
 
-import { ZosmfRestClient } from "../../../../../rest";
-import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
-import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions } from "./doc/IDownloadOptions";
-import { Get } from "../get/Get";
 import { asyncPool } from "../../../../../utils";
-import { IGetOptions } from "../get";
-import { Writable } from "stream";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";

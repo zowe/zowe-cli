@@ -121,3 +121,12 @@ export function delay(ms: number) {
 }
 
 export const delTime = 500;
+
+/**
+ * Use instead of `util.inspect` to get consistently formatted output that can be used in snapshots.
+ * Does not inspect nested objects.
+ * @param obj Object to stringify
+ */
+export function inspect(obj: any) : string {
+    return JSON.stringify(Object.keys(obj).reduce((newObj, key) => ({...newObj, [key]: obj[key]}), {}));
+}

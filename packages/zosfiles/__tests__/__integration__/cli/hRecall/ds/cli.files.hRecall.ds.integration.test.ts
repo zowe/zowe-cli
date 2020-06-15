@@ -38,6 +38,14 @@ describe("Recall Data Set", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
+    it("should display the help in json format", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/recall_data_set_help_rfj.sh",
+            TEST_ENVIRONMENT);
+        expect(response.status).toBe(0);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.stdout.toString()).toMatchSnapshot();
+    });
+
     describe("Expected failures", () => {
         it("should fail recalling a data set due to missing data set name", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_recall_data_set.sh",

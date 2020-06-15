@@ -9,10 +9,7 @@
 *
 */
 
-export * from "./methods/CheckStatus";
-export * from "./methods/ListDefinedSystems";
-export * from "./doc/IZosmfInfoResponse";
-export * from "./doc/IZosmfPluginInfo";
-export * from "./constants/Zosmf.constants";
-export * from "./constants/Zosmf.messages";
-export * from "./doc/IZosmfListDefinedSystemsResponse";
+export * from "./src/api/Login";
+export * from "./src/api/LoginConstants";
+export * from "./src/api/Logout";
+export * from "./src/api/LogoutConstants";

@@ -15,7 +15,7 @@ import { List } from "../../../../src/api/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
 import { posix } from "path";
 import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
-import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
+import { ZosmfHeaders } from "../../../../../rest/src/api/ZosmfHeaders";
 
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");

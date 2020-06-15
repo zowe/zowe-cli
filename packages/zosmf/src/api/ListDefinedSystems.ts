@@ -11,10 +11,10 @@
 
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 import { posix } from "path";
-import { ZosmfConstants } from "../constants/Zosmf.constants";
-import { ZosmfMessages } from "../constants/Zosmf.messages";
-import { ZosmfRestClient } from "../../../../rest/src/ZosmfRestClient";
-import { IZosmfListDefinedSystemsResponse } from "../doc/IZosmfListDefinedSystemsResponse";
+import { ZosmfConstants } from "./constants/Zosmf.constants";
+import { ZosmfMessages } from "./constants/Zosmf.messages";
+import { ZosmfRestClient } from "../../../rest";
+import { IZosmfListDefinedSystemsResponse } from "./doc/IZosmfListDefinedSystemsResponse";
 
 /**
  * This class is used to list the systems defined to z/OSMF throgh the

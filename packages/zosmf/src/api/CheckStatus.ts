@@ -11,10 +11,10 @@
 
 import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { posix } from "path";
-import { ZosmfConstants } from "../constants/Zosmf.constants";
-import { ZosmfMessages } from "../constants/Zosmf.messages";
-import { ZosmfRestClient } from "../../../../rest/src/ZosmfRestClient";
-import { IZosmfInfoResponse } from "../doc/IZosmfInfoResponse";
+import { ZosmfConstants } from "./constants/Zosmf.constants";
+import { ZosmfMessages } from "./constants/Zosmf.messages";
+import { ZosmfRestClient } from "../../../rest/";
+import { IZosmfInfoResponse } from "./doc/IZosmfInfoResponse";
 
 /**
  * This class holds the helper functions that are used to gather zosmf information throgh the
