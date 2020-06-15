@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.16.0`
 
 - Upgrade Zowe commands to prompt for any of the following values if the option is missing: host, port, user, and password.
 - Add ability to log into and out of the APIML, getting and using a token
