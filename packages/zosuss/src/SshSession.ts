@@ -13,9 +13,7 @@ import {
     ICommandArguments,
     ICommandOptionDefinition,
     IProfile,
-    Logger,
-    ISession,
-    Session
+    Logger
 } from "@zowe/imperative";
 import { ISshSession } from "./api/doc/ISshSession";
 
