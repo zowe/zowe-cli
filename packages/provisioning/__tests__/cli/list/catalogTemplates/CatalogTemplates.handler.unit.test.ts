@@ -24,6 +24,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["provisioning", "list", "catalog-templates"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["provisioning", "list", "catalog-templates"],
     response: getMockedResponse(),
     definition: catalogTemplates,
     fullDefinition: catalogTemplates,

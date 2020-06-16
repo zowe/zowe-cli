@@ -9,6 +9,8 @@
 *
 */
 
+import { IGetJobsParms } from "../../../..";
+
 jest.mock("../../../../src/api/GetJobs");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
 import { GetJobs } from "../../../../src/api/GetJobs";
@@ -41,6 +43,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         _: ["zos-jobs", "view", "job"],
         ...ZOSMF_PROF_OPTS
     },
+    positionals: ["zos-jobs", "view", "job"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
@@ -78,22 +81,26 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
 describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs using defaults", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, owner, prefix) => {
+        let passedParms: IGetJobsParms;
+        GetJobs.getJobsCommon = jest.fn((session, parms) => {
             passedSession = session;
+            passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
         });
         const handler = new JobsHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
         await handler.process(params);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, passedSession.ISession.user, "*");
+        expect(GetJobs.getJobsCommon).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getJobsCommon).toHaveBeenCalledWith(passedSession, passedParms);
     });
 
     it("should be able to get a list of jobs for a specific owner", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, owner, prefix) => {
+        let passedParms: IGetJobsParms;
+        GetJobs.getJobsCommon = jest.fn((session, parms) => {
             passedSession = session;
+            passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
         });
         const handler = new JobsHandler.default();
@@ -101,14 +108,16 @@ describe("list jobs handler tests", () => {
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
         params.arguments.owner = "TESTOWN";
         await handler.process(params);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, "TESTOWN", "*");
+        expect(GetJobs.getJobsCommon).toHaveBeenCalledTimes(1);
+        expect(passedParms.owner).toBe(params.arguments.owner);
     });
 
     it("should be able to get a list of jobs for a specific prefix", async () => {
         let passedSession: Session;
-        GetJobs.getJobsByOwnerAndPrefix = jest.fn((session, owner, prefix) => {
+        let passedParms: IGetJobsParms;
+        GetJobs.getJobsCommon = jest.fn((session, parms) => {
             passedSession = session;
+            passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
         });
         const handler = new JobsHandler.default();
@@ -116,14 +125,15 @@ describe("list jobs handler tests", () => {
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
         params.arguments.prefix = "TESTPRFX";
         await handler.process(params);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledWith(passedSession, passedSession.ISession.user, "TESTPRFX");
+        expect(GetJobs.getJobsCommon).toHaveBeenCalledTimes(1);
+        expect(passedParms.prefix).toBe(params.arguments.prefix);
+
     });
 
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJobsByOwnerAndPrefix = jest.fn(async (session, owner, prefix) => {
+        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new JobsHandler.default();
@@ -133,7 +143,7 @@ describe("list jobs handler tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(GetJobs.getJobsByOwnerAndPrefix).toHaveBeenCalledTimes(1);
+        expect(GetJobs.getJobsCommon).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();

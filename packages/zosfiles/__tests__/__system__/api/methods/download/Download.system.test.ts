@@ -27,7 +27,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
 import { readdirSync, readFileSync } from "fs";
-import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
+import { ZosmfHeaders } from "../../../../../../rest/src/api/ZosmfHeaders";
 import { posix } from "path";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 

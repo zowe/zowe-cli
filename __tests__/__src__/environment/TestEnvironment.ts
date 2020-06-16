@@ -129,6 +129,23 @@ export class TestEnvironment {
     }
 
     /**
+     * Create a ZOSMF session through the APIML from properties present in your test environment
+     * @param testEnvironment - your test environment with system test properties populated
+     */
+    public static createBaseSession(testEnvironment: ITestEnvironment): AbstractSession {
+        const SYSTEM_PROPS = testEnvironment.systemTestProperties;
+        return new Session({
+            user: SYSTEM_PROPS.base.user,
+            password: SYSTEM_PROPS.base.pass,
+            hostname: SYSTEM_PROPS.base.host,
+            port: SYSTEM_PROPS.base.port,
+            type: "token",
+            tokenType: "apimlAuthenticationToken",
+            rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized
+        });
+    }
+
+    /**
      * Create a SSH session from properties present in your test environment
      * @param testEnvironment - your test environment with system test properties populated
      */

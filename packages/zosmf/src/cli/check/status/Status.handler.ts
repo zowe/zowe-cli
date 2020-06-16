@@ -39,9 +39,19 @@ export default class Handler extends ZosmfBaseHandler {
         };
 
         // display the information that we got
+        let userToDisplay: string;
+        if (this.mSession.ISession.user === undefined ||
+            this.mSession.ISession.user === null ||
+            this.mSession.ISession.user.length === 0)
+        {
+            userToDisplay = "with a token";
+        } else {
+            userToDisplay = this.mSession.ISession.user;
+        }
+
         commandParameters.response.console.log(
             TextUtils.formatMessage(CheckStatusMessages.cmdSucceeded.message, {
-                userName: commandParameters.arguments.user,
+                userName: userToDisplay,
                 hostName: zosResponse.zosmf_hostname,
                 mainZosmfProps: TextUtils.prettyJson(mainZosmfProps),
                 pluginStatus: TextUtils.prettyJson(zosResponse.plugins)

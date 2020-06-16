@@ -16,7 +16,7 @@ import { ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
+import { IHeaderContent } from "../../../../../rest/src/api/doc/IHeaderContent";
 import { IDataSet } from "../../doc/IDataSet";
 import { ICopyDatasetOptions } from "./doc/ICopyDatasetOptions";
 /**

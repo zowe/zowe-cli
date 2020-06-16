@@ -39,6 +39,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         $0: "bright",
         _: ["zos-tso", "ping", "address-space"]
     },
+    positionals: ["zos-tso", "ping", "address-space"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {

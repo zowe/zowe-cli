@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`check status behavior should display zosmf properties 1`] = `
-"The user 'someone' successfully connected to z/OSMF on 'CAMainframe'.
+"The user someone successfully connected to z/OSMF on 'CAMainframe'.
 [33mzosmf_port: [39m        1234
 [33mzosmf_saf_realm: [39m   MakeBelieve
 [33mzos_version: [39m       zosv123

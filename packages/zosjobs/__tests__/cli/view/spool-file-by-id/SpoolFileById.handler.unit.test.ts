@@ -17,7 +17,7 @@ import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-file
 import * as SpoolFileByIdHandler from "../../../../src/cli/view/spool-file-by-id/SpoolFileById.handler";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
-import { ZosmfSession } from "../../../../../zosmf/src/ZosmfSession";
+import { ZosmfSession } from "../../../../../zosmf/src/api/ZosmfSession";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 // Disable coloring for the snapshots
@@ -29,6 +29,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["zos-jobs", "view", "spool-file-by-id"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["zos-jobs", "view", "spool-file-by-id"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
