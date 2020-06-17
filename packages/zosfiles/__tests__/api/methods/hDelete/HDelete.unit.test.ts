@@ -11,12 +11,12 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-import { ZosFilesConstants, ZosFilesMessages, HRecall } from "../../../..";
+import { HDelete, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
-import { IRecallOptions } from "../../../../src/api";
+import { IDeleteOptions } from "../../../../src/api/methods/hDelete/doc/IDeleteOptions";
 
-describe("hRecall data set", () => {
+describe("hDelete data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
 
     beforeEach(() => {
@@ -39,7 +39,7 @@ describe("hRecall data set", () => {
         const dataSetName: string = "EFGH";
 
         it("should send a request", async () => {
-            const expectedPayload = { request: "hrecall" };
+            const expectedPayload = { request: "hdelete" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -52,11 +52,11 @@ describe("hRecall data set", () => {
                 { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
-            const response = await HRecall.dataSet(dummySession, dataSetName);
+            const response = await HDelete.dataSet(dummySession, dataSetName);
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetRecallRequested.message
+                commandResponse: ZosFilesMessages.datasetDeletionRequested.message
             });
 
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
@@ -68,10 +68,10 @@ describe("hRecall data set", () => {
             );
         });
         it("should send a request with wait = true", async () => {
-            const options: IRecallOptions = { wait: true };
+            const options: IDeleteOptions = { wait: true };
 
             const expectedPayload = {
-                request: "hrecall",
+                request: "hdelete",
                 wait: true
             };
             const expectedEndpoint = posix.join(
@@ -84,11 +84,42 @@ describe("hRecall data set", () => {
                 { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
             ];
 
-            const response = await HRecall.dataSet(dummySession, dataSetName, options);
+            const response = await HDelete.dataSet(dummySession, dataSetName, options);
 
             expect(response).toEqual({
                 success: true,
-                commandResponse: ZosFilesMessages.datasetRecallRequested.message
+                commandResponse: ZosFilesMessages.datasetDeletionRequested.message
+            });
+            expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(putExpectStringSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                expectedEndpoint,
+                expectedHeaders,
+                expectedPayload
+            );
+        });
+        it("should send a request with purge = true", async () => {
+            const options: IDeleteOptions = { purge: true };
+
+            const expectedPayload = {
+                request: "hdelete",
+                purge: true
+            };
+            const expectedEndpoint = posix.join(
+                ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                dataSetName
+            );
+            const expectedHeaders = [
+                { "Content-Type": "application/json" },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+            ];
+
+            const response = await HDelete.dataSet(dummySession, dataSetName, options);
+
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetDeletionRequested.message
             });
             expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
@@ -107,7 +138,7 @@ describe("hRecall data set", () => {
             putExpectStringSpy.mockImplementation(() => {
                 throw new ImperativeError({ msg: errorMessage });
             });
-            const expectedPayload = { request: "hrecall" };
+            const expectedPayload = { request: "hdelete" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -121,7 +152,7 @@ describe("hRecall data set", () => {
 
             let error;
             try {
-                await HRecall.dataSet(dummySession, dataSetName);
+                await HDelete.dataSet(dummySession, dataSetName);
             } catch (err) {
                 error = err.message;
             }

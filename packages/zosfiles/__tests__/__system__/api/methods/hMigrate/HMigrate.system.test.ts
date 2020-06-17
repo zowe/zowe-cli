@@ -79,7 +79,7 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse).toBeTruthy();
                 expect(migrateResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("YES");
-                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
             it("should migrate a sequential data set with wait = true", async () => {
                 const migrateOptions: IMigrateOptions = { wait: true };
@@ -101,7 +101,7 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse).toBeTruthy();
                 expect(migrateResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("YES");
-                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
         });
         describe("Partitioned Data Set", () => {
@@ -131,7 +131,7 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse).toBeTruthy();
                 expect(migrateResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("YES");
-                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
             it("should migrate a partitioned dataset with wait = true", async () => {
                 const migrateOptions: IMigrateOptions = { wait: true };
@@ -153,7 +153,7 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse).toBeTruthy();
                 expect(migrateResponse.success).toBe(true);
                 expect(listResponse.apiResponse.items[0].migr).toBe("YES");
-                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigratedSuccessfully.message);
+                expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
         });
     });

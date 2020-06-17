@@ -16,7 +16,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
 /**
- * This class holds helper functions that are used to recall files through the
+ * This class holds helper functions that are used to recall data sets through the
  * z/OSMF APIs.
  */
 export class HRecall {
@@ -31,7 +31,7 @@ export class HRecall {
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      *
-     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.4.0/com.ibm.zos.v2r4.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async dataSet(
         session: AbstractSession,
@@ -41,7 +41,7 @@ export class HRecall {
         return ZosFilesUtils.dfsmsHsmCommand(
             session,
             dataSetName,
-            ZosFilesMessages.datasetRecalledSuccessfully.message,
+            ZosFilesMessages.datasetRecallRequested.message,
             { request: "hrecall" },
             options
         );

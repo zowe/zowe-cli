@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Added API to delete migrated data sets.
+
 ## `6.16.0`
 
 - Upgrade Zowe commands to prompt for any of the following values if the option is missing: host, port, user, and password.
