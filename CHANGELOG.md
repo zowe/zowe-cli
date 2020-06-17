@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Update Imperative version to fix issue "Can't use service profile after storing token in base profile"
 
+## `6.17.0`
+
+- Added API to delete migrated data sets.
+
 ## `6.16.0`
 
 - Upgrade Zowe commands to prompt for any of the following values if the option is missing: host, port, user, and password.

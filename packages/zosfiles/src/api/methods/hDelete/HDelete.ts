@@ -11,15 +11,15 @@
 
 import { AbstractSession } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { IMigrateOptions } from "./doc/IMigrateOptions";
+import { IDeleteOptions } from "./doc/IDeleteOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
 /**
- * This class holds helper functions that are used to migrate data sets through the
+ * This class holds helper functions that are used to delete data sets through the
  * z/OSMF APIs.
  */
-export class HMigrate {
+export class HDelete {
     /**
      *
      * @param {AbstractSession}       session      z/OSMF connection info
@@ -36,13 +36,13 @@ export class HMigrate {
     public static async dataSet(
         session: AbstractSession,
         dataSetName: string,
-        options: Partial<IMigrateOptions> = {}
+        options: Partial<IDeleteOptions> = {}
     ): Promise<IZosFilesResponse> {
         return ZosFilesUtils.dfsmsHsmCommand(
             session,
             dataSetName,
-            ZosFilesMessages.datasetMigrationRequested.message,
-            { request: "hmigrate" },
+            ZosFilesMessages.datasetDeletionRequested.message,
+            { request: "hdelete" },
             options
         );
     }

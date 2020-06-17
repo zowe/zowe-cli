@@ -16,8 +16,7 @@ import { ZosFilesConstants } from "../../../src/api/constants/ZosFiles.constants
 import { ZosFilesMessages } from "../../../src/api/constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
 import { ZosmfRestClient } from "../../../../rest/src/api/ZosmfRestClient";
-import { IRecallOptions } from "../methods/hRecall/doc/IRecallOptions";
-import { IMigrateOptions } from "../methods/hMigrate/doc/IMigrateOptions";
+import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { ZosmfHeaders } from "../../../../rest";
 
@@ -217,17 +216,17 @@ export class ZosFilesUtils {
     /**
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} dataSetName -The name of the data set to recall|migrate
-     * @param {string} returnMessage - Message to rtuern based upon command request
+     * @param {string} returnMessage - Message to return based upon command request
      * @param {any} hsmCommand - HsmCommand requested
-     *  - If true then the function waits for completion of the request. If false (default) the request is queued.
-     * @param {IRecallOptions | IMigrateOptions} options
+     * @param {IRecallOptions | IMigrateOptions | IDeleteOptions} options
+     * * - If true then the function waits for completion of the request. If false (default) the request is queued.
      */
     public static async dfsmsHsmCommand(
         session: AbstractSession,
         dataSetName: string,
         returnMessage: string,
         hsmCommand: any,
-        options: Partial<IRecallOptions> | Partial<IMigrateOptions> = {}
+        options: Partial<IDeleteOptions> = {}
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -241,6 +240,10 @@ export class ZosFilesUtils {
 
             if (options.wait != null) {
                 payload.wait = options.wait;
+            }
+
+            if (options.purge != null) {
+                payload.purge = options.purge;
             }
 
             const headers: IHeaderContent[] = [
