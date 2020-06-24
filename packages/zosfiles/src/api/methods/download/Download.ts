@@ -201,7 +201,7 @@ export class Download {
                 return generatedDirectory;
             })();
 
-            const downloadErrors: any = [];
+            const downloadErrors: Error[] = [];
             let downloadsInitiated = 0;
 
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -222,21 +222,19 @@ export class Download {
                     downloadsInitiated++;
                 }
 
-                try {
-                    const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
-                    return this.dataSet(session, `${dataSetName}(${mem.member})`, {
-                        volume: options.volume,
-                        file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
-                        binary: options.binary,
-                        encoding: options.encoding
-                    });
-                } catch (err) {
+                const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
+                return this.dataSet(session, `${dataSetName}(${mem.member})`, {
+                    volume: options.volume,
+                    file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
+                    binary: options.binary,
+                    encoding: options.encoding
+                }).catch((err) => {
                     // If we should fail fast, rethrow error
                     if (options.failFast || typeof options.failFast === "undefined") {
                         throw err;
                     }
                     downloadErrors.push(err);
-                }
+                });
             };
 
             const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
@@ -250,7 +248,7 @@ export class Download {
             // Handle failed downloads if no errors were thrown yet
             if (downloadErrors.length > 0) {
                 throw new ImperativeError({
-                    msg: ZosFilesMessages.datasetDownloadFailed.message,
+                    msg: downloadErrors.map((err: Error) => err.message).join("\n"),
                     causeErrors: downloadErrors
                 });
             }
