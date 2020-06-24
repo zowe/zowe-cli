@@ -73,4 +73,12 @@ export interface IDownloadOptions extends IOptions {
      * This option has only effect on automatically generated directories and files.
      */
     preserveOriginalLetterCase?: boolean;
+
+    /**
+     * Indicates if a download operation for multiple files/data sets should fail as soon as the first failure happens.
+     * If set to true, the first failure will throw an error and abort the download operation.
+     * If set to false, individual download failures will be reported after all other downloads have completed.
+     * The default value is true for backward compatibility.
+     */
+    failFast?: boolean;
 }

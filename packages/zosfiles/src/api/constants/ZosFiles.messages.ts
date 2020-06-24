@@ -128,6 +128,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set failed to download
+     * @type {IMessageDefinition}
+     */
+    datasetDownloadFailed: {
+        message: "Failed to download data set."
+    },
+
+    /**
      * Message indicating that the uss file was downloaded successfully
      * @type {IMessageDefinition}
      */
