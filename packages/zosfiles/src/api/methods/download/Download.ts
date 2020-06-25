@@ -230,7 +230,7 @@ export class Download {
                     encoding: options.encoding
                 }).catch((err) => {
                     // If we should fail fast, rethrow error
-                    if (options.failFast || typeof options.failFast === "undefined") {
+                    if (options.failFast || options.failFast === undefined) {
                         throw err;
                     }
                     downloadErrors.push(err);
