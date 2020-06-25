@@ -637,7 +637,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const dummyError = new Error("test");
-            listAllMembersSpy.mockImplementation(() => {
+            listAllMembersSpy.mockImplementation(async () => {
                 throw dummyError;
             });
 
@@ -661,7 +661,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const dummyError = new Error("test");
-            downloadDatasetSpy.mockImplementation(() => {
+            downloadDatasetSpy.mockImplementation(async () => {
                 throw dummyError;
             });
 
@@ -684,6 +684,38 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should delay handling an error from Download.dataSet when failFast option is false", async () => {
+            let response;
+            let caughtError;
+
+            const dummyError = new Error("test");
+            downloadDatasetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {failFast: false});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual(`${dummyError.message}\n${dummyError.message}`);
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            const firstItem = listApiResponse.items[0];
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
+                file: `${dsFolder}/${firstItem.member.toLowerCase()}.txt`
+            });
+            const secondItem = listApiResponse.items[1];
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${secondItem.member})`, {
+                file: `${dsFolder}/${secondItem.member.toLowerCase()}.txt`
+            });
+        });
     });
 
     describe("datasetMatchingPattern", () => {
