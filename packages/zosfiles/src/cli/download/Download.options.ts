@@ -130,5 +130,13 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.PRESERVE_ORIGINAL_LETTER_CASE,
         type: "boolean",
         defaultValue: false
+    },
+
+    failFast: {
+        name: "fail-fast",
+        aliases: ["ff"],
+        description: strings.FAIL_FAST,
+        type: "boolean",
+        defaultValue: true
     }
 };

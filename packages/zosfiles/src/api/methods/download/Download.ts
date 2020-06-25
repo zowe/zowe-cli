@@ -234,6 +234,8 @@ export class Download {
                         throw err;
                     }
                     downloadErrors.push(err);
+                    // Delete the file that could not be downloaded
+                    IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
                 });
             };
 
