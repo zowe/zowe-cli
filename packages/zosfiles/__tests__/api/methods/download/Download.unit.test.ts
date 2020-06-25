@@ -403,7 +403,7 @@ describe("z/OS Files - Download", () => {
             });
 
             downloadDatasetSpy.mockClear();
-            downloadDatasetSpy.mockImplementation(() => null);
+            downloadDatasetSpy.mockResolvedValue(null);
         });
 
         it("should throw and error if the data set name is not specified", async () => {
