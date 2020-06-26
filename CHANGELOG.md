@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Update Imperative version to include compatibility fix for `ISession` type
+
 ## `6.17.2`
 
 - Update Imperative version (again) to include security fix
