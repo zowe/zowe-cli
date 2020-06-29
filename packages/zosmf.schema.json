@@ -1,0 +1,89 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "host": "usilca11.lvn.broadcom.net",
+            "port": 1443,
+            "user": "ibmuser",
+            "password": "password",
+            "rejectUnauthorized": false,
+            "encoding": 1047
+        }
+    ],
+    "required": [
+        "host",
+        "port",
+        "user",
+        "password",
+        "rejectUnauthorized",
+        "encoding"
+    ],
+    "additionalProperties": true,
+    "properties": {
+        "host": {
+            "$id": "#/properties/host",
+            "type": "string",
+            "title": "The host schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "usilca11.lvn.broadcom.net"
+            ]
+        },
+        "port": {
+            "$id": "#/properties/port",
+            "type": "integer",
+            "title": "The port schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1443
+            ]
+        },
+        "user": {
+            "$id": "#/properties/user",
+            "type": "string",
+            "title": "The user schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "ibmuser"
+            ]
+        },
+        "password": {
+            "$id": "#/properties/password",
+            "type": "string",
+            "title": "The password schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "password"
+            ]
+        },
+        "rejectUnauthorized": {
+            "$id": "#/properties/rejectUnauthorized",
+            "type": "boolean",
+            "title": "The rejectUnauthorized schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                false
+            ]
+        },
+        "encoding": {
+            "$id": "#/properties/encoding",
+            "type": "integer",
+            "title": "The encoding schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1047
+            ]
+        }
+    }
+}
