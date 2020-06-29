@@ -604,6 +604,24 @@ export default {
                 " without a maximum number of concurrent requests. "
         }
     },
+    HDELETE: {
+        DESCRIPTION: "Delete migrated data sets.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Delete a migrated data set.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the migrated data set you want to delete."
+                },
+                EXAMPLES: {
+                    EX1: `Delete a migrated data set using default options`
+                }
+            }
+        },
+        OPTIONS: {
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
+            PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
+        }
+    },
     HMIGRATE: {
         DESCRIPTION: "Migrate data sets.",
         ACTIONS: {
@@ -618,7 +636,7 @@ export default {
             }
         },
         OPTIONS: {
-            WAIT: "If true then the function waits for completion of the request. If false the request is queued."
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued."
         }
     },
     HRECALL: {
@@ -635,7 +653,7 @@ export default {
             }
         },
         OPTIONS: {
-            WAIT: "If true then the function waits for completion of the request. If false the request is queued."
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued."
         }
     },
     RENAME: {

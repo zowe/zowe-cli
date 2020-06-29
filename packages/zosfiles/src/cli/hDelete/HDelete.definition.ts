@@ -15,15 +15,15 @@ import { DsDefinition } from "./ds/Ds.definition";
 import i18nTypings from "../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTypings).HRECALL;
+const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTypings).HDELETE;
 
 /**
- * hRecall group definition containing its description and children
+ * hDelete group definition containing its description and children
  * @type {ICommandDefinition}
  */
-export const HRecallDefinition: ICommandDefinition = {
-    name: "recall",
-    aliases: ["hrec", "hRecall"],
+export const HDeleteDefinition: ICommandDefinition = {
+    name: "delete",
+    aliases: ["hdel", "hDelete"],
     type: "group",
     description: DESCRIPTION,
     children: [
