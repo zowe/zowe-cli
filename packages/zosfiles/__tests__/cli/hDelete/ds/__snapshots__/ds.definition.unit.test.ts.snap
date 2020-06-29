@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files delete ds command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "w",
+    ],
+    "description": "If true then the function waits for completion of the request. If false (default) the request is queued.",
+    "name": "wait",
+    "required": false,
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "p",
+    ],
+    "description": "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request.",
+    "name": "purge",
+    "required": false,
+    "type": "boolean",
+  },
+]
+`;
+
+exports[`zos-files delete ds command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Delete a migrated data set using default options",
+    "options": "\\"USER.DATA.SET\\"",
+  },
+]
+`;

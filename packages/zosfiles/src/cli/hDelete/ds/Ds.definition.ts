@@ -15,7 +15,7 @@ import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const strings = (require("../../-strings-/en").default as typeof i18nTypings);
-const dSStrings = strings.HMIGRATE.ACTIONS.DATA_SET;
+const dSStrings = strings.HDELETE.ACTIONS.DATA_SET;
 
 export const DsDefinition: ICommandDefinition = {
   name: "data-set",
