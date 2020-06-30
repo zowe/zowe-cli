@@ -69,7 +69,7 @@
             "type": "integer",
             "title": "Encoding / Code Page",
             "description": "Encoding value used for z/OS data set and files download / upload operations.",
-            "default": 1047,
+            "default": 1047
         }
     }
 }
