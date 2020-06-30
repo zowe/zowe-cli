@@ -37,10 +37,7 @@
             "type": "integer",
             "title": "z/OSMF Port",
             "description": "Port for z/OSMF instance.",
-            "default": 443,
-            "examples": [
-                1443
-            ]
+            "default": 443
         },
         "user": {
             "$id": "#/properties/user",
