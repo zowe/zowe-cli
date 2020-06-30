@@ -59,10 +59,7 @@
             "type": "boolean",
             "title": "Reject Unauthorized",
             "description": "Connect only with trusted certifacates.",
-            "default": true,
-            "examples": [
-                false
-            ]
+            "default": true
         },
         "encoding": {
             "$id": "#/properties/encoding",
