@@ -17,7 +17,7 @@
     ],
     "required": [
     ],
-    "additionalProperties": true,
+    "additionalProperties": false,
     "properties": {
         "host": {
             "$id": "#/properties/host",
