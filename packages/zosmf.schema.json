@@ -27,7 +27,11 @@
             "default": "",
             "examples": [
                 "some.zosmf.host.net"
-            ]
+            ],
+            "defaultSnippets": {
+                "label": "Some label",
+                "body" : { "one" : 1, "two": 2}
+            }
         },
         "port": {
             "$id": "#/properties/port",
