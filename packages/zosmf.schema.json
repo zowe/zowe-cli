@@ -24,7 +24,6 @@
             "type": "string",
             "title": "z/OSMF Host",
             "description": "Host for z/OSMF instance.",
-            "default": "",
             "examples": [
                 "some.zosmf.host.net"
             ],
@@ -48,7 +47,6 @@
             "type": "string",
             "title": "Mainframe user ID",
             "description": "The mainframe user ID to connect to this z/OSMF instance.",
-            "default": "",
             "examples": [
                 "ibmuser"
             ]
@@ -58,17 +56,13 @@
             "type": "string",
             "title": "Mainframe password",
             "description": "The mainframe password to connect to this z/OSMF instance.",
-            "default": "",
-            "examples": [
-                "password"
-            ]
         },
         "rejectUnauthorized": {
             "$id": "#/properties/rejectUnauthorized",
             "type": "boolean",
             "title": "Reject Unauthorized",
             "description": "Connect only with trusted certifacates.",
-            "default": false,
+            "default": true,
             "examples": [
                 false
             ]
@@ -78,9 +72,9 @@
             "type": "integer",
             "title": "Encoding / Code Page",
             "description": "Encoding value used for z/OS data set and files download / upload operations.",
-            "default": 0,
+            "default": 1047,
             "examples": [
-                1047
+                285
             ]
         }
     }
