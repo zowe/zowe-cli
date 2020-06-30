@@ -48,7 +48,7 @@
             "$id": "#/properties/password",
             "type": "string",
             "title": "Mainframe password",
-            "description": "The mainframe password to connect to this z/OSMF instance.",
+            "description": "The mainframe password to connect to this z/OSMF instance."
         },
         "rejectUnauthorized": {
             "$id": "#/properties/rejectUnauthorized",
