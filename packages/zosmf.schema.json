@@ -22,8 +22,8 @@
         "host": {
             "$id": "#/properties/host",
             "type": "string",
-            "title": "The host of a z/OSMF instance",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "z/OSMF Host",
+            "description": "Host for z/OSMF instance.",
             "default": "",
             "examples": [
                 "some.zosmf.host.net"
@@ -36,8 +36,8 @@
         "port": {
             "$id": "#/properties/port",
             "type": "integer",
-            "title": "The port schema",
-            "description": "An explanation about the purpose of this instance.",
+            "title": "z/OSMF Port",
+            "description": "Port for z/OSMF instance.",
             "default": 443,
             "examples": [
                 1443
