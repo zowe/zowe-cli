@@ -10,7 +10,7 @@
 */
 
 import { IZosFilesResponse, HDelete } from "../../../../src/api";
-import DSHandler from "../../../../src/cli/HDelete/ds/Ds.handler";
+import DSHandler from "../../../../src/cli/hDelete/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
 import { IDeleteOptions } from "../../../../src/api/methods/hDelete/doc/IDeleteOptions";
 
