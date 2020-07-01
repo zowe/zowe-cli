@@ -3,7 +3,7 @@ dataSetName=$1
 set -e
 
 echo "================Z/OS FILES MIGRATE DATA SET==============="
-zowe zos-files migrate data-set "$dataSetName" 
+zowe zos-files hMigrate data-set "$dataSetName" 
 if [ $? -gt 0 ]
 then
     exit $?

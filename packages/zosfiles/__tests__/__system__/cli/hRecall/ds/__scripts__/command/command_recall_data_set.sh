@@ -3,7 +3,7 @@ dataSetName=$1
 set -e
 
 echo "================Z/OS FILES RECALL DATA SET==============="
-zowe zos-files recall data-set "$dataSetName" 
+zowe zos-files hRecall data-set "$dataSetName" 
 if [ $? -gt 0 ]
 then
     exit $?
