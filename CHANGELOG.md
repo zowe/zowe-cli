@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Add CLI command to delete migrated data sets.
+
 ## `6.17.3`
 
 - Update Imperative version to include compatibility fix for `ISession` type
