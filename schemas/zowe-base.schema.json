@@ -1,0 +1,70 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "id": "http://jsonschema.net",
+    "items": {
+        "type": "object",
+        "patternProperties": {
+            "^\\S+": {
+                "title": "blah",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "host": {
+                        "type": "string"
+                    },
+                    "port": {
+                        "type": "integer"
+                    },
+                    "rejectUnauthorized": {
+                        "type": "boolean"
+                    },
+                    "services": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "zosmf": {
+                                    "defaultSnippets": [
+                                        {
+                                            "label": "Zosmf",
+                                            "body": [
+                                                {
+                                                    "some-zosmf": {
+                                                        "host": "some.zosmf.host",
+                                                        "port": 443
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "patternProperties": {
+                                            "^\\S+": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "host": {
+                                                        "type": "string"
+                                                    },
+                                                    "port": {
+                                                        "type": "integer"
+                                                    },
+                                                    "rejectUnauthorized": {
+                                                        "type": "boolean"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

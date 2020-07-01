@@ -1,0 +1,21 @@
+[
+    {
+        "defatult": {
+            "host": "usilca11",
+            "port": 0,
+            "services": [
+                {
+                    "zosmf": [
+                        {
+                            "some-zosmf": {
+                                "host": "some.zosmf.host",
+                                "port": 443,
+                                "rejectUnauthorized": true
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]

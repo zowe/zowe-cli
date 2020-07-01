@@ -1,0 +1,12 @@
+---
+- default:
+    host: "usus"
+    port: 0
+    services:
+      - zosmf:
+          - ca11: 
+              host: sd
+              port: 3
+              rejectUnauthorized: false
+          - ca32:
+              host: "asdsad"

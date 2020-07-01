@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "array",
+    "id": "http://jsonschema.net",
+    "items": {
+        "type": "object",
+        "patternProperties": {
+            "^\\S+": {
+                "title": "blah",
+                "type": "object",
+                "properties": {
+                    "firstname": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "firstname",
+        "lastname"
+    ]
+}

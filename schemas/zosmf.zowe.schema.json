@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://github.com/zowe/zowe-cli/blob/profile-schema-validation/packages/zosmf.schema.json",
+    "type": "object",
+    "title": "z/OSMF Profile",
+    "description": "Profile for connecting to a z/OSMF instance.",
+    "default": {
+        "port": 1443
+    },
+    "examples": [
+        {
+            "host": "some.zosmf.host.net",
+            "port": 1443,
+            "user": "ibmuser",
+            "password": "password",
+            "rejectUnauthorized": false,
+            "encoding": 1047
+        }
+    ],
+    "required": [],
+    "additionalProperties": false,
+    "properties": {
+        "host": {
+            "$id": "#/properties/host",
+            "type": "string",
+            "title": "z/OSMF Host",
+            "description": "Host for z/OSMF instance.",
+            "defaultSnippets": [
+                {
+                    "label": "Some label",
+                    "body": {
+                        "one": "$1"
+                    }
+                }
+            ]
+        },
+        "port": {
+            "$id": "#/properties/port",
+            "type": "integer",
+            "title": "z/OSMF Port",
+            "description": "Port for z/OSMF instance.",
+            "default": 443
+        },
+        "user": {
+            "$id": "#/properties/user",
+            "type": "string",
+            "title": "Mainframe user ID",
+            "description": "The mainframe user ID to connect to this z/OSMF instance.",
+            "examples": [
+                "ibmuser"
+            ]
+        },
+        "password": {
+            "$id": "#/properties/password",
+            "type": "string",
+            "title": "Mainframe password",
+            "description": "The mainframe password to connect to this z/OSMF instance."
+        },
+        "rejectUnauthorized": {
+            "$id": "#/properties/rejectUnauthorized",
+            "type": "boolean",
+            "title": "Reject Unauthorized",
+            "description": "Connect only with trusted certifacates.",
+            "default": true
+        },
+        "encoding": {
+            "$id": "#/properties/encoding",
+            "type": "integer",
+            "title": "Encoding / Code Page",
+            "description": "Encoding value used for z/OS data set and files download / upload operations.",
+            "default": 1047
+        }
+    }
+}

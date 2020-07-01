@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "host": {
+            "$id": "#/properties/host",
+            "type": "string",
+            "title": "Service Host",
+            "description": "Host for service instance.",
+            "examples": [
+                "some.host.com"
+            ]
+        },
+        "port": {
+            "$id": "#/properties/port",
+            "type": "integer",
+            "title": "Service Port",
+            "description": "Port for service instance.",
+            "default": 443
+        },
+        "user": {
+            "$id": "#/properties/user",
+            "type": "string",
+            "title": "User ID",
+            "description": "Theuser ID to connect to this service instance.",
+            "examples": [
+                "ibmuser"
+            ]
+        },
+        "password": {
+            "$id": "#/properties/password",
+            "type": "string",
+            "title": "Password",
+            "description": "The password to connect to this service instance."
+        },
+        "rejectUnauthorized": {
+            "$id": "#/properties/rejectUnauthorized",
+            "type": "boolean",
+            "title": "Reject Unauthorized",
+            "description": "Connect only with trusted certificates.",
+            "default": true
+        }
+    }
+}
