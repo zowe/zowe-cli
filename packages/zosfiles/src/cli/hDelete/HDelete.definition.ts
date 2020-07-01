@@ -22,8 +22,8 @@ const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTyping
  * @type {ICommandDefinition}
  */
 export const HDeleteDefinition: ICommandDefinition = {
-    name: "delete",
-    aliases: ["hdel", "hDelete"],
+    name: "hDelete",
+    aliases: ["hdel"],
     type: "group",
     description: DESCRIPTION,
     children: [

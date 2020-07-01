@@ -22,8 +22,8 @@ const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTyping
  * @type {ICommandDefinition}
  */
 export const HRecallDefinition: ICommandDefinition = {
-    name: "recall",
-    aliases: ["hrec", "hRecall"],
+    name: "hRecall",
+    aliases: ["hrec"],
     type: "group",
     description: DESCRIPTION,
     children: [
