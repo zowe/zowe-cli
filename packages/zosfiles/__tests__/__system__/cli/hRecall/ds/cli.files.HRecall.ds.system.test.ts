@@ -139,7 +139,7 @@ describe("Recall Dataset", () => {
         }
       });
       it("Should throw an error if a missing data set name is selected", async () => {
-        const response = runCliScript(recallScript, TEST_ENVIRONMENT, ["MISSING.DATA.SET", dataSetName3]);
+        const response = runCliScript(recallScript, TEST_ENVIRONMENT, ["", dataSetName3]);
 
         expect(response.stderr.toString()).toBeTruthy();
         expect(response.status).toBe(1);
