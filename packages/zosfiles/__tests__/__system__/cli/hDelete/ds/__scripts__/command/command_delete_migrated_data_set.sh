@@ -2,7 +2,7 @@
 dataSetName=$1
 set -e
 
-echo "================Z/OS FILES DELETE MIGRATD DATA SET==============="
+echo "================Z/OS FILES DELETE MIGRATED DATA SET==============="
 zowe zos-files delete data-set "$dataSetName" 
 if [ $? -gt 0 ]
 then

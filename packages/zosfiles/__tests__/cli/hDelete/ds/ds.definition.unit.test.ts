@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-files delete ds command definition", () => {
+describe("zos-files delete migrated ds command definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../src/cli/hDelete/ds/Ds.definition").DsDefinition;
 

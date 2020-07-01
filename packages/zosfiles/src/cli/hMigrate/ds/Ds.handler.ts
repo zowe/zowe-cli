@@ -15,7 +15,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { HMigrate } from "../../../api/methods/hMigrate";
 
 /**
- * Handler to rename a Data Set
+ * Handler to migrate a Data Set
  */
 export default class DSHandler extends ZosFilesBaseHandler {
   public async processWithSession(

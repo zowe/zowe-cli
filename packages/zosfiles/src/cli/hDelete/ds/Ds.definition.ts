@@ -49,7 +49,6 @@ export const DsDefinition: ICommandDefinition = {
       type: "boolean",
       required: false
     }
-
   ],
   examples: [
     {
