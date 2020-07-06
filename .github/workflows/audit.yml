@@ -21,4 +21,4 @@ jobs:
         node-version: 12.x
 
     - name: Check Vulnerabilities
-      run: npm audit --audit-level=moderate
+      run: npm audit --production --audit-level=moderate
