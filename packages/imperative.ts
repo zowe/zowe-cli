@@ -135,7 +135,7 @@ const config: IImperativeConfig = {
                     options: [
                         Constants.BASE_OPTION_HOST,
                         Constants.BASE_OPTION_PORT,
-                        Constants.BASE_OPTION_TOKEN_TYPE,
+                        Constants.APIML_LOGOUT_OPTION_TOKEN_TYPE,
                         Constants.BASE_OPTION_TOKEN_VALUE,
                         Constants.BASE_OPTION_REJECT_UNAUTHORIZED
                     ]

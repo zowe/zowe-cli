@@ -160,7 +160,6 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         description: "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by " +
             "'zowe auth login'.",
         type: "string",
-        allowableValues: { values: SessConstants.ALL_TOKEN_TYPES },
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
 
@@ -250,7 +249,7 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         "can no longer authenticate. Also remove the token from the default base profile, if it is stored on disk.";
 
     /**
-     * Example definition for APIML login command
+     * Example definition for APIML logout command
      * @static
      * @memberof AuthConstants
      */
@@ -260,12 +259,20 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     };
 
     /**
-     * Example definition for APIML login command with token-value
+     * Example definition for APIML logout command with token-value
      * @static
      * @memberof AuthConstants
      */
     public static readonly APIML_LOGOUT_EXAMPLE2: ICommandExampleDefinition = {
         description: "Log out of an API ML instance to revoke a token that was not stored in a profile",
         options: "--token-value <token>"
+    };
+
+    /**
+     * Option used in APIML logout command for token-type
+     */
+    public static APIML_LOGOUT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_TOKEN_TYPE,
+        allowableValues: { values: SessConstants.ALL_TOKEN_TYPES }
     };
 }

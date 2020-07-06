@@ -137,8 +137,6 @@ exports[`Download All Member should display the help 1`] = `
       The type of token to get and use for the API. Omit this option to use the
       default token type, which is provided by 'zowe auth login'.
 
-      Allowed values: apimlAuthenticationToken, jwtToken, LtpaToken2
-
    --token-value  | --tv (string)
 
       The value of the token to pass to the API.
