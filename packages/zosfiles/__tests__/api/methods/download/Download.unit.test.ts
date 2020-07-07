@@ -699,19 +699,21 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const firstItem = listApiResponse.items[0];
+            const secondItem = listApiResponse.items[1];
+
             expect(response).toBeUndefined();
             expect(caughtError).toBeDefined();
-            expect(caughtError.message).toEqual(`${dummyError.message}\n${dummyError.message}`);
+            expect(caughtError.message).toEqual(`Failed to download the following members: ` +
+                `\n${firstItem.member.toLowerCase()}\n${secondItem.member.toLowerCase()}\n\n${dummyError.message}\n${dummyError.message}`);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
-            const firstItem = listApiResponse.items[0];
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
                 file: `${dsFolder}/${firstItem.member.toLowerCase()}.txt`
             });
-            const secondItem = listApiResponse.items[1];
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${secondItem.member})`, {
                 file: `${dsFolder}/${secondItem.member.toLowerCase()}.txt`
             });

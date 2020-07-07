@@ -25,6 +25,7 @@ import { asyncPool } from "../../../../../utils";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
+import { FileToDataSetDefinition } from "../../../cli/upload/ftds/FileToDataSet.definition";
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
@@ -202,6 +203,7 @@ export class Download {
             })();
 
             const downloadErrors: Error[] = [];
+            const failedMembers: string[] = [];
             let downloadsInitiated = 0;
 
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -234,6 +236,7 @@ export class Download {
                         throw err;
                     }
                     downloadErrors.push(err);
+                    failedMembers.push(fileName);
                     // Delete the file that could not be downloaded
                     IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
                 });
@@ -250,8 +253,10 @@ export class Download {
             // Handle failed downloads if no errors were thrown yet
             if (downloadErrors.length > 0) {
                 throw new ImperativeError({
-                    msg: downloadErrors.map((err: Error) => err.message).join("\n"),
-                    causeErrors: downloadErrors
+                    msg: "Failed to download the following members: \n" + failedMembers.join("\n") + "\n\n" +
+                        downloadErrors.map((err: Error) => err.message).join("\n"),
+                    causeErrors: downloadErrors,
+                    additionalDetails: failedMembers.join("\n")
                 });
             }
 
