@@ -704,8 +704,8 @@ describe("z/OS Files - Download", () => {
 
             expect(response).toBeUndefined();
             expect(caughtError).toBeDefined();
-            expect(caughtError.message).toEqual(`Failed to download the following members: ` +
-                `\n${firstItem.member.toLowerCase()}\n${secondItem.member.toLowerCase()}\n\n${dummyError.message}\n${dummyError.message}`);
+            expect(caughtError.message).toEqual(ZosFilesMessages.memberDownloadFailed.message +
+                `${firstItem.member.toLowerCase()}\n${secondItem.member.toLowerCase()}\n\n${dummyError.message}\n${dummyError.message}`);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});

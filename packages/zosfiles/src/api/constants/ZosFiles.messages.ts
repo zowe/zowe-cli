@@ -561,5 +561,13 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     datasetCopiedSuccessfully: {
         message: "Data set copied successfully."
+    },
+
+    /**
+     * Message indicating that the following members failed to properly download
+     * @type {IMessageDefinition}
+     */
+    memberDownloadFailed: {
+        message: "Failed to download the following members: \n"
     }
 };

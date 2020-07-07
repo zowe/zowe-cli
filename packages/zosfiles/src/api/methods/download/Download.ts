@@ -252,7 +252,7 @@ export class Download {
             // Handle failed downloads if no errors were thrown yet
             if (downloadErrors.length > 0) {
                 throw new ImperativeError({
-                    msg: "Failed to download the following members: \n" + failedMembers.join("\n") + "\n\n" +
+                    msg: ZosFilesMessages.memberDownloadFailed.message + failedMembers.join("\n") + "\n\n" +
                         downloadErrors.map((err: Error) => err.message).join("\n"),
                     causeErrors: downloadErrors,
                     additionalDetails: failedMembers.join("\n")
