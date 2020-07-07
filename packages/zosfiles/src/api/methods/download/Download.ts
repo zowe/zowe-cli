@@ -25,7 +25,6 @@ import { asyncPool } from "../../../../../utils";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
-import { FileToDataSetDefinition } from "../../../cli/upload/ftds/FileToDataSet.definition";
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
