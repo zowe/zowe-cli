@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.18.0`
+
+- Add the --fail-fast option to the `zowe zos-files download all-members` command
+  - Specifying `--fail-fast false` allows member downloads to continue if one or more fail
+
 ## `6.17.3`
 
 - Update Imperative version to include compatibility fix for `ISession` type
