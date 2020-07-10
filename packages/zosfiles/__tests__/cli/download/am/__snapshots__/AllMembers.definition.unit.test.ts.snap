@@ -36,6 +36,15 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ff",
+    ],
+    "defaultValue": true,
+    "description": "Set this option to false to continue downloading dataset members if one or more fail.",
+    "name": "fail-fast",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "mcr",
     ],
     "defaultValue": 1,

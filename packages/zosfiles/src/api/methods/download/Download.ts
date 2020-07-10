@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -201,6 +201,8 @@ export class Download {
                 return generatedDirectory;
             })();
 
+            const downloadErrors: Error[] = [];
+            const failedMembers: string[] = [];
             let downloadsInitiated = 0;
 
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -227,6 +229,15 @@ export class Download {
                     file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
                     binary: options.binary,
                     encoding: options.encoding
+                }).catch((err) => {
+                    // If we should fail fast, rethrow error
+                    if (options.failFast || options.failFast === undefined) {
+                        throw err;
+                    }
+                    downloadErrors.push(err);
+                    failedMembers.push(fileName);
+                    // Delete the file that could not be downloaded
+                    IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
                 });
             };
 
@@ -236,6 +247,16 @@ export class Download {
                 await Promise.all(memberList.map(createDownloadPromise));
             } else {
                 await asyncPool(maxConcurrentRequests, memberList, createDownloadPromise);
+            }
+
+            // Handle failed downloads if no errors were thrown yet
+            if (downloadErrors.length > 0) {
+                throw new ImperativeError({
+                    msg: ZosFilesMessages.memberDownloadFailed.message + failedMembers.join("\n") + "\n\n" +
+                        downloadErrors.map((err: Error) => err.message).join("\n"),
+                    causeErrors: downloadErrors,
+                    additionalDetails: failedMembers.join("\n")
+                });
             }
 
             return {
