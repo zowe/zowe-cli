@@ -14,13 +14,12 @@ import { ICommandDefinition } from "@zowe/imperative";
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
-const strings = (require("../../-strings-/en").default as typeof i18nTypings);
-const dSStrings = strings.HDELETE.ACTIONS.DATA_SET;
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).DELETE.ACTIONS.MIGRATED_DATA_SET;
 
-export const DsDefinition: ICommandDefinition = {
-  name: "data-set",
-  aliases: ["ds"],
-  description: dSStrings.DESCRIPTION,
+export const MdsDefinition: ICommandDefinition = {
+  name: "migrated-data-set",
+  aliases: ["mds"],
+  description: strings.DESCRIPTION,
   type: "command",
   handler: __dirname + "/Ds.handler",
   profile: {
@@ -30,7 +29,7 @@ export const DsDefinition: ICommandDefinition = {
     {
       name: "dataSetName",
       type: "string",
-      description: dSStrings.POSITIONALS.DATASETNAME,
+      description: strings.POSITIONALS.DATASETNAME,
       required: true
     }
   ],
@@ -38,21 +37,21 @@ export const DsDefinition: ICommandDefinition = {
     {
       name: "wait",
       aliases: ["w"],
-      description: strings.HDELETE.OPTIONS.WAIT,
+      description: strings.OPTIONS.WAIT,
       type: "boolean",
       required: false
     },
     {
       name: "purge",
       aliases: ["p"],
-      description: strings.HDELETE.OPTIONS.PURGE,
+      description: strings.OPTIONS.PURGE,
       type: "boolean",
       required: false
     }
   ],
   examples: [
     {
-      description: dSStrings.EXAMPLES.EX1,
+      description: strings.EXAMPLES.EX1,
       options: `"USER.DATA.SET"`
     }
   ]

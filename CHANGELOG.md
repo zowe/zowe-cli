@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Add CLI command to delete migrated data sets.
+- Add CLI command to delete migrated data sets `zowe zos-files delete migrated-data-sets`.
 
 ## `6.18.0`
 

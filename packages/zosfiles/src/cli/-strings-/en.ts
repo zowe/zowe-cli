@@ -200,6 +200,19 @@ export default {
                     EX2: "Delete the data set member named 'ibmuser.cntl(mem)'"
                 }
             },
+            MIGRATED_DATA_SET: {
+                DESCRIPTION: "Delete migrated data sets.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the migrated data set you want to delete."
+                },
+                OPTIONS: {
+                    WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
+                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
+                },
+                EXAMPLES: {
+                    EX1: `Delete a migrated data set using default options`
+                }
+            },
             VSAM: {
                 DESCRIPTION: "Delete a VSAM cluster permanently",
                 POSITIONALS: {
@@ -603,24 +616,6 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to upload all members at once" +
                 " without a maximum number of concurrent requests. "
-        }
-    },
-    HDELETE: {
-        DESCRIPTION: "Delete migrated data sets.",
-        ACTIONS: {
-            DATA_SET: {
-                DESCRIPTION: "Delete a migrated data set.",
-                POSITIONALS: {
-                    DATASETNAME: "The name of the migrated data set you want to delete."
-                },
-                EXAMPLES: {
-                    EX1: `Delete a migrated data set using default options`
-                }
-            }
-        },
-        OPTIONS: {
-            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
-            PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
         }
     },
     HMIGRATE: {

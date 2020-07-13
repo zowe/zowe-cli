@@ -17,7 +17,7 @@ import { HDelete } from "../../../api";
 /**
  * Handler to rename a Data Set
  */
-export default class DSHandler extends ZosFilesBaseHandler {
+export default class MDSHandler extends ZosFilesBaseHandler {
   public async processWithSession(
     commandParameters: IHandlerParameters,
     session: AbstractSession

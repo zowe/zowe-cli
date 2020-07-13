@@ -10,11 +10,11 @@
 */
 
 import { IZosFilesResponse, HDelete } from "../../../../src/api";
-import DSHandler from "../../../../src/cli/hDelete/ds/Ds.handler";
+import DSHandler from "../../../../src/cli/delete/mds/Mds.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
 import { IDeleteOptions } from "../../../../src/api/methods/hDelete/doc/IDeleteOptions";
 
-describe("DsHandler", () => {
+describe("MdsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
         success: true,
         commandResponse: "THIS IS A TEST"

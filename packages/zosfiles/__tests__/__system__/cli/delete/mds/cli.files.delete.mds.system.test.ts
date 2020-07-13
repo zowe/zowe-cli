@@ -78,6 +78,7 @@ describe("Delete migrated Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with wait = true", async () => {
@@ -86,6 +87,7 @@ describe("Delete migrated Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with purge = true", async () => {
@@ -94,6 +96,7 @@ describe("Delete migrated Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
     });
@@ -111,6 +114,7 @@ describe("Delete migrated Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with wait = true", async () => {
@@ -119,6 +123,7 @@ describe("Delete migrated Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with purge = true", async () => {
@@ -127,6 +132,7 @@ describe("Delete migrated Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
     });

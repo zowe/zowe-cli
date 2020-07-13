@@ -30,20 +30,22 @@ describe("Delete migrated Data Set", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/delete_migrated_data_set_help.sh",
-            TEST_ENVIRONMENT);
-        expect(response.status).toBe(0);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toMatchSnapshot();
-    });
+    describe("Success scenarios", () => {
+        it("should display the help", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/delete_migrated_data_set_help.sh",
+                TEST_ENVIRONMENT);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
 
-    it("should display the help in json format", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/delete_migrated_data_set_help_rfj.sh",
-            TEST_ENVIRONMENT);
-        expect(response.status).toBe(0);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toMatchSnapshot();
+        it("should display the help in json format", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/delete_migrated_data_set_help_rfj.sh",
+                TEST_ENVIRONMENT);
+            expect(response.status).toBe(0);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Expected failures", () => {
