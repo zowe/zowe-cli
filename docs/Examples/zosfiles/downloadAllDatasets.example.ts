@@ -41,7 +41,7 @@ async function main() {
         exit(0);
     } catch (err) {
         // tslint:disable-next-line: no-console
-        console.log(err.message);
+        console.error(err);
         exit(1);
     }
 }
