@@ -14,7 +14,7 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Download Options
+// Upload Options
 const localFile: string = "C:/Users/zoweuser/Documents/testFile.txt";
 const remoteLocation: string = "/u/zoweuser/file.txt"
 const options: IUploadOptions = {binary: true};

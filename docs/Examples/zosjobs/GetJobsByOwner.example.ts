@@ -1,4 +1,4 @@
-import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "../../../packages/zosfiles";
+import { GetJobs, IJob } from "../../../packages/zosjobs";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 import { exit } from "process";
 
@@ -14,15 +14,8 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Create Options
-const dataset: string = "ZOWEUSER.PUBLIC.NEW.DATASET";
-const options: ICreateDataSetOptions = {
-    primary: 10,
-    secondary: 1,
-    alcunit: "TRK",
-    lrecl: 80
-};
-const dataSetType = CreateDataSetTypeEnum.DATA_SET_CLASSIC
+// Job Options
+const owner: string = user;
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -38,10 +31,11 @@ const sessionConfig: ISession = {
 
 const session = new Session(sessionConfig);
 
+// Example note: This can take a *considerable* amount of time, depending on the number of jobs on the system.
 async function main() {
-    let response: IZosFilesResponse;
+    let response: IJob[];
     try {
-        response = await Create.dataSet(session, dataSetType, dataset, options);
+        response = await GetJobs.getJobsByOwner(session, owner);
         // tslint:disable-next-line: no-console
         console.log(response);
         exit(0);

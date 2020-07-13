@@ -14,7 +14,7 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Download Options
+// List Options
 const dataset: string = "ZOWEUSER.*";
 const options: IListOptions = {};
 const sessionConfig: ISession = {

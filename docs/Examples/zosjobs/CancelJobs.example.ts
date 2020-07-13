@@ -1,4 +1,4 @@
-import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "../../../packages/zosfiles";
+import { CancelJobs } from "../../../packages/zosjobs";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 import { exit } from "process";
 
@@ -14,15 +14,10 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Create Options
-const dataset: string = "ZOWEUSER.PUBLIC.NEW.DATASET";
-const options: ICreateDataSetOptions = {
-    primary: 10,
-    secondary: 1,
-    alcunit: "TRK",
-    lrecl: 80
-};
-const dataSetType = CreateDataSetTypeEnum.DATA_SET_CLASSIC
+// Job Options
+const jobName: string = "MYJOB";
+const jobId: string = "JOBID";
+const version: string = undefined;
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -39,9 +34,9 @@ const sessionConfig: ISession = {
 const session = new Session(sessionConfig);
 
 async function main() {
-    let response: IZosFilesResponse;
+    let response: any;
     try {
-        response = await Create.dataSet(session, dataSetType, dataset, options);
+        response = await CancelJobs.cancelJob(session, jobName, jobId, version);
         // tslint:disable-next-line: no-console
         console.log(response);
         exit(0);
