@@ -22,21 +22,11 @@ const conn: ISession = {
 };
 const session = new Session(conn);
 
-// See https://github.com/zowe/zowe-cli/issues/762 for a full list of things to fix
-// Some of these fields are not optional in listWorkflows API
-const workflowName: string = null;
-const category: string = null;
-const system: string = null;
-const owner: string = null;
-const vendor: string = null;
-const statusName: string = null;
-
 (async () => {
     // TODO: export IActiveWorkflows
     let response: any;//IActiveWorkflows;
     let error;
     try {
-        // TODO: API not really usable if you don't specify a few "Optional" fields
         response = await ListWorkflows.listWorkflows(session);
     } catch (err) {
         error = "List workflow(s) " + err;
@@ -60,8 +50,7 @@ const statusName: string = null;
             header: true
         });
     } else {
-        // TODO: fix typo
-        console.log("No workflows match the requested querry");
+        console.log("No workflows match the requested query");
     }
 })();
 ```
