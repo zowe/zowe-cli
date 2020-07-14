@@ -9,7 +9,6 @@ Contains APIs and commands to interact with the z/OS Management Facility (using 
 ```typescript
 import { CheckStatus, IZosmfInfoResponse } from "../../../packages/zosmf";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -44,10 +43,10 @@ async function main() {
     try {
         response = await CheckStatus.getZosmfInfo(session);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -60,7 +59,6 @@ main();
 ```typescript
 import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "../../../packages/zosmf";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -95,10 +93,10 @@ async function main() {
     try {
         response = await ListDefinedSystems.listDefinedSystems(session);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 

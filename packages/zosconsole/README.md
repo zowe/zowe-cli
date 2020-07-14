@@ -9,7 +9,6 @@ Contains APIs and commands to work with the z/OS console (using z/OSMF console R
 ```typescript
 import { IssueCommand, IIssueParms, IConsoleResponse } from "../../../packages/zosconsole";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -50,10 +49,10 @@ async function main() {
     try {
         response = await IssueCommand.issue(session, parms);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -66,7 +65,6 @@ main();
 ```typescript
 import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../packages/zosconsole";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -106,10 +104,10 @@ async function main() {
     try {
         response = await CollectCommand.collect(session, parms);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 

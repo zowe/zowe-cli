@@ -9,7 +9,6 @@ Contains APIs and commands to interact with jobs on z/OS (using z/OSMF jobs REST
 ```typescript
 import { CancelJobs } from "../../../packages/zosjobs";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -47,10 +46,10 @@ async function main() {
     try {
         response = await CancelJobs.cancelJob(session, jobName, jobId, version);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -63,7 +62,6 @@ main();
 ```typescript
 import { DownloadJobs, IDownloadAllSpoolContentParms } from "../../../packages/zosjobs";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -105,10 +103,10 @@ async function main() {
     try {
         response = await DownloadJobs.downloadAllSpoolContentCommon(session, jobParms);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -121,7 +119,6 @@ main();
 ```typescript
 import { GetJobs, IJob } from "../../../packages/zosjobs";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -158,10 +155,10 @@ async function main() {
     try {
         response = await GetJobs.getJobsByOwner(session, owner);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -174,7 +171,6 @@ main();
 ```typescript
 import { SubmitJobs, IJob, ISubmitJobParms } from "../../../packages/zosjobs";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -210,10 +206,10 @@ async function main() {
     try {
         response = await SubmitJobs.submitJob(session, jobDataSet);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 

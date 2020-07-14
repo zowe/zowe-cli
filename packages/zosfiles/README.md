@@ -9,7 +9,6 @@ Contains APIs and commands to work with files and datasets on z/OS (using z/OSMF
 ```typescript
 import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "../../../packages/zosfiles";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -52,10 +51,10 @@ async function main() {
     try {
         response = await Create.dataSet(session, dataSetType, dataset, options);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -68,7 +67,6 @@ main();
 ```typescript
 import { Download, IDownloadOptions, IZosFilesResponse } from "../../../packages/zosfiles";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -105,10 +103,10 @@ async function main() {
     try {
         response = await Download.allMembers(session, dataset, options);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -121,7 +119,6 @@ main();
 ```typescript
 import { List, IListOptions, IZosFilesResponse } from "../../../packages/zosfiles";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -163,10 +160,10 @@ async function main() {
                 console.log(obj.dsname.toString());
             }
         };
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.error(err);
-        exit(1);
+        process.exit(1);
     }
 }
 
@@ -179,7 +176,6 @@ main();
 ```typescript
 import { Upload, IUploadOptions, IZosFilesResponse } from "../../../packages/zosfiles";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { exit } from "process";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -217,10 +213,10 @@ async function main() {
     try {
         response = await Upload.fileToUssFile(session, localFile, remoteLocation, options);
         console.log(response);
-        exit(0);
+        process.exit(0);
     } catch (err) {
         console.log(err.message);
-        exit(1);
+        process.exit(1);
     }
 }
 
