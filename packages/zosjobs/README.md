@@ -189,9 +189,7 @@ const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
 // Job Options
-const jobParms: ISubmitJobParms = {
-    jobDataSet: "ZOWEUSER.PUBLIC.MY.DATASET.JCL(MEMBER)"
-}
+const jobDataSet: "ZOWEUSER.PUBLIC.MY.DATASET.JCL(MEMBER)"
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -210,7 +208,7 @@ const session = new Session(sessionConfig);
 async function main() {
     let response: IJob;
     try {
-        response = await SubmitJobs.submitJobCommon(session, jobParms);
+        response = await SubmitJobs.submitJob(session, jobDataSet);
         console.log(response);
         exit(0);
     } catch (err) {
