@@ -1,13 +1,13 @@
-# z/OS Management Facility Package
+# z/OS Console Package
 
-Contains APIs and commands to interact with the z/OS Management Facility (using z/OSMF REST endpoints).
+Contains APIs and commands to work with the z/OS console (using z/OSMF console REST endpoints).
 
 # API Examples
 
-**Check z/OSMF status**
+**Submit a command to the z/OS console**
 
 ```typescript
-import { CheckStatus, IZosmfInfoResponse } from "../../../packages/zosmf";
+import { IssueCommand, IIssueParms, IConsoleResponse } from "../../../packages/zosconsole";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 import { exit } from "process";
 
@@ -23,7 +23,13 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Session Options
+// Console Options
+const parms: IIssueParms = {
+    command: "D IPLINFO",
+    sysplexSystem: undefined,
+    solicitedKeyword: undefined,
+    async: "N"
+}
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -40,9 +46,9 @@ const sessionConfig: ISession = {
 const session = new Session(sessionConfig);
 
 async function main() {
-    let response: IZosmfInfoResponse;
+    let response: IConsoleResponse;
     try {
-        response = await CheckStatus.getZosmfInfo(session);
+        response = await IssueCommand.issue(session, parms);
         console.log(response);
         exit(0);
     } catch (err) {
@@ -55,10 +61,10 @@ main();
 ```
 
 #
-**List systems defined to z/OSMF**
+**Get the response from a command sent to the z/OS console**
 
 ```typescript
-import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "../../../packages/zosmf";
+import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../packages/zosconsole";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 import { exit } from "process";
 
@@ -74,7 +80,12 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Session Options
+// Console Options
+const parms: ICollectParms = {
+    commandResponseKey: "KEY",
+    waitToCollect: undefined,
+    followUpAttempts: undefined
+}
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -91,9 +102,9 @@ const sessionConfig: ISession = {
 const session = new Session(sessionConfig);
 
 async function main() {
-    let response: IZosmfListDefinedSystemsResponse;
+    let response: IConsoleResponse;
     try {
-        response = await ListDefinedSystems.listDefinedSystems(session);
+        response = await CollectCommand.collect(session, parms);
         console.log(response);
         exit(0);
     } catch (err) {
