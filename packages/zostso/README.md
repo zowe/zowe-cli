@@ -1,7 +1,48 @@
-/* Demonstrate starting, pinging, and stopping a TSO address space */
+# z/OS TSO Package
 
+Contains APIs and commands to interact with TSO on z/OS (using z/OSMF TSO REST endpoints).
+
+# API Examples
+
+**Issue the TSO command "status" to display info about jobs for your user ID**
+
+```typescript
 import { ISession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
-import { PingTso, StartTso, StopTso } from "./";
+import { IssueTso } from "./packages/zostso";
+
+Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
+
+const sessCfg: ISession = {
+    hostname: "example.com",
+    port: 443,
+    rejectUnauthorized: false,
+    user: "ibmuser",
+    password: "password",
+    type: "basic"
+};
+const session = new Session(sessCfg);
+const accountNumber = "ACCT#";
+const command = "status";
+
+(async () => {
+    const response = await IssueTso.issueTsoCommand(session, accountNumber, command);
+    if (response.success) {
+        console.log(response.commandResponse);
+    } else {
+        throw new Error(`Failed to issue TSO command "${command}"`);
+    }
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
+```
+
+#
+**Demonstrate starting, pinging, and stopping a TSO address space**
+
+```typescript
+import { ISession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
+import { PingTso, StartTso, StopTso } from "./packages/zostso";
 
 Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
 
@@ -50,3 +91,4 @@ const accountNumber = "ACCT#";
     console.error(err);
     process.exit(1);
 });
+```
