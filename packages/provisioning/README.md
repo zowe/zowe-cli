@@ -31,7 +31,7 @@ const session = new Session(conn);
 (async () => {
     const templates: IPublishedTemplates = await ListCatalogTemplates.listCatalogCommon(session, ProvisioningConstants.ZOSMF_VERSION);
     let prettifiedTemplates: any = {};
-    if (process.argv.slice(2)[0] === "--all" || process.argv.slice(2)[0] === "-a") {
+    if (process.argv.slice(2).contains("--all") || process.argv.slice(2).contains("-a")) {
         prettifiedTemplates = TextUtils.explainObject(templates, explainPublishedTemplatesFull, true);
     } else {
         prettifiedTemplates = TextUtils.explainObject(templates, explainPublishedTemplatesSummary, false);
