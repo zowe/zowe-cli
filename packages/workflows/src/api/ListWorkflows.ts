@@ -47,7 +47,6 @@ export class ListWorkflows {
      * This operation returns list of workflows.
      * Parameters are optional,request can include one or more parameters to filter the results.
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
      * @param {IGetWorkflowsOptions} options - Options to filter the request
      * @returns {string} z/OSMF response object
      * @memberof ListWorkflows
@@ -92,7 +91,7 @@ export class ListWorkflows {
      * @returns {string} URI path for the REST call.
      * @memberof ListWorkflows
      */
-    private static getResourceQuery(params: IGetWorkflowsOptions) {
+    public static getResourceQuery(params: IGetWorkflowsOptions) {
         let query: string = `${WorkflowConstants.RESOURCE}/${params.zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
         let sign = "?";
         for (const key in params) {
