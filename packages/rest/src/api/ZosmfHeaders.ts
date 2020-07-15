@@ -181,6 +181,14 @@ export class ZosmfHeaders {
     public static readonly IF_MATCH = "If-Match";
 
     /**
+     * Header to set response timeout
+     * Timeout defaults to 30 seconds if not modified
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RESPONSE_TIMEOUT = "X-IBM-Response-Timeout";
+
+    /**
      * Header to force return of ETag in response regardless of file size
      * By default Etag is returned only for files smaller than a system determined value (which is at least 8mb)
      * @static
