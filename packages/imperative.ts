@@ -192,6 +192,10 @@ const config: IImperativeConfig = {
                                 " The default encoding if not specified is 1047.",
                             type: "number"
                         }
+                    },
+                    timeout: {
+                        type: "number",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_TIMEOUT
                     }
                 },
                 required: []

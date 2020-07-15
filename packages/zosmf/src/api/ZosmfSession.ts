@@ -116,6 +116,20 @@ export class ZosmfSession {
     };
 
     /**
+     * Option used in profile creation and commands for z/OSMF Response Timeout
+     */
+    public static ZOSMF_OPTION_TIMEOUT: ICommandOptionDefinition = {
+        name: "timeout",
+        aliases: ["to"],
+        description: "The maximum amount of time in seconds the z/OSMF tso servlet should run before returning a response." +
+            " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+        type: "number",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
+        defaultValue: undefined,
+        numericValueRange: [5, 600]
+    };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -125,7 +139,8 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_USER,
         ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
-        ZosmfSession.ZOSMF_OPTION_BASE_PATH
+        ZosmfSession.ZOSMF_OPTION_BASE_PATH,
+        ZosmfSession.ZOSMF_OPTION_TIMEOUT
     ];
 
     /**
@@ -136,7 +151,8 @@ export class ZosmfSession {
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
         return {
             rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath
+            basePath: args.basePath,
+            timeout: args.timeout
         };
     }
 
@@ -156,7 +172,8 @@ export class ZosmfSession {
             user: profile.user,
             password: profile.password,
             rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath
+            basePath: profile.basePath,
+            timeout: profile.timeout
         });
     }
 
@@ -174,7 +191,8 @@ export class ZosmfSession {
             hostname: args.host,
             port: args.port,
             rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath
+            basePath: args.basePath,
+            timeout: args.timeout
         };
 
         sessionConfig.type = SessConstants.AUTH_TYPE_BASIC;
