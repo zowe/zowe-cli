@@ -7,3 +7,22 @@ Array [
   },
 ]
 `;
+
+exports[`ZosmfRestClient tests should append the timeout header to requests with timeout in the session object 1`] = `
+Array [
+  Object {
+    "X-CSRF-ZOSMF-HEADER": true,
+  },
+  Object {
+    "X-IBM-Response-Timeout": 5,
+  },
+]
+`;
+
+exports[`ZosmfRestClient tests should not append the timeout header to requests with null timeout in the session object 1`] = `
+Array [
+  Object {
+    "X-CSRF-ZOSMF-HEADER": true,
+  },
+]
+`;

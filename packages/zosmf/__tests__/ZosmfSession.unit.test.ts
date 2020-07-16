@@ -38,6 +38,18 @@ describe("zosmf utils", () => {
         const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
         expect(session.ISession).toMatchSnapshot();
     });
+    it("should create a session object with timeout", () => {
+        const session: Session = ZosmfSession.createBasicZosmfSession({
+            host: "fake",
+            port: "fake",
+            user: "fake",
+            password: "fake",
+            auth: "fake",
+            rejectUnauthorized: "fake",
+            timeout: 30
+        });
+        expect(session.ISession).toMatchSnapshot();
+    });
     it("should fail to create a basic session object when username and password are not present", () => {
         let error;
         try {

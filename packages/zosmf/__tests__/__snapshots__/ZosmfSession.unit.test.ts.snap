@@ -10,6 +10,7 @@ Object {
   "rejectUnauthorized": false,
   "secureProtocol": "SSLv23_method",
   "strictSSL": true,
+  "timeout": undefined,
   "tokenType": "fake",
   "tokenValue": "fake",
   "type": "token",
@@ -28,6 +29,24 @@ Object {
   "rejectUnauthorized": "fake",
   "secureProtocol": "SSLv23_method",
   "strictSSL": true,
+  "timeout": undefined,
+  "type": "basic",
+  "user": "fake",
+}
+`;
+
+exports[`zosmf utils should create a session object with timeout 1`] = `
+Object {
+  "base64EncodedAuth": "ZmFrZTpmYWtl",
+  "basePath": "",
+  "hostname": "fake",
+  "password": "fake",
+  "port": "fake",
+  "protocol": "https",
+  "rejectUnauthorized": "fake",
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "timeout": 30,
   "type": "basic",
   "user": "fake",
 }

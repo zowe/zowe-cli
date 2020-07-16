@@ -120,8 +120,8 @@ export class ZosmfSession {
      */
     public static ZOSMF_OPTION_TIMEOUT: ICommandOptionDefinition = {
         name: "timeout",
-        aliases: ["to"],
-        description: "The maximum amount of time in seconds the z/OSMF tso servlet should run before returning a response." +
+        aliases: ["t"],
+        description: "The maximum amount of time in seconds the z/OSMF TSO servlet should run before returning a response." +
             " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
         type: "number",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,

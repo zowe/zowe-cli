@@ -79,6 +79,20 @@ Object {
       "name": "base-path",
       "type": "string",
     },
+    Object {
+      "aliases": Array [
+        "t",
+      ],
+      "defaultValue": undefined,
+      "description": "The maximum amount of time in seconds the z/OSMF TSO servlet should run before returning a response. Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+      "group": "Zosmf Connection Options",
+      "name": "timeout",
+      "numericValueRange": Array [
+        5,
+        600,
+      ],
+      "type": "number",
+    },
   ],
   "profile": Object {
     "optional": Array [
