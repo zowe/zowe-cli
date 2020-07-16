@@ -163,6 +163,18 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
+                response = await ListWorkflows.listWorkflows(REAL_SESSION, "");
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, nozOSMFVersion.message);
+        });
+        it("Throws an error with zOSMF version as null.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            try {
                 response = await ListWorkflows.listWorkflows(REAL_SESSION, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {

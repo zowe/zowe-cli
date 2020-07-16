@@ -55,7 +55,9 @@ export class ListWorkflows {
         WorkflowValidator.validateSession(session);
         options = {
           ...options,
-          zOSMFVersion: options.zOSMFVersion ?? WorkflowConstants.ZOSMF_VERSION,
+          // zOSMFVersion by design was only checking for undefined. To prevent a breaking change we have to do the same ??
+          // Added another "system" test for this
+          zOSMFVersion: options.zOSMFVersion !== undefined ? options.zOSMFVersion : WorkflowConstants.ZOSMF_VERSION,
           workflowName: options.workflowName ? encodeURIComponent(options.workflowName) : null
         }
         WorkflowValidator.validateNotEmptyString(options.zOSMFVersion, nozOSMFVersion.message);
