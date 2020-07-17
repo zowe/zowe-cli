@@ -8,7 +8,7 @@ Contains APIs and commands to interact with USS on z/OS (using z/OSMF USS REST e
 
 ```typescript
 import { Logger, LoggingConfigurer } from "@zowe/imperative";
-import { ISshSession, Shell, SshSession } from "./packages/zosuss";
+import { ISshSession, Shell, SshSession } from "@zowe/cli";
 
 Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
 
@@ -35,7 +35,7 @@ const session = new SshSession(sessCfg);
 
 ```typescript
 import { Logger, LoggingConfigurer } from "@zowe/imperative";
-import { ISshSession, Shell, SshSession } from "./packages/zosuss";
+import { ISshSession, Shell, SshSession } from "@zowe/cli";
 
 Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
 

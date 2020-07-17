@@ -7,7 +7,7 @@ Contains APIs and commands to interact with jobs on z/OS (using z/OSMF jobs REST
 **Cancel a job**
 
 ```typescript
-import { CancelJobs } from "../../../packages/zosjobs";
+import { CancelJobs } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -60,7 +60,7 @@ main();
 **Download a job's output**
 
 ```typescript
-import { DownloadJobs, IDownloadAllSpoolContentParms } from "../../../packages/zosjobs";
+import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -117,7 +117,7 @@ main();
 **Get jobs by owner**
 
 ```typescript
-import { GetJobs, IJob } from "../../../packages/zosjobs";
+import { GetJobs, IJob } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -169,7 +169,7 @@ main();
 **Submit a job**
 
 ```typescript
-import { SubmitJobs, IJob, ISubmitJobParms } from "../../../packages/zosjobs";
+import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options

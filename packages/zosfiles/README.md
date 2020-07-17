@@ -7,7 +7,7 @@ Contains APIs and commands to work with files and datasets on z/OS (using z/OSMF
 **Create a dataset**
 
 ```typescript
-import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "../../../packages/zosfiles";
+import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -65,7 +65,7 @@ main();
 **Download all datasets in a partitioned dataset**
 
 ```typescript
-import { Download, IDownloadOptions, IZosFilesResponse } from "../../../packages/zosfiles";
+import { Download, IDownloadOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -117,7 +117,7 @@ main();
 **List datasets on z/OS**
 
 ```typescript
-import { List, IListOptions, IZosFilesResponse } from "../../../packages/zosfiles";
+import { List, IListOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -174,7 +174,7 @@ main();
 **Upload a file to Unix System Services**
 
 ```typescript
-import { Upload, IUploadOptions, IZosFilesResponse } from "../../../packages/zosfiles";
+import { Upload, IUploadOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options

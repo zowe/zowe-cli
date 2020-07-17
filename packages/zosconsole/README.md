@@ -7,7 +7,7 @@ Contains APIs and commands to work with the z/OS console (using z/OSMF console R
 **Submit a command to the z/OS console**
 
 ```typescript
-import { IssueCommand, IIssueParms, IConsoleResponse } from "../../../packages/zosconsole";
+import { IssueCommand, IIssueParms, IConsoleResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -63,7 +63,7 @@ main();
 **Get the response from a command sent to the z/OS console**
 
 ```typescript
-import { CollectCommand, ICollectParms, IConsoleResponse } from "../../../packages/zosconsole";
+import { CollectCommand, ICollectParms, IConsoleResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options

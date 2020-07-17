@@ -7,7 +7,7 @@ Contains APIs and commands to interact with the z/OS Management Facility (using 
 **Check z/OSMF status**
 
 ```typescript
-import { CheckStatus, IZosmfInfoResponse } from "../../../packages/zosmf";
+import { CheckStatus, IZosmfInfoResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -57,7 +57,7 @@ main();
 **List systems defined to z/OSMF**
 
 ```typescript
-import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "../../../packages/zosmf";
+import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
