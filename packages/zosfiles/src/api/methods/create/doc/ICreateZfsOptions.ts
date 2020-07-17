@@ -9,12 +9,14 @@
 *
 */
 
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+
 /**
  * Interface for the options to the create zos-file-system API.
  * @export
  * @interface ICreateZfsOptions
  */
-export interface ICreateZfsOptions {
+export interface ICreateZfsOptions extends IGlobalOptions {
 
     /**
      * The user ID for owner of the root directory

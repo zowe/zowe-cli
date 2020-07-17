@@ -10,11 +10,12 @@
 */
 
 import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedRecallOptions";
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
 
 /**
  * This interface defines the options that can be sent into the dwanload data set function
  */
-export interface IListOptions {
+export interface IListOptions extends IGlobalOptions {
 
     /**
      * The volume where the data set resides

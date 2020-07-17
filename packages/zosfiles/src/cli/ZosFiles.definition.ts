@@ -23,6 +23,7 @@ import { HMigrateDefinition } from "./hMigrate/HMigrate.definition";
 import { HRecallDefinition } from "./hRecall/HRecall.definition";
 import { CopyDefinition } from "./copy/Copy.definition";
 import { RenameDefinition } from "./rename/Rename.definition";
+import { ZosFilesOptionDefinitions } from "./ZosFiles.options";
 
 /**
  * This object defines the top level command group for zosfiles. This is not
@@ -53,7 +54,7 @@ const definition: ICommandDefinition = {
     passOn: [
         {
             property: "options",
-            value: ZosmfSession.ZOSMF_CONNECTION_OPTIONS,
+            value: [...ZosmfSession.ZOSMF_CONNECTION_OPTIONS, ...ZosFilesOptionDefinitions],
             merge: true,
             ignoreNodes: [
                 {type: "group"}

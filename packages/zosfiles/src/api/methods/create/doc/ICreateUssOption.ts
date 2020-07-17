@@ -9,12 +9,14 @@
 *
 */
 
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+
 /**
  * Interface for the options to the create uss file or directory API.
  * @export
  * @interface ICreateUssOptions
  */
-export interface ICreateUssOptions {
+export interface ICreateUssOptions extends IGlobalOptions {
 
     /**
      * The request type

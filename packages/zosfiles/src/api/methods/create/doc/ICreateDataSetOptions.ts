@@ -9,13 +9,15 @@
 *
 */
 
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+
 /**
  * Interface for create dataset API
  *  zOSMF REST API information:
  *    https://www.ibm.com/support/knowledgecenter/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_CreateDataSet.htm#CreateDataSet
  * @export
  */
-export interface ICreateDataSetOptions {
+export interface ICreateDataSetOptions extends IGlobalOptions {
     /**
      * The volume serial
      * @type {string}

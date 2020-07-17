@@ -193,9 +193,17 @@ const config: IImperativeConfig = {
                             type: "number"
                         }
                     },
-                    timeout: {
+                    responseTimeout: {
                         type: "number",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_TIMEOUT
+                        optionDefinition: {
+                            name: "responseTimeout",
+                            aliases: ["rto"],
+                            description: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response."+
+                                " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+                            type: "number",
+                            defaultValue: undefined,
+                            numericValueRange: [5, 600]
+                        }
                     }
                 },
                 required: []
