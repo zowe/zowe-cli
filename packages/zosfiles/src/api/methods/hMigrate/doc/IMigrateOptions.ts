@@ -9,10 +9,12 @@
 *
 */
 
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+
 /**
  * This interface defines the options that can be sent into the migrate data set function.
  */
-export interface IMigrateOptions {
+export interface IMigrateOptions extends IGlobalOptions {
 
     /**
      * If true then the function waits for completion of the request.

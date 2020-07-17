@@ -42,9 +42,6 @@ export class ZosmfRestClient extends RestClient {
         } else {
             headers.push(ZosmfHeaders.X_CSRF_ZOSMF_HEADER);
         }
-        if (this.session.ISession.timeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: this.session.ISession.timeout});
-        }
         return headers;
     }
 

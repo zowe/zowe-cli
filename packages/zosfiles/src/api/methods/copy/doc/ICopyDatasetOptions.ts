@@ -1,4 +1,5 @@
 import { IDataSet } from "../../../doc/IDataSet";
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
 
 /*
 * This program and the accompanying materials are made available under the terms of the
@@ -14,7 +15,7 @@ import { IDataSet } from "../../../doc/IDataSet";
 /**
  * This interface defines the options that can be sent into the copy data set function.
  */
-export interface ICopyDatasetOptions {
+export interface ICopyDatasetOptions extends IGlobalOptions {
     /**
      * The dataset to copy from.
      * @type {IDataSet}

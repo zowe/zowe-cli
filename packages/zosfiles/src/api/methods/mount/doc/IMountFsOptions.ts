@@ -10,13 +10,14 @@
 */
 
 import { IMountFsMode } from "./IMountFsMode";
+import { IGlobalOptions } from "../../../doc/IGlobalOptions";
 
 /**
  * Interface for the options to the mount file-system API.
  * @export
  * @interface IMountFsOptions
  */
-export interface IMountFsOptions {
+export interface IMountFsOptions extends IGlobalOptions {
 
     /**
      * The file system type to mount

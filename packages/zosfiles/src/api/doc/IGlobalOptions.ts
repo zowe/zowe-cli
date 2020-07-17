@@ -9,16 +9,15 @@
 *
 */
 
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
-
 /**
- * This interface defines the options that can be sent into the USS list files qfunction
+ * This interface defines the global options that apply to all zosfiles APIs
+ * @export
+ * @interface IGlobalOptions
  */
-export interface IUSSListOptions extends IGlobalOptions {
-
-
+export interface IGlobalOptions {
     /**
-     * The indicator that we want to show less files
+     * The maximum amount of time for the TSO servlet to wait for a response before returning an error
+     * @type {number}
      */
-    maxLength?: number;
+    responseTimeout?: number;
 }

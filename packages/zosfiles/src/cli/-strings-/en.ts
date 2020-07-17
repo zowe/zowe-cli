@@ -464,6 +464,10 @@ export default {
             }
         }
     },
+    OPTIONS: {
+        RESPONSETIMEOUT: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
+        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
+    },
     UNMOUNT: {
         SUMMARY: "Unmount file systems",
         DESCRIPTION: "Unmount file systems, such as HFS, ZFS, and more. This disconnects you from USS file systems.",
