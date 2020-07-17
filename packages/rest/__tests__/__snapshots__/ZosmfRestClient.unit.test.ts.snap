@@ -13,9 +13,6 @@ Array [
   Object {
     "X-CSRF-ZOSMF-HEADER": true,
   },
-  Object {
-    "X-IBM-Response-Timeout": 5,
-  },
 ]
 `;
 

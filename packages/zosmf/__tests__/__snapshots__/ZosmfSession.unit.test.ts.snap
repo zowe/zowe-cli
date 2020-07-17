@@ -10,7 +10,6 @@ Object {
   "rejectUnauthorized": false,
   "secureProtocol": "SSLv23_method",
   "strictSSL": true,
-  "timeout": undefined,
   "tokenType": "fake",
   "tokenValue": "fake",
   "type": "token",
@@ -29,7 +28,6 @@ Object {
   "rejectUnauthorized": "fake",
   "secureProtocol": "SSLv23_method",
   "strictSSL": true,
-  "timeout": undefined,
   "type": "basic",
   "user": "fake",
 }
@@ -46,7 +44,6 @@ Object {
   "rejectUnauthorized": "fake",
   "secureProtocol": "SSLv23_method",
   "strictSSL": true,
-  "timeout": 30,
   "type": "basic",
   "user": "fake",
 }
