@@ -1065,6 +1065,9 @@ export class Upload {
         if (options.returnEtag) {
             reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
         }
+        if (options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         return reqHeaders;
     }
 }
