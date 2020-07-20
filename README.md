@@ -4,7 +4,7 @@
 
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
-You can also leverage the underlying Zowe Node APIs in this repository to build applications that interface with the mainframe. For more information, see [Leveraging the Zowe Node APIs](#leveraging-the-zowe-node-apis).
+You can also leverage the underlying Zowe Node APIs in this repository to build applications that interface with the mainframe. For more information, see [Using the Zowe Node APIs](#using-the-zowe-node-apis).
 
 ## Contents  <!-- omit in toc -->
 
@@ -14,7 +14,7 @@ You can also leverage the underlying Zowe Node APIs in this repository to
  - [Install Zowe CLI from source](#install-zowe-cli-from-source)
  - [Uninstall Zowe CLI](#uninstall-zowe-cli)
  - [Configure Zowe CLI](#configure-zowe-cli)
- - [Using the Zowe Node APIs](#leveraging-the-zowe-node-apis)
+ - [Using the Zowe Node APIs](#using-the-zowe-node-apis)
  - [Run system tests](#run-system-tests)
  - [FAQs](#frequently-asked-questions)
 
@@ -107,13 +107,13 @@ The Zowe Node APIs are programamatic APIs that enable Zowe CLI to interface with
 
 The Zowe Node APIs are maintained in this repository. Each set of functionality, such as z/OS Jobs, is stored in a folder that contains the API and CLI code.
 
-To perform actions on the mainframe, import Zowe CLI into your project and call the individual APIs. We provide usage examples for each API in the package Readme files:
+To get started, import Zowe CLI into your project and call the individual APIs. We provide a Readme with usage examples for each API package:
 
 ```
 zowe-cli/packages/<package-name>/README.md
 ```
 
-Refer to each package Readme for more information:
+Refer to each Readme for more information:
 
 - [Provisioning](https://github.com/zowe/zowe-cli/tree/master/packages/provisioning): Provision middleware and resources such as IBM CICS, IBM Db2, IBM MQ, and more.
 - [z/OS Console](https://github.com/zowe/zowe-cli/tree/master/packages/zosconsole): Perform z/OS console operations.
