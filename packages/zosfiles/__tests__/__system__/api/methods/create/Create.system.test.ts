@@ -106,6 +106,26 @@ describe("Create data set", () => {
     }, LONGER_TIMEOUT);
 });
 
+describe("Allocate Like", () => {
+    it("should be able to allocate like from a sequential data set", async () => {
+        const custOptions1 = {
+            dsorg: "PO",
+            alcunit: "CYL",
+            primary: 20,
+            recfm: "FB",
+            blksize: 6160,
+            lrecl: 80,
+            showAttributes: true
+        };
+        const custOptions2 = { like: "dataSet1", showAttributes: true };
+
+        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "dataSet1", custOptions1);
+        const response2 = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "dataSet2", custOptions2);
+
+        expect(response2.commandResponse).toContain("created successfully");
+    });
+})
+
 describe("Create VSAM", () => {
 
     beforeAll(async () => {
