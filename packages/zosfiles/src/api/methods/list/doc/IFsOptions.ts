@@ -9,12 +9,12 @@
 *
 */
 
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent into the zfs function
  */
-export interface IFsOptions extends IGlobalOptions {
+export interface IFsOptions extends IZosFilesOptions {
 
     /**
      * Specifies the path where the file system is mounted

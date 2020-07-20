@@ -10,14 +10,14 @@
 */
 
 import { ITaskWithStatus } from "@zowe/imperative";
-import { IGlobalOptions } from "./IGlobalOptions";
+import { IZosFilesOptions } from "./IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
  * @export
  * @interface IOptions
  */
-export interface IOptions extends IGlobalOptions {
+export interface IOptions extends IZosFilesOptions {
     /**
      * The indicator to view the data set or USS file in binary mode
      * @type {boolean}

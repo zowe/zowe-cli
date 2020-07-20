@@ -251,6 +251,10 @@ export class ZosFilesUtils {
                 { "Content-Length": JSON.stringify(payload).length.toString() }
             ];
 
+            if (options.responseTimeout != null) {
+                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+
             await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {

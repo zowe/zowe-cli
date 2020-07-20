@@ -9,12 +9,12 @@
 *
 */
 
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent into the migrate data set function.
  */
-export interface IMigrateOptions extends IGlobalOptions {
+export interface IMigrateOptions extends IZosFilesOptions {
 
     /**
      * If true then the function waits for completion of the request.

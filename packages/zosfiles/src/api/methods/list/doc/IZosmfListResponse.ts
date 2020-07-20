@@ -9,12 +9,12 @@
 *
 */
 
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the information that is stored in the download data set API return object
  */
-export interface IZosmfListResponse extends IGlobalOptions {
+export interface IZosmfListResponse extends IZosFilesOptions {
 
 
     /**

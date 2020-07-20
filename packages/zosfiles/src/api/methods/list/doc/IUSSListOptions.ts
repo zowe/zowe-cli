@@ -9,12 +9,12 @@
 *
 */
 
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent into the USS list files qfunction
  */
-export interface IUSSListOptions extends IGlobalOptions {
+export interface IUSSListOptions extends IZosFilesOptions {
 
 
     /**

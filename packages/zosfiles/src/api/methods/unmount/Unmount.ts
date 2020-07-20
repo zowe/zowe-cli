@@ -11,10 +11,11 @@
 
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient, ZosmfHeaders } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 /**
  * This class holds helper functions that are used to unmount file systems through the z/OS MF APIs
@@ -35,7 +36,8 @@ export class Unmount {
      */
     public static async fs(
         session: AbstractSession,
-        fileSystemName: string)
+        fileSystemName: string,
+        options?: IZosFilesOptions)
         : Promise<IZosFilesResponse> {
         // We require the file system name
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
@@ -44,7 +46,12 @@ export class Unmount {
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
         const jsonContent = JSON.stringify({action: "unmount"});
-        const headers = [{"Content-Length": jsonContent.length}];
+        const headers = [];
+        headers.push({"Content-Length": jsonContent.length});
+
+        if (options.responseTimeout) {
+            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
 
         const data = await ZosmfRestClient.putExpectString(session, endpoint, headers, jsonContent);
 

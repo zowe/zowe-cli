@@ -9,14 +9,14 @@
 *
 */
 
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * Interface for the options to the create data-set-vsam API.
  * @export
  * @interface ICreateVsamOptions
  */
-export interface ICreateVsamOptions extends IGlobalOptions {
+export interface ICreateVsamOptions extends IZosFilesOptions {
 
     /**
      * The data set organization

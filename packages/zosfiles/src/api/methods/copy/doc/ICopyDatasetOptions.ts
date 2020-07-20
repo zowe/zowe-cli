@@ -1,5 +1,5 @@
 import { IDataSet } from "../../../doc/IDataSet";
-import { IGlobalOptions } from "../../../doc/IGlobalOptions";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /*
 * This program and the accompanying materials are made available under the terms of the
@@ -15,7 +15,7 @@ import { IGlobalOptions } from "../../../doc/IGlobalOptions";
 /**
  * This interface defines the options that can be sent into the copy data set function.
  */
-export interface ICopyDatasetOptions extends IGlobalOptions {
+export interface ICopyDatasetOptions extends IZosFilesOptions {
     /**
      * The dataset to copy from.
      * @type {IDataSet}
