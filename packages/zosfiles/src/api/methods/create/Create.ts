@@ -102,7 +102,7 @@ export class Create {
                         }
                     }
                 } else {
-                    if (isNullOrUndefined(tempOptions.secondary)) {
+                    if (isNullOrUndefined(tempOptions.secondary) && cmdType !== CreateDataSetTypeEnum.DATA_SET_LIKE) {
                         if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
                             tempOptions.secondary = 1;
                         } else {
