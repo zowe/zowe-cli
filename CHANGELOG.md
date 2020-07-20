@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `6.18.1`
+## `Recent Changes`
 
 - Add "like" parameter to `ICreateDataSetOptions` type (implementation of new zOSMF "like" REST parameter in API)
 

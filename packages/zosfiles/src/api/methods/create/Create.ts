@@ -55,8 +55,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Remove type if "like" attribute is set...attributes will be determined from other data set
-        // tslint:disable-next-line:no-magic-numbers
-        if (!isNullOrUndefined(tempOptions.like)) { cmdType = 6 }
+        if (!isNullOrUndefined(tempOptions.like)) { cmdType = CreateDataSetTypeEnum.DATA_SET_LIKE }
 
         switch (cmdType) {
             case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
@@ -74,8 +73,7 @@ export class Create {
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
                 tempOptions = {...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions};
                 break;
-            // tslint:disable-next-line:no-magic-numbers
-            case 6:
+            case CreateDataSetTypeEnum.DATA_SET_LIKE:
                 // "like" attribute is set, so attributes should not be added
                 break;
             default:
