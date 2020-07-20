@@ -9,23 +9,24 @@ You can also leverage the underlying APIs in this repository to build a
 ## Contents  <!-- omit in toc -->
 
  - [Documentation](#documentation)
- - [Contribution Guidelines](#contribution-guidelines)
- - [Build Zowe CLI from Source](#build-zowe-cli-from-source)
- - [Install Zowe CLI from Source](#install-zowe-cli-from-source)
+ - [Contribution guidelines](#contribution-guidelines)
+ - [Build Zowe CLI from source](#build-zowe-cli-from-source)
+ - [Install Zowe CLI from source](#install-zowe-cli-from-source)
  - [Uninstall Zowe CLI](#uninstall-zowe-cli)
  - [Configure Zowe CLI](#configure-zowe-cli)
- - [Run System Tests](#run-system-tests)
+ - [Leveraging the Zowe Node APIs](#leveraging-the-zowe-node-apis)
+ - [Run system tests](#run-system-tests)
  - [FAQs](#frequently-asked-questions)
 
 ## Documentation
 
-For more information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/). The documentation also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
+For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
 The `docs` directory in this repository contains auto-generated typescript documentation under the `docs/typedoc` directory. To access the typescript documentation locally, navigate to the local `node_modules` directory that contains the installed package and access the `docs` directory after you install the Zowe CLI package.
 
 **Note:** Some links in the auto-generated typescript documentation are not functional at this time.
 
-## Contribution Guidelines
+## Contribution guidelines
 
 The following information is critical to working with the code, running/writing/maintaining automated tests, developing consistent syntax in your plug-in, and ensuring that your plug-in integrates with Zowe CLI properly:
 
@@ -43,7 +44,7 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 
 **Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://docs.zowe.org/stable/extend/extend-cli/cli-devTutorials.html).
 
-## Build Zowe CLI from Source
+## Build Zowe CLI from source
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
@@ -60,7 +61,7 @@ npm run build
 
 When you update `package.json` to include new dependencies, or when you pull changes that affect `package.json`, issue the `npm update` command to download the dependencies.
 
-## Install Zowe CLI from Source
+## Install Zowe CLI from source
 From your copy of this repository, after a build, issue the following command to install Zowe CLI from source:
 
 ```
@@ -96,14 +97,33 @@ zowe zosmf check status
 
 **Tip:** When you confirm that your profile connects to and communicates with your mainframe system successfully, you can issue the same command at any time to verify the availability and status of the z/OSMF subsystem on your mainframe.
 
-## Leveraging the Zowe Node APIs
+## Leveraging the Zowe Node APIs
 
-outline:
-- overview/business value
-- structure of the repo
-- list of links to each API and use case described
+The Zowe Node APIs are programmatic APIs that enable Zowe CLI to interface with the mainframe. Use the APIs to build your own applications (or automation) independent of Zowe CLI.
 
-## Run System Tests
+### Accessing the APIs
+
+Import Zowe CLI into your project and call the individual APIs to perform actions on the mainframe.
+
+The APIs are maintained in this repository. Each set of functionality, such as `zos-jobs` or `zos-files`, is organized in a separate folder that contains the API and CLI code.
+
+Each API has a Readme file that provides API usage examples:
+
+```
+zowe-cli/packages/<package-name>/README.md
+```
+
+Refer to the following examples to learn about calling and using each API:
+- [Provisioning](): test blah blah
+- [z/OS Console](): test blah blah
+- [z/OS Files](): test blah blah
+- [z/OS Jobs](): test blah blah
+- [z/OSMF](): test blah blah
+- [z/OS TSO](): test blah blah
+- [z/OS USS](): test blah blah
+- [z/OS Workflows](): test blah blah
+
+## Run system tests
 
 In addition to Node.js, you must have a means to execute `.sh` (bash) scripts, which are required for running integration tests. On Windows, you can install "Git Bash" (bundled with the standard [Git](https://git-scm.com/downloads) installation - check "Use Git and Unix Tools from Windows Command Prompt" installation option).
 
@@ -125,7 +145,7 @@ npm run test:system
 
 If the `custom_properties.yaml` file cannot be found or loaded, an error with relevant details is thrown.
 
-## Frequently Asked Questions
+## Frequently asked questions
 
 - **How can I install Zowe CLI as a root user on Mac/Linux?**
 
