@@ -272,6 +272,10 @@ export class Create {
                         // no validation
 
                         break;
+                    case "like":
+                        // no validation
+
+                        break;
 
                     default:
                         throw new ImperativeError({msg: ZosFilesMessages.invalidFilesCreateOption.message + option});
