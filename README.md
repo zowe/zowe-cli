@@ -115,14 +115,14 @@ zowe-cli/packages/<package-name>/README.md
 
 Refer to each package Readme for more information:
 
-- [Provisioning](): Provision middleware and resources such as IBM CICS, IBM Db2, IBM MQ, and more.
-- [z/OS Console](): Perform z/OS console operations.
-- [z/OS Data Sets and Files](): Work with data sets on z/OS.
-- [z/OS Jobs](): Work with batch jobs on z/OS.
-- [z/OSMF](): Return data about z/OSMF, such as connection status or a list of available systems.
-- [z/OS TSO](): Interact with TSO/E adress spaces on z/OS.
-- [z/OS USS](): Work with UNIX system services (USS) files on z/OS.
-- [z/OS Workflows](): Create and manage z/OSMF workflows on z/OS.
+- [Provisioning](https://github.com/zowe/zowe-cli/tree/master/packages/provisioning): Provision middleware and resources such as IBM CICS, IBM Db2, IBM MQ, and more.
+- [z/OS Console](https://github.com/zowe/zowe-cli/tree/master/packages/zosconsole): Perform z/OS console operations.
+- [z/OS Data Sets](https://github.com/zowe/zowe-cli/tree/master/packages/zosfiles): Work with data sets on z/OS.
+- [z/OS Jobs](https://github.com/zowe/zowe-cli/tree/master/packages/zosjobs): Work with batch jobs on z/OS.
+- [z/OSMF](https://github.com/zowe/zowe-cli/tree/master/packages/zosmf): Return data about z/OSMF, such as connection status or a list of available systems.
+- [z/OS TSO](https://github.com/zowe/zowe-cli/tree/master/packages/zostso): Interact with TSO/E adress spaces on z/OS.
+- [z/OS USS](https://github.com/zowe/zowe-cli/tree/master/packages/zosuss): Work with UNIX system services (USS) files on z/OS.
+- [z/OS Workflows](https://github.com/zowe/zowe-cli/tree/master/packages/workflows): Create and manage z/OSMF workflows on z/OS.
 
 ## Run system tests
 
