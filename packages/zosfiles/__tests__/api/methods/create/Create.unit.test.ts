@@ -13,6 +13,7 @@ import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../";
 import { ZosmfRestClient } from "../../../../../rest/";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
+import { Get } from "../../../../src/api";
 
 describe("Create data set", () => {
     const dummySession: any = {};
@@ -137,6 +138,25 @@ describe("Create data set", () => {
                     }
                 })
             );
+        });
+
+        it("should be able to allocate like from a sequential data set", async () => {
+            const custOptions1 = {
+                dsorg: "PS",
+                alcunit: "CYL",
+                primary: 20,
+                recfm: "FB",
+                blksize: 6160,
+                lrecl: 80,
+                showAttributes: true
+            };
+            const response1 = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions1);
+
+            const custOptions2 = { like: dataSetName };
+
+            const response2 = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "testing2", custOptions2);
+
+            expect(response2.commandResponse).toEqual(response1.commandResponse);
         });
 
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {

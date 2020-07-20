@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.18.1`
+
+- Add "like" parameter to `ICreateDataSetOptions` type (implementation of new zOSMF "like" REST parameter in API)
+
 ## `6.18.0`
 
 - Add the --fail-fast option to the `zowe zos-files download all-members` command
