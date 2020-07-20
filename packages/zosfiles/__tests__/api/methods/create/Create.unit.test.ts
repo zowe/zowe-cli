@@ -153,11 +153,9 @@ describe("Create data set", () => {
             const custOptions2 = { like: dataSetName, showAttributes: true };
 
             await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions1);
-            await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "testing2", custOptions2);
-            const attributes1 = await List.dataSet(dummySession, dataSetName, { attributes: true });
-            const attributes2 = await List.dataSet(dummySession, "testing2", { attributes: true });
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "testing2", custOptions2);
 
-            expect(attributes1).toEqual(attributes2);
+            expect(response.commandResponse).toContain("created successfully");
         });
 
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
