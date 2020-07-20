@@ -12,6 +12,7 @@
 import { Create } from "../../../../src/api/methods/create/Create";
 // import { CreateDataSetTypeEnum } from "../../../../src/api/methods/create/CreateDataSetType.enum";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("Create USS Directory", () => {
     describe("process method", () => {
@@ -20,6 +21,7 @@ describe("Create USS Directory", () => {
             const handlerReq = require("../../../../src/cli/create/ussDir/ussDir.handler");
             const handler = new handlerReq.default();
             const ussDir = "testing";
+            const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
 
             // Vars populated by the mocked function
             let error;
@@ -92,7 +94,7 @@ describe("Create USS Directory", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.uss).toHaveBeenCalledTimes(1);
-            expect(Create.uss).toHaveBeenCalledWith(fakeSession, undefined, "directory", undefined);
+            expect(Create.uss).toHaveBeenCalledWith(fakeSession, undefined, "directory", undefined, zosFilesOptions);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

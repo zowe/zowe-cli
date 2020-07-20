@@ -60,7 +60,7 @@ export class Delete {
             }
 
             const reqHeaders: IHeaderContent[] = [];
-            if (options.responseTimeout != null) {
+            if (options && options.responseTimeout != null) {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
@@ -159,7 +159,7 @@ export class Delete {
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
         }
-        if (options.responseTimeout != null) {
+        if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
@@ -195,7 +195,7 @@ export class Delete {
         // Format the endpoint to send the request to
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
         const reqHeaders: IHeaderContent[] = [];
-        if (options.responseTimeout != null) {
+        if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 

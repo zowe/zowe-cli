@@ -17,6 +17,7 @@ import { ZosmfRestClient } from "../../../../../rest";
 import { IDeleteDatasetOptions } from "../../../../src/api/methods/delete/doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "../../../../src/api/methods/delete/doc/IDeleteVsamOptions";
 import { Invoke } from "../../../../src/api/methods/invoke";
+import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("Delete", () => {
     const deleteExpectStringSpy = jest.spyOn(ZosmfRestClient, "deleteExpectString");
@@ -89,7 +90,8 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataset)
+                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataset),
+                []
             );
         });
 
@@ -108,7 +110,8 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset)
+                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
+                []
             );
         });
 
@@ -201,11 +204,13 @@ describe("Delete", () => {
 
         it("should work with defaults", async () => {
             const apiResponse = await Delete.vsam(dummySession, dsName);
+            const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
 
             expect(invokeAmsSpy).toHaveBeenCalledTimes(1);
             expect(invokeAmsSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                formatAmsStatements(dsName)
+                formatAmsStatements(dsName),
+                zosFilesOptions
             );
 
             expect(apiResponse).toEqual({
@@ -220,13 +225,15 @@ describe("Delete", () => {
                 const options = {
                     purge: true
                 };
+                const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
 
                 const apiResponse = await Delete.vsam(dummySession, dsName, options);
 
                 expect(invokeAmsSpy).toHaveBeenCalledTimes(1);
                 expect(invokeAmsSpy).toHaveBeenLastCalledWith(
                     dummySession,
-                    formatAmsStatements(dsName, options)
+                    formatAmsStatements(dsName, options),
+                    zosFilesOptions
                 );
 
                 expect(apiResponse).toEqual({
@@ -240,13 +247,15 @@ describe("Delete", () => {
                 const options = {
                     erase: true
                 };
+                const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
 
                 const apiResponse = await Delete.vsam(dummySession, dsName, options);
 
                 expect(invokeAmsSpy).toHaveBeenCalledTimes(1);
                 expect(invokeAmsSpy).toHaveBeenLastCalledWith(
                     dummySession,
-                    formatAmsStatements(dsName, options)
+                    formatAmsStatements(dsName, options),
+                    zosFilesOptions
                 );
 
                 expect(apiResponse).toEqual({

@@ -49,7 +49,7 @@ export class Unmount {
         const headers = [];
         headers.push({"Content-Length": jsonContent.length});
 
-        if (options.responseTimeout) {
+        if (options && options.responseTimeout) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 

@@ -85,7 +85,7 @@ export class Invoke {
                 }
             ];
 
-            if (options.responseTimeout != null) {
+            if (options && options.responseTimeout != null) {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
