@@ -13,7 +13,7 @@ import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../";
 import { ZosmfRestClient } from "../../../../../rest/";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
-import { Get } from "../../../../src/api";
+import { Get, List } from "../../../../src/api";
 
 describe("Create data set", () => {
     const dummySession: any = {};
@@ -142,7 +142,7 @@ describe("Create data set", () => {
 
         it("should be able to allocate like from a sequential data set", async () => {
             const custOptions1 = {
-                dsorg: "PS",
+                dsorg: "PO",
                 alcunit: "CYL",
                 primary: 20,
                 recfm: "FB",
@@ -150,13 +150,14 @@ describe("Create data set", () => {
                 lrecl: 80,
                 showAttributes: true
             };
-            const response1 = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions1);
+            const custOptions2 = { like: dataSetName, showAttributes: true };
 
-            const custOptions2 = { like: dataSetName };
+            await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions1);
+            await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "testing2", custOptions2);
+            const attributes1 = await List.dataSet(dummySession, dataSetName, { attributes: true });
+            const attributes2 = await List.dataSet(dummySession, "testing2", { attributes: true });
 
-            const response2 = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "testing2", custOptions2);
-
-            expect(response2.commandResponse).toEqual(response1.commandResponse);
+            expect(attributes1).toEqual(attributes2);
         });
 
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {

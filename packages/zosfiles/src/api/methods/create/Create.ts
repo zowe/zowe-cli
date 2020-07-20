@@ -53,6 +53,9 @@ export class Create {
 
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        
+        // Remove type if "like" attribute is set...attributes will be determined from other data set
+        if (!isNullOrUndefined(tempOptions.like)) { cmdType = 6 }
 
         switch (cmdType) {
             case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
@@ -69,6 +72,9 @@ export class Create {
                 break;
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
                 tempOptions = {...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions};
+                break;
+            case 6:
+                // "like" attribute is set, so attributes should not be added
                 break;
             default:
                 validCmdType = false;
