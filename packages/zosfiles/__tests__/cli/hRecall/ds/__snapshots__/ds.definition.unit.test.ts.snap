@@ -6,6 +6,7 @@ Array [
     "aliases": Array [
       "w",
     ],
+    "defaultValue": false,
     "description": "If true then the function waits for completion of the request. If false (default) the request is queued.",
     "name": "wait",
     "required": false,

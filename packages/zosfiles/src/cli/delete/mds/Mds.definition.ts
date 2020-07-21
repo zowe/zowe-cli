@@ -39,6 +39,7 @@ export const MdsDefinition: ICommandDefinition = {
       aliases: ["w"],
       description: strings.OPTIONS.WAIT,
       type: "boolean",
+      defaultValue: false,
       required: false
     },
     {
@@ -46,6 +47,7 @@ export const MdsDefinition: ICommandDefinition = {
       aliases: ["p"],
       description: strings.OPTIONS.PURGE,
       type: "boolean",
+      defaultValue: false,
       required: false
     }
   ],
