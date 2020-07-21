@@ -21,7 +21,7 @@ export const MdsDefinition: ICommandDefinition = {
   aliases: ["mds"],
   description: strings.DESCRIPTION,
   type: "command",
-  handler: __dirname + "/Ds.handler",
+  handler: __dirname + "/Mds.handler",
   profile: {
     optional: ["zosmf"]
   },

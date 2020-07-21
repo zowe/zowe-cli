@@ -544,7 +544,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetMigrationRequested: {
-        message: "Data set migraton requested."
+        message: "Data set migration requested."
     },
 
     /**
