@@ -75,6 +75,43 @@ describe("Copy", () => {
                         expectedPayload
                     );
                 });
+                it("should send a request with timeout", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "responseTimeout": 10,
+                        "from-dataset": {
+                            dsn: fromDataSetName
+                        }
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        toDataSetName
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "X-IBM-Response-Timeout": "10"}
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: toDataSetName },
+                        { fromDataSet: { dataSetName: fromDataSetName }, responseTimeout: 10 }
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
             });
             describe("Member > Member", () => {
                 it("should send a request", async () => {

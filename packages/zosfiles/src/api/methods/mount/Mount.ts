@@ -105,6 +105,7 @@ export class Mount {
                         break;
 
                     case "fs-type":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 

@@ -138,6 +138,10 @@ export class ZosFilesUtils {
             // do nothing
         }
 
+        if (options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
+
         return reqHeaders;
     }
 

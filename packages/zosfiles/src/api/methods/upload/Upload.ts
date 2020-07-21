@@ -488,12 +488,14 @@ export class Upload {
                                         binary: boolean = false,
                                         localEncoding?: string,
                                         etag?: string,
-                                        returnEtag?: boolean) {
+                                        returnEtag?: boolean,
+                                        responseTimeout?: number) {
         return this.bufferToUssFile(session, ussname, buffer, {
             binary,
             localEncoding,
             etag,
-            returnEtag
+            returnEtag,
+            responseTimeout
         });
     }
 
@@ -1029,11 +1031,18 @@ export class Upload {
                 } else {
                     reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
                 }
+                if (options.responseTimeout != null) {
+                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                }
                 break;
             default:
                 const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
                 if (headers.length === 0) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                } else if (headers.length === 1 &&
+                           ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT in headers[0]) {
+                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    reqHeaders.push(...headers);
                 } else {
                     reqHeaders.push(...headers);
                 }
@@ -1064,9 +1073,6 @@ export class Upload {
 
         if (options.returnEtag) {
             reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
-        }
-        if (options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
         return reqHeaders;
     }

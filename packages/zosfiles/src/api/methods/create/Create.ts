@@ -270,6 +270,7 @@ export class Create {
 
                     case "unit":
                     case "volser":
+                    case "responseTimeout":
                         // no validation
 
                         break;

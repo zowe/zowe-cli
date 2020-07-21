@@ -16,6 +16,7 @@ import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.message
 import { posix } from "path";
 import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
 import { ZosmfHeaders } from "../../../../../rest/src/api/ZosmfHeaders";
+import { IListOptions } from "../../../../src/api";
 
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
@@ -128,6 +129,29 @@ describe("z/OS Files - List", () => {
             });
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should list members from given data set with responseTimeout", async () => {
+            let response;
+            let caughtError;
+            const options: IListOptions = {responseTimeout: 5}
+
+            try {
+                response = await List.allMembers(dummySession, dsname, options);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: null,
+                apiResponse: listApiResponse
+            });
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
         it("should list members from given data set with additional attributes", async () => {
@@ -281,6 +305,34 @@ describe("z/OS Files - List", () => {
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
+        it("should return with data when input data set name is valid with responseTimeout", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                items: ["test"]
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
+
+            const options: IListOptions = {responseTimeout: 5}
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                response = await List.dataSet(dummySession, dsname, options);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
         it("should return with data when specify attribute option", async () => {
@@ -567,6 +619,42 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
         });
 
+        it("should return with files when input path name is valid with responseTimeout and max items set", async () => {
+            let response;
+            let error;
+            const testApiResponse = {
+                    items: [
+                        {
+                            name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                        },
+                        {
+                            name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                            group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                        }
+                ],  returnedRows: 2, totalRows: 6, JSONversion: 1
+            };
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE,
+                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+
+            expectJsonSpy.mockResolvedValue(testApiResponse);
+
+            try {
+                    response = await List.fileList(dummySession, path, { maxLength: 2, responseTimeout: 5 });
+                } catch (err) {
+                    error = err;
+                }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse).toBe(testApiResponse);
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
+        });
+
     });
 
     describe("fs", () => {
@@ -606,6 +694,25 @@ describe("z/OS Files - List", () => {
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+        });
+
+        it("should return 2 records of all mounted filesystems with responseTimeout", async () => {
+            let response;
+            let error;
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_MFS}`);
+
+            try {
+                response = await List.fs(dummySession, { maxLength: 2, responseTimeout: 5 });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
         it("should throw error when zosmfRestClient.getExpectJSON error", async () => {

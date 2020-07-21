@@ -115,6 +115,27 @@ describe("Delete", () => {
             );
         });
 
+        it("should send a request with responseTimeout", async () => {
+            const options: IDeleteDatasetOptions = {
+                volume: "ABCD",
+                responseTimeout: 5
+            };
+
+            const apiResponse = await Delete.dataSet(dummySession, dataset, options);
+
+            expect(apiResponse).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message
+            });
+
+            expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
+                [{"X-IBM-Response-Timeout": "5"}]
+            );
+        });
+
         it("should handle an error from the ZosmfRestClient", async () => {
             const error = new Error("This is a test");
 
@@ -248,6 +269,29 @@ describe("Delete", () => {
                     erase: true
                 };
                 const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
+
+                const apiResponse = await Delete.vsam(dummySession, dsName, options);
+
+                expect(invokeAmsSpy).toHaveBeenCalledTimes(1);
+                expect(invokeAmsSpy).toHaveBeenLastCalledWith(
+                    dummySession,
+                    formatAmsStatements(dsName, options),
+                    zosFilesOptions
+                );
+
+                expect(apiResponse).toEqual({
+                    success: true,
+                    commandResponse: ZosFilesMessages.datasetDeletedSuccessfully.message,
+                    apiResponse: defaultReturn
+                });
+            });
+
+            it("should use erase with responseTimeout", async () => {
+                const options = {
+                    erase: true,
+                    responseTimeout: 5
+                };
+                const zosFilesOptions: IZosFilesOptions = {responseTimeout: 5};
 
                 const apiResponse = await Delete.vsam(dummySession, dsName, options);
 

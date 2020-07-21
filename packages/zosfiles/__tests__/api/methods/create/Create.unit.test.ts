@@ -140,6 +140,29 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to create a sequential data set (PS) with responseTimeout", async () => {
+
+            dsOptions.dsntype = "PDS";
+            dsOptions.responseTimeout = 5;
+
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
+        });
+
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
             const custOptions = {
                 dsorg: "PS",
