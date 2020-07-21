@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+```
+## Recent Changes
+
+- Added documentation about leveraging the Zowe Node APIs to the Readme.
+```
+
 ## `6.18.0`
 
 - Add the --fail-fast option to the `zowe zos-files download all-members` command
