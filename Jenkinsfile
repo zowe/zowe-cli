@@ -25,7 +25,7 @@ node('ca-jenkins-agent') {
 
     // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.
-    pipeline.admins.add("tucker01", "gejohnston", "zfernand0", "mikebauerca", "markackert", "dkelosky")
+    pipeline.admins.add("tucker01", "gejohnston", "zfernand0", "mikebauerca", "markackert", "dkelosky", "awharn", "tjohnsonbcm")
 
     // Comma-separated list of emails that should receive notifications about these builds
     pipeline.emailList = "fernando.rijocedeno@broadcom.com"

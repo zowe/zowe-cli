@@ -1,0 +1,23 @@
+name: Changelog
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Check Changelog Updated
+      id: checkchangelogupdated
+      if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
+      uses: awharn/check_changelog_action@v0.0.1
+      with:
+        header: '## Recent Changes'
+        file: 'CHANGELOG.md'
+        token: ${{ secrets.GITHUB_TOKEN }}
