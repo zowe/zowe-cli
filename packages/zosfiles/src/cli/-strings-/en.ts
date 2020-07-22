@@ -200,6 +200,19 @@ export default {
                     EX2: "Delete the data set member named 'ibmuser.cntl(mem)'"
                 }
             },
+            MIGRATED_DATA_SET: {
+                DESCRIPTION: "Delete migrated data sets.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the migrated data set you want to delete."
+                },
+                OPTIONS: {
+                    WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
+                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
+                },
+                EXAMPLES: {
+                    EX1: `Delete a migrated data set using default options`
+                }
+            },
             VSAM: {
                 DESCRIPTION: "Delete a VSAM cluster permanently",
                 POSITIONALS: {
@@ -619,7 +632,7 @@ export default {
             }
         },
         OPTIONS: {
-            WAIT: "If true then the function waits for completion of the request. If false the request is queued."
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued."
         }
     },
     HRECALL: {
@@ -636,7 +649,7 @@ export default {
             }
         },
         OPTIONS: {
-            WAIT: "If true then the function waits for completion of the request. If false the request is queued."
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued."
         }
     },
     RENAME: {
