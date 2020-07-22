@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete migrated Dataset Success scenarios Partitioned Data Set Should delete a migrated data set 1`] = `
+"================Z/OS FILES DELETE MIGRATED DATA SET===============
+Data set deletion requested.
+"
+`;
+
+exports[`Delete migrated Dataset Success scenarios Partitioned Data Set Should delete a migrated data set with purge = true 1`] = `
+"================Z/OS FILES DELETE MIGRATED DATA SET===============
+Data set deletion requested.
+"
+`;
+
+exports[`Delete migrated Dataset Success scenarios Partitioned Data Set Should delete a migrated data set with wait = true 1`] = `
+"================Z/OS FILES DELETE MIGRATED DATA SET===============
+Data set deletion requested.
+"
+`;
+
+exports[`Delete migrated Dataset Success scenarios Sequential Data Set Should delete a migrated data set 1`] = `
+"================Z/OS FILES DELETE MIGRATED DATA SET===============
+Data set deletion requested.
+"
+`;
+
+exports[`Delete migrated Dataset Success scenarios Sequential Data Set Should delete a migrated data set with purge = true 1`] = `
+"================Z/OS FILES DELETE MIGRATED DATA SET===============
+Data set deletion requested.
+"
+`;
+
+exports[`Delete migrated Dataset Success scenarios Sequential Data Set Should delete a migrated data set with wait = true 1`] = `
+"================Z/OS FILES DELETE MIGRATED DATA SET===============
+Data set deletion requested.
+"
+`;
