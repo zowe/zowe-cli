@@ -51,6 +51,9 @@ export class ProvisioningService {
         const props = readYaml.safeLoad(fs.readFileSync(path, "utf8"));
         const propsArrayObj: IPropertiesInput[] = [];
 
+        if (typeof props !== "object") {
+            return [];
+        }
         for (const key in props) {
             if (props.hasOwnProperty(key)) {
                 propsArrayObj.push({name: key, value: (props as any)[key]});
