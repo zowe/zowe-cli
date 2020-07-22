@@ -23,6 +23,7 @@ import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import i18nTypings from "../../../cli/-strings-/en";
 import * as path from "path";
+import { ICreateDataSetLikeOptions } from ".";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 const strings = (require("../../../cli/-strings-/en").default as typeof i18nTypings);
@@ -54,27 +55,21 @@ export class Create {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
-        // Remove type if "like" attribute is set...attributes will be determined from other data set
-        if (!isNullOrUndefined(tempOptions.like)) { cmdType = CreateDataSetTypeEnum.DATA_SET_LIKE }
-
         switch (cmdType) {
             case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
-                tempOptions = {...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL:
-                tempOptions = {...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_BINARY:
-                tempOptions = {...CreateDefaults.DATA_SET.BINARY, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.BINARY, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_C:
-                tempOptions = {...CreateDefaults.DATA_SET.C, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.C, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
-                tempOptions = {...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions};
-                break;
-            case CreateDataSetTypeEnum.DATA_SET_LIKE:
-                // "like" attribute is set, so attributes should not be added
+                tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
                 break;
             default:
                 validCmdType = false;
@@ -82,7 +77,7 @@ export class Create {
         }
 
         if (!validCmdType) {
-            throw new ImperativeError({msg: ZosFilesMessages.unsupportedDatasetType.message});
+            throw new ImperativeError({ msg: ZosFilesMessages.unsupportedDatasetType.message });
         } else {
             try {
                 // Handle the size option
@@ -102,7 +97,7 @@ export class Create {
                         }
                     }
                 } else {
-                    if (isNullOrUndefined(tempOptions.secondary) && cmdType !== CreateDataSetTypeEnum.DATA_SET_LIKE) {
+                    if (isNullOrUndefined(tempOptions.secondary)) {
                         if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
                             tempOptions.secondary = 1;
                         } else {
@@ -137,6 +132,37 @@ export class Create {
             } catch (error) {
                 throw error;
             }
+        }
+    }
+
+    public static async dataSetLike(session: AbstractSession, dataSetName: string, options: ICreateDataSetLikeOptions): Promise<IZosFilesResponse> {
+        const tempOptions = JSON.parse(JSON.stringify(options));
+
+        // Required
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+
+        try {
+            let response = "";
+            // Handle the print attributes option
+            if (!isNullOrUndefined(tempOptions.showAttributes)) {
+                if (tempOptions.showAttributes) {
+                    delete tempOptions.showAttributes;
+                    response = TextUtils.prettyJson(tempOptions);
+                } else {
+                    delete tempOptions.showAttributes;
+                }
+            }
+
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+
+            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
+
+            return {
+                success: true,
+                commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
+            };
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -275,10 +301,6 @@ export class Create {
 
                     case "unit":
                     case "volser":
-                        // no validation
-
-                        break;
-                    case "like":
                         // no validation
 
                         break;

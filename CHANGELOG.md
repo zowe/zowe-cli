@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Add "like" parameter to `ICreateDataSetOptions` type (implementation of new zOSMF "like" REST parameter in API)
+- Added new command "dataSetLike(session, dataSetName, options)" to `Create` class, for use when creating a dataset with parameters like another data set
 
 ## `6.18.0`
 

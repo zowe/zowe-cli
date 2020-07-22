@@ -143,7 +143,7 @@ describe("Create data set", () => {
         it("should be able to allocate like from a sequential data set", async () => {
             const custOptions2 = { like: dataSetName, showAttributes: true };
 
-            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "testing2", custOptions2);
+            const response = await Create.dataSetLike(dummySession, "testing2", custOptions2);
 
             expect(response.commandResponse).toContain("created successfully");
         });
