@@ -47,22 +47,13 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:integration >> file.txt
 
-    - name: Zip Results
-      id: zip
-      if: ${{ always() && steps.build.outcome == 'success' }}
-      uses: papeloto/action-zip@v1
-      with:
-        files: __tests__/__results__/
-        dest: results.zip
-        recursive: false
-
     - name: Archive Results
       id: upload
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
-        path: results.zip
+        path: __tests__/__results__/
 
     - name: Upload Results to Codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
