@@ -15,9 +15,9 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { Session, Imperative } from "@zowe/imperative";
-import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions } from "../../../../..";
-import { IMigrateOptions } from "../../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
+import { Delete, Create, CreateDataSetTypeEnum } from "../../../../..";
 import { inspect } from "util";
+import { IDeleteOptions, HMigrate } from "../../../../../src/api";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
@@ -27,25 +27,25 @@ let dataSetName3: string;
 let user: string;
 let REAL_SESSION: Session;
 
-const listOptions: IListOptions = { attributes: true };
 
 const scriptsLocation = join(__dirname, "__scripts__", "command");
-const migrateScript = join(scriptsLocation, "command_migrate_data_set.sh");
-const migrateScriptWait = join(scriptsLocation, "command_migrate_data_set_wait.sh");
+const deleteScript = join(scriptsLocation, "command_delete_migrated_data_set.sh");
+const deleteScriptWait = join(scriptsLocation, "command_delete_migrated_data_set_wait.sh");
+const deleteScriptPurge = join(scriptsLocation, "command_delete_migrated_data_set_purge.sh");
 
-describe("Migrate Dataset", () => {
+describe("Delete migrated Dataset", () => {
   beforeAll(async () => {
     TEST_ENVIRONMENT = await TestEnvironment.setUp({
       tempProfileTypes: ["zosmf"],
-      testName: "zos_migrate_data_set"
+      testName: "zos_delete_migrated_data_set"
     });
     defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
     REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
     user = defaultSystem.zosmf.user.trim().toUpperCase();
-    dataSetName1 = `${user}.SDATAC.MIGR`;
-    dataSetName2 = `${user}.PDATAC.MIGR`;
-    dataSetName3 = `${user}.FAIL.MIGR`;
+    dataSetName1 = `${user}.SDATAC.DEL`;
+    dataSetName2 = `${user}.PDATAC.DEL`;
+    dataSetName3 = `${user}.FAIL.DEL`;
   });
 
   afterAll(async () => {
@@ -68,60 +68,72 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
+          await HMigrate.dataSet(REAL_SESSION, dataSetName1);
         } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
         }
       });
-      it("Should migrate a data set", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName1]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
+      it("Should delete a migrated data set", async () => {
+        const response = runCliScript(deleteScript, TEST_ENVIRONMENT, [dataSetName1]);
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
-      it("Should migrate a data set with wait = true", async () => {
-        const migrateOptions: IMigrateOptions = { wait: true };
-        const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName1, migrateOptions]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
+      it("Should delete a migrated data set with wait = true", async () => {
+        const deleteOptions: IDeleteOptions = { wait: true };
+        const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName1, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
+      });
+      it("Should delete a migrated data set with purge = true", async () => {
+        const deleteOptions: IDeleteOptions = { purge: true };
+        const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName1, deleteOptions]);
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
     });
     describe("Partitioned Data Set", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
+          await HMigrate.dataSet(REAL_SESSION, dataSetName2);
         } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
         }
       });
-      it("Should migrate a data set", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName2]);
-        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
-
-        expect(list2.apiResponse.items[0].migr).toBe("YES");
+      it("Should delete a migrated data set", async () => {
+        const response = runCliScript(deleteScript, TEST_ENVIRONMENT, [dataSetName2]);
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
-      it("Should migrate a data set with wait = true", async () => {
-        const migrateOptions: IMigrateOptions = { wait: true };
-        const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName2, migrateOptions]);
-        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
-
-        expect(list2.apiResponse.items[0].migr).toBe("YES");
+      it("Should delete a migrated data set with wait = true", async () => {
+        const deleteOptions: IDeleteOptions = { wait: true };
+        const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName2, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
+      });
+      it("Should delete a migrated data set with purge = true", async () => {
+        const deleteOptions: IDeleteOptions = { purge: true };
+        const response = runCliScript(deleteScriptPurge, TEST_ENVIRONMENT, [dataSetName2, deleteOptions]);
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
     });
   });
@@ -130,16 +142,17 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
+          await HMigrate.dataSet(REAL_SESSION, dataSetName3);
         } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
         }
       });
       it("Should throw an error if a missing data set name is selected", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, ["", dataSetName3]);
+        const response = runCliScript(deleteScript, TEST_ENVIRONMENT, ["", dataSetName3]);
 
         expect(response.stderr.toString()).toBeTruthy();
         expect(response.status).toBe(1);
-        expect(response.stdout.toString()).not.toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).not.toContain("Data set deletion requested.");
       });
     });
   });
