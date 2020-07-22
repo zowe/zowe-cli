@@ -107,22 +107,69 @@ describe("Create data set", () => {
 });
 
 describe("Allocate Like", () => {
+    let dsnameLike: string;
+    const options: ICreateDataSetOptions = {
+        dsorg: "PO",
+        alcunit: "CYL",
+        primary: 20,
+        recfm: "FB",
+        blksize: 6160,
+        lrecl: 80,
+        showAttributes: true
+    } as any;
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_create_dataset_like"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        dsnameLike = `${dsname}.LIKE`;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        try {
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    afterEach(async () => {
+        try {
+            await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsnameLike);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
     it("should be able to allocate like from a sequential data set", async () => {
-        const custOptions1 = {
-            dsorg: "PO",
-            alcunit: "CYL",
-            primary: 20,
-            recfm: "FB",
-            blksize: 6160,
-            lrecl: 80,
+        const options2: ICreateDataSetOptions = {
+            like: dsname,
             showAttributes: true
-        };
-        const custOptions2 = { like: "dataSet1", showAttributes: true };
+        } as any;
+        let error;
+        let response;
 
-        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "dataSet1", custOptions1);
-        const response2 = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, "dataSet2", custOptions2);
+        try {
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_LIKE, dsnameLike, options2);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
 
-        expect(response2.commandResponse).toContain("created successfully");
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     });
 })
 
