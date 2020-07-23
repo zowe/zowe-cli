@@ -19,7 +19,9 @@ const tenantName: string = "tenant_name1";
 const inputProperties: string = "name=CSQ_MQ,value=ABCD";
 const badInputFormat: string = "name:CSQ_MQ. value: ABCD";
 const testFileName: string = "provisioning_prompt_variables.yml";
+const emptyTestFileName: string = "empty.yml";
 const propertiesFilePath: string = Path.resolve(__dirname + "../../../../../__tests__/__resources__/provisioning/" + testFileName);
+const emptyPropertiesFilePath: string = Path.resolve(__dirname + "../../../../../__tests__/__resources__/provisioning/" + emptyTestFileName);
 const parsedArrayOfObjects: IPropertiesInput[] = [{name: "name", value: "CSQ_MQ"}, {name: "value", value: "ABCD"}];
 const readFromFileProperties: IPropertiesInput[] = [{name: "key1", value: "val1"}, {name: "key2", value: "val2"}, {name: "key3", value: "val3"}];
 
@@ -61,6 +63,14 @@ describe("ProvisionService", () => {
 
         expect(parsedObject).toBeDefined();
         expect(parsedObject).toEqual(readFromFileProperties);
+    });
+
+    it("readPropertiesFromYamlFile should read from empty yaml file, parse and return an empty array", () => {
+        const parsedObject: IPropertiesInput[] = ProvisioningService.readPropertiesFromYamlFile(emptyPropertiesFilePath);
+        Imperative.console.info(`Response ${parsedObject}`);
+
+        expect(parsedObject).toBeDefined();
+        expect(parsedObject).toEqual([]);
     });
 
     it("checkForPassedOptionalParms should parse passed optional parameters and return a parsed object", () => {
