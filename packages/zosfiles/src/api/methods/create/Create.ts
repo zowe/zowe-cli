@@ -11,6 +11,7 @@
 
 import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
+import { List } from "../list";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -142,20 +143,17 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         try {
-            let response = "";
-            // Handle the print attributes option
-            if (!isNullOrUndefined(tempOptions.showAttributes)) {
-                if (tempOptions.showAttributes) {
-                    delete tempOptions.showAttributes;
-                    response = TextUtils.prettyJson(tempOptions);
-                } else {
-                    delete tempOptions.showAttributes;
-                }
-            }
-
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
             const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
+
+            let response = "";
+            if (!isNullOrUndefined(tempOptions.showAttributes)) {
+                delete tempOptions.showAttributes;
+                if (tempOptions.showAttributes) {
+                    response = TextUtils.prettyJson(List.dataSet(session, dataSetName, { attributes: true }));
+                }
+            }
 
             return {
                 success: true,

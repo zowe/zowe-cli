@@ -123,9 +123,4 @@ export interface ICreateDataSetOptions {
      * @type {string}
      */
     size?: string;
-    /**
-     * The name of another data set from which to copy attributes
-     * @type {string}
-     */
-    like?: string;
 }

@@ -11,7 +11,7 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../../src/api/methods/create";
+import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions, ICreateDataSetLikeOptions } from "../../../../../src/api/methods/create";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -104,6 +104,76 @@ describe("Create data set", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
+});
+
+describe("Allocate Like", () => {
+    let dsnameLike: string;
+    const options: ICreateDataSetOptions = {
+        dsorg: "PO",
+        alcunit: "CYL",
+        primary: 20,
+        recfm: "FB",
+        blksize: 6160,
+        lrecl: 80,
+        showAttributes: true
+    } as any;
+
+    beforeAll(async () => {
+        testEnvironment = await TestEnvironment.setUp({
+            testName: "zos_create_dataset_like"
+        });
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        dsnameLike = `${dsname}.LIKE`;
+
+        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        try {
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    afterEach(async () => {
+        try {
+            await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsnameLike);
+        } catch (error) {
+            Imperative.console.info("Error: " + inspect(error));
+        }
+    });
+
+    it("should be able to allocate like from a sequential data set", async () => {
+        const options2: ICreateDataSetLikeOptions = {
+            like: dsname,
+            showAttributes: true
+        } as any;
+        let error;
+        let response;
+
+        try {
+            response = await Create.dataSetLike(REAL_SESSION, dsnameLike, options2);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+        expect(response.commandResponse).toContain(options);
+    });
 });
 
 describe("Create VSAM", () => {
