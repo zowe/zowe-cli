@@ -142,6 +142,22 @@ describe("Create data set", () => {
 
         it("should be able to allocate like from a sequential data set", async () => {
             const custOptions2 = { like: dataSetName, showAttributes: true };
+            const likeSpy = jest.spyOn(List, "dataSet").mockReturnValue({
+                apiResponse: {
+                    items: [{
+                        dsname: "testSet",
+                        extx: null,
+                        used: null,
+                        sizex: null,
+                        vol: null,
+                        spacu: null,
+                        dsorg: null,
+                        recfm: null,
+                        lrecl: null,
+                        dsntp: null
+                    }]
+                }
+            });
 
             const response = await Create.dataSetLike(dummySession, "testing2", custOptions2);
 
@@ -150,6 +166,22 @@ describe("Create data set", () => {
 
         it("should be able to allocate like from a sequential data set, when showAttributes is not set", async () => {
             const custOptions2 = { like: dataSetName };
+            const likeSpy = jest.spyOn(List, "dataSet").mockReturnValue({
+                apiResponse: {
+                    items: [{
+                        dsname: "testSet",
+                        extx: null,
+                        used: null,
+                        sizex: null,
+                        vol: null,
+                        spacu: null,
+                        dsorg: null,
+                        recfm: null,
+                        lrecl: null,
+                        dsntp: null
+                    }]
+                }
+            });
 
             const response = await Create.dataSetLike(dummySession, "testing2", custOptions2);
 
