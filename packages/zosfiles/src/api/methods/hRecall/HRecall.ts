@@ -14,6 +14,7 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IRecallOptions } from "./doc/IRecallOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
+import { IZosFileUtils } from "../../doc/IZosFileUtils";
 
 /**
  * This class holds helper functions that are used to recall data sets through the
@@ -36,13 +37,12 @@ export class HRecall {
     public static async dataSet(
         session: AbstractSession,
         dataSetName: string,
-        options: Partial<IRecallOptions> = {}
+        options: Partial<IRecallOptions> = {"request": "hrecall"}
     ): Promise<IZosFilesResponse> {
         return ZosFilesUtils.dfsmsHsmCommand(
             session,
             dataSetName,
             ZosFilesMessages.datasetRecallRequested.message,
-            { request: "hrecall" },
             options
         );
     }

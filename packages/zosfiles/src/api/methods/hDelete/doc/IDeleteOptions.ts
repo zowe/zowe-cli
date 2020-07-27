@@ -9,12 +9,12 @@
 *
 */
 
-import { IMigrateOptions } from "../../hMigrate";
+import { IZosFileUtils } from "../../../doc/IZosFileUtils";
 
 /**
  * This interface defines the options that can be sent into the delete data set function.
  */
-export interface IDeleteOptions extends IMigrateOptions {
+export interface IDeleteOptions extends IZosFileUtils {
 
     /**
      * If true then the function uses the PURGE=YES on ARCHDEL request.

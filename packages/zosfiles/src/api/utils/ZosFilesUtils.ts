@@ -19,6 +19,8 @@ import { ZosmfRestClient } from "../../../../rest/src/api/ZosmfRestClient";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { ZosmfHeaders } from "../../../../rest";
+import { IZosFileUtils } from "../doc/IZosFileUtils";
+import { option } from "yargs";
 
 /**
  * Common IO utilities
@@ -81,8 +83,8 @@ export class ZosFilesUtils {
      * @return {string[]} Array of all files finds in path
      */
     public static getFileListFromPath(inputPath: string,
-                                      inFullPathFormat: boolean = true,
-                                      isIgnoreHidden: boolean = true): string[] {
+        inFullPathFormat: boolean = true,
+        isIgnoreHidden: boolean = true): string[] {
         const returnFileList: string[] = [];
 
         const fullpath = this.getFullPath(inputPath);
@@ -225,7 +227,6 @@ export class ZosFilesUtils {
         session: AbstractSession,
         dataSetName: string,
         returnMessage: string,
-        hsmCommand: any,
         options: Partial<IDeleteOptions> = {}
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
@@ -236,7 +237,9 @@ export class ZosFilesUtils {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const payload = hsmCommand;
+            const payload: any = {
+                "request": options.request
+            };
 
             if (options.wait != null) {
                 payload.wait = options.wait;

@@ -39,7 +39,7 @@ describe("hRecall data set", () => {
         const dataSetName: string = "EFGH";
 
         it("should send a request", async () => {
-            const expectedPayload = { request: "hrecall" };
+            const expectedPayload = { "request": "hrecall" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -68,11 +68,11 @@ describe("hRecall data set", () => {
             );
         });
         it("should send a request with wait = true", async () => {
-            const options: IRecallOptions = { wait: true };
+            const options: IRecallOptions = { "request": "hrecall", "wait": true };
 
             const expectedPayload = {
-                request: "hrecall",
-                wait: true
+                "request": "hrecall",
+                "wait": true
             };
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -107,7 +107,7 @@ describe("hRecall data set", () => {
             putExpectStringSpy.mockImplementation(() => {
                 throw new ImperativeError({ msg: errorMessage });
             });
-            const expectedPayload = { request: "hrecall" };
+            const expectedPayload = { "request": "hrecall" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,

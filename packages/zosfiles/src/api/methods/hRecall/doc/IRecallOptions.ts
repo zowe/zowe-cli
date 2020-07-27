@@ -9,12 +9,12 @@
 *
 */
 
-import { IMigrateOptions } from "../../hMigrate";
+import { IZosFileUtils } from "../../../doc/IZosFileUtils";
 
 /**
  * This interface defines the options that can be sent into the recall data set function.
  */
 
 // tslint:disable-next-line: no-empty-interface
-export interface IRecallOptions extends IMigrateOptions{
+export interface IRecallOptions extends IZosFileUtils{
 }

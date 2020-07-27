@@ -83,7 +83,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
             it("should recall a sequential data set with wait = true", async () => {
-                const recallOptions: IRecallOptions = { wait: true };
+                const recallOptions: IRecallOptions = { "request": "hrecall", "wait": true };
                 let error;
                 let recallResponse;
                 let listResponse;
@@ -136,7 +136,7 @@ describe("Recall Dataset", () => {
                 expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
             it("should recall a partitioned dataset with wait = true", async () => {
-                const recallOptions: IRecallOptions = { wait: true };
+                const recallOptions: IRecallOptions = { "request": "hrecall", "wait": true };
                 let error;
                 let recallResponse;
                 let listResponse;
