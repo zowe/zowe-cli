@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Update Imperative version
 - Fix compilation error
 
 ## `6.19.0`
