@@ -2,11 +2,14 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Update hsmCommands to have a base options handler
+
 ## `6.19.1`
 
 - Update Imperative version
 - Fix compilation error
-- Update hsmCommands to have a base options handler
 
 ## `6.19.0`
 
