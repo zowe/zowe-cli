@@ -2,11 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-```
+
 ## Recent Changes
 
-- Added documentation about leveraging the Zowe Node APIs to the Readme.
-```
+- Added API usage examples to each package Readme (files, jobs, etc...). [#751](https://github.com/zowe/zowe-cli/issues/751).
 
 ## `6.18.0`
 
