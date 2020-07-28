@@ -61,7 +61,7 @@ describe("DsHandler", () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IMigrateOptions = { wait: true };
+        const options: IMigrateOptions = { "request": "hmigrate", "wait": true };
 
         const commandParameters: any = {
             arguments: {
@@ -79,7 +79,7 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IMigrateOptions = { wait: true };
+        const expectedOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 

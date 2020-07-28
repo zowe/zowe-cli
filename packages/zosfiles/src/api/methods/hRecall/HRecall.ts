@@ -14,7 +14,6 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IRecallOptions } from "./doc/IRecallOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
-import { IZosFileUtils } from "../../doc/IZosFileUtils";
 
 /**
  * This class holds helper functions that are used to recall data sets through the

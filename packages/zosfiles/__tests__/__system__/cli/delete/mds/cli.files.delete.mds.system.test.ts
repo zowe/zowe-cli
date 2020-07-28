@@ -82,7 +82,7 @@ describe("Delete migrated Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with wait = true", async () => {
-        const deleteOptions: IDeleteOptions = { wait: true };
+        const deleteOptions: IDeleteOptions = { "request": "hdelete", "wait": true };
         const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName1, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");
@@ -91,7 +91,7 @@ describe("Delete migrated Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with purge = true", async () => {
-        const deleteOptions: IDeleteOptions = { purge: true };
+        const deleteOptions: IDeleteOptions = { "request": "hdelete", "purge": true };
         const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName1, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");
@@ -118,7 +118,7 @@ describe("Delete migrated Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with wait = true", async () => {
-        const deleteOptions: IDeleteOptions = { wait: true };
+        const deleteOptions: IDeleteOptions = { "request": "hdelete", "wait": true };
         const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName2, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");
@@ -127,7 +127,7 @@ describe("Delete migrated Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
       it("Should delete a migrated data set with purge = true", async () => {
-        const deleteOptions: IDeleteOptions = { purge: true };
+        const deleteOptions: IDeleteOptions = { "request": "hdelete", "purge": true };
         const response = runCliScript(deleteScriptPurge, TEST_ENVIRONMENT, [dataSetName2, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");

@@ -39,7 +39,7 @@ describe("hMigrate data set", () => {
         const dataSetName: string = "EFGH";
 
         it("should send a request", async () => {
-            const expectedPayload = { request: "hmigrate" };
+            const expectedPayload = { "request": "hmigrate" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -68,7 +68,7 @@ describe("hMigrate data set", () => {
             );
         });
         it("should send a request with wait = true", async () => {
-            const options: IMigrateOptions = { wait: true };
+            const options: IMigrateOptions = { "request": "hmigrate", "wait": true };
 
             const expectedPayload = {
                 request: "hmigrate",
@@ -107,7 +107,7 @@ describe("hMigrate data set", () => {
             putExpectStringSpy.mockImplementation(() => {
                 throw new ImperativeError({ msg: errorMessage });
             });
-            const expectedPayload = { request: "hmigrate" };
+            const expectedPayload = { "request": "hmigrate" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,

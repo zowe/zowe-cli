@@ -78,7 +78,7 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
             it("should delete a migrated sequential data set with wait = true", async () => {
-                const deleteOptions: IDeleteOptions = { wait: true };
+                const deleteOptions: IDeleteOptions = { "request": "hdelete", "wait": true };
                 let error;
                 let response;
 
@@ -97,7 +97,7 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
             it("should delete a migrated sequential data set with purge = true", async () => {
-                const deleteOptions: IDeleteOptions = { purge: true };
+                const deleteOptions: IDeleteOptions = { "request": "hdelete", "purge": true };
                 let error;
                 let response;
 
@@ -144,7 +144,7 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
             it("should delete a migrated partitioned dataset with wait = true", async () => {
-                const deleteOptions: IDeleteOptions = { wait: true };
+                const deleteOptions: IDeleteOptions = { "request": "hdelete", "wait": true };
                 let error;
                 let response;
 
@@ -163,7 +163,7 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
             it("should delete a migrated partitioned dataset with purge = true", async () => {
-                const deleteOptions: IDeleteOptions = { purge: true };
+                const deleteOptions: IDeleteOptions = { "request": "hdelete", "purge": true };
                 let error;
                 let response;
 

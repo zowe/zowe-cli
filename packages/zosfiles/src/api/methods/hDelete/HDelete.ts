@@ -36,13 +36,12 @@ export class HDelete {
     public static async dataSet(
         session: AbstractSession,
         dataSetName: string,
-        options: Partial<IDeleteOptions> = {}
+        options: Partial<IDeleteOptions> = { "request": "hdelete" }
     ): Promise<IZosFilesResponse> {
         return ZosFilesUtils.dfsmsHsmCommand(
             session,
             dataSetName,
             ZosFilesMessages.datasetDeletionRequested.message,
-            { request: "hdelete" },
             options
         );
     }

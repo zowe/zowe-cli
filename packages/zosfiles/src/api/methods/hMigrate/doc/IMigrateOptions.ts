@@ -17,5 +17,4 @@ import { IZosFileUtils } from "../../../doc/IZosFileUtils";
 
 // tslint:disable-next-line: no-empty-interface
 export interface IMigrateOptions extends IZosFileUtils {
-
 }

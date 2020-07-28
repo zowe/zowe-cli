@@ -36,13 +36,12 @@ export class HMigrate {
     public static async dataSet(
         session: AbstractSession,
         dataSetName: string,
-        options: Partial<IMigrateOptions> = {}
+        options: Partial<IMigrateOptions> = { "request": "hmigrate" }
     ): Promise<IZosFilesResponse> {
         return ZosFilesUtils.dfsmsHsmCommand(
             session,
             dataSetName,
             ZosFilesMessages.datasetMigrationRequested.message,
-            { request: "hmigrate" },
             options
         );
     }

@@ -39,7 +39,7 @@ describe("hDelete data set", () => {
         const dataSetName: string = "EFGH";
 
         it("should send a request", async () => {
-            const expectedPayload = { request: "hdelete" };
+            const expectedPayload = { "request": "hdelete" };
 
             const expectedEndpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
@@ -68,7 +68,7 @@ describe("hDelete data set", () => {
             );
         });
         it("should send a request with wait = true", async () => {
-            const options: IDeleteOptions = { wait: true };
+            const options: IDeleteOptions = { "request": "hdelete", "wait": true };
 
             const expectedPayload = {
                 request: "hdelete",
@@ -99,7 +99,7 @@ describe("hDelete data set", () => {
             );
         });
         it("should send a request with purge = true", async () => {
-            const options: IDeleteOptions = { purge: true };
+            const options: IDeleteOptions = { "request": "hdelete", "purge": true };
 
             const expectedPayload = {
                 request: "hdelete",

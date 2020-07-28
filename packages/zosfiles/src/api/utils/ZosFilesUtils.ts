@@ -19,8 +19,6 @@ import { ZosmfRestClient } from "../../../../rest/src/api/ZosmfRestClient";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { ZosmfHeaders } from "../../../../rest";
-import { IZosFileUtils } from "../doc/IZosFileUtils";
-import { option } from "yargs";
 
 /**
  * Common IO utilities
@@ -82,7 +80,8 @@ export class ZosFilesUtils {
      * @param {boolean} [isIgnoreHidden=true] is listing hidden files flag
      * @return {string[]} Array of all files finds in path
      */
-    public static getFileListFromPath(inputPath: string,
+    public static getFileListFromPath(
+        inputPath: string,
         inFullPathFormat: boolean = true,
         isIgnoreHidden: boolean = true): string[] {
         const returnFileList: string[] = [];

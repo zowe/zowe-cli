@@ -82,7 +82,7 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
             it("should migrate a sequential data set with wait = true", async () => {
-                const migrateOptions: IMigrateOptions = { wait: true };
+                const migrateOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };
                 let error;
                 let migrateResponse;
                 let listResponse;
@@ -134,7 +134,7 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
             it("should migrate a partitioned dataset with wait = true", async () => {
-                const migrateOptions: IMigrateOptions = { wait: true };
+                const migrateOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };
                 let error;
                 let migrateResponse;
                 let listResponse;

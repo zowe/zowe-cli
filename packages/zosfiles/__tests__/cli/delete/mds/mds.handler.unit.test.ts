@@ -61,7 +61,7 @@ describe("MdsHandler", () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IDeleteOptions = { wait: true };
+        const options: IDeleteOptions = { "request": "hdelete", "wait": true };
 
         const commandParameters: any = {
             arguments: {
@@ -79,7 +79,7 @@ describe("MdsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IDeleteOptions = { wait: true };
+        const expectedOptions: IDeleteOptions = { "request": "hdelete", "wait": true };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
@@ -95,7 +95,7 @@ describe("MdsHandler", () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IDeleteOptions = { purge: true };
+        const options: IDeleteOptions = { "request": "hdelete", "purge": true };
 
         const commandParameters: any = {
             arguments: {
@@ -113,7 +113,7 @@ describe("MdsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IDeleteOptions = { purge: true };
+        const expectedOptions: IDeleteOptions = { "request": "hdelete", "purge": true };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 

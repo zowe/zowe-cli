@@ -85,7 +85,7 @@ describe("Recall Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set recall requested.");
       });
       it("Should recall a data set with wait = true", async () => {
-        const recallOptions: IRecallOptions = { wait: true };
+        const recallOptions: IRecallOptions = { "request": "hrecall", "wait": true };
         const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
         const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
@@ -116,7 +116,7 @@ describe("Recall Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set recall requested.");
       });
       it("Should recall a data set with wait = true", async () => {
-        const recallOptions: IRecallOptions = { wait: true };
+        const recallOptions: IRecallOptions = { "request": "hrecall", "wait": true };
         const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName2, recallOptions]);
         const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 

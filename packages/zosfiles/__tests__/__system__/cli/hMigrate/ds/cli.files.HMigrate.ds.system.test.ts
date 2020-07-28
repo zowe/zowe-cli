@@ -80,10 +80,10 @@ describe("Migrate Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
-        const migrateOptions: IMigrateOptions = { wait: true };
+        const migrateOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };
         const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName1, migrateOptions]);
         const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
@@ -91,7 +91,7 @@ describe("Migrate Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
     });
     describe("Partitioned Data Set", () => {
@@ -110,10 +110,10 @@ describe("Migrate Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
-        const migrateOptions: IMigrateOptions = { wait: true };
+        const migrateOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };
         const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName2, migrateOptions]);
         const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
@@ -121,7 +121,7 @@ describe("Migrate Dataset", () => {
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
     });
   });
@@ -139,7 +139,7 @@ describe("Migrate Dataset", () => {
 
         expect(response.stderr.toString()).toBeTruthy();
         expect(response.status).toBe(1);
-        expect(response.stdout.toString()).not.toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).not.toContain("Data set migration requested.");
       });
     });
   });
