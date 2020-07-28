@@ -11,7 +11,6 @@
 
 import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
-import { List } from "../list";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -24,7 +23,6 @@ import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import i18nTypings from "../../../cli/-strings-/en";
 import * as path from "path";
-import { ICreateDataSetLikeOptions } from ".";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 const strings = (require("../../../cli/-strings-/en").default as typeof i18nTypings);
@@ -136,40 +134,19 @@ export class Create {
         }
     }
 
-    public static async dataSetLike(session: AbstractSession, dataSetName: string, options: ICreateDataSetLikeOptions): Promise<IZosFilesResponse> {
-        const tempOptions = JSON.parse(JSON.stringify(options));
-
+    public static async dataSetLike(session: AbstractSession, dataSetName: string, likeDataSetName: string): Promise<IZosFilesResponse> {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
         try {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            let response;
-            const showAttr = tempOptions.showAttributes;
-            if (!isNullOrUndefined(tempOptions.showAttributes)) { delete tempOptions.showAttributes; }
-
-            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
-
-            if (showAttr) {
-                response = await List.dataSet(session, dataSetName, { attributes: true });
-                response = {
-                    dsname: response.apiResponse.items[0].dsname,
-                    extx: response.apiResponse.items[0].extx,
-                    used: response.apiResponse.items[0].used,
-                    sizex: response.apiResponse.items[0].sizex,
-                    vol: response.apiResponse.items[0].vol,
-                    spacu: response.apiResponse.items[0].spacu,
-                    dsorg: response.apiResponse.items[0].dsorg,
-                    recfm: response.apiResponse.items[0].recfm,
-                    lrecl: response.apiResponse.items[0].lrecl,
-                    dsntp: response.apiResponse.items[0].dsntp
-                };
-            }
+            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], { like: likeDataSetName });
 
             return {
                 success: true,
-                commandResponse: `${JSON.stringify(response)}, ${ZosFilesMessages.dataSetCreatedSuccessfully.message}`
+                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
             };
         } catch (error) {
             throw error;

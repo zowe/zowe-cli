@@ -10,7 +10,6 @@
 */
 
 export * from "./doc/ICreateDataSetOptions";
-export * from "./doc/ICreateDataSetLikeOptions";
 export * from "./doc/ICreateVsamOptions";
 
 export * from "./Create";

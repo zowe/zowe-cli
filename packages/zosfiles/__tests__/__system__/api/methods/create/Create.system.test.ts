@@ -11,7 +11,7 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions, ICreateDataSetLikeOptions } from "../../../../../src/api/methods/create";
+import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../../src/api/methods/create";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -152,15 +152,11 @@ describe("Allocate Like", () => {
     });
 
     it("should be able to allocate like from a sequential data set", async () => {
-        const options2: ICreateDataSetLikeOptions = {
-            like: dsname,
-            showAttributes: true
-        } as any;
         let error;
         let response;
 
         try {
-            response = await Create.dataSetLike(REAL_SESSION, dsnameLike, options2);
+            response = await Create.dataSetLike(REAL_SESSION, dsnameLike, dsname);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
