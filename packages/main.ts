@@ -45,6 +45,6 @@ const config: IImperativeConfig = {
         Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
             ":\n "
             + inspect(initErr));
-        process.exitCode = 1;
+        process.exit(1);
     }
 })();

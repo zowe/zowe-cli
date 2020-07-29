@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Fixed an issue where the CLI exited with status code 0 in case of an error.
+
 ## `6.19.1`
 
 - Update Imperative version

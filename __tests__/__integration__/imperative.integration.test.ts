@@ -12,55 +12,21 @@
 import { runCliScript } from "../__src__/TestUtils";
 import { TestEnvironment } from "../__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../__src__/environment/doc/response/ITestEnvironment";
-import { resolve } from "path";
-import { Imperative } from '@zowe/imperative';
 
 let testEnvironment: ITestEnvironment;
 
-describe("imperative integration tests", () => {
+describe("imperative create profile", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-            testName: "imperative_integration_tests",
+            testName: "imperative_create_profile",
             skipProperties: true
         });
     });
 
-    beforeEach(() => {
-        jest.resetModules();
-    });
-
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
-    });
-
-    describe("Imperative init error handling", () => {
-
-        it("should exit with non zero return code if Imperative.init() fails - calling main.js directly", async () => {
-
-            const mainTs = resolve(__dirname, '../../packages/main');
-
-            const realImperative = require("@zowe/imperative").Imperative;
-            const imperativeMock = jest.spyOn(realImperative, "init");
-            const fatalLogMock = jest.spyOn(realImperative.console, "fatal");
-
-            const errMsg = "This should fail zowe!";
-            let loggedMsg;
-
-            fatalLogMock.mockImplementation((message: string, ...args: any[]) => {
-                loggedMsg = message;
-            })
-
-            imperativeMock.mockImplementation(async () => {
-                throw new Error(errMsg);
-            })
-
-            await require(mainTs);
-            expect(process.exitCode).not.toBe(0);
-            expect(loggedMsg).toContain(errMsg);
-        });
-
     });
 
     describe("create zosmf profile", () => {
@@ -69,9 +35,8 @@ describe("imperative integration tests", () => {
             const opts = ["CreateProfileSystemTest"];
             try {
                 runCliScript(__dirname + "/__scripts__/imperative_zosmf_delete_profile.sh", testEnvironment, opts);
-                // tslint:disable-next-line: no-empty
-            } catch (err) {
-            }
+            // tslint:disable-next-line: no-empty
+            } catch (err) { }
         });
 
         it("should successfully create a profile", async () => {
@@ -119,9 +84,8 @@ describe("imperative integration tests", () => {
             const opts = ["CreateProfileSystemTest"];
             try {
                 runCliScript(__dirname + "/__scripts__/imperative_ssh_delete_profile.sh", testEnvironment, opts);
-                // tslint:disable-next-line: no-empty
-            } catch (err) {
-            }
+            // tslint:disable-next-line: no-empty
+            } catch (err) { }
         });
 
         it("should successfully create a profile", async () => {
@@ -167,9 +131,8 @@ describe("imperative integration tests", () => {
             const opts = ["CreateProfileSystemTest"];
             try {
                 runCliScript(__dirname + "/__scripts__/imperative_tso_delete_profile.sh", testEnvironment, opts);
-                // tslint:disable-next-line: no-empty
-            } catch (err) {
-            }
+            // tslint:disable-next-line: no-empty
+            } catch (err) { }
         });
 
         it("should successfully create a profile", async () => {
