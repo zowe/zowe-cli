@@ -40,6 +40,7 @@ export const DsDefinition: ICommandDefinition = {
       aliases: ["w"],
       description: strings.HMIGRATE.OPTIONS.WAIT,
       type: "boolean",
+      defaultValue: false,
       required: false
     }
   ],

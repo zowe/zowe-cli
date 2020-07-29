@@ -18,7 +18,7 @@ import i18nTypings from "../-strings-/en";
 const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTypings).HRECALL;
 
 /**
- * Download group definition containing its description and children
+ * hRecall group definition containing its description and children
  * @type {ICommandDefinition}
  */
 export const HRecallDefinition: ICommandDefinition = {

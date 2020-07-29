@@ -2,10 +2,18 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-
 ## Recent Changes
 
 - Added API usage examples to each package Readme (files, jobs, etc...). [#751](https://github.com/zowe/zowe-cli/issues/751).
+
+## `6.19.1`
+
+- Update Imperative version
+- Fix compilation error
+
+## `6.19.0`
+
+- Add CLI command to delete migrated data sets `zowe zos-files delete migrated-data-sets`.
 
 ## `6.18.0`
 
