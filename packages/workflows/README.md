@@ -6,7 +6,7 @@ Contains APIs and commands to work with the z/OS Workflows APIs
 
 **List Active Workflow Instance(s) in z/OSMF**
 
-```javascript
+```typescript
 import { ISession, Session, Logger, LoggingConfigurer } from "@zowe/imperative";
 import { IActiveWorkflows, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 

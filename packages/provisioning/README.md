@@ -6,7 +6,7 @@ Contains APIs and commands to work with the provisioning APIs
 
 **List z/OSMF Published Catalog Templates**
 
-```javascript
+```typescript
 import { ISession, Session, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
 import {
   explainPublishedTemplatesFull,
