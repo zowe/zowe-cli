@@ -163,7 +163,8 @@ describe("Allocate Like", () => {
             Imperative.console.info("Error: " + inspect(error));
         }
 
-        expect(response).toBeFalsy();
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     });
 });
