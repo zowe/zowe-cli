@@ -142,7 +142,7 @@ export class Create {
         try {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], { like: likeDataSetName });
+            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify({ like: likeDataSetName }));
 
             return {
                 success: true,
