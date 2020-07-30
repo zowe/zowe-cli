@@ -14,6 +14,7 @@ import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession, ImperativeError } from "@zowe/imperative";
 import { WorkflowConstants, nozOSMFVersion, wrongString, noWorkflowName } from "./WorkflowConstants";
 import { IActiveWorkflows } from "./doc/IActiveWorkflows";
+import { IGetWorkflowsOptions } from "./doc/IGetWorkflowsOptions";
 
 /**
  * Get list of workflows from registry.
@@ -34,22 +35,33 @@ export class ListWorkflows {
      * @param {string} statusName - the URI path with optional parameter for listing filtered workflows.
      * @returns {string} z/OSMF response object
      * @memberof ListWorkflows
+     * @deprecated
      */
     public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
                                       workflowName?: string, category?: string, system?: string,
                                       owner?: string, vendor?: string, statusName?: string ) {
+        return this.getWorkflows(session, {zOSMFVersion, workflowName, category, system, owner, vendor, statusName});
+    }
+
+    /**
+     * This operation returns list of workflows.
+     * Parameters are optional,request can include one or more parameters to filter the results.
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {IGetWorkflowsOptions} options - Options to filter the request
+     * @returns {string} z/OSMF response object
+     * @memberof ListWorkflows
+     */
+    public static async getWorkflows(session: AbstractSession, options: IGetWorkflowsOptions = {}) {
         WorkflowValidator.validateSession(session);
-        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        const resourcesQuery: string = ListWorkflows.getResourcesQuery(zOSMFVersion,
-            [
-                {key: WorkflowConstants.workflowName, value : workflowName ? encodeURIComponent(workflowName) : null},
-                {key: WorkflowConstants.category, value : category},
-                {key: WorkflowConstants.system, value : system},
-                {key: WorkflowConstants.owner, value : owner},
-                {key: WorkflowConstants.vendor, value : vendor},
-                {key: WorkflowConstants.statusName, value : statusName}
-            ]
-        );
+        options = {
+          ...options,
+          // zOSMFVersion by design was only checking for undefined. To prevent a breaking change we have to do the same ??
+          // Added another "system" test for this
+          zOSMFVersion: options.zOSMFVersion !== undefined ? options.zOSMFVersion : WorkflowConstants.ZOSMF_VERSION,
+          workflowName: options.workflowName ? encodeURIComponent(options.workflowName) : null
+        }
+        WorkflowValidator.validateNotEmptyString(options.zOSMFVersion, nozOSMFVersion.message);
+        const resourcesQuery: string = ListWorkflows.getResourceQuery(options);
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
     }
 
@@ -59,6 +71,7 @@ export class ListWorkflows {
      * @param {string} params - The array with URI path with filters for listing filtered workflows.
      * @returns {string} URI path for the REST call.
      * @memberof ListWorkflows
+     * @deprecated
      */
     public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>) {
         let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
@@ -71,6 +84,27 @@ export class ListWorkflows {
                 sign = "&";
             }
         });
+        return query;
+    }
+
+    /**
+     * This operation Builds URI path from provided parameters.
+     * @param {IGetWorkflowsOptions} params - The array with URI path with filters for listing filtered workflows.
+     * @returns {string} URI path for the REST call.
+     * @memberof ListWorkflows
+     */
+    public static getResourceQuery(params: IGetWorkflowsOptions) {
+        let query: string = `${WorkflowConstants.RESOURCE}/${params.zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
+        let sign = "?";
+        for (const key in params) {
+            if (key === "zOSMFVersion") continue;
+            if (params[key]) {
+                // Validate if parameter value does not contains ? or &
+                WorkflowValidator.validateParameter(params[key], wrongString.message);
+                query += sign + `${key}=${params[key]}`;
+                sign = "&";
+            }
+        }
         return query;
     }
 
@@ -90,7 +124,7 @@ export class ListWorkflows {
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(workflowName, noWorkflowName.message);
 
-        const result: IActiveWorkflows = await this.listWorkflows(session, zOSMFVersion, workflowName);
+        const result: IActiveWorkflows = await this.getWorkflows(session, {workflowName});
 
         // Check if there was more than one workflows found
         if (result.workflows.length > 1){

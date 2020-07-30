@@ -26,7 +26,7 @@ import { isNullOrUndefined } from "util";
 import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
 import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
-import { IVariable } from "./doc/IVariables";
+import { IVariable } from "./doc/IVariable";
 import { Upload, ZosFilesConstants, Delete } from "../../../zosfiles/src/api";
 import { basename } from "path";
 

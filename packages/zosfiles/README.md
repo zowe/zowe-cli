@@ -1,13 +1,13 @@
-# z/OS Jobs Package
+# z/OS Files Package
 
-Contains APIs and commands to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
+Contains APIs and commands to work with files and datasets on z/OS (using z/OSMF files REST endpoints).
 
 # API Examples
 
-**Cancel a job**
+**Create a dataset**
 
 ```typescript
-import { CancelJobs } from "@zowe/cli";
+import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -22,10 +22,15 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Job Options
-const jobName: string = "MYJOB";
-const jobId: string = "JOBID";
-const version: string = undefined;
+// Create Options
+const dataset: string = "ZOWEUSER.PUBLIC.NEW.DATASET";
+const options: ICreateDataSetOptions = {
+    primary: 10,
+    secondary: 1,
+    alcunit: "TRK",
+    lrecl: 80
+};
+const dataSetType = CreateDataSetTypeEnum.DATA_SET_CLASSIC
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -42,9 +47,9 @@ const sessionConfig: ISession = {
 const session = new Session(sessionConfig);
 
 async function main() {
-    let response: any;
+    let response: IZosFilesResponse;
     try {
-        response = await CancelJobs.cancelJob(session, jobName, jobId, version);
+        response = await Create.dataSet(session, dataSetType, dataset, options);
         console.log(response);
         process.exit(0);
     } catch (err) {
@@ -57,10 +62,10 @@ main();
 ```
 
 #
-**Download a job's output**
+**Download all datasets in a partitioned dataset**
 
 ```typescript
-import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/cli";
+import { Download, IDownloadOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -75,14 +80,9 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Job Options
-const jobParms: IDownloadAllSpoolContentParms = {
-    jobname: "JOBNAME",
-    jobid: "JOBID",
-    outDir: undefined,
-    extension: ".txt",
-    omitJobidDirectory: false
-}
+// Download Options
+const dataset: string = "ZOWEUSER.PUBLIC.YOUR.DATASET.HERE";
+const options: IDownloadOptions = {failFast: false};
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -99,9 +99,9 @@ const sessionConfig: ISession = {
 const session = new Session(sessionConfig);
 
 async function main() {
-    let response: any;
+    let response: IZosFilesResponse;
     try {
-        response = await DownloadJobs.downloadAllSpoolContentCommon(session, jobParms);
+        response = await Download.allMembers(session, dataset, options);
         console.log(response);
         process.exit(0);
     } catch (err) {
@@ -114,10 +114,10 @@ main();
 ```
 
 #
-**Get jobs by owner**
+**List datasets on z/OS**
 
 ```typescript
-import { GetJobs, IJob } from "@zowe/cli";
+import { List, IListOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -132,8 +132,9 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Job Options
-const owner: string = user;
+// List Options
+const dataset: string = "ZOWEUSER.*";
+const options: IListOptions = {};
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -149,12 +150,16 @@ const sessionConfig: ISession = {
 
 const session = new Session(sessionConfig);
 
-// Example note: This can take a *considerable* amount of time, depending on the number of jobs on the system.
 async function main() {
-    let response: IJob[];
+    let response: IZosFilesResponse;
     try {
-        response = await GetJobs.getJobsByOwner(session, owner);
-        console.log(response);
+        response = await List.dataSet(session, dataset, options);
+        const objArray = response.apiResponse.items;
+        for (const obj of objArray) {
+            if (obj) {
+                console.log(obj.dsname.toString());
+            }
+        };
         process.exit(0);
     } catch (err) {
         console.error(err);
@@ -166,10 +171,10 @@ main();
 ```
 
 #
-**Submit a job**
+**Upload a file to Unix System Services**
 
 ```typescript
-import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/cli";
+import { Upload, IUploadOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
 
 // Connection Options
@@ -184,8 +189,10 @@ const tokenType: string = undefined;
 const tokenValue: string = undefined;
 const rejectUnauthorized: boolean = false;
 
-// Job Options
-const jobDataSet: "ZOWEUSER.PUBLIC.MY.DATASET.JCL(MEMBER)"
+// Upload Options
+const localFile: string = "C:/Users/zoweuser/Documents/testFile.txt";
+const remoteLocation: string = "/u/zoweuser/file.txt"
+const options: IUploadOptions = {binary: true};
 const sessionConfig: ISession = {
     hostname,
     port,
@@ -202,13 +209,13 @@ const sessionConfig: ISession = {
 const session = new Session(sessionConfig);
 
 async function main() {
-    let response: IJob;
+    let response: IZosFilesResponse;
     try {
-        response = await SubmitJobs.submitJob(session, jobDataSet);
+        response = await Upload.fileToUssFile(session, localFile, remoteLocation, options);
         console.log(response);
         process.exit(0);
     } catch (err) {
-        console.error(err);
+        console.log(err.message);
         process.exit(1);
     }
 }
