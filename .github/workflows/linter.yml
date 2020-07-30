@@ -5,6 +5,9 @@ on:
     branches-ignore:
       - 'master'
       - 'zowe-v1-lts'
+  pull_request:
+    branches:
+      - "**"
 
 jobs:
   lint:
