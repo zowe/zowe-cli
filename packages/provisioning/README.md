@@ -44,7 +44,7 @@ const session = new Session(conn);
 
 **Provision a Published Software Service Template**
 
-```javascript
+```typescript
 import { ISession, Session, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
 import {
     explainProvisionTemplateResponse,
@@ -76,7 +76,7 @@ const templateName = "myTemplate";
 
 **List Provisioned Instances and Perform an Action to the Matching Instance**
 
-```javascript
+```typescript
 import { ISession, Session, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
 import {
     explainActionResponse,
