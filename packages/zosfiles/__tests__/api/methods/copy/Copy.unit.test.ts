@@ -150,6 +150,44 @@ describe("Copy", () => {
                         expectedPayload
                     );
                 });
+                it("should send a request with a timeout", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "responseTimeout": 10,
+                        "from-dataset": {
+                            dsn: fromDataSetName,
+                            member: fromMemberName
+                        }
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        `${toDataSetName}(${toMemberName})`
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "X-IBM-Response-Timeout": "10" }
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: toDataSetName, memberName: toMemberName },
+                        { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName }, responseTimeout: 10 }
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
             });
             describe("Sequential > Member", () => {
                 it("should send a request", async () => {
@@ -173,6 +211,43 @@ describe("Copy", () => {
                         dummySession,
                         { dataSetName: toDataSetName, memberName: toMemberName },
                         { fromDataSet: { dataSetName: fromDataSetName} }
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
+                it("should send a request with a timeout", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "responseTimeout": 10,
+                        "from-dataset": {
+                            dsn: fromDataSetName
+                        }
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        `${toDataSetName}(${toMemberName})`
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "X-IBM-Response-Timeout": "10" }
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: toDataSetName, memberName: toMemberName },
+                        { fromDataSet: { dataSetName: fromDataSetName}, responseTimeout: 10 }
                     );
 
                     expect(response).toEqual({
@@ -211,6 +286,44 @@ describe("Copy", () => {
                         dummySession,
                         { dataSetName: toDataSetName },
                         { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName } }
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
+                });
+                it("should send a request with a timeout", async () => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "responseTimeout": 10,
+                        "from-dataset": {
+                            dsn: fromDataSetName,
+                            member: fromMemberName
+                        }
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        toDataSetName
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        { "X-IBM-Response-Timeout": "10" }
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dataSetName: toDataSetName },
+                        { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName }, responseTimeout: 10 }
                     );
 
                     expect(response).toEqual({
