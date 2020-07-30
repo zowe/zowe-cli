@@ -441,7 +441,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expect(error.errorCode).toEqual(wrongPath);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of workflow definition file. Path not from root.", async () => {
             //

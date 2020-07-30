@@ -163,6 +163,12 @@ describe("Create data set", () => {
             );
         });
 
+        it("should be able to allocate like from a sequential data set", async () => {
+            const response = await Create.dataSetLike(dummySession, "testing2", dataSetName);
+
+            expect(response.commandResponse).toContain("created successfully");
+        });
+
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
             const custOptions = {
                 dsorg: "PS",

@@ -40,6 +40,7 @@ export const DsDefinition: ICommandDefinition = {
       aliases: ["w"],
       description: strings.HRECALL.OPTIONS.WAIT,
       type: "boolean",
+      defaultValue: false,
       required: false
     }
   ],

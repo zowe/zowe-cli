@@ -26,7 +26,7 @@ export class HDelete {
      * @param {string}                dataSetName  The name of the data set to recall
      * @param {boolean}               wait If true then the function waits for completion of the request. If false (default) the request is queued.
      *
-     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the migrating
+     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the deletion
      *
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error

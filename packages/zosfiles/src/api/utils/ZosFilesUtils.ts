@@ -219,7 +219,7 @@ export class ZosFilesUtils {
 
     /**
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} dataSetName -The name of the data set to recall|migrate
+     * @param {string} dataSetName -The name of the data set to recall|migrate|delete
      * @param {string} returnMessage - Message to return based upon command request
      * @param {any} hsmCommand - HsmCommand requested
      * @param {IRecallOptions | IMigrateOptions | IDeleteOptions} options

@@ -2,6 +2,21 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.20.0`
+
+- Added API usage examples to each package Readme (files, jobs, etc...). [#751](https://github.com/zowe/zowe-cli/issues/751).
+- Fixed an issue where the CLI exited with status code 0 in case of an error. [#748](https://github.com/zowe/zowe-cli/issues/748)
+- Added new method "dataSetLike(session, dataSetName, options)" to `Create` class, for use when creating a dataset with parameters like another data set. [#766](https://github.com/zowe/zowe-cli/issues/766)
+
+## `6.19.1`
+
+- Update Imperative version
+- Fix compilation error
+
+## `6.19.0`
+
+- Add CLI command to delete migrated data sets `zowe zos-files delete migrated-data-sets`.
+
 ## `6.18.0`
 
 - Add the --fail-fast option to the `zowe zos-files download all-members` command

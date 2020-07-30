@@ -1,28 +1,104 @@
-# zOSMF Package
-Contains utilities to work with z/OSMF.
-# Example
-**Create a z/OSMF REST client session from properties in profile, environment, or command line:** 
+# z/OS Management Facility Package
+
+Contains APIs and commands to interact with the z/OS Management Facility (using z/OSMF REST endpoints).
+
+# API Examples
+
+**Check z/OSMF status**
+
+```typescript
+import { CheckStatus, IZosmfInfoResponse } from "@zowe/cli";
+import { Session, ISession, SessConstants } from "@zowe/imperative";
+
+// Connection Options
+const hostname: string = "yourhost.yourdomain.net";
+const port: number = 443;
+const user: string = "ZOWEUSER";
+const password: string = "ZOWEPASS";
+const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
+const basePath: string = undefined;
+const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
+const tokenType: string = undefined;
+const tokenValue: string = undefined;
+const rejectUnauthorized: boolean = false;
+
+// Session Options
+const sessionConfig: ISession = {
+    hostname,
+    port,
+    user,
+    password,
+    protocol,
+    basePath,
+    type,
+    tokenType,
+    tokenValue,
+    rejectUnauthorized
+}
+
+const session = new Session(sessionConfig);
+
+async function main() {
+    let response: IZosmfInfoResponse;
+    try {
+        response = await CheckStatus.getZosmfInfo(session);
+        console.log(response);
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+}
+
+main();
 ```
-// Load the profile contents
-const zosmfProfile = await new BasicProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({loadDefault: true});
 
-// Create your session configuration
-const sessCfg: ISession =  {
-    hostname: commandParameters.arguments.host,
-    port: commandParameters.arguments.port,
-    rejectUnauthorized: commandParameters.arguments.rejectUnauthorized,
-    basePath: commandParameters.arguments.basePath,
-    // any other stuff for your session configuration
-};
+#
+**List systems defined to z/OSMF**
 
-// add credentials to your session configuration
-const sessCfgWithCreds = await CredsForSessCfg.addCredsOrPrompt<ISession>(
-    sessCfg, commandParameters.arguments
-);
+```typescript
+import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "@zowe/cli";
+import { Session, ISession, SessConstants } from "@zowe/imperative";
 
-// Create the session for the REST client
-mySession = new Session(sessCfgWithCreds);
+// Connection Options
+const hostname: string = "yourhost.yourdomain.net";
+const port: number = 443;
+const user: string = "ZOWEUSER";
+const password: string = "ZOWEPASS";
+const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
+const basePath: string = undefined;
+const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
+const tokenType: string = undefined;
+const tokenValue: string = undefined;
+const rejectUnauthorized: boolean = false;
+
+// Session Options
+const sessionConfig: ISession = {
+    hostname,
+    port,
+    user,
+    password,
+    protocol,
+    basePath,
+    type,
+    tokenType,
+    tokenValue,
+    rejectUnauthorized
+}
+
+const session = new Session(sessionConfig);
+
+async function main() {
+    let response: IZosmfListDefinedSystemsResponse;
+    try {
+        response = await ListDefinedSystems.listDefinedSystems(session);
+        console.log(response);
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+}
+
+main();
 ```

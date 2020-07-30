@@ -123,7 +123,7 @@ describe("List workflow details handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -198,7 +198,7 @@ describe("List workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
@@ -278,7 +278,7 @@ describe("List workflow details handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return {workflows: []};
             });
@@ -356,7 +356,7 @@ describe("List workflow details handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return {workflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
