@@ -48,6 +48,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set "like" name is required
+     * @type {IMessageDefinition}
+     */
+    missingDatasetLikeName: {
+        message: "Specify the name of the data set to \"allocate like\" from."
+    },
+
+    /**
      * Message indicating that the USS File name is required
      * @type {IMessageDefinition}
      */
