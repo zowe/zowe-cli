@@ -101,6 +101,17 @@ describe("Delete z/OS File System", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+        it("should delete a ZFS with response timeout", async () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+                TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 5"]);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+                TEST_ENVIRONMENT, [fsname, "--for-sure", "--responseTimeout 5"]);
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Expected failures", () => {

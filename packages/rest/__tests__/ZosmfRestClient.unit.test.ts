@@ -18,16 +18,6 @@ describe("ZosmfRestClient tests", () => {
         expect((zosmfRestClient as any).appendHeaders([])).toMatchSnapshot();
     });
 
-    it("should append the timeout header to requests with timeout in the session object", () => {
-        const zosmfRestClient = new ZosmfRestClient(new Session({hostname: "dummy", timeout: 5}));
-        expect((zosmfRestClient as any).appendHeaders([])).toMatchSnapshot();
-    });
-
-    it("should not append the timeout header to requests with null timeout in the session object", () => {
-        const zosmfRestClient = new ZosmfRestClient(new Session({hostname: "dummy", timeout: null}));
-        expect((zosmfRestClient as any).appendHeaders([])).toMatchSnapshot();
-    });
-
     it("should delete stack from any zosmf errors before presenting them to users", () => {
         const zosmfRestClient = new ZosmfRestClient(new Session({hostname: "dummy"}));
         const shouldNotDeleteMessage = "This should not be deleted";

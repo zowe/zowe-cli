@@ -71,6 +71,15 @@ describe("Create USS file", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
+        it("should create a USS file with response timeout", () => {
+            dsnameSuffix = "ps";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_file.sh",
+                TEST_ENVIRONMENT, [basePath, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Expected failures", () => {

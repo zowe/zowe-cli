@@ -587,6 +587,7 @@ export class Create {
                     case "storeclass":
                     case "mgntclass":
                     case "dataclass":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 
@@ -657,6 +658,7 @@ export class Create {
                     case "dataclass":
                     case "volumes":
                     case "timeout":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 

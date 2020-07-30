@@ -86,9 +86,51 @@ describe("Create data set", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
 
+    it("should create a partitioned data set with response timeout", async () => {
+        let error;
+        let response;
+
+        options.responseTimeout = 5
+
+        try {
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
     it("should create a sequential data set", async () => {
         let error;
         let response;
+
+        try {
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a sequential data set with response timeout", async () => {
+        let error;
+        let response;
+
+        options.responseTimeout = 5;
 
         try {
             response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
@@ -149,6 +191,28 @@ describe("Create VSAM", () => {
         let response;
 
         options.volumes = volume;
+
+        try {
+            response = await Create.vsam(REAL_SESSION, dsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a VSAM data set with response timeout (volume must be specified)", async () => {
+        let error;
+        let response;
+
+        options.volumes = volume;
+        options.responseTimeout = 5;
 
         try {
             response = await Create.vsam(REAL_SESSION, dsname, options);
@@ -233,6 +297,32 @@ describe("Create z/OS file system", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
+
+    it("should create a ZFS with response timeout", async () => {
+        let error;
+        let response;
+
+        options.perms = perms;
+        options.cylsPri = cylsPri;
+        options.cylsSec = cylsSec;
+        options.timeout = timeout;
+        options.volumes = [volume];
+        options.responseTimeout = 5;
+
+        try {
+            response = await Create.zfs(REAL_SESSION, fsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
 });
 
 describe("Create uss file", () => {
@@ -275,6 +365,27 @@ describe("Create uss file", () => {
     it("should create a uss file", async () => {
         let error;
         let response;
+
+        try {
+            response = await Create.uss(REAL_SESSION, filename, "file");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.ussCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a uss file with response timeout", async () => {
+        let error;
+        let response;
+
+        options.responseTimeout = 5;
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "file");
@@ -333,6 +444,27 @@ describe("Create uss directory", () => {
     it("should create a uss directory", async () => {
         let error;
         let response;
+
+        try {
+            response = await Create.uss(REAL_SESSION, filename, "directory");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.ussCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a uss directory with response timeout", async () => {
+        let error;
+        let response;
+
+        options.responseTimeout = 5;
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "directory");

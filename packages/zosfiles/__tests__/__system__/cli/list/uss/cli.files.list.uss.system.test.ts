@@ -139,6 +139,14 @@ describe("List directory", () => {
             expect(response.stdout.toString()).toContain(testFile);
         });
 
+        it("should list files with response timeout", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_uss.sh");
+            response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(testFile);
+        });
+
         it("should list directories with response-format-json flag", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_uss.sh");
             response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, "--rfj"]);

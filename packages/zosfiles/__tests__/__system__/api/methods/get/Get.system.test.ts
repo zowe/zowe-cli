@@ -93,6 +93,24 @@ describe("Get", () => {
                 expect(response.toString()).toEqual(data);
             });
 
+            it("should get data set content with response timeout", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual(data);
+            });
+
 
             it("should get data set content with volume option", async () => {
                 let error;

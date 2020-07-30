@@ -26,6 +26,7 @@ export class Unmount {
      *
      * @param {AbstractSession}  session         - z/OS MF connection info
      * @param {string}           fileSystemName  - contains the file system name
+     * @param {IZosFilesOptions} options         - contains the options to use
      *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *

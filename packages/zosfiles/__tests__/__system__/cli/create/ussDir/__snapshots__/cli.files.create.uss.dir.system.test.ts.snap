@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create USS dir Success scenarios should create a USS dir 1`] = `
+"================Z/OS FILES CREATE USS DIRECTORY===============
+USS file or directory created successfully.
+"
+`;
+
+exports[`Create USS dir Success scenarios should create a USS dir with response timeout 1`] = `
+"================Z/OS FILES CREATE USS DIRECTORY===============
+USS file or directory created successfully.
+"
+`;
