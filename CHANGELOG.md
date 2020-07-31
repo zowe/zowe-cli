@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Added optional responseTimeout option to zosFiles APIs and CLI
+- Specifying `--responseTimeout ###` sets the TSO servlet response timeout
+  - z/OSMF default is 30 seconds, can be set to between 5 and 600 seconds (inclusive)
+- Adds responseTimeout to z/OSMF profile
+
 ## `6.20.0`
 
 - Added API usage examples to each package Readme (files, jobs, etc...). [#751](https://github.com/zowe/zowe-cli/issues/751).
