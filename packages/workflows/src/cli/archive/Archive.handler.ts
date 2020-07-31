@@ -65,7 +65,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 break;
 
             case "workflowName":
-                    getWfKey = await ListWorkflows.listWorkflows(this.mSession, undefined, this.arguments.workflowName);
+                    getWfKey = await ListWorkflows.getWorkflows(this.mSession, {workflowName: this.arguments.workflowName});
                     if (getWfKey === null || getWfKey.workflows.length === 0) {
                         throw new ImperativeError({
                             msg: `No workflows match the provided workflow name.`

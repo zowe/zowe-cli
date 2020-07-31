@@ -9,7 +9,6 @@
 *
 */
 
-import { IExplanationMap } from "@zowe/imperative";
 import { IWorkflowsInfo } from "./IWorkflowsInfo";
 
 /**

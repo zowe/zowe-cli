@@ -24,7 +24,7 @@ import {
 } from "../../src/api/WorkflowConstants";
 import { ICreatedWorkflow } from "../../src/api/doc/ICreatedWorkflow";
 import { ICreateWorkflow } from "../../src/api/doc/ICreateWorkflow";
-import { IVariable } from "../../src/api/doc/IVariables";
+import { IVariable } from "../../src/api/doc/IVariable";
 import { Upload, ZosFilesConstants, Delete } from "../../../zosfiles/src/api";
 
 const wfName = "Test-Workflow";
