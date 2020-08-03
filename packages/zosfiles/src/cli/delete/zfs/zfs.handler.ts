@@ -21,6 +21,6 @@ import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
-        return Delete.zfs(session, commandParameters.arguments.fileSystemName);
+        return Delete.zfs(session, commandParameters.arguments.fileSystemName, zosFilesOptions);
     }
 }

@@ -70,7 +70,7 @@ export class Copy {
 
         if (options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        };
+        }
 
         try {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);
