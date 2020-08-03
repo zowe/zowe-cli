@@ -161,6 +161,7 @@ describe("Create data set", () => {
                     }
                 })
             );
+            dsOptions.responseTimeout = undefined;
         });
 
         it("should be able to allocate like from a sequential data set", async () => {

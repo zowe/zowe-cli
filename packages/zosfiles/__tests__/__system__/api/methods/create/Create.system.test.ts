@@ -90,10 +90,10 @@ describe("Create data set", () => {
         let error;
         let response;
 
-        options.responseTimeout = 5
+        const tempOptions = { ...options, responseTimeout: 5 };
 
         try {
-            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, tempOptions);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -130,10 +130,10 @@ describe("Create data set", () => {
         let error;
         let response;
 
-        options.responseTimeout = 5;
+        const tempOptions = { ...options, responseTimeout: 5 };
 
         try {
-            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, tempOptions);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -274,11 +274,10 @@ describe("Create VSAM", () => {
         let error;
         let response;
 
-        options.volumes = volume;
-        options.responseTimeout = 5;
+        const tempOptions = { ...options, responseTimeout: 5 };
 
         try {
-            response = await Create.vsam(REAL_SESSION, dsname, options);
+            response = await Create.vsam(REAL_SESSION, dsname, tempOptions);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -365,15 +364,10 @@ describe("Create z/OS file system", () => {
         let error;
         let response;
 
-        options.perms = perms;
-        options.cylsPri = cylsPri;
-        options.cylsSec = cylsSec;
-        options.timeout = timeout;
-        options.volumes = [volume];
-        options.responseTimeout = 5;
+        const tempOptions = { ...options, responseTimeout: 5 };
 
         try {
-            response = await Create.zfs(REAL_SESSION, fsname, options);
+            response = await Create.zfs(REAL_SESSION, fsname, tempOptions);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -448,10 +442,8 @@ describe("Create uss file", () => {
         let error;
         let response;
 
-        options.responseTimeout = 5;
-
         try {
-            response = await Create.uss(REAL_SESSION, filename, "file");
+            response = await Create.uss(REAL_SESSION, filename, "file", undefined, {responseTimeout: 5});
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -527,10 +519,8 @@ describe("Create uss directory", () => {
         let error;
         let response;
 
-        options.responseTimeout = 5;
-
         try {
-            response = await Create.uss(REAL_SESSION, filename, "directory");
+            response = await Create.uss(REAL_SESSION, filename, "directory", undefined, {responseTimeout: 5});
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;

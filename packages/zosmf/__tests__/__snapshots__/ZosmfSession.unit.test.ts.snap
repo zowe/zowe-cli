@@ -32,19 +32,3 @@ Object {
   "user": "fake",
 }
 `;
-
-exports[`zosmf utils should create a session object with timeout 1`] = `
-Object {
-  "base64EncodedAuth": "ZmFrZTpmYWtl",
-  "basePath": "",
-  "hostname": "fake",
-  "password": "fake",
-  "port": "fake",
-  "protocol": "https",
-  "rejectUnauthorized": "fake",
-  "secureProtocol": "SSLv23_method",
-  "strictSSL": true,
-  "type": "basic",
-  "user": "fake",
-}
-`;

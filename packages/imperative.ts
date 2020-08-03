@@ -25,6 +25,8 @@ import {
     TSO_OPTION_ROWS
 } from "./zostso/src/cli/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
+import i18nTypings from "./zosfiles/src/cli/-strings-/en";
+const strings = (require("./zosfiles/src/cli/-strings-/en").default as typeof i18nTypings).OPTIONS;
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -198,10 +200,10 @@ const config: IImperativeConfig = {
                         optionDefinition: {
                             name: "responseTimeout",
                             aliases: ["rto"],
-                            description: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response."+
-                                " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+                            description: strings.RESPONSETIMEOUT,
                             type: "number",
                             defaultValue: undefined,
+                            // tslint:disable-next-line: no-magic-numbers
                             numericValueRange: [5, 600]
                         }
                     }

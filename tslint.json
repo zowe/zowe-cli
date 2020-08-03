@@ -21,8 +21,7 @@
       0,
       1,
       2,
-      5,
-      600
+      5
     ],
     "no-consecutive-blank-lines": [
       true,

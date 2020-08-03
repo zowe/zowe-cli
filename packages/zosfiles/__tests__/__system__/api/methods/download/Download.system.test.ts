@@ -318,7 +318,7 @@ describe("Download Data Set", () => {
                 const rc = rimraf(folders[0]);
             });
 
-            it("should download a data set", async () => {
+            it("should download a data set member", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -350,7 +350,7 @@ describe("Download Data Set", () => {
                 expect(fileContents).toEqual(data);
             });
 
-            it("should download a data set with response timeout", async () => {
+            it("should download a data set member with response timeout", async () => {
                 let error;
                 let response: IZosFilesResponse;
 

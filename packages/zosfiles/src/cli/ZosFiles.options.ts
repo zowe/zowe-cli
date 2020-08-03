@@ -28,10 +28,10 @@ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
     responseTimeout: {
         name: "responseTimeout",
         aliases: ["rto"],
-        description: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response."+
-            " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+        description: strings.RESPONSETIMEOUT,
         type: "number",
         defaultValue: undefined,
+        // tslint:disable-next-line: no-magic-numbers
         numericValueRange: [5, 600]
     }
 }
