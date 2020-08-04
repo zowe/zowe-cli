@@ -26,6 +26,7 @@ import {
 } from "./zostso/src/cli/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
 import i18nTypings from "./zosfiles/src/cli/-strings-/en";
+import { ZosFilesOptions, ZosFilesOptionDefinitions } from "./zosfiles/src/cli/ZosFiles.options";
 const strings = (require("./zosfiles/src/cli/-strings-/en").default as typeof i18nTypings).OPTIONS;
 
 const config: IImperativeConfig = {
@@ -197,15 +198,7 @@ const config: IImperativeConfig = {
                     },
                     responseTimeout: {
                         type: "number",
-                        optionDefinition: {
-                            name: "responseTimeout",
-                            aliases: ["rto"],
-                            description: strings.RESPONSETIMEOUT,
-                            type: "number",
-                            defaultValue: undefined,
-                            // tslint:disable-next-line: no-magic-numbers
-                            numericValueRange: [5, 600]
-                        }
+                        optionDefinition: ZosFilesOptions.responseTimeout
                     }
                 },
                 required: []
