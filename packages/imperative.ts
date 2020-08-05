@@ -25,9 +25,7 @@ import {
     TSO_OPTION_ROWS
 } from "./zostso/src/cli/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
-import i18nTypings from "./zosfiles/src/cli/-strings-/en";
 import { ZosFilesOptions } from "./zosfiles/src/cli/ZosFiles.options";
-const strings = (require("./zosfiles/src/cli/-strings-/en").default as typeof i18nTypings).OPTIONS;
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
