@@ -5,10 +5,14 @@ on:
     branches-ignore:
       - 'master'
       - 'zowe-v1-lts'
+  pull_request:
+    branches:
+      - "**"
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
     steps:
     - name: Checkout
