@@ -9,16 +9,16 @@
 *
 */
 
-jest.mock("../../../../src/api/GetJobs");
+jest.mock("../../../../src/GetJobs");
 import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
-import { GetJobs } from "../../../../src/api/GetJobs";
-import { GetJobsData } from "../../../__resources__/api/GetJobsData";
-import { SpoolFilesByJobidDefinition } from "../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
-import * as SpoolFileByIdHandler from "../../../../src/cli/view/spool-file-by-id/SpoolFileById.handler";
+import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
+import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
+import { SpoolFilesByJobidDefinition } from "../../../../src/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
+import * as SpoolFileByIdHandler from "../../../../src/view/spool-file-by-id/SpoolFileById.handler";
 import * as fs from "fs";
-import { TEST_RESOURCES_DIR } from "../../../__src__/ZosJobsTestConstants";
-import { ZosmfSession } from "../../../../../zosmf/src/api/ZosmfSession";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { TEST_RESOURCES_DIR } from "../../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
+import { ZosmfSession } from "../../../../../../zosmf/src/ZosmfSession";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";

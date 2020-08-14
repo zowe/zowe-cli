@@ -11,9 +11,9 @@
 
 import { AbstractSession, Session, Imperative, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../rest";
-import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
+import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../../";
-import { WorkflowConstants } from "../../src/api/WorkflowConstants";
+import { WorkflowConstants } from "../../src/WorkflowConstants";
 
 const session: AbstractSession = new Session({
     user: "usr",

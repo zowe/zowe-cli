@@ -18,12 +18,12 @@ import {
     IssueCommand,
     IZosmfIssueParms,
     IZosmfIssueResponse
-} from "../../../../zosconsole";
+} from "../../../zosconsole";
 import * as fs from "fs";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 /**
  * These tests runs on mainframe, be pretared to provide proper credentials.

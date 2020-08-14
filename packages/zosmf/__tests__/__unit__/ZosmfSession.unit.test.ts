@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfSession } from "../src/api/ZosmfSession";
+import { ZosmfSession } from "../../src/ZosmfSession";
 import { Session, ImperativeExpect, ICommandArguments } from "@zowe/imperative";
 
 describe("zosmf utils", () => {

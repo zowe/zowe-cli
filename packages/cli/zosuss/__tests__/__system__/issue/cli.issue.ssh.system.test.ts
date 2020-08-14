@@ -17,7 +17,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ZosFilesConstants } from "../../../../../index";
 import { ZosmfRestClient } from "../../../../../rest";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { startCmdFlag } from "../../../../src/api/Shell";
+import { startCmdFlag } from "../../../../../../packages/zosuss/src/Shell";
 
 
 // Test environment will be populated in the "beforeAll"

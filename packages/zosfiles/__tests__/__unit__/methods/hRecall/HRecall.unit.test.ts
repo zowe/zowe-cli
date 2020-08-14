@@ -14,7 +14,7 @@ import { posix } from "path";
 import { ZosFilesConstants, ZosFilesMessages, HRecall } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
-import { IRecallOptions } from "../../../../src/api";
+import { IRecallOptions } from "../../../../src";
 
 describe("hRecall data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

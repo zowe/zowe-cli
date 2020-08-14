@@ -9,13 +9,17 @@
 *
 */
 
-import { CheckStatus, ListDefinedSystems } from "../../../../../zosmf";
+import { CheckStatus, ListDefinedSystems } from "../../../../../../zosmf";
 import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
-import CmdHandler from "../../../../src/cli/list/systems/Systems.handler";
-import * as cmdDef from "../../../../src/cli/list/systems/Systems.definition";
-import { getMockedResponse, UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import CmdHandler from "../../../../src/list/systems/Systems.handler";
+import * as cmdDef from "../../../../src/list/systems/Systems.definition";
+import {
+    getMockedResponse,
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-jest.mock("../../../../src/api/ListDefinedSystems");
+jest.mock("../../../../src/ListDefinedSystems");
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {
@@ -34,18 +38,20 @@ let listSystemsHandler: ICommandHandler = null;
 
 describe("check status behavior", () => {
     beforeEach(() => {
-        ListDefinedSystems.listDefinedSystems = jest.fn((session, servletKey) => {
-            return {
-                numRows: "1",
-                items: [
-                    {
-                        systemNickName: "SYS1",
-                        systemName: "SYS1_001",
-                        url: "some.zosmf.url"
-                    }
-                ]
-            };
-        });
+        ListDefinedSystems.listDefinedSystems = jest.fn(
+            (session, servletKey) => {
+                return {
+                    numRows: "1",
+                    items: [
+                        {
+                            systemNickName: "SYS1",
+                            systemName: "SYS1_001",
+                            url: "some.zosmf.url"
+                        }
+                    ]
+                };
+            }
+        );
 
         listSystemsHandler = new CmdHandler();
     });
@@ -81,9 +87,11 @@ describe("check status behavior", () => {
 
     it("should pass the rest client error to the command processor (no transformation)", async () => {
         const parmsToUse = Object.assign({}, ...[goodCmdParms]);
-        ListDefinedSystems.listDefinedSystems = jest.fn((session, servletKey) => {
-            throw new Error("Mock GetInfo Error");
-        });
+        ListDefinedSystems.listDefinedSystems = jest.fn(
+            (session, servletKey) => {
+                throw new Error("Mock GetInfo Error");
+            }
+        );
         parmsToUse.response.console.error = jest.fn((errors) => {
             expect(errors).toMatchSnapshot();
             expect(errors).toContain("Mock GetInfo Error");

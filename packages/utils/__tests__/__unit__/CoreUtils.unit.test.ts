@@ -9,7 +9,7 @@
 *
 */
 
-import * as CoreUtils from "../src/CoreUtils";
+import * as CoreUtils from "../../src/CoreUtils";
 
 jest.mock("fs");
 const fs = require("fs");
