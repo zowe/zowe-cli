@@ -11,11 +11,14 @@
 
 jest.mock("../../../../src/api/GetJobs");
 import { IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
-import { GetJobs } from "../../../../src/api/GetJobs";
-import { GetJobsData } from "../../../__resources__/api/GetJobsData";
-import * as JobStatusByJobidHandler from "../../../../src/cli/view/job-status-by-jobid/JobStatusByJobid.handler";
-import * as JobStatusByJobidDefinition from "../../../../src/cli/view/job-status-by-jobid/JobStatusByJobid.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
+import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
+import * as JobStatusByJobidHandler from "../../../../src/view/job-status-by-jobid/JobStatusByJobid.handler";
+import * as JobStatusByJobidDefinition from "../../../../src/view/job-status-by-jobid/JobStatusByJobid.definition";
+import { UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF,
+    getMockedResponse
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 process.env.FORCE_COLOR = "0";
 

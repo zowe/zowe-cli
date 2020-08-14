@@ -10,13 +10,13 @@
 */
 
 jest.mock("../../../src/api/MonitorJobs");
-import { IJob, MonitorJobs } from "../../..";
+import { IJob, MonitorJobs } from "../../../../../../packages/zosjobs";
 
 jest.mock("../../../src/api/SubmitJobs");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@zowe/imperative";
-import { SubmitJobs } from "../../../src/api/SubmitJobs";
-import * as SubmitDefinition from "../../../src/cli/submit/Submit.definition";
-import { ISubmitParms } from "../../../src/api/doc/input/ISubmitParms";
+import { SubmitJobs } from "../../../../../../packages/zosjobs/src/SubmitJobs";
+import * as SubmitDefinition from "../../../src/submit/Submit.definition";
+import { ISubmitParms } from "../../../../../../packages/zosjobs/src/doc/input/ISubmitParms";
 
 process.env.FORCE_COLOR = "0";
 
