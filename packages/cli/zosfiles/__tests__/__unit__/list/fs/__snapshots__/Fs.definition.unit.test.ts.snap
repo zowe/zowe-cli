@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files list fs command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "max",
+    ],
+    "description": "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items. If you specify an incorrect value, the parameter returns up to 1000 items.",
+    "name": "max-length",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "f",
+    ],
+    "conflictsWith": Array [
+      "path",
+    ],
+    "description": "Specifies the name of the mounted file system. This option and --path are mutually exclusive.",
+    "name": "fsname",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "p",
+    ],
+    "description": "Specifies the path where the file system is mounted. This option and --fsname are mutually exclusive.",
+    "name": "path",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files list fs command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "To list all mounted filesystems",
+    "options": "",
+  },
+  Object {
+    "description": "To list filesystems mounted to a specific path",
+    "options": "-p /a/ibmuser",
+  },
+  Object {
+    "description": "To list filesystems mounted with a specific name",
+    "options": "-f MY.ZFS",
+  },
+]
+`;

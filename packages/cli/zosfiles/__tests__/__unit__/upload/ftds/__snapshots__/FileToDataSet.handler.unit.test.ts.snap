@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Upload file-to-data-set handler process method should display error when upload file to data set 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-file",
+      "success": false,
+      "to": "testing",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
+
+exports[`Upload file-to-data-set handler process method should display error when upload file to data set 2`] = `""`;
+
+exports[`Upload file-to-data-set handler process method should display error when upload file to data set 3`] = `
+"
+[31m[33msuccess: [31m[31mfalse[31m[39m
+[31m[33mfrom: [31m   test-file[39m
+[31m[33mto: [31m     testing[39m
+[31m[39m
+[31m[39m
+[33mfile_to_upload: [39m[34m1[39m
+[33msuccess: [39m       [34m0[39m
+[33merror: [39m         [34m1[39m
+[33mskipped: [39m       [34m0[39m
+
+
+uploaded"
+`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-file",
+      "success": true,
+      "to": "testing",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": true,
+}
+`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set if requested 2`] = `""`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set if requested 3`] = `
+"
+[33msuccess: [39m[32mtrue[39m
+[33mfrom: [39m   test-file
+[33mto: [39m     testing
+
+
+[33mfile_to_upload: [39m[34m1[39m
+[33msuccess: [39m       [34m1[39m
+[33merror: [39m         [34m0[39m
+[33mskipped: [39m       [34m0[39m
+
+
+uploaded"
+`;
