@@ -14,7 +14,7 @@ import { posix } from "path";
 import { HDelete, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
 import { ZosmfRestClient } from "../../../../../rest";
-import { IDeleteOptions } from "../../../../src/api/methods/hDelete/doc/IDeleteOptions";
+import { IDeleteOptions } from "../../../../src/methods/hDelete/doc/IDeleteOptions";
 
 describe("hDelete data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

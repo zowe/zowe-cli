@@ -9,7 +9,7 @@
 *
 */
 
-import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src/api";
+import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src";
 import { Session, Headers } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../../rest";
 import { posix } from "path";

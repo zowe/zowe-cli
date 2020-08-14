@@ -12,11 +12,11 @@
 import { Create, Delete, ZosFilesMessages } from "../../../../../";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
-import { ICreateZfsOptions } from "../../../../../src/api/methods/create/doc/ICreateZfsOptions";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
+import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
