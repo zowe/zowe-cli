@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Session } from "@zowe/imperative";
-import { StopTso } from "../../../../";
+import { StopTso } from "../../../../../../packages/zostso";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();

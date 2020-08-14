@@ -9,20 +9,20 @@
 *
 */
 
-import { PingTsoData } from "../../../__resources__/api/PingTsoData";
+import { PingTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/PingTsoData";
 
-jest.mock("../../../../src/api/PingTso");
-import { IssueTso } from "../../../../../zostso";
+jest.mock("../../../../src/PingTso");
+import { IssueTso } from "../../../../../../zostso";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import * as Command from "../../../../src/cli/issue/command/Command.handler";
-import { CommandDefinition } from "../../../../src/cli/issue/command/Command.definition";
-import { StartTsoData } from "../../../__resources__/api/StartTsoData";
+import * as Command from "../../../../src/issue/command/Command.handler";
+import { CommandDefinition } from "../../../../src/issue/command/Command.definition";
+import { StartTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/StartTsoData";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF_TSO,
     UNIT_TEST_TSO_PROF_OPTS
-} from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
