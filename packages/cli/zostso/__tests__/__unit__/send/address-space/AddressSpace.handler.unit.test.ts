@@ -9,7 +9,7 @@
 *
 */
 
-import { PingTsoData } from "../../__resources__/PingTsoData";
+import { PingTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/PingTsoData";
 
 jest.mock("../../../../src/PingTso");
 import { SendTso } from "../../../../../../zostso";
