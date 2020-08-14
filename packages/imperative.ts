@@ -23,7 +23,7 @@ import {
     TSO_OPTION_LOGON_PROCEDURE,
     TSO_OPTION_REGION_SIZE,
     TSO_OPTION_ROWS
-} from "./zostso/src/cli/constants/ZosTso.constants";
+} from "../packages/cli/zostso/src/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
 
 const config: IImperativeConfig = {

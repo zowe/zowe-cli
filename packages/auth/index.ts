@@ -9,7 +9,7 @@
 *
 */
 
-export * from "./src/api/Login";
-export * from "./src/api/LoginConstants";
-export * from "./src/api/Logout";
-export * from "./src/api/LogoutConstants";
+export * from "../../packages/auth/src/Login";
+export * from "../../packages/auth/src/LoginConstants";
+export * from "../../packages/auth/src/Logout";
+export * from "../../packages/auth/src/LogoutConstants";

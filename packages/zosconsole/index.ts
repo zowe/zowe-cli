@@ -9,20 +9,20 @@
 *
 */
 
-export * from "./src/api/doc/zosmf/IZosmfIssueParms";
-export * from "./src/api/doc/zosmf/IZosmfIssueResponse";
-export * from "./src/api/doc/zosmf/IZosmfCollectResponse";
+export * from "./src/doc/zosmf/IZosmfIssueParms";
+export * from "./src/doc/zosmf/IZosmfIssueResponse";
+export * from "./src/doc/zosmf/IZosmfCollectResponse";
 
-export * from "./src/api/doc/IConsoleParms";
-export * from "./src/api/doc/IIssueParms";
-export * from "./src/api/doc/ICollectParms";
-export * from "./src/api/doc/IConsoleResponse";
-export * from "./src/api/doc/ICollectParms";
+export * from "./src/doc/IConsoleParms";
+export * from "./src/doc/IIssueParms";
+export * from "./src/doc/ICollectParms";
+export * from "./src/doc/IConsoleResponse";
+export * from "./src/doc/ICollectParms";
 
-export * from "./src/api/types/ConsoleResponse";
+export * from "./src/types/ConsoleResponse";
 
-export * from "./src/api/IssueCommand";
-export * from "./src/api/ConsoleValidator";
-export * from "./src/api/CollectCommand";
-export * from "./src/api/ConsoleConstants";
-export * from "./src/api/ConsoleResponseService";
+export * from "./src/IssueCommand";
+export * from "./src/ConsoleValidator";
+export * from "./src/CollectCommand";
+export * from "./src/ConsoleConstants";
+export * from "./src/ConsoleResponseService";

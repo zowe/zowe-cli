@@ -9,36 +9,36 @@
 *
 */
 
-export * from "./src/api/doc/input/ICancelJob";
-export * from "./src/api/doc/input/ICancelJobParms";
-export * from "./src/api/doc/input/IDownloadSpoolContentParms";
-export * from "./src/api/doc/input/IDownloadAllSpoolContentParms";
-export * from "./src/api/doc/input/ICommonJobParms";
-export * from "./src/api/doc/input/IDownloadSpoolContentParms";
-export * from "./src/api/doc/input/IGetJobsParms";
-export * from "./src/api/doc/input/IMonitorJobWaitForParms";
-export * from "./src/api/doc/input/ISubmitJclNotifyParms";
-export * from "./src/api/doc/input/ISubmitJclParms";
-export * from "./src/api/doc/input/ISubmitJobNotifyParms";
-export * from "./src/api/doc/input/ISubmitJobParms";
+export * from "./src/doc/input/ICancelJob";
+export * from "./src/doc/input/ICancelJobParms";
+export * from "./src/doc/input/IDownloadSpoolContentParms";
+export * from "./src/doc/input/IDownloadAllSpoolContentParms";
+export * from "./src/doc/input/ICommonJobParms";
+export * from "./src/doc/input/IDownloadSpoolContentParms";
+export * from "./src/doc/input/IGetJobsParms";
+export * from "./src/doc/input/IMonitorJobWaitForParms";
+export * from "./src/doc/input/ISubmitJclNotifyParms";
+export * from "./src/doc/input/ISubmitJclParms";
+export * from "./src/doc/input/ISubmitJobNotifyParms";
+export * from "./src/doc/input/ISubmitJobParms";
 
-export * from "./src/api/doc/response/IJob";
-export * from "./src/api/doc/response/IJobComplete";
-export * from "./src/api/doc/response/IJobError";
-export * from "./src/api/doc/response/IJobFeedback";
-export * from "./src/api/doc/response/IJobFile";
-export * from "./src/api/doc/response/IJobFileSimple";
-export * from "./src/api/doc/response/IJobStepData";
-export * from "./src/api/doc/response/IJobSubmit";
+export * from "./src/doc/response/IJob";
+export * from "./src/doc/response/IJobComplete";
+export * from "./src/doc/response/IJobError";
+export * from "./src/doc/response/IJobFeedback";
+export * from "./src/doc/response/IJobFile";
+export * from "./src/doc/response/IJobFileSimple";
+export * from "./src/doc/response/IJobStepData";
+export * from "./src/doc/response/IJobSubmit";
 
-export * from "./src/api/types/JobDataResolve";
-export * from "./src/api/types/JobResolve";
-export * from "./src/api/types/JobStatus";
+export * from "./src/types/JobDataResolve";
+export * from "./src/types/JobResolve";
+export * from "./src/types/JobStatus";
 
-export * from "./src/api/CancelJobs";
-export * from "./src/api/DeleteJobs";
-export * from "./src/api/DownloadJobs";
-export * from "./src/api/GetJobs";
-export * from "./src/api/JobsConstants";
-export * from "./src/api/MonitorJobs";
-export * from "./src/api/SubmitJobs";
+export * from "./src/CancelJobs";
+export * from "./src/DeleteJobs";
+export * from "./src/DownloadJobs";
+export * from "./src/GetJobs";
+export * from "./src/JobsConstants";
+export * from "./src/MonitorJobs";
+export * from "./src/SubmitJobs";
