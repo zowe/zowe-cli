@@ -12,8 +12,8 @@
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { StartWorkflow } from "../../../workflows";
-import { WorkflowConstants, noSession, noWorkflowKey, nozOSMFVersion } from "../../src/api/WorkflowConstants";
-import { IStartWorkflow, startT } from "../../src/api/doc/IStartWorkflow";
+import { WorkflowConstants, noSession, noWorkflowKey, nozOSMFVersion } from "../../src/WorkflowConstants";
+import { IStartWorkflow, startT } from "../../src/doc/IStartWorkflow";
 
 const wfKey = "1234567_abcde";
 const conflict: startT = "outputFileValue";

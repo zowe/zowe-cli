@@ -12,9 +12,9 @@
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { ListWorkflows } from "../../../workflows";
-import { WorkflowConstants, wrongString, noSession, noWorkflowName } from "../../src/api/WorkflowConstants";
-import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
-import { IActiveWorkflows } from "../../src/api/doc/IActiveWorkflows";
+import { WorkflowConstants, wrongString, noSession, noWorkflowName } from "../../src/WorkflowConstants";
+import { IWorkflowsInfo } from "../../src/doc/IWorkflowsInfo";
+import { IActiveWorkflows } from "../../src/doc/IActiveWorkflows";
 
 const system = "SYS1";
 const category = "Provisioning";

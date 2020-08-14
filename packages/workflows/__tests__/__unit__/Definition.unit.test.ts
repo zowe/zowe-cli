@@ -17,14 +17,14 @@ import {
     noSession,
     noWorkflowDefinitionFile,
     nozOSMFVersion
-} from "../../src/api/WorkflowConstants";
+} from "../../src/WorkflowConstants";
 
-import { IWorkflowDefinition } from "../../src/api/doc/IWorkflowDefinition";
-import { IStepDefinition } from "../../src/api/doc/IStepDefinition";
-import { IVariableDefinition } from "../../src/api/doc/IVariableDefinition";
-import { IVariableSpecification } from "../../src/api/doc/IVariableSpecification";
-import { IStepApprovers } from "../../src/api/doc/IStepApprovers";
-import { IPropertyMapping } from "../../src/api/doc/IPropertyMapping";
+import { IWorkflowDefinition } from "../../src/doc/IWorkflowDefinition";
+import { IStepDefinition } from "../../src/doc/IStepDefinition";
+import { IVariableDefinition } from "../../src/doc/IVariableDefinition";
+import { IVariableSpecification } from "../../src/doc/IVariableSpecification";
+import { IStepApprovers } from "../../src/doc/IStepApprovers";
+import { IPropertyMapping } from "../../src/doc/IPropertyMapping";
 
 const wfDefinitionFile = "/tmp/workflow.xml";
 const wfPath = "/a/wf1.xml";

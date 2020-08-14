@@ -20,15 +20,15 @@ import {
     nozOSMFVersion,
     noSteps,
     noVariables
-} from "../../src/api/WorkflowConstants";
-import { IVariable } from "../../src/api/doc/IVariable";
-import { IWorkflowInfo } from "../../src/api/doc/IWorkflowInfo";
-import { IAutomationStatus } from "../../src/api/doc/IAutomationStatus";
-import { IStepInfo } from "../../src/api/doc/IStepInfo";
-import { IVariableInfo } from "../../src/api/doc/IVariableInfo";
-import { IJobStatus } from "../../src/api/doc/IJobStatus";
-import { IJobFiles } from "../../src/api/doc/IJobFiles";
-import { IJobInfo } from "../../src/api/doc/IJobInfo";
+} from "../../src/WorkflowConstants";
+import { IVariable } from "../../src/doc/IVariable";
+import { IWorkflowInfo } from "../../src/doc/IWorkflowInfo";
+import { IAutomationStatus } from "../../src/doc/IAutomationStatus";
+import { IStepInfo } from "../../src/doc/IStepInfo";
+import { IVariableInfo } from "../../src/doc/IVariableInfo";
+import { IJobStatus } from "../../src/doc/IJobStatus";
+import { IJobFiles } from "../../src/doc/IJobFiles";
+import { IJobInfo } from "../../src/doc/IJobInfo";
 
 const wfName = "Test-Workflow";
 const wfDefinitionFile = "/tmp/workflow.xml";

@@ -11,9 +11,9 @@
 
 import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { ListArchivedWorkflows } from "../../src/api/ListArchivedWorkflows";
-import { WorkflowConstants, noSession } from "../../src/api/WorkflowConstants";
-import { IWorkflowsInfo } from "../../src/api/doc/IWorkflowsInfo";
+import { ListArchivedWorkflows } from "../../src/ListArchivedWorkflows";
+import { WorkflowConstants, noSession } from "../../src/WorkflowConstants";
+import { IWorkflowsInfo } from "../../src/doc/IWorkflowsInfo";
 
 const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;
 
