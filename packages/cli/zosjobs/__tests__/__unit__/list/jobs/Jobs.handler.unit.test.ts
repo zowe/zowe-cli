@@ -9,14 +9,14 @@
 *
 */
 
-import { IGetJobsParms } from "../../../..";
+import { IGetJobsParms } from "../../../../../..";
 
 jest.mock("../../../../src/api/GetJobs");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
-import { GetJobs } from "../../../../src/api/GetJobs";
-import { GetJobsData } from "../../../__resources__/api/GetJobsData";
-import * as JobsHandler from "../../../../src/cli/list/jobs/Jobs.handler";
-import * as JobsDefinition from "../../../../src/cli/list/jobs/Jobs.definition";
+import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
+import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
+import * as JobsHandler from "../../../../src/list/jobs/Jobs.handler";
+import * as JobsDefinition from "../../../../src/list/jobs/Jobs.definition";
 
 process.env.FORCE_COLOR = "0";
 

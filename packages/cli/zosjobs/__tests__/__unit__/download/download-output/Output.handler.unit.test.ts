@@ -1,22 +1,31 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-import { DownloadJobs, IDownloadAllSpoolContentParms } from "../../../../index";
+import {
+    DownloadJobs,
+    IDownloadAllSpoolContentParms,
+} from "../../../../../../index";
 
 jest.mock("../../../../src/api/GetJobs");
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
-import { GetJobs } from "../../../../src/api/GetJobs";
-import { GetJobsData } from "../../../__resources__/api/GetJobsData";
-import * as OutputHandler from "../../../../src/cli/download/download-output/Output.handler";
-import * as OutputDefinition from "../../../../src/cli/download/download-output/Output.definition";
+import {
+    CommandProfiles,
+    IHandlerParameters,
+    ImperativeError,
+    IProfile,
+    Session,
+} from "@zowe/imperative";
+import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
+import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
+import * as OutputHandler from "../../../../src/download/download-output/Output.handler";
+import * as OutputDefinition from "../../../../src/download/download-output/Output.definition";
 
 process.env.FORCE_COLOR = "0";
 
@@ -28,13 +37,13 @@ const ZOSMF_PROF_OPTS = {
 };
 
 const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
+PROFILE_MAP.set("zosmf", [
+    {
         name: "zosmf",
         type: "zosmf",
         ...ZOSMF_PROF_OPTS
-    }]
-);
+    },
+]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMETERS: IHandlerParameters = {
@@ -85,9 +94,11 @@ describe("download output handler tests", () => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DownloadJobs.downloadAllSpoolContentCommon = jest.fn((session, options) => {
-            return;
-        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            (session, options) => {
+                return;
+            }
+        );
         const handler = new OutputHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -96,11 +107,14 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
-            omitJobidDirectory: false
+            omitJobidDirectory: false,
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
-        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(passedSession, defaults);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            defaults
+        );
     });
 
     it("should download a job output to a specific directory", async () => {
@@ -110,9 +124,11 @@ describe("download output handler tests", () => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DownloadJobs.downloadAllSpoolContentCommon = jest.fn((session, options) => {
-            return;
-        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            (session, options) => {
+                return;
+            }
+        );
         const handler = new OutputHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -122,11 +138,14 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: outputDir,
-            omitJobidDirectory: false
+            omitJobidDirectory: false,
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
-        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(passedSession, opts);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            opts
+        );
     });
 
     it("should download a job output with a specific extension", async () => {
@@ -136,9 +155,11 @@ describe("download output handler tests", () => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DownloadJobs.downloadAllSpoolContentCommon = jest.fn((session, options) => {
-            return;
-        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            (session, options) => {
+                return;
+            }
+        );
         const handler = new OutputHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -149,11 +170,14 @@ describe("download output handler tests", () => {
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
             omitJobidDirectory: false,
-            extension
+            extension,
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
-        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(passedSession, optsext);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            optsext
+        );
     });
 
     it("should download a job output omitting the output directory", async () => {
@@ -162,9 +186,11 @@ describe("download output handler tests", () => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DownloadJobs.downloadAllSpoolContentCommon = jest.fn((session, options) => {
-            return;
-        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            (session, options) => {
+                return;
+            }
+        );
         const handler = new OutputHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
@@ -174,18 +200,21 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
-            omitJobidDirectory: true
+            omitJobidDirectory: true,
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
-        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(passedSession, opts);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            opts
+        );
     });
 
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail in z/OSMF";
         let error;
         GetJobs.getJob = jest.fn((session, jobid) => {
-            throw new ImperativeError({msg: failMessage});
+            throw new ImperativeError({ msg: failMessage });
         });
         const handler = new OutputHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
@@ -206,9 +235,11 @@ describe("download output handler tests", () => {
         GetJobs.getJob = jest.fn((session, jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DownloadJobs.downloadAllSpoolContentCommon = jest.fn((session, options) => {
-            throw new ImperativeError({msg: failMessage});
-        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            (session, options) => {
+                throw new ImperativeError({ msg: failMessage });
+            }
+        );
         const handler = new OutputHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         try {
@@ -217,7 +248,9 @@ describe("download output handler tests", () => {
             error = thrownError;
         }
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
-        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledTimes(1);
+        expect(
+            DownloadJobs.downloadAllSpoolContentCommon
+        ).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
