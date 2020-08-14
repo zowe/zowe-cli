@@ -10,7 +10,7 @@
 */
 
 import { Client } from "ssh2";
-import { SshSession, startCmdFlag } from "../../index";
+import { SshSession, startCmdFlag, Shell } from "../../index";
 import { EventEmitter } from "events";
 jest.mock("ssh2");
 
