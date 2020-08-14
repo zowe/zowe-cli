@@ -19,8 +19,8 @@ import {
     IProvisionedInstance,
     ListRegistryInstances,
     ProvisioningConstants
-} from "../../../../index";
-import { ListInstanceInfo } from "../../../api/ListInstanceInfo";
+} from "../../../../../../packages/provisioning";
+import { ListInstanceInfo } from "../../../../../../packages/provisioning/src/ListInstanceInfo";
 import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 

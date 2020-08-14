@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { explainActionResponse, PerformAction, ProvisioningConstants } from "../../../../";
-import { IProvisionedInstance, ListRegistryInstances } from "../../../../index";
+import { explainActionResponse, PerformAction, ProvisioningConstants } from "../../../../../../packages/provisioning";
+import { IProvisionedInstance, ListRegistryInstances } from "../../../../../../packages/provisioning/index";
 import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 

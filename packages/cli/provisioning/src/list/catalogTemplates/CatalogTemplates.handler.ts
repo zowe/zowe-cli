@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCatalogTemplates, ProvisioningConstants } from "../../../../";
-import { IPublishedTemplates } from "../../../../index";
+import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCatalogTemplates, ProvisioningConstants } from "../../../../../../packages/provisioning";
+import { IPublishedTemplates } from "../../../../../../packages/provisioning/index";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
