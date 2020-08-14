@@ -22,7 +22,7 @@ import {
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { inspect } from "util";
-import { SendTso } from "../../src/api/SendTso";
+import { SendTso } from "../../src/SendTso";
 
 
 const START_HEADERS: any[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON];

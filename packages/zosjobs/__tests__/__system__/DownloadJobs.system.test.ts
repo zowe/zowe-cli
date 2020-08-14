@@ -11,14 +11,14 @@
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../../";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Get } from "../../../../zosfiles/src/api/methods/get";
-import { MonitorJobs } from "../../../src/api/MonitorJobs";
-import { IJob } from "../../../src/api/doc/response/IJob";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { Get } from "../../../zosfiles/src/methods/get";
+import { MonitorJobs } from "../../src/MonitorJobs";
+import { IJob } from "../../src/doc/response/IJob";
 import * as fs from "fs";
-import { TEST_RESOURCES_DIR } from "../../__src__/ZosJobsTestConstants";
+import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
 import { join } from "path";
 
 let outputDirectory: string;

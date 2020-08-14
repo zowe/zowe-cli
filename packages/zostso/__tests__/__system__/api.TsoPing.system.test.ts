@@ -10,11 +10,11 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { IPingResponse, noPingInput, PingTso, StopTso } from "../../../../zostso";
+import { IPingResponse, noPingInput, PingTso, StopTso } from "../../../zostso";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { IStartTsoParms, StartTso } from "../../../index";
 
 let servletKey: string;

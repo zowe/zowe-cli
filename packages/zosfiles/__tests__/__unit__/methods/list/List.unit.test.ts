@@ -11,11 +11,11 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../../../../rest";
-import { List } from "../../../../src/api/methods/list/List";
-import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
+import { List } from "../../../../src/methods/list/List";
+import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { posix } from "path";
-import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
-import { ZosmfHeaders } from "../../../../../rest/src/api/ZosmfHeaders";
+import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
+import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");

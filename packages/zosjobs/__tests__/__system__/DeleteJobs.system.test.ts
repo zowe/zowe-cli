@@ -12,10 +12,10 @@
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, SubmitJobs } from "../../../";
 import { IJob } from "../../../index";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Get } from "../../../../zosfiles/src/api/methods/get";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { Get } from "../../../zosfiles/src/methods/get";
 
 let REAL_SESSION: Session;
 let iefbr14JCL: string;

@@ -9,12 +9,12 @@
 *
 */
 
-import { CheckStatus, ZosmfMessages } from "../../../../../zosmf";
+import { CheckStatus, ZosmfMessages } from "../../../../zosmf";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

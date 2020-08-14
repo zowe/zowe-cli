@@ -9,15 +9,15 @@
 *
 */
 
-import { TEST_REGEX_DIR, TEST_RESOURCES_DIR } from "./../../__src__/ZosJobsTestConstants";
+import { TEST_REGEX_DIR, TEST_RESOURCES_DIR } from "./../__src__/ZosJobsTestConstants";
 import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "./../../../index";
 import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
-import { ZosmfRestClient } from "../../../../rest";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ZosmfRestClient } from "../../../rest";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // long running test timeout
 const LONG_TIMEOUT = 100000;

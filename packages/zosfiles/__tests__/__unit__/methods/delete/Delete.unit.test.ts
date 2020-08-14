@@ -14,9 +14,9 @@ import { posix } from "path";
 import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
 
 import { ZosmfRestClient } from "../../../../../rest";
-import { IDeleteDatasetOptions } from "../../../../src/api/methods/delete/doc/IDeleteDatasetOptions";
-import { IDeleteVsamOptions } from "../../../../src/api/methods/delete/doc/IDeleteVsamOptions";
-import { Invoke } from "../../../../src/api/methods/invoke";
+import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDeleteDatasetOptions";
+import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
+import { Invoke } from "../../../../src/methods/invoke";
 
 describe("Delete", () => {
     const deleteExpectStringSpy = jest.spyOn(ZosmfRestClient, "deleteExpectString");

@@ -12,12 +12,12 @@
 import { IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
-import { Download } from "../../../../src/api/methods/download/Download";
+import { Download } from "../../../../src/methods/download/Download";
 import { posix } from "path";
-import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
+import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import * as util from "util";
-import { List } from "../../../../src/api/methods/list";
-import { CLIENT_PROPERTY } from "../../../../src/api/doc/types/ZosmfRestClientProperties";
+import { List } from "../../../../src/methods/list";
+import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";

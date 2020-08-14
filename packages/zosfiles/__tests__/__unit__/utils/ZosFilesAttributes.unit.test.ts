@@ -10,7 +10,7 @@
 */
 
 
-import { ZosFilesAttributes, TransferMode } from "../../../src/api/utils/ZosFilesAttributes";
+import { ZosFilesAttributes, TransferMode } from "../../../src/utils/ZosFilesAttributes";
 
 
 describe("ZosFilesAttributes", () => {

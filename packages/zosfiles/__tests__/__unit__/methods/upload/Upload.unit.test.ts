@@ -18,17 +18,17 @@ import { ImperativeError, IO, Session, IHeaderContent } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { IZosFilesResponse } from "../../../../../zosfiles";
-import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
-import { IUploadOptions } from "../../../../src/api/methods/upload/doc/IUploadOptions";
-import { Upload } from "../../../../src/api/methods/upload/Upload";
-import { List } from "../../../../src/api/methods/list/List";
-import { Utilities } from "../../../../src/api/methods/utilities/Utilities";
+import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
+import { IUploadOptions } from "../../../../src/methods/upload/doc/IUploadOptions";
+import { Upload } from "../../../../src/methods/upload/Upload";
+import { List } from "../../../../src/methods/list/List";
+import { Utilities } from "../../../../src/methods/utilities/Utilities";
 
-import { ZosFilesUtils } from "../../../../src/api/utils/ZosFilesUtils";
+import { ZosFilesUtils } from "../../../../src/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { Create } from "../../../../src/api/methods/create";
-import { ZosFilesAttributes, TransferMode, Tag } from "../../../../src/api";
-import { CLIENT_PROPERTY } from "../../../../src/api/doc/types/ZosmfRestClientProperties";
+import { Create } from "../../../../src/methods/create";
+import { ZosFilesAttributes, TransferMode, Tag } from "../../../../src";
+import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { Readable } from "stream";
 
 describe("z/OS Files - Upload", () => {

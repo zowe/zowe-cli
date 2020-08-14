@@ -19,10 +19,10 @@ import {
     noTsoStopInput,
     StartTso,
     StopTso
-} from "../../../../zostso";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+} from "../../../zostso";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { inspect } from "util";
 
 /**

@@ -12,7 +12,7 @@
 import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Mount, IMountFsMode, IMountFsOptions } from "../../../..";
 import { ZosmfRestClient } from "../../../../../rest";
-import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
+import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 
 
 describe("Mount FS", () => {

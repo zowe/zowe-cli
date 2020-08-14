@@ -12,9 +12,9 @@
 import { ImperativeError } from "@zowe/imperative";
 import { GetJobs, JOB_STATUS } from "../..";
 import { sleep } from "../../../utils";
-import { IMonitorJobWaitForParms } from "../../src/api/doc/input/IMonitorJobWaitForParms";
-import { IJob } from "../../src/api/doc/response/IJob";
-import { MonitorJobs } from "../../src/api/MonitorJobs";
+import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
+import { IJob } from "../../src/doc/response/IJob";
+import { MonitorJobs } from "../../src/MonitorJobs";
 
 jest.mock("../../src/api/GetJobs");
 jest.mock("../../../utils");

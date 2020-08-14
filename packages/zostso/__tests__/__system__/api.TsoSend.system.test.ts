@@ -10,11 +10,11 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { ISendResponse, IStartStopResponse, SendTso, StartTso, StopTso } from "../../../../zostso";
+import { ISendResponse, IStartStopResponse, SendTso, StartTso, StopTso } from "../../../zostso";
 import * as fs from "fs";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 
 let testEnvironment: ITestEnvironment;
 let systemProperties: ITestPropertiesSchema;

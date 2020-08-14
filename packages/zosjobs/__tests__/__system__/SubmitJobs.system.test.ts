@@ -11,11 +11,11 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, IJob, SubmitJobs } from "../../../index";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { existsSync } from "fs";
-import { ZosJobsMessages } from "../../../src/api/JobsMessages";
+import { ZosJobsMessages } from "../../src/JobsMessages";
 // tslint:disable-next-line:no-implicit-dependencies
 const rimraf = require("rimraf").sync;
 

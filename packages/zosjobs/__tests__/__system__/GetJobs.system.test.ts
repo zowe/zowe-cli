@@ -9,15 +9,15 @@
 *
 */
 
-import { JOB_STATUS } from "./../../../src/api/types/JobStatus";
+import { JOB_STATUS } from "./../../src/types/JobStatus";
 import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../../index";
 import * as  fs from "fs";
-import { TEST_RESOURCES_DIR } from "../../__src__/ZosJobsTestConstants";
+import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
 import { join } from "path";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 /**********************************************************************************/
 let ACCOUNT: string;
