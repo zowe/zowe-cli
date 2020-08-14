@@ -10,8 +10,8 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     DeleteInstance,
     noInstanceId,
@@ -20,7 +20,7 @@ import {
     PerformAction,
     ProvisioningConstants
 } from "../../../";
-import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
+import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
 let templateName: string;

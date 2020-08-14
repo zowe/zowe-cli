@@ -10,7 +10,7 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import {
     IPublishedTemplateInfo,
     ListTemplateInfo,
@@ -19,8 +19,8 @@ import {
     nozOSMFVersion,
     ProvisioningConstants
 } from "../../../";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
 let TEMPLATE_NAME: string;

@@ -10,8 +10,8 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import {
     IProvisionTemplateResponse,
     noAccountInfo,
@@ -21,7 +21,7 @@ import {
     ProvisioningConstants,
     ProvisionPublishedTemplate
 } from "../../../";
-import { ProvisioningTestUtils } from "../../__resources__/utils/ProvisioningTestUtils";
+import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/${ProvisioningConstants.INSTANCES_RESOURCE}/`;
 
