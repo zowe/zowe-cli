@@ -11,7 +11,7 @@
 
 import {
     DownloadJobs,
-    IDownloadAllSpoolContentParms,
+    IDownloadAllSpoolContentParms
 } from "../../../../../../index";
 
 jest.mock("../../../../src/api/GetJobs");
@@ -20,7 +20,7 @@ import {
     IHandlerParameters,
     ImperativeError,
     IProfile,
-    Session,
+    Session
 } from "@zowe/imperative";
 import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
 import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
@@ -42,7 +42,7 @@ PROFILE_MAP.set("zosmf", [
         name: "zosmf",
         type: "zosmf",
         ...ZOSMF_PROF_OPTS
-    },
+    }
 ]);
 const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
@@ -107,7 +107,7 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
-            omitJobidDirectory: false,
+            omitJobidDirectory: false
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -138,7 +138,7 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: outputDir,
-            omitJobidDirectory: false,
+            omitJobidDirectory: false
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -170,7 +170,7 @@ describe("download output handler tests", () => {
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
             omitJobidDirectory: false,
-            extension,
+            extension
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -200,7 +200,7 @@ describe("download output handler tests", () => {
             jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
-            omitJobidDirectory: true,
+            omitJobidDirectory: true
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);

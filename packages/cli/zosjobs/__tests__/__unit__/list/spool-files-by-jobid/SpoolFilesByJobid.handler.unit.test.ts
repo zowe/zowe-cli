@@ -15,7 +15,11 @@ import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
 import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../src/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
 import * as SpoolFilesHandler from "../../../../src/list/spool-files-by-jobid/SpoolFilesByJobid.handler";
-import { UNIT_TEST_PROFILES_ZOSMF, getMockedResponse, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import {
+    UNIT_TEST_PROFILES_ZOSMF,
+    getMockedResponse,
+    UNIT_TEST_ZOSMF_PROF_OPTS
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
