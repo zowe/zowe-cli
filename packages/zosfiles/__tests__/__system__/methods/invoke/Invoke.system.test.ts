@@ -13,12 +13,12 @@ import * as fs from "fs";
 import { Imperative, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
-import { Invoke } from "../../../../../src/api/methods/invoke/Invoke";
-import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
+import { Invoke } from "../../../../src/methods/invoke/Invoke";
+import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 
 let testEnvironment: ITestEnvironment;
 let systemProps: ITestPropertiesSchema;
@@ -59,7 +59,7 @@ describe("Invoke AMS", () => {
 
         // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
         let controlStatementFile: string =
-            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/api/methods/invoke/DefineVSAM.ams");
+            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams");
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile);
@@ -80,7 +80,7 @@ describe("Invoke AMS", () => {
 
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
-            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/api/methods/invoke/DeleteVSAM.ams");
+            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams");
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile);

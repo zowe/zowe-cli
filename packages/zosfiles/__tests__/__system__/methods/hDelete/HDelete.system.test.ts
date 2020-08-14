@@ -12,10 +12,10 @@
 import { Create, Delete, CreateDataSetTypeEnum, ZosFilesMessages } from "../../../../..";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IDeleteOptions, HDelete, HMigrate } from "../../../../../src/api";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { IDeleteOptions, HDelete, HMigrate } from "../../../../src";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

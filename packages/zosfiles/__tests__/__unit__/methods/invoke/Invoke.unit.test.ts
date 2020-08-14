@@ -18,7 +18,7 @@ import { IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../..
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../rest";
 import { getErrorContext } from "../../../../../utils";
-import { Invoke } from "../../../../src/api";
+import { Invoke } from "../../../../src";
 
 const fs = require("fs");
 

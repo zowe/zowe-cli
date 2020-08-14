@@ -13,8 +13,8 @@ import { posix } from "path";
 import { Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
-import { Get, IGetOptions } from "../../../../src/api/methods/get";
-import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
+import { Get, IGetOptions } from "../../../../src/methods/get";
+import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 
 describe("z/OS Files - View", () => {
     const dsname = "USER.DATA.SET";
