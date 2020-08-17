@@ -15,7 +15,11 @@ import { GetJobs, CancelJobs } from "../../../../../../../packages/zosjobs/";
 import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
 import * as JobHandler from "../../../../src/cancel/job/Job.handler";
 import * as JobDefinition from "../../../../src/cancel/job/Job.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    getMockedResponse,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 process.env.FORCE_COLOR = "0";
 
@@ -48,14 +52,17 @@ describe("cancel job handler tests", () => {
         params.arguments.jobid = GetJobsData.SAMPLE_COMPLETE_JOB.jobid;
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
-        expect(CancelJobs.cancelJobForJob).toHaveBeenCalledWith(passedSession, GetJobsData.SAMPLE_COMPLETE_JOB);
+        expect(CancelJobs.cancelJobForJob).toHaveBeenCalledWith(
+            passedSession,
+            GetJobsData.SAMPLE_COMPLETE_JOB
+        );
     });
 
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail in z/OSMF";
         let error;
         GetJobs.getJob = jest.fn((session, jobid) => {
-            throw new ImperativeError({msg: failMessage});
+            throw new ImperativeError({ msg: failMessage });
         });
         const handler = new JobHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
@@ -77,7 +84,7 @@ describe("cancel job handler tests", () => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         CancelJobs.cancelJobForJob = jest.fn((session, job) => {
-            throw new ImperativeError({msg: failMessage});
+            throw new ImperativeError({ msg: failMessage });
         });
         const handler = new JobHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
