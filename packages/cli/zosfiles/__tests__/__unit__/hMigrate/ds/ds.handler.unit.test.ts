@@ -1,17 +1,17 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import {
     IZosFilesResponse,
-    HMigrate,
+    HMigrate
 } from "../../../../../../../packages/zosfiles/src";
 import DSHandler from "../../../../src/hMigrate/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
@@ -20,7 +20,7 @@ import { IMigrateOptions } from "../../../../../../../packages/zosfiles/src/meth
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
         success: true,
-        commandResponse: "THIS IS A TEST",
+        commandResponse: "THIS IS A TEST"
     };
 
     const migrateDataSetSpy = jest.spyOn(HMigrate, "dataSet");
@@ -37,8 +37,8 @@ describe("DsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                dataSetName: "ABCD",
-            },
+                dataSetName: "ABCD"
+            }
         };
 
         const dummySession = {
@@ -47,7 +47,7 @@ describe("DsHandler", () => {
             hostname: "machine",
             port: 443,
             protocol: "https",
-            type: "basic",
+            type: "basic"
         };
 
         const response = await handler.processWithSession(
@@ -72,8 +72,8 @@ describe("DsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 dataSetName: "ABCD",
-                options,
-            },
+                options
+            }
         };
 
         const dummySession = {
@@ -82,7 +82,7 @@ describe("DsHandler", () => {
             hostname: "machine",
             port: 443,
             protocol: "https",
-            type: "basic",
+            type: "basic"
         };
 
         const expectedOptions: IMigrateOptions = { wait: true };
