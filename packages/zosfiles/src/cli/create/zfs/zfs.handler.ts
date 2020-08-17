@@ -27,7 +27,7 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
             perms: commandParameters.arguments.perms,
             cylsPri: commandParameters.arguments.cylsPri,
             cylsSec: commandParameters.arguments.cylsSec,
-            storeclass: commandParameters.arguments.storageClass,
+            storclass: commandParameters.arguments.storageClass,
             mgntclass: commandParameters.arguments.managementClass,
             dataclass: commandParameters.arguments.dataClass,
             volumes: commandParameters.arguments.volumes,
