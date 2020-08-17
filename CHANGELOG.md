@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.21.1`
 
 - Rename the `storeclass` z/OS Files API Option to `storclass` to fix defining the storage class on create dataset commands
 
