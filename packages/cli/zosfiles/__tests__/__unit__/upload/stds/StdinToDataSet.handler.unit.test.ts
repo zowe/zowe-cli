@@ -9,8 +9,8 @@
 *
 */
 
-import { Upload } from "../../../../src/api/methods/upload";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { Upload } from "../../../../../../../packages/zosfiles/src/methods/upload";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Upload stdin-to-data-set handler", () => {
     describe("process method", () => {

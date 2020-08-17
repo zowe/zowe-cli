@@ -9,9 +9,9 @@
 *
 */
 
-import { Rename, IZosFilesResponse } from "../../../../src/api";
-import DsmHandler from "../../../../src/cli/rename/dsm/Dsm.handler";
-import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
+import { Rename, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src/";
+import DsmHandler from "../../../../src/rename/dsm/Dsm.handler";
+import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
 
 describe("DsmHandler", () => {
     const defaultReturn: IZosFilesResponse = {

@@ -9,9 +9,9 @@
 *
 */
 
-import { Copy, IZosFilesResponse } from "../../../../src/api";
-import DsHandler from "../../../../src/cli/copy/ds/Ds.handler";
-import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
+import { Copy, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
+import DsHandler from "../../../../src/copy/ds/Ds.handler";
+import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/cli/-strings-/en";
-import { VsamDefinition } from "../../../../src/cli/delete/vsam/Vsam.definition";
+import i18nEnglish from "../../../../src/-strings-/en";
+import { VsamDefinition } from "../../../../src/delete/vsam/Vsam.definition";
 
 describe("VsamDefinition", () => {
     it("should use the correct object for strings", () => {

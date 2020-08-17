@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/cli/-strings-/en";
-import { MountDefinition } from "../../../src/cli/mount/Mount.definition";
+import i18nEnglish from "../../../src/-strings-/en";
+import { MountDefinition } from "../../../src/mount/Mount.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files mount group definition", () => {

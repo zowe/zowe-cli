@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/cli/-strings-/en";
-import { DsDefinition } from "../../../../src/cli/rename/ds/Ds.definition";
+import i18nEnglish from "../../../../src/-strings-/en";
+import { DsDefinition } from "../../../../src/rename/ds/Ds.definition";
 
 describe("DsDefinition", () => {
     it("should use the correct object for strings", () => {

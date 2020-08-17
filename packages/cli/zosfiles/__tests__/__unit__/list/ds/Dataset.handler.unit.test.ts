@@ -9,8 +9,8 @@
 *
 */
 
-import { List } from "../../../../src/api/methods/list";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { List } from "../../../../../../../packages/zosfiles/src/methods/list";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("List Dataset handler", () => {
     describe("process method", () => {

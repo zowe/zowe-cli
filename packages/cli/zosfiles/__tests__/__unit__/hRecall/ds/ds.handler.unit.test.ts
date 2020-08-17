@@ -9,9 +9,9 @@
 *
 */
 
-import { IZosFilesResponse, IRecallOptions, HRecall } from "../../../../src/api";
-import DSHandler from "../../../../src/cli/hRecall/ds/Ds.handler";
-import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
+import { IZosFilesResponse, IRecallOptions, HRecall } from "../../../../../../../packages/zosfiles/src";
+import DSHandler from "../../../../src/hRecall/ds/Ds.handler";
+import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

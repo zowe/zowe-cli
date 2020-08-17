@@ -9,9 +9,9 @@
 *
 */
 
-import { Mount } from "../../../../src/api/methods/mount/Mount";
+import { Mount } from "../../../../../../../packages/zosfiles/src/methods/mount/Mount";
 import { ImperativeError } from "@zowe/imperative";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const message: string = "Dummy error message";
 

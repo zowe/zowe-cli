@@ -9,8 +9,8 @@
 *
 */
 
-import { Download } from "../../../../src/api/methods/download";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { Download } from "../../../../../../../packages/zosfiles/src/methods/download";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Download uss file handler", () => {
     describe("process method", () => {

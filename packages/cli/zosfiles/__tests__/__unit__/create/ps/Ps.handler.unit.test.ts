@@ -9,9 +9,9 @@
 *
 */
 
-import { Create } from "../../../../src/api/methods/create/Create";
-import { CreateDataSetTypeEnum } from "../../../../src/api/methods/create/CreateDataSetType.enum";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { Create } from "../../../../../../../packages/zosfiles/src/methods/create/Create";
+import { CreateDataSetTypeEnum } from "../../../../../../../packages/zosfiles/src/methods/create/CreateDataSetType.enum";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Create PS data set handler", () => {
     describe("process method", () => {

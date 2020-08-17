@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/cli/-strings-/en";
-import { UssDefinition } from "../../../../src/cli/delete/uss/Uss.definition";
+import i18nEnglish from "../../../../src/-strings-/en";
+import { UssDefinition } from "../../../../src/delete/uss/Uss.definition";
 
 describe("DsDefinition", () => {
     it("should use the correct object for strings", () => {

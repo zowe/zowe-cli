@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/cli/-strings-/en";
-import { HRecallDefinition } from "../../../src/cli/hRecall/HRecall.definition";
+import i18nEnglish from "../../../src/-strings-/en";
+import { HRecallDefinition } from "../../../src/hRecall/HRecall.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files recall group definition", () => {

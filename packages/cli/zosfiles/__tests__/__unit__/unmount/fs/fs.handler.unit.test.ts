@@ -9,9 +9,9 @@
 *
 */
 
-import { Unmount, IZosFilesResponse } from "../../../../src/api";
-import FsHandler from "../../../../src/cli/unmount/fs/fs.handler";
-import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
+import { Unmount, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src/";
+import FsHandler from "../../../../src/unmount/fs/fs.handler";
+import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
 
 describe("FsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

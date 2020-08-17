@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/cli/-strings-/en";
-import { CopyDefinition } from "../../../src/cli/copy/Copy.definition";
+import i18nEnglish from "../../../src/-strings-/en";
+import { CopyDefinition } from "../../../src/copy/Copy.definition";
 
 describe("Copy Definition", () => {
     it("should be using the correct string field in the object", () => {

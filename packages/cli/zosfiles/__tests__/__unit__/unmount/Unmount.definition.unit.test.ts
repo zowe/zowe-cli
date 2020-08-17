@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/cli/-strings-/en";
-import { UnmountDefinition } from "../../../src/cli/unmount/Unmount.definition";
+import i18nEnglish from "../../../src/-strings-/en";
+import { UnmountDefinition } from "../../../src/unmount/Unmount.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files unmount group definition", () => {

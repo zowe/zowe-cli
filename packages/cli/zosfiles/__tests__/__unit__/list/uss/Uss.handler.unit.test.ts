@@ -9,11 +9,11 @@
 *
 */
 
-import { List } from "../../../../src/api/methods/list";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import UssFileHandler from "../../../../src/cli/list/uss/UssFile.handler";
-import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
-import { IZosFilesResponse } from "../../../../src/api";
+import { List } from "../../../../../../../packages/zosfiles/src/methods/list";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import UssFileHandler from "../../../../src/list/uss/UssFile.handler";
+import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
+import { IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
 
 describe("USS directory handler", () => {
     describe("process method", () => {

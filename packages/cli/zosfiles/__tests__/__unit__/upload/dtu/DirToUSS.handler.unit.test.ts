@@ -9,10 +9,10 @@
 *
 */
 
-import { Upload } from "../../../../src/api/methods/upload";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { Upload } from "../../../../../../../packages/zosfiles/src/methods/upload";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as fs from "fs";
-import { ZosFilesAttributes } from "../../../../src/api/utils/ZosFilesAttributes";
+import { ZosFilesAttributes } from "../../../../../../../packages/zosfiles/src/utils/ZosFilesAttributes";
 
 jest.mock("../../../../src/api/utils/ZosFilesAttributes");
 
