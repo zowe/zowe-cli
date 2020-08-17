@@ -9,10 +9,10 @@
 *
 */
 
-import ApimlAuthHandler from "../../src/cli/ApimlAuthHandler";
+import ApimlAuthHandler from "../../src/ApimlAuthHandler";
 import { SessConstants } from "@zowe/imperative";
-import { ZosmfSession } from "../../../zosmf";
-import { Login, Logout } from "../..";
+import { ZosmfSession } from "../../../../../packages/zosmf";
+import { Login, Logout } from "../../../../../packages/auth";
 
 describe("ApimlAuthHandler", () => {
     it("should not have changed", () => {
