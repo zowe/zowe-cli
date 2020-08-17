@@ -9,7 +9,7 @@
 *
 */
 
-import { ListArchivedWorkflows } from "../../../../src/api/ListArchivedWorkflows";
+import { ListArchivedWorkflows } from "../../../../../../../packages/workflows/src/ListArchivedWorkflows";
 
 
 describe("List archived workflows common handler", () => {

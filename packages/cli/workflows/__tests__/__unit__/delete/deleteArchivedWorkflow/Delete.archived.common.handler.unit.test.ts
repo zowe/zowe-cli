@@ -9,8 +9,8 @@
 *
 */
 
-import { ArchivedDeleteWorkflow } from "../../../../src/api/ArchivedDelete";
-import { ListArchivedWorkflows } from "../../../../src/api/ListArchivedWorkflows";
+import { ArchivedDeleteWorkflow } from "../../../../../../../packages/workflows/src/ArchivedDelete";
+import { ListArchivedWorkflows } from "../../../../../../../packages/workflows/src/ListArchivedWorkflows";
 import { ImperativeError } from "@zowe/imperative";
 
 

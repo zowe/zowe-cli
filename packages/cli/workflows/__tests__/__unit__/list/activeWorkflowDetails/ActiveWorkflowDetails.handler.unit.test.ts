@@ -20,8 +20,8 @@
 *
 */
 
-import { PropertiesWorkflow } from "../../../../src/api/Properties";
-import { ListWorkflows } from "../../../../src/api/ListWorkflows";
+import { PropertiesWorkflow } from "../../../../../../../packages/workflows/src/Properties";
+import { ListWorkflows } from "../../../../../../../packages/workflows/src/ListWorkflows";
 
 describe("List workflow details handler", () => {
     describe("process method", () => {

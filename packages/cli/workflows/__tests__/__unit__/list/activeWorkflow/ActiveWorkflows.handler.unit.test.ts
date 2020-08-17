@@ -20,7 +20,7 @@
 *
 */
 
-import { ListWorkflows } from "../../../../src/api/ListWorkflows";
+import { ListWorkflows } from "../../../../../../../packages/workflows/src/ListWorkflows";
 
 describe("List workflows handler", () => {
     describe("process method", () => {

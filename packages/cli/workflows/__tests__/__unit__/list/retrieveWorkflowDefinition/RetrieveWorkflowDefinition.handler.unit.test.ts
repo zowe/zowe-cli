@@ -20,7 +20,7 @@
 *
 */
 
-import { DefinitionWorkflow } from "../../../../src/api/Definition";
+import { DefinitionWorkflow } from "../../../../../../../packages/workflows/src/Definition";
 
 describe("List workflow definition file details handler", () => {
     describe("process method", () => {

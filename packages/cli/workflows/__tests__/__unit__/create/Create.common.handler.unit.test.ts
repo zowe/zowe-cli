@@ -20,7 +20,7 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../..";
+import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../../../../../packages/workflows";
 
 
 describe("Create workflow common handler", () => {
