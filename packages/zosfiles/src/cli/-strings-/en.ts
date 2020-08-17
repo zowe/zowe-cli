@@ -151,7 +151,7 @@ export default {
             RECFM: `The record format for the data set (for example, FB for "Fixed Block")`,
             BLKSIZE: "The block size for the data set (for example, 6160)",
             LRECL: "The logical record length. Analogous to the length of a line (for example, 80)",
-            STORECLASS: "The SMS storage class to use for the allocation",
+            STORCLASS: "The SMS storage class to use for the allocation",
             MGNTCLASS: "The SMS management class to use for the allocation",
             DATACLASS: "The SMS data class to use for the allocation",
             DSNTYPE: "The data set type",

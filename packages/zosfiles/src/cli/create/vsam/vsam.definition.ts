@@ -67,7 +67,7 @@ export const VsamDefinition: ICommandDefinition = {
         vsamSize,
         vsamSecondary,
         VsamCreateOptions.volumes,
-        ZosFilesCreateOptions.storeclass,
+        ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         vsamRetainFor,

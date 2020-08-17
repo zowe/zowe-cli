@@ -281,7 +281,7 @@ export class Create {
 
                     // SMS class values
                     case "mgntclass":
-                    case "storeclass":
+                    case "storclass":
                     case "dataclass":
                         // no validation
 
@@ -521,7 +521,7 @@ export class Create {
             (options.retainTo ? "TO(" + options.retainTo + ") -\n" : "") +
             (options.retainFor ? "FOR(" + options.retainFor + ") -\n" : "") +
             (options.volumes ? "VOLUMES(" + options.volumes.toUpperCase() + ") -\n" : "") +
-            (options.storeclass ? "STORAGECLASS(" + options.storeclass + ") -\n" : "") +
+            (options.storclass ? "STORAGECLASS(" + options.storclass + ") -\n" : "") +
             (options.mgntclass ? "MANAGEMENTCLASS(" + options.mgntclass + ") -\n" : "") +
             (options.dataclass ? "DATACLASS(" + options.dataclass + ") -\n" : "") +
             ")"
@@ -603,7 +603,7 @@ export class Create {
 
                     case "retainTo":
                     case "volumes":
-                    case "storeclass":
+                    case "storclass":
                     case "mgntclass":
                     case "dataclass":
                     case "responseTimeout":
@@ -672,7 +672,7 @@ export class Create {
 
                     case "owner":
                     case "group":
-                    case "storeclass":
+                    case "storclass":
                     case "mgntclass":
                     case "dataclass":
                     case "volumes":

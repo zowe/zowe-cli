@@ -52,7 +52,7 @@ export interface ICreateVsamOptions extends IZosFilesOptions {
      * The storage class
      * @type {string}
      */
-    storeclass?: string;
+    storclass?: string;
 
     /**
      * The management class

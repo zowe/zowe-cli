@@ -1038,14 +1038,14 @@ describe("Create VSAM Data Set", () => {
             expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
-        it("should be able to create a VSAM data set with storeclass, mgntclass and dataclass provided",async () => {
+        it("should be able to create a VSAM data set with storclass, mgntclass and dataclass provided",async () => {
 
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nKB(${primary} ${secondary}) -\nVOLUMES(STG100) -` +
                 `\nSTORAGECLASS(STORE) -\nMANAGEMENTCLASS(MANAGEMENT) -\nDATACLASS(DATA) -\n)`];
             const options: IZosFilesOptions = {responseTimeout: undefined};
 
-            dsOptions.storeclass = "STORE";
+            dsOptions.storclass = "STORE";
             dsOptions.mgntclass = "MANAGEMENT";
             dsOptions.dataclass = "DATA";
             dsOptions.volumes = "STG100";
