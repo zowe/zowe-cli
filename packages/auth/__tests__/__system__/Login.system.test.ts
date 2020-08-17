@@ -9,10 +9,10 @@
 *
 */
 
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
-import { Login } from "../../../src/api/Login";
+import { Login } from "../../src/Login";
 
 let testEnvironment: ITestEnvironment;
 let REAL_SESSION: Session;

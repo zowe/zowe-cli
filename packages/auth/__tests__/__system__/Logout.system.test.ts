@@ -9,12 +9,12 @@
 *
 */
 
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
-import { Login } from "../../../src/api/Login";
-import { Logout } from "../../../src/api/Logout";
-import { ZosmfRestClient } from "../../../../rest";
+import { Login } from "../../src/Login";
+import { Logout } from "../../src/Logout";
+import { ZosmfRestClient } from "../../../rest";
 
 let testEnvironment: ITestEnvironment;
 let REAL_SESSION: Session;
