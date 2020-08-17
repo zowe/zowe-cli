@@ -9,8 +9,8 @@
 *
 */
 
-import { LoginConstants } from "../../src/api/LoginConstants";
-import { LogoutConstants } from "../../src/api/LogoutConstants";
+import { LoginConstants } from "../../src/LoginConstants";
+import { LogoutConstants } from "../../src/LogoutConstants";
 import { inspect } from "../../../../__tests__/__src__/TestUtils";
 
 describe("LoginConstants Unit Test", () => {

@@ -9,7 +9,7 @@
 *
 */
 
-import { Login } from "../../src/api/Login";
+import { Login } from "../../src/Login";
 import { ZosmfRestClient } from "../../../rest";
 import { ImperativeError, RestConstants } from "@zowe/imperative";
 
