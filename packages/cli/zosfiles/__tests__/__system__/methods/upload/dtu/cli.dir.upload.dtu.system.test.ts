@@ -13,12 +13,12 @@ import { Headers, Imperative, Session } from "@zowe/imperative";
 
 import * as path from "path";
 import * as fs from "fs";
-import { getUniqueDatasetName, runCliScript, getTag } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Get, ZosFilesConstants, ZosFilesUtils } from "../../../../../index";
-import { ZosmfRestClient } from "../../../../../../rest";
+import { getUniqueDatasetName, runCliScript, getTag } from "../../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { Get, ZosFilesConstants, ZosFilesUtils } from "../../../../../../../zosfiles/index";
+import { ZosmfRestClient } from "../../../../../../../rest";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
