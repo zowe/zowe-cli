@@ -1,13 +1,13 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
 
@@ -15,7 +15,7 @@ jest.mock("../../../../src/api/ProvisionPublishedTemplate");
 import {
     ListRegistryInstances,
     PerformAction,
-    ProvisioningConstants,
+    ProvisioningConstants
 } from "../../../../../../provisioning";
 import { IHandlerParameters } from "@zowe/imperative";
 import * as ActionHandler from "../../../../src/perform/action/Action.handler";
@@ -23,20 +23,20 @@ import * as ActionDefinition from "../../../../src/perform/action/Action.definit
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,
-    UNIT_TEST_PROFILES_ZOSMF,
+    UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["provisioning", "perform", "action"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS,
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
     positionals: ["provisioning", "perform", "action"],
     response: getMockedResponse(),
     definition: ActionDefinition.ActionDefinition,
     fullDefinition: ActionDefinition.ActionDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF,
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("provision template handler tests", () => {

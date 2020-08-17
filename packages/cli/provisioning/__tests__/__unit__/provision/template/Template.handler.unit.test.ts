@@ -10,12 +10,19 @@
 */
 
 jest.mock("../../../../src/api/ProvisionPublishedTemplate");
-import { ProvisioningConstants, ProvisionPublishedTemplate } from "../../../../../../provisioning";
+import {
+    ProvisioningConstants,
+    ProvisionPublishedTemplate
+} from "../../../../../../provisioning";
 import { ProvisionTemplateData } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisionTemplateData";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as TemplateHandler from "../../../../src/provision/template/Template.handler";
 import * as TemplateDefinition from "../../../../src/provision/template/Template.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF,
+    getMockedResponse
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
@@ -31,30 +38,36 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
 };
 
 describe("provision template handler tests", () => {
-
     afterEach(() => {
         jest.resetAllMocks();
     });
 
     it("should be able to provision a template", async () => {
-        ProvisionPublishedTemplate.provisionTemplate = jest.fn((session, zOSMFVersion, templateName) => {
-            return ProvisionTemplateData.PROVISION_TEMPLATE_RESPONSE;
-        });
+        ProvisionPublishedTemplate.provisionTemplate = jest.fn(
+            (session, zOSMFVersion, templateName) => {
+                return ProvisionTemplateData.PROVISION_TEMPLATE_RESPONSE;
+            }
+        );
         const handler = new TemplateHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.zOSMFVersion = ProvisioningConstants.ZOSMF_VERSION;
         params.arguments.templateName = "some_name1";
         await handler.process(params);
-        expect(ProvisionPublishedTemplate.provisionTemplate).toHaveBeenCalledTimes(1);
+        expect(
+            ProvisionPublishedTemplate.provisionTemplate
+        ).toHaveBeenCalledTimes(1);
     });
 
     it("should be able respond with error message", async () => {
-        const failMessage = "IYUCM0004E:The resource was not found. The resource type is Template" +
+        const failMessage =
+            "IYUCM0004E:The resource was not found. The resource type is Template" +
             " and the identifier or name is some_bad_name.";
         let error;
-        ProvisionPublishedTemplate.provisionTemplate = jest.fn((session, zOSMFVersion, templateName) => {
-            throw new ImperativeError({msg: failMessage});
-        });
+        ProvisionPublishedTemplate.provisionTemplate = jest.fn(
+            (session, zOSMFVersion, templateName) => {
+                throw new ImperativeError({ msg: failMessage });
+            }
+        );
         const handler = new TemplateHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.templateName = "some_bad_name";
@@ -63,7 +76,9 @@ describe("provision template handler tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(ProvisionPublishedTemplate.provisionTemplate).toHaveBeenCalledTimes(1);
+        expect(
+            ProvisionPublishedTemplate.provisionTemplate
+        ).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();

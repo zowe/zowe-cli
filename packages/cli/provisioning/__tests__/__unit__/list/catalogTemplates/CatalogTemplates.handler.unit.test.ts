@@ -14,7 +14,11 @@ import { ListCatalogTemplates } from "../../../../../../provisioning";
 import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../src/list/catalogTemplates/CatalogTemplates.handler";
 import { catalogTemplates } from "../../../../src/list/catalogTemplates/CatalogTemplates.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF,
+    getMockedResponse
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 jest.mock("../../../../src/api/ListCatalogTemplates");
 
@@ -32,19 +36,19 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
 };
 
 describe("list catalog templates handler tests", () => {
-
     afterEach(() => {
         jest.resetAllMocks();
     });
 
     it("should be able to list catalog", async () => {
-        ListCatalogTemplates.listCatalogCommon = jest.fn((session, zOSMFVersion) => {
-            return ProvisioningListMocks.LIST_CATALOG_TEMPLATES_RESPONSE;
-        });
+        ListCatalogTemplates.listCatalogCommon = jest.fn(
+            (session, zOSMFVersion) => {
+                return ProvisioningListMocks.LIST_CATALOG_TEMPLATES_RESPONSE;
+            }
+        );
         const handler = new Handler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         await handler.process(params);
         expect(ListCatalogTemplates.listCatalogCommon).toHaveBeenCalledTimes(1);
     });
-
 });

@@ -1,13 +1,13 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
 
@@ -19,20 +19,20 @@ import { templateInfo } from "../../../../src/list/templateInfo/TemplateInfo.def
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,
-    UNIT_TEST_PROFILES_ZOSMF,
+    UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
         $0: "bright",
         _: ["provisioning", "list", "catalog-templates"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS,
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
     positionals: ["provisioning", "list", "catalog-templates"],
     response: getMockedResponse(),
     definition: templateInfo,
     fullDefinition: templateInfo,
-    profiles: UNIT_TEST_PROFILES_ZOSMF,
+    profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
 describe("list catalog templates handler tests", () => {
