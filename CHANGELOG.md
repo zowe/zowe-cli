@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Rename the `storeclass` z/OS Files API Option to `storclass` to fix defining the storage class on create dataset commands
+
 ## `6.21.0`
 
 - Added optional responseTimeout option to zosFiles APIs and CLI
