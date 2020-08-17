@@ -11,11 +11,11 @@
 
 jest.mock("../../../../src/api/GetJobs");
 import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
-import { GetJobs, CancelJobs } from "../../../../";
-import { GetJobsData } from "../../../__resources__/api/GetJobsData";
-import * as JobHandler from "../../../../src/cli/cancel/job/Job.handler";
-import * as JobDefinition from "../../../../src/cli/cancel/job/Job.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { GetJobs, CancelJobs } from "../../../../../../../packages/zosjobs/";
+import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
+import * as JobHandler from "../../../../src/cancel/job/Job.handler";
+import * as JobDefinition from "../../../../src/cancel/job/Job.definition";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 process.env.FORCE_COLOR = "0";
 
