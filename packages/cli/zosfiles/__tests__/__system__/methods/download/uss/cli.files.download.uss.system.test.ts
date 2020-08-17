@@ -11,12 +11,15 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ZosFilesConstants } from "../../../../../index";
-import { ZosmfRestClient } from "../../../../../../rest";
+import {
+    getUniqueDatasetName,
+    runCliScript
+} from "../../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ZosFilesConstants } from "../../../../../../../zosfiles/index";
+import { ZosmfRestClient } from "../../../../../../../rest";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -26,7 +29,6 @@ let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
 
 describe("Download USS File", () => {
-
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
@@ -37,7 +39,9 @@ describe("Download USS File", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         // using unique DS function to generate unique USS file name
-        ussname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+        ussname = getUniqueDatasetName(
+            `${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`
+        );
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
         Imperative.console.info("Using ussfile:" + ussname);
     });
@@ -58,19 +62,33 @@ describe("Download USS File", () => {
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
             const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string =
+                ZosFilesConstants.RESOURCE +
+                ZosFilesConstants.RES_USS_FILES +
+                ussname;
             try {
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await ZosmfRestClient.putExpectString(
+                    REAL_SESSION,
+                    endpoint,
+                    [],
+                    data
+                );
             } catch (err) {
                 throw err;
             }
         });
 
         afterAll(async () => {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string =
+                ZosFilesConstants.RESOURCE +
+                ZosFilesConstants.RES_USS_FILES +
+                ussname;
 
             try {
-                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await ZosmfRestClient.deleteExpectString(
+                    REAL_SESSION,
+                    endpoint
+                );
             } catch (err) {
                 Imperative.console.error(err);
             }
@@ -79,25 +97,37 @@ describe("Download USS File", () => {
         });
 
         it("should download uss file", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file_fully_qualified.sh");
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_file_fully_qualified.sh"
+            );
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
             // if API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
             if (defaultSys.zosmf.basePath != null) {
-                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
+                TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] =
+                    defaultSys.zosmf.basePath;
             }
 
-            const response = runCliScript(shellScript,
+            const response = runCliScript(
+                shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
-                [ussname.substr(1, ussname.length),
+                [
+                    ussname.substr(1, ussname.length),
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.pass
+                ]
+            );
             expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+            expect(response.stdout.toString()).toContain(
+                "USS file downloaded successfully."
+            );
             expect(response.status).toBe(0);
         });
     });
@@ -105,56 +135,106 @@ describe("Download USS File", () => {
     describe("Success scenarios", () => {
         beforeAll(async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string =
+                ZosFilesConstants.RESOURCE +
+                ZosFilesConstants.RES_USS_FILES +
+                ussname;
             try {
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await ZosmfRestClient.putExpectString(
+                    REAL_SESSION,
+                    endpoint,
+                    [],
+                    data
+                );
             } catch (err) {
                 throw err;
             }
         });
 
         afterAll(async () => {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string =
+                ZosFilesConstants.RESOURCE +
+                ZosFilesConstants.RES_USS_FILES +
+                ussname;
 
             try {
-                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await ZosmfRestClient.deleteExpectString(
+                    REAL_SESSION,
+                    endpoint
+                );
             } catch (err) {
                 Imperative.console.error(err);
             }
         });
 
         it("should download an uss file", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length)]);
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_file.sh"
+            );
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
+                ussname.substr(1, ussname.length)
+            ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+            expect(response.stdout.toString()).toContain(
+                "USS file downloaded successfully."
+            );
         });
 
         it("should download uss file with response-format-json flag", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), "--rfj"]);
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_file.sh"
+            );
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
+                ussname.substr(1, ussname.length),
+                "--rfj"
+            ]);
             expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+            expect(response.stdout.toString()).toContain(
+                "USS file downloaded successfully."
+            );
             expect(response.status).toBe(0);
         });
 
         it("should download uss file to a specified file name", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_file.sh"
+            );
             const fileName = "testFile.txt";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), `-f ${fileName}`, "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
+                ussname.substr(1, ussname.length),
+                `-f ${fileName}`,
+                "--rfj"
+            ]);
             expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+            expect(response.stdout.toString()).toContain(
+                "USS file downloaded successfully."
+            );
             expect(response.stdout.toString()).toContain(fileName);
             expect(response.status).toBe(0);
         });
     });
 
     describe("Expected failures", () => {
-
         it("should fail due to specified uss file name does not exist", async () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname + ".dummy"]);
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_file.sh"
+            );
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
+                ussname + ".dummy"
+            ]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("File not found.");
         });

@@ -1,27 +1,27 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import { IO, Session } from "@zowe/imperative";
 import * as path from "path";
 import {
     getRandomBytes,
     getUniqueDatasetName,
-    runCliScript,
+    runCliScript
 } from "../../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import {
     Create,
-    CreateDataSetTypeEnum,
+    CreateDataSetTypeEnum
 } from "../../../../../../../../packages/zosfiles/src/methods/create";
 import { Delete } from "../../../../../../../../packages/zosfiles/src/methods/delete";
 import { ICreateDataSetOptions } from "../../../../../../../../packages/zosfiles/src/methods/create/doc/ICreateDataSetOptions";
@@ -37,7 +37,7 @@ describe("Upload file to data set", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
-            testName: "upload_data_set",
+            testName: "upload_data_set"
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
@@ -57,7 +57,7 @@ describe("Upload file to data set", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_upload_ftds_without_profile",
+                testName: "zos_files_upload_ftds_without_profile"
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
@@ -114,7 +114,7 @@ describe("Upload file to data set", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass,
+                    defaultSys.zosmf.pass
                 ]
             );
             expect(response.stderr.toString()).toBe("");
@@ -167,7 +167,7 @@ describe("Upload file to data set", () => {
             );
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
                 localFileName,
-                dsname + "(member)",
+                dsname + "(member)"
             ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -191,7 +191,7 @@ describe("Upload file to data set", () => {
             const dsnOptions: ICreateDataSetOptions = {
                 dsntype: "LIBRARY",
                 primary: 1,
-                lrecl: 80,
+                lrecl: 80
             };
             try {
                 await Create.dataSet(
@@ -216,7 +216,7 @@ describe("Upload file to data set", () => {
             );
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
                 localFileName,
-                dsnLibrary + "(member)",
+                dsnLibrary + "(member)"
             ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -253,7 +253,7 @@ describe("Upload file to data set", () => {
             );
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
                 randomDataFile,
-                dsname + "(member)",
+                dsname + "(member)"
             ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -288,7 +288,7 @@ describe("Upload file to data set", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
                 localFileName,
                 dsname + "(member)",
-                "--rfj",
+                "--rfj"
             ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -324,7 +324,7 @@ describe("Upload file to data set", () => {
             );
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
                 localFileName,
-                "MF.DOES.NOT.EXIST",
+                "MF.DOES.NOT.EXIST"
             ]);
             expect(response.stderr.toString()).toContain("Data set not found");
         });

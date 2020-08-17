@@ -12,12 +12,12 @@
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
 import { inspect } from "util";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Delete } from "../../../../../src/api/methods/delete";
-import { Create } from "../../../../../src/api/methods/create";
+import { runCliScript } from "../../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { Delete } from "../../../../../../../../packages/zosfiles/src/methods/delete";
+import { Create } from "../../../../../../../../packages/zosfiles/src/methods/create";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();

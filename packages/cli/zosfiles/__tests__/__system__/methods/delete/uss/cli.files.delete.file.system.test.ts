@@ -10,12 +10,12 @@
 */
 
 import { Imperative, Session } from "@zowe/imperative";
-import { Create } from "../../../../..";
+import { Create } from "../../../../../../../../packages/zosfiles";
 import { inspect } from "util";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { runCliScript } from "../../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();

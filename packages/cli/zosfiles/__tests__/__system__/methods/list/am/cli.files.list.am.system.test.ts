@@ -11,13 +11,13 @@
 
 import { Session } from "@zowe/imperative";
 import * as path from "path";
-import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Create, CreateDataSetTypeEnum } from "../../../../../src/api/methods/create";
-import { Upload } from "../../../../../src/api/methods/upload";
-import { Delete } from "../../../../../src/api/methods/delete";
+import { runCliScript, getUniqueDatasetName } from "../../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { Create, CreateDataSetTypeEnum } from "../../../../../../../../packages/zosfiles/src/methods/create";
+import { Upload } from "../../../../../../../../packages/zosfiles/src/methods/upload";
+import { Delete } from "../../../../../../../../packages/zosfiles/src/methods/delete";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();

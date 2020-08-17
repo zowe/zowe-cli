@@ -9,16 +9,16 @@
 *
 */
 
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { runCliScript } from "../../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { Session, Imperative } from "@zowe/imperative";
-import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions } from "../../../../..";
-import { IRecallOptions } from "../../../../../src/api/methods/hRecall/doc/IRecallOptions";
+import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions } from "../../../../../../../../packages/zosfiles";
+import { IRecallOptions } from "../../../../../../../../packages/zosfiles/src/methods/hRecall/doc/IRecallOptions";
 import { inspect } from "util";
-import { HMigrate } from "../../../../../src/api";
+import { HMigrate } from "../../../../../../../../packages/zosfiles/src";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;

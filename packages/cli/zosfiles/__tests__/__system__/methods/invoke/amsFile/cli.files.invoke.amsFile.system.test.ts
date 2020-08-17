@@ -11,11 +11,11 @@
 
 import * as fs from "fs";
 import { Session, TextUtils } from "@zowe/imperative";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
-import { ZosFilesMessages } from "../../../../../src/api/constants/ZosFiles.messages";
+import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../../__tests__/__src__/TestUtils";
+import { ZosFilesMessages } from "../../../../../../../../packages/zosfiles/src/constants/ZosFiles.messages";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
