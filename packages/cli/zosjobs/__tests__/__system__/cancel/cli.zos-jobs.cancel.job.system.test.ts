@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { JobTestsUtils } from "../../api/JobTestsUtils";
+import { JobTestsUtils } from "../../../../../../packages/zosjobs/__tests__/__system__/JobTestsUtils";
 import { IO } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
