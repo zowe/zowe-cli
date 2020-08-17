@@ -10,12 +10,12 @@
 */
 
 jest.mock("../../../../src/api/ProvisionPublishedTemplate");
-import { ProvisioningConstants, ProvisionPublishedTemplate } from "../../../../../provisioning";
-import { ProvisionTemplateData } from "../../../__resources__/api/ProvisionTemplateData";
+import { ProvisioningConstants, ProvisionPublishedTemplate } from "../../../../../../provisioning";
+import { ProvisionTemplateData } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisionTemplateData";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import * as TemplateHandler from "../../../../src/cli/provision/template/Template.handler";
-import * as TemplateDefinition from "../../../../src/cli/provision/template/Template.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import * as TemplateHandler from "../../../../src/provision/template/Template.handler";
+import * as TemplateDefinition from "../../../../src/provision/template/Template.definition";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {

@@ -9,15 +9,15 @@
 *
 */
 
-import { ListRegistryInstances } from "../../../../index";
+import { ListRegistryInstances } from "../../../../../../../packages/provisioning/index";
 
 jest.mock("../../../../src/api/ListInstanceInfo");
-import { ListInstanceInfo } from "../../../../../provisioning";
+import { ListInstanceInfo } from "../../../../../../provisioning";
 import { CommandProfiles, IHandlerParameters, IProfile } from "@zowe/imperative";
-import * as Handler from "../../../../src/cli/list/instanceInfo/InstanceInfo.handler";
-import { instanceInfo } from "../../../../src/cli/list/instanceInfo/InstanceInfo.definition";
-import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import * as Handler from "../../../../src/list/instanceInfo/InstanceInfo.handler";
+import { instanceInfo } from "../../../../src/list/instanceInfo/InstanceInfo.definition";
+import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {

@@ -11,11 +11,11 @@
 
 jest.mock("../../../../src/api/ProvisionPublishedTemplate");
 import { IHandlerParameters } from "@zowe/imperative";
-import * as DeleteInstanceHandler from "../../../../src/cli/delete/instance/DeleteInstance.handler";
-import * as DeleteInstanceDefinition from "../../../../src/cli/delete/instance/DeleteInstance.definition";
-import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
-import { DeleteInstance, ListRegistryInstances, ProvisioningConstants } from "../../../../../provisioning";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import * as DeleteInstanceHandler from "../../../../src/delete/instance/DeleteInstance.handler";
+import * as DeleteInstanceDefinition from "../../../../src/delete/instance/DeleteInstance.definition";
+import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
+import { DeleteInstance, ListRegistryInstances, ProvisioningConstants } from "../../../../../../provisioning";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, getMockedResponse, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {

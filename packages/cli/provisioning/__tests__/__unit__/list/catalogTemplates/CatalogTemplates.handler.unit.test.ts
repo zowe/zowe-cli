@@ -9,12 +9,12 @@
 *
 */
 
-import { ProvisioningListMocks } from "../../../__resources__/api/ProvisioningListMocks";
-import { ListCatalogTemplates } from "../../../../../provisioning";
+import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
+import { ListCatalogTemplates } from "../../../../../../provisioning";
 import { IHandlerParameters } from "@zowe/imperative";
-import * as Handler from "../../../../src/cli/list/catalogTemplates/CatalogTemplates.handler";
-import { catalogTemplates } from "../../../../src/cli/list/catalogTemplates/CatalogTemplates.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import * as Handler from "../../../../src/list/catalogTemplates/CatalogTemplates.handler";
+import { catalogTemplates } from "../../../../src/list/catalogTemplates/CatalogTemplates.definition";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF, getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 jest.mock("../../../../src/api/ListCatalogTemplates");
 
