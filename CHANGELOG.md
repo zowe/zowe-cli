@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.21.0`
 
 - Added optional responseTimeout option to zosFiles APIs and CLI
 - Specifying `--responseTimeout ###` sets the TSO servlet response timeout
