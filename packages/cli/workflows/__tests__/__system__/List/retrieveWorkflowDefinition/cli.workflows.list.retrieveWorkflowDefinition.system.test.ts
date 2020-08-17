@@ -15,8 +15,8 @@ import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
-import { ZosFilesConstants } from "../../../../../../zosfiles/src/api";
+import { Upload } from "../../../../../../../packages/zosfiles/src/methods/upload";
+import { ZosFilesConstants } from "../../../../../../../packages/zosfiles/src";
 import { join } from "path";
 
 let REAL_SESSION: Session;

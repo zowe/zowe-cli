@@ -14,11 +14,11 @@ import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { DeleteWorkflow } from "../../../..";
+import { DeleteWorkflow } from "../../../../../../packages/workflows";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../../zosfiles/src/api/methods/upload";
-import { Create, CreateDataSetTypeEnum } from "../../../../../zosfiles/src/api/methods/create";
-import { ZosFilesConstants } from "../../../../../zosfiles/src/api";
+import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
+import { Create, CreateDataSetTypeEnum } from "../../../../../../packages/zosfiles/src/methods/create";
+import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src";
 import { join } from "path";
 
 let REAL_SESSION: Session;

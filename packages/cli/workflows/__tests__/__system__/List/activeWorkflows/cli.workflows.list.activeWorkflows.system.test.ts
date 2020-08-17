@@ -14,12 +14,12 @@ import { Session } from "@zowe/imperative";
 import { runCliScript, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { DeleteWorkflow, CreateWorkflow } from "../../../../..";
+import { DeleteWorkflow, CreateWorkflow } from "../../../../../../../packages/workflows";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../../../zosfiles/src/api/methods/upload";
-import { ZosFilesConstants } from "../../../../../../zosfiles/src/api";
+import { Upload } from "../../../../../../../packages/zosfiles/src/methods/upload";
+import { ZosFilesConstants } from "../../../../../../../packages/zosfiles/src";
 import { join } from "path";
-import { IWorkflows } from "../../../../../src/api/doc/IWorkflows";
+import { IWorkflows } from "../../../../../../../packages/workflows/src/doc/IWorkflows";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
