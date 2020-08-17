@@ -13,7 +13,7 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List } from "../../../../../../zosfiles/src/api/methods/list";
+import { List } from "../../../../../../zosfiles/src/methods/list";
 import { Session } from "@zowe/imperative";
 
 process.env.FORCE_COLOR = "0";

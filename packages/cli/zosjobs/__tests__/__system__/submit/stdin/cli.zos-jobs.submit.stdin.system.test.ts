@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
-import { Get } from "../../../../../../zosfiles/src/api/methods/get";
+import { Get } from "../../../../../../zosfiles/src/methods/get";
 
 
 process.env.FORCE_COLOR = "0";
