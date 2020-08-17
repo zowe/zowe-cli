@@ -13,8 +13,8 @@ import { Imperative } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { PerformAction, ProvisioningConstants } from "../../../../";
-import { ProvisioningTestUtils } from "../../../__resources__/utils/ProvisioningTestUtils";
+import { PerformAction, ProvisioningConstants } from "../../../../../../packages/provisioning";
+import { ProvisioningTestUtils } from "../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 const RESPONSE_CHECK = "was successfully deleted";
