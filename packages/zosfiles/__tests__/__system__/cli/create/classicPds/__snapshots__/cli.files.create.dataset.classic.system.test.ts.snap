@@ -21,6 +21,12 @@ exports[`Create Classic Data Set Success scenarios should create a classic parti
 }"
 `;
 
+exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with response timeout 1`] = `
+"================Z/OS FILES CREATE DATA-SET-CLASSIC===============
+Data set created successfully.
+"
+`;
+
 exports[`Create Classic Data Set Success scenarios should create a classic partitioned data set with specified primary allocation 1`] = `
 "================Z/OS FILES CREATE DATA-SET-CLASSIC===============
 alcunit:   CYL

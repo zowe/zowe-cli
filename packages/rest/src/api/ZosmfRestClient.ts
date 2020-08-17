@@ -37,12 +37,12 @@ export class ZosmfRestClient extends RestClient {
      * @memberof ZosmfRestClient
      */
     protected appendHeaders(headers: any[] | undefined): any[] {
-        if (headers === undefined || headers === null) {
-            return [ZosmfHeaders.X_CSRF_ZOSMF_HEADER];
+        if (headers == null) {
+            headers = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER];
         } else {
             headers.push(ZosmfHeaders.X_CSRF_ZOSMF_HEADER);
-            return headers;
         }
+        return headers;
     }
 
     /**

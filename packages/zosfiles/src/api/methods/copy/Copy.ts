@@ -12,7 +12,7 @@
 import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { posix } from "path";
 
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient, ZosmfHeaders } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -67,6 +67,10 @@ export class Copy {
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() }
         ];
+
+        if (options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
 
         try {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);

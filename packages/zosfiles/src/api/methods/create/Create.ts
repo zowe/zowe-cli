@@ -23,6 +23,7 @@ import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import i18nTypings from "../../../cli/-strings-/en";
 import * as path from "path";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 const strings = (require("../../../cli/-strings-/en").default as typeof i18nTypings);
@@ -288,6 +289,7 @@ export class Create {
 
                     case "unit":
                     case "volser":
+                    case "responseTimeout":
                         // no validation
 
                         break;
@@ -359,13 +361,18 @@ export class Create {
             }
         }
 
+        let respTimeout: number;
+        if (options) {
+            respTimeout = options.responseTimeout
+        }
+
         try {
             this.vsamValidateOptions(idcamsOptions);
 
             // We invoke IDCAMS to create the VSAM cluster
             const idcamsCmds = this.vsamFormIdcamsCreateCmd(dataSetName, idcamsOptions);
             Logger.getAppLogger().debug("Invoking this IDCAMS command:\n" + idcamsCmds.join("\n"));
-            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds);
+            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds, {responseTimeout: respTimeout});
             return {
                 success: true,
                 commandResponse: attribText + ZosFilesMessages.dataSetCreatedSuccessfully.message,
@@ -394,7 +401,8 @@ export class Create {
     public static async uss(session: AbstractSession,
                             ussPath: string,
                             type: string,
-                            mode?: string)
+                            mode?: string,
+                            options?: IZosFilesOptions)
         : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
@@ -403,6 +411,9 @@ export class Create {
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
         const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, { "Content-Type": "application/json" }];
+        if (options && options.responseTimeout != null) {
+            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         let payload: object = { type };
         if (mode) {
             payload = { ...payload, ...{ mode } };
@@ -595,6 +606,7 @@ export class Create {
                     case "storeclass":
                     case "mgntclass":
                     case "dataclass":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 
@@ -665,6 +677,7 @@ export class Create {
                     case "dataclass":
                     case "volumes":
                     case "timeout":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 

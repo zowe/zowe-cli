@@ -9,12 +9,14 @@
 *
 */
 
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
+
 /**
  * Interface for the options to the create zos-file-system API.
  * @export
  * @interface ICreateZfsOptions
  */
-export interface ICreateZfsOptions {
+export interface ICreateZfsOptions extends IZosFilesOptions {
 
     /**
      * The user ID for owner of the root directory

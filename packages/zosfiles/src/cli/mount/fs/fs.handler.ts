@@ -23,7 +23,8 @@ export default class FsHandler extends ZosFilesBaseHandler {
         // collect the options from our command line arguments into an object
         const mountFsOptions: Partial<IMountFsOptions> = {
             "fs-type": commandParameters.arguments.fsType,
-            "mode": commandParameters.arguments.mode
+            "mode": commandParameters.arguments.mode,
+            responseTimeout: commandParameters.arguments.responseTimeout
         };
 
         return Mount.fs(session, commandParameters.arguments.fileSystemName, commandParameters.arguments.mountPoint, mountFsOptions);

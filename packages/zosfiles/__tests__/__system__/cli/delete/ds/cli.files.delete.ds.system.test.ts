@@ -102,6 +102,16 @@ describe("Delete Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should delete a data set with response timeout", async () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
+            response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--responseTimeout 5 --for-sure"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should delete a partitioned data set and print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);

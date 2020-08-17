@@ -13,6 +13,7 @@ import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../";
 import { ZosmfRestClient } from "../../../../../rest/";
 import { ZosFilesMessages } from "../../../../src/api/constants/ZosFiles.messages";
+import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("Create data set", () => {
     const dummySession: any = {};
@@ -137,6 +138,30 @@ describe("Create data set", () => {
                     }
                 })
             );
+        });
+
+        it("should be able to create a sequential data set (PS) with responseTimeout", async () => {
+
+            dsOptions.dsntype = "PDS";
+            dsOptions.responseTimeout = 5;
+
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, dsOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [],
+                JSON.stringify({
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...dsOptions,
+                    ...{
+                        secondary: 1
+                    }
+                })
+            );
+            dsOptions.responseTimeout = undefined;
         });
 
         it("should be able to allocate like from a sequential data set", async () => {
@@ -954,18 +979,20 @@ describe("Create VSAM Data Set", () => {
 
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\n${CreateDefaults.VSAM.dsorg} -\nKB(${primary} ${secondary}) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             const response = await Create.vsam(dummySession, dataSetName, dsOptions);
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set with dsorg of NUMBERED", async () => {
 
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNUMBERED -\nKB(${primary} ${secondary}) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.dsorg = "NUMBERED";
 
@@ -973,13 +1000,14 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set with retention for 10 days", async () => {
 
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nKB(${primary} ${secondary}) -\nFOR(${TEN}) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.retainFor = TEN;
 
@@ -987,13 +1015,14 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set and over-ride multiple options", async () => {
 
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNONINDEXED -\nCYL(${THIRTY} ${TEN}) -\nFOR(${TEN}) -\nVOLUMES(STG100, STG101) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.dsorg = "NONINDEXED";
             dsOptions.retainFor = TEN;
@@ -1006,7 +1035,7 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set with storeclass, mgntclass and dataclass provided",async () => {
@@ -1014,6 +1043,7 @@ describe("Create VSAM Data Set", () => {
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nKB(${primary} ${secondary}) -\nVOLUMES(STG100) -` +
                 `\nSTORAGECLASS(STORE) -\nMANAGEMENTCLASS(MANAGEMENT) -\nDATACLASS(DATA) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.storeclass = "STORE";
             dsOptions.mgntclass = "MANAGEMENT";
@@ -1024,7 +1054,7 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set with retention to a specific date",async () => {
@@ -1032,6 +1062,7 @@ describe("Create VSAM Data Set", () => {
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nKB(${primary} ${secondary}) -\nTO(2019001) -` +
                 `\nVOLUMES(STG100) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.retainTo = "2019001";
             dsOptions.volumes = "STG100";
@@ -1040,7 +1071,7 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set while printing (or not) the attributes",async () => {
@@ -1048,6 +1079,7 @@ describe("Create VSAM Data Set", () => {
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nKB(${primary} ${secondary}) -` +
                 `\nVOLUMES(STG100) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.showAttributes = true;
             dsOptions.volumes = "STG100";
@@ -1056,7 +1088,7 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set with a given size and print attributes false",async () => {
@@ -1064,6 +1096,7 @@ describe("Create VSAM Data Set", () => {
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nTRK(30 3) -` +
                 `\nVOLUMES(STG100) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             dsOptions.primary = THIRTY;
             dsOptions.showAttributes = false;
@@ -1074,7 +1107,7 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
 
         it("should be able to create a VSAM data set using --size",async () => {
@@ -1082,6 +1115,7 @@ describe("Create VSAM Data Set", () => {
             const expectedCommand: string[] =
                 [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nINDEXED -\nTRK(30 3) -` +
                 `\nVOLUMES(STG100) -\n)`];
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             (dsOptions as any).size = THIRTY + "TRK";
             dsOptions.volumes = "STG100";
@@ -1090,7 +1124,7 @@ describe("Create VSAM Data Set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand);
+            expect(mySpy).toHaveBeenCalledWith(dummySession, expectedCommand, options);
         });
     });
 

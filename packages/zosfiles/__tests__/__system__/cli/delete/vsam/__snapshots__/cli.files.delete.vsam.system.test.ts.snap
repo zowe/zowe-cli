@@ -12,6 +12,12 @@ Data set deleted successfully.
 "
 `;
 
+exports[`Delete VSAM Data Set Success scenarios should delete a VSAM data set with response timeout 1`] = `
+"================Z/OS FILES DELETE VSAM DATA SET===============
+Data set deleted successfully.
+"
+`;
+
 exports[`Delete VSAM Data Set without profiles should delete a data set 1`] = `
 "Data set deleted successfully.
 "

@@ -120,6 +120,22 @@ describe("Invoke AMS CLI", () => {
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
         });
 
+        it("should invoke ams to create and then delete a VSAM cluster with response timeout", async () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+                TEST_ENVIRONMENT, [user, defaultSystem.datasets.vol, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            let testOutput = stripNewLines(response.stdout.toString());
+            expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_delete_statement.sh",
+                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            testOutput = stripNewLines(response.stdout.toString());
+            expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+        });
+
         it("should invoke ams to create and then delete a VSAM cluster using a control statement and print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement_rfj.sh",
                 TEST_ENVIRONMENT, [user, defaultSystem.datasets.vol]);

@@ -21,6 +21,12 @@ exports[`Create Physical Sequential Data Set Success scenarios should create a p
 }"
 `;
 
+exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set with response timeout 1`] = `
+"================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
+Data set created successfully.
+"
+`;
+
 exports[`Create Physical Sequential Data Set Success scenarios should create a physical sequential data set with specified primary allocation 1`] = `
 "================Z/OS FILES CREATE DATA-SET-SEQUENTIAL===============
 alcunit:   CYL

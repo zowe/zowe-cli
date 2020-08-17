@@ -14,15 +14,16 @@ import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
 import { ICreateUssOptions } from "../../../api/methods/create/doc/ICreateUssOption";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { Create } from "../../../api/methods/create";
+import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to create a USS Directory
  */
 export default class UssDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-
         const strMode = commandParameters.arguments.mode;
+        const zosFilesOptions: IZosFilesOptions = { responseTimeout: commandParameters.arguments.responseTimeout};
 
-        return Create.uss(session, commandParameters.arguments.ussPath, "directory", strMode);
+        return Create.uss(session, commandParameters.arguments.ussPath, "directory", strMode, zosFilesOptions);
     }
 }
