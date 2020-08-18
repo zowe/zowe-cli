@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-jobs list jobs definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/cli/list/jobs/Jobs.definition").JobsDefinition;
+            = require("../../../../src/list/jobs/Jobs.definition").JobsDefinition;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

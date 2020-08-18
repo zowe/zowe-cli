@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs submit group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/submit/data-set/DataSet.definition").DataSetDefinition;
+        const definition: ICommandDefinition = require("../../../../src/submit/data-set/DataSet.definition").DataSetDefinition;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();
