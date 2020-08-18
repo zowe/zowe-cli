@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zosmf list group definition", () => {
     it("should have the right command content", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListCommand;
+        const definition: ICommandDefinition = require("../../../src/list/List.definition").ListCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

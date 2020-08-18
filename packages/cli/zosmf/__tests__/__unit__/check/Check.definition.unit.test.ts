@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zosmf check group definition", () => {
     it("should have the right command content", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/check/Check.definition").CheckCommand;
+        const definition: ICommandDefinition = require("../../../src/check/Check.definition").CheckCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

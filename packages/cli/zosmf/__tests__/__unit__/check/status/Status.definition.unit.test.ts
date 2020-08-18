@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zosmf check status definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/check/status/Status.definition").StatusDefinition;
+        const definition: ICommandDefinition = require("../../../../src/check/status/Status.definition").StatusDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         expect(definition).toMatchSnapshot();
