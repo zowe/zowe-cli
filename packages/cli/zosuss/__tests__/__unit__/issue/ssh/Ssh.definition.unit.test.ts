@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-uss issue ssh command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/issue/ssh/Ssh.definition").SshDefinition;
+        const definition: ICommandDefinition = require("../../../../src/issue/ssh/Ssh.definition").SshDefinition;
 
         expect(definition).toBeDefined();
 

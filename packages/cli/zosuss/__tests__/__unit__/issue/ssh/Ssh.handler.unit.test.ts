@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../src/Shell.ts");
+jest.mock("../../../../../../../packages/zosuss/src/Shell.ts");
 import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative";
 import * as SshHandler from "../../../../src/issue/ssh/Ssh.handler";
 import * as SshDefinition from "../../../../src/issue/ssh/Ssh.definition";
