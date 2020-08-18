@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../src/api/ProvisionPublishedTemplate");
+jest.mock("../../../../../../../packages/provisioning/src/ProvisionPublishedTemplate");
 import { IHandlerParameters } from "@zowe/imperative";
 import * as DeleteInstanceHandler from "../../../../src/delete/instance/DeleteInstance.handler";
 import * as DeleteInstanceDefinition from "../../../../src/delete/instance/DeleteInstance.definition";

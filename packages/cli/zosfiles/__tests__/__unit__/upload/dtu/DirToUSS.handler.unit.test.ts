@@ -14,7 +14,7 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src_
 import * as fs from "fs";
 import { ZosFilesAttributes } from "../../../../../../../packages/zosfiles/src/utils/ZosFilesAttributes";
 
-jest.mock("../../../../src/api/utils/ZosFilesAttributes");
+jest.mock("../../../../../../../packages/zosfiles/src/utils/ZosFilesAttributes");
 
 describe("Upload dir-to-uss handler", () => {
 

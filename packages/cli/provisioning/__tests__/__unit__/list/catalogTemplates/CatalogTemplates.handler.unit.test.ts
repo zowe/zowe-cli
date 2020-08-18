@@ -20,7 +20,7 @@ import {
     getMockedResponse
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-jest.mock("../../../../src/api/ListCatalogTemplates");
+jest.mock("../../../../../../../packages/provisioning/src/ListCatalogTemplates");
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {

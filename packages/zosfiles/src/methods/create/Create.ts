@@ -26,7 +26,7 @@ import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 // Do not use import in anticipation of some internationalization work to be done later.
-const strings = (require("../../../cli/-strings-/en").default as typeof i18nTypings);
+const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);
 
 /**
  * Class to handle creation of data sets

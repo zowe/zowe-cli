@@ -15,8 +15,8 @@ import { IJob, MonitorJobs, SubmitJobs } from "../../";
 import { ZosmfRestClient } from "../../../rest/src/ZosmfRestClient";
 import { ImperativeError } from "@zowe/imperative";
 
-jest.mock("../../../rest/src/api/ZosmfRestClient");
-jest.mock("../../src/api/MonitorJobs");
+jest.mock("../../../rest/src/ZosmfRestClient");
+jest.mock("../../src/MonitorJobs");
 
 const fakeSession: any = {};
 

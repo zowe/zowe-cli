@@ -13,8 +13,8 @@ import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IJobFile } from "../../";
 import { ZosmfRestClient } from "../../../rest";
 
-jest.mock("../../../rest/src/api/ZosmfRestClient");
-jest.mock("../../src/api/GetJobs");
+jest.mock("../../../rest/src/ZosmfRestClient");
+jest.mock("../../src/GetJobs");
 
 // unit tests for DownloadJobs API
 describe("DownloadJobs", () => {

@@ -18,7 +18,7 @@ import {
 import * as Handler from "../../../../src/list/registry/RegistryInstances.handler";
 import { registryInstances } from "../../../../src/list/registry/RegistryInstances.definition";
 
-jest.mock("../../../../src/api/ListCatalogTemplates");
+jest.mock("../../../../../../../packages/provisioning/src/ListCatalogTemplates");
 
 const ZOSMF_PROF_OPTS = {
     host: "somewhere.com",

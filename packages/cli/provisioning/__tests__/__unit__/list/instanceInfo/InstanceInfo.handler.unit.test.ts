@@ -11,7 +11,7 @@
 
 import { ListRegistryInstances } from "../../../../../../../packages/provisioning/index";
 
-jest.mock("../../../../src/api/ListInstanceInfo");
+jest.mock("../../../../../../../packages/provisioning/src/ListInstanceInfo");
 import { ListInstanceInfo } from "../../../../../../provisioning";
 import {
     CommandProfiles,

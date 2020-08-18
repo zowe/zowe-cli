@@ -13,7 +13,7 @@ import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { ImperativeError } from "@zowe/imperative";
 import { CancelJobs, IJob } from "../../";
 
-jest.mock("../../../rest/src/api/ZosmfRestClient");
+jest.mock("../../../rest/src/ZosmfRestClient");
 
 const returnEmpty = async () => {
     return;

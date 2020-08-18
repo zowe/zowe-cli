@@ -11,7 +11,7 @@
 
 import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
 
-jest.mock("../../../../src/api/ProvisionPublishedTemplate");
+jest.mock("../../../../../../../packages/provisioning/src/ProvisionPublishedTemplate");
 import {
     ListRegistryInstances,
     PerformAction,

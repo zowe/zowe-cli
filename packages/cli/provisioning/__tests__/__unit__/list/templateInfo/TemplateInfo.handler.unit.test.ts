@@ -11,7 +11,7 @@
 
 import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
 
-jest.mock("../../../../src/api/ListTemplateInfo");
+jest.mock("../../../../../../../packages/provisioning/src/ListTemplateInfo");
 import { ListTemplateInfo } from "../../../../../../provisioning";
 import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../src/list/templateInfo/TemplateInfo.handler";

@@ -16,7 +16,7 @@ import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForP
 import { IJob } from "../../src/doc/response/IJob";
 import { MonitorJobs } from "../../src/MonitorJobs";
 
-jest.mock("../../src/api/GetJobs");
+jest.mock("../../src/GetJobs");
 jest.mock("../../../utils");
 
 describe("MonitorJobs", () => {

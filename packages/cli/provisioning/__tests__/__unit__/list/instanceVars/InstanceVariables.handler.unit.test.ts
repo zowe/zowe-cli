@@ -11,7 +11,7 @@
 
 import { ListRegistryInstances } from "../../../../../../../packages/provisioning/index";
 
-jest.mock("../../../../src/api/ListInstanceVariables");
+jest.mock("../../../../../../../packages/provisioning/src/ListInstanceVariables");
 import { ListInstanceVariables } from "../../../../../../provisioning";
 import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../src/list/instanceVariables/InstanceVariables.handler";
