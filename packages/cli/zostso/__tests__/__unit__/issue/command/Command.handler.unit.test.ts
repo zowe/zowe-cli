@@ -11,7 +11,7 @@
 
 import { PingTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/PingTsoData";
 
-jest.mock("../../../../src/PingTso");
+jest.mock("../../../../../../../packages/zostso/src/PingTso");
 import { IssueTso } from "../../../../../../zostso";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as Command from "../../../../src/issue/command/Command.handler";

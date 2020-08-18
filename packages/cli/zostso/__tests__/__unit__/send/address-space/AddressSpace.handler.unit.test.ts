@@ -11,7 +11,7 @@
 
 import { PingTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/PingTsoData";
 
-jest.mock("../../../../src/PingTso");
+jest.mock("../../../../../../../packages/zostso/src/PingTso");
 import { SendTso } from "../../../../../../zostso";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as SendToAddressSpace from "../../../../src/send/address_space/SendToAddressSpace.handler";

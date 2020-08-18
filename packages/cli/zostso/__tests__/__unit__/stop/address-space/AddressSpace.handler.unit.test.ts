@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../src/StopTso");
+jest.mock("../../../../../../../packages/zostso/src/StopTso");
 import { StopTso } from "../../../../../../zostso";
 import { StopTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/StopTsoData";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
