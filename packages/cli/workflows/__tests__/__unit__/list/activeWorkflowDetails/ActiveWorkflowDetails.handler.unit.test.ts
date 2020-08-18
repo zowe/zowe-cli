@@ -31,7 +31,7 @@ describe("List workflow details handler", () => {
         const listVariables = true;
         it("should list workflow details using wf key", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/activeWorkflowDetails/ActiveWorkflowDetails.handler");
+            const handlerReq = require("../../../../src/list/activeWorkflowDetails/ActiveWorkflowDetails.handler");
             const handler = new handlerReq.default();
 
 
@@ -112,7 +112,7 @@ describe("List workflow details handler", () => {
         });
         it("should list workflow details using wf name", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/activeWorkflowDetails/ActiveWorkflowDetails.handler");
+            const handlerReq = require("../../../../src/list/activeWorkflowDetails/ActiveWorkflowDetails.handler");
             const handler = new handlerReq.default();
 
 
