@@ -42,7 +42,7 @@ describe("Create USS dir", () => {
 
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        fileName = `${basePath}/test`;
+        fileName = `${basePath}/testDir`;
 
     });
 
@@ -58,14 +58,19 @@ describe("Create USS dir", () => {
 
         afterEach(async () => {
             // use DELETE APIs
-            if (dsnameSuffix !== "") {
-                const response = await Delete.ussFile(REAL_SESSION, fileName);
-            }
+            const response = await Delete.ussFile(REAL_SESSION, fileName);
         });
 
         it("should create a USS dir", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_dir.sh",
                 TEST_ENVIRONMENT, [basePath]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+        it("should create a USS dir with response timeout", () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_dir.sh",
+                TEST_ENVIRONMENT, [basePath, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

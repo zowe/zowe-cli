@@ -63,11 +63,11 @@ describe("DsHandler", () => {
         );
         expect(response).toBe(defaultReturn);
     });
-    it("should call HMigrate.dataSet with wait = true", async () => {
+    it("should call HMigrate.dataSet with options", async () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IMigrateOptions = { wait: true };
+        const options: IMigrateOptions = { wait: true, responseTimeout: 5 };
 
         const commandParameters: any = {
             arguments: {
@@ -85,7 +85,7 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IMigrateOptions = { wait: true };
+        const expectedOptions: IMigrateOptions = { wait: true, responseTimeout: 5 };
 
         const response = await handler.processWithSession(
             commandParameters,

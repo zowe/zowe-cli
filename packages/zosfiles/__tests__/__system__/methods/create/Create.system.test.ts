@@ -86,12 +86,54 @@ describe("Create data set", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
 
+    it("should create a partitioned data set with response timeout", async () => {
+        let error;
+        let response;
+
+        const tempOptions = { ...options, responseTimeout: 5 };
+
+        try {
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, tempOptions);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
     it("should create a sequential data set", async () => {
         let error;
         let response;
 
         try {
             response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a sequential data set with response timeout", async () => {
+        let error;
+        let response;
+
+        const tempOptions = { ...options, responseTimeout: 5 };
+
+        try {
+            response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, tempOptions);
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -227,6 +269,27 @@ describe("Create VSAM", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
+
+    it("should create a VSAM data set with response timeout (volume must be specified)", async () => {
+        let error;
+        let response;
+
+        const tempOptions = { ...options, responseTimeout: 5 };
+
+        try {
+            response = await Create.vsam(REAL_SESSION, dsname, tempOptions);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
 });
 
 describe("Create z/OS file system", () => {
@@ -296,6 +359,27 @@ describe("Create z/OS file system", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
     }, LONGER_TIMEOUT);
+
+    it("should create a ZFS with response timeout", async () => {
+        let error;
+        let response;
+
+        const tempOptions = { ...options, responseTimeout: 5 };
+
+        try {
+            response = await Create.zfs(REAL_SESSION, fsname, tempOptions);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.zfsCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
 });
 
 describe("Create uss file", () => {
@@ -341,6 +425,25 @@ describe("Create uss file", () => {
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "file");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.ussCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a uss file with response timeout", async () => {
+        let error;
+        let response;
+
+        try {
+            response = await Create.uss(REAL_SESSION, filename, "file", undefined, {responseTimeout: 5});
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;
@@ -399,6 +502,25 @@ describe("Create uss directory", () => {
 
         try {
             response = await Create.uss(REAL_SESSION, filename, "directory");
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.ussCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a uss directory with response timeout", async () => {
+        let error;
+        let response;
+
+        try {
+            response = await Create.uss(REAL_SESSION, filename, "directory", undefined, {responseTimeout: 5});
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
             error = err;

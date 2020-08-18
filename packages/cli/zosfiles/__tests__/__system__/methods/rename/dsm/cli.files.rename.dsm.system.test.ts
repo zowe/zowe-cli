@@ -70,6 +70,27 @@ describe("Rename data set member", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(contents.toString().trim()).toBe(data);
             });
+            it("should rename a data set member from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_rename_data_set_member.sh"),
+                        TEST_ENVIRONMENT,
+                        [dataSetName, beforeMemberName, afterMemberName, "--responseTimeout 5"]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
         });
     });
 });

@@ -25,6 +25,7 @@ import {
     TSO_OPTION_ROWS
 } from "../packages/cli/zostso/src/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
+import { ZosFilesOptions } from "./zosfiles/src/cli/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -192,6 +193,10 @@ const config: IImperativeConfig = {
                                 " The default encoding if not specified is 1047.",
                             type: "number"
                         }
+                    },
+                    responseTimeout: {
+                        type: "number",
+                        optionDefinition: ZosFilesOptions.responseTimeout
                     }
                 },
                 required: []

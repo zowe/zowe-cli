@@ -12,11 +12,12 @@
 import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { posix } from "path";
 
-import { ZosmfRestClient, IHeaderContent } from "../../../../rest";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 /**
  * Class to handle renaming data sets
@@ -32,7 +33,8 @@ export class Rename {
     public static async dataSet(
         session: AbstractSession,
         beforeDataSetName: string,
-        afterDataSetName: string
+        afterDataSetName: string,
+        options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(beforeDataSetName, "beforeDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(afterDataSetName, "afterDataSetName");
@@ -40,7 +42,8 @@ export class Rename {
         return this.rename(
             session,
             afterDataSetName.trim(),
-            { dataSetName: beforeDataSetName.trim() }
+            { dataSetName: beforeDataSetName.trim() },
+            options
         );
     }
 
@@ -56,7 +59,8 @@ export class Rename {
         session: AbstractSession,
         dataSetName: string,
         beforeMemberName: string,
-        afterMemberName: string
+        afterMemberName: string,
+        options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(dataSetName, "dataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(beforeMemberName, "beforeMemberName");
@@ -65,7 +69,8 @@ export class Rename {
         return this.rename(
             session,
             `${dataSetName.trim()}(${afterMemberName.trim()})`,
-            { dataSetName: dataSetName.trim(), memberName: beforeMemberName.trim() }
+            { dataSetName: dataSetName.trim(), memberName: beforeMemberName.trim() },
+            options
         );
     }
 
@@ -78,7 +83,8 @@ export class Rename {
     private static async rename(
         session: AbstractSession,
         afterDataSetName: string,
-        { dataSetName: beforeDataSetName, memberName: beforeMemberName }: IDataSet
+        { dataSetName: beforeDataSetName, memberName: beforeMemberName }: IDataSet,
+        options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
@@ -99,6 +105,10 @@ export class Rename {
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() }
         ];
+
+        if (options && options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
 
         try {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);

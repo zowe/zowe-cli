@@ -172,4 +172,64 @@ describe("Mount and unmount a file system", () => {
         expect(response).toBeTruthy();
         expect(response.success).toBe(true);
     }, LONGER_TIMEOUT);
+
+    it("should mount a FS to a mount point and then unmount with response timeout", async () => {
+        let response;
+        let error;
+        mountOptions["fs-type"] = fsType;
+        mountOptions.mode = mode;
+        mountOptions.responseTimeout = 5;
+
+        try {
+            response = await Mount.fs(REAL_SESSION, fsname, mountPoint, mountOptions);
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.fsMountedSuccessfully.message);
+
+        try{
+            response = await List.fs(REAL_SESSION, {fsname, responseTimeout: 5});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+        expect(response.apiResponse.items.length).toBe(1);
+        expect(response.apiResponse.items[0].mountpoint).toContain(mountPoint);
+
+        try {
+            response = await Unmount.fs(REAL_SESSION, fsname, {responseTimeout: 5});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeUndefined();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.fsUnmountedSuccessfully.message);
+
+        try{
+            response = await List.fs(REAL_SESSION, {fsname, responseTimeout: 5});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (e) {
+            error = e;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeDefined();
+        expect(response).toBeTruthy();
+        expect(response.success).toBe(true);
+    }, LONGER_TIMEOUT);
 });

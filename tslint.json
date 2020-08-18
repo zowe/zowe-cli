@@ -20,7 +20,8 @@
       -1,
       0,
       1,
-      2
+      2,
+      5
     ],
     "no-consecutive-blank-lines": [
       true,

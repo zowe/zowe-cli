@@ -30,11 +30,12 @@ export function generateZosmfOptions(commandArguments: Arguments): ICreateDataSe
         recfm: commandArguments.recordFormat,
         blksize: commandArguments.blockSize,
         lrecl: commandArguments.recordLength,
-        storeclass: commandArguments.storageClass,
+        storclass: commandArguments.storageClass,
         mgntclass: commandArguments.managementClass,
         dataclass: commandArguments.dataClass,
         dsntype: commandArguments.dataSetType,
         showAttributes: commandArguments.showAttributes,
-        size: commandArguments.size
+        size: commandArguments.size,
+        responseTimeout: commandArguments.responseTimeout
     }));
 }

@@ -117,6 +117,15 @@ describe("Create Classic Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should create a classic partitioned data set with response timeout", () => {
+            dsnameSuffix = "classic";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds.sh",
+                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should create a classic partitioned data set and print attributes", () => {
             dsnameSuffix = "classic";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_rfj.sh",

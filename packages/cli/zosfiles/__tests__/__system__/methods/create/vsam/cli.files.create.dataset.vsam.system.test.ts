@@ -108,6 +108,13 @@ describe("Create VSAM Data Set", () => {
             expect(response.status).toBe(0);
         });
 
+        it("should create a VSAM data set with response timeout", () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
+                TEST_ENVIRONMENT, [dsname, `-v ${volume} --responseTimeout 5`]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+        });
+
         it("should create a VSAM data set specifying 'retain-to'", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_vsam.sh",
                 TEST_ENVIRONMENT, [dsname, `-v ${volume} --rt ${new Date().getFullYear() + 1}360`]);

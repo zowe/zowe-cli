@@ -314,6 +314,41 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
 
+        it("should download a data set using responseTimeout", async () => {
+            let response;
+            let caughtError;
+            const responseTimeout = 5;
+            const destination = dsFolder + ".txt";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {responseTimeout});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [{ "X-IBM-Response-Timeout": "5" }],
+                                                                        responseStream: fakeWriteStream,
+                                                                        normalizeResponseNewLines: true,
+                                                                        task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
         it("should download a data set and return Etag", async () => {
             zosmfGetFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
             let response;
@@ -530,6 +565,44 @@ describe("z/OS Files - Download", () => {
                     volume,
                     file: `${directory}/${mem.member.toLowerCase()}${extension}`,
                     binary
+                });
+            });
+        });
+
+        it("should download all members specifying directory, volume, extension, responseTimeout and binary mode", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path/";
+            const extension = ".xyz";
+            const binary = true;
+            const responseTimeout = 5;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary, responseTimeout});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    binary,
+                    encoding: undefined,
+                    responseTimeout
                 });
             });
         });
@@ -906,6 +979,40 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                                                                         reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }],
+                                                                        responseStream: fakeStream,
+                                                                        normalizeResponseNewLines: true,
+                                                                        task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
+        it("should download uss file using responseTimeout", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+            const responseTimeout = 5;
+            try {
+                response = await Download.ussFile(dummySession, ussname, {responseTimeout});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        reqHeaders: [{ "X-IBM-Response-Timeout": "5" }],
                                                                         responseStream: fakeStream,
                                                                         normalizeResponseNewLines: true,
                                                                         task: undefined /* no progress task */});

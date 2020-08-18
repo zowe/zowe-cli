@@ -13,6 +13,7 @@ import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative
 import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
 import { Invoke } from "../../../../../../packages/zosfiles/src/methods/invoke";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to create a PDS data set
@@ -21,7 +22,8 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class AmsFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         let response: IZosFilesResponse;
-        response = await Invoke.ams(session, commandParameters.arguments.controlStatementsFile);
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
+        response = await Invoke.ams(session, commandParameters.arguments.controlStatementsFile, zosFilesOptions);
         commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse));
         return response;
     }

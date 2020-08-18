@@ -21,7 +21,8 @@ export default class VsamHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         return Delete.vsam(session, commandParameters.arguments.dataSetName, {
             erase: commandParameters.arguments.erase,
-            purge: commandParameters.arguments.purge
+            purge: commandParameters.arguments.purge,
+            responseTimeout: commandParameters.arguments.responseTimeout
         });
     }
 }

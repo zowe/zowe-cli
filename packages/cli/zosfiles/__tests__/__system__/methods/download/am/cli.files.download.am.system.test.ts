@@ -128,6 +128,14 @@ describe("Download All Member", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
         });
 
+        it("should download all data set member of pds with response timeout", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+        });
+
         it("should download all data set members with --max-concurrent-requests 2", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member_mcr.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, 2]);

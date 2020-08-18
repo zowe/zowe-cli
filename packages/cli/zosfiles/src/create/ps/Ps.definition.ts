@@ -49,7 +49,7 @@ export const PsDefinition: ICommandDefinition = {
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.blksize},
         {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.SEQUENTIAL.lrecl},
-        ZosFilesCreateOptions.storeclass,
+        ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,

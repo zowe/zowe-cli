@@ -13,12 +13,14 @@ import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 
 import { Delete, IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to delete a z/OS file system.
  */
 export default class ZfsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        return Delete.zfs(session, commandParameters.arguments.fileSystemName);
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
+        return Delete.zfs(session, commandParameters.arguments.fileSystemName, zosFilesOptions);
     }
 }

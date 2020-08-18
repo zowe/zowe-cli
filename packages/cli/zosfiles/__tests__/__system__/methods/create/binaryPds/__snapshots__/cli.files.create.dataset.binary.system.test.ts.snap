@@ -21,6 +21,12 @@ exports[`Create Binary Data Set Success scenarios should create a binary partiti
 }"
 `;
 
+exports[`Create Binary Data Set Success scenarios should create a binary partitioned data set with response timeout 1`] = `
+"================Z/OS FILES CREATE DATA-SET-BINARY===============
+Data set created successfully.
+"
+`;
+
 exports[`Create Binary Data Set Success scenarios should create a binary partitioned data set with specified primary allocation 1`] = `
 "================Z/OS FILES CREATE DATA-SET-BINARY===============
 dsorg:     PO

@@ -26,6 +26,7 @@ let user: string;
 
 const fromMemberName: string = "mem1";
 const toMemberName: string = "mem2";
+const responseTimeout = `--responseTimeout 5`;
 
 describe("Copy data set", () => {
     beforeAll(async () => {
@@ -40,6 +41,7 @@ describe("Copy data set", () => {
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         fromDataSetName = `${user}.COPY.FROM.SET`;
         toDataSetName = `${user}.COPY.TO.SET`;
+
     });
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
@@ -81,6 +83,27 @@ describe("Copy data set", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(contents.toString().trim()).toBe(data);
             });
+            it("should copy a data set from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
+                        TEST_ENVIRONMENT,
+                        [fromDataSetName, toDataSetName, responseTimeout]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, toDataSetName);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
         });
         describe("member > member", () => {
             beforeEach(async () => {
@@ -100,6 +123,27 @@ describe("Copy data set", () => {
                         join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
                         TEST_ENVIRONMENT,
                         [`${fromDataSetName}(${fromMemberName})`, `${toDataSetName}(${toMemberName})`]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${toMemberName})`);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
+            it("should copy a data set from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
+                        TEST_ENVIRONMENT,
+                        [`${fromDataSetName}(${fromMemberName})`, `${toDataSetName}(${toMemberName})`, responseTimeout]
                     );
                     contents = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${toMemberName})`);
                 } catch(err) {
@@ -141,6 +185,27 @@ describe("Copy data set", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(contents.toString().trim()).toBe(data);
             });
+            it("should copy a data set from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
+                        TEST_ENVIRONMENT,
+                        [fromDataSetName, `${toDataSetName}(${toMemberName})`, responseTimeout]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${toMemberName})`);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
         });
         describe("member > sequential", () => {
             beforeEach(async () => {
@@ -160,6 +225,27 @@ describe("Copy data set", () => {
                         join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
                         TEST_ENVIRONMENT,
                         [`${fromDataSetName}(${fromMemberName})`, toDataSetName]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, toDataSetName);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
+            it("should copy a data set from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_copy_data_set.sh"),
+                        TEST_ENVIRONMENT,
+                        [`${fromDataSetName}(${fromMemberName})`, toDataSetName, responseTimeout]
                     );
                     contents = await Get.dataSet(REAL_SESSION, toDataSetName);
                 } catch(err) {

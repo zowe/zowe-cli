@@ -77,6 +77,24 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.success).toBe(true);
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
+            it("should delete a migrated sequential data set with response timeout", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await HDelete.dataSet(REAL_SESSION, dataSet1, {responseTimeout: 5});
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
+            });
             it("should delete a migrated sequential data set with wait = true", async () => {
                 const deleteOptions: IDeleteOptions = { wait: true };
                 let error;
@@ -131,6 +149,24 @@ describe("Delete Migrated Dataset", () => {
 
                 try {
                     response = await HDelete.dataSet(REAL_SESSION, dataSet2);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
+            });
+            it("should delete a migrated partitioned dataset with response timeout", async () => {
+                let error;
+                let response;
+
+                try {
+                    response = await HDelete.dataSet(REAL_SESSION, dataSet2, {responseTimeout: 5});
                     Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;

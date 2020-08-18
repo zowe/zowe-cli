@@ -23,6 +23,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
         if (commandParameters.arguments.volume) {
             options.volume = commandParameters.arguments.volume;
         }
+        options.responseTimeout = commandParameters.arguments.responseTimeout;
 
         return Delete.dataSet(session, commandParameters.arguments.dataSetName, options);
     }

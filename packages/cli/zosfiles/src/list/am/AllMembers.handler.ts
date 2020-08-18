@@ -23,7 +23,8 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
         const response = await List.allMembers(session, commandParameters.arguments.dataSetName, {
             volume: commandParameters.arguments.volumeSerial,
             attributes: commandParameters.arguments.attributes,
-            maxLength: commandParameters.arguments.maxLength
+            maxLength: commandParameters.arguments.maxLength,
+            responseTimeout: commandParameters.arguments.responseTimeout
         });
 
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {

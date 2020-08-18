@@ -117,6 +117,15 @@ describe("Create C Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should create a c partitioned data set with response timeout", () => {
+            dsnameSuffix = "c";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds.sh",
+                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should create a c partitioned data set and print attributes", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_rfj.sh",

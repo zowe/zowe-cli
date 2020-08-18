@@ -13,7 +13,7 @@ import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zow
 
 import { posix } from "path";
 
-import { ZosmfRestClient } from "../../../../rest";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -23,6 +23,7 @@ import { IDeleteDatasetOptions } from "./doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "./doc/IDeleteVsamOptions";
 import { IDeleteVsamResponse } from "./doc/IDeleteVsamResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 /**
  * This class holds helper functions that are used to delete files through the
@@ -58,13 +59,18 @@ export class Delete {
                 endpoint = posix.join(endpoint, `-(${options.volume})`);
             }
 
+            const reqHeaders: IHeaderContent[] = [];
+            if (options && options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+
             endpoint = posix.join(endpoint, dataSetName);
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             // Since there is a bug with the deleteExpectJSON (doesn't handle 204 no content) we will be using the expect
             // string api since that doesn't seem to complain.
-            await ZosmfRestClient.deleteExpectString(session, endpoint);
+            await ZosmfRestClient.deleteExpectString(session, endpoint, reqHeaders);
 
             return {
                 success        : true,
@@ -107,7 +113,7 @@ export class Delete {
         ];
 
         try {
-            const response: IZosFilesResponse = await Invoke.ams(session, amsControlStatements);
+            const response: IZosFilesResponse = await Invoke.ams(session, amsControlStatements, {responseTimeout: options.responseTimeout});
 
             return {
                 success        : true,
@@ -134,7 +140,8 @@ export class Delete {
      */
     public static async ussFile(session: AbstractSession,
                                 fileName: string,
-                                recursive?: boolean): Promise<IZosFilesResponse> {
+                                recursive?: boolean,
+                                options?: IZosFilesOptions): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(fileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(fileName, "", ZosFilesMessages.missingUSSFileName.message);
@@ -148,12 +155,16 @@ export class Delete {
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
+        const reqHeaders: IHeaderContent[] = [];
+        if (recursive && recursive === true) {
+            reqHeaders.push({"X-IBM-Option": "recursive"});
+        }
+        if (options && options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
+
         try {
-            if (recursive && recursive === true) {
-                await ZosmfRestClient.deleteExpectString(session, endpoint, [{"X-IBM-Option": "recursive"}]);
-            } else {
-                await ZosmfRestClient.deleteExpectString(session, endpoint);
-            }
+            await ZosmfRestClient.deleteExpectString(session, endpoint, reqHeaders);
             return {
                 success: true,
                 commandResponse: ZosFilesMessages.ussFileDeletedSuccessfully.message
@@ -174,15 +185,21 @@ export class Delete {
      *
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_DeleteUnixzFsFilesystem.htm
      */
-    public static async zfs(session: AbstractSession,     fileSystemName: string): Promise<IZosFilesResponse> {
+    public static async zfs(session: AbstractSession,
+                            fileSystemName: string,
+                            options?: IZosFilesOptions): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
 
         // Format the endpoint to send the request to
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
+        const reqHeaders: IHeaderContent[] = [];
+        if (options && options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
 
-        const data = await ZosmfRestClient.deleteExpectString(session, endpoint, []);
+        const data = await ZosmfRestClient.deleteExpectString(session, endpoint, reqHeaders);
 
         return {
             success: true,

@@ -33,20 +33,23 @@ describe("ZfsHandler", () => {
 
         const commandParameters: any = {
             arguments: {
-                fileSystemName: "ABCD"
+                fileSystemName: "ABCD",
+                responseTimeout: 5
             }
         };
 
         const dummySession = {
             lazyness: "(n.) An important quality for a developer to have."
         }; // I'm lazy and we don't actually need the object
+        const rtoObject = {responseTimeout: 5}
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(deleteZfs).toHaveBeenCalledTimes(1);
         expect(deleteZfs).toHaveBeenLastCalledWith(
             dummySession,
-            commandParameters.arguments.fileSystemName
+            commandParameters.arguments.fileSystemName,
+            rtoObject
         );
         expect(response).toBe(defaultReturn);
     });

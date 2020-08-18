@@ -76,6 +76,27 @@ describe("Rename data set", () => {
                 expect(response.stdout.toString()).toMatchSnapshot();
                 expect(contents.toString().trim()).toBe(data);
             });
+            it("should rename a data set from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_rename_data_set.sh"),
+                        TEST_ENVIRONMENT,
+                        [beforeDataSetName, afterDataSetName, "--responseTimeout 5"]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, afterDataSetName);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
         });
         describe("partitioned", () => {
             beforeEach(async () => {
@@ -92,6 +113,27 @@ describe("Rename data set", () => {
                         join(__dirname, "__scripts__", "command", "command_rename_data_set.sh"),
                         TEST_ENVIRONMENT,
                         [beforeDataSetName, afterDataSetName]
+                    );
+                    contents = await Get.dataSet(REAL_SESSION, `${afterDataSetName}(${memberName})`);
+                } catch(err) {
+                    error = err;
+                }
+
+                expect(error).toBe(undefined);
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toMatchSnapshot();
+                expect(contents.toString().trim()).toBe(data);
+            });
+            it("should rename a data set from the command with response timeout", async () => {
+                let response;
+                let contents;
+                let error;
+
+                try {
+                    response = runCliScript(
+                        join(__dirname, "__scripts__", "command", "command_rename_data_set.sh"),
+                        TEST_ENVIRONMENT,
+                        [beforeDataSetName, afterDataSetName, "--responseTimeout 5"]
                     );
                     contents = await Get.dataSet(REAL_SESSION, `${afterDataSetName}(${memberName})`);
                 } catch(err) {

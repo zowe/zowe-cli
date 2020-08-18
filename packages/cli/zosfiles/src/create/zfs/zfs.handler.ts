@@ -27,11 +27,12 @@ export default class ZfsHandler extends ZosFilesBaseHandler {
             perms: commandParameters.arguments.perms,
             cylsPri: commandParameters.arguments.cylsPri,
             cylsSec: commandParameters.arguments.cylsSec,
-            storeclass: commandParameters.arguments.storageClass,
+            storclass: commandParameters.arguments.storageClass,
             mgntclass: commandParameters.arguments.managementClass,
             dataclass: commandParameters.arguments.dataClass,
             volumes: commandParameters.arguments.volumes,
-            timeout: commandParameters.arguments.timeout
+            timeout: commandParameters.arguments.timeout,
+            responseTimeout: commandParameters.arguments.responseTimeout
         };
 
         return Create.zfs(session, commandParameters.arguments.fileSystemName, createZfsOptions);

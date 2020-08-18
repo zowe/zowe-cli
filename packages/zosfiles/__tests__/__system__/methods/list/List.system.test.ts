@@ -86,6 +86,25 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[0].member).toEqual(testString.toUpperCase());
             });
 
+            it("should list all members of a data set with response timeout", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    response = await List.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(1);
+                expect(response.apiResponse.items[0].member).toEqual(testString.toUpperCase());
+            });
+
             it("should list all members of a data set with attributes", async () => {
                 let error;
                 let response: IZosFilesResponse;

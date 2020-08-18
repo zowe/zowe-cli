@@ -142,6 +142,26 @@ describe("z/OS Files - Upload", () => {
             expect(dataSetSpy).toHaveBeenCalledTimes(1);
             expect(dataSetSpy).toHaveBeenLastCalledWith(dummySession, testPath, dsName, {});
         });
+        it("return with proper response with responseTimeout", async () => {
+            const testReturn = {};
+            const testPath = "test/path";
+            lsStatSpy.mockImplementationOnce((somePath, callback) => {
+                callback(null, {isFile: () => true});
+            });
+
+            dataSetSpy.mockReturnValueOnce(testReturn);
+
+            try {
+                response = await Upload.fileToDataset(dummySession, testPath, dsName, {responseTimeout: 5});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(dataSetSpy).toHaveBeenCalledTimes(1);
+            expect(dataSetSpy).toHaveBeenLastCalledWith(dummySession, testPath, dsName, {responseTimeout: 5});
+        });
     });
 
     describe("dirToPds", () => {
@@ -244,6 +264,26 @@ describe("z/OS Files - Upload", () => {
             expect(response).toBeDefined();
             expect(dataSetSpy).toHaveBeenCalledTimes(1);
             expect(dataSetSpy).toHaveBeenLastCalledWith(dummySession, testPath, dsName, {});
+        });
+        it("return with proper response with responseTimeout", async () => {
+            const testReturn = {};
+            const testPath = "test/path";
+            isDirSpy.mockReturnValueOnce(true);
+            dataSetSpy.mockReturnValueOnce(testReturn);
+            lsStatSpy.mockImplementationOnce((somePath, callback) => {
+                callback(null, {isFile: () => false});
+            });
+
+            try {
+                response = await Upload.dirToPds(dummySession, testPath, dsName, {responseTimeout: 5});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(dataSetSpy).toHaveBeenCalledTimes(1);
+            expect(dataSetSpy).toHaveBeenLastCalledWith(dummySession, testPath, dsName, {responseTimeout: 5});
         });
     });
 
@@ -501,6 +541,24 @@ describe("z/OS Files - Upload", () => {
                                                                             writeData: buffer,
                                                                             dataToReturn: [CLIENT_PROPERTY.response]});
             });
+            it("return with proper response when uploading with responseTimeout option", async () => {
+                uploadOptions.responseTimeout = 5;
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"});
+
+                try {
+                    response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeUndefined();
+                expect(response).toBeDefined();
+
+                expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                            reqHeaders,
+                                                                            writeData: buffer});
+            });
         });
         it("return with proper response when upload dataset with specify volume option", async () => {
             const buffer: Buffer = Buffer.from("testing");
@@ -751,6 +809,32 @@ describe("z/OS Files - Upload", () => {
                                                                         reqHeaders,
                                                                         requestStream: inputStream,
                                                                         dataToReturn: [CLIENT_PROPERTY.response]});
+            zosmfPutFullSpy.mockClear();
+            zosmfPutFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
+
+            // Unit test for responseTimeout
+            uploadOptions.responseTimeout = 5;
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"},
+                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                {"If-Match" : uploadOptions.etag},
+                ZosmfHeaders.X_IBM_RETURN_ETAG];
+
+            try {
+                response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                        normalizeRequestNewLines: false,
+                                                                        reqHeaders,
+                                                                        requestStream: inputStream,
+                                                                        dataToReturn: [CLIENT_PROPERTY.response]});
         });
         it("return with proper response when upload dataset with specify volume option", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(TEST)`, dsName);
@@ -957,6 +1041,42 @@ describe("z/OS Files - Upload", () => {
 
             try {
                 response = await Upload.pathToDataSet(dummySession, "dummyPath", dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBeTruthy();
+            expect(response.apiResponse[0].success).toBeTruthy();
+            expect(response.apiResponse[1].success).toBeTruthy();
+        });
+        it("should return information when successfully uploaded multiple files with responseTimeout", async () => {
+            const mockFileList = ["file1", "file2"];
+            const mockListResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: "dummy response",
+                apiResponse: {
+                    items: [{
+                        dsname: dsName,
+                        dsorg: "PO"
+                    }],
+                    returnedRows: 1
+                }
+            };
+            listDatasetSpy.mockResolvedValueOnce(mockListResponse);
+            getFileListSpy.mockReturnValueOnce(mockFileList);
+            writeZosmfDatasetSpy.mockResolvedValueOnce({
+                success: true,
+                CommandResponse: "dummy"
+            });
+            writeZosmfDatasetSpy.mockResolvedValueOnce({
+                success: true,
+                CommandResponse: "dummy"
+            });
+
+            try {
+                response = await Upload.pathToDataSet(dummySession, "dummyPath", dsName, {responseTimeout:5});
             } catch (err) {
                 error = err;
             }
@@ -1197,6 +1317,24 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
         });
+        it("return with proper response when upload USS file with responseTimeout", async () => {
+            const data: Buffer = Buffer.from("testing");
+            const responseTimeout = 5;
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const headers = [ZosmfHeaders.TEXT_PLAIN, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
+
+            try {
+                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, undefined, undefined, false, responseTimeout);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, headers, data);
+        });
         it("return with proper response when upload USS file in binary", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
@@ -1304,6 +1442,26 @@ describe("z/OS Files - Upload", () => {
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                                                                           reqHeaders,
+                                                                           requestStream: inputStream,
+                                                                           normalizeRequestNewLines: true});
+                                                                        });
+        it("return with proper response when upload USS file with responseTimeout", async () => {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
+
+            try {
+                USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {responseTimeout: 5});
             } catch (err) {
                 error = err;
             }
@@ -1501,6 +1659,22 @@ describe("z/OS Files - Upload", () => {
             expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
             expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {});
         });
+        it("return with proper response when upload USS file with responseTimeout", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", {responseTimeout: 5});
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {responseTimeout: 5});
+        });
         it("return with proper response when upload USS file including Etag", async () => {
             const streamResponse: IZosFilesResponse = {
                 success: true,
@@ -1589,6 +1763,27 @@ describe("z/OS Files - Upload", () => {
             fileToUssFileSpy.mockReturnValue({});
             try {
                 USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(createUssDirSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("should upload recursively if option is specified and work with responseTimeout", async () => {
+            isDirSpy.mockReturnValue(true);
+            isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
+            createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
+            // tslint:disable-next-line:max-line-length
+            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce([]);
+            filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
+            getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
+            fileToUssFileSpy.mockReturnValue({});
+            try {
+                USSresponse = await Upload.dirToUSSDirRecursive(dummySession, testPath, dsName, {responseTimeout: 5});
             } catch (err) {
                 error = err;
             }
@@ -1794,6 +1989,24 @@ describe("z/OS Files - Upload", () => {
 
             try {
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+        });
+        it("should return with proper response with responseTimeout", async () => {
+            isDirSpy.mockReturnValueOnce(true);
+            isDirectoryExistsSpy.mockReturnValueOnce(true);
+            getFileListFromPathSpy.mockReturnValueOnce(["file1", "file2"]);
+            fileToUssFileSpy.mockReturnValue(testReturn);
+            fileToUssFileSpy.mockReturnValue(testReturn);
+            promiseSpy.mockReturnValueOnce({});
+
+            try {
+                USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {responseTimeout: 5});
             } catch (err) {
                 error = err;
             }

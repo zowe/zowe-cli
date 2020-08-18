@@ -155,5 +155,27 @@ describe("Mount and unmount file system", () => {
             expect(response.stderr.toString()).toBeTruthy();
             expect(response.status).toBe(1);
         });
+        it("should mount and unmount a file system with response timeout", () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_mount_fs.sh",
+                TEST_ENVIRONMENT, [fsname, mountPoint, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_list_fs.sh",
+                TEST_ENVIRONMENT, [fsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(mountPoint.slice(1));
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_unmount_fs.sh",
+                TEST_ENVIRONMENT, [fsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+
+            response = runCliScript(__dirname + "/__scripts__/command/command_list_fs.sh",
+                TEST_ENVIRONMENT, [fsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBeTruthy();
+            expect(response.status).toBe(1);
+        });
     });
 });

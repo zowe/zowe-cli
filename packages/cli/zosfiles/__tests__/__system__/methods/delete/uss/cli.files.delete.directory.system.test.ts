@@ -129,6 +129,13 @@ describe("Delete Directory", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+        it("should delete a directory with response timeout", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_directory.sh",
+                TEST_ENVIRONMENT, [ussname, "--for-sure", "--r", "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Expected failures", () => {

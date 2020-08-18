@@ -116,6 +116,15 @@ describe("Create Binary Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should create a binary partitioned data set with response timeout", () => {
+            dsnameSuffix = "binary";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds.sh",
+                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should create a binary partitioned data set and print attributes", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_rfj.sh",

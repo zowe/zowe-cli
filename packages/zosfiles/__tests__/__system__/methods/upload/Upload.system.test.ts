@@ -97,6 +97,25 @@ describe("Upload Data Set", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
             });
 
+            it("should upload a file to a physical sequential data set with response timeout", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    // packages/zosfiles/__tests__/__system__/api/methods/upload/
+                    response = await Upload.fileToDataset(REAL_SESSION,
+                        __dirname + "/testfiles/upload.txt", dsname, {responseTimeout: 5});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+            });
+
             it("should upload a file to a physical sequential data set while passing correct Etag", async () => {
                 let error;
                 let response: IZosFilesResponse;
@@ -256,6 +275,25 @@ describe("Upload Data Set", () => {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
                         __dirname + "/testfiles/upload.txt", dsname + "(member)");
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+            });
+
+            it("should upload a file to a partitioned data set member with response timeout", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    // packages/zosfiles/__tests__/__system__/api/methods/upload/
+                    response = await Upload.fileToDataset(REAL_SESSION,
+                        __dirname + "/testfiles/upload.txt", dsname + "(member)", {responseTimeout: 5});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;

@@ -12,6 +12,7 @@
 import { Delete, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
 import UssHandler from "../../../../src/delete/uss/Uss.handler";
 import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
+import { IZosFilesOptions } from "../../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 describe("UssHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -28,6 +29,7 @@ describe("UssHandler", () => {
 
     it("should call Delete.ussFile", async () => {
         const handler = new UssHandler();
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
 
@@ -47,7 +49,8 @@ describe("UssHandler", () => {
         expect(deleteUssFileSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.fileName,
-            undefined
+            undefined,
+            zosFilesOptions
         );
         expect(response).toBe(defaultReturn);
     });

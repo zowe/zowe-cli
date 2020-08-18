@@ -108,6 +108,14 @@ describe("Upload uss file", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file uploaded successfully");
         });
+        it("should upload USS file from local file with response timeout", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftu.sh");
+            const localFileName = path.join(__dirname, "__data__", "command_upload_ftu.txt");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1), "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("USS file uploaded successfully");
+        });
 
     });
 

@@ -78,6 +78,24 @@ describe("Delete a z/OS File System", () => {
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain(ZosFilesMessages.zfsDeletedSuccessfully.message);
         });
+
+        it("should delete a ZFS with response timeout", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.zfs(REAL_SESSION, fsname, {responseTimeout: 5});
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.zfsDeletedSuccessfully.message);
+        });
     });
 
     describe("Failure scenarios", () => {

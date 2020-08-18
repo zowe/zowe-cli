@@ -11,6 +11,7 @@
 
 import { Invoke } from "../../../../../../../packages/zosfiles/src/methods/invoke";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { IZosFilesOptions } from "../../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 describe("Invoke AMS files handler", () => {
     describe("process method", () => {
@@ -45,6 +46,7 @@ describe("Invoke AMS files handler", () => {
 
         it("should invoke AMS if requested and read statements from a file", async () => {
             const controlStatementsFile = "testing";
+            const options: IZosFilesOptions = {responseTimeout: undefined};
 
             // Vars populated by the mocked function
             let error;
@@ -95,7 +97,7 @@ describe("Invoke AMS files handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Invoke.ams).toHaveBeenCalledTimes(1);
-            expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, controlStatementsFile);
+            expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, controlStatementsFile, options);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

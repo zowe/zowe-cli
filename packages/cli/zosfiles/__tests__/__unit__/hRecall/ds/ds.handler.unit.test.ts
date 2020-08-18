@@ -56,11 +56,11 @@ describe("DsHandler", () => {
         );
         expect(response).toBe(defaultReturn);
     });
-    it("should call HRecall.dataSet with wait = true", async () => {
+    it("should call HRecall.dataSet with options", async () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IRecallOptions = { wait : true };
+        const options: IRecallOptions = { wait : true, responseTimeout: 5 };
 
         const commandParameters: any = {
             arguments: {
@@ -78,7 +78,7 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IRecallOptions = { wait : true };
+        const expectedOptions: IRecallOptions = { wait : true, responseTimeout: 5 };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 

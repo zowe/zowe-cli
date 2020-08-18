@@ -83,6 +83,31 @@ describe("Rename", () => {
                 expect(beforeList.apiResponse.returnedRows).toBe(0);
                 expect(afterList.apiResponse.returnedRows).toBe(1);
             });
+            it("Should rename a sequential data set with response timeout", async () => {
+                let error;
+                let response;
+                let beforeList;
+                let afterList;
+
+                try {
+                    response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName, {responseTimeout: 5});
+                    beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName, {responseTimeout: 5});
+                    afterList = await List.dataSet(REAL_SESSION, afterDataSetName, {responseTimeout: 5});
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetRenamedSuccessfully.message);
+
+                expect(beforeList.apiResponse.returnedRows).toBe(0);
+                expect(afterList.apiResponse.returnedRows).toBe(1);
+            });
             it("Should trim the name before renaming a sequential data set", async () => {
                 let error;
                 let response;
@@ -261,6 +286,31 @@ describe("Rename", () => {
                 expect(beforeList.apiResponse.returnedRows).toBe(0);
                 expect(afterList.apiResponse.returnedRows).toBe(1);
             });
+            it("Should rename a partitioned data set with response timeout", async () => {
+                let error;
+                let response;
+                let beforeList;
+                let afterList;
+
+                try {
+                    response = await Rename.dataSet(REAL_SESSION, beforeDataSetName, afterDataSetName, {responseTimeout: 5});
+                    beforeList = await List.dataSet(REAL_SESSION, beforeDataSetName, {responseTimeout: 5});
+                    afterList = await List.dataSet(REAL_SESSION, afterDataSetName, {responseTimeout: 5});
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetRenamedSuccessfully.message);
+
+                expect(beforeList.apiResponse.returnedRows).toBe(0);
+                expect(afterList.apiResponse.returnedRows).toBe(1);
+            });
         });
     });
     describe("Member", () => {
@@ -281,6 +331,29 @@ describe("Rename", () => {
                 try {
                     response = await Rename.dataSetMember(REAL_SESSION, beforeDataSetName, beforeMemberName, afterMemberName);
                     allMembers = await List.allMembers(REAL_SESSION, beforeDataSetName);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetRenamedSuccessfully.message);
+
+                expect(allMembers.apiResponse.items.length).toBe(1);
+                expect(allMembers.apiResponse.items[0].member).toBe(afterMemberName.toUpperCase());
+            });
+            it("Should rename a data set member with response timeout", async () => {
+                let error;
+                let response;
+                let allMembers;
+
+                try {
+                    response = await Rename.dataSetMember(REAL_SESSION, beforeDataSetName, beforeMemberName, afterMemberName, {responseTimeout: 5});
+                    allMembers = await List.allMembers(REAL_SESSION, beforeDataSetName, {responseTimeout: 5});
                     Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;

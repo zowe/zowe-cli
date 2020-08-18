@@ -35,7 +35,8 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
             failFast: commandParameters.arguments.failFast,
-            task: status
+            task: status,
+            responseTimeout: commandParameters.arguments.responseTimeout
         });
     }
 }

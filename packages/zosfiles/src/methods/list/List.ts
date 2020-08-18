@@ -57,6 +57,9 @@ export class List {
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -105,6 +108,9 @@ export class List {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
             // Migrated recall options
@@ -163,6 +169,9 @@ export class List {
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -207,6 +216,9 @@ export class List {
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -248,6 +260,9 @@ export class List {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);

@@ -92,6 +92,14 @@ describe("List all mounted filesystems", () => {
             // expect(response.stdout.toString()).toContain(testString.toUpperCase());
         });
 
+        it("should list all mounted filesystems with response timeout", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            // expect(response.stdout.toString()).toContain(testString.toUpperCase());
+        });
+
         it("should list all mounted filesystems with response-format-json flag", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ "--rfj"]);

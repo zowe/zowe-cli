@@ -97,6 +97,13 @@ describe("Create z/OS File System", () => {
             expect(response.status).toBe(0);
         });
 
+        it("should create a ZFS with response timeout", () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+                TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+        });
+
         it("should create a ZFS with primary and secondary cylinders specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume, `--cp 100 --cs 10`]);

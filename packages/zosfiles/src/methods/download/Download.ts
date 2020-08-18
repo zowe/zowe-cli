@@ -172,7 +172,8 @@ export class Download {
 
         try {
             const response = await List.allMembers(session, dataSetName, {
-                volume: options.volume
+                volume: options.volume,
+                responseTimeout: options.responseTimeout
             });
 
             const memberList: Array<{ member: string }> = response.apiResponse.items;
@@ -228,7 +229,8 @@ export class Download {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
                     binary: options.binary,
-                    encoding: options.encoding
+                    encoding: options.encoding,
+                    responseTimeout: options.responseTimeout
                 }).catch((err) => {
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {

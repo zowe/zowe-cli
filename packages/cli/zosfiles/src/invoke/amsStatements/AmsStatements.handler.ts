@@ -14,6 +14,7 @@ import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src/const
 import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
 import { Invoke } from "../../../../../../packages/zosfiles/src/methods/invoke";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to create a PDS data set
@@ -22,6 +23,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 export default class AmsStatementsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         let response: IZosFilesResponse;
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
 
         const statements = TextUtils
             .wordWrap(commandParameters.arguments.controlStatements, ZosFilesConstants.MAX_AMS_LINE - ZosFilesConstants.MAX_AMS_BUFFER)
@@ -30,7 +32,7 @@ export default class AmsStatementsHandler extends ZosFilesBaseHandler {
             statements[stIdx] += " -";
         }
 
-        response = await Invoke.ams(session, statements);
+        response = await Invoke.ams(session, statements, zosFilesOptions);
         commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse));
 
         return response;

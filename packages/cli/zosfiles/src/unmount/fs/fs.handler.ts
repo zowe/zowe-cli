@@ -13,12 +13,14 @@ import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { Unmount } from "../../../../../../packages/zosfiles/src/methods/unmount";
+import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 /**
  * Handler to unmount a Unix file system
  */
 export default class FsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        return Unmount.fs(session, commandParameters.arguments.fileSystemName);
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
+        return Unmount.fs(session, commandParameters.arguments.fileSystemName, zosFilesOptions);
     }
 }
