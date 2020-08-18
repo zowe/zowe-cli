@@ -18,7 +18,7 @@ describe("Delete workflow common handler", () => {
     describe("process method", () => {
         it("should delete a workflow using workflow key", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
+            const handlerReq = require("../../../src/delete/Delete.common.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -88,7 +88,7 @@ describe("Delete workflow common handler", () => {
         });
         it("should delete a workflow using workflow name", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
+            const handlerReq = require("../../../src/delete/Delete.common.handler");
             const handler = new handlerReq.default();
             const wfArray = {workflows: [
                 {workflowKey: "fake-workflow-key"},
@@ -176,7 +176,7 @@ describe("Delete workflow common handler", () => {
     describe("Fail scenarios", () => {
         it("should fail if no workflow with specified name was found.", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
+            const handlerReq = require("../../../src/delete/Delete.common.handler");
             const handler = new handlerReq.default();
             const workflowName = "fake-name";
 
@@ -256,7 +256,7 @@ describe("Delete workflow common handler", () => {
         });
         it("should fail if wrong workflow deletion criteria was provided.", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
+            const handlerReq = require("../../../src/delete/Delete.common.handler");
             const handler = new handlerReq.default();
             const workflowID = "fake-id";
 
@@ -337,7 +337,7 @@ describe("Delete workflow common handler", () => {
         });
         it("should fail if deletion with wf key failed", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
+            const handlerReq = require("../../../src/delete/Delete.common.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-wf-key";
             const deleteError: string = "failed to delete wf";
@@ -409,7 +409,7 @@ describe("Delete workflow common handler", () => {
         });
         it("should fail if deletion with wf name failed", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/cli/delete/Delete.common.handler");
+            const handlerReq = require("../../../src/delete/Delete.common.handler");
             const handler = new handlerReq.default();
             const workflowName = "fake-wf-name";
             const deleteError: string = "failed to delete wf";

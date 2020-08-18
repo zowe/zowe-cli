@@ -30,7 +30,7 @@ describe("List workflow details handler", () => {
         const workflowKey = "fakekey";
         it("should archive workflow details using wf key", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handlerReq = require("../../../../src/archive/Archive.handler");
             const handler = new handlerReq.default();
 
 
@@ -102,7 +102,7 @@ describe("List workflow details handler", () => {
         });
         it("should archive a workflow using workflow name", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handlerReq = require("../../../../src/archive/Archive.handler");
             const handler = new handlerReq.default();
             const workflowName = "fake-name";
 
@@ -185,7 +185,7 @@ describe("List workflow details handler", () => {
     describe("fail scenarios", () => {
         it("should fail when attemting to archive with workflow key fails", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handlerReq = require("../../../../src/archive/Archive.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-name";
@@ -259,7 +259,7 @@ describe("List workflow details handler", () => {
         });
         it("should fail when no workflows match the provided wf name", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handlerReq = require("../../../../src/archive/Archive.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-name";
@@ -337,7 +337,7 @@ describe("List workflow details handler", () => {
         });
         it("should fail when archivation with workflow name fails", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handlerReq = require("../../../../src/archive/Archive.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-name";
@@ -415,7 +415,7 @@ describe("List workflow details handler", () => {
         });
         it("should fail when neither workflow key or name is chosen", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/archive/Archive.handler");
+            const handlerReq = require("../../../../src/archive/Archive.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-name";

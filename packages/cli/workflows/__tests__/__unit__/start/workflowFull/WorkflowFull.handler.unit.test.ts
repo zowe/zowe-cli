@@ -25,7 +25,7 @@ describe("Start workflow common handler", () => {
 
         it("should start a workflow using workflow key", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
+            const handlerReq = require("../../../../src/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -89,7 +89,7 @@ describe("Start workflow common handler", () => {
 
         it("should start a workflow using workflow name", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
+            const handlerReq = require("../../../../src/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-workflow-name";
@@ -160,7 +160,7 @@ describe("Start workflow common handler", () => {
         it("should start a workflow using workflow key and optional arguments - without wait", async () => {
             const resolveConflict: startT = "outputFileValue";
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
+            const handlerReq = require("../../../../src/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -227,7 +227,7 @@ describe("Start workflow common handler", () => {
 
             const wait = true;
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
+            const handlerReq = require("../../../../src/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -302,7 +302,7 @@ describe("Start workflow common handler", () => {
         it("should start a workflow using workflow key and wait with workflow that failed", async () => {
             const wait = true;
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/start/workflowFull/WorkflowFull.handler");
+            const handlerReq = require("../../../../src/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
