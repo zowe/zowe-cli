@@ -25,7 +25,7 @@ import {
     TSO_OPTION_ROWS
 } from "../packages/cli/zostso/src/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
-import { ZosFilesOptions } from "./zosfiles/src/cli/ZosFiles.options";
+import { ZosFilesOptions } from "./cli/zosfiles/src/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,

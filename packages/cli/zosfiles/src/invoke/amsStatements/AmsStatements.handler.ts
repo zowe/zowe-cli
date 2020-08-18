@@ -14,7 +14,7 @@ import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src/const
 import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
 import { Invoke } from "../../../../../../packages/zosfiles/src/methods/invoke";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
+import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 /**
  * Handler to create a PDS data set
