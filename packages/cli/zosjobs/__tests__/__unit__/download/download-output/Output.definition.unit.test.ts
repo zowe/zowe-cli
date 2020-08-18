@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-jobs download output definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/cli/download/download-output/Output.definition").OutputDefinition;
+            = require("../../../../src/download/download-output/Output.definition").OutputDefinition;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

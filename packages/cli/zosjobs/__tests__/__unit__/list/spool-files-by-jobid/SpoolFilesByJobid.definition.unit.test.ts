@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-jobs list spool-files-by-jobid definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/cli/list/spool-files-by-jobid/SpoolFilesByJobid.definition").SpoolFilesByJobidDefinition;
+            = require("../../../../src/list/spool-files-by-jobid/SpoolFilesByJobid.definition").SpoolFilesByJobidDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         expect(definition).toMatchSnapshot();

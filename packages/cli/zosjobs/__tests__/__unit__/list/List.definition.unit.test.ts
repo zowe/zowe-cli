@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs list definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListDefinition;
+        const definition: ICommandDefinition = require("../../../src/list/List.definition").ListDefinition;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(2);
         delete definition.children;
