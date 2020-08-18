@@ -9,7 +9,7 @@
 *
 */
 
-jest.mock("../../../../src/GetJobs");
+jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
 import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
 import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
 import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";

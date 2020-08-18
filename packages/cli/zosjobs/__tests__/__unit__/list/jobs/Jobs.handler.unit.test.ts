@@ -11,7 +11,7 @@
 
 import { IGetJobsParms } from "../../../../../..";
 
-jest.mock("../../../../src/api/GetJobs");
+jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
 import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
 import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";

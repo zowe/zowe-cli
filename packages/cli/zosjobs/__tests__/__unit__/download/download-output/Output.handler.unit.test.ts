@@ -14,7 +14,7 @@ import {
     IDownloadAllSpoolContentParms
 } from "../../../../../../index";
 
-jest.mock("../../../../src/api/GetJobs");
+jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
 import {
     CommandProfiles,
     IHandlerParameters,
