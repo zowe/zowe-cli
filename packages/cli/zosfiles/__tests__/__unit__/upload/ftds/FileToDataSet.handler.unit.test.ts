@@ -16,7 +16,7 @@ describe("Upload file-to-data-set handler", () => {
     describe("process method", () => {
         it("should upload a file to a data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/upload/ftds/FileToDataSet.handler");
+            const handlerReq = require("../../../../src/upload/ftds/FileToDataSet.handler");
             const handler = new handlerReq.default();
             const inputfile = "test-file";
             const dataSetName = "testing";
@@ -109,7 +109,7 @@ describe("Upload file-to-data-set handler", () => {
         });
         it("should display error when upload file to data set", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/upload/ftds/FileToDataSet.handler");
+            const handlerReq = require("../../../../src/upload/ftds/FileToDataSet.handler");
             const handler = new handlerReq.default();
             const inputfile = "test-file";
             const dataSetName = "testing";

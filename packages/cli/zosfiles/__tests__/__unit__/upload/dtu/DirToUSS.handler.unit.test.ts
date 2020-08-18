@@ -96,7 +96,7 @@ describe("Upload dir-to-uss handler", () => {
             });
 
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/upload/dtu/DirToUSSDir.handler");
+            const handlerReq = require("../../../../src/upload/dtu/DirToUSSDir.handler");
             handler = new handlerReq.default();
         });
         it("should upload a directory to a USS directory if requested", async () => {
