@@ -19,7 +19,7 @@ import {
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-jest.mock("../../../../src/CheckStatus");
+jest.mock("../../../../../../../packages/zosmf/src/CheckStatus");
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {
