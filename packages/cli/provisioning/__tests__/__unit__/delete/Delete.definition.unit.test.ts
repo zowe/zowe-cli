@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning delete command group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/delete/Delete.definition").DeleteCommand;
+        const definition: ICommandDefinition = require("../../../src/delete/Delete.definition").DeleteCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

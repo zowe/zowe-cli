@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning perform action command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/perform/action/Action.definition").ActionDefinition;
+        const definition: ICommandDefinition = require("../../../../src/perform/action/Action.definition").ActionDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

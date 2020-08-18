@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning perform action group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/perform/Perform.definition").PerformCommand;
+        const definition: ICommandDefinition = require("../../../src/perform/Perform.definition").PerformCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

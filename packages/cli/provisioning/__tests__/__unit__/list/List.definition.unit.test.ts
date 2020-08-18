@@ -15,7 +15,7 @@ const children = 5;
 
 describe("provisioning list group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListCommand;
+        const definition: ICommandDefinition = require("../../../src/list/List.definition").ListCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(children);
         delete definition.children;
