@@ -98,8 +98,8 @@ describe("hMigrate data set", () => {
                 expectedPayload
             );
         });
-        it("should send a request with responseTimeout", async () => {
-            const options: IMigrateOptions = { responseTimeout: 5 };
+        it("should send a request with response timeout", async () => {
+            const options: IMigrateOptions = { "request": "hmigrate", responseTimeout: 5 };
 
             const expectedPayload = {
                 request: "hmigrate"

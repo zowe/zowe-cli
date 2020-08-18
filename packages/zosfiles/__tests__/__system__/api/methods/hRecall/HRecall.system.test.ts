@@ -83,12 +83,13 @@ describe("Recall Dataset", () => {
                 expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
             it("should recall a sequential data set with response timeout", async () => {
+                const recallOptions: IRecallOptions = { "request": "hrecall", responseTimeout: 5 };
                 let error;
                 let recallResponse;
                 let listResponse;
 
                 try {
-                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet1, {responseTimeout: 5});
+                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet1, recallOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
                     Imperative.console.info(`Response: ${inspect(recallResponse)}`);
                 } catch (err) {
@@ -157,12 +158,13 @@ describe("Recall Dataset", () => {
                 expect(recallResponse.commandResponse).toContain(ZosFilesMessages.datasetRecallRequested.message);
             });
             it("should recall a partitioned dataset with response timeout", async () => {
+                const recallOptions: IRecallOptions = { "request": "hrecall", responseTimeout: 5 };
                 let error;
                 let recallResponse;
                 let listResponse;
 
                 try {
-                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet2, {responseTimeout: 5});
+                    recallResponse = await HRecall.dataSet(REAL_SESSION, dataSet2, recallOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
                     Imperative.console.info(`Response: ${inspect(recallResponse)}`);
                 } catch (err) {

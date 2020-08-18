@@ -82,12 +82,13 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
             it("should migrate a sequential data set with response timeout", async () => {
+                const migrateOptions: IMigrateOptions = { "request": "hmigrate", responseTimeout: 5 };
                 let error;
                 let migrateResponse;
                 let listResponse;
 
                 try {
-                    migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, {responseTimeout: 5});
+                    migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet1, migrateOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet1, listOptions);
                     Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {
@@ -155,12 +156,13 @@ describe("Migrate Dataset", () => {
                 expect(migrateResponse.commandResponse).toContain(ZosFilesMessages.datasetMigrationRequested.message);
             });
             it("should migrate a partitioned dataset with response timeout", async () => {
+                const migrateOptions: IMigrateOptions = { "request": "hmigrate", responseTimeout: 5 };
                 let error;
                 let migrateResponse;
                 let listResponse;
 
                 try {
-                    migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, {responseTimeout: 5});
+                    migrateResponse = await HMigrate.dataSet(REAL_SESSION, dataSet2, migrateOptions);
                     listResponse = await List.dataSet(REAL_SESSION, dataSet2, listOptions);
                     Imperative.console.info(`Response: ${inspect(migrateResponse)}`);
                 } catch (err) {

@@ -78,11 +78,12 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
             it("should delete a migrated sequential data set with response timeout", async () => {
+                const deleteOptions: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
                 let error;
                 let response;
 
                 try {
-                    response = await HDelete.dataSet(REAL_SESSION, dataSet1, {responseTimeout: 5});
+                    response = await HDelete.dataSet(REAL_SESSION, dataSet1, deleteOptions);
                     Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;
@@ -162,11 +163,12 @@ describe("Delete Migrated Dataset", () => {
                 expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletionRequested.message);
             });
             it("should delete a migrated partitioned dataset with response timeout", async () => {
+                const deleteOptions: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
                 let error;
                 let response;
 
                 try {
-                    response = await HDelete.dataSet(REAL_SESSION, dataSet2, {responseTimeout: 5});
+                    response = await HDelete.dataSet(REAL_SESSION, dataSet2, deleteOptions);
                     Imperative.console.info(`Response: ${inspect(response)}`);
                 } catch (err) {
                     error = err;

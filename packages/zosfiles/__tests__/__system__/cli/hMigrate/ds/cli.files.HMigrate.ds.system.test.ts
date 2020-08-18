@@ -84,14 +84,15 @@ describe("Migrate Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
       it("Should migrate a data set with response timeout", async () => {
-        const response = runCliScript(migrateScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1]);
+        const migrateOptions: IMigrateOptions = { "request": "hmigrate", responseTimeout: 5 };
+        const response = runCliScript(migrateScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1, migrateOptions]);
         const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
         expect(list1.apiResponse.items[0].migr).toBe("YES");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };
@@ -124,14 +125,15 @@ describe("Migrate Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
       it("Should migrate a data set with response timeout", async () => {
-        const response = runCliScript(migrateScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2]);
+        const migrateOptions: IMigrateOptions = { "request": "hmigrate", responseTimeout: 5 };
+        const response = runCliScript(migrateScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2, migrateOptions]);
         const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
         expect(list2.apiResponse.items[0].migr).toBe("YES");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+        expect(response.stdout.toString()).toContain("Data set migration requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { "request": "hmigrate", "wait": true };

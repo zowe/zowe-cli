@@ -129,8 +129,8 @@ describe("hDelete data set", () => {
                 expectedPayload
             );
         });
-        it("should send a request with responseTimeout", async () => {
-            const options: IDeleteOptions = { responseTimeout: 5 };
+        it("should send a request with response timeout", async () => {
+            const options: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
 
             const expectedPayload = {
                 request: "hdelete"

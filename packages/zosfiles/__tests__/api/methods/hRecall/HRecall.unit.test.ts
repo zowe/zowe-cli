@@ -98,8 +98,8 @@ describe("hRecall data set", () => {
                 expectedPayload
             );
         });
-        it("should send a request with responseTimeout", async () => {
-            const options: IRecallOptions = { responseTimeout: 5 };
+        it("should send a request with response timeout", async () => {
+            const options: IRecallOptions = { "request": "hrecall" ,responseTimeout: 5 };
 
             const expectedPayload = {
                 request: "hrecall"

@@ -86,7 +86,8 @@ describe("Recall Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set recall requested.");
       });
       it("Should recall a data set with response timeout", async () => {
-        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1]);
+        const recallOptions: IRecallOptions = { "request": "hrecall", responseTimeout: 5 };
+        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
         const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
         expect(list1.apiResponse.items[0].migr).toBe("NO");
@@ -127,7 +128,8 @@ describe("Recall Dataset", () => {
         expect(response.stdout.toString()).toContain("Data set recall requested.");
       });
       it("Should recall a data set with response timeout", async () => {
-        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2]);
+        const recallOptions: IRecallOptions = { "request": "hrecall", responseTimeout: 5 };
+        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2, recallOptions]);
         const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
         expect(list2.apiResponse.items[0].migr).toBe("NO");

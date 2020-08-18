@@ -10,11 +10,12 @@
 */
 
 import { IZosFileUtils } from "../../../doc/IZosFileUtils";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent into the delete data set function.
  */
-export interface IDeleteOptions extends IZosFileUtils {
+export interface IDeleteOptions extends IZosFilesOptions, IZosFileUtils {
 
     /**
      * If true then the function uses the PURGE=YES on ARCHDEL request.

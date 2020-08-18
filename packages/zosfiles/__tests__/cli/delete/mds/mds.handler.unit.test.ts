@@ -125,4 +125,38 @@ describe("MdsHandler", () => {
         );
         expect(response).toBe(defaultReturn);
     });
+    it("should call HDelete.dataSet with response timeout", async () => {
+        const handler = new DSHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const options: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
+
+        const commandParameters: any = {
+            arguments: {
+                dataSetName: "ABCD",
+                options
+            }
+        };
+
+        const dummySession = {
+            user: "dummy",
+            password: "dummy",
+            hostname: "machine",
+            port: 443,
+            protocol: "https",
+            type: "basic"
+        };
+
+        const expectedOptions: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(hDeleteDataSetSpy).toHaveBeenCalledTimes(1);
+        expect(hDeleteDataSetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            commandParameters.arguments.dataSetName,
+            expectedOptions
+        );
+        expect(response).toBe(defaultReturn);
+    });
 });

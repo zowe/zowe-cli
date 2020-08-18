@@ -32,6 +32,7 @@ const scriptsLocation = join(__dirname, "__scripts__", "command");
 const deleteScript = join(scriptsLocation, "command_delete_migrated_data_set.sh");
 const deleteScriptWait = join(scriptsLocation, "command_delete_migrated_data_set_wait.sh");
 const deleteScriptPurge = join(scriptsLocation, "command_delete_migrated_data_set_purge.sh");
+const deleteScriptResponseTimeout = join(scriptsLocation, "command_delete_migrated_data_set_response_timeout.sh");
 
 describe("Delete migrated Dataset", () => {
   beforeAll(async () => {
@@ -81,6 +82,15 @@ describe("Delete migrated Dataset", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
         expect(response.stdout.toString()).toContain("Data set deletion requested.");
       });
+      it("Should delete a migrated data set with response timeout", async () => {
+        const deleteOptions: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
+        const response = runCliScript(deleteScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1, deleteOptions]);
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
+      });
       it("Should delete a migrated data set with wait = true", async () => {
         const deleteOptions: IDeleteOptions = { "request": "hdelete", "wait": true };
         const response = runCliScript(deleteScriptWait, TEST_ENVIRONMENT, [dataSetName1, deleteOptions]);
@@ -111,6 +121,15 @@ describe("Delete migrated Dataset", () => {
       });
       it("Should delete a migrated data set", async () => {
         const response = runCliScript(deleteScript, TEST_ENVIRONMENT, [dataSetName2]);
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toContain("Data set deletion requested.");
+      });
+      it("Should delete a migrated data set with response timeout", async () => {
+        const deleteOptions: IDeleteOptions = { "request": "hdelete", responseTimeout: 5 };
+        const response = runCliScript(deleteScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2, deleteOptions]);
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
