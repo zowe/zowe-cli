@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-tso ping group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/ping/Ping.definition").PingCommand;
+        const definition: ICommandDefinition = require("../../../src/ping/Ping.definition").PingCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;
