@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files upload dtu command definition", () => {
     fit ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/upload/dtu/DirToUSSDir.definition").DirToUSSDirDefinition;
+        const definition: ICommandDefinition = require("../../../../src/upload/dtu/DirToUSSDir.definition").DirToUSSDirDefinition;
 
         expect(definition).toBeDefined();
 

@@ -15,7 +15,7 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src_
 describe("Invoke AMS statements handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../src/cli/invoke/amsStatements/AmsStatements.handler");
+        const handlerReq = require("../../../../src/invoke/amsStatements/AmsStatements.handler");
         const handler = new handlerReq.default();
         let fakeSession: any = null;
 

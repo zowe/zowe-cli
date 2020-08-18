@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files list ds command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/list/ds/DataSet.definition").DataSetDefinition;
+        const definition: ICommandDefinition = require("../../../../src/list/ds/DataSet.definition").DataSetDefinition;
 
         expect(definition).toBeDefined();
 

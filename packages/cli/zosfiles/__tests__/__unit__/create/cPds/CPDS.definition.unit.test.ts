@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create dsc command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/create/cPds/CPDS.definition").CPDSDefinition;
+        const definition: ICommandDefinition = require("../../../../src/create/cPds/CPDS.definition").CPDSDefinition;
 
         expect(definition).toBeDefined();
 

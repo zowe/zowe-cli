@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files upload stds command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/upload/stds/StdinToDataSet.definition").StdinToDataSetDefinition;
+        const definition: ICommandDefinition = require("../../../../src/upload/stds/StdinToDataSet.definition").StdinToDataSetDefinition;
 
         expect(definition).toBeDefined();
 
