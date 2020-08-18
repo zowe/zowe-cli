@@ -6,6 +6,17 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Update hsmCommands to have a base options handler.
 
+## `6.21.1`
+
+- Rename the `storeclass` z/OS Files API Option to `storclass` to fix defining the storage class on create dataset commands
+
+## `6.21.0`
+
+- Added optional responseTimeout option to zosFiles APIs and CLI
+- Specifying `--responseTimeout ###` sets the TSO servlet response timeout
+  - z/OSMF default is 30 seconds, can be set to between 5 and 600 seconds (inclusive)
+- Adds responseTimeout to z/OSMF profile
+
 ## `6.20.0`
 
 - Added API usage examples to each package Readme (files, jobs, etc...). [#751](https://github.com/zowe/zowe-cli/issues/751).

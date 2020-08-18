@@ -16,3 +16,9 @@ exports[`Delete Directory Success scenarios should delete a directory 1`] = `
 USS File or directory deleted successfully.
 "
 `;
+
+exports[`Delete Directory Success scenarios should delete a directory with response timeout 1`] = `
+"================Z/OS FILES DELETE FILE===============
+USS File or directory deleted successfully.
+"
+`;

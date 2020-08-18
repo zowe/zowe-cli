@@ -10,11 +10,10 @@
 */
 
 import { IZosFileUtils } from "../../../doc/IZosFileUtils";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent into the migrate data set function.
  */
-
-// tslint:disable-next-line: no-empty-interface
-export interface IMigrateOptions extends IZosFileUtils {
+export interface IMigrateOptions extends IZosFilesOptions, IZosFileUtils {
 }

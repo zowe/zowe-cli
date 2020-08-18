@@ -33,6 +33,7 @@ const listOptions: IListOptions = { attributes: true };
 const scriptsLocation = join(__dirname, "__scripts__", "command");
 const recallScript = join(scriptsLocation, "command_recall_data_set.sh");
 const recallScriptWait = join(scriptsLocation, "command_recall_data_set_wait.sh");
+const recallScriptResponseTimeout = join(scriptsLocation, "command_recall_data_set_response_timeout.sh");
 
 describe("Recall Dataset", () => {
   beforeAll(async () => {
@@ -84,6 +85,16 @@ describe("Recall Dataset", () => {
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Data set recall requested.");
       });
+      it("Should recall a data set with response timeout", async () => {
+        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1]);
+        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
+
+        expect(list1.apiResponse.items[0].migr).toBe("NO");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set recall requested.");
+      });
       it("Should recall a data set with wait = true", async () => {
         const recallOptions: IRecallOptions = { "request": "hrecall", "wait": true };
         const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
@@ -107,6 +118,16 @@ describe("Recall Dataset", () => {
       });
       it("Should recall a data set", async () => {
         const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName2]);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+        expect(list2.apiResponse.items[0].migr).toBe("NO");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set recall requested.");
+      });
+      it("Should recall a data set with response timeout", async () => {
+        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2]);
         const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
         expect(list2.apiResponse.items[0].migr).toBe("NO");

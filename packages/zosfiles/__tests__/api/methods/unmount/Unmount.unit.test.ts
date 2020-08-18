@@ -27,6 +27,14 @@ describe("Unmount", () => {
             expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
         });
 
+        it("should succeed with responseTimeout", async () => {
+            (ZosmfRestClient as any).putExpectString = jest.fn(() => {
+                // Do nothing
+            });
+            await Unmount.fs(dummySession, fileSystemName, {responseTimeout: 5});
+            expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
+        });
+
         it("should fail if fileSystemName is missing or blank", async () => {
             let caughtError;
             (ZosmfRestClient as any).putExpectString = jest.fn(() => {

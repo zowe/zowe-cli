@@ -12,6 +12,7 @@
 import { Unmount, IZosFilesResponse } from "../../../../src/api";
 import FsHandler from "../../../../src/cli/unmount/fs/fs.handler";
 import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
+import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("FsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -36,6 +37,7 @@ describe("FsHandler", () => {
                 fileSystemName: "ABCD"
             }
         };
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
 
         const dummySession = {
             lazyness: "(n.) An important quality for a developer to have."
@@ -46,7 +48,8 @@ describe("FsHandler", () => {
         expect(unmountFs).toHaveBeenCalledTimes(1);
         expect(unmountFs).toHaveBeenLastCalledWith(
             dummySession,
-            commandParameters.arguments.fileSystemName
+            commandParameters.arguments.fileSystemName,
+            zosFilesOptions
         );
         expect(response).toBe(defaultReturn);
     });

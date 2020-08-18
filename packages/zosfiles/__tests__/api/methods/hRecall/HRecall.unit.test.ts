@@ -98,6 +98,37 @@ describe("hRecall data set", () => {
                 expectedPayload
             );
         });
+        it("should send a request with responseTimeout", async () => {
+            const options: IRecallOptions = { responseTimeout: 5 };
+
+            const expectedPayload = {
+                request: "hrecall"
+            };
+            const expectedEndpoint = posix.join(
+                ZosFilesConstants.RESOURCE,
+                ZosFilesConstants.RES_DS_FILES,
+                dataSetName
+            );
+            const expectedHeaders = [
+                { "Content-Type": "application/json" },
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                { "X-IBM-Response-Timeout": "5" }
+            ];
+
+            const response = await HRecall.dataSet(dummySession, dataSetName, options);
+
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetRecallRequested.message
+            });
+            expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+            expect(putExpectStringSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                expectedEndpoint,
+                expectedHeaders,
+                expectedPayload
+            );
+        });
     });
     describe("Failure Scenarios", () => {
         const dataSetName: string = "EFGH";

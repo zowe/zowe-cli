@@ -151,7 +151,7 @@ export default {
             RECFM: `The record format for the data set (for example, FB for "Fixed Block")`,
             BLKSIZE: "The block size for the data set (for example, 6160)",
             LRECL: "The logical record length. Analogous to the length of a line (for example, 80)",
-            STORECLASS: "The SMS storage class to use for the allocation",
+            STORCLASS: "The SMS storage class to use for the allocation",
             MGNTCLASS: "The SMS management class to use for the allocation",
             DATACLASS: "The SMS data class to use for the allocation",
             DSNTYPE: "The data set type",
@@ -476,6 +476,10 @@ export default {
                 }
             }
         }
+    },
+    OPTIONS: {
+        RESPONSETIMEOUT: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
+        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
     },
     UNMOUNT: {
         SUMMARY: "Unmount file systems",

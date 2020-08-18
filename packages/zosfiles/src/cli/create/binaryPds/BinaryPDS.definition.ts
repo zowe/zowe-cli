@@ -49,7 +49,7 @@ export const BinaryPDSDefinition: ICommandDefinition = {
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.BINARY.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.BINARY.blksize},
         {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.BINARY.lrecl},
-        ZosFilesCreateOptions.storeclass,
+        ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,

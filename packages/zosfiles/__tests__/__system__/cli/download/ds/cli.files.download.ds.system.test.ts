@@ -125,6 +125,14 @@ describe("Download Data Set", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
         });
 
+        it("should download data set with response timeout", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+        });
+
         it("should download data set in binary mode", async () => {
             const randomDataLength = 70;
             const randomData = await getRandomBytes(randomDataLength);

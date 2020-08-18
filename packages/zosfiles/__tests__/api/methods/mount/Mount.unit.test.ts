@@ -33,6 +33,20 @@ describe("Mount FS", () => {
         expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
     });
 
+    it("should succeed with responseTimeout", async () => {
+        (ZosmfRestClient as any).putExpectString = jest.fn(() => {
+            // Do nothing
+        });
+        const mode: IMountFsMode = "rdonly";
+        const options: IMountFsOptions = {
+            "fs-type":"ZFS",
+            "mode":mode,
+            "responseTimeout":5
+        };
+        await Mount.fs(dummySession, fileSystemName, mountPoint, options);
+        expect(ZosmfRestClient.putExpectString).toHaveBeenCalledTimes(1);
+    });
+
     it("should fail with a bad option", async () => {
         let caughtError;
         (ZosmfRestClient as any).putExpectString = jest.fn(() => {
