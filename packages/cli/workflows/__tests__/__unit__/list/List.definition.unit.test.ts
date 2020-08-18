@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-workflows list definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/list/List.definition").ListDefinition;
+        const definition: ICommandDefinition = require("../../../src/list/List.definition").ListDefinition;
         expect(definition).toBeDefined();
         const four = 4;
         expect(definition.children.length).toBe(four);

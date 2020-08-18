@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-workflows delete active-workflow definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/cli/delete/deleteActiveWorkflow/DeleteActiveWorkflow.definition").DeleteActiveWorkflow;
+            = require("../../../../src/delete/deleteActiveWorkflow/DeleteActiveWorkflow.definition").DeleteActiveWorkflow;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-workflows create local-file definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/cli/create/localfile/LocalFile.definition").LocalFile;
+            = require("../../../../src/create/localfile/LocalFile.definition").LocalFile;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

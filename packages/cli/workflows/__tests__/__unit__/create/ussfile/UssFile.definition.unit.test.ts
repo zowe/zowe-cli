@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-workflows create uss-file definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/cli/create/ussfile/UssFile.definition").UssFile;
+            = require("../../../../src/create/ussfile/UssFile.definition").UssFile;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();
