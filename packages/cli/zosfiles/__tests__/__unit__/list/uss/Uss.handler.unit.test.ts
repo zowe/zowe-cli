@@ -19,7 +19,7 @@ describe("USS directory handler", () => {
     describe("process method", () => {
         it("should list files if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/uss/UssFile.handler");
+            const handlerReq = require("../../../../src/list/uss/UssFile.handler");
             const handler = new handlerReq.default();
             const path = "testing";
 

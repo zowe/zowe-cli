@@ -19,7 +19,7 @@ describe("fs handler", () => {
     describe("process method", () => {
         it("should list all mounted files", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/fs/Fs.handler");
+            const handlerReq = require("../../../../src/list/fs/Fs.handler");
             const handler = new handlerReq.default();
 
             // Vars populated by the mocked function
@@ -104,7 +104,7 @@ describe("fs handler", () => {
 
         it("should list all mounted files using path", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/fs/Fs.handler");
+            const handlerReq = require("../../../../src/list/fs/Fs.handler");
             const handler = new handlerReq.default();
             const path = "testing";
 

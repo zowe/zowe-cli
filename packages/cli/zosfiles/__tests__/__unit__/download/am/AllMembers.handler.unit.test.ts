@@ -16,7 +16,7 @@ describe("Download AllMembers handler", () => {
     describe("process method", () => {
         it("should download all members from a PDS if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/download/am/AllMembers.handler");
+            const handlerReq = require("../../../../src/download/am/AllMembers.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 

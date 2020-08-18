@@ -15,7 +15,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files unmount group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/unmount/Unmount.definition").UnmountDefinition;
+        const definition: ICommandDefinition = require("../../../src/unmount/Unmount.definition").UnmountDefinition;
 
         expect(definition).toBeDefined();
 

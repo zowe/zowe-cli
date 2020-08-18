@@ -18,7 +18,7 @@ describe("Create USS Directory", () => {
     describe("process method", () => {
         it("should create a USS directory if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/create/ussDir/ussDir.handler");
+            const handlerReq = require("../../../../src/create/ussDir/ussDir.handler");
             const handler = new handlerReq.default();
             const ussDir = "testing";
             const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};

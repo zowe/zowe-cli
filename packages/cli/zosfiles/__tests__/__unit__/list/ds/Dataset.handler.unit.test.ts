@@ -16,7 +16,7 @@ describe("List Dataset handler", () => {
     describe("process method", () => {
         it("should list a data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/ds/DataSet.handler");
+            const handlerReq = require("../../../../src/list/ds/DataSet.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 

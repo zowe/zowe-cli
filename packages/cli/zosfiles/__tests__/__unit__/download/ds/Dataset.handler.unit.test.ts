@@ -16,7 +16,7 @@ describe("Download data set handler", () => {
     describe("process method", () => {
         it("should download a single data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/download/ds/Dataset.handler");
+            const handlerReq = require("../../../../src/download/ds/Dataset.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 

@@ -17,7 +17,7 @@ describe("Create binary PDS data set handler", () => {
     describe("process method", () => {
         it("should create a binary PDS data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/create/binaryPds/BinaryPDS.handler");
+            const handlerReq = require("../../../../src/create/binaryPds/BinaryPDS.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 

@@ -16,7 +16,7 @@ describe("List AllMembers handler", () => {
     describe("process method", () => {
         it("should list all members from a PDS if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/cli/list/am/AllMembers.handler");
+            const handlerReq = require("../../../../src/list/am/AllMembers.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 
