@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-tso issue address-space definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require
-        ("../../../../src/cli/issue/command/Command.definition").CommandDefinition;
+        ("../../../../src/issue/command/Command.definition").CommandDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;
