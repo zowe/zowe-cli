@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning list catalog templates definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/list/catalogTemplates/CatalogTemplates.definition").catalogTemplates;
+        const definition: ICommandDefinition = require("../../../../src/list/catalogTemplates/CatalogTemplates.definition").catalogTemplates;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;
