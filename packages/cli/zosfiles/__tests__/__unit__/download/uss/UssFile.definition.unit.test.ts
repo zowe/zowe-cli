@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files download uss-file command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/download/uss/UssFile.definition").UssFileDefinition;
+        const definition: ICommandDefinition = require("../../../../src/download/uss/UssFile.definition").UssFileDefinition;
 
         expect(definition).toBeDefined();
 

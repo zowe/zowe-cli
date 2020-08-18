@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files mount fs command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/mount/fs/fs.definition").FsDefinition;
+        const definition: ICommandDefinition = require("../../../../src/mount/fs/fs.definition").FsDefinition;
 
         expect(definition).toBeDefined();
 

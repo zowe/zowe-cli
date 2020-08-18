@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create vsam command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/create/vsam/vsam.definition").VsamDefinition;
+        const definition: ICommandDefinition = require("../../../../src/create/vsam/vsam.definition").VsamDefinition;
 
         expect(definition).toBeDefined();
 

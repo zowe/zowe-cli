@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create ps command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/create/ps/Ps.definition").PsDefinition;
+        const definition: ICommandDefinition = require("../../../../src/create/ps/Ps.definition").PsDefinition;
 
         expect(definition).toBeDefined();
 

@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files invoke group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/invoke/Invoke.definition").InvokeDefinition;
+        const definition: ICommandDefinition = require("../../../src/invoke/Invoke.definition").InvokeDefinition;
 
         expect(definition).toBeDefined();
 

@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files invoke ams-file command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/invoke/amsFile/AmsFile.definition").AmsFileDefinition;
+        const definition: ICommandDefinition = require("../../../../src/invoke/amsFile/AmsFile.definition").AmsFileDefinition;
 
         expect(definition).toBeDefined();
 
