@@ -102,6 +102,7 @@
     "jest-sonar-reporter": "^2.0.0",
     "jest-stare": "^1.11.1",
     "jsonfile": "^4.0.0",
+    "lerna": "^3.22.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
