@@ -3,7 +3,7 @@
     "version": "6.21.1",
     "description": "",
     "author": "",
-    "license": "",
+    "license": "EPL-2.0",
     "keywords": [
       "zosmf",
       "mainframe",
@@ -31,6 +31,7 @@
       "@zowe/imperative": "4.7.4"
     },
     "devDependencies": {
-      "typescript": "^3.8.0"
+      "typescript": "^3.8.0",
+      "rimraf": "^2.6.3"
     }
   }
