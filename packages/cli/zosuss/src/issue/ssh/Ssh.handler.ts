@@ -11,7 +11,6 @@
 
 import { IHandlerParameters, IHandlerResponseConsoleApi } from "@zowe/imperative";
 import { Shell } from "../../../../../../packages/zosuss/src/Shell";
-import { ClientChannel } from "ssh2";
 import { SshBaseHandler } from "../../../../../../packages/zosuss/src/SshBaseHandler";
 
 /**

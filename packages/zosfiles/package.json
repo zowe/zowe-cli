@@ -1,36 +1,42 @@
 {
-    "name": "@zowe/zos-files-for-zowe-sdk",
-    "version": "6.21.1",
-    "description": "",
-    "author": "",
-    "license": "",
-    "keywords": [
-      "zosmf",
-      "mainframe",
-      "CLI",
-      "zos",
-      "jobs",
-      "jcl",
-      "z/OSMF",
-      "mvs",
-      "os390",
-      "z/OS",
-      "zowe"
-    ],
-    "files": [
-      "lib"
-    ],
-    "main": "lib/index.js",
-    "typings": "lib/index.d.ts",
-    "scripts": {
-      "build": "tsc --pretty",
-      "watch": "tsc --pretty --watch",
-      "clean": "rimraf lib"
-    },
-    "dependencies": {
-      "@zowe/imperative": "4.7.4"
-    },
-    "devDependencies": {
-      "typescript": "^3.8.0"
-    }
+  "name": "@zowe/zos-files-for-zowe-sdk",
+  "version": "6.21.1",
+  "description": "",
+  "author": "",
+  "license": "",
+  "keywords": [
+    "zosmf",
+    "mainframe",
+    "CLI",
+    "zos",
+    "jobs",
+    "jcl",
+    "z/OSMF",
+    "mvs",
+    "os390",
+    "z/OS",
+    "zowe"
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc --pretty",
+    "watch": "tsc --pretty --watch",
+    "clean": "rimraf lib"
+  },
+  "dependencies": {
+    "@zowe/imperative": "4.7.4",
+    "minimatch": "3.0.4",
+    "string-width": "2.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "@types/minimatch": "^3.0.3",
+    "@types/node": "^12.12.24",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.8.0"
   }
+}
