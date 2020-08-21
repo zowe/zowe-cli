@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.22.0`
 
 - Added `--encoding` option for directory to PDS command. [#764](https://github.com/zowe/zowe-cli/issues/764)
 - Fix output of `zowe zos-uss issue ssh` sometimes omitting last line. [#795](https://github.com/zowe/zowe-cli/issues/795)
