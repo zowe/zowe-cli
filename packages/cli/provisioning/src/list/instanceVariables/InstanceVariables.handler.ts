@@ -10,10 +10,10 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { ListInstanceVariables } from "../../../../../../packages/provisioning/src/ListInstanceVariables";
+import { ListInstanceVariables } from "@zowe/provisioning-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
-import { IProvisionedInstance, IProvisionedInstanceVariable, ListRegistryInstances, ProvisioningConstants } from "../../../../../provisioning";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { IProvisionedInstance, IProvisionedInstanceVariable, ListRegistryInstances, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 
 /**

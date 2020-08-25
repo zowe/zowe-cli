@@ -10,9 +10,9 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { explainPublishedTemplateInfoFull, explainPublishedTemplateInfoSummary, ListTemplateInfo } from "../../../../../../packages/provisioning";
-import { IPublishedTemplateInfo, ProvisioningConstants } from "../../../../../provisioning/src/index";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { explainPublishedTemplateInfoFull, explainPublishedTemplateInfoSummary, ListTemplateInfo } from "@zowe/provisioning-for-zowe-sdk";
+import { IPublishedTemplateInfo, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * Handler to list template info
