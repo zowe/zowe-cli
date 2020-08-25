@@ -10,8 +10,6 @@
 */
 
 export * from "./Shell";
-export * from "./SshSession";
-export * from "./SshBaseHandler";
 
 export * from "./constants/ZosUss.messages";
 

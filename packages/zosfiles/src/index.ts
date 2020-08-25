@@ -9,35 +9,32 @@
 *
 */
 
-export * from "./constants/ZosFiles.constants";
-export * from "./constants/ZosFiles.messages";
-
-export * from "./doc/types/ZosmfMigratedRecallOptions";
-export * from "./doc/types/ZosmfRestClientProperties";
-
-export * from "./doc/IDataSet";
-export * from "./doc/IOptions";
-export * from "./doc/IOptionsFullResponse";
-export * from "./doc/IRestClientResponse";
-export * from "./doc/IUSSFileListResponse";
-export * from "./doc/IZosFilesOptions";
-export * from "./doc/IZosFilesResponse";
-
-export * from "./methods/copy";
 export * from "./methods/create";
 export * from "./methods/delete";
+export * from "./methods/invoke";
 export * from "./methods/download";
+export * from "./methods/list";
+export * from "./methods/upload";
 export * from "./methods/get";
+export * from "./methods/utilities";
+export * from "./methods/mount";
+export * from "./methods/unmount";
+export * from "./methods/hRecall";
+export * from "./methods/rename";
 export * from "./methods/hDelete";
 export * from "./methods/hMigrate";
-export * from "./methods/hRecall";
-export * from "./methods/invoke";
-export * from "./methods/list";
-export * from "./methods/mount";
-export * from "./methods/rename";
-export * from "./methods/unmount";
-export * from "./methods/upload";
-export * from "./methods/utilities";
+export * from "./methods/copy";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
+
+export * from "./doc/IDataSet";
+export * from "./doc/IZosFilesResponse";
+export * from "./doc/IOptionsFullResponse";
+export * from "./doc/IRestClientResponse";
+export * from "./doc/IOptions";
+export * from "./doc/types/ZosmfMigratedRecallOptions";
+export * from "./doc/types/ZosmfRestClientProperties";
+
+export * from "./constants/ZosFiles.constants";
+export * from "./constants/ZosFiles.messages";

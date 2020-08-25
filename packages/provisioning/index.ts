@@ -9,4 +9,33 @@
 *
 */
 
-export * from "./src";
+export * from "./src/doc/zosmf/IPromptVariable";
+export * from "./src/doc/zosmf/IPublishedTemplateInfo";
+export * from "./src/doc/zosmf/IPublishedTemplate";
+export * from "./src/doc/zosmf/IPublishedTemplates";
+export * from "./src/doc/zosmf/IProvisionedInstanceVariable";
+export * from "./src/doc/zosmf/IProvisionedInstanceActions";
+export * from "./src/doc/zosmf/IProvisionedInstance";
+export * from "./src/doc/zosmf/IProvisionedInstances";
+export * from "./src/doc/zosmf/IProvisionedInstanceVariables";
+export * from "./src/doc/zosmf/IPerformActionResponse";
+export * from "./src/doc/zosmf/ITemplateRegistryInfo";
+export * from "./src/doc/zosmf/ITemplateWorkflowInfo";
+export * from "./src/doc/zosmf/IProvisionTemplateResponse";
+
+export * from "./src/doc/input/IPropertiesInput";
+export * from "./src/doc/input/IProvisionOptionals";
+
+
+export * from "./src/ProvisioningConstants";
+export * from "./src/ProvisioningValidator";
+export * from "./src/ProvisioningService";
+export * from "./src/ListTemplateInfo";
+export * from "./src/ListCatalogTemplates";
+export * from "./src/ListInstanceInfo";
+export * from "./src/ListRegistryInstances";
+export * from "./src/ListInstanceVariables";
+export * from "./src/DeleteInstance";
+export * from "./src/PerformAction";
+export * from "./src/ProvisionPublishedTemplate";
+
