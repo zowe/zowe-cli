@@ -10,15 +10,15 @@
 */
 
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
-import { SubmitJobs } from "../../../../../packages/zosjobs/src/SubmitJobs";
-import { IJob } from "../../../../../packages/zosjobs/src/doc/response/IJob";
+import { SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { isNullOrUndefined } from "util";
 import * as  fs from "fs";
-import { ISubmitParms } from "../../../../../packages/zosjobs/src/doc/input/ISubmitParms";
-import { ISpoolFile } from "../../../../../packages/zosjobs/src/doc/response/ISpoolFile";
-import { IDownloadOptions } from "../../../../zosfiles/src/methods/download/doc/IDownloadOptions";
-import { Get } from "../../../../zosfiles/src/methods/get/Get";
-import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
+import { IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import getstdin = require("get-stdin");
 
 /**

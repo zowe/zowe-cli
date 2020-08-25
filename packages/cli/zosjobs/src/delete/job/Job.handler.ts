@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { DeleteJobs, GetJobs, IJob } from "../../../../../../packages/zosjobs";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { DeleteJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * "zos-jobs delete job" command handler. Delete (purge) a job by ID.

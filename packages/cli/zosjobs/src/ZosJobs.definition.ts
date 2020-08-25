@@ -16,7 +16,7 @@ import { ListDefinition } from "./list/List.definition";
 import { CancelDefinition } from "./cancel/Cancel.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { DownloadDefinition } from "./download/Download.definition";
-import { ZosmfSession } from "../../../zosmf";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 export const definition: ICommandDefinition = {
     name: "zos-jobs",

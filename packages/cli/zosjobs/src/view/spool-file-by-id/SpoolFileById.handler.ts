@@ -10,9 +10,9 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { IJob } from "../../../../../../packages/zosjobs/src/doc/response/IJob";
-import { GetJobs } from "../../../../../../packages/zosjobs";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * "zos-jobs view spool-by-id" command handler. Outputs a single spool DD contents.
