@@ -10,8 +10,8 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { CheckStatus, ZosmfConstants, ZosmfMessages, IZosmfInfoResponse } from "../../../../zosmf";
-import { ZosmfRestClient } from "../../../../rest";
+import { CheckStatus, ZosmfConstants, IZosmfInfoResponse } from "../../../";
+import { ZosmfRestClient } from "../../../";
 
 describe("Check Status api", () => {
     const dummySession: any = {};
