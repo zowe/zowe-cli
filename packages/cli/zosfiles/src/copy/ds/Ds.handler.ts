@@ -10,10 +10,10 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { Copy, IZosFilesResponse, IDataSet, List } from "../../../../../../packages/zosfiles/src";
+import { Copy, IZosFilesResponse, IDataSet, List } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { getDataSet } from "../../ZosFiles.utils";
-import { ICopyDatasetOptions } from "../../../../../../packages/zosfiles/src/methods/copy/doc/ICopyDatasetOptions";
+import { ICopyDatasetOptions } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to copy a data set.
