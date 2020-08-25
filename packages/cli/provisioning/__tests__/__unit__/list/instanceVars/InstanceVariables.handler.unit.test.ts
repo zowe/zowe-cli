@@ -36,7 +36,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
     profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
-describe("list instance info handler tests", () => {
+describe("list instance variables handler tests", () => {
     afterEach(() => {
         jest.resetAllMocks();
     });

@@ -78,7 +78,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
     profiles: PROFILES
 };
 
-describe("list catalog templates handler tests", () => {
+describe("list registry instances handler tests", () => {
     afterEach(() => {
         jest.resetAllMocks();
     });

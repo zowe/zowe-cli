@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-workflows start workflow-key definition should not have changed 1`] = `
+exports[`zos-workflows start workflow-step definition should not have changed 1`] = `
 Object {
   "aliases": Array [
     "ws",

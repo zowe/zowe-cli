@@ -9,8 +9,6 @@
 *
 */
 
-import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
-
 jest.mock("../../../../../../../packages/provisioning/src/ListTemplateInfo");
 import { ListTemplateInfo } from "../../../../../../provisioning";
 import { IHandlerParameters } from "@zowe/imperative";
@@ -35,14 +33,14 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
     profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
-describe("list catalog templates handler tests", () => {
+describe("list template info handler tests", () => {
     afterEach(() => {
         jest.resetAllMocks();
     });
 
     it("should be able to list catalog", async () => {
         ListTemplateInfo.listTemplateCommon = jest.fn(
-            (session, zOSMFVersion) => {
+            () => {
                 return {};
             }
         );

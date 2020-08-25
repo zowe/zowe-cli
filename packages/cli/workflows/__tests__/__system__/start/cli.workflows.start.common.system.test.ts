@@ -38,7 +38,7 @@ let owner: string;
 let wfName: string;
 const workflow = join(__dirname, "../../testfiles/demo.xml");
 
-describe("Create workflow cli system tests", () => {
+describe("Start workflow cli system tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],

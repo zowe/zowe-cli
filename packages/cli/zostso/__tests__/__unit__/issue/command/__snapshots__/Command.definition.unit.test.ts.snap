@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-tso issue address-space definition should not have changed 1`] = `
+exports[`zos-tso issue command definition should not have changed 1`] = `
 Object {
   "aliases": Array [
     "cmd",
