@@ -11,7 +11,7 @@
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 
-import { Delete, IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
+import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
