@@ -9,10 +9,9 @@
 *
 */
 
-import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Mount, IMountFsMode, IMountFsOptions } from "../../../..";
-import { ZosmfRestClient } from "../../../../../rest";
-import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
+import { ZosmfRestClient } from "../../../../";
+import { ZosFilesMessages } from "../../../../";
 
 
 describe("Mount FS", () => {

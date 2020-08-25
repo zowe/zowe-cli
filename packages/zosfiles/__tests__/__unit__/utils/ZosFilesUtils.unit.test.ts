@@ -12,7 +12,7 @@
 import * as path from "path";
 import * as fs from "fs";
 import { IO } from "@zowe/imperative";
-import { ZosFilesUtils } from "../../../src/utils/ZosFilesUtils";
+import { ZosFilesUtils } from "../../../";
 
 jest.mock("fs");
 
