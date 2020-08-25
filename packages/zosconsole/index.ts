@@ -9,20 +9,4 @@
 *
 */
 
-export * from "./src/doc/zosmf/IZosmfIssueParms";
-export * from "./src/doc/zosmf/IZosmfIssueResponse";
-export * from "./src/doc/zosmf/IZosmfCollectResponse";
-
-export * from "./src/doc/IConsoleParms";
-export * from "./src/doc/IIssueParms";
-export * from "./src/doc/ICollectParms";
-export * from "./src/doc/IConsoleResponse";
-export * from "./src/doc/ICollectParms";
-
-export * from "./src/types/ConsoleResponse";
-
-export * from "./src/IssueCommand";
-export * from "./src/ConsoleValidator";
-export * from "./src/CollectCommand";
-export * from "./src/ConsoleConstants";
-export * from "./src/ConsoleResponseService";
+export * from "./src";
