@@ -11,7 +11,7 @@
 
 import * as Path from "path";
 import { Imperative, ImperativeError } from "@zowe/imperative";
-import { IPropertiesInput, ProvisioningService, IProvisionOptionals } from "../../../provisioning";
+import { IPropertiesInput, ProvisioningService, IProvisionOptionals } from "../../";
 
 
 const domainName: string = "domain_name1";
