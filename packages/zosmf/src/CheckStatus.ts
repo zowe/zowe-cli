@@ -13,7 +13,7 @@ import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { posix } from "path";
 import { ZosmfConstants } from "./constants/Zosmf.constants";
 import { ZosmfMessages } from "./constants/Zosmf.messages";
-import { ZosmfRestClient } from "../../rest/";
+import { ZosmfRestClient } from "../";
 import { IZosmfInfoResponse } from "./doc/IZosmfInfoResponse";
 
 /**

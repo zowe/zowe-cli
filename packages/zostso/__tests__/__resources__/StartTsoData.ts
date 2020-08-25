@@ -9,7 +9,7 @@
 *
 */
 
-import { IStartStopResponse } from "../../../zostso";
+import { IStartStopResponse } from "../../";
 
 /**
  * Mocked data for start tso command.
