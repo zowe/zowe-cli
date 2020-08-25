@@ -9,7 +9,7 @@
 *
 */
 
-import { IProvisionTemplateResponse } from "../../../index";
+import { IProvisionTemplateResponse } from "../../../";
 
 /**
  * Mocked data for provision commands
