@@ -11,7 +11,7 @@
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCatalogTemplates, ProvisioningConstants } from "../../../../../../packages/provisioning";
-import { IPublishedTemplates } from "../../../../../../packages/provisioning/index";
+import { IPublishedTemplates } from "../../../../../provisioning/src/index";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**

@@ -17,7 +17,7 @@ import {
     IProvisionedInstance,
     IProvisionedInstances,
     ProvisioningConstants
-} from "../../../../../../packages/provisioning/index";
+} from "../../../../../provisioning/src/index";
 import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
