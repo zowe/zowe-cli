@@ -9,7 +9,7 @@
 *
 */
 
-import { ListDefinedSystems, ZosmfMessages } from "../../../../zosmf";
+import { ListDefinedSystems, ZosmfMessages } from "../../../";
 import { Session, Imperative } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
