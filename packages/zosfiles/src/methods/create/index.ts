@@ -10,10 +10,9 @@
 */
 
 export * from "./doc/ICreateDataSetOptions";
-export * from "./doc/ICreateUssOption";
 export * from "./doc/ICreateVsamOptions";
-export * from "./doc/ICreateZfsOptions";
 
 export * from "./Create";
 export * from "./Create.defaults";
 export * from "./CreateDataSetType.enum";
+

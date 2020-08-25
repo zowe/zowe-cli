@@ -10,5 +10,4 @@
 */
 
 export * from "./doc/IRecallOptions";
-
 export * from "./HRecall";

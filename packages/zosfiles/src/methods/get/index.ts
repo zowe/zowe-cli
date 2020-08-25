@@ -10,5 +10,4 @@
 */
 
 export * from "./doc/IGetOptions";
-
 export * from "./Get";
