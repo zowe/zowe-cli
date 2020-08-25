@@ -39,7 +39,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
     profiles: UNIT_TEST_PROFILES_ZOSMF
 };
 
-describe("provision template handler tests", () => {
+describe("perform action handler tests", () => {
     afterEach(() => {
         jest.resetAllMocks();
     });

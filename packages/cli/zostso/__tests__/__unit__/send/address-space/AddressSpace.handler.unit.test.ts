@@ -74,7 +74,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
     profiles: PROFILES
 };
 
-describe("ping address-space handler tests", () => {
+describe("send address-space handler tests", () => {
 
     afterEach(() => {
         jest.resetAllMocks();

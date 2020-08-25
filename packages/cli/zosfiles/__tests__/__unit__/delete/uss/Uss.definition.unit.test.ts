@@ -12,7 +12,7 @@
 import i18nEnglish from "../../../../src/-strings-/en";
 import { UssDefinition } from "../../../../src/delete/uss/Uss.definition";
 
-describe("DsDefinition", () => {
+describe("UssDefinition", () => {
     it("should use the correct object for strings", () => {
         const strings = i18nEnglish.DELETE.ACTIONS.USS;
 

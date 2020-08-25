@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-workflows start workflow-key definition", () => {
+describe("zos-workflows start workflow-step definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
             = require("../../../../src/start/workflowStep/WorkflowStep.definition").WorkflowStep;

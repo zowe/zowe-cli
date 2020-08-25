@@ -27,7 +27,7 @@ let instance;
 let instanceID: string;
 let instanceName: string;
 
-describe("provisioning delete instance", () => {
+describe("provisioning perform action", () => {
 
     // Create the unique test environment
     beforeAll(async () => {

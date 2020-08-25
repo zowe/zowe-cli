@@ -36,7 +36,7 @@ const goodCmdParms: IHandlerParameters = {
 
 let listSystemsHandler: ICommandHandler = null;
 
-describe("check status behavior", () => {
+describe("List systems behavior", () => {
     beforeEach(() => {
         ListDefinedSystems.listDefinedSystems = jest.fn(
             (session, servletKey) => {

@@ -9,7 +9,7 @@
 *
 */
 
-import { JOB_STATUS } from "../../../../zosjobs";
+import { JOB_STATUS } from "../../../";
 
 /**
  * Interface for submiting jobs API
