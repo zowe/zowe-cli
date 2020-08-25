@@ -9,7 +9,7 @@
 *
 */
 
-import { IMigrateOptions } from "../../hMigrate";
+import { IMigrateOptions } from "../../hMigrate/doc/IMigrateOptions";
 
 /**
  * This interface defines the options that can be sent into the recall data set function.

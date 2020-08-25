@@ -9,9 +9,6 @@
 *
 */
 
-import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
-import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
-
 /**
  * Defaults to be used as options for the different types of data sets that can be created
  */

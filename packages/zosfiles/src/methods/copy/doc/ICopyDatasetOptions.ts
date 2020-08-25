@@ -1,6 +1,3 @@
-import { IDataSet } from "../../../doc/IDataSet";
-import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
-
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -11,6 +8,9 @@ import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 * Copyright Contributors to the Zowe Project.
 *
 */
+
+import { IDataSet } from "../../../doc/IDataSet";
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
  * This interface defines the options that can be sent into the copy data set function.
