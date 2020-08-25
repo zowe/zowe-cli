@@ -10,12 +10,12 @@
 */
 
 import { AbstractSession, IHandlerParameters, TextUtils, ITaskWithStatus, TaskStage, ImperativeError } from "@zowe/imperative";
-import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
-import { IZosFilesResponse, ZosFilesAttributes, ZosFilesMessages } from "../../../../../../packages/zosfiles/src";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse, ZosFilesAttributes, ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import * as path from "path";
 import * as fs from "fs";
-import { IUploadMap } from "../../../../../../packages/zosfiles/src/methods/upload/doc/IUploadMap";
+import { IUploadMap } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to upload content from a local directory to a USS directory
