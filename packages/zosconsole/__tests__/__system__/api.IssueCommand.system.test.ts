@@ -61,7 +61,7 @@ const COLLECT_PARMS: ICollectParms = {
 
 const INCORRECT_PARMS: string = "cmd: D IPLINFO";
 
-describe("IssueCommand (integration)", () => {
+describe("IssueCommand (system)", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({

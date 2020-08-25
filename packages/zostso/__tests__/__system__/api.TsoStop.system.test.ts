@@ -40,7 +40,7 @@ const ZOSMF_ERROR_MESSAGE: string = 'IZUG1126E: z/OSMF cannot correlate the requ
 
 const LONG_TIMEOUT = 10000;
 
-describe("StopCommand (integration)", () => {
+describe("StopCommand (system)", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({

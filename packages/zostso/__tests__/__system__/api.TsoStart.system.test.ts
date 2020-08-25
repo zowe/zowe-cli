@@ -57,7 +57,7 @@ function expectStartResponseFailed(response: IStartStopResponse, error: Imperati
     expect(error.details.msg).toContain(msg);
 }
 
-describe("StartCommand (integration)", () => {
+describe("StartCommand (system)", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({

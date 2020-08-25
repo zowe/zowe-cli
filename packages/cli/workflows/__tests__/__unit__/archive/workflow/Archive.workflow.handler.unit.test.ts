@@ -25,7 +25,7 @@ import { ImperativeError } from "@zowe/imperative";
 import { ListWorkflows } from "../../../../../../../packages/workflows/src/ListWorkflows";
 
 
-describe("List workflow details handler", () => {
+describe("Archive workflow details handler", () => {
     describe("process method", () => {
         const workflowKey = "fakekey";
         it("should archive workflow details using wf key", async () => {

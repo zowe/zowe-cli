@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-jobs submit group definition", () => {
+describe("zos-jobs submit data set definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../src/submit/data-set/DataSet.definition").DataSetDefinition;
         expect(definition).toBeDefined();

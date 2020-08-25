@@ -15,7 +15,7 @@ import UssFileHandler from "../../../../src/list/uss/UssFile.handler";
 import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
 import { IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
 
-describe("USS directory handler", () => {
+describe("USS file handler", () => {
     describe("process method", () => {
         it("should list files if requested", async () => {
             // Require the handler and create a new instance

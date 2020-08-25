@@ -9,7 +9,7 @@
 *
 */
 
-import { IJobStepData } from "../../../../zosjobs";
+import { IJobStepData } from "../response/IJobStepData";
 
 /**
  * Standard job response document

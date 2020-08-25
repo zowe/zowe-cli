@@ -9,7 +9,7 @@
 *
 */
 
-import { IJobFile } from "../../../../zosjobs";
+import { IJobFile } from "../response/IJobFile";
 
 /**
  * Interface for downloading single spool file with DownloadJobs API
