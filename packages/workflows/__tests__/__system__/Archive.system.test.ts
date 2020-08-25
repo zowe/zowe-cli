@@ -11,13 +11,11 @@
 
 import { Session, Imperative } from "@zowe/imperative";
 import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
-import { ArchiveWorkflow } from "../..";
+import { ArchiveWorkflow, Upload, ZosmfRestClient } from "../..";
 import { WorkflowConstants } from "../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../zosfiles/src";
 import { CreateWorkflow } from "../../src/Create";
-import { ZosmfRestClient } from "../../../rest";
 
 let session: Session;
 let testEnvironment: ITestEnvironment;

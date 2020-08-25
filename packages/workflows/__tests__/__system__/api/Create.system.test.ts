@@ -9,11 +9,9 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow } from "../../..";
+import { CreateWorkflow, DeleteWorkflow, ZosmfRestClient, ZosFilesConstants, Upload, Delete } from "../../..";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";

@@ -14,16 +14,14 @@ import { ArchivedDeleteWorkflow } from "../../../src/ArchivedDelete";
 import { ListArchivedWorkflows } from "../../../src/ListArchivedWorkflows";
 import { ArchiveWorkflow } from "../../../src/ArchiveWorkflow";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../rest";
+import { ZosmfRestClient, ZosFilesConstants, Upload } from "../../../";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../zosfiles/src/methods/upload";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ZosFilesConstants } from "../../../../zosfiles/src";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
-import { noSession, nozOSMFVersion, wrongString } from "../../../src/WorkflowConstants";
+import { noSession, nozOSMFVersion } from "../../../src/WorkflowConstants";
 
 
 let REAL_SESSION: Session;
