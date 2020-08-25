@@ -9,9 +9,9 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
-import { ZosmfHeaders, ZosmfRestClient } from "../../rest";
+import { ZosmfHeaders, ZosmfRestClient } from "../";
 import { IJob } from "./doc/response/IJob";
 import { ICancelJobParms } from "./doc/input/ICancelJobParms";
 import { ICancelJob } from "./doc/input/ICancelJob";

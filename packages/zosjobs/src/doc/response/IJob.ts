@@ -9,7 +9,7 @@
 *
 */
 
-import { IJobStepData } from "../response/IJobStepData";
+import { IJobStepData } from "./IJobStepData";
 
 /**
  * Standard job response document

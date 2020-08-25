@@ -10,11 +10,11 @@
 */
 
 import { TEST_REGEX_DIR, TEST_RESOURCES_DIR } from "./../__src__/ZosJobsTestConstants";
-import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "./../../../index";
+import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "./../../";
 import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "../../";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";

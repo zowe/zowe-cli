@@ -12,7 +12,7 @@
 // unit tests for submit jobs
 
 import { IJob, MonitorJobs, SubmitJobs } from "../../";
-import { ZosmfRestClient } from "../../../rest/src/ZosmfRestClient";
+import { ZosmfRestClient } from "../../";
 import { ImperativeError } from "@zowe/imperative";
 
 jest.mock("../../../rest/src/ZosmfRestClient");
