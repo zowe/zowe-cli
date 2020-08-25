@@ -11,8 +11,8 @@
 
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
-import { Download } from "../../../../../../packages/zosfiles/src/methods/download";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Download } from "@zowe/zos-files-for-zowe-sdk";
 
 
 /**
