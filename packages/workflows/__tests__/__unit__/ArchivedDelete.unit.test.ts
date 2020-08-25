@@ -9,9 +9,9 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "../../";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
-import { ArchivedDeleteWorkflow } from "../../../workflows";
+import { ArchivedDeleteWorkflow } from "../../";
 import { WorkflowConstants, noSession, noWorkflowKey, nozOSMFVersion } from "../../src/WorkflowConstants";
 
 const wfKey = "1234567_abcde";

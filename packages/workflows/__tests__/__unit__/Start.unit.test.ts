@@ -9,9 +9,9 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "../../";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { StartWorkflow } from "../../../workflows";
+import { StartWorkflow } from "../../";
 import { WorkflowConstants, noSession, noWorkflowKey, nozOSMFVersion } from "../../src/WorkflowConstants";
 import { IStartWorkflow, startT } from "../../src/doc/IStartWorkflow";
 

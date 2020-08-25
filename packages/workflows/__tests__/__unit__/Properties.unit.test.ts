@@ -9,18 +9,14 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "../../";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { PropertiesWorkflow } from "../../../workflows";
+import { PropertiesWorkflow } from "../../";
 import {
     WorkflowConstants,
     noSession,
     noWorkflowKey,
-    noOwner,
-    nozOSMFVersion,
-    noSteps,
-    noVariables
-} from "../../src/WorkflowConstants";
+    nozOSMFVersion} from "../../src/WorkflowConstants";
 import { IVariable } from "../../src/doc/IVariable";
 import { IWorkflowInfo } from "../../src/doc/IWorkflowInfo";
 import { IAutomationStatus } from "../../src/doc/IAutomationStatus";
@@ -30,16 +26,6 @@ import { IJobStatus } from "../../src/doc/IJobStatus";
 import { IJobFiles } from "../../src/doc/IJobFiles";
 import { IJobInfo } from "../../src/doc/IJobInfo";
 
-const wfName = "Test-Workflow";
-const wfDefinitionFile = "/tmp/workflow.xml";
-const systemName = "SYS1";
-const wfOwner = "ABCDE01";
-const varInputFile = "/tmp/var.properties";
-const variables = "DUMMY=DUMMY";
-const assign = true;
-const access = "Public";
-const deleteJobs = false;
-const propertiesText = "WRONG_VAR";
 const wfKey = "73c81ef4-eccc-47ce-8f08-8a5c97e753f1";
 const wfVersion = "1.0";
 const propertiesSteps = false;
