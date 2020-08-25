@@ -10,8 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
-import { List } from "../../../../../../packages/zosfiles/src/methods/list";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { List } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**

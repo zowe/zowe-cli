@@ -9,9 +9,9 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { IZosFilesResponse, ZosFilesMessages } from "../../../../../../packages/zosfiles/src";
-import { List } from "../../../../../../packages/zosfiles/src/methods/list";
+import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { List } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
