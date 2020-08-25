@@ -64,7 +64,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     volser: {
         name: "volume-serial",
-        aliases: ["vs"],
+        aliases: ["vs","volser"],
         description: strings.VOLSER,
         type: "string"
     },
@@ -75,7 +75,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     unit: {
         name: "device-type",
-        aliases: ["dt"],
+        aliases: ["dt","unit"],
         description: strings.UNIT,
         type: "string"
     },
@@ -86,7 +86,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     dsorg: {
         name: "data-set-organization",
-        aliases: ["dso"],
+        aliases: ["dso","dsorg"],
         description: strings.DSORG,
         type: "string"
     },
@@ -130,7 +130,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     dirblk: {
         name: "directory-blocks",
-        aliases: ["db"],
+        aliases: ["db","dirblk"],
         description: strings.DIRBLK,
         type: "number"
     },
@@ -152,7 +152,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     recfm: {
         name: "record-format",
-        aliases: ["rf"],
+        aliases: ["rf","recfm"],
         description: strings.RECFM,
         type: "string"
     },
@@ -163,7 +163,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     blksize: {
         name: "block-size",
-        aliases: ["bs"],
+        aliases: ["bs","blksize"],
         description: strings.BLKSIZE,
         type: "number"
     },
@@ -174,7 +174,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     lrecl: {
         name: "record-length",
-        aliases: ["rl"],
+        aliases: ["rl","lrecl"],
         description: strings.LRECL,
         type: "number"
     },
@@ -218,7 +218,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     dsntype: {
         name: "data-set-type",
-        aliases: ["dst"],
+        aliases: ["dst","dsntype"],
         description: strings.DSNTYPE,
         type: "string"
     }
