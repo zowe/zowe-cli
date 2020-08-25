@@ -9,5 +9,4 @@
 *
 */
 
-export * from "./src/SshSession";
 export * from "./src";
