@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../rest";
+import { ZosmfRestClient } from "../";
 import { noInstanceId, nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
 import { ProvisioningValidator } from "./ProvisioningValidator";
 

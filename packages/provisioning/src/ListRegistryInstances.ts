@@ -10,7 +10,7 @@
 */
 
 import { isNullOrUndefined } from "util";
-import { ZosmfRestClient } from "../../rest";
+import { ZosmfRestClient } from "../";
 import { AbstractSession } from "@zowe/imperative";
 import { ProvisioningValidator } from "./ProvisioningValidator";
 import { nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
