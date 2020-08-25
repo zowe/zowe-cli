@@ -10,11 +10,11 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
-import { PropertiesWorkflow } from "../../../../../../packages/workflows/src/Properties";
-import { ListWorkflows } from "../../../../../../packages/workflows";
-import { IWorkflowInfo } from "../../../../../../packages/workflows/src/doc/IWorkflowInfo";
-import { IStepSummary } from "../../../../../../packages/workflows/src/doc/IStepSummary";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { PropertiesWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IWorkflowInfo } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IStepSummary } from "@zowe/zos-workflows-for-zowe-sdk";
 
 /**
  * A Handler for listing details of a workflow instance in z/OSMF in zosworkflows package.

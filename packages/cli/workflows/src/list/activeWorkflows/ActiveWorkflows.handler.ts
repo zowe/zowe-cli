@@ -10,10 +10,10 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ListWorkflows } from "../../../../../../packages/workflows/src/ListWorkflows";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
-import { IActiveWorkflows } from "../../../../../../packages/workflows/src/doc/IActiveWorkflows";
-import { IWorkflowsInfo } from "../../../../../../packages/workflows/src/doc/IWorkflowsInfo";
+import { ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IWorkflowsInfo } from "@zowe/zos-workflows-for-zowe-sdk";
 
 
 /**

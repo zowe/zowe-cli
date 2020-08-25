@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters, ImperativeError, Imperative } from "@zowe/imperative";
-import { CreateWorkflow } from "../../../../../packages/workflows/src/Create";
-import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { CreateWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { ListWorkflows, DeleteWorkflow } from "../../../..";
 
 /**

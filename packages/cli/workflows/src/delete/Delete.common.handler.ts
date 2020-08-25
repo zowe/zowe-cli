@@ -10,11 +10,11 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { DeleteWorkflow } from "../../../../../packages/workflows/src/Delete";
-import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
+import { DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { ListWorkflows } from "../../../..";
-import { IActiveWorkflows } from "../../../../../packages/workflows/src/doc/IActiveWorkflows";
-import { IWorkflowsInfo } from "../../../../../packages/workflows/src/doc/IWorkflowsInfo";
+import { IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IWorkflowsInfo } from "@zowe/zos-workflows-for-zowe-sdk";
 
 
 /**

@@ -10,11 +10,11 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { ArchivedDeleteWorkflow } from "../../../../../packages/workflows/src/ArchivedDelete";
-import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
-import { ListArchivedWorkflows } from "../../../../../packages/workflows/src/ListArchivedWorkflows";
-import { IArchivedWorkflows } from "../../../../../packages/workflows/src/doc/IArchivedWorkflows";
-import { IWorkflowsInfo } from "../../../../../packages/workflows/src/doc/IWorkflowsInfo";
+import { ArchivedDeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { ListArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IWorkflowsInfo } from "@zowe/zos-workflows-for-zowe-sdk";
 const minimatch = require("minimatch");
 
 /**

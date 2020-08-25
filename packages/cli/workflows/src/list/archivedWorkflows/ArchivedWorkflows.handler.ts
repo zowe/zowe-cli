@@ -10,10 +10,10 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ListArchivedWorkflows } from "../../../../../../packages/workflows/src//ListArchivedWorkflows";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
-import { IWorkflowsInfo } from "../../../../../../packages/workflows/src/doc/IWorkflowsInfo";
-import { IArchivedWorkflows } from "../../../../../../packages/workflows/src/doc/IArchivedWorkflows";
+import { ListArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { IWorkflowsInfo } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 /**
  * Common Handler for listing archived workflows for a system.

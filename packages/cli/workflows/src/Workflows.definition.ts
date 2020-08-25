@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { CreateDefinition } from "./create/Create.definition";
 import { StartDefinition } from "./start/Start.definition";
-import { ZosmfSession } from "../../../zosmf";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { ListDefinition } from "./list/List.definition";
 import { ArchiveDefinition } from "./archive/Archive.definition";
 

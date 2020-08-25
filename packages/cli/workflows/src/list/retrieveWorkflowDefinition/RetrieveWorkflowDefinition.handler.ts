@@ -9,10 +9,10 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { DefinitionWorkflow } from "../../../../../../packages/workflows/src/Definition";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
-import { IWorkflowDefinition } from "../../../../../../packages/workflows/src/doc/IWorkflowDefinition";
+import { IHandlerParameters } from "@zowe/imperative";
+import { DefinitionWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { IWorkflowDefinition } from "@zowe/zos-workflows-for-zowe-sdk";
 
 /**
  * Common Handler for retrieving the contents of a z/OSMF workflow definition from a z/OS system.
