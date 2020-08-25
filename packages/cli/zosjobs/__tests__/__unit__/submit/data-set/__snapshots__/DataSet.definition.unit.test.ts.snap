@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zos-jobs submit group definition should not have changed 1`] = `
+exports[`zos-jobs submit data set definition should not have changed 1`] = `
 Object {
   "aliases": Array [
     "ds",
