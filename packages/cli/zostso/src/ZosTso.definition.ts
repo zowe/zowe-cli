@@ -15,7 +15,7 @@ import { SendCommand } from "./send/Send.definition";
 import { StopCommand } from "./stop/Stop.definition";
 import { PingCommand } from "./ping/Ping.definition";
 import { IssueCommand } from "./issue/Issue.definition";
-import { ZosmfSession } from "../../../zosmf";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 export const definition: ICommandDefinition = {
     name: "zos-tso",

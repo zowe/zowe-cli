@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { StartTso } from "../../../../../zostso";
-import { ZosTsoBaseHandler } from "../../../../../../packages/zostso/src/ZosTsoBaseHandler";
+import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
+import { ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to start an address space

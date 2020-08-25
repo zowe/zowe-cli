@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { StopTso } from "../../../../../zostso";
-import { ZosTsoBaseHandler } from "../../../../../../packages/zostso/src/ZosTsoBaseHandler";
+import { StopTso } from "@zowe/zos-tso-for-zowe-sdk";
+import { ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 export default class Handler extends ZosTsoBaseHandler {
 
