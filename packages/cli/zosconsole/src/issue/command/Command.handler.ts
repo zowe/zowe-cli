@@ -10,9 +10,9 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ICollectParms, IConsoleResponse, IIssueParms, IssueCommand } from "../../../../../zosconsole";
+import { ICollectParms, IConsoleResponse, IIssueParms, IssueCommand } from "@zowe/zos-console-for-zowe-sdk";
 import { isNullOrUndefined } from "util";
-import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * Handle to issue a MVS console command
