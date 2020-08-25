@@ -13,7 +13,6 @@ import { Logger, ImperativeError } from "@zowe/imperative";
 import { ClientChannel } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
-import { Stream } from "stream";
 const Client = require("ssh2");
 
 // These are needed for authenticationHandler
