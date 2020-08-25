@@ -19,8 +19,8 @@ import {
     ISession,
     Session
 } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../packages/zosfiles/src/doc/IZosFilesResponse";
-import { ZosmfSession } from "../../../zosmf";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 
 /**

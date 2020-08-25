@@ -17,7 +17,7 @@ import { DownloadDefinition } from "./download/Download.definition";
 import { ListDefinition } from "./list/List.definition";
 import { UploadDefinition } from "./upload/Upload.definition";
 import { MountDefinition } from "./mount/Mount.definition";
-import { ZosmfSession } from "../../../zosmf";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { UnmountDefinition } from "./unmount/Unmount.definition";
 import { HMigrateDefinition } from "./hMigrate/HMigrate.definition";
 import { HRecallDefinition } from "./hRecall/HRecall.definition";
