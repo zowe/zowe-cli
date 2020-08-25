@@ -13,7 +13,7 @@
 // so we can ignore this linting error.
 // tslint:disable-next-line:no-implicit-dependencies
 import { Arguments } from "yargs";
-import { ICreateDataSetOptions } from "../../../../../packages/zosfiles/src/methods/create/doc/ICreateDataSetOptions";
+import { ICreateDataSetOptions } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Generate the appropriate options object to create a dataset before sending it to the z/OS MF APIs

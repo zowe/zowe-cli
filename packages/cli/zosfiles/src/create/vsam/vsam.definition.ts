@@ -10,9 +10,9 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { CreateDefaults } from "../../../../../../packages/zosfiles/src/methods/create";
+import { CreateDefaults } from "@zowe/zos-files-for-zowe-sdk";
 import { VsamCreateOptions } from "./vsam.options";
-import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src";
+import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 
 import i18nTypings from "../../-strings-/en";
