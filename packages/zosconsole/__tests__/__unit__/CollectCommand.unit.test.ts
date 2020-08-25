@@ -9,11 +9,11 @@
 *
 */
 
-import { CollectCommand, ConsoleConstants, ICollectParms, IConsoleResponse, IZosmfIssueResponse } from "../../index";
-import { ZosmfRestClient } from "../../../rest";
+import { CollectCommand, ConsoleConstants, ICollectParms, IConsoleResponse, IZosmfIssueResponse } from "../../";
+import { ZosmfRestClient } from "../../";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { noCommandKey, noConsoleName, noSession } from "../../../zosconsole/src/ConsoleConstants";
+import { noCommandKey, noConsoleName, noSession } from "../../";
 
 const PRETEND_SESSION = new Session({
     user: "user",
