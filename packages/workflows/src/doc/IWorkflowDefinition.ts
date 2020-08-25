@@ -10,7 +10,6 @@
 */
 
 // get workflow definition object (table 2 wf definition request)
-import { IExplanationMap } from "@zowe/imperative";
 import { IStepDefinition } from "./IStepDefinition";
 import { IVariableDefinition } from "./IVariableDefinition";
 /**
