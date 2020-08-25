@@ -9,7 +9,7 @@
 *
 */
 
-import { ITsoMessages, IZosfmMessages } from "../../../../zostso";
+import { ITsoMessages, IZosfmMessages } from "../../../";
 
 /**
  * z/OSMF synchronous most tso command response messages. See the z/OSMF REST API publication for complete details.

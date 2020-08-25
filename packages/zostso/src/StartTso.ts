@@ -12,7 +12,7 @@
 import { AbstractSession, Headers } from "@zowe/imperative";
 
 import { isNullOrUndefined } from "util";
-import { ZosmfHeaders, ZosmfRestClient } from "../../rest";
+import { ZosmfHeaders, ZosmfRestClient } from "../";
 import { SendTso } from "./SendTso";
 import { IStartStopResponses } from "./doc/IStartStopResponses";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
