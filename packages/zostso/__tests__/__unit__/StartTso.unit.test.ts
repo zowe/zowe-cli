@@ -18,9 +18,9 @@ import {
     noTsoStartInput,
     StartTso,
     TsoConstants
-} from "../../../zostso";
+} from "../../";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
+import { ZosmfHeaders, ZosmfRestClient } from "../../";
 import { inspect } from "util";
 import { SendTso } from "../../src/SendTso";
 
