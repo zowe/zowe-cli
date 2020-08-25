@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
+import { ZosmfHeaders, ZosmfRestClient } from "../../";
 import { ImperativeError } from "@zowe/imperative";
 import { CancelJobs, IJob } from "../../";
 

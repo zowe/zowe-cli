@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IJobFile } from "../../";
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "../../";
 
 jest.mock("../../../rest/src/ZosmfRestClient");
 jest.mock("../../src/GetJobs");
