@@ -39,6 +39,7 @@
     "@zowe/zos-uss-for-zowe-sdk": "6.21.1"
   },
   "devDependencies": {
-    "typescript": "^3.8.0"
+    "typescript": "^3.8.0",
+    "rimraf": "^2.6.3"
   }
 }
