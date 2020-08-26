@@ -21,7 +21,7 @@ import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
 import { Invoke } from "../invoke";
 import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
-import i18nTypings from "../../../../../packages/cli/zosfiles/src/-strings-/en";
+import i18nTypings from "../../../../cli/src/zosfiles/-strings-/en";
 import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
