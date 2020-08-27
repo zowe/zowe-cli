@@ -39,7 +39,8 @@ export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
             commandParameters.arguments.dataSetName, {
                 volume: commandParameters.arguments.volumeSerial,
                 binary: commandParameters.arguments.binary,
-                task
+                task,
+                responseTimeout: commandParameters.arguments.responseTimeout
             });
 
         if (result.success) {

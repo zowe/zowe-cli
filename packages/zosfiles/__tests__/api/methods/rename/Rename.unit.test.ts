@@ -64,6 +64,32 @@ describe("Rename", () => {
                     expectedPayload
                 );
             });
+            it("Should send a request to rename a data set with response timeout", async () => {
+                const expectedPayload = { "request": "rename", "from-dataset": { dsn: beforeDataSetName } };
+                const expectedEndpoint = posix.join(
+                    ZosFilesConstants.RESOURCE,
+                    ZosFilesConstants.RES_DS_FILES,
+                    afterDataSetName
+                );
+                const expectedHeaders = [
+                    { "Content-Type": "application/json" },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "X-IBM-Response-Timeout": "5"}
+                ];
+                const response = await Rename.dataSet(dummySession, beforeDataSetName, afterDataSetName, {responseTimeout: 5});
+
+                expect(response).toEqual({
+                    success: true,
+                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message
+                });
+                expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+                expect(putExpectStringSpy).toHaveBeenLastCalledWith(
+                    dummySession,
+                    expectedEndpoint,
+                    expectedHeaders,
+                    expectedPayload
+                );
+            });
         });
         describe("Failure Scenarios", () => {
             it("Should throw an error if a data set name is empty", async () => {
@@ -159,6 +185,39 @@ describe("Rename", () => {
                 ];
 
                 const response = await Rename.dataSetMember(dummySession, dataSetName, beforeMemberName, afterMemberName);
+
+                expect(response).toEqual({
+                    success: true,
+                    commandResponse: ZosFilesMessages.dataSetRenamedSuccessfully.message
+                });
+                expect(putExpectStringSpy).toHaveBeenCalledTimes(1);
+                expect(putExpectStringSpy).toHaveBeenLastCalledWith(
+                    dummySession,
+                    expectedEndpoint,
+                    expectedHeaders,
+                    expectedPayload
+                );
+            });
+            it("Should send a request to rename a data set member with response timeout", async () => {
+                const expectedPayload = {
+                    "request": "rename",
+                    "from-dataset": {
+                        dsn: dataSetName,
+                        member: beforeMemberName
+                    }
+                };
+                const expectedEndpoint = posix.join(
+                    ZosFilesConstants.RESOURCE,
+                    ZosFilesConstants.RES_DS_FILES,
+                    `${dataSetName}(${afterMemberName})`
+                );
+                const expectedHeaders = [
+                    { "Content-Type": "application/json" },
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    { "X-IBM-Response-Timeout": "5" }
+                ];
+
+                const response = await Rename.dataSetMember(dummySession, dataSetName, beforeMemberName, afterMemberName, {responseTimeout: 5});
 
                 expect(response).toEqual({
                     success: true,

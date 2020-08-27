@@ -32,7 +32,8 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
             commandParameters.arguments.USSFileName, {
             binary: commandParameters.arguments.binary,
             encoding: commandParameters.arguments.encoding,
-            task
+            task,
+            responseTimeout: commandParameters.arguments.responseTimeout
         });
 
         const formatMessage = TextUtils.prettyJson(response.apiResponse);

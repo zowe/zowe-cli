@@ -118,6 +118,15 @@ describe("Create Physical Sequential Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should create a physical sequential data set with response timeout", () => {
+            dsnameSuffix = "ps";
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps.sh",
+                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should create a physical sequential data set and print attributes", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_rfj.sh",

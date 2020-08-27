@@ -6,7 +6,19 @@ Data set renamed successfully.
 "
 `;
 
+exports[`Rename data set success scenarios partitioned should rename a data set from the command with response timeout 1`] = `
+"================Z/OS FILES RENAME DS===============
+Data set renamed successfully.
+"
+`;
+
 exports[`Rename data set success scenarios sequential should rename a data set from the command 1`] = `
+"================Z/OS FILES RENAME DS===============
+Data set renamed successfully.
+"
+`;
+
+exports[`Rename data set success scenarios sequential should rename a data set from the command with response timeout 1`] = `
 "================Z/OS FILES RENAME DS===============
 Data set renamed successfully.
 "

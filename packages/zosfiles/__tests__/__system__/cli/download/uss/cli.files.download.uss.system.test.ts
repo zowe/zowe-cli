@@ -131,6 +131,14 @@ describe("Download USS File", () => {
             expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
         });
 
+        it("should download an uss file with response timeout", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
+        });
+
         it("should download uss file with response-format-json flag", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), "--rfj"]);

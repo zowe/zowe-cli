@@ -6,6 +6,12 @@ Data set deleted successfully.
 "
 `;
 
+exports[`Delete Data Set Success scenarios should delete a data set with response timeout 1`] = `
+"================Z/OS FILES DELETE DATA SET===============
+Data set deleted successfully.
+"
+`;
+
 exports[`Delete Data Set Success scenarios should delete a partitioned data set and print attributes 1`] = `
 "================Z/OS FILES DELETE DATA SET===============
 {

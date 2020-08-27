@@ -183,10 +183,10 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      * The storage class
      * @type {ICommandOptionDefinition}
      */
-    storeclass: {
+    storclass: {
         name: "storage-class",
         aliases: ["sc"],
-        description: strings.STORECLASS,
+        description: strings.STORCLASS,
         type: "string"
     },
 

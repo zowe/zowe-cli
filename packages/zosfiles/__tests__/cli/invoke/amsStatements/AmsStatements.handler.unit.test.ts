@@ -45,6 +45,7 @@ describe("Invoke AMS statements handler", () => {
 
         it("should invoke AMS if requested and read as in-line statements", async () => {
             const controlStatements = "testing";
+            const options: any = {"responseTimeout": undefined};
 
             // Vars populated by the mocked function
             let error;
@@ -95,7 +96,7 @@ describe("Invoke AMS statements handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Invoke.ams).toHaveBeenCalledTimes(1);
-            expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, [controlStatements]);
+            expect(Invoke.ams).toHaveBeenCalledWith(fakeSession, [controlStatements], options);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

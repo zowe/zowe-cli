@@ -12,12 +12,14 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Delete, IZosFilesResponse } from "../../../api";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
+import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to delete a USS file.
  */
 export default class UssHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        return Delete.ussFile(session, commandParameters.arguments.fileName, commandParameters.arguments.recursive);
+        const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
+        return Delete.ussFile(session, commandParameters.arguments.fileName, commandParameters.arguments.recursive, zosFilesOptions);
     }
 }

@@ -126,6 +126,17 @@ describe("Upload Data Set", () => {
             expect(stdoutText).toContain("Data set uploaded successfully.");
         });
 
+        it("should upload data set from standard input with response timeout", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("success: true");
+            expect(stdoutText).toContain("from:    stdin");
+            expect(stdoutText).toContain("Data set uploaded successfully.");
+        });
+
         it("should upload data set with response-format-json flag", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);

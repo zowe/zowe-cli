@@ -57,7 +57,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
                         binary: commandParameters.arguments.binary,
                         filesMap,
                         maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                        task: status
+                        task: status,
+                        responseTimeout: commandParameters.arguments.responseTimeout
                     });
             } else {
                 response = await Upload.dirToUSSDir(session,
@@ -66,7 +67,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
                         binary: commandParameters.arguments.binary,
                         filesMap,
                         maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                        task: status
+                        task: status,
+                        responseTimeout: commandParameters.arguments.responseTimeout
                     });
             }
         }
@@ -125,7 +127,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
                 commandParameters.arguments.USSDir, {
                     attributes,
                     maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                    task: status
+                    task: status,
+                    responseTimeout: commandParameters.arguments.responseTimeout
                 });
         } else {
             response = await Upload.dirToUSSDir(session,
@@ -133,7 +136,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
                 commandParameters.arguments.USSDir, {
                     attributes,
                     maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
-                    task: status
+                    task: status,
+                    responseTimeout: commandParameters.arguments.responseTimeout
                 });
         }
 

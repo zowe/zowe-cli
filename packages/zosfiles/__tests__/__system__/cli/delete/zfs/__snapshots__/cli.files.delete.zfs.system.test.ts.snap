@@ -6,6 +6,12 @@ z/OS file system deleted successfully.
 "
 `;
 
+exports[`Delete z/OS File System Success scenarios should delete a ZFS with response timeout 1`] = `
+"================Z/OS FILES DELETE Z/OS FILE SYSTEM===============
+z/OS file system deleted successfully.
+"
+`;
+
 exports[`Delete z/OS File System without profiles should delete a ZFS 1`] = `
 "================Z/OS FILES DELETE Z/OS FILE SYSTEM===============
 z/OS file system deleted successfully.

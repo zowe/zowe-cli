@@ -129,6 +129,14 @@ describe("List all members of data set", () => {
             expect(response.stdout.toString()).toContain(testString.toUpperCase());
         });
 
+        it("should list data set with response timeout", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_all_members.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(testString.toUpperCase());
+        });
+
         it("should list data set with response-format-json flag", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_all_members.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
