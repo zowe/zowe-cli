@@ -4,12 +4,12 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.22.0`
 
-- Added the `--encoding` option for the `zowe zos-files upload dir-to-pds` command. This option lets you upload multiple members at one time. [#764](https://github.com/zowe/zowe-cli/issues/764)
-- Bugfix: Fixed an issue where the output of the `zowe zos-uss issue ssh` command would sometimes omit the last line. [#795](https://github.com/zowe/zowe-cli/issues/795)
+- Added the `--encoding` option for the `zowe zos-files upload dir-to-pds` command. This option lets you upload multiple members with a single command. [#764](https://github.com/zowe/zowe-cli/issues/764)
+- Fixed an issue where the output of the `zowe zos-uss issue ssh` command would sometimes omit the last line. [#795](https://github.com/zowe/zowe-cli/issues/795)
 
 ## `6.21.1`
 
-- Bugfix: Renamed the z/OS Files API option from `storeclass` to `storclass`. This fixed an issue with defining the wrong storage class on `create dataset` commands. [#503](https://github.com/zowe/zowe-cli/issues/503)
+- Renamed the z/OS Files API option from `storeclass` to `storclass`. This fixed an issue where the CLI could define the wrong storage class on `create dataset` commands. [#503](https://github.com/zowe/zowe-cli/issues/503)
 
 ## `6.21.0`
 
