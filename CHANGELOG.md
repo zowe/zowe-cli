@@ -9,11 +9,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.21.1`
 
-- Bugfix: Renamed the z/OS Files API option from `storeclass` to `storclass`. This fixed an issue with defining the storage class on `create dataset` commands.
+- Bugfix: Renamed the z/OS Files API option from `storeclass` to `storclass`. This fixed an issue with defining the wrong storage class on `create dataset` commands. [#503](https://github.com/zowe/zowe-cli/issues/503)
 
 ## `6.21.0`
 
-- Added a `--responseTimeout` option to the z/OS Files APIs, CLI commands, and z/OSMF profiles. Specify `--responseTimeout <###>` to set the number of seconds that the TSO servlet request runs before a timout occurs. The default is 30 seconds. You can set the option to between 5 and 600 seconds (inclusive).
+- Added a `--responseTimeout` option to the z/OS Files APIs, CLI commands, and z/OSMF profiles. Specify `--responseTimeout <###>` to set the number of seconds that the TSO servlet request runs before a timout occurs. The default is 30 seconds. You can set the option to between 5 and 600 seconds (inclusive). [#760](https://github.com/zowe/zowe-cli/issues/760)
 
 ## `6.20.0`
 
