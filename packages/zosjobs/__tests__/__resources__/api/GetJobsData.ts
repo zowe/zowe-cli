@@ -9,9 +9,9 @@
 *
 */
 
-import { IJob } from "../../../src/api/doc/response/IJob";
-import { IJobError } from "../../../src/api/doc/response/IJobError";
-import { IJobFile } from "../../../src/api/doc/response/IJobFile";
+import { IJob } from "../../../src/doc/response/IJob";
+import { IJobError } from "../../../src/doc/response/IJobError";
+import { IJobFile } from "../../../src/doc/response/IJobFile";
 
 /**
  * Static class for GetJobs data

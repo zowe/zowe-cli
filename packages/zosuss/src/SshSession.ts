@@ -15,7 +15,7 @@ import {
     IProfile,
     Logger
 } from "@zowe/imperative";
-import { ISshSession } from "./api/doc/ISshSession";
+import { ISshSession } from "./doc/ISshSession";
 
 
 /**

@@ -10,4 +10,4 @@
 */
 
 export * from "./src/SshSession";
-export * from "./src/api";
+export * from "./src";
