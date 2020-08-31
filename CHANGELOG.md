@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Addedoptions like `--lrecl, --recfm` to zos-files create options. [788](https://github.com/zowe/zowe-cli/issues/788)
+***
+
 ## `6.22.0`
 
 - Enhancement: Added the `--encoding` option for the `zowe zos-files upload dir-to-pds` command. This option lets you upload multiple members with a single command. [#764](https://github.com/zowe/zowe-cli/issues/764)
