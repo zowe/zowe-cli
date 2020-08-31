@@ -89,6 +89,7 @@ The following NPM scripts should be defined in "package.json" for each SDK packa
 
 ### At top level
 
+The following guidelines apply to the top-level "package.json" file:
 * All the NPM scripts listed above should be defined, using [`lerna run`](https://github.com/lerna/lerna/tree/master/commands/run#lernarun) to run the NPM scripts across all packages (e.g., `lerna run build`, `lerna run --parallel watch`).
 * The following line should be included to prevent the top-level package from being accidentally published:
     ```json
