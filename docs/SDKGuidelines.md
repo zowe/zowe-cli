@@ -119,7 +119,7 @@ import { Download } from "../zosfiles/api";
 
 Instead of using relative imports, add other packages as dependencies and reference them by their name in import statements. For example, to rewrite the relative import above, declare `@zowe/zos-files-for-zowe-sdk` as a dependency in the "package.json" for `@zowe/cli`, and import from it like this:
 ```javascript
-import { Download } from "@zowe/zos-files-sdk-for-zowe-cli";
+import { Download } from "@zowe/zos-files-for-zowe-sdk";
 ```
 
 This works when the `@zowe/cli` package is published, because it has declared the zos-files SDK as a dependency. It also works in a local build, because Lerna creates a symlink to the zos-files SDK in the "node_modules" folder for `@zowe/cli`.
