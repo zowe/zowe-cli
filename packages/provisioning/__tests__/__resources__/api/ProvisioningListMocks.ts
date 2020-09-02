@@ -9,7 +9,7 @@
 *
 */
 
-import { IProvisionedInstances, IPublishedTemplates } from "../../../index";
+import { IProvisionedInstances, IPublishedTemplates } from "../../../";
 /**
  * Mocked data for provision list commands
  * @class ProvisioningListMocks
