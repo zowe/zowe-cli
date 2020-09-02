@@ -14,7 +14,7 @@ import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, IHeaderContent } from "../../../../rest";
+import { ZosmfRestClient, IHeaderContent } from "@zowe/rest-for-zowe-sdk";
 import * as path from "path";
 
 export class Utilities {

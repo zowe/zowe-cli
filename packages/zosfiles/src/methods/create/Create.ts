@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
-import { ZosmfHeaders, ZosmfRestClient } from "../../../../rest";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -21,7 +21,7 @@ import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
 import { Invoke } from "../invoke";
 import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
-import i18nTypings from "../../../../cli/src/zosfiles/-strings-/en";
+import i18nTypings from "@zowe/cli";
 import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 

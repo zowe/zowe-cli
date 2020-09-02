@@ -13,7 +13,7 @@ import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Log
 
 import { posix } from "path";
 
-import { ZosmfRestClient, ZosmfHeaders } from "../../../../rest";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

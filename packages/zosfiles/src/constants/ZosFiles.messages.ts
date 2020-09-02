@@ -9,7 +9,7 @@
 *
 */
 
-import { getErrorContext } from "../../../utils/src/CoreUtils";
+import { getErrorContext } from "@zowe/utils-for-zowe-sdk";
 import { ZosFilesConstants } from "./ZosFiles.constants";
 import { IMessageDefinition } from "@zowe/imperative";
 
