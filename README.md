@@ -4,7 +4,7 @@
 
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
-You can also leverage the underlying Zowe Node APIs in this repository to build applications that interface with the mainframe. For more information, see [Using the Zowe Node APIs](#using-the-zowe-node-apis).
+This repository also contains the Zowe Node Client SDK. The SDK lets you leverage the underlying APIs to build applications that interface with the mainframe. 
 
 ## Contents  <!-- omit in toc -->
 
@@ -14,7 +14,7 @@ You can also leverage the underlying Zowe Node APIs in this repository to
  - [Install Zowe CLI from source](#install-zowe-cli-from-source)
  - [Uninstall Zowe CLI](#uninstall-zowe-cli)
  - [Configure Zowe CLI](#configure-zowe-cli)
- - [Using the Zowe Node APIs](#using-the-zowe-node-apis)
+ - [Zowe Node Client SDK](#zowe-node-client-sdk)
  - [Run system tests](#run-system-tests)
  - [FAQs](#frequently-asked-questions)
 
@@ -99,21 +99,17 @@ zowe zosmf check status
 
 For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-usingcli.html).
 
-## Using the Zowe Node APIs
+## Zowe Node Client SDK
 
-The Zowe Node APIs are programamatic APIs that enable Zowe CLI to interface with the mainframe. You can use the APIs to build your own applications or automation scripts independent of Zowe CLI.
+The Zowe Node Client SDK consists of APIs that enable you to build client applications that interface with the mainframe. Use the APIs to build your own client applications or automation scripts, independent of Zowe CLI.
 
-### Accessing the APIs
+For information about downloading and getting started with the SDK, see the [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-usingcli.html#using-sdk).
 
-The Zowe Node APIs are maintained in this repository. Each set of functionality, such as z/OS Jobs, is stored in a folder that contains the API and CLI code.
+**Tip:** Alternatively, you can import Zowe CLI into your project to call the Node APIs. However, importing all of Zowe CLI will increase the size of your project.
 
-To get started, import Zowe CLI into your project and call the individual APIs. We provide a Readme with usage examples for each API package:
+### Example API usage
 
-```
-zowe-cli/packages/<package-name>/README.md
-```
-
-Refer to each Readme for more information:
+For example usage syntax, see the readme for each API package in this repository:
 
 - [Provisioning](https://github.com/zowe/zowe-cli/tree/master/packages/provisioning): Provision middleware and resources such as IBM CICS, IBM Db2, IBM MQ, and more.
 - [z/OS Console](https://github.com/zowe/zowe-cli/tree/master/packages/zosconsole): Perform z/OS console operations.
@@ -123,6 +119,16 @@ Refer to each Readme for more information:
 - [z/OS TSO](https://github.com/zowe/zowe-cli/tree/master/packages/zostso): Interact with TSO/E adress spaces on z/OS.
 - [z/OS USS](https://github.com/zowe/zowe-cli/tree/master/packages/zosuss): Work with UNIX system services (USS) files on z/OS.
 - [z/OS Workflows](https://github.com/zowe/zowe-cli/tree/master/packages/workflows): Create and manage z/OSMF workflows on z/OS.
+
+## Import APIs from Source
+
+To get started, import Zowe CLI into your project and call the individual APIs. We provide a Readme with usage examples for each API package:
+
+```
+zowe-cli/packages/<package-name>/README.md
+```
+
+
 
 ## Run system tests
 
