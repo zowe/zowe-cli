@@ -10,7 +10,7 @@
 */
 
 import { TextUtils } from "@zowe/imperative";
-import { Constants } from "../../../../Constants";
+import { Constants } from "../../../src/Constants";
 
 export default {
     COMMON: {
