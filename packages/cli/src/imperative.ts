@@ -14,7 +14,7 @@ import * as path from "path";
 // WIP Imperative version of Brightside
 import { IImperativeConfig } from "@zowe/imperative";
 import { Constants } from "./Constants";
-import { ZosmfSession } from "./zosmf";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import {
     TSO_OPTION_ACCOUNT_PROFILE,
     TSO_OPTION_CHAR_SET,
@@ -23,9 +23,9 @@ import {
     TSO_OPTION_LOGON_PROCEDURE,
     TSO_OPTION_REGION_SIZE,
     TSO_OPTION_ROWS
-} from "./cli/src/zostso/constants/ZosTso.constants";
-import { SshSession } from "./zosuss";
-import { ZosFilesOptions } from "./cli/src/zosfiles/ZosFiles.options";
+} from "./zostso/constants/ZosTso.constants";
+import { SshSession } from "@zowe/zos-uss-for-zowe-sdk";
+import { ZosFilesOptions } from "./zosfiles/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
