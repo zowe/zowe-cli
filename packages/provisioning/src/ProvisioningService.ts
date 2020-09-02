@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as readYaml from "js-yaml";
 import { ImperativeError } from "@zowe/imperative";
-import { IPropertiesInput, IProvisionOptionals } from "../";
+import { IPropertiesInput, IProvisionOptionals } from "../src/";
 
 /**
  * Service class which helps to filter or edit input parameters.

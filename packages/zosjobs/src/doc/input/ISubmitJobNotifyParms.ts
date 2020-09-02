@@ -9,7 +9,7 @@
 *
 */
 
-import { JOB_STATUS } from "../../../";
+import { JOB_STATUS } from "../../../src/types/JobStatus";
 
 /**
  * Interface for submit job API
