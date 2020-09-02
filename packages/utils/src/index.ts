@@ -9,4 +9,4 @@
 *
 */
 
-export * from "./src";
+export * from "./CoreUtils";
