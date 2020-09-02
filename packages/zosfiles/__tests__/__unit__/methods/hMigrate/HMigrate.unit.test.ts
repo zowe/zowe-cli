@@ -13,8 +13,8 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
-import { ZosmfRestClient } from "../../../../";
-import { IMigrateOptions } from "../../../../";
+import { ZosmfRestClient } from "../../../../../rest";
+import { IMigrateOptions } from "../../../../src/methods/hMigrate/doc/IMigrateOptions";
 
 describe("hMigrate data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

@@ -11,7 +11,7 @@
 
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfRestClient } from "../";
+import { ZosmfRestClient } from "../../rest";
 import { WorkflowConstants, noWorkflowKey, nozOSMFVersion } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IStartWorkflow, startT } from "./doc/IStartWorkflow";

@@ -13,11 +13,11 @@ import { Session } from "@zowe/imperative";
 import { posix } from "path";
 import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
 
-import { ZosmfRestClient } from "../../../../";
-import { IDeleteDatasetOptions } from "../../../../";
-import { IDeleteVsamOptions } from "../../../../";
-import { Invoke } from "../../../../";
-import { IZosFilesOptions } from "../../../../";
+import { ZosmfRestClient } from "../../../../../rest";
+import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDeleteDatasetOptions";
+import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
+import { Invoke } from "../../../../src/methods/invoke";
+import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 describe("Delete", () => {
     const deleteExpectStringSpy = jest.spyOn(ZosmfRestClient, "deleteExpectString");

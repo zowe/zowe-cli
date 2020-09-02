@@ -13,7 +13,7 @@ import { AbstractSession, ImperativeError, ImperativeExpect, IO, ITaskWithStatus
 import * as fs from "fs";
 import * as path from "path";
 
-import { IHeaderContent, ZosmfHeaders, ZosmfRestClient } from "../../../";
+import { IHeaderContent, ZosmfHeaders, ZosmfRestClient } from "../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
@@ -25,7 +25,7 @@ import { IUploadResult } from "./doc/IUploadResult";
 import { Create } from "../create";
 import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
-import { asyncPool } from "../../../";
+import { asyncPool } from "../../../../utils";
 import { ZosFilesAttributes, TransferMode } from "../../utils/ZosFilesAttributes";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";

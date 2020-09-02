@@ -13,7 +13,7 @@ import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/impera
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
 import { isNullOrUndefined } from "util";
-import { ZosmfRestClient, ZosmfHeaders } from "../../../";
+import { ZosmfRestClient, ZosmfHeaders } from "../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

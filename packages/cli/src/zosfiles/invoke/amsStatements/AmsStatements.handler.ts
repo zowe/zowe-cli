@@ -10,11 +10,11 @@
 */
 
 import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { Invoke } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src/constants/ZosFiles.constants";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
+import { Invoke } from "../../../../../../packages/zosfiles/src/methods/invoke";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 /**
  * Handler to create a PDS data set

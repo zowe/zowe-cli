@@ -10,8 +10,8 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { ISendResponse, IZosmfTsoResponse, SendTso } from "../../";
-import { ZosmfRestClient } from "../../";
+import { ISendResponse, IZosmfTsoResponse, SendTso } from "../../../zostso";
+import { ZosmfRestClient } from "../../../rest";
 
 const PRETEND_SESSION = new Session({
     user: "user",

@@ -11,8 +11,8 @@
 
 import { isNullOrUndefined } from "util";
 import { IHandlerParameters } from "@zowe/imperative";
-import { IProvisionedInstance, ListRegistryInstances, DeleteInstance, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
-import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { IProvisionedInstance, ListRegistryInstances, DeleteInstance, ProvisioningConstants } from "../../../../../provisioning";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 
 export default class Handler extends ZosmfBaseHandler {

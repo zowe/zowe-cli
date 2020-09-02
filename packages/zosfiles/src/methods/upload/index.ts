@@ -9,9 +9,6 @@
 *
 */
 
-export * from "./doc/IUploadDir";
-export * from "./doc/IUploadFile";
-export * from "./doc/IUploadMap";
 export * from "./doc/IUploadOptions";
 export * from "./doc/IUploadResult";
 

@@ -11,7 +11,7 @@
 
 import { Unmount, ZosFilesMessages } from "../../../..";
 
-import { ZosmfRestClient } from "../../../../";
+import { ZosmfRestClient } from "../../../../../rest";
 
 describe("Unmount", () => {
     const dummySession: any = {};

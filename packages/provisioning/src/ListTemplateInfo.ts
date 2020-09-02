@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession } from "@zowe/imperative";
-import { ZosmfRestClient } from "../";
+import { ZosmfRestClient } from "../../rest";
 import { ProvisioningValidator } from "./ProvisioningValidator";
 import { noTemplateName, nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
 import { IPublishedTemplateInfo } from "./doc/zosmf/IPublishedTemplateInfo";

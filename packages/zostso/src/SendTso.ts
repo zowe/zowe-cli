@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../rest";
 
 import { isNullOrUndefined } from "util";
 import { TsoValidator } from "./TsoValidator";

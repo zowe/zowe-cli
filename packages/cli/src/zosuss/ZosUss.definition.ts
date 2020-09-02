@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { IssueCommand } from "./issue/Issue.definition";
-import { SshSession } from "@zowe/zos-uss-for-zowe-sdk";
+import { SshSession } from "../../../../packages/zosuss/src/SshSession";
 
 export const definition: ICommandDefinition = {
     name: "zos-uss",

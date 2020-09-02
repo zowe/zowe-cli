@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { ZosmfSession } from "../../../../../zosmf";
 
 export const SpoolFilesByJobidDefinition: ICommandDefinition = {
     name: "spool-files-by-jobid",

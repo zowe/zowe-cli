@@ -19,10 +19,10 @@ import {
     IProvisionedInstance,
     ListRegistryInstances,
     ProvisioningConstants
-} from "@zowe/provisioning-for-zowe-sdk";
-import { ListInstanceInfo } from "@zowe/provisioning-for-zowe-sdk";
+} from "../../../../../../packages/provisioning";
+import { ListInstanceInfo } from "../../../../../../packages/provisioning/src/ListInstanceInfo";
 import { isNullOrUndefined } from "util";
-import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler to list instance info

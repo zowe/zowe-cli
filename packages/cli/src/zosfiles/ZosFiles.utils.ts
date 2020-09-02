@@ -12,7 +12,7 @@
 // We are using arguments as an expected input to the function. Thus there is no generated code
 // so we can ignore this linting error.
 // tslint:disable-next-line:no-implicit-dependencies
-import { IDataSet } from "@zowe/zos-files-for-zowe-sdk";
+import { IDataSet } from "../../../../packages/zosfiles/src/doc/IDataSet";
 
 /**
  * Converts the name of a data set to an IDataSet

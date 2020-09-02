@@ -11,7 +11,7 @@
 
 
 import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
-import { ZosmfRestClient } from "../";
+import { ZosmfRestClient } from "../../rest";
 import {
     WorkflowConstants,
     nozOSMFVersion,
@@ -27,7 +27,7 @@ import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
 import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
 import { IVariable } from "./doc/IVariable";
-import { Upload, Delete } from "../";
+import { Upload, ZosFilesConstants, Delete } from "../../zosfiles/src";
 import { basename } from "path";
 
 /**

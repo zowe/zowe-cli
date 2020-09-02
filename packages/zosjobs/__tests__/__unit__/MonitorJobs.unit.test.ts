@@ -11,7 +11,7 @@
 
 import { ImperativeError } from "@zowe/imperative";
 import { GetJobs, JOB_STATUS } from "../..";
-import { sleep } from "../../";
+import { sleep } from "../../../utils";
 import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
 import { IJob } from "../../src/doc/response/IJob";
 import { MonitorJobs } from "../../src/MonitorJobs";

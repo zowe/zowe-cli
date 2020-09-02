@@ -10,9 +10,9 @@
 */
 
 import { inspect } from "util";
-import { ZosmfRestClient } from "../../";
+import { ZosmfRestClient } from "../../../rest";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { IPublishedTemplates, ListCatalogTemplates, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../";
+import { IPublishedTemplates, ListCatalogTemplates, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../provisioning";
 
 const RESOURCES_QUERY: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/psc/`;
 

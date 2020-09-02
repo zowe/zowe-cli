@@ -14,7 +14,8 @@ import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } f
 import { posix } from "path";
 import * as util from "util";
 
-import { IHeaderContent, getErrorContext, ZosmfRestClient, ZosmfHeaders } from "../../../";
+import { IHeaderContent, ZosmfRestClient, ZosmfHeaders } from "../../../../rest";
+import { getErrorContext } from "../../../../utils";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

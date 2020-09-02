@@ -9,9 +9,9 @@
 *
 */
 
-import { ZosmfRestClient } from "../../";
+import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { DefinitionWorkflow } from "../../";
+import { DefinitionWorkflow } from "../../../workflows";
 import {
     WorkflowConstants,
     noSession,
@@ -26,6 +26,7 @@ import { IVariableSpecification } from "../../src/doc/IVariableSpecification";
 import { IStepApprovers } from "../../src/doc/IStepApprovers";
 import { IPropertyMapping } from "../../src/doc/IPropertyMapping";
 
+const wfDefinitionFile = "/tmp/workflow.xml";
 const wfPath = "/a/wf1.xml";
 const wfVersion = "1.0";
 const propertiesSteps = false;

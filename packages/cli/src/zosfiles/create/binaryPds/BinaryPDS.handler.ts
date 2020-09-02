@@ -9,9 +9,9 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { Create, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
+import { Create, CreateDataSetTypeEnum } from "../../../../../../packages/zosfiles/src/methods/create";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { generateZosmfOptions } from "../Create.utils";
 

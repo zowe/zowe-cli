@@ -11,13 +11,13 @@
 
 import { IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
-import { ZosmfHeaders, ZosmfRestClient } from "../../../../";
-import { Download } from "../../../../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
+import { Download } from "../../../../src/methods/download/Download";
 import { posix } from "path";
-import { ZosFilesConstants } from "../../../../";
+import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import * as util from "util";
-import { List } from "../../../../";
-import { CLIENT_PROPERTY } from "../../../../";
+import { List } from "../../../../src/methods/list";
+import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";

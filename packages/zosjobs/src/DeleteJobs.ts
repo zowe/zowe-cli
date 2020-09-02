@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
-import { ZosmfHeaders, ZosmfRestClient } from "../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../rest";
 import { IJob } from "./doc/response/IJob";
 import { IDeleteJobParms } from "./doc/input/IDeleteJobParms";
 

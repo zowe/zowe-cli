@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError } from "@zowe/imperative";
-import { IPingResponse, IStartStopResponse, IZosmfPingResponse, IZosmfTsoResponse, noZosmfResponse, TsoResponseService } from "../../";
+import { IPingResponse, IStartStopResponse, IZosmfPingResponse, IZosmfTsoResponse, noZosmfResponse, TsoResponseService } from "../../../zostso";
 
 const PRETEND_ZOSMF_RESPONSE: IZosmfTsoResponse = {
     servletKey: "ZOSMFAD-SYS2-55-aaakaaac",

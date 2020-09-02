@@ -9,9 +9,9 @@
 *
 */
 
-import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../";
+import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src";
 import { Session, Headers } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../";
+import { ZosmfRestClient } from "../../../../../rest";
 import { posix } from "path";
 
 describe("USS utiliites", () => {

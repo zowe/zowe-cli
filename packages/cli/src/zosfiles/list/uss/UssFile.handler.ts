@@ -9,9 +9,10 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { List } from "@zowe/zos-files-for-zowe-sdk";
+import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IUSSFileListResponse } from "../../../../../../packages/zosfiles/src/doc/IUSSFileListResponse";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
+import { List } from "../../../../../../packages/zosfiles/src/methods/list";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 /**
  * Handler to list a unix directory

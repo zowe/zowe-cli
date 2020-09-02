@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfHeaders, ZosmfRestClient } from "../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../rest";
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import {
     IJob,
@@ -18,7 +18,7 @@ import {
     ISubmitJobNotifyParm,
     ISubmitJobParms,
     JOB_STATUS
-} from "../";
+} from "../../zosjobs";
 import { JobsConstants } from "./JobsConstants";
 import { ZosJobsMessages } from "./JobsMessages";
 import { ISubmitParms } from "./doc/input/ISubmitParms";

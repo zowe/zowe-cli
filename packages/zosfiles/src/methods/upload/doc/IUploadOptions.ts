@@ -9,6 +9,7 @@
 *
 */
 
+import { ITaskWithStatus } from "@zowe/imperative";
 import { IUploadMap } from "./IUploadMap";
 import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 import { IOptions } from "../../../doc/IOptions";

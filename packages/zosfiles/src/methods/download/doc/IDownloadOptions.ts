@@ -9,6 +9,7 @@
 *
 */
 
+import { ITaskWithStatus } from "@zowe/imperative";
 import { IOptions } from "../../../doc/IOptions";
 
 /**

@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../rest";
 import { TsoValidator } from "./TsoValidator";
 import { noPingInput, TsoConstants } from "./TsoConstants";
 import { IZosmfPingResponse } from "./doc/zosmf/IZosmfPingResponse";

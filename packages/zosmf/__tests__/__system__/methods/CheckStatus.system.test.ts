@@ -9,7 +9,7 @@
 *
 */
 
-import { CheckStatus, ZosmfMessages } from "../../../";
+import { CheckStatus, ZosmfMessages } from "../../../../zosmf";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

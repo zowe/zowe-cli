@@ -9,13 +9,11 @@
 *
 */
 
-import { Shell } from "../../src/Shell";
-import { SshSession } from "../../src/SshSession"
-import { ZosUssMessages } from "../../src/constants/ZosUss.messages";
-
+import { Shell, SshSession } from "../../../index";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ZosUssMessages } from "../../src/constants/ZosUss.messages";
 
 let TEST_ENVIRONMENT: ITestEnvironment;
 let SSH_SESSION: SshSession;

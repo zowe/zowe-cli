@@ -11,9 +11,9 @@
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../";
-import { ZosmfRestClient } from "../../../../";
-import { ZosFilesMessages } from "../../../../";
-import { IZosFilesOptions } from "../../../../";
+import { ZosmfRestClient } from "../../../../../rest/";
+import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
+import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 describe("Create data set", () => {
     const dummySession: any = {};

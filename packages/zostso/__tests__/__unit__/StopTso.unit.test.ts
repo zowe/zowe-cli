@@ -10,7 +10,7 @@
 */
 
 import { inspect } from "util";
-import { ZosmfHeaders, ZosmfRestClient } from "../../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../../rest";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import {
     IStartStopResponse,

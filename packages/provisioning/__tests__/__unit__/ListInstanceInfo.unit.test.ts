@@ -10,10 +10,10 @@
 */
 
 import { inspect } from "util";
-import { ZosmfRestClient } from "../../";
+import { ZosmfRestClient } from "../../../rest";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { IProvisionedInstance, noInstanceId, ProvisioningConstants,
-        noSessionProvisioning, nozOSMFVersion, ListInstanceInfo } from "../../";
+        noSessionProvisioning, nozOSMFVersion, ListInstanceInfo } from "../../../provisioning";
 
 const instanceId: string = "123456";
 const RESOURCES_QUERY: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/scr/${instanceId}`;

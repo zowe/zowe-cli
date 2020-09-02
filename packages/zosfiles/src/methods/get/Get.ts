@@ -10,10 +10,10 @@
 */
 
 import { posix } from "path";
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, Logger, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "../../../";
+import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 

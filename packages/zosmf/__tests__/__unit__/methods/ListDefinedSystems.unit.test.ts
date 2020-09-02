@@ -10,8 +10,8 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { ListDefinedSystems, ZosmfConstants, IZosmfListDefinedSystemsResponse } from "../../../";
-import { ZosmfRestClient } from "../../../";
+import { ListDefinedSystems, ZosmfConstants, IZosmfListDefinedSystemsResponse } from "../../../../zosmf";
+import { ZosmfRestClient } from "../../../../rest";
 
 describe("List Defined Systems api", () => {
     const dummySession: any = {};

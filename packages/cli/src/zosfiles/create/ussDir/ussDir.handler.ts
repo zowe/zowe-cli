@@ -10,10 +10,11 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
+import { ICreateUssOptions } from "../../../../../../packages/zosfiles/src/methods/create/doc/ICreateUssOption";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Create } from "@zowe/zos-files-for-zowe-sdk";
-import { IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { Create } from "../../../../../../packages/zosfiles/src/methods/create";
+import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 /**
  * Handler to create a USS Directory

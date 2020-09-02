@@ -10,9 +10,9 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Delete, IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 /**
  * Handler to delete a USS file.

@@ -10,10 +10,10 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { explainActionResponse, PerformAction, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
-import { IProvisionedInstance, ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
+import { explainActionResponse, PerformAction, ProvisioningConstants } from "../../../../../../packages/provisioning";
+import { IProvisionedInstance, ListRegistryInstances } from "../../../../../../packages/provisioning/index";
 import { isNullOrUndefined } from "util";
-import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler to perform action against instance

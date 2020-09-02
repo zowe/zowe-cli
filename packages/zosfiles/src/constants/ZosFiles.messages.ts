@@ -9,6 +9,7 @@
 *
 */
 
+import { getErrorContext } from "../../../utils/src/CoreUtils";
 import { ZosFilesConstants } from "./ZosFiles.constants";
 import { IMessageDefinition } from "@zowe/imperative";
 

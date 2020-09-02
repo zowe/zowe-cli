@@ -9,14 +9,15 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse, Upload, Get, Download } from "../../../../";
+import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse, Upload, ZosFilesMessages, Download } from "../../../../../";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosFilesMessages, ZosFilesConstants, ZosmfRestClient } from "../../../../";
+import { Get, ZosFilesConstants } from "../../../../../index";
+import { ZosmfRestClient } from "../../../../../rest";
 import { IUploadMap } from "../../../../src/methods/upload/doc/IUploadMap";
 import * as fs from "fs";
 

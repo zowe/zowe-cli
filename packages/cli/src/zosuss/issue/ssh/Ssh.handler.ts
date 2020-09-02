@@ -9,9 +9,10 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
-import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
-import { SshBaseHandler } from "@zowe/zos-uss-for-zowe-sdk";
+import { IHandlerParameters, IHandlerResponseConsoleApi } from "@zowe/imperative";
+import { Shell } from "../../../../../../packages/zosuss/src/Shell";
+import { ClientChannel } from "ssh2";
+import { SshBaseHandler } from "../../../../../../packages/zosuss/src/SshBaseHandler";
 
 /**
  * Handle to issue an USS ssh command

@@ -10,8 +10,8 @@
 */
 
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
-import { SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { SubmitJobs } from "../../../../../packages/zosjobs/src/SubmitJobs";
+import { IJob } from "../../../../../packages/zosjobs/src/doc/response/IJob";
 import { isNullOrUndefined } from "util";
 import * as  fs from "fs";
 import { ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";

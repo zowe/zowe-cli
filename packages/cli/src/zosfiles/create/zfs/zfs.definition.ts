@@ -10,10 +10,13 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { CreateDefaults } from "../../../../../../packages/zosfiles/src/methods/create";
 import { ZfsCreateOptions } from "./zfs.options";
-import { ZosFilesCreateOptions } from "../Create.options";
+import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src/";
+import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 
 import i18nTypings from "../../-strings-/en";
+import { ZosmfSession } from "../../../../../zosmf";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
 const fileStrings = (require("../../-strings-/en").default as typeof i18nTypings);

@@ -9,8 +9,8 @@
 *
 */
 
+export * from "./Delete";
+
 export * from "./doc/IDeleteDatasetOptions";
 export * from "./doc/IDeleteVsamOptions";
 export * from "./doc/IDeleteVsamResponse";
-
-export * from "./Delete";

@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ICollectParms, IConsoleResponse, IIssueParms, IssueCommand } from "@zowe/zos-console-for-zowe-sdk";
+import { ICollectParms, IConsoleResponse, IIssueParms, IssueCommand } from "../../../../../zosconsole";
 import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
 

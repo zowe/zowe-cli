@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
-import { ZosmfHeaders, ZosmfRestClient } from "../../../";
+import { ZosmfHeaders, ZosmfRestClient } from "../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

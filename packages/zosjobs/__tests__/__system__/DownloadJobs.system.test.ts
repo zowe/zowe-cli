@@ -9,7 +9,7 @@
 *
 */
 
-import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../";
+import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../../";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

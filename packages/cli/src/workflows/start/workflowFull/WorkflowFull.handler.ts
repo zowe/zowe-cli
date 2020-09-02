@@ -12,7 +12,7 @@
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
 import { PropertiesWorkflow, StartWorkflow, ListWorkflows } from "../../../../..";
-import { IWorkflowInfo } from "@zowe/zos-workflows-for-zowe-sdk";
+import { IWorkflowInfo } from "../../../../../../packages/workflows/src/doc/IWorkflowInfo";
 
 
 /**

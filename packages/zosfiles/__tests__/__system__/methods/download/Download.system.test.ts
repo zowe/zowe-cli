@@ -19,7 +19,7 @@ import {
     IZosFilesResponse,
     ZosFilesConstants,
     ZosFilesMessages
-} from "../../../../";
+} from "../../../../../";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

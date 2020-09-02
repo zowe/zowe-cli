@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfRestClient } from "../";
+import { ZosmfRestClient } from "../../rest";
 import { AbstractSession } from "@zowe/imperative";
 import { ProvisioningValidator } from "./ProvisioningValidator";
 import { nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";

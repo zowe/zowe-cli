@@ -15,10 +15,10 @@ import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers 
 import { ZosFilesConstants } from "../../src/constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../src/constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
-import { ZosmfRestClient } from "../../";
+import { ZosmfRestClient } from "../../../rest/src/ZosmfRestClient";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
-import { ZosmfHeaders } from "../../";
+import { ZosmfHeaders } from "../../../rest";
 
 /**
  * Common IO utilities

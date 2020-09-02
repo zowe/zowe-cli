@@ -10,16 +10,16 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
+import { ListRegistryInstances } from "../../../../../../packages/provisioning";
 import {
     explainProvisionedInstanceFull,
     explainProvisionedInstanceSummary,
     IProvisionedInstance,
     IProvisionedInstances,
     ProvisioningConstants
-} from "@zowe/provisioning-for-zowe-sdk";
+} from "../../../../../../packages/provisioning/index";
 import { isNullOrUndefined } from "util";
-import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 
 /**
  * Handler to list registry instances

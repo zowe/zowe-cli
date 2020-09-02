@@ -18,8 +18,8 @@ import {
     IssueCommand,
     IZosmfIssueParms,
     IZosmfIssueResponse
-} from "../../";
-import { ZosmfRestClient } from "../../";
+} from "../../../zosconsole";
+import { ZosmfRestClient } from "../../../rest";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { noConsoleInput, noConsoleName, noSession, noZosmfInput } from "../../src/ConsoleConstants";

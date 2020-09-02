@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 
-import { ZosmfRestClient, ZosmfHeaders } from "../../../";
+import { ZosmfRestClient, ZosmfHeaders } from "../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";

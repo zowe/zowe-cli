@@ -10,10 +10,10 @@
 */
 
 import { inspect } from "util";
-import { ZosmfRestClient } from "../../";
+import { ZosmfRestClient } from "../../../rest";
 import { Session, Imperative, ImperativeError } from "@zowe/imperative";
 import { ListTemplateInfo, noSessionProvisioning,
-        noTemplateName, nozOSMFVersion, ProvisioningConstants } from "../../";
+        noTemplateName, nozOSMFVersion, ProvisioningConstants } from "../../../provisioning";
 
 
 const templateName: string = "EXAMPLE_TEMPLATE";

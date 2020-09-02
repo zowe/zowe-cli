@@ -19,7 +19,7 @@ import {
     noSessionProvisioning,
     nozOSMFVersion,
     ProvisioningConstants
-} from "../../";
+} from "../../../";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 const TYPE: string = "CICS";

@@ -10,9 +10,9 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { HMigrate } from "@zowe/zos-files-for-zowe-sdk";
+import { HMigrate } from "../../../../../../packages/zosfiles/src/methods/hMigrate";
 
 /**
  * Handler to migrate a Data Set

@@ -10,10 +10,10 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Unmount } from "@zowe/zos-files-for-zowe-sdk";
-import { IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { Unmount } from "../../../../../../packages/zosfiles/src/methods/unmount";
+import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
 
 /**
  * Handler to unmount a Unix file system

@@ -10,10 +10,10 @@
 */
 
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
-import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
+import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IUploadResult } from "@zowe/zos-files-for-zowe-sdk";
+import { IUploadResult } from "../../../../../../packages/zosfiles/src/methods/upload/doc/IUploadResult";
 
 /**
  * Handler to upload content from a file to a data set

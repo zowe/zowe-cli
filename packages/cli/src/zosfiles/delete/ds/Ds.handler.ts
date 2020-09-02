@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { Delete, IDeleteDatasetOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Delete, IDeleteDatasetOptions, IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**

@@ -9,8 +9,8 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../";
-import { Imperative, Session } from "@zowe/imperative";
+import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../../";
+import { Imperative, IO, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -18,6 +18,7 @@ import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../..
 import { ZosmfRestClient } from "../../../../../rest";
 import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 import { IZosmfListResponse } from "../../../../src/methods/list/doc/IZosmfListResponse";
+import { Utilities, Tag } from "../../../../src";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
