@@ -9,7 +9,7 @@
 *
 */
 
-import { IProvisionedInstanceVariable } from "../../../../provisioning";
+import { IProvisionedInstanceVariable } from "../../../";
 
 /**
  * The list of variables of the provisioned instance.
