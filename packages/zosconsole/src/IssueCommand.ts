@@ -11,7 +11,7 @@
 
 import { AbstractSession, Headers } from "@zowe/imperative";
 
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk"";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { isNullOrUndefined } from "util";
 import { IZosmfIssueParms } from "./doc/zosmf/IZosmfIssueParms";
 import { ConsoleValidator } from "./ConsoleValidator";

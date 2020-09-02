@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfRestClient } from "../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { WorkflowConstants, nozOSMFVersion } from "./WorkflowConstants";
