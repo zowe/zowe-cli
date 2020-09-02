@@ -23,9 +23,9 @@ import {
     TSO_OPTION_LOGON_PROCEDURE,
     TSO_OPTION_REGION_SIZE,
     TSO_OPTION_ROWS
-} from "../packages/cli/zostso/src/constants/ZosTso.constants";
+} from "./cli/src/zostso/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
-import { ZosFilesOptions } from "./cli/zosfiles/src/ZosFiles.options";
+import { ZosFilesOptions } from "./cli/src/zosfiles/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
