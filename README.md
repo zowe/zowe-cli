@@ -120,16 +120,6 @@ For example usage syntax, see the readme for each API package in this repository
 - [z/OS USS](https://github.com/zowe/zowe-cli/tree/master/packages/zosuss): Work with UNIX system services (USS) files on z/OS.
 - [z/OS Workflows](https://github.com/zowe/zowe-cli/tree/master/packages/workflows): Create and manage z/OSMF workflows on z/OS.
 
-## Import APIs from Source
-
-To get started, import Zowe CLI into your project and call the individual APIs. We provide a Readme with usage examples for each API package:
-
-```
-zowe-cli/packages/<package-name>/README.md
-```
-
-
-
 ## Run system tests
 
 In addition to Node.js, you must have a means to execute `.sh` (bash) scripts, which are required for running integration tests. On Windows, you can install "Git Bash" (bundled with the standard [Git](https://git-scm.com/downloads) installation - check "Use Git and Unix Tools from Windows Command Prompt" installation option).
