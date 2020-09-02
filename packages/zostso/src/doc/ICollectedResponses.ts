@@ -9,7 +9,7 @@
 *
 */
 
-import { IZosmfTsoResponse } from "../../";
+import { IZosmfTsoResponse } from "../../src/doc/zosmf/IZosmfTsoResponse";
 
 export interface ICollectedResponses{
     /**

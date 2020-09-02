@@ -30,6 +30,7 @@
   "dependencies": {
     "@zowe/imperative": "4.7.4",
     "minimatch": "3.0.4",
+    "@zowe/cli": "6.21.1",
     "@zowe/rest-for-zowe-sdk": "6.21.1",
     "@zowe/utils-for-zowe-sdk": "6.21.1"
   },
