@@ -28,7 +28,9 @@
     "clean": "rimraf lib"
   },
   "dependencies": {
-    "@zowe/imperative": "4.7.4"
+    "@zowe/imperative": "4.7.4",
+    "@zowe/rest-for-zowe-sdk": "6.21.1",
+    "@zowe/utils-for-zowe-sdk": "6.21.1"
   },
   "devDependencies": {
     "rimraf": "^2.6.3",
