@@ -9,7 +9,7 @@
 *
 */
 
-import { ITsoMessage, ITsoPromptMessage, ITsoResponseMessage } from "../../../../index";
+import { ITsoMessage, ITsoPromptMessage, ITsoResponseMessage } from "../../../";
 
 /**
  * Interface for TSO/E messages

@@ -9,7 +9,7 @@
 *
 */
 
-import { IZosmfTsoResponse } from "../../../zostso";
+import { IZosmfTsoResponse } from "../../";
 
 /**
  * The TsoSend API response.
