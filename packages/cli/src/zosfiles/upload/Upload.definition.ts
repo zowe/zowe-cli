@@ -13,7 +13,6 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { FileToDataSetDefinition } from "./ftds/FileToDataSet.definition";
 import { StdinToDataSetDefinition } from "./stds/StdinToDataSet.definition";
 import { DirToPdsDefinition } from "./dtp/DirToPds.definition";
-
 import i18nTypings from "../-strings-/en";
 import { FileToUSSDefinition } from "./ftu/FileToUSS.definition";
 import { DirToUSSDirDefinition } from "./dtu/DirToUSSDir.definition";

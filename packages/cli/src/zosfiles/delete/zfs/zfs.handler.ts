@@ -10,10 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-
-import { Delete, IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
+import { IZosFilesOptions, Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to delete a z/OS file system.

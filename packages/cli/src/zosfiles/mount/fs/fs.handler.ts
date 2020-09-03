@@ -10,10 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
-import { IMountFsOptions } from "../../../../../../packages/zosfiles/src/methods/mount/doc/IMountFsOptions";
+import { IZosFilesResponse, IMountFsOptions, Mount } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Mount } from "../../../../../../packages/zosfiles/src/methods/mount";
 
 /**
  * Handler to mount a Unix file system

@@ -10,10 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
-import { ICreateZfsOptions } from "../../../../../../packages/zosfiles/src/methods/create/doc/ICreateZfsOptions";
+import { IZosFilesResponse, ICreateZfsOptions, Create } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Create } from "../../../../../../packages/zosfiles/src/methods/create";
 
 /**
  * Handler to create a z/OS file system

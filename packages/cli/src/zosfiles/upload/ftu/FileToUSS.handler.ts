@@ -10,8 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
-import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles";
+import { Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**

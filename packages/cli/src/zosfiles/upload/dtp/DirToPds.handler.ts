@@ -10,10 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src";
-import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
+import { IZosFilesResponse, Upload, IUploadResult } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IUploadResult } from "../../../../../../packages/zosfiles/src/methods/upload/doc/IUploadResult";
 
 /**
  * Handler to upload content of a directory to a PDS

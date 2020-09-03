@@ -20,7 +20,7 @@ import {
     Session
 } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfSession } from "../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 
 /**

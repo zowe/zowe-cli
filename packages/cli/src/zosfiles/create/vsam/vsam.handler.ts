@@ -10,10 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
-import { ICreateVsamOptions } from "../../../../../../packages/zosfiles/src/methods/create/doc/ICreateVsamOptions";
+import { IZosFilesResponse, ICreateVsamOptions, Create } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Create } from "../../../../../../packages/zosfiles/src/methods/create";
 
 /**
  * Handler to create a VSAM data set
