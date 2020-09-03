@@ -21,12 +21,11 @@ import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
 import { Invoke } from "../invoke";
 import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
-import i18nTypings from "@zowe/cli";
 import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 // Do not use import in anticipation of some internationalization work to be done later.
-const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);
+// const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);
 
 /**
  * Class to handle creation of data sets
@@ -355,7 +354,7 @@ export class Create {
         if (!isNullOrUndefined(idcamsOptions.showAttributes)) {
             if (idcamsOptions.showAttributes) {
                 delete idcamsOptions.showAttributes;
-                attribText = strings.COMMON.ATTRIBUTE_TITLE + TextUtils.prettyJson(idcamsOptions);
+                attribText = ZosFilesMessages.attributeTitle.message + TextUtils.prettyJson(idcamsOptions);
             } else {
                 delete idcamsOptions.showAttributes;
             }
@@ -581,7 +580,7 @@ export class Create {
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
-                                    strings.COMMON.FOR + " '" + option + "' " + strings.COMMON.WITH_VALUE +
+                                    ZosFilesMessages.commonFor.message + " '" + option + "' " + ZosFilesMessages.commonWithValue.message +
                                     " = " + options[option] + "."
                             });
                         }
@@ -664,7 +663,7 @@ export class Create {
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
-                                    strings.COMMON.FOR + " '" + option + "' " + strings.COMMON.WITH_VALUE +
+                                    ZosFilesMessages.commonFor.message + " '" + option + "' " + ZosFilesMessages.commonWithValue.message +
                                     " = " + options[option] + "."
                             });
                         }
