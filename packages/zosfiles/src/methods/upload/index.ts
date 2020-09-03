@@ -11,5 +11,6 @@
 
 export * from "./doc/IUploadOptions";
 export * from "./doc/IUploadResult";
+export * from "./doc/IUploadMap";
 
 export * from "./Upload";
