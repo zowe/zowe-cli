@@ -19,7 +19,7 @@ import {
     nozOSMFVersion,
     PerformAction,
     ProvisioningConstants
-} from "../../../";
+} from "../../";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;
