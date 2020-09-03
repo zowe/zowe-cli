@@ -1,16 +1,17 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { Client } from "ssh2";
-import { SshSession, startCmdFlag, Shell } from "../../index";
+import { startCmdFlag, Shell } from "../../src/Shell";
+import { SshSession } from "../../src/SshSession";
 import { EventEmitter } from "events";
 jest.mock("ssh2");
 
@@ -19,7 +20,7 @@ const fakeSshSession = new SshSession({
     hostname: "localhost",
     port: 22,
     user: "",
-    password: ""
+    password: "",
 });
 const mockClient: any = new EventEmitter();
 const mockConnect = jest.fn().mockImplementation(() => {
@@ -55,7 +56,6 @@ function checkMockFunctionsWithCommand(command: string) {
 }
 
 describe("Shell", () => {
-
     it("Should execute ssh command", async () => {
         const command = "commandtest";
         Shell.executeSsh(fakeSshSession, command, stdoutHandler);
@@ -70,5 +70,4 @@ describe("Shell", () => {
 
         checkMockFunctionsWithCommand(command);
     });
-
 });

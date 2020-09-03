@@ -9,7 +9,8 @@
 *
 */
 
-import { Shell, SshSession } from "../../../index";
+import { Shell } from "../../src/Shell";
+import { SshSession } from "../../src/SshSession";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
