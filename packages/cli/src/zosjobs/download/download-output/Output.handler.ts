@@ -11,7 +11,7 @@
 
 import { IHandlerParameters } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
-import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * "zos-jobs download output" command handler. Download each spool DD to a separate file.

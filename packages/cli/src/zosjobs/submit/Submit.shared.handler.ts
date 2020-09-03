@@ -10,15 +10,11 @@
 */
 
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
-import { SubmitJobs } from "../../../../../packages/zosjobs/src/SubmitJobs";
-import { IJob } from "../../../../../packages/zosjobs/src/doc/response/IJob";
 import { isNullOrUndefined } from "util";
 import * as  fs from "fs";
-import { ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
-import { ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
-import { IDownloadOptions } from "@zowe/zos-files-for-zowe-sdk";
-import { Get } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfBaseHandler } from "../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
+import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import getstdin = require("get-stdin");
 
 /**

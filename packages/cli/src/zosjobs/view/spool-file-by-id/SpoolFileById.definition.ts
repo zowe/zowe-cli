@@ -10,8 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { Constants } from "../../../../../Constants";
-import { ZosmfSession } from "../../../../../zosmf";
+import { Constants } from "../../../Constants";
 
 export const SpoolFileByIdDefinition: ICommandDefinition = {
     name: "spool-file-by-id",

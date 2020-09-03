@@ -10,9 +10,8 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
-import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { IJob, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * "zos-jobs view job-status-by-jobid" command handler. Outputs details regarding a z/OS job.

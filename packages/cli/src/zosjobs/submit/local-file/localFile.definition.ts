@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
 
 export const LocalFileDefinition: ICommandDefinition = {
     name: "local-file",

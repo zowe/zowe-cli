@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
 
 export const DataSetDefinition: ICommandDefinition = {
     name: "data-set",

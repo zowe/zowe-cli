@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { ZosmfSession } from "../../../../../zosmf";
 
 export const JobStatusByJobidDefinition: ICommandDefinition = {
     name: "job-status-by-jobid",
