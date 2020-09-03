@@ -9,7 +9,7 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, ListWorkflows, ZosmfRestClient, ZosFilesConstants, Upload } from "../../../";
+import { CreateWorkflow, DeleteWorkflow, ListWorkflows} from "../../../";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
@@ -19,6 +19,8 @@ import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import { noSession, nozOSMFVersion, wrongString } from "../../../src/WorkflowConstants";
 import { IWorkflowsInfo } from "../../../src/doc/IWorkflowsInfo";
+import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
