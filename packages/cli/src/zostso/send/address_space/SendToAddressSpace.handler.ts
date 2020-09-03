@@ -10,8 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { SendTso, ISendResponse } from "../../../../../../packages/zostso";
-import { ZosTsoBaseHandler } from "../../../../../../packages/zostso/src/ZosTsoBaseHandler";
+import { SendTso, ISendResponse, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to Send data to TSO address space

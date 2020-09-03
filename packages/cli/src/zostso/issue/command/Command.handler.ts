@@ -10,8 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { IIssueResponse, IssueTso } from "../../../../../zostso";
-import { ZosTsoBaseHandler } from "../../../../../../packages/zostso/src/ZosTsoBaseHandler";
+import { IIssueResponse, IssueTso, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to issue command to TSO address space
