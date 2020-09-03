@@ -10,8 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
-import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { ListDefinedSystems, IZosmfListDefinedSystemsResponse, ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * Handler to show zosmf information
