@@ -10,12 +10,11 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
 import { List } from "../../../../src/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { posix } from "path";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
-import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 import { IListOptions } from "../../../../src";
 
 describe("z/OS Files - List", () => {
