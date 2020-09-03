@@ -10,9 +10,8 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { CheckStatus, IZosmfInfoResponse } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { CheckStatus, IZosmfInfoResponse, ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { CheckStatusMessages } from "../../constants/CheckStatus.messages";
-import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
 
 /**
  * Handler to show zosmf information
