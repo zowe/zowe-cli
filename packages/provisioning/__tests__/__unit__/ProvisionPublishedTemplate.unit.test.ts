@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { ProvisionPublishedTemplate, IProvisionTemplateResponse, noSessionProvisioning, noTemplateName, nozOSMFVersion,
         ProvisioningConstants, IProvisionOptionals, ProvisioningService, noAccountInfo } from "../../../provisioning";
