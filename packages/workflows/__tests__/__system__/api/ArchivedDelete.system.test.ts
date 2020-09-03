@@ -9,7 +9,8 @@
 *
 */
 
-import { ZosmfRestClient, ZosFilesConstants, Upload } from "../../../";
+import { ZosFilesConstants, Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noSession, noWorkflowKey, nozOSMFVersion } from "../../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
