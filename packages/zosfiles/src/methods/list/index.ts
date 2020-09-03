@@ -9,6 +9,9 @@
 *
 */
 
+export * from "./doc/IFsOptions";
 export * from "./doc/IListOptions";
+export * from "./doc/IUSSListOptions";
+export * from "./doc/IZosmfListResponse";
 
 export * from "./List";
