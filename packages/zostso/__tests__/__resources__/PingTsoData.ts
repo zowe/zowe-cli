@@ -10,7 +10,6 @@
 */
 
 import { IPingResponse } from "../../../zostso";
-import { IIssueResponse } from "../../src/doc/IIssueResponse";
 
 /**
  * Mocked data for ping tso command.

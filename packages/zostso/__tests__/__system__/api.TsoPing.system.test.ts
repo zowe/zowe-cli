@@ -15,7 +15,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { IStartTsoParms, StartTso } from "../../../index";
+import { IStartTsoParms, StartTso } from "../../";
 
 let servletKey: string;
 
