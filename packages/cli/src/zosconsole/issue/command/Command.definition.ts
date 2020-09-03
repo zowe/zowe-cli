@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { Constants } from "../../../../../Constants";
+import { Constants } from "../../../Constants";
 
 export const IssueCommandDefinition: ICommandDefinition = {
     name: "command",

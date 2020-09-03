@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { CollectCommand } from "./collect/Collect.definition";
 import { IssueCommand } from "./issue/Issue.definition";
-import { ZosmfSession } from "../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 export const definition: ICommandDefinition = {
     name: "zos-console",
