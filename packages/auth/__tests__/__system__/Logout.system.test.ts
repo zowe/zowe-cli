@@ -14,7 +14,7 @@ import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../src/Login";
 import { Logout } from "../../src/Logout";
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 
 let testEnvironment: ITestEnvironment;
 let REAL_SESSION: Session;
