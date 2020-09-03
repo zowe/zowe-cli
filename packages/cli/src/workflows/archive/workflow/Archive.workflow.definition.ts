@@ -13,7 +13,6 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { ArchiveOptions } from "../Archive.options";
 import { join } from "path";
 
-
 /**
  * This object defines the command for archiving workflow instance on zOSMF.
  * This is not something that is intended to be used outside of this npm package.

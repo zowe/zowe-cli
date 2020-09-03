@@ -10,9 +10,8 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { StartWorkflow, ListWorkflows } from "../../../../../";
-import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
-
+import { StartWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * Common handler to start a workflow instance in z/OSMF.

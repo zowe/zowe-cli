@@ -10,12 +10,8 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { ArchiveWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
-import { ZosmfBaseHandler } from "../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
-import { ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-import { IWorkflowsInfo } from "@zowe/zos-workflows-for-zowe-sdk";
-import { IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
+import { ArchiveWorkflow, ListWorkflows, IWorkflowsInfo, IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 /**
  * Common Handler for archiving workflow instance in z/OSMF in zosworkflows package.

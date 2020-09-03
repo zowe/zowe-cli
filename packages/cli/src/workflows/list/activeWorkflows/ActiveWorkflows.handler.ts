@@ -10,11 +10,8 @@
 */
 
 import { IHandlerParameters, TextUtils } from "@zowe/imperative";
-import { ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-import { ZosmfBaseHandler } from "../../../../src/provisioning/delete/instance/node_modules/@zowe/zosmf-for-zowe-sdk";
-import { IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
-import { IWorkflowsInfo } from "@zowe/zos-workflows-for-zowe-sdk";
-
+import { IWorkflowsInfo, ListWorkflows, IActiveWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
  * Common Handler for listing active workflow(s) instance(s) in z/OSMF.
