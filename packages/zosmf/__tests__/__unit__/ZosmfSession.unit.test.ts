@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../../src/ZosmfSession";
-import { Session, ImperativeExpect, ICommandArguments } from "@zowe/imperative";
+import { Session, ICommandArguments } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
     it("should create a basic session object", () => {
