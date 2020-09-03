@@ -15,7 +15,7 @@ import { IJob } from "../../src/doc/response/IJob";
 import { ImperativeError, Session } from "@zowe/imperative";
 import { GetJobs } from "../..";
 
-jest.mock("../../src/api/GetJobs");
+jest.mock("../../src/GetJobs");
 
 // Longer timeout for async poll test
 const LONGER_TIMEOUT = 20000;

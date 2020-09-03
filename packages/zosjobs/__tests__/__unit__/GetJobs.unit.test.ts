@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { AbstractSession, ImperativeError, ProcessUtils, Session } from "@zowe/imperative";
 import { GetJobs } from "../../";
 import { GetJobsData } from "../__resources__/api/GetJobsData";
