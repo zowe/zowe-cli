@@ -9,7 +9,7 @@
 *
 */
 
-import { ConsoleResponseService, IConsoleResponse, IZosmfIssueResponse } from "../../index";
+import { ConsoleResponseService, IConsoleResponse, IZosmfIssueResponse } from "../../";
 
 const COMMAND_RESPONSE_KEY: string = "C1046283";
 const COMMAND_RESPONSE: string = "text part 1 text part two text part three";
