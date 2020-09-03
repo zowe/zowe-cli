@@ -14,7 +14,7 @@ import { ListCommand } from "./list/List.definition";
 import { ProvisionCommand } from "./provision/Provision.definition";
 import { PerformCommand } from "./perform/Perform.definition";
 import { DeleteCommand } from "./delete/Delete.definition";
-import { ZosmfSession } from "../../../zosmf";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 const definition: ICommandDefinition = {
     name: "provisioning",
