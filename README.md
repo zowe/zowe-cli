@@ -105,7 +105,13 @@ The Zowe Node Client SDK consists of APIs that enable you to build client applic
 
 For information about downloading and getting started with the SDK, see the [Zowe Docs](https://docs.zowe.org/stable/user-guide/cli-usingcli.html#using-sdk).
 
-**Tip:** Alternatively, you can import Zowe CLI into your project to call the Node APIs. However, importing all of Zowe CLI will increase the size of your project.
+**Tip:** Alternatively, you can import Zowe CLI into your project to call the Node APIs. However, importing all of Zowe CLI will increase the size of your project. For example, use the following statement to import packages from Zowe CLI:
+
+```
+import { <interfaceName> } from @zowe/cli
+```
+
+*Where* `<interfaceName>` is the name of an interface that you populate (i.e. `IIssueParms`) or a function that submits requests (i.e `IssueCommand`).
 
 ### Example API usage
 
