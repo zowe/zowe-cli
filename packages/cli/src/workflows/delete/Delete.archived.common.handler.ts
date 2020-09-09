@@ -14,7 +14,7 @@ import {
     IArchivedWorkflows,
     IWorkflowsInfo,
     ListArchivedWorkflows,
-    ArchivedDeleteWorkflow,
+    ArchivedDeleteWorkflow
 } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 const minimatch = require("minimatch");
@@ -115,7 +115,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
 
                 if (listWorkflows.archivedWorkflows.length === 0) {
                     throw new ImperativeError({
-                        msg: `No workflows match the provided workflow name.`,
+                        msg: `No workflows match the provided workflow name.`
                     });
                 }
 
@@ -127,7 +127,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                         fields: ["workflowName", "workflowKey"],
                         output: successWfs,
                         format: "table",
-                        header: true,
+                        header: true
                     });
                 }
 
@@ -139,10 +139,10 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                         fields: ["workflowName", "workflowKey"],
                         output: failedWfs,
                         format: "table",
-                        header: true,
+                        header: true
                     });
                     throw new ImperativeError({
-                        msg: `Some workflows were not deleted, please check the message above.`,
+                        msg: `Some workflows were not deleted, please check the message above.`
                     });
                 }
                 params.response.data.setObj("Deleted.");
@@ -153,7 +153,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                     msg:
                         `Internal create error: Unable to determine the the criteria by which to run delete workflow action. ` +
                         `Please contact support.`,
-                    additionalDetails: JSON.stringify(params),
+                    additionalDetails: JSON.stringify(params)
                 });
         }
     }

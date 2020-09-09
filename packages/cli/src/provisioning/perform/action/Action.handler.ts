@@ -15,7 +15,7 @@ import {
     PerformAction,
     ProvisioningConstants,
     IProvisionedInstance,
-    ListRegistryInstances,
+    ListRegistryInstances
 } from "@zowe/provisioning-for-zowe-sdk";
 import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";

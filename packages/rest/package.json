@@ -25,7 +25,10 @@
   "scripts": {
     "build": "tsc --pretty",
     "watch": "tsc --pretty --watch",
-    "clean": "rimraf lib"
+    "clean": "rimraf lib",
+    "lint": "npm run lint:packages && npm run lint:tests",
+    "lint:packages": "tslint --format stylish -c ../../tslint-packages.json \"src/**/*.ts\"",
+    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\""
   },
   "dependencies": {
     "@zowe/imperative": "4.7.4"

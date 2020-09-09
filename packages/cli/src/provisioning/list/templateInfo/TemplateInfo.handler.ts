@@ -15,7 +15,7 @@ import {
     explainPublishedTemplateInfoSummary,
     ListTemplateInfo,
     IPublishedTemplateInfo,
-    ProvisioningConstants,
+    ProvisioningConstants
 } from "@zowe/provisioning-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 

@@ -16,7 +16,7 @@ import {
     IProvisionedInstance,
     IProvisionedInstanceVariable,
     ListRegistryInstances,
-    ProvisioningConstants,
+    ProvisioningConstants
 } from "@zowe/provisioning-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -54,7 +54,7 @@ export default class InstanceVariablesHandler extends ZosmfBaseHandler {
                 fields: ["name", "value", "visibility", "update-registry"],
                 output: variables,
                 format: "table",
-                header: true,
+                header: true
             });
             commandParameters.response.data.setObj(variables);
         } else if (instances.length > 1) {

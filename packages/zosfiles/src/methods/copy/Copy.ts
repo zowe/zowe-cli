@@ -12,11 +12,10 @@
 import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { posix } from "path";
 
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "@zowe/rest-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { IHeaderContent } from "@zowe/rest-for-zowe-sdk";
 import { IDataSet } from "../../doc/IDataSet";
 import { ICopyDatasetOptions } from "./doc/ICopyDatasetOptions";
 /**

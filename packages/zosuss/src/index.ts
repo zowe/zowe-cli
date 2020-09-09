@@ -11,7 +11,7 @@
 
 export * from "./Shell";
 export * from "./SshBaseHandler";
-export * from "./SshSession"; 
+export * from "./SshSession";
 
 export * from "./constants/ZosUss.messages";
 

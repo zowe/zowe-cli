@@ -20,7 +20,7 @@ const fakeSshSession = new SshSession({
     hostname: "localhost",
     port: 22,
     user: "",
-    password: "",
+    password: ""
 });
 const mockClient: any = new EventEmitter();
 const mockConnect = jest.fn().mockImplementation(() => {
