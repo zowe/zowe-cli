@@ -13,7 +13,7 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { IMigrateOptions } from "../../../../src/methods/hMigrate/doc/IMigrateOptions";
 
 describe("hMigrate data set", () => {

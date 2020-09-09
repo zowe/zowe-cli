@@ -16,9 +16,6 @@
     "sourceMap": true,
     "newLine": "lf"
   },
-  "include": [
-    "packages/**/*"
-  ],
   "exclude": [
     "lib",
     "node_modules",

@@ -12,8 +12,7 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { Rename, ZosFilesConstants, ZosFilesMessages } from "../../../../";
-
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 
 describe("Rename", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

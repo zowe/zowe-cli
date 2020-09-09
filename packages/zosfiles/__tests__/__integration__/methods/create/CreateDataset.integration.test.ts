@@ -9,7 +9,7 @@
 *
 */
 
-import { ICreateDataSetOptions, ZosFilesConstants } from "../../../../../index";
+import { ICreateDataSetOptions, ZosFilesConstants } from "../../../../";
 import { Imperative, Session } from "@zowe/imperative";
 import * as http from "http";
 import { inspect } from "util";

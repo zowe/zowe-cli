@@ -11,7 +11,7 @@
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../";
-import { ZosmfRestClient } from "../../../../../rest/";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 

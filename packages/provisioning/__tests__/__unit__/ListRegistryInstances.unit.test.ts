@@ -10,7 +10,7 @@
 */
 
 import { inspect } from "util";
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../provisioning";
 

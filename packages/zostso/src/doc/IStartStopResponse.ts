@@ -9,7 +9,7 @@
 *
 */
 
-import { IZosmfTsoResponse } from "../../../zostso";
+import { IZosmfTsoResponse } from "../../src/doc/zosmf/IZosmfTsoResponse";
 import { ImperativeError } from "@zowe/imperative";
 
 export interface IStartStopResponse {

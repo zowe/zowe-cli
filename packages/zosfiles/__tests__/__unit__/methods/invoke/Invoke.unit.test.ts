@@ -10,14 +10,14 @@
 */
 
 jest.mock("fs");
-jest.mock("../../../../../utils");
+jest.mock("@zowe/utils-for-zowe-sdk");
 
 import { Headers, Session } from "@zowe/imperative";
 import { posix } from "path";
 import { IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient } from "../../../../../rest";
-import { getErrorContext } from "../../../../../utils";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { getErrorContext } from "@zowe/utils-for-zowe-sdk";
 import { Invoke } from "../../../../src";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 

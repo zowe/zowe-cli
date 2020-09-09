@@ -15,9 +15,9 @@ import { ArchiveWorkflow } from "../..";
 import { WorkflowConstants } from "../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../zosfiles/src";
 import { CreateWorkflow } from "../../src/Create";
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 
 let session: Session;
 let testEnvironment: ITestEnvironment;

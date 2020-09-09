@@ -9,7 +9,7 @@
 *
 */
 
-import { IStartStopResponse, IZosmfTsoResponse } from "../../../zostso";
+import { IStartStopResponse, IZosmfTsoResponse } from "../../src/";
 import { IStartStopResponses } from "./IStartStopResponses";
 
 /**

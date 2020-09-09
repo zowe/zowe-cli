@@ -11,9 +11,7 @@
 
 import { CreateWorkflow, DeleteWorkflow } from "../../..";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
@@ -29,6 +27,8 @@ import {
     wrongOwner
 } from "../../../src/WorkflowConstants";
 import { ICreatedWorkflowLocal } from "../../../src/doc/ICreatedWorkflowLocal";
+import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

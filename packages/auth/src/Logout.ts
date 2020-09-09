@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeExpect, Logger, ImperativeError, RestConstants, SessConstants } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../packages/rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { LogoutConstants } from "./LogoutConstants";
 
 /**

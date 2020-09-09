@@ -9,7 +9,7 @@
 *
 */
 
-import { IZosfmMessages } from "../../../../zostso";
+import { IZosfmMessages } from "../../../src/doc/zosmf/IZosmfMessages";
 
 /**
  * The z/OSMF Ping API parameters. See the z/OSMF REST API documentation for full details.

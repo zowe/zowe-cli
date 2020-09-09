@@ -11,7 +11,7 @@
 
 import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src";
 import { Session, Headers } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 import { posix } from "path";
 
 describe("USS utiliites", () => {

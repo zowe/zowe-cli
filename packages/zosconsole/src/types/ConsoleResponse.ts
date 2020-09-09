@@ -9,6 +9,6 @@
 *
 */
 
-import { IConsoleResponse } from "../../../zosconsole";
+import { IConsoleResponse } from "../../src/doc/IConsoleResponse";
 
 export type ConsoleResponse = (response: IConsoleResponse) => void;

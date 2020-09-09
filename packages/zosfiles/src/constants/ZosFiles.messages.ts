@@ -9,7 +9,6 @@
 *
 */
 
-import { getErrorContext } from "../../../utils/src/CoreUtils";
 import { ZosFilesConstants } from "./ZosFiles.constants";
 import { IMessageDefinition } from "@zowe/imperative";
 
@@ -577,5 +576,29 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     memberDownloadFailed: {
         message: "Failed to download the following members: \n"
+    },
+
+    /**
+     * Message indicating the attributes are used during dataset creation
+     * @type {IMessageDefinition}
+     */
+    attributeTitle: {
+        message: "The following attributes are used during creation:\n"
+    },
+
+    /**
+     * Message to be used when throwing an imperative error during dataset creation
+     * @type {IMessageDefinition}
+     */
+    commonFor: {
+        message: "for"
+    },
+
+    /**
+     * Message to be used when throwing an imperative error during dataset creation
+     * @type {IMessageDefinition}
+     */
+    commonWithValue: {
+        message: "with value"
     }
 };

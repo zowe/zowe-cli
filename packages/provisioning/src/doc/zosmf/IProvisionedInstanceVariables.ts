@@ -9,7 +9,7 @@
 *
 */
 
-import { IProvisionedInstanceVariable } from "../../../../provisioning";
+import { IProvisionedInstanceVariable } from "../../../src/doc/zosmf/IProvisionedInstanceVariable";
 
 /**
  * The list of variables of the provisioned instance.

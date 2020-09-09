@@ -9,7 +9,8 @@
 *
 */
 
-import { ICollectParms, IIssueParms, IZosmfIssueParms } from "../../zosconsole";
+import { ICollectParms, IIssueParms } from "../src/";
+import { IZosmfIssueParms } from "../src/doc/zosmf/IZosmfIssueParms";
 import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
 import { noCollectParameters, noCommandKey, noConsoleInput, noConsoleName, noSession, noZosmfInput } from "./ConsoleConstants";
 

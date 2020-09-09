@@ -19,15 +19,14 @@ import {
     IZosFilesResponse,
     ZosFilesConstants,
     ZosFilesMessages
-} from "../../../../../";
+} from "../../../../";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
 import { readdirSync, readFileSync } from "fs";
-import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
 import { posix } from "path";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 

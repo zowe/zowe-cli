@@ -12,8 +12,8 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 
-import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../..";
-import { ZosmfRestClient } from "../../../../../rest";
+import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../../";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
 
 describe("Copy", () => {
     const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

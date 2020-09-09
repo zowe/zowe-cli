@@ -11,9 +11,10 @@
 
 import { AbstractSession, ImperativeExpect, IO, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
-import { IDownloadSpoolContentParms, IJobFile } from "../../zosjobs";
-import { ZosmfRestClient } from "../../rest";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
+import { IJobFile } from "./doc/response/IJobFile";
+import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { IDownloadSpoolContentParms } from "./doc/input/IDownloadSpoolContentParms";
 import { GetJobs } from "./GetJobs";
 
 

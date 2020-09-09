@@ -17,7 +17,6 @@ import { ZosFilesUtils } from "../../../src/utils/ZosFilesUtils";
 jest.mock("fs");
 
 describe("ZosFilesUtils", () => {
-    const dummyString = "test";
     describe("CONSTANTS", () => {
         it("should contain various constants", () => {
             // Data set name qualifier separator

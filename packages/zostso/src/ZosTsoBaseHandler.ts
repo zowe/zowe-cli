@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfBaseHandler } from "../../zosmf/src/ZosmfBaseHandler";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 

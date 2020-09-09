@@ -17,7 +17,7 @@ import {
     PerformAction,
     ProvisioningConstants,
     ProvisionPublishedTemplate
-} from "../../..";
+} from "../../../";
 
 /**
  * Class for provisioning test utils.

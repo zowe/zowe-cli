@@ -1,0 +1,48 @@
+{
+  "name": "@zowe/cli",
+  "version": "6.21.1",
+  "description": "",
+  "author": "",
+  "license": "EPL-2.0",
+  "keywords": [
+    "zosmf",
+    "mainframe",
+    "CLI",
+    "zos",
+    "jobs",
+    "jcl",
+    "z/OSMF",
+    "mvs",
+    "os390",
+    "z/OS",
+    "zowe"
+  ],
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc --pretty",
+    "watch": "tsc --pretty --watch",
+    "clean": "rimraf lib"
+  },
+  "dependencies": {
+    "@zowe/auth-for-zowe-sdk": "6.21.1",
+    "@zowe/imperative": "4.7.4",
+    "@zowe/perf-timing": "1.0.7",
+    "@zowe/provisioning-for-zowe-sdk": "6.21.1",
+    "@zowe/zos-workflows-for-zowe-sdk": "6.21.1",
+    "@zowe/zos-console-for-zowe-sdk": "6.21.1",
+    "@zowe/zos-files-for-zowe-sdk": "6.21.1",
+    "@zowe/zos-jobs-for-zowe-sdk": "6.21.1",
+    "@zowe/zosmf-for-zowe-sdk": "6.21.1",
+    "@zowe/zos-tso-for-zowe-sdk": "6.21.1",
+    "@zowe/zos-uss-for-zowe-sdk": "6.21.1",
+    "get-stdin": "7.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.3",
+    "typescript": "^3.8.0"
+  }
+}
