@@ -33,7 +33,6 @@
   "dependencies": {
     "@zowe/imperative": "4.7.4",
     "@zowe/core-for-zowe-sdk": "6.21.1",
-    "@zowe/core-for-zowe-sdk": "6.21.1",
     "@zowe/zos-files-for-zowe-sdk": "6.21.1"
   },
   "devDependencies": {
