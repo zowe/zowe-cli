@@ -25,7 +25,10 @@
   "scripts": {
     "build": "tsc --pretty",
     "watch": "tsc --pretty --watch",
-    "clean": "rimraf lib"
+    "clean": "rimraf lib",
+    "lint": "npm run lint:packages && npm run lint:tests",
+    "lint:packages": "tslint --format stylish -c ../../tslint-packages.json \"src/**/*.ts\"",
+    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\""
   },
   "dependencies": {
     "@zowe/auth-for-zowe-sdk": "6.21.1",
@@ -39,9 +42,11 @@
     "@zowe/zosmf-for-zowe-sdk": "6.21.1",
     "@zowe/zos-tso-for-zowe-sdk": "6.21.1",
     "@zowe/zos-uss-for-zowe-sdk": "6.21.1",
-    "get-stdin": "7.0.0"
+    "get-stdin": "7.0.0",
+    "minimatch": "^3.0.4"
   },
   "devDependencies": {
+    "js-yaml": "^3.14.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.8.0"
   }

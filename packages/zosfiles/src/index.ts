@@ -20,7 +20,7 @@ export * from "./doc/IOptions";
 export * from "./doc/IOptionsFullResponse";
 export * from "./doc/IRestClientResponse";
 export * from "./doc/IUSSFileListResponse";
-export * from "./doc/IZosFilesOptions"; 
+export * from "./doc/IZosFilesOptions";
 export * from "./doc/IZosFilesResponse";
 
 export * from "./methods/copy";
@@ -41,5 +41,3 @@ export * from "./methods/utilities";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
-
-

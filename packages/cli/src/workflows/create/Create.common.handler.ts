@@ -13,7 +13,7 @@ import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import {
     ListWorkflows,
     DeleteWorkflow,
-    CreateWorkflow,
+    CreateWorkflow
 } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -100,7 +100,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                 params.response.format.output({
                     fields: ["workflowKey", "workflowDescription"],
                     output: resp,
-                    format: "object",
+                    format: "object"
                 });
 
                 break;
@@ -132,7 +132,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                 params.response.format.output({
                     fields: ["workflowKey", "workflowDescription"],
                     output: resp,
-                    format: "object",
+                    format: "object"
                 });
 
                 break;
@@ -171,10 +171,10 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                             ? "filesKept"
                             : resp.failedToDelete
                             ? "failedToDelete"
-                            : "",
+                            : ""
                     ],
                     output: resp,
-                    format: "object",
+                    format: "object"
                 });
 
                 break;
@@ -184,7 +184,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     msg:
                         `Internal create error: Unable to determine the source of the definition file. ` +
                         `Please contact support.`,
-                    additionalDetails: JSON.stringify(params),
+                    additionalDetails: JSON.stringify(params)
                 });
         }
     }
