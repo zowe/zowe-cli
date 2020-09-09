@@ -1,5 +1,5 @@
 {
-  "name": "@zowe/auth-for-zowe-sdk",
+  "name": "@zowe/core-for-zowe-sdk",
   "version": "6.21.1",
   "description": "",
   "author": "",
@@ -32,9 +32,11 @@
   },
   "dependencies": {
     "@zowe/imperative": "4.7.4",
-    "@zowe/rest-for-zowe-sdk": "6.21.1"
+    "@zowe/rest-for-zowe-sdk": "6.21.1",
+    "string-width": "2.1.1"
   },
   "devDependencies": {
+    "chalk": "^4.1.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.8.0"
   }
