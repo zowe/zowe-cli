@@ -10,7 +10,7 @@
 */
 
 import { IGulpError, ITaskFunction } from "./GulpHelpers";
-import { Constants } from "../packages/Constants";
+import { Constants } from "../packages/cli/src/Constants";
 import { SpawnSyncReturns } from "child_process";
 import * as util from "util";
 import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@zowe/imperative";
