@@ -10,7 +10,7 @@
 */
 
 import { Mount, IMountFsMode, IMountFsOptions } from "../../../..";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 
 

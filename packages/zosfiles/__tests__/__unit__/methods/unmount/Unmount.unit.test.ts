@@ -10,7 +10,7 @@
 */
 
 import { Unmount, ZosFilesMessages } from "../../../..";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Unmount", () => {
     const dummySession: any = {};

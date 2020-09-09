@@ -14,14 +14,13 @@ import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, Imperative
 import { posix } from "path";
 import * as util from "util";
 
-import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions } from "./doc/IDownloadOptions";
-import { asyncPool } from "@zowe/utils-for-zowe-sdk";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";

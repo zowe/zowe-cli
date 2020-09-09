@@ -11,7 +11,7 @@
 
 import { AbstractSession, Logger, TextUtils } from "@zowe/imperative";
 
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { isNullOrUndefined } from "util";
 import { ConsoleValidator } from "./ConsoleValidator";
 import { IZosmfCollectResponse } from "./doc/zosmf/IZosmfCollectResponse";

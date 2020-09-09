@@ -17,7 +17,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 
 let REAL_SESSION: Session;

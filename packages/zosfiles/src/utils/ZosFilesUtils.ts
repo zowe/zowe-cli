@@ -15,7 +15,7 @@ import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers 
 import { ZosFilesConstants } from "../../src/constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../src/constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 

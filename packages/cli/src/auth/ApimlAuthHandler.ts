@@ -11,7 +11,7 @@
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/imperative";
-import { Logout, Login } from "@zowe/auth-for-zowe-sdk";
+import { Logout, Login } from "@zowe/core-for-zowe-sdk";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.

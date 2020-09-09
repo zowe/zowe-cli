@@ -13,7 +13,7 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { HDelete, ZosFilesConstants, ZosFilesMessages } from "../../../..";
 
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../../../../src/methods/hDelete/doc/IDeleteOptions";
 
 describe("hDelete data set", () => {

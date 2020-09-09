@@ -23,7 +23,7 @@ There are 3 types of packages:
     * `@zowe/zos-jobs-for-zowe-sdk` - z/OSMF jobs APIs
     * `@zowe/cics-for-zowe-sdk` - CICS CMCI APIs
 * Utility - Package that provides utility functions which are shared by multiple SDK packages. Examples:
-    * `@zowe/rest-for-zowe-sdk` - REST client for z/OSMF APIs
+    * `@zowe/core-for-zowe-sdk` - REST client for z/OSMF APIs
 
 ### Zowe CLI
 
@@ -39,10 +39,8 @@ The Zowe CLI monorepo contains:
     * `@zowe/zos-uss-for-zowe-sdk`
     * `@zowe/provisioning-for-zowe-sdk`
     * `@zowe/zos-workflows-for-zowe-sdk`
-* Some utility packages (for utility functions shared by the SDK packages above):
-    * `@zowe/auth-for-zowe-sdk`
-    * `@zowe/rest-for-zowe-sdk`
-    * `@zowe/utils-for-zowe-sdk`
+* A utility package (for utility functions shared by the SDK packages above):
+    * `@zowe/core-for-zowe-sdk`
 
 ### Zowe CLI Plugins
 
@@ -108,7 +106,7 @@ Packages may have interdependencies, meaning that they depend on other packages 
 
     A. @zowe/cli
     B. @zowe/zos-files-for-zowe-sdk
-    C. @zowe/utils-for-zowe-sdk
+    C. @zowe/core-for-zowe-sdk
 
 Package A depends on Package B, and Packages A and B both depend on Package C.
 

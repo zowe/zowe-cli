@@ -16,7 +16,7 @@ import * as fs from "fs";
 
 import { ImperativeError, IO, Session, IHeaderContent } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "../../../../src/doc/IZosFilesResponse";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import { IUploadOptions } from "../../../../src/methods/upload/doc/IUploadOptions";

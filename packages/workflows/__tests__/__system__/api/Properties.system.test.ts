@@ -19,7 +19,7 @@ import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import { IWorkflowInfo } from "../../../src/doc/IWorkflowInfo";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

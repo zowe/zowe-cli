@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@zowe/imperative": "4.7.4",
-    "@zowe/rest-for-zowe-sdk": "6.21.1",
     "string-width": "2.1.1"
   },
   "devDependencies": {

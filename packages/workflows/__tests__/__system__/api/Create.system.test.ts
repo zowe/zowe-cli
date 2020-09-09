@@ -28,7 +28,7 @@ import {
 } from "../../../src/WorkflowConstants";
 import { ICreatedWorkflowLocal } from "../../../src/doc/ICreatedWorkflowLocal";
 import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
