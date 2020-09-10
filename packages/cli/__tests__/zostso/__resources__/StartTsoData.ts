@@ -9,7 +9,7 @@
 *
 */
 
-import { IStartStopResponse } from "../../../zostso";
+import { IStartStopResponse } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Mocked data for start tso command.

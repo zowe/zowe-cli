@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-tso send group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/send/Send.definition").SendCommand;
+        const definition: ICommandDefinition = require("../../../../src/zostso/send/Send.definition").SendCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

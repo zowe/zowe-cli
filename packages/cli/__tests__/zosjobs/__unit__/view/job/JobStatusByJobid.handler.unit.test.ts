@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
+jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
-import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
-import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
-import * as JobStatusByJobidHandler from "../../../../src/view/job-status-by-jobid/JobStatusByJobid.handler";
-import * as JobStatusByJobidDefinition from "../../../../src/view/job-status-by-jobid/JobStatusByJobid.definition";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { GetJobsData } from "../../../__resources__/GetJobsData";
+import * as JobStatusByJobidHandler from "../../../../../src/zosjobs/view/job-status-by-jobid/JobStatusByJobid.handler";
+import * as JobStatusByJobidDefinition from "../../../../../src/zosjobs/view/job-status-by-jobid/JobStatusByJobid.definition";
 import { UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF,
     getMockedResponse

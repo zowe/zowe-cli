@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
+jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
-import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
-import { SpoolFilesByJobidDefinition } from "../../../../src/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
-import * as SpoolFilesHandler from "../../../../src/list/spool-files-by-jobid/SpoolFilesByJobid.handler";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { GetJobsData } from "../../../__resources__/GetJobsData";
+import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
+import * as SpoolFilesHandler from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.handler";
 import {
     UNIT_TEST_PROFILES_ZOSMF,
     getMockedResponse,

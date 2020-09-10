@@ -9,9 +9,9 @@
 *
 */
 
-import { Delete, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
-import VsamHandler from "../../../../src/delete/vsam/Vsam.handler";
-import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
+import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import VsamHandler from "../../../../../src/zosfiles/delete/vsam/Vsam.handler";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("VsamHandler", () => {
     const defaultReturn: IZosFilesResponse = {

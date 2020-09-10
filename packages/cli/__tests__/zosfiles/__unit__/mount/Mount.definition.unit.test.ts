@@ -9,13 +9,13 @@
 *
 */
 
-import i18nEnglish from "../../../src/-strings-/en";
-import { MountDefinition } from "../../../src/mount/Mount.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { MountDefinition } from "../../../../src/zosfiles/mount/Mount.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files mount group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/mount/Mount.definition").MountDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/mount/Mount.definition").MountDefinition;
 
         expect(definition).toBeDefined();
 

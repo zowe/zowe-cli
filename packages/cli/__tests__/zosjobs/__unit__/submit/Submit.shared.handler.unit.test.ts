@@ -9,14 +9,10 @@
 *
 */
 
-jest.mock("../../../../../../packages/zosjobs/src/MonitorJobs");
-import { IJob, MonitorJobs } from "../../../../../../packages/zosjobs";
-
-jest.mock("../../../../../../packages/zosjobs/src/SubmitJobs");
+jest.mock("@zowe/zos-jobs-for-zowe-sdk");
+import { IJob, MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@zowe/imperative";
-import { SubmitJobs } from "../../../../../../packages/zosjobs/src/SubmitJobs";
-import * as SubmitDefinition from "../../../src/submit/Submit.definition";
-import { ISubmitParms } from "../../../../../../packages/zosjobs/src/doc/input/ISubmitParms";
+import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
 
 process.env.FORCE_COLOR = "0";
 

@@ -9,9 +9,9 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../rest";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { CreateWorkflow } from "../../../workflows";
+import { CreateWorkflow } from "../../";
 import {
     WorkflowConstants,
     noSession,
@@ -25,7 +25,7 @@ import {
 import { ICreatedWorkflow } from "../../src/doc/ICreatedWorkflow";
 import { ICreateWorkflow } from "../../src/doc/ICreateWorkflow";
 import { IVariable } from "../../src/doc/IVariable";
-import { Upload, ZosFilesConstants, Delete } from "../../../zosfiles/src";
+import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk";
 
 const wfName = "Test-Workflow";
 const wfDefinitionFile = "/tmp/workflow.xml";

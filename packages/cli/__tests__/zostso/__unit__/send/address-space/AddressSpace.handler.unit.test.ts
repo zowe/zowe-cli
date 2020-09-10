@@ -9,13 +9,13 @@
 *
 */
 
-import { PingTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/PingTsoData";
+import { PingTsoData } from "../../../__resources__/PingTsoData";
 
-jest.mock("../../../../../../../packages/zostso/src/PingTso");
-import { SendTso } from "../../../../../../zostso";
+jest.mock("@zowe/zos-tso-for-zowe-sdk");
+import { SendTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
-import * as SendToAddressSpace from "../../../../src/send/address_space/SendToAddressSpace.handler";
-import { SendToAddressSpaceCommandDefinition } from "../../../../src/send/address_space/SendToAddressSpace.definition";
+import * as SendToAddressSpace from "../../../../../src/zostso/send/address_space/SendToAddressSpace.handler";
+import { SendToAddressSpaceCommandDefinition } from "../../../../../src/zostso/send/address_space/SendToAddressSpace.definition";
 
 const ZOSMF_PROF_OPTS = {
     host: "somewhere.com",

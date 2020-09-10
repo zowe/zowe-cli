@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create pds command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/create/pds/Pds.definition").PdsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/create/pds/Pds.definition").PdsDefinition;
 
         expect(definition).toBeDefined();
 

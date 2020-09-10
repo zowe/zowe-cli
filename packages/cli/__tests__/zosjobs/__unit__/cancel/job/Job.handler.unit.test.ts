@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
+jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
-import { GetJobs, CancelJobs } from "../../../../../../../packages/zosjobs/";
-import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
-import * as JobHandler from "../../../../src/cancel/job/Job.handler";
-import * as JobDefinition from "../../../../src/cancel/job/Job.definition";
+import { GetJobs, CancelJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { GetJobsData } from "../../../__resources__/GetJobsData";
+import * as JobHandler from "../../../../../src/zosjobs/cancel/job/Job.handler";
+import * as JobDefinition from "../../../../../src/zosjobs/cancel/job/Job.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,

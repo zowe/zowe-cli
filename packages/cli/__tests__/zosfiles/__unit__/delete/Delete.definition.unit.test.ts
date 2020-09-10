@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/-strings-/en";
-import { DeleteDefinition } from "../../../src/delete/Delete.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { DeleteDefinition } from "../../../../src/zosfiles/delete/Delete.definition";
 
 describe("DeleteDefinition", () => {
     it("should be using the correct string field in the object", () => {

@@ -14,10 +14,10 @@ import * as path from "path";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ZosFilesConstants } from "../../../../../index";
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { startCmdFlag } from "../../../../../../packages/zosuss/src/Shell";
+import { startCmdFlag } from "@zowe/zos-uss-for-zowe-sdk";
 
 
 // Test environment will be populated in the "beforeAll"

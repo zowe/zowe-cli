@@ -9,11 +9,10 @@
 *
 */
 
-import { List } from "../../../../../../../packages/zosfiles/src/methods/list";
+import { List, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import UssFileHandler from "../../../../src/list/uss/UssFile.handler";
-import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
-import { IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
+import UssFileHandler from "../../../../../src/zosfiles/list/uss/UssFile.handler";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("USS file handler", () => {
     describe("process method", () => {

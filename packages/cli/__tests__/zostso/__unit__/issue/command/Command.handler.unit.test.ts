@@ -9,14 +9,14 @@
 *
 */
 
-import { PingTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/PingTsoData";
+import { PingTsoData } from "../../../__resources__/PingTsoData";
 
-jest.mock("../../../../../../../packages/zostso/src/PingTso");
-import { IssueTso } from "../../../../../../zostso";
+jest.mock("@zowe/zos-tso-for-zowe-sdk");
+import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import * as Command from "../../../../src/issue/command/Command.handler";
-import { CommandDefinition } from "../../../../src/issue/command/Command.definition";
-import { StartTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/StartTsoData";
+import * as Command from "../../../../../src/zostso/issue/command/Command.handler";
+import { CommandDefinition } from "../../../../../src/zostso/issue/command/Command.definition";
+import { StartTsoData } from "../../../__resources__/StartTsoData";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,

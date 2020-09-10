@@ -9,10 +9,9 @@
 *
 */
 
-import { Unmount, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src/";
-import FsHandler from "../../../../src/unmount/fs/fs.handler";
-import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
+import { Unmount, IZosFilesResponse, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
+import FsHandler from "../../../../../src/zosfiles/unmount/fs/fs.handler";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("FsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

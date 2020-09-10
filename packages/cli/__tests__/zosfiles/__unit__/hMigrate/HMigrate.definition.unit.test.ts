@@ -9,13 +9,13 @@
 *
 */
 
-import i18nEnglish from "../../../src/-strings-/en";
-import { HMigrateDefinition } from "../../../src/hMigrate/HMigrate.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { HMigrateDefinition } from "../../../../src/zosfiles/hMigrate/HMigrate.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files migrate group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/hMigrate/HMigrate.definition").HMigrateDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/hMigrate/HMigrate.definition").HMigrateDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.options).toBeUndefined();

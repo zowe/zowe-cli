@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../../../packages/zosuss/src/Shell.ts");
+jest.mock("@zowe/zos-uss-for-zowe-sdk");
 import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative";
-import * as SshHandler from "../../../../src/issue/ssh/Ssh.handler";
-import * as SshDefinition from "../../../../src/issue/ssh/Ssh.definition";
+import * as SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
+import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";
 import { getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { Shell } from "../../../../../../../packages/zosuss/src";
+import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 
 process.env.FORCE_COLOR = "0";
 

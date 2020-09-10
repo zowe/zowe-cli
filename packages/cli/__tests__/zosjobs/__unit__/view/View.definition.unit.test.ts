@@ -15,7 +15,7 @@ const VIEW_CHILDREN: number = 2;
 
 describe("zos-jobs view group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/view/View.definition").ViewDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosjobs/view/View.definition").ViewDefinition;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(VIEW_CHILDREN);
         delete definition.children;

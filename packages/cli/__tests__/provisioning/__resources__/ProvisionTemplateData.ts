@@ -9,7 +9,7 @@
 *
 */
 
-import { IProvisionTemplateResponse } from "../../../";
+import { IProvisionTemplateResponse } from "@zowe/provisioning-for-zowe-sdk";
 
 /**
  * Mocked data for provision commands

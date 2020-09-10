@@ -9,25 +9,24 @@
 *
 */
 
-import { IStartStopResponse } from "../../../zostso";
+import { IPingResponse } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
- * Mocked data for stop tso command.
- * @class StopTsoData
+ * Mocked data for ping tso command.
+ * @class PingTsoData
  */
-export class StopTsoData {
+export class PingTsoData {
 
     /**
-     * Mocked data for stop address-space.
-     * @type {IStartStopResponse}
-     * @memberOf StopTsoData
+     * Mocked data for ping address-space.
+     * @type {IPingResponse}
+     * @memberOf PingTsoData
      */
-    public static readonly SAMPLE_STOP_RESPONSE: IStartStopResponse = {
+    public static readonly SAMPLE_PING_RESPONSE: IPingResponse = {
         success: true,
-        zosmfTsoResponse:
+        zosmfPingResponse:
             {
                 servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
-                queueID: "4",
                 ver: "0100",
                 reused: false,
                 timeout: false
