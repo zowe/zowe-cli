@@ -23,7 +23,7 @@ There are 3 types of packages:
     * `@zowe/zos-jobs-for-zowe-sdk` - z/OSMF jobs APIs
     * `@zowe/cics-for-zowe-sdk` - CICS CMCI APIs
 * Utility - Package that provides utility functions which are shared by multiple SDK packages. Examples:
-    * `@zowe/core-for-zowe-sdk` - REST client for z/OSMF APIs
+    * `@zowe/core-for-zowe-sdk` - REST client, auth handler, and utility function provider for z/OSMF APIs
 
 ### Zowe CLI
 
