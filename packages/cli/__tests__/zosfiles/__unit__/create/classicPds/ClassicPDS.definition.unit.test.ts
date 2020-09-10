@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create classic command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/create/classicPds/ClassicPDS.definition").ClassicPDSDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/create/classicPds/ClassicPDS.definition").ClassicPDSDefinition;
 
         expect(definition).toBeDefined();
 

@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning provision command group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/provision/Provision.definition").ProvisionCommand;
+        const definition: ICommandDefinition = require("../../../../src/provisioning/provision/Provision.definition").ProvisionCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

@@ -17,7 +17,7 @@ describe("Create PDS data set handler", () => {
     describe("process method", () => {
         it("should create a PDS data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/create/pds/Pds.handler");
+            const handlerReq = require("../../../../../src/zosfiles/create/pds/Pds.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 

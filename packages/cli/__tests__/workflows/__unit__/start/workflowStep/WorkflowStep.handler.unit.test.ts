@@ -26,7 +26,7 @@ describe("Start workflow common handler", () => {
 
         it("should start a workflow using workflow key", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/start/workflowStep/WorkflowStep.handler");
+            const handlerReq = require("../../../../../src/workflows/start/workflowStep/WorkflowStep.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 
@@ -90,7 +90,7 @@ describe("Start workflow common handler", () => {
 
         it("should start a workflow using workflow name", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/start/workflowStep/WorkflowStep.handler");
+            const handlerReq = require("../../../../../src/workflows/start/workflowStep/WorkflowStep.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-workflow-name";
@@ -163,7 +163,7 @@ describe("Start workflow common handler", () => {
             const performFollowingSteps = true;
             const resolveConflict: startT = "outputFileValue";
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/start/workflowStep/WorkflowStep.handler");
+            const handlerReq = require("../../../../../src/workflows/start/workflowStep/WorkflowStep.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
 

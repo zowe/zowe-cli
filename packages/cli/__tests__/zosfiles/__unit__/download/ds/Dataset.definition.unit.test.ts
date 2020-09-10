@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files download ds command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/download/ds/Dataset.definition").DatasetDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/download/ds/Dataset.definition").DatasetDefinition;
 
         expect(definition).toBeDefined();
 

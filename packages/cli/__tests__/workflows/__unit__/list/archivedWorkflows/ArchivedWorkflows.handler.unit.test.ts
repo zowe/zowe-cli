@@ -16,7 +16,7 @@ describe("List archived workflows common handler", () => {
     describe("process method", () => {
         it("should list all archived workflows", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/list/archivedWorkflows/ArchivedWorkflows.handler");
+            const handlerReq = require("../../../../../src/workflows/list/archivedWorkflows/ArchivedWorkflows.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
             const workflowName = "fake-name";

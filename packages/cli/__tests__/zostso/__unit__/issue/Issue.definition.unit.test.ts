@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-tso issue group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/issue/Issue.definition").IssueCommand;
+        const definition: ICommandDefinition = require("../../../../src/zostso/issue/Issue.definition").IssueCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

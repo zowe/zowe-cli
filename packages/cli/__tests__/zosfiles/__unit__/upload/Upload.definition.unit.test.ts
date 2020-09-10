@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files upload group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/upload/Upload.definition").UploadDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/upload/Upload.definition").UploadDefinition;
 
         expect(definition).toBeDefined();
 

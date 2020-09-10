@@ -17,7 +17,7 @@ import { IJob } from "../../src/doc/response/IJob";
 import { MonitorJobs } from "../../src/MonitorJobs";
 
 jest.mock("../../src/GetJobs");
-jest.mock("@zowe/core-for-zowe-cli");
+jest.mock("@zowe/core-for-zowe-sdk");
 
 describe("MonitorJobs", () => {
     // Use this so that editors don't complain about us accessing private stuff

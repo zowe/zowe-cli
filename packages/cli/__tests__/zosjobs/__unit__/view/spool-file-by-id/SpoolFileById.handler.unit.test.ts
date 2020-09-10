@@ -21,7 +21,7 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../..
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
-const TEST_RESOURCES_DIR = __dirname + "../../../__resources__";
+const TEST_RESOURCES_DIR = __dirname + "/../../../__resources__";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {

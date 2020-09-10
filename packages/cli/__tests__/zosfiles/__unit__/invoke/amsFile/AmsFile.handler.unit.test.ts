@@ -16,7 +16,7 @@ import { IZosFilesOptions } from "../../../../../../../packages/zosfiles/src/doc
 describe("Invoke AMS files handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../src/invoke/amsFile/AmsFile.handler");
+        const handlerReq = require("../../../../../src/zosfiles/invoke/amsFile/AmsFile.handler");
         const handler = new handlerReq.default();
         let fakeSession: any = null;
 

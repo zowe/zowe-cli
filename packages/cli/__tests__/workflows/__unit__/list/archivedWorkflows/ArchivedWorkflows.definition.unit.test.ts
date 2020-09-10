@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-workflows list archived workflows definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/list/archivedWorkflows/ArchivedWorkflows.definition").ArchivedWorkflows;
+            = require("../../../../../src/workflows/list/archivedWorkflows/ArchivedWorkflows.definition").ArchivedWorkflows;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

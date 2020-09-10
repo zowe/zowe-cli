@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-workflows start workflow-step definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/start/workflowStep/WorkflowStep.definition").WorkflowStep;
+            = require("../../../../../src/workflows/start/workflowStep/WorkflowStep.definition").WorkflowStep;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

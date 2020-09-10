@@ -13,7 +13,7 @@ import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 
 describe("zos-files unmount fs command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/unmount/fs/fs.definition").FsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/unmount/fs/fs.definition").FsDefinition;
 
         expect(definition).toBeDefined();
 
