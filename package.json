@@ -44,7 +44,8 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "build": "gulp updateLicense && tsc --pretty && npm run lint && npm run checkTestsCompile && madge -c lib",
+    "build": "gulp updateLicense && npm run clean && lerna run build && npm run lint && npm run checkTestsCompile && madge -c lib",
+    "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
     "postinstall": "node ./scripts/validatePlugins",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",

@@ -31,7 +31,7 @@
     "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\""
   },
   "dependencies": {
-    "@zowe/imperative": "4.7.4",
+    "@zowe/imperative": "4.8.1",
     "string-width": "2.1.1"
   },
   "devDependencies": {

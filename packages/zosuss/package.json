@@ -31,7 +31,7 @@
     "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\""
   },
   "dependencies": {
-    "@zowe/imperative": "4.7.4",
+    "@zowe/imperative": "4.8.1",
     "ssh2": "0.8.7"
   },
   "devDependencies": {

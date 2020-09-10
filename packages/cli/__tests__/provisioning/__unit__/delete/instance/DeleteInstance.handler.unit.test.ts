@@ -11,9 +11,9 @@
 
 jest.mock("../../../../../../../packages/provisioning/src/ProvisionPublishedTemplate");
 import { IHandlerParameters } from "@zowe/imperative";
-import * as DeleteInstanceHandler from "../../../../src/delete/instance/DeleteInstance.handler";
-import * as DeleteInstanceDefinition from "../../../../src/delete/instance/DeleteInstance.definition";
-import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
+import * as DeleteInstanceHandler from "../../../../../src/provisioning/delete/instance/DeleteInstance.handler";
+import * as DeleteInstanceDefinition from "../../../../../src/provisioning/delete/instance/DeleteInstance.definition";
+import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";
 import {
     DeleteInstance,
     ListRegistryInstances,
