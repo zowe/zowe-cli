@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfRestClient } from "../../src/ZosmfRestClient";
+import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
 import { IImperativeError, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {

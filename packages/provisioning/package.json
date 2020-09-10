@@ -33,7 +33,7 @@
   "dependencies": {
     "@zowe/imperative": "4.7.4",
     "js-yaml": "3.13.1",
-    "@zowe/rest-for-zowe-sdk": "6.21.1"
+    "@zowe/core-for-zowe-sdk": "6.21.1"
   },
   "devDependencies": {
     "rimraf": "^2.6.3",

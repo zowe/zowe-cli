@@ -11,9 +11,9 @@
 
 import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IJobFile } from "../../";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
-jest.mock("@zowe/rest-for-zowe-sdk/src/ZosmfRestClient");
+jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/GetJobs");
 
 // unit tests for DownloadJobs API

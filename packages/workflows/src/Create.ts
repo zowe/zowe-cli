@@ -11,7 +11,7 @@
 
 
 import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import {
     WorkflowConstants,
     nozOSMFVersion,

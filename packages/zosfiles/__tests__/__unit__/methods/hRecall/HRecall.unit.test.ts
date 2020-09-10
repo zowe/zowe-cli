@@ -13,7 +13,7 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { ZosFilesConstants, ZosFilesMessages, HRecall } from "../../../..";
 
-import { ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IRecallOptions } from "../../../../src";
 
 describe("hRecall data set", () => {

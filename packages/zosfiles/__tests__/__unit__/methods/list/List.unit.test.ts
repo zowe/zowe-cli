@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { List } from "../../../../src/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { posix } from "path";

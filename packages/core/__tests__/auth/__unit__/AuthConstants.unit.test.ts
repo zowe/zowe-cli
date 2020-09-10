@@ -9,9 +9,9 @@
 *
 */
 
-import { LoginConstants } from "../../src/LoginConstants";
-import { LogoutConstants } from "../../src/LogoutConstants";
-import { inspect } from "../../../../__tests__/__src__/TestUtils";
+import { LoginConstants } from "../../../src/auth/LoginConstants";
+import { LogoutConstants } from "../../../src/auth/LogoutConstants";
+import { inspect } from "../../../../../__tests__/__src__/TestUtils";
 
 describe("LoginConstants Unit Test", () => {
     it("Should not have changed", () => {

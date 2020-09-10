@@ -11,7 +11,7 @@
 
 import { IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/rest-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
 import { posix } from "path";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";

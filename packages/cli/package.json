@@ -31,7 +31,7 @@
     "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\""
   },
   "dependencies": {
-    "@zowe/auth-for-zowe-sdk": "6.21.1",
+    "@zowe/core-for-zowe-sdk": "6.21.1",
     "@zowe/imperative": "4.7.4",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "6.21.1",
