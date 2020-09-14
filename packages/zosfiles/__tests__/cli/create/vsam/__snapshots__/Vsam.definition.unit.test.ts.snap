@@ -13,6 +13,7 @@ Array [
   Object {
     "aliases": Array [
       "dso",
+      "dsorg",
     ],
     "allowableValues": Object {
       "caseSensitive": false,
