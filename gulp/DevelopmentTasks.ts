@@ -61,7 +61,10 @@ lint.description = "Runs tslint on the project to check for style, " +
 
 const license: ITaskFunction = (done: (err: Error) => void) => {
     // process all typescript files
-    require("glob")("{__mocks__,packages,gulp,__tests__,jenkins}{/**/*.js,/**/*.ts}", (globErr: any, filePaths: string[]) => {
+    require("glob")(
+      "{__mocks__,packages,gulp,__tests__,jenkins}{/**/*.js,/**/*.ts}",
+      {"ignore":['**/node_modules/**','**/lib/**']},
+      (globErr: any, filePaths: string[]) => {
         if (globErr) {
             done(globErr);
             return;
@@ -153,7 +156,7 @@ const doc: ITaskFunction = async () => {
         } else {
             anchorTag = definition.name;
         }
-        
+
         tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel), commandNameSummary, anchorTag.trim());
 
         markdownContent += util.format("#%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), commandNameSummary, anchorTag.trim());
@@ -174,7 +177,7 @@ const doc: ITaskFunction = async () => {
             } else {
                 childAnchorTag = `${definition.name}-${child.name.replace(/\s/g, "-")}`;
             }
-            
+
             let childNameSummary = child.name;
             if (child.experimental) {
                 childNameSummary += " (experimental)";
