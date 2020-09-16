@@ -9,13 +9,9 @@
 *
 */
 
-import {
-    IZosFilesResponse,
-    HMigrate
-} from "../../../../../../../packages/zosfiles/src";
-import DSHandler from "../../../../src/hMigrate/ds/Ds.handler";
-import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
-import { IMigrateOptions } from "../../../../../../../packages/zosfiles/src/methods/hMigrate/doc/IMigrateOptions";
+import { IZosFilesResponse, HMigrate, IMigrateOptions } from "@zowe/zos-files-for-zowe-sdk";
+import DSHandler from "../../../../../src/zosfiles/hMigrate/ds/Ds.handler";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

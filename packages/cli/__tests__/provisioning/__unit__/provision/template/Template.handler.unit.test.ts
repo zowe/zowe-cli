@@ -9,15 +9,15 @@
 *
 */
 
-jest.mock("../../../../../../../packages/provisioning/src/ProvisionPublishedTemplate");
+jest.mock("@zowe/provisioning-for-zowe-sdk");
 import {
     ProvisioningConstants,
     ProvisionPublishedTemplate
-} from "../../../../../../provisioning";
-import { ProvisionTemplateData } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisionTemplateData";
+} from "@zowe/provisioning-for-zowe-sdk";
+import { ProvisionTemplateData } from "../../../__resources__/ProvisionTemplateData";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import * as TemplateHandler from "../../../../src/provision/template/Template.handler";
-import * as TemplateDefinition from "../../../../src/provision/template/Template.definition";
+import * as TemplateHandler from "../../../../../src/provisioning/provision/template/Template.handler";
+import * as TemplateDefinition from "../../../../../src/provisioning/provision/template/Template.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF,

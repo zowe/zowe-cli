@@ -9,18 +9,17 @@
 *
 */
 
-import { ListRegistryInstances } from "../../../../../../../packages/provisioning/index";
 
-jest.mock("../../../../../../../packages/provisioning/src/ListInstanceInfo");
-import { ListInstanceInfo } from "../../../../../../provisioning";
+jest.mock("@zowe/provisioning-for-zowe-sdk");
+import { ListInstanceInfo, ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
 import {
     CommandProfiles,
     IHandlerParameters,
     IProfile
 } from "@zowe/imperative";
-import * as Handler from "../../../../src/list/instanceInfo/InstanceInfo.handler";
-import { instanceInfo } from "../../../../src/list/instanceInfo/InstanceInfo.definition";
-import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
+import * as Handler from "../../../../../src/provisioning/list/instanceInfo/InstanceInfo.handler";
+import { instanceInfo } from "../../../../../src/provisioning/list/instanceInfo/InstanceInfo.definition";
+import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,

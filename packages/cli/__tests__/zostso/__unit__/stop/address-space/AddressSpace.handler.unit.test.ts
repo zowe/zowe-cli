@@ -9,12 +9,12 @@
 *
 */
 
-jest.mock("../../../../../../../packages/zostso/src/StopTso");
-import { StopTso } from "../../../../../../zostso";
-import { StopTsoData } from "../../../../../../../packages/zostso/__tests__/__resources__/StopTsoData";
+jest.mock("@zowe/zos-tso-for-zowe-sdk");
+import { StopTso } from "@zowe/zos-tso-for-zowe-sdk";
+import { StopTsoData } from "../../../__resources__/StopTsoData";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
-import * as AddressSpaceHandler from "../../../../src/stop/address-space/AddressSpace.handler";
-import * as AddressSpaceDefinition from "../../../../src/stop/address-space/AddressSpace.definition";
+import * as AddressSpaceHandler from "../../../../../src/zostso/stop/address-space/AddressSpace.handler";
+import * as AddressSpaceDefinition from "../../../../../src/zostso/stop/address-space/AddressSpace.definition";
 
 const ZOSMF_PROF_OPTS = {
     host: "somewhere.com",

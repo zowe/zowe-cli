@@ -13,7 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning list registry instances definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/list/registry/RegistryInstances.definition").registryInstances;
+        const definition: ICommandDefinition = require("../../../../../src/provisioning/list/registry/RegistryInstances.definition")
+            .registryInstances;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

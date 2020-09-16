@@ -19,7 +19,7 @@ describe("Create VSAM data set handler", () => {
     describe("process method", () => {
         it("should create a VSAM data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/create/vsam/vsam.handler");
+            const handlerReq = require("../../../../../src/zosfiles/create/vsam/vsam.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 
@@ -103,7 +103,7 @@ describe("Create VSAM data set handler", () => {
 
     it("should raise an error", async () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../src/create/vsam/vsam.handler");
+        const handlerReq = require("../../../../../src/zosfiles/create/vsam/vsam.handler");
         const handler = new handlerReq.default();
         const dataSetName = "testing";
 

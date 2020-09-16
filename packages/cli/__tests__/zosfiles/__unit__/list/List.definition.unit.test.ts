@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files list group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/list/List.definition").ListDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/list/List.definition").ListDefinition;
 
         expect(definition).toBeDefined();
 

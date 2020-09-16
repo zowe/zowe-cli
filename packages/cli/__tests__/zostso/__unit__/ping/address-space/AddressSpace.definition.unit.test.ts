@@ -14,7 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-tso ping address-space definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require
-        ("../../../../src/ping/address_space/PingAddressSpace.definition").PingAddressSpaceCommandDefinition;
+        ("../../../../../src/zostso/ping/address_space/PingAddressSpace.definition").PingAddressSpaceCommandDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

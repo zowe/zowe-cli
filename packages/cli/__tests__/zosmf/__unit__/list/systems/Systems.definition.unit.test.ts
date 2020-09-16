@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zosmf list systems definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/list/systems/Systems.definition").SystemsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosmf/list/systems/Systems.definition").SystemsDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         expect(definition).toMatchSnapshot();

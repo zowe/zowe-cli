@@ -9,9 +9,9 @@
 *
 */
 
-import { Delete, IZosFilesResponse } from "../../../../../../../packages/zosfiles/src";
-import DsHandler from "../../../../src/delete/ds/Ds.handler";
-import { ZosFilesBaseHandler } from "../../../../src/ZosFilesBase.handler";
+import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import DsHandler from "../../../../../src/zosfiles/delete/ds/Ds.handler";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

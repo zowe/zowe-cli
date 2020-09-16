@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/-strings-/en";
-import { CopyDefinition } from "../../../src/copy/Copy.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { CopyDefinition } from "../../../../src/zosfiles/copy/Copy.definition";
 
 describe("Copy Definition", () => {
     it("should be using the correct string field in the object", () => {

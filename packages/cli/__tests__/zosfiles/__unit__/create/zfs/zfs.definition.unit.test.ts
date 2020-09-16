@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create zfs command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/create/zfs/zfs.definition").ZfsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/create/zfs/zfs.definition").ZfsDefinition;
 
         expect(definition).toBeDefined();
 

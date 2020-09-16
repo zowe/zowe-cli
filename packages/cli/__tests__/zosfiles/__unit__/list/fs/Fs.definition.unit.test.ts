@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files list fs command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/list/fs/Fs.definition").FsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/list/fs/Fs.definition").FsDefinition;
 
         expect(definition).toBeDefined();
 

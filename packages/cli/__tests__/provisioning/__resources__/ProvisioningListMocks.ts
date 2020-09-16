@@ -9,7 +9,7 @@
 *
 */
 
-import { IProvisionedInstances, IPublishedTemplates } from "../../../";
+import { IProvisionedInstances, IPublishedTemplates } from "@zowe/provisioning-for-zowe-sdk";
 /**
  * Mocked data for provision list commands
  * @class ProvisioningListMocks

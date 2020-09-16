@@ -9,16 +9,16 @@
 *
 */
 
-import { ListRegistryInstances } from "../../../../../../provisioning";
+import { ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
 import {
     CommandProfiles,
     IHandlerParameters,
     IProfile
 } from "@zowe/imperative";
-import * as Handler from "../../../../src/list/registry/RegistryInstances.handler";
-import { registryInstances } from "../../../../src/list/registry/RegistryInstances.definition";
+import * as Handler from "../../../../../src/provisioning/list/registry/RegistryInstances.handler";
+import { registryInstances } from "../../../../../src/provisioning/list/registry/RegistryInstances.definition";
 
-jest.mock("../../../../../../../packages/provisioning/src/ListCatalogTemplates");
+jest.mock("@zowe/provisioning-for-zowe-sdk");
 
 const ZOSMF_PROF_OPTS = {
     host: "somewhere.com",

@@ -9,12 +9,10 @@
 *
 */
 
-import {
-    DownloadJobs,
-    IDownloadAllSpoolContentParms
-} from "../../../../../../index";
+import { DownloadJobs, IDownloadAllSpoolContentParms, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { GetJobsData } from "../../../__resources__/GetJobsData";
 
-jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
+jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import {
     CommandProfiles,
     IHandlerParameters,
@@ -22,10 +20,8 @@ import {
     IProfile,
     Session
 } from "@zowe/imperative";
-import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
-import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
-import * as OutputHandler from "../../../../src/download/download-output/Output.handler";
-import * as OutputDefinition from "../../../../src/download/download-output/Output.definition";
+import * as OutputHandler from "../../../../../src/zosjobs/download/download-output/Output.handler";
+import * as OutputDefinition from "../../../../../src/zosjobs/download/download-output/Output.definition";
 
 process.env.FORCE_COLOR = "0";
 

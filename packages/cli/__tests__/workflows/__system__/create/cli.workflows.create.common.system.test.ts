@@ -9,16 +9,14 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { DeleteWorkflow } from "../../../../../../packages/workflows";
+import { DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
-import { Create, CreateDataSetTypeEnum } from "../../../../../../packages/zosfiles/src/methods/create";
-import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src";
+import { Upload, Create, CreateDataSetTypeEnum, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
 let REAL_SESSION: Session;

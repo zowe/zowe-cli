@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs cancel definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cancel/Cancel.definition").CancelDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosjobs/cancel/Cancel.definition").CancelDefinition;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

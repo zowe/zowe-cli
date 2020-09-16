@@ -16,7 +16,7 @@ describe("Download uss file handler", () => {
     describe("process method", () => {
         it("should download an uss file if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/download/uss/UssFile.handler");
+            const handlerReq = require("../../../../../src/zosfiles/download/uss/UssFile.handler");
             const handler = new handlerReq.default();
             const ussFileName = "testing";
 

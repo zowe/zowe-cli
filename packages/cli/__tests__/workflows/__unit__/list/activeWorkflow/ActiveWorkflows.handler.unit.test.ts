@@ -32,7 +32,7 @@ describe("List workflows handler", () => {
         const statusName = "canceled";
         it("should list workflows", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/list/activeWorkflows/ActiveWorkflows.handler");
+            const handlerReq = require("../../../../../src/workflows/list/activeWorkflows/ActiveWorkflows.handler");
             const handler = new handlerReq.default();
 
 

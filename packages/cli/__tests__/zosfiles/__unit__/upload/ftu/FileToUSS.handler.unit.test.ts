@@ -16,7 +16,7 @@ describe("Upload file-to-uss handler", () => {
     describe("process method", () => {
         it("should upload a file to a uss if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/upload/ftu/FileToUSS.handler");
+            const handlerReq = require("../../../../../src/zosfiles/upload/ftu/FileToUSS.handler");
             const handler = new handlerReq.default();
             const inputfile = "test-file";
             const USSFileName = "testing";

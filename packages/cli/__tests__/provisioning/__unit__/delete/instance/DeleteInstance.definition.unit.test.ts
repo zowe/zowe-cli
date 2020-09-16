@@ -13,7 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning delete instance command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/delete/instance/DeleteInstance.definition").DeleteInstanceDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/provisioning/delete/instance/DeleteInstance.definition")
+            .DeleteInstanceDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

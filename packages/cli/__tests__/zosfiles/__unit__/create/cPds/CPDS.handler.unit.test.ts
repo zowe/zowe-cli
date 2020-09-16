@@ -17,7 +17,7 @@ describe("Create C-code PDS data set handler", () => {
     describe("process method", () => {
         it("should create a C-code PDS data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/create/cPds/CPDS.handler");
+            const handlerReq = require("../../../../../src/zosfiles/create/cPds/CPDS.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
 

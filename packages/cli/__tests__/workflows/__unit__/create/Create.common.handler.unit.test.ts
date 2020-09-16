@@ -42,7 +42,7 @@ describe("Create workflow common handler", () => {
         const overwrite = true;
         it("should create a workflow using a dataset", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/create/Create.common.handler");
+            const handlerReq = require("../../../../src/workflows/create/Create.common.handler");
             const handler = new handlerReq.default();
 
 
@@ -150,7 +150,7 @@ describe("Create workflow common handler", () => {
         });
         it("should create a workflow using a uss file", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/create/Create.common.handler");
+            const handlerReq = require("../../../../src/workflows/create/Create.common.handler");
             const handler = new handlerReq.default();
 
 
@@ -241,7 +241,7 @@ describe("Create workflow common handler", () => {
         });
         it("should create a workflow using a local file", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/create/Create.common.handler");
+            const handlerReq = require("../../../../src/workflows/create/Create.common.handler");
             const handler = new handlerReq.default();
 
 
@@ -336,7 +336,7 @@ describe("Create workflow common handler", () => {
         });
         it("should fail if definition file is not a uss file or dataset", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../src/create/Create.common.handler");
+            const handlerReq = require("../../../../src/workflows/create/Create.common.handler");
             const handler = new handlerReq.default();
 
 

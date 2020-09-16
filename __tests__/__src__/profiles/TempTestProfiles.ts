@@ -15,7 +15,7 @@
 import { ITestEnvironment } from "../environment/doc/response/ITestEnvironment";
 import { ImperativeError, IO } from "@zowe/imperative";
 import { runCliScript } from "../TestUtils";
-import { Constants } from "../../../packages/Constants";
+import { Constants } from "../../../packages/cli/src/Constants";
 import * as fs from "fs";
 
 const uuidv4 = require("uuid");

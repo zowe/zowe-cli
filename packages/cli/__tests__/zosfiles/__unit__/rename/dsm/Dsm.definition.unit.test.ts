@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/-strings-/en";
-import { DsmDefinition } from "../../../../src/rename/dsm/Dsm.definition";
+import i18nEnglish from "../../../../../src/zosfiles/-strings-/en";
+import { DsmDefinition } from "../../../../../src/zosfiles/rename/dsm/Dsm.definition";
 
 describe("DsmDefinition", () => {
     it("should use the correct object for strings", () => {

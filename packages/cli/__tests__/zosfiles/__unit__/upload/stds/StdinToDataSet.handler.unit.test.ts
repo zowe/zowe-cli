@@ -16,7 +16,7 @@ describe("Upload stdin-to-data-set handler", () => {
     describe("process method", () => {
         it("should upload a file to a data set if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/upload/stds/StdinToDataSet.handler");
+            const handlerReq = require("../../../../../src/zosfiles/upload/stds/StdinToDataSet.handler");
             const handler = new handlerReq.default();
             const inputBuffer = Buffer.from("test-data");
             const dataSetName = "testing";

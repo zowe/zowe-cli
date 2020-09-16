@@ -32,7 +32,7 @@
     "circularDependencyCheck": "madge -c lib"
   },
   "dependencies": {
-    "@zowe/imperative": "4.7.4",
+    "@zowe/imperative": "4.8.1",
     "@zowe/core-for-zowe-sdk": "6.21.1"
   },
   "devDependencies": {

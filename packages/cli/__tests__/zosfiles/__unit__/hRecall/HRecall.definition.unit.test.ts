@@ -9,13 +9,13 @@
 *
 */
 
-import i18nEnglish from "../../../src/-strings-/en";
-import { HRecallDefinition } from "../../../src/hRecall/HRecall.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { HRecallDefinition } from "../../../../src/zosfiles/hRecall/HRecall.definition";
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files recall group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/hRecall/HRecall.definition").HRecallDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/hRecall/HRecall.definition").HRecallDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.options).toBeUndefined();

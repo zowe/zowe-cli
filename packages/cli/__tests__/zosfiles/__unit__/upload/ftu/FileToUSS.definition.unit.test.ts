@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files upload ftu command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/upload/ftu/FileToUSS.definition").FileToUSSDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/upload/ftu/FileToUSS.definition").FileToUSSDefinition;
 
         expect(definition).toBeDefined();
 

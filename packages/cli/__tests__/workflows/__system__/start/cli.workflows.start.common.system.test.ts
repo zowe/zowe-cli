@@ -9,20 +9,15 @@
 *
 */
 
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session, Imperative } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow } from "../../../../../../packages/workflows";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../../../packages/zosfiles/src/methods/upload";
-import { ZosFilesConstants } from "../../../../../../packages/zosfiles/src";
+import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
-import { startT } from "../../../../../../packages/workflows/src/doc/IStartWorkflow";
-import { IWorkflowInfo } from "../../../../../../packages/workflows/src/doc/IWorkflowInfo";
-import { WorkflowConstants } from "../../../../../../packages/workflows/src/WorkflowConstants";
-import { IStepInfo } from "../../../../../../packages/workflows/src/doc/IStepInfo";
+import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow, startT, IWorkflowInfo, WorkflowConstants, IStepInfo } from "@zowe/zos-workflows-for-zowe-sdk";
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";
