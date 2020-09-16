@@ -29,7 +29,7 @@ import { ZosFilesOptions } from "./zosfiles/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
-    commandModuleGlobs: ["**/cli/*.definition!(.d).*s"],
+    commandModuleGlobs: ["**/*.definition!(.d).*s"],
     rootCommandDescription: Constants.DESCRIPTION,
     defaultHome: Constants.HOME_DIR,
     envVariablePrefix: Constants.ENV_PREFIX,
@@ -110,7 +110,7 @@ const config: IImperativeConfig = {
         authConfig: [
             {
                 serviceName: "apiml",
-                handler: __dirname + "/auth/src/cli/ApimlAuthHandler",
+                handler: __dirname + "/auth/ApimlAuthHandler",
                 login: {
                     summary: Constants.APIML_LOGIN_SUMMARY,
                     description: Constants.APIML_LOGIN_DESCRIPTION,

@@ -14,8 +14,8 @@
     "url": "https://github.com/zowe/zowe-cli.git"
   },
   "bin": {
-    "bright": "./lib/main.js",
-    "zowe": "./lib/main.js"
+    "bright": "./packages/cli/lib/main.js",
+    "zowe": "./packages/cli/lib/main.js"
   },
   "keywords": [
     "zosmf",
@@ -40,8 +40,8 @@
   "imperative": {
     "configurationModule": "lib/imperative.js"
   },
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "packages/cli/lib/index.js",
+  "typings": "packages/cli/lib/index.d.ts",
   "scripts": {
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
     "build": "gulp updateLicense && npm run clean && lerna run build && npm run lint && npm run checkTestsCompile && madge -c lib",
@@ -55,9 +55,9 @@
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
-    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.integration\\.(spec|test)\\.ts\" --coverage false",
-    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.system\\.(spec|test)\\.ts\" --coverage false",
-    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.unit\\.(spec|test)\\.ts\" --coverage",
+    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\" --coverage false",
+    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\" --coverage false",
+    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\" --coverage",
     "watch": "tsc --pretty --watch",
     "watch:test": "jest --watch",
     "typedoc": "typedoc --options ./typedoc.json ./packages/",
