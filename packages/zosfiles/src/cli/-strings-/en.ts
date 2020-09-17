@@ -401,7 +401,8 @@ export default {
                 EXAMPLES: {
                     EX1: `Show members of the data set "ibmuser.asm"`,
                     EX2: `Show attributes of members of the data set "ibmuser.cntl"`,
-                    EX3: `Show the first 5 members of the data set "ibmuser.cntl"`
+                    EX3: `Show the first 5 members of the data set "ibmuser.cntl"`,
+                    EX4: `Show the first 4 members of the data set "ibmuser.cntl" matching an input pattern"`
                 }
             },
             DATA_SET: {
