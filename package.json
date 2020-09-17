@@ -130,11 +130,6 @@
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
-    "reporters": [
-      "default",
-      "jest-stare",
-      "jest-junit"
-    ],
     "testResultsProcessor": "jest-stare",
     "transform": {
       ".(ts)": "ts-jest"
