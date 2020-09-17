@@ -170,6 +170,6 @@
     ]
   },
   "jest-junit": {
-    "outputDirectory": "__tests__/__results__/"
+    "outputDirectory": "__tests__/__results__/ci/unit/"
   }
 }
