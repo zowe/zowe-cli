@@ -3,8 +3,8 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
-- Enhancement: Added options like `--lrecl, --recfm` to zos-files create options. [788](https://github.com/zowe/zowe-cli/issues/788)
-***
+
+- Added `--pattern` option to `zowe files list am`
 
 ## `6.22.0`
 
