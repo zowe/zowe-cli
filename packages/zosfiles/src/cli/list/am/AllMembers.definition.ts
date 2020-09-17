@@ -42,7 +42,8 @@ export const AllMembersDefinition: ICommandDefinition = {
     ],
     options: [
         ListOptions.attributes,
-        ListOptions.maxLength
+        ListOptions.maxLength,
+        ListOptions.pattern
     ],
     examples: [
         {
