@@ -40,5 +40,9 @@ Array [
     "description": "Show the first 5 members of the data set \\"ibmuser.cntl\\"",
     "options": "\\"ibmuser.cntl\\" --max 5",
   },
+  Object {
+    "description": "Show the first 4 members of the data set \\"ibmuser.cntl\\" matching an input pattern\\"",
+    "options": "\\"sys1.maclib\\" --pattern IJK* --max 4",
+  },
 ]
 `;
