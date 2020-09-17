@@ -130,7 +130,11 @@
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
-    "testResultsProcessor": "jest-stare",
+    "reporters": [
+      "default",
+      "jest-stare",
+      "jest-junit"
+    ],
     "transform": {
       ".(ts)": "ts-jest"
     },
@@ -162,7 +166,6 @@
     "resultDir": "__tests__/__results__/jest-stare",
     "coverageLink": "../unit/coverage/lcov-report/index.html",
     "additionalResultsProcessors": [
-      "jest-junit",
       "jest-sonar-reporter"
     ]
   },
