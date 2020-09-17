@@ -9,7 +9,7 @@
 *
 */
 
-import { List } from "../../../../../../../packages/zosfiles/src/methods/list";
+import { List } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("List AllMembers handler", () => {

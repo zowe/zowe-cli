@@ -1,5 +1,51 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Archive workflow details handler fail scenarios should fail when archivation with workflow name fails 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [],
+}
+`;
+
+exports[`Archive workflow details handler fail scenarios should fail when archivation with workflow name fails 2`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "workflowKey": "fake-workflow-key",
+      "workflowName": "fake-name",
+    },
+  ],
+}
+`;
+
+exports[`Archive workflow details handler process method should archive a workflow using workflow name 1`] = `
+Object {
+  "fields": Array [
+    "workflowName",
+    "workflowKey",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "workflowKey": "fakekey",
+      "workflowName": "fake-name",
+    },
+  ],
+}
+`;
+
 exports[`List workflow details handler fail scenarios should fail when archivation with workflow name fails 1`] = `
 Object {
   "fields": Array [

@@ -9,12 +9,12 @@
 *
 */
 
-import { Upload } from "../../../../../../../packages/zosfiles/src/methods/upload";
+import { ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as fs from "fs";
-import { ZosFilesAttributes } from "../../../../../../../packages/zosfiles/src/utils/ZosFilesAttributes";
 
-jest.mock("../../../../../../../packages/zosfiles/src/utils/ZosFilesAttributes");
+jest.mock("@zowe/zos-files-for-zowe-sdk");
+const {Upload} = jest.requireActual("@zowe/zos-files-for-node-sdk");
 
 describe("Upload dir-to-uss handler", () => {
 

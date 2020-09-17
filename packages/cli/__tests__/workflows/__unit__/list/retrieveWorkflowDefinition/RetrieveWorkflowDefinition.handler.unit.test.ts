@@ -20,7 +20,7 @@
 *
 */
 
-import { DefinitionWorkflow } from "../../../../../../../packages/workflows/src/Definition";
+import { DefinitionWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 
 describe("List workflow definition file details handler", () => {
     describe("process method", () => {

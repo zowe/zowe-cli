@@ -113,7 +113,7 @@ const doc: ITaskFunction = async () => {
     // Get all command definitions
     const myConfig = ImperativeConfig.instance;
     // myConfig.callerLocation = __dirname;
-    myConfig.loadedConfig = require("../packages/imperative");
+    myConfig.loadedConfig = require("../packages/cli/src/imperative");
 
     // Need to avoid any .definition file inside of __tests__ folders
     myConfig.loadedConfig.commandModuleGlobs = ["**/!(__tests__)/cli/*.definition!(.d).*s"];
@@ -153,7 +153,6 @@ const doc: ITaskFunction = async () => {
         } else {
             anchorTag = definition.name;
         }
-        
         tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel), commandNameSummary, anchorTag.trim());
 
         markdownContent += util.format("#%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), commandNameSummary, anchorTag.trim());
@@ -174,7 +173,7 @@ const doc: ITaskFunction = async () => {
             } else {
                 childAnchorTag = `${definition.name}-${child.name.replace(/\s/g, "-")}`;
             }
-            
+
             let childNameSummary = child.name;
             if (child.experimental) {
                 childNameSummary += " (experimental)";

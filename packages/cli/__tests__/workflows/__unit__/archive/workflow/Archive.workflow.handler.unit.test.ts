@@ -20,9 +20,8 @@
 *
 */
 
-import { ArchiveWorkflow } from "../../../../../../../packages/workflows/src/ArchiveWorkflow";
+import { ArchiveWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
-import { ListWorkflows } from "../../../../../../../packages/workflows/src/ListWorkflows";
 
 
 describe("Archive workflow details handler", () => {

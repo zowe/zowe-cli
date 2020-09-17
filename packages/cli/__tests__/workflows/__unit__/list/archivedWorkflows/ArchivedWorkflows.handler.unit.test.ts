@@ -9,7 +9,7 @@
 *
 */
 
-import { ListArchivedWorkflows } from "../../../../../../../packages/workflows/src/ListArchivedWorkflows";
+import { ListArchivedWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 
 describe("List archived workflows common handler", () => {

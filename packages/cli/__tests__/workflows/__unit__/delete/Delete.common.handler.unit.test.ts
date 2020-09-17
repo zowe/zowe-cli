@@ -9,8 +9,7 @@
 *
 */
 
-import { DeleteWorkflow } from "../../../../../../packages/workflows/src/Delete";
-import { ListWorkflows } from "../../../../../../packages/workflows/src/ListWorkflows";
+import { DeleteWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { AbstractSession, ImperativeError } from "@zowe/imperative";
 
 
