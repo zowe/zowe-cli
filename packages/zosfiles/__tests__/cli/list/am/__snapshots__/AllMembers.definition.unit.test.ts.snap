@@ -18,6 +18,11 @@ Array [
     "name": "max-length",
     "type": "number",
   },
+  Object {
+    "description": "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. \\"*\\".",
+    "name": "pattern",
+    "type": "string",
+  },
 ]
 `;
 
