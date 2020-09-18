@@ -9,7 +9,7 @@
 *
 */
 
-import { Upload } from "../../../../../../../packages/zosfiles/src/methods/upload";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Upload dir-to-pds handler", () => {

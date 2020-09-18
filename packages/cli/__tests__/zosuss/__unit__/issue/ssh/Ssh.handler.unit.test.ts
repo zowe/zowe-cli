@@ -10,6 +10,7 @@
 */
 
 jest.mock("@zowe/zos-uss-for-zowe-sdk");
+
 import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative";
 import * as SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
 import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";

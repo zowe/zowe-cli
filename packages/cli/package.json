@@ -49,5 +49,15 @@
     "js-yaml": "^3.14.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.8.0"
+  },
+  "imperative": {
+    "configurationModule": "lib/imperative.js"
+  },
+  "bin": {
+    "bright": "./lib/main.js",
+    "zowe": "./lib/main.js"
+  },
+  "engines": {
+    "node": ">=8.0.0"
   }
 }

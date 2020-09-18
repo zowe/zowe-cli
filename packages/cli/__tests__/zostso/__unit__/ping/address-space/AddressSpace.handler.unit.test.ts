@@ -9,10 +9,10 @@
 *
 */
 
+jest.mock("@zowe/zos-tso-for-zowe-sdk");
+
 import { PingTsoData } from "../../../__resources__/PingTsoData";
 import { PingTso } from "@zowe/zos-tso-for-zowe-sdk";
-
-jest.mock("@zowe/zos-tso-for-zowe-sdk");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as PingAddressSpaceHandler from "../../../../../src/zostso/ping/address_space/PingAddressSpace.handler";
 import { PingAddressSpaceCommandDefinition } from "../../../../../src/zostso/ping/address_space/PingAddressSpace.definition";

@@ -9,10 +9,11 @@
 *
 */
 
+jest.mock('@zowe/core-for-zowe-sdk');
+
 import { Session } from "@zowe/imperative";
 import { posix } from "path";
 import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
-
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";

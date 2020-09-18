@@ -9,6 +9,7 @@
 *
 */
 
+jest.mock("@zowe/zosmf-for-zowe-sdk");
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../../src/zosmf/check/status/Status.handler";
@@ -18,8 +19,6 @@ import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-
-jest.mock("@zowe/zosmf-for-zowe-sdk");
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {

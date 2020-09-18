@@ -18,12 +18,11 @@ import {
     noTsoStartInput,
     StartTso,
     TsoConstants
-} from "../../../zostso";
+} from "../../";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 import { SendTso } from "../../src/SendTso";
-
 
 const START_HEADERS: any[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON];
 

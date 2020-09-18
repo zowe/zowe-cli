@@ -10,7 +10,8 @@
 */
 
 jest.mock("@zowe/zos-tso-for-zowe-sdk");
-import { IStartTsoParms, StartTso } from "@zowe/zos-tso-for-zowe-sdk";
+
+import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/start/address-space/AddressSpace.handler";
