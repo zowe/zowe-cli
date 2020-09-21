@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.23.0`
 
 - Added `--pattern` option to `zowe files list am`
 
