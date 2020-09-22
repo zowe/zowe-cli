@@ -115,7 +115,7 @@ const config: IImperativeConfig = {
         if (server) {
             server.listen(port, () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${port}`);
-                console.log("server bound")
+                Imperative.console.info(`server bound ${port}`)
             });
         } else {
             Imperative.parse();
