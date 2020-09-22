@@ -11,6 +11,73 @@
 */
 
 import { PerfTiming } from "@zowe/perf-timing";
+import * as net from "net";
+
+
+// TODO(Kelosky): handle prompting cases from login command
+// TODO(Kelosky): can more of this be moved to imperative
+// TODO(Kelosky): console needs to be logs
+
+// get command args
+const numOfParms = process.argv.length - 2;
+
+let server: net.Server;
+const defaultPort = 4000;
+let port = defaultPort;
+let useServer = false;
+
+if (numOfParms > 0) {
+    const parm = process.argv[2];
+
+    const daemonKey = "--daemon";
+    const daemonPortKey = "--daemon=";
+    const portOffset = parm.indexOf(daemonKey);
+
+
+    if (portOffset > -1) {
+        const portKeyOffset = parm.indexOf(daemonPortKey);
+        if (portKeyOffset > -1) {
+            port = parseInt(parm.substr(daemonPortKey.length, parm.length - daemonPortKey.length), 10);
+        }
+        console.log(`port ${port}`);
+
+        server = net.createServer((c) => {
+            console.log('client connected');
+            c.on('end', () => {
+                console.log('client disconnected');
+            });
+            c.on('close', () => {
+                console.log('client closed');
+            })
+            c.on('data', (data: Buffer) => {
+                // TODO(Kelosky): get cwd from daemon client
+                const stopKey = "--shutdown";
+                const stopOffset = data.toString().indexOf(stopKey);
+                if (stopOffset > -1) {
+                    if (server) {
+                        console.log("shutting down")
+                        c.end();
+                        server.close()
+                    }
+                } else {
+                    console.log(`command ${data.toString()}`)
+                    Imperative.parse(data.toString(), { stream: c });
+                }
+            })
+        });
+
+        server.on('error', (err) => {
+            console.log(`server error`)
+            throw err;
+        });
+
+        server.on('close', () => {
+            console.log(`server closed`)
+        })
+    }
+
+
+}
 
 const timingApi = PerfTiming.api;
 
@@ -38,7 +105,15 @@ const config: IImperativeConfig = {
         Imperative.api.appLogger.trace("Init was successful");
 
         timingApi.mark("BEFORE_PARSE");
-        Imperative.parse();
+
+        if (server) {
+            server.listen(port, () => {
+                console.log(`server bound ${port}`);
+            });
+        } else {
+            Imperative.parse();
+        }
+
         timingApi.mark("AFTER_PARSE");
         timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
     } catch (initErr) {
