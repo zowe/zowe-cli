@@ -11,8 +11,8 @@
 
 import { PingTsoData } from "../../../__resources__/PingTsoData";
 
-jest.mock("@zowe/zos-tso-for-zowe-sdk");
-import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
+jest.mock("../../../../../../zostso/lib/IssueTso");
+import { IssueTso } from "../../../../../../zostso/lib/IssueTso";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as Command from "../../../../../src/zostso/issue/command/Command.handler";
 import { CommandDefinition } from "../../../../../src/zostso/issue/command/Command.definition";

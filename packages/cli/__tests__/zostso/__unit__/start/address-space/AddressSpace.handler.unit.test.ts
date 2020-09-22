@@ -9,9 +9,9 @@
 *
 */
 
-jest.mock("@zowe/zos-tso-for-zowe-sdk");
+jest.mock("../../../../../../zostso/lib/StartTso");
 
-import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
+import { StartTso } from "../../../../../../zostso/lib/StartTso";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/start/address-space/AddressSpace.handler";
@@ -127,7 +127,6 @@ describe("start address-space handler tests", () => {
             error = thrownError;
         }
         expect(error).toBeDefined();
-        expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
     });
 

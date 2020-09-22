@@ -10,8 +10,8 @@
 */
 
 import { resolve } from "path";
-import { TestEnvironment } from '../../__tests__/__src__/environment/TestEnvironment';
-import { ITestEnvironment } from '../../__tests__/__src__/environment/doc/response/ITestEnvironment';
+import { TestEnvironment } from '../../../__tests__/__src__/environment/TestEnvironment';
+import { ITestEnvironment } from '../../../__tests__/__src__/environment/doc/response/ITestEnvironment';
 
 let testEnvironment: ITestEnvironment;
 
@@ -29,7 +29,7 @@ describe("behavior of main.ts", () => {
 
         it("should exit with non zero return code if Imperative.init() fails - calling main.ts directly", async () => {
 
-            const mainTs = resolve(__dirname, '../../packages/cli/src/main');
+            const mainTs = resolve(__dirname, '../lib/main.js');
 
             const realImperative = require("@zowe/imperative").Imperative;
             const imperativeMock = jest.spyOn(realImperative, "init");

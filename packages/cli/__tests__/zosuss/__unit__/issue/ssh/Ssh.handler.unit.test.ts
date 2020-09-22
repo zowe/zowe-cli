@@ -9,13 +9,13 @@
 *
 */
 
-jest.mock("@zowe/zos-uss-for-zowe-sdk");
+jest.mock("../../../../../../zosuss/lib/Shell");
 
 import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative";
 import * as SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
 import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";
 import { getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
+import * as Shell from "../../../../../../zosuss/lib/Shell";
 
 process.env.FORCE_COLOR = "0";
 
@@ -60,19 +60,19 @@ describe("issue ssh handler tests", () => {
     });
 
     it("should be able to get stdout", async () => {
-        Shell.executeSsh = jest.fn((session, command, stdoutHandler) => {
+        Shell.Shell.executeSsh = jest.fn((session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
         const handler = new SshHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.command = "pwd";
         await handler.process(params);
-        expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
+        expect(Shell.Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
 
     it("should be able to get stdout with cwd option", async () => {
-        Shell.executeSshCwd = jest.fn((session, command, cwd, stdoutHandler) => {
+        Shell.Shell.executeSshCwd = jest.fn((session, command, cwd, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
         const handler = new SshHandler.default();
@@ -80,7 +80,7 @@ describe("issue ssh handler tests", () => {
         params.arguments.command = "pwd";
         params.arguments.cwd = "/user/home";
         await handler.process(params);
-        expect(Shell.executeSshCwd).toHaveBeenCalledTimes(1);
+        expect(Shell.Shell.executeSshCwd).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
 

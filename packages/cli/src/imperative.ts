@@ -29,7 +29,16 @@ import { ZosFilesOptions } from "./zosfiles/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
-    commandModuleGlobs: ["**/*.definition!(.d).*s"],
+    commandModuleGlobs: [
+        "provisioning/*.definition!(.d).*s",
+        "workflows/*.definition!(.d).*s",
+        "zosconsole/*.definition!(.d).*s",
+        "zosfiles/*.definition!(.d).*s",
+        "zosjobs/*.definition!(.d).*s",
+        "zosmf/*.definition!(.d).*s",
+        "zostso/*.definition!(.d).*s",
+        "zosuss/*.definition!(.d).*s"
+    ],
     rootCommandDescription: Constants.DESCRIPTION,
     defaultHome: Constants.HOME_DIR,
     envVariablePrefix: Constants.ENV_PREFIX,

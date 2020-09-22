@@ -22,7 +22,7 @@ import { inspect } from "util";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
-    configurationModule: __dirname + "/imperative"
+    configurationModule: "imperative.js"
 };
 
 (async () => {

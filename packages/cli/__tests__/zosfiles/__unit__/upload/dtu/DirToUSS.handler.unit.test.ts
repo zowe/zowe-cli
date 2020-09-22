@@ -9,7 +9,10 @@
 *
 */
 
-import { ZosFilesAttributes, Upload } from "@zowe/zos-files-for-zowe-sdk";
+jest.mock("../../../../../../zosfiles/lib/utils/ZosFilesAttributes")
+
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosFilesAttributes } from "../../../../../../zosfiles/lib/utils/ZosFilesAttributes";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import * as fs from "fs";
 

@@ -9,6 +9,8 @@
 *
 */
 
+jest.mock("../../../core/lib/rest/ZosmfRestClient");
+
 import {
     IStartStopResponse,
     IStartTsoParms,
@@ -17,12 +19,13 @@ import {
     noSessionTso,
     noTsoStartInput,
     StartTso,
-    TsoConstants
-} from "../../";
+    TsoConstants,
+    SendTso
+} from "../../lib";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "../../../core/lib/rest/ZosmfRestClient";
 import { inspect } from "util";
-import { SendTso } from "../../src/SendTso";
 
 const START_HEADERS: any[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON];
 
@@ -274,6 +277,9 @@ describe("StartTso start", () => {
 
         expect((StartTso.startCommon as any)).toHaveBeenCalledTimes(1);
         expect((StartTso.startCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
+        console.log("eyecatcher");
+        console.log(error);
+        console.log(error.message);
         expectStartResponseSucceeded(response, error);
     });
 
