@@ -334,7 +334,6 @@ export default {
             ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                 "specified.",
             FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",
-            CURRENT_WORKING_DIRECTORY: "Alternate current working directory",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
             EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension.  When no extension " +
