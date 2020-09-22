@@ -34,6 +34,7 @@ export default class DatasetHandler extends ZosFilesBaseHandler {
                 extension: commandParameters.arguments.extension,
                 preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
                 task,
+                cwd: commandParameters.arguments.cwd,
                 responseTimeout: commandParameters.arguments.responseTimeout
             });
     }

@@ -86,8 +86,11 @@ export class Download {
             // If the "file" is not provided, we create a folder structure similar to the data set name
             // Note that the "extension" options do not affect the destination if the "file" options were provided
             const destination = (() => {
+
+                const cwd = options.cwd;
+
                 if (options.file) {
-                    return options.file;
+                    return cwd ? cwd + options.file : options.file;
                 }
 
                 let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
@@ -97,7 +100,7 @@ export class Download {
                     generatedFilePath = generatedFilePath.toUpperCase();
                 }
 
-                return generatedFilePath + IO.normalizeExtension(extension);
+                return cwd ? cwd + generatedFilePath + IO.normalizeExtension(extension) : generatedFilePath + IO.normalizeExtension(extension);
             })();
 
             IO.createDirsSyncFromFilePath(destination);

@@ -18,6 +18,13 @@ import { IOptions } from "../../../doc/IOptions";
 export interface IDownloadOptions extends IOptions {
 
     /**
+     * Alternate current working directory
+     * @type {string}
+     * @memberof IDownloadOptions
+     */
+    cwd?: string;
+
+    /**
      * The local file to download the data set to
      * @example "./path/to/file.txt"
      */

@@ -35,11 +35,16 @@ const config: IImperativeConfig = {
         timingApi.mark("BEFORE_INIT");
         await Imperative.init(config);
 
-        // NOTE(Kelosky): DAEMON testing
-
         // TODO(Kelosky): handle prompting cases from login command
         // TODO(Kelosky): can more of this be moved to imperative
         // TODO(Kelosky): console needs to be logs
+        // TODO(Kelosky): cwd likely broken
+        // TODO(Kelosky): help web broken
+        // TODO(Kelosky): prompt* broken - hangs, must restart daemon
+        // TODO(Kelosky): login broken
+        // TODO(Kelosky): timeout on connection for both sides to allow later reconnect
+        // TODO(Kelosky): display `--daemon` keyword in CLI help
+        // TODO(Kelosky): display daemon cli (Rust client) help
 
         // get command args
         const numOfParms = process.argv.length - 2;
@@ -99,8 +104,6 @@ const config: IImperativeConfig = {
                 })
             }
         }
-
-        // NOTE(Kelosky): DAEMON testing
 
         timingApi.mark("AFTER_INIT");
         timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");

@@ -138,5 +138,12 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.FAIL_FAST,
         type: "boolean",
         defaultValue: true
+    },
+
+    cwd: {
+        name: "current-working-directory",
+        aliases: ["cwd"],
+        description: strings.CURRENT_WORKING_DIRECTORY,
+        type: "string"
     }
 };
