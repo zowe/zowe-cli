@@ -70,7 +70,7 @@ const config: IImperativeConfig = {
                     });
                     c.on('close', () => {
                         Imperative.api.appLogger.trace('client closed');
-                    })
+                    });
                     c.on('data', (data: Buffer) => {
                         // TODO(Kelosky): get cwd from daemon client
                         const stopKey = "--shutdown";
@@ -83,6 +83,7 @@ const config: IImperativeConfig = {
                             }
                         } else {
                             Imperative.api.appLogger.trace(`daemon input command: ${data.toString()}`)
+                            Imperative.commandLine = data.toString();
                             Imperative.parse(data.toString(), { stream: c });
                         }
                     })
@@ -111,8 +112,7 @@ const config: IImperativeConfig = {
         if (server) {
             server.listen(port, () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${port}`);
-                sock.write("got it");
-                sock.end();
+                console.log("server bound")
             });
         } else {
             Imperative.parse();
