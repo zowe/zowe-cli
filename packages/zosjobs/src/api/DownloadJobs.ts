@@ -15,6 +15,7 @@ import { IDownloadSpoolContentParms, IJobFile } from "../../../zosjobs";
 import { ZosmfRestClient } from "../../../rest";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { GetJobs } from "./GetJobs";
+import * as path from "path";
 
 
 /**
@@ -82,6 +83,7 @@ export class DownloadJobs {
             await DownloadJobs.downloadSpoolContentCommon(session, {
                 jobFile: {...file, ddname: uniqueDDName},
                 outDir: parms.outDir,
+                cwd: parms.cwd,
                 omitJobidDirectory: parms.omitJobidDirectory
             });
             usedStepNames[file.stepname] = [...usedStepNames[file.stepname] || [], uniqueDDName];
@@ -105,6 +107,12 @@ export class DownloadJobs {
             parms.outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
         }
 
+        if (parms.cwd) {
+            if (parms.cwd[parms.cwd.length - 1] !== '/') {
+                parms.cwd += '/';
+            }
+            parms.outDir = path.normalize(parms.cwd + parms.outDir);
+        }
 
         const file = DownloadJobs.getSpoolDownloadFile(parms.jobFile, parms.omitJobidDirectory, parms.outDir);
         this.log.debug("Downloading spool file %s for job %s(%s) to file %s",

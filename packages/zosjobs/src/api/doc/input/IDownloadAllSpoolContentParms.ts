@@ -56,4 +56,11 @@ export interface IDownloadAllSpoolContentParms {
      * @memberof IDownloadAllSpoolContentParms
      */
     extension?: string;
+
+    /**
+     * Alternate current working directory
+     * @type {string}
+     * @memberof IDownloadAllSpoolContentParms
+     */
+    cwd?: string;
 }

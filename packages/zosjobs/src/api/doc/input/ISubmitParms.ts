@@ -49,6 +49,11 @@ export interface ISubmitParms {
     directory?: string;
 
     /**
+     * Alternate current working directory
+     */
+    cwd?: string;
+
+    /**
      * A file extension to save the job output with
      */
     extension?: string;

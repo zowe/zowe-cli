@@ -64,6 +64,12 @@ export const DataSetDefinition: ICommandDefinition = {
             type: "string"
         },
         {
+            name: "current-working-directory", aliases: ["cwd"],
+            description: "Alternate current working directory",
+            implies: ["directory"],
+            type: "string"
+        },
+        {
             name: "extension", aliases: ["e"],
             description: "A file extension to save the job output with. Default is '.txt'.",
             implies: ["directory"],
