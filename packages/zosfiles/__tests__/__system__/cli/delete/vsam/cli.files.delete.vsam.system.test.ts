@@ -99,6 +99,16 @@ describe("Delete VSAM Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
+        it("should delete a VSAM data set with response timeout", async () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+                TEST_ENVIRONMENT, [dsname, volume]);
+            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
         it("should delete a VSAM data set And print attributes", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);

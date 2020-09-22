@@ -29,8 +29,10 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         commandParameters.response.progress.startBar({task});
         return Download.ussFile(session, commandParameters.arguments.ussFileName, {
             binary: commandParameters.arguments.binary,
+            encoding: commandParameters.arguments.encoding,
             file: commandParameters.arguments.file,
-            task
+            task,
+            responseTimeout: commandParameters.arguments.responseTimeout
         });
     }
 }

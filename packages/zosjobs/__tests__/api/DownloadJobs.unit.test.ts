@@ -13,7 +13,7 @@ import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IJobFile } from "../../";
 import { ZosmfRestClient } from "../../../rest";
 
-jest.mock("../../../rest/src/ZosmfRestClient");
+jest.mock("../../../rest/src/api/ZosmfRestClient");
 jest.mock("../../src/api/GetJobs");
 
 // unit tests for DownloadJobs API
@@ -57,10 +57,12 @@ describe("DownloadJobs", () => {
         "procstep": "PROC1"
     }];
 
-    GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
-        return jobFiles;
-    });
     describe("Positive tests", () => {
+        beforeEach(() => {
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return jobFiles;
+            });
+        });
 
         it("should allow users to call downloadSpoolContent with correct parameters", async () => {
             ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
@@ -87,6 +89,27 @@ describe("DownloadJobs", () => {
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
 
+        it("should allow users to call downloadAllSpoolContentCommon with a job containing duplicate step names", async () => {
+            const sampJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return [sampJobFile, sampJobFile, sampJobFile];
+            });
+            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
+                // do nothing;
+            });
+            await DownloadJobs.downloadAllSpoolContentCommon(fakeSession,
+                {jobname: "MYJOB", jobid: "JOB0001"}
+            );
+            const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFiles[0]);
+            const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+            expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
+            expect((IO.createDirsSyncFromFilePath as any).mock.calls).toEqual([
+                [expectedFile],
+                [expectedFile.slice(0, -expectedExt.length) + "(1)" + expectedExt],
+                [expectedFile.slice(0, -expectedExt.length) + "(2)" + expectedExt]
+            ]);
+        });
+
         it("should allow users to call downloadSpoolContentCommon with correct parameters " +
             "(jobFile with no procstep - procstep should be omitted from the download directory)", async () => {
             ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
@@ -105,6 +128,7 @@ describe("DownloadJobs", () => {
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFile, false, outDir);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
         });
+
         it("should allow users to call downloadSpoolContentCommon with correct parameters (default output directory)", async () => {
             ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]) => {
                 // do nothing;

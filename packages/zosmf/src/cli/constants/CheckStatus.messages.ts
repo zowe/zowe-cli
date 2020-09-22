@@ -22,7 +22,7 @@ export const CheckStatusMessages: { [key: string]: IMessageDefinition } = {
      */
     cmdSucceeded: {
         message:
-            "The user '{{userName}}' successfully connected to z/OSMF on " +
+            "The user {{userName}} successfully connected to z/OSMF on " +
             "'{{hostName}}'.\n{{mainZosmfProps}}" +
             "z/OSMF Plug-ins that are installed on '{{hostName}}':\n{{pluginStatus}}"
     }

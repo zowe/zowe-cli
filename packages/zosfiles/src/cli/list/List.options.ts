@@ -19,7 +19,7 @@ const strings = (require("../-strings-/en").default as typeof i18nTypings).LIST.
 /**
  * Object containing all options to be used by the List data-set/member API
  */
-export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
+export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     /**
      * The volume serial
      * @type {ICommandOptionDefinition}
@@ -51,6 +51,16 @@ export const ListOptions: {[key: string]: ICommandOptionDefinition} = {
         aliases: ["max"],
         description: strings.MAXLENGTH,
         type: "number"
+    },
+
+    /**
+     * The pattern to match against a list of members in a data set.
+     * @type {ICommandOptionDefinition}
+     */
+    pattern: {
+        name: "pattern",
+        description: strings.PATTERN,
+        type: "string"
     },
 
     /**

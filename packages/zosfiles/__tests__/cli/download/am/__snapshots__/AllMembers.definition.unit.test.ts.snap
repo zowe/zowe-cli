@@ -20,11 +20,28 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ec",
+    ],
+    "description": "Download the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
+    "name": "encoding",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
       "e",
     ],
     "description": "Save the local files with a specified file extension. For example, .txt. Or \\"\\" for no extension.  When no extension is specified, .txt is used as the default file extension.",
     "name": "extension",
     "type": "stringOrEmpty",
+  },
+  Object {
+    "aliases": Array [
+      "ff",
+    ],
+    "defaultValue": true,
+    "description": "Set this option to false to continue downloading dataset members if one or more fail.",
+    "name": "fail-fast",
+    "type": "boolean",
   },
   Object {
     "aliases": Array [
@@ -39,6 +56,15 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
       99999,
     ],
     "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "po",
+    ],
+    "defaultValue": false,
+    "description": "Specifies if the automatically generated directories and files use the original letter case",
+    "name": "preserve-original-letter-case",
+    "type": "boolean",
   },
   Object {
     "aliases": Array [

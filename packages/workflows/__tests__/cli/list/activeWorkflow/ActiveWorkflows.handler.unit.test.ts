@@ -44,7 +44,7 @@ describe("List workflows handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -114,16 +114,17 @@ describe("List workflows handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(ListWorkflows.listWorkflows).toHaveBeenCalledTimes(1);
-            expect(ListWorkflows.listWorkflows).toHaveBeenCalledWith(
+            expect(ListWorkflows.getWorkflows).toHaveBeenCalledTimes(1);
+            expect(ListWorkflows.getWorkflows).toHaveBeenCalledWith(
                 fakeSession,
-                undefined,
-                workflowName,
-                category,
-                system,
-                owner,
-                vendor,
-                statusName);
+                {
+                    workflowName,
+                    category,
+                    system,
+                    owner,
+                    vendor,
+                    statusName
+                });
         });
     });
 });

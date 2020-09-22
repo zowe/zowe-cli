@@ -18,12 +18,12 @@ import i18nTypings from "../-strings-/en";
 const { DESCRIPTION } = (require("../-strings-/en").default as typeof i18nTypings).HMIGRATE;
 
 /**
- * Download group definition containing its description and children
+ * hMigrate group definition containing its description and children
  * @type {ICommandDefinition}
  */
 export const HMigrateDefinition: ICommandDefinition = {
-    name: "hMigrate",
-    aliases: ["hmigr"],
+    name: "migrate",
+    aliases: ["hmigr", "hMigrate"],
     type: "group",
     description: DESCRIPTION,
     children: [

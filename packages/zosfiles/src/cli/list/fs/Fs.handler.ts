@@ -26,7 +26,8 @@ export default class FsHandler extends ZosFilesBaseHandler {
             response = await List.fsWithPath(session, {
                 path: commandParameters.arguments.path,
                 fsname: null,
-                maxLength: commandParameters.arguments.maxLength
+                maxLength: commandParameters.arguments.maxLength,
+                responseTimeout: commandParameters.arguments.responseTimeout
             });
         }
         else
@@ -34,7 +35,8 @@ export default class FsHandler extends ZosFilesBaseHandler {
             response = await List.fs(session, {
                 path: null,
                 fsname: commandParameters.arguments.fsname,
-                maxLength: commandParameters.arguments.maxLength
+                maxLength: commandParameters.arguments.maxLength,
+                responseTimeout: commandParameters.arguments.responseTimeout
             });
         }
 

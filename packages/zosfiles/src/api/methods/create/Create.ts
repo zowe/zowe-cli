@@ -23,6 +23,7 @@ import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
 import i18nTypings from "../../../cli/-strings-/en";
 import * as path from "path";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 const strings = (require("../../../cli/-strings-/en").default as typeof i18nTypings);
@@ -56,19 +57,19 @@ export class Create {
 
         switch (cmdType) {
             case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
-                tempOptions = {...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL:
-                tempOptions = {...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_BINARY:
-                tempOptions = {...CreateDefaults.DATA_SET.BINARY, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.BINARY, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_C:
-                tempOptions = {...CreateDefaults.DATA_SET.C, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.C, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
-                tempOptions = {...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions};
+                tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
                 break;
             default:
                 validCmdType = false;
@@ -76,7 +77,7 @@ export class Create {
         }
 
         if (!validCmdType) {
-            throw new ImperativeError({msg: ZosFilesMessages.unsupportedDatasetType.message});
+            throw new ImperativeError({ msg: ZosFilesMessages.unsupportedDatasetType.message });
         } else {
             try {
                 // Handle the size option
@@ -134,6 +135,25 @@ export class Create {
         }
     }
 
+    public static async dataSetLike(session: AbstractSession, dataSetName: string, likeDataSetName: string): Promise<IZosFilesResponse> {
+        // Required
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
+
+        try {
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+
+            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify({ like: likeDataSetName }));
+
+            return {
+                success: true,
+                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+            };
+        } catch (error) {
+            throw error;
+        }
+    }
+
     /**
      * Validate supplied parameters
      * @static
@@ -161,7 +181,7 @@ export class Create {
                             case "TRK":
                                 break;
                             default:
-                                throw new ImperativeError({msg: ZosFilesMessages.invalidAlcunitOption.message + tempOptions.alcunit});
+                                throw new ImperativeError({ msg: ZosFilesMessages.invalidAlcunitOption.message + tempOptions.alcunit });
                         }
 
                         break;
@@ -186,11 +206,11 @@ export class Create {
                     case "dirblk":
                         // Validate non-zero if dsorg is PS
                         if (tempOptions.dirblk !== 0 && tempOptions.dsorg === "PS") {
-                            throw new ImperativeError({msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message});
+                            throw new ImperativeError({ msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message });
                         }
                         // Validate non-zero if 'dsorg' is PO
                         if (tempOptions.dirblk === 0 && tempOptions.dsorg === "PO") {
-                            throw new ImperativeError({msg: ZosFilesMessages.invalidPODsorgDirblkCombination.message});
+                            throw new ImperativeError({ msg: ZosFilesMessages.invalidPODsorgDirblkCombination.message });
                         }
 
                         break;
@@ -199,8 +219,8 @@ export class Create {
                         // Key to create a PDSE.
                         const type: string = tempOptions.dsntype.toUpperCase();
                         const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
-                        if (availableTypes.indexOf(type) === -1 ) {
-                            throw new ImperativeError({msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype});
+                        if (availableTypes.indexOf(type) === -1) {
+                            throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
                         }
                         break;
 
@@ -212,7 +232,7 @@ export class Create {
                                 break;
 
                             default:
-                                throw new ImperativeError({msg: ZosFilesMessages.invalidDsorgOption.message + tempOptions.dsorg});
+                                throw new ImperativeError({ msg: ZosFilesMessages.invalidDsorgOption.message + tempOptions.dsorg });
                         }
 
                         break;
@@ -223,7 +243,7 @@ export class Create {
 
                         // Validate maximum allocation quantity
                         if (tempOptions.primary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'primary'."});
+                            throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'primary'." });
                         }
                         break;
 
@@ -235,7 +255,7 @@ export class Create {
 
                         // Validate maximum allocation quantity
                         if (tempOptions.secondary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'secondary'."});
+                            throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'secondary'." });
                         }
                         break;
 
@@ -255,13 +275,13 @@ export class Create {
                             case "U":
                                 break;
                             default:
-                                throw new ImperativeError({msg: ZosFilesMessages.invalidRecfmOption.message + tempOptions.recfm});
+                                throw new ImperativeError({ msg: ZosFilesMessages.invalidRecfmOption.message + tempOptions.recfm });
                         }
                         break;
 
                     // SMS class values
                     case "mgntclass":
-                    case "storeclass":
+                    case "storclass":
                     case "dataclass":
                         // no validation
 
@@ -269,12 +289,13 @@ export class Create {
 
                     case "unit":
                     case "volser":
+                    case "responseTimeout":
                         // no validation
 
                         break;
 
                     default:
-                        throw new ImperativeError({msg: ZosFilesMessages.invalidFilesCreateOption.message + option});
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
 
                 }
             }
@@ -290,7 +311,11 @@ export class Create {
      * @example
      * ```typescript
      *
-     *     session = ZosmfSession.createBasicZosmfSession(profile);
+     *     sessCfg: ISession = yourFunctionToCreateSessCfgFromArgs(commandParameters.arguments);
+     *     sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+     *         sessCfg, commandParameters.arguments
+     *     );
+     *     session = new Session(sessCfgWithCreds);
      *
      *     // The option keys are defined in ZosFilesCreateOptions,
      *     // ZosFilesCreateExtraOptions and VsamCreateOptions.
@@ -336,13 +361,18 @@ export class Create {
             }
         }
 
+        let respTimeout: number;
+        if (options) {
+            respTimeout = options.responseTimeout
+        }
+
         try {
             this.vsamValidateOptions(idcamsOptions);
 
             // We invoke IDCAMS to create the VSAM cluster
             const idcamsCmds = this.vsamFormIdcamsCreateCmd(dataSetName, idcamsOptions);
             Logger.getAppLogger().debug("Invoking this IDCAMS command:\n" + idcamsCmds.join("\n"));
-            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds);
+            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds, {responseTimeout: respTimeout});
             return {
                 success: true,
                 commandResponse: attribText + ZosFilesMessages.dataSetCreatedSuccessfully.message,
@@ -371,18 +401,22 @@ export class Create {
     public static async uss(session: AbstractSession,
                             ussPath: string,
                             type: string,
-                            mode?: string)
-                            : Promise<IZosFilesResponse> {
+                            mode?: string,
+                            options?: IZosFilesOptions)
+        : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
         ussPath = path.posix.normalize(ussPath);
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, {"Content-Type": "application/json"}];
+        const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, { "Content-Type": "application/json" }];
+        if (options && options.responseTimeout != null) {
+            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         let payload: object = { type };
-        if(mode) {
-            payload = {...payload, ...{ mode }};
+        if (mode) {
+            payload = { ...payload, ...{ mode } };
         }
         const data = await ZosmfRestClient.postExpectString(session, parameters, headers, payload);
 
@@ -415,7 +449,7 @@ export class Create {
         }
 
         const jsonContent = JSON.stringify(tempOptions);
-        const headers = [{"Content-Length": jsonContent.length}];
+        const headers = [{ "Content-Length": jsonContent.length }];
 
         const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
 
@@ -456,7 +490,7 @@ export class Create {
         }
 
         // start with our default options, and override with any supplied options.
-        idcamsOptions = {...CreateDefaults.VSAM, ...idcamsOptions};
+        idcamsOptions = { ...CreateDefaults.VSAM, ...idcamsOptions };
 
         // when secondary is not specified, use 10% of primary
         if (isNullOrUndefined(idcamsOptions.secondary)) {
@@ -487,7 +521,7 @@ export class Create {
             (options.retainTo ? "TO(" + options.retainTo + ") -\n" : "") +
             (options.retainFor ? "FOR(" + options.retainFor + ") -\n" : "") +
             (options.volumes ? "VOLUMES(" + options.volumes.toUpperCase() + ") -\n" : "") +
-            (options.storeclass ? "STORAGECLASS(" + options.storeclass + ") -\n" : "") +
+            (options.storclass ? "STORAGECLASS(" + options.storclass + ") -\n" : "") +
             (options.mgntclass ? "MANAGEMENTCLASS(" + options.mgntclass + ") -\n" : "") +
             (options.dataclass ? "DATACLASS(" + options.dataclass + ") -\n" : "") +
             ")"
@@ -569,14 +603,15 @@ export class Create {
 
                     case "retainTo":
                     case "volumes":
-                    case "storeclass":
+                    case "storclass":
                     case "mgntclass":
                     case "dataclass":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 
                     default:
-                        throw new ImperativeError({msg: ZosFilesMessages.invalidFilesCreateOption.message + option});
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
 
                 } // end switch
             }
@@ -637,16 +672,17 @@ export class Create {
 
                     case "owner":
                     case "group":
-                    case "storeclass":
+                    case "storclass":
                     case "mgntclass":
                     case "dataclass":
                     case "volumes":
                     case "timeout":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 
                     default:
-                        throw new ImperativeError({msg: ZosFilesMessages.invalidFilesCreateOption.message + option});
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
 
                 } // end switch
             }

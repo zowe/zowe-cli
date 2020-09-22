@@ -27,6 +27,12 @@ Data set created successfully.
 "
 `;
 
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with response timeout 1`] = `
+"================Z/OS FILES CREATE PDS===============
+Data set created successfully.
+"
+`;
+
 exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with specified primary allocation 1`] = `
 "================Z/OS FILES CREATE PDS===============
 alcunit:   CYL

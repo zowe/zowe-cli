@@ -9,7 +9,7 @@
 *
 */
 
-import { IVariable } from "./IVariables";
+import { IVariable } from "./IVariable";
 
 export type accessT = "Public" | "Private" | "Restricted";
 

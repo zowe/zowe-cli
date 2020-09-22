@@ -48,6 +48,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set "like" name is required
+     * @type {IMessageDefinition}
+     */
+    missingDatasetLikeName: {
+        message: "Specify the name of the data set to \"allocate like\" from."
+    },
+
+    /**
      * Message indicating that the USS File name is required
      * @type {IMessageDefinition}
      */
@@ -540,11 +548,27 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set was deleted successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetDeletionRequested: {
+        message: "Data set deletion requested."
+    },
+
+    /**
+     * Message indicating that the data set was migrated successfully.
+     * @type {IMessageDefinition}
+     */
+    datasetMigrationRequested: {
+        message: "Data set migration requested."
+    },
+
+    /**
      * Message indicating that the data set was recalled successfully.
      * @type {IMessageDefinition}
      */
-    datasetMigratedSuccessfully: {
-        message: "Data set migraton requested."
+    datasetRecallRequested: {
+        message: "Data set recall requested."
     },
 
     /**
@@ -553,5 +577,13 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     datasetCopiedSuccessfully: {
         message: "Data set copied successfully."
+    },
+
+    /**
+     * Message indicating that the following members failed to properly download
+     * @type {IMessageDefinition}
+     */
+    memberDownloadFailed: {
+        message: "Failed to download the following members: \n"
     }
 };

@@ -11,7 +11,14 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO } from "@zowe/imperative";
+import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import { ZosFilesConstants } from "../../../src/api/constants/ZosFiles.constants";
+import { ZosFilesMessages } from "../../../src/api/constants/ZosFiles.messages";
+import { IZosFilesResponse } from "../doc/IZosFilesResponse";
+import { ZosmfRestClient } from "../../../../rest/src/api/ZosmfRestClient";
+import { IDeleteOptions } from "../methods/hDelete";
+import { IOptions } from "../doc/IOptions";
+import { ZosmfHeaders } from "../../../../rest";
 
 /**
  * Common IO utilities
@@ -83,8 +90,8 @@ export class ZosFilesUtils {
             const fileList = fs.readdirSync(fullpath);
             fileList.forEach((file) => {
                 const tempPath = path.resolve(fullpath, file);
-                if (fs.lstatSync(tempPath).isFile()){
-                    if (!(isIgnoreHidden && path.basename(file).startsWith("."))){
+                if (fs.lstatSync(tempPath).isFile()) {
+                    if (!(isIgnoreHidden && path.basename(file).startsWith("."))) {
                         if (inFullPathFormat) {
                             returnFileList.push(tempPath);
                         } else {
@@ -104,6 +111,38 @@ export class ZosFilesUtils {
         }
 
         return returnFileList;
+    }
+
+    /**
+     * Common method to build headers given input options object
+     * @private
+     * @static
+     * @param {IOptions} options - various options
+     * @returns {IHeaderContent[]}
+     * @memberof ZosFilesUtils
+     */
+    public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
+        let reqHeaders: IHeaderContent[] = [];
+
+        if (options.binary) {
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+        } else if (options.encoding) {
+
+            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+            const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+            header[keys[0]] = value;
+            reqHeaders = [header];
+
+        } else {
+            // do nothing
+        }
+
+        if (options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
+
+        return reqHeaders;
     }
 
     /**
@@ -177,5 +216,58 @@ export class ZosFilesUtils {
         }
         return usspath;
     }
-}
 
+    /**
+     * @param {AbstractSession} session - z/OSMF connection info
+     * @param {string} dataSetName -The name of the data set to recall|migrate|delete
+     * @param {string} returnMessage - Message to return based upon command request
+     * @param {any} hsmCommand - HsmCommand requested
+     * @param {IRecallOptions | IMigrateOptions | IDeleteOptions} options
+     * * - If true then the function waits for completion of the request. If false (default) the request is queued.
+     */
+    public static async dfsmsHsmCommand(
+        session: AbstractSession,
+        dataSetName: string,
+        returnMessage: string,
+        hsmCommand: any,
+        options: Partial<IDeleteOptions> = {}
+    ): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+
+        try {
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
+
+            Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
+
+            const payload = hsmCommand;
+
+            if (options.wait != null) {
+                payload.wait = options.wait;
+            }
+
+            if (options.purge != null) {
+                payload.purge = options.purge;
+            }
+
+            const headers: IHeaderContent[] = [
+                Headers.APPLICATION_JSON,
+                { "Content-Length": JSON.stringify(payload).length.toString() }
+            ];
+
+            if (options.responseTimeout != null) {
+                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+
+            await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
+
+            return {
+                success: true,
+                commandResponse: returnMessage
+            };
+        } catch (error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
+}

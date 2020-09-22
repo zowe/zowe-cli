@@ -9,12 +9,14 @@
 *
 */
 
+import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
+
 /**
  * Interface for the options to the create uss file or directory API.
  * @export
  * @interface ICreateUssOptions
  */
-export interface ICreateUssOptions {
+export interface ICreateUssOptions extends IZosFilesOptions {
 
     /**
      * The request type

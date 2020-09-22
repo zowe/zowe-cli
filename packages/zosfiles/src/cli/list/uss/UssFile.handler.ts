@@ -22,7 +22,8 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
 
         const response = await List.fileList(session, commandParameters.arguments.path, {
-            maxLength: commandParameters.arguments.maxLength
+            maxLength: commandParameters.arguments.maxLength,
+            responseTimeout: commandParameters.arguments.responseTimeout
         });
 
         // Populate the response object

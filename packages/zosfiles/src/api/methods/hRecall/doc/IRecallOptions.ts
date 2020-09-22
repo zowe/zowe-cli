@@ -9,14 +9,12 @@
 *
 */
 
-/**
- * This interface defines the options that can be sent into the copy data set function.
- */
-export interface IRecallOptions {
+import { IMigrateOptions } from "../../hMigrate";
 
-  /**
-   * If true then the function waits for completion of the request.
-   * If false the request is queued.
-   */
-  wait?: boolean;
+/**
+ * This interface defines the options that can be sent into the recall data set function.
+ */
+
+// tslint:disable-next-line: no-empty-interface
+export interface IRecallOptions extends IMigrateOptions{
 }

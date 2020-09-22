@@ -29,11 +29,18 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
         commandParameters.response.progress.startBar({task: status});
-        const response = await Upload.dirToPds(session, commandParameters.arguments.inputdir, commandParameters.arguments.dataSetName, {
-            volume: commandParameters.arguments.volumeSerial,
-            binary: commandParameters.arguments.binary,
-            task: status
-        });
+        const response = await Upload.dirToPds(
+            session,
+            commandParameters.arguments.inputdir,
+            commandParameters.arguments.dataSetName,
+            {
+                volume: commandParameters.arguments.volumeSerial,
+                binary: commandParameters.arguments.binary,
+                encoding: commandParameters.arguments.encoding,
+                task: status,
+                responseTimeout: commandParameters.arguments.responseTimeout
+            }
+        );
 
         if (response.apiResponse) {
             let skipCount: number = 0;

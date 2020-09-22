@@ -43,6 +43,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
         _: ["zos-uss", "issue", "ssh"],
         ...UNIT_TEST_SSH_PROF_OPTS
     },
+    positionals: ["zos-uss", "issue", "ssh"],
     response: getMockedResponse(),
     definition: SshDefinition.SshDefinition,
     fullDefinition: SshDefinition.SshDefinition,

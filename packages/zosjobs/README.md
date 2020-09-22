@@ -1,105 +1,217 @@
 # z/OS Jobs Package
-Contains APIs & commands to work with z/OS batch jobs (using z/OSMF Jobs REST endpoints).
+
+Contains APIs and commands to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
+
 # API Examples
-**Submit JCL Text:**
-```
-const iefbr14JCL = "//SAMPLEJ JOB 123" +
-    ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
-    "//EXEC PGM=IEFBR14";
 
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
+**Cancel a job**
 
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({loadDefault: true});
+```typescript
+import { CancelJobs } from "@zowe/cli";
+import { Session, ISession, SessConstants } from "@zowe/imperative";
 
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
+// Connection Options
+const hostname: string = "yourhost.yourdomain.net";
+const port: number = 443;
+const user: string = "ZOWEUSER";
+const password: string = "ZOWEPASS";
+const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
+const basePath: string = undefined;
+const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
+const tokenType: string = undefined;
+const tokenValue: string = undefined;
+const rejectUnauthorized: boolean = false;
 
-// Submit the JCL 
-const response: IJob = await SubmitJobs.submitJcl(session, iefbr14JCL);
-```
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
+// Job Options
+const jobName: string = "MYJOB";
+const jobId: string = "JOBID";
+const version: string = undefined;
+const sessionConfig: ISession = {
+    hostname,
+    port,
+    user,
+    password,
+    protocol,
+    basePath,
+    type,
+    tokenType,
+    tokenValue,
+    rejectUnauthorized
+}
 
-**Get Job Details:**
-```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
+const session = new Session(sessionConfig);
 
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
+async function main() {
+    let response: any;
+    try {
+        response = await CancelJobs.cancelJob(session, jobName, jobId, version);
+        console.log(response);
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+}
 
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
-
-// Submit the JCL
-const response: IJob = await GetJobs.getJob(session, "JOB123");
-```
-
-**Get Job Details:**
-```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/brightside");
-
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
-
-// Create the session for the REST client
-const session: Session = Utils.createZosmfSession(zosmfProfile.profile);
-
-// Get the job details
-const response: IJob = await GetJobs.getJob(session, "JOB123");
+main();
 ```
 
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
+#
+**Download a job's output**
 
-**Get Job Spool Files:**
+```typescript
+import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/cli";
+import { Session, ISession, SessConstants } from "@zowe/imperative";
+
+// Connection Options
+const hostname: string = "yourhost.yourdomain.net";
+const port: number = 443;
+const user: string = "ZOWEUSER";
+const password: string = "ZOWEPASS";
+const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
+const basePath: string = undefined;
+const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
+const tokenType: string = undefined;
+const tokenValue: string = undefined;
+const rejectUnauthorized: boolean = false;
+
+// Job Options
+const jobParms: IDownloadAllSpoolContentParms = {
+    jobname: "JOBNAME",
+    jobid: "JOBID",
+    outDir: undefined,
+    extension: ".txt",
+    omitJobidDirectory: false
+}
+const sessionConfig: ISession = {
+    hostname,
+    port,
+    user,
+    password,
+    protocol,
+    basePath,
+    type,
+    tokenType,
+    tokenValue,
+    rejectUnauthorized
+}
+
+const session = new Session(sessionConfig);
+
+async function main() {
+    let response: any;
+    try {
+        response = await DownloadJobs.downloadAllSpoolContentCommon(session, jobParms);
+        console.log(response);
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+}
+
+main();
 ```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
 
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
+#
+**Get jobs by owner**
 
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
+```typescript
+import { GetJobs, IJob } from "@zowe/cli";
+import { Session, ISession, SessConstants } from "@zowe/imperative";
 
-// Get the spool files for the job
-const job: IJob[] = await GetJobs.getJob(session, "JOB123");
-const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
+// Connection Options
+const hostname: string = "yourhost.yourdomain.net";
+const port: number = 443;
+const user: string = "ZOWEUSER";
+const password: string = "ZOWEPASS";
+const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
+const basePath: string = undefined;
+const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
+const tokenType: string = undefined;
+const tokenValue: string = undefined;
+const rejectUnauthorized: boolean = false;
+
+// Job Options
+const owner: string = user;
+const sessionConfig: ISession = {
+    hostname,
+    port,
+    user,
+    password,
+    protocol,
+    basePath,
+    type,
+    tokenType,
+    tokenValue,
+    rejectUnauthorized
+}
+
+const session = new Session(sessionConfig);
+
+// Example note: This can take a *considerable* amount of time, depending on the number of jobs on the system.
+async function main() {
+    let response: IJob[];
+    try {
+        response = await GetJobs.getJobsByOwner(session, owner);
+        console.log(response);
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+}
+
+main();
 ```
 
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
+#
+**Submit a job**
 
-**Get Spool File Contents:**
+```typescript
+import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/cli";
+import { Session, ISession, SessConstants } from "@zowe/imperative";
+
+// Connection Options
+const hostname: string = "yourhost.yourdomain.net";
+const port: number = 443;
+const user: string = "ZOWEUSER";
+const password: string = "ZOWEPASS";
+const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
+const basePath: string = undefined;
+const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
+const tokenType: string = undefined;
+const tokenValue: string = undefined;
+const rejectUnauthorized: boolean = false;
+
+// Job Options
+const jobDataSet: "ZOWEUSER.PUBLIC.MY.DATASET.JCL(MEMBER)"
+const sessionConfig: ISession = {
+    hostname,
+    port,
+    user,
+    password,
+    protocol,
+    basePath,
+    type,
+    tokenType,
+    tokenValue,
+    rejectUnauthorized
+}
+
+const session = new Session(sessionConfig);
+
+async function main() {
+    let response: IJob;
+    try {
+        response = await SubmitJobs.submitJob(session, jobDataSet);
+        console.log(response);
+        process.exit(0);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
+}
+
+main();
 ```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
-
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
-
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
-
-// Get the spool content
-const content = await GetJobs.getSpoolContentById(session, "MYJOB", "JOB123", 2);
-```
-
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
-

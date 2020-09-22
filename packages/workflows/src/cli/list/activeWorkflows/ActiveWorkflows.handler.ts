@@ -41,10 +41,14 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         let error;
         const width = 42;
         try {
-            response = await ListWorkflows.listWorkflows(
-                this.mSession, undefined, this.arguments.workflowName,
-                this.arguments.category, this.arguments.system, this.arguments.owner,
-                this.arguments.vendor, this.arguments.statusName);
+            response = await ListWorkflows.getWorkflows(this.mSession, {
+                workflowName: this.arguments.workflowName,
+                category: this.arguments.category,
+                system: this.arguments.system,
+                owner: this.arguments.owner,
+                vendor: this.arguments.vendor,
+                statusName: this.arguments.statusName
+            });
         } catch (err) {
             error = "List workflow(s) " + err;
             throw error;

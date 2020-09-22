@@ -12,6 +12,14 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ec",
+    ],
+    "description": "Download the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
+    "name": "encoding",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
       "f",
     ],
     "description": "The path to the local file where you want to download the content. When you omit the option, the command generates a file name automatically for you.",

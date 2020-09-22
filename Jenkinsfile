@@ -25,7 +25,7 @@ node('ca-jenkins-agent') {
 
     // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.
-    pipeline.admins.add("tucker01", "gejohnston", "zfernand0", "mikebauerca", "markackert", "dkelosky")
+    pipeline.admins.add("tucker01", "gejohnston", "zfernand0", "mikebauerca", "markackert", "dkelosky", "awharn", "tjohnsonbcm")
 
     // Comma-separated list of emails that should receive notifications about these builds
     pipeline.emailList = "fernando.rijocedeno@broadcom.com"
@@ -61,8 +61,19 @@ node('ca-jenkins-agent') {
         ]
     ]
 
-    // Initialize the pipeline library, should create 5 steps
+    // Initialize the pipeline library, should create 5 steps.
     pipeline.setup()
+
+    // When we need to build the CLI with imperative from Github repo source,
+    // we need lots of time to install imperative, since imperative
+    // is also built from source during the NPM install.
+    // When building from GitHub source, commment out the setup
+    // command above, and uncomment the setup command below:
+    //
+    // pipeline.setup(installDependencies: [
+    //     time: 15,
+    //     unit: 'MINUTES'
+    // ])
 
     // Create a custom lint stage that runs immediately after the setup.
     pipeline.createStage(

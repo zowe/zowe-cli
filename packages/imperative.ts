@@ -16,7 +16,7 @@ import { IImperativeConfig } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { ZosmfSession } from "./zosmf";
 import {
-    TSO_OPTION_ACCOUNT,
+    TSO_OPTION_ACCOUNT_PROFILE,
     TSO_OPTION_CHAR_SET,
     TSO_OPTION_CODE_PAGE,
     TSO_OPTION_COLUMNS,
@@ -25,6 +25,7 @@ import {
     TSO_OPTION_ROWS
 } from "./zostso/src/cli/constants/ZosTso.constants";
 import { SshSession } from "./zosuss";
+import { ZosFilesOptions } from "./zosfiles/src/cli/ZosFiles.options";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -38,6 +39,117 @@ const config: IImperativeConfig = {
             logFile: Constants.LOG_LOCATION
         }
     },
+    baseProfile: {
+        type: "base",
+        schema: {
+            type: "object",
+            title: "Base Profile",
+            description: "Base profile that stores values shared by multiple service profiles",
+            properties: {
+                host: {
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_HOST
+                },
+                port: {
+                    type: "number",
+                    optionDefinition: Constants.BASE_OPTION_PORT
+                },
+                user: {
+                    type: "string",
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_USER
+                },
+                password: {
+                    type: "string",
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_PASSWORD
+                },
+                rejectUnauthorized: {
+                    type: "boolean",
+                    optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                },
+                tokenType: {
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_TOKEN_TYPE
+                },
+                tokenValue: {
+                    type: "string",
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_TOKEN_VALUE
+                }
+            },
+            required: []
+        },
+        createProfileExamples: [
+            {
+                options: "base1 --host example.com --port 443 --user admin --password 123456",
+                description: "Create a profile called 'base1' to connect to host example.com and port 443"
+            },
+            {
+                options: "base2 --host example.com --user admin --password 123456 --reject-unauthorized false",
+                description: "Create a profile called 'base2' to connect to host example.com (default port - 443) " +
+                    "and allow self-signed certificates"
+            },
+            {
+                options: "base3 --host example.com --port 1443",
+                description: "Create a profile called 'base3' to connect to host example.com and port 1443, " +
+                    " not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+            },
+            {
+                options: "base4 --reject-unauthorized false",
+                description: "Create a zosmf profile called 'base4' to connect to default port 443 and allow self-signed certificates, " +
+                    "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+            }
+        ],
+        updateProfileExamples: [
+            {
+                options: "base1 --user newuser --password newp4ss",
+                description: "Update a base profile named 'base1' with a new username and password"
+            }
+        ],
+        authConfig: [
+            {
+                serviceName: "apiml",
+                handler: __dirname + "/auth/src/cli/ApimlAuthHandler",
+                login: {
+                    summary: Constants.APIML_LOGIN_SUMMARY,
+                    description: Constants.APIML_LOGIN_DESCRIPTION,
+                    examples: [
+                        Constants.APIML_LOGIN_EXAMPLE1,
+                        Constants.APIML_LOGIN_EXAMPLE2
+                    ],
+                    options: [
+                        Constants.BASE_OPTION_HOST,
+                        Constants.BASE_OPTION_PORT,
+                        Constants.BASE_OPTION_USER,
+                        Constants.BASE_OPTION_PASSWORD,
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    ]
+                },
+                logout: {
+                    summary: Constants.APIML_LOGOUT_SUMMARY,
+                    description: Constants.APIML_LOGOUT_DESCRIPTION,
+                    examples: [
+                        Constants.APIML_LOGOUT_EXAMPLE1,
+                        Constants.APIML_LOGOUT_EXAMPLE2
+                    ],
+                    options: [
+                        Constants.BASE_OPTION_HOST,
+                        Constants.BASE_OPTION_PORT,
+                        Constants.APIML_LOGOUT_OPTION_TOKEN_TYPE,
+                        Constants.BASE_OPTION_TOKEN_VALUE,
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    ]
+                }
+            }
+        ]
+    },
+    authGroupConfig: {
+        authGroup: {
+            summary: Constants.AUTH_GROUP_SUMMARY,
+            description: Constants.AUTH_GROUP_DESCRIPTION
+        }
+    },
     profiles: [
         {
             type: "zosmf",
@@ -48,7 +160,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST_PROFILE
                     },
                     port: {
                         type: "number",
@@ -57,12 +169,12 @@ const config: IImperativeConfig = {
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER_PROFILE
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD_PROFILE
                     },
                     rejectUnauthorized: {
                         type: "boolean",
@@ -71,9 +183,23 @@ const config: IImperativeConfig = {
                     basePath: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
+                    },
+                    encoding: {
+                        type: "number",
+                        optionDefinition: {
+                            name: "encoding",
+                            aliases: ["ec"],
+                            description: "The encoding for download and upload of z/OS data set and USS files." +
+                                " The default encoding if not specified is 1047.",
+                            type: "number"
+                        }
+                    },
+                    responseTimeout: {
+                        type: "number",
+                        optionDefinition: ZosFilesOptions.responseTimeout
                     }
                 },
-                required: ["host"]
+                required: []
             },
             createProfileExamples: [
                 {
@@ -84,6 +210,16 @@ const config: IImperativeConfig = {
                     options: "zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
+                },
+                {
+                    options: "zos125 --host zos125 --port 1443",
+                    description: "Create a zosmf profile called 'zos125' to connect to z/OSMF at the host zos125 and port 1443, " +
+                        " not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+                },
+                {
+                    options: "zos126 --reject-unauthorized false",
+                    description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates, " +
+                        "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
                 },
                 {
                     options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
@@ -107,7 +243,7 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_ACCOUNT
+                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE
                     },
                     characterSet: {
                         type: "string",
@@ -134,7 +270,7 @@ const config: IImperativeConfig = {
                         optionDefinition: TSO_OPTION_ROWS
                     }
                 },
-                required: ["account"]
+                required: []
             },
             createProfileExamples: [
                 {
@@ -145,6 +281,10 @@ const config: IImperativeConfig = {
                     description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
                         "JES accounting information of '1234'",
                     options: "largeregion -a 1234 --rs 8192"
+                },
+                {
+                    description: "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user account on disk",
+                    options: "myprof2 --rs 8192"
                 }
             ],
             updateProfileExamples: [
@@ -163,7 +303,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST
+                        optionDefinition: SshSession.SSH_OPTION_HOST_PROFILE
                     },
                     port: {
                         type: "number",
@@ -171,7 +311,7 @@ const config: IImperativeConfig = {
                     },
                     user: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_USER
+                        optionDefinition: SshSession.SSH_OPTION_USER_PROFILE
                     },
                     password: {
                         type: "string",
@@ -192,7 +332,7 @@ const config: IImperativeConfig = {
                         optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT
                     }
                 },
-                required: ["host", "user"]
+                required: []
             },
             createProfileExamples: [
                 {
@@ -206,8 +346,13 @@ const config: IImperativeConfig = {
                 {
                     options: "ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
                     description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
-                                 "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
-                                 "for privatekey authentication"
+                        "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
+                        "for privatekey authentication"
+                },
+                {
+                    options: "ssh444 --privateKey /path/to/privatekey",
+                    description: "Create a ssh profile called 'ssh444' to connect to z/OS SSH server on default port 22, without specifying " +
+                        "username, host, or password, preventing those values from being stored on disk"
                 }
             ]
         }

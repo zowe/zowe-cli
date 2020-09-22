@@ -16,7 +16,7 @@ import { IMigrateOptions } from "../../../../src/api/methods/hMigrate/doc/IMigra
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
-        success        : true,
+        success: true,
         commandResponse: "THIS IS A TEST"
     };
 
@@ -47,27 +47,27 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any, {});
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
         expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
             dummySession,
             commandParameters.arguments.dataSetName,
-            {}
+            undefined
         );
         expect(response).toBe(defaultReturn);
     });
-    it("should call HMigrate.dataSet with wait = true", async () => {
+    it("should call HMigrate.dataSet with options", async () => {
         const handler = new DSHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const options: IMigrateOptions = { wait : true };
+        const options: IMigrateOptions = { wait: true, responseTimeout: 5 };
 
         const commandParameters: any = {
             arguments: {
-                dataSetName: "ABCD"
-            },
-            options
+                dataSetName: "ABCD",
+                options
+            }
         };
 
         const dummySession = {
@@ -79,9 +79,9 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const expectedOptions: IMigrateOptions = { wait : true };
+        const expectedOptions: IMigrateOptions = { wait: true, responseTimeout: 5 };
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any, { wait: true });
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
         expect(migrateDataSetSpy).toHaveBeenLastCalledWith(

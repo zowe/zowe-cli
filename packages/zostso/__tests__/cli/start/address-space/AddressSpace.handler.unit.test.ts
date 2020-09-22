@@ -58,6 +58,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         $0: "bright",
         _: ["zos-tso", "start", "address-space"]
     },
+    positionals: ["zos-tso", "start", "address-space"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {
@@ -116,6 +117,8 @@ describe("start address-space handler tests", () => {
     it("should be able respond with error message, if required z/OSMF parameters were not passed", async () => {
         const handler = new AddressSpaceHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        params.arguments.user = "FakeUser";
+        params.arguments.password = "FakePassword";
         let error;
         try {
             await handler.process(params);

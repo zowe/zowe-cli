@@ -49,7 +49,7 @@ export const CPDSDefinition: ICommandDefinition = {
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.C.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.C.blksize},
         {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.C.lrecl},
-        ZosFilesCreateOptions.storeclass,
+        ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,

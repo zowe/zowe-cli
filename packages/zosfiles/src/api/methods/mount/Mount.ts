@@ -13,7 +13,7 @@ import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/impera
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
 import { isNullOrUndefined } from "util";
-import { ZosmfRestClient } from "../../../../../rest";
+import { ZosmfRestClient, ZosmfHeaders } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -57,7 +57,11 @@ export class Mount {
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
         const jsonContent = JSON.stringify(tempOptions);
-        const headers = [{"Content-Length": jsonContent.length}];
+        const headers = [];
+        headers.push({"Content-Length": jsonContent.length});
+        if (options.responseTimeout != null) {
+            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
 
         const data = await ZosmfRestClient.putExpectString(session, endpoint, headers, jsonContent);
 
@@ -101,6 +105,7 @@ export class Mount {
                         break;
 
                     case "fs-type":
+                    case "responseTimeout":
                         // no validation at this time
                         break;
 

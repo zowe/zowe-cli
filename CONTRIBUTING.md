@@ -5,6 +5,7 @@ This document is a living summary of conventions and best practices for developm
   - [Pull Requests](#pull-requests)
   - [Contributing to Core Functionality](#contributing-to-core-functionality)
   - [General Guidelines](#general-guidelines)
+  - [Changelog Update Guidelines](#changelog-update-guidelines)
   - [Code Guidelines](#code-guidelines)
   - [Programmatic API Guidelines](#programmatic-api-guidelines)
   - [File Naming Guidelines](#file-naming-guidelines)
@@ -73,16 +74,25 @@ The following list describes general conventions for contributing to Zowe CLI:
 
 ## Changelog Update Guidelines
 
-The changelog should be updated for any PR that updates code that will be distributed to the end user. Changes to certain files, such as the Jenkinsfile, do not require an update to the changelog.
+Add an entry to changelog.md for any PR that introduces a feature, enhancement, or fix that affects end users. Changes to certain files, such as the Jenkinsfile, do not require a changelog update. The changelogs are compiled into Zowe Docs [Release Notes](https://docs.zowe.org/stable/getting-started/summaryofchanges.html) periodically.
 
-The following code block should be inserted into the Changelog above the last released version:
+**Each changelog entry must:**
+- Describe the change and how it impacts end users.
+- Include a relevant Issue # or Pull Request #.
+
+The following is an example of the markdown that you should insert into the changelog above the last-released version:
 
 ```
 ## Recent Changes
 
-- <Your changes should>
-- <be documented here>
+- Document your changes here. [Issue# or PR#](link-to-issue-or-pr)
+- Document another change here. [Issue# or PR#](link-to-issue-or-pr)
 ```
+
+**Tips:**
+- Start the sentence with a verb in past tense. For example "Added...", "Improved...", "Enhanced...".
+- Write from a user's perspective. Document why the change matters to the end user (what this feature allows them to do now). For example, "Added the validate-only mode of Zowe. This lets you check whether all the component validation checks of the Zowe installation pass without starting any of the components.".
+- Use second person "you" instead of "users".
 
 ## Code Guidelines
 

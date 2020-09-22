@@ -46,7 +46,7 @@ export const ZfsDefinition: ICommandDefinition = {
         ZfsCreateOptions.perms,
         ZfsCreateOptions.cylsPri,
         ZfsCreateOptions.cylsSec,
-        ZosFilesCreateOptions.storeclass,
+        ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZfsCreateOptions.volumes,

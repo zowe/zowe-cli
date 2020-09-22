@@ -24,7 +24,7 @@ Object {
           "description": "The z/OS SSH server host name.",
           "group": "z/OS Ssh Connection Options",
           "name": "host",
-          "required": true,
+          "required": false,
           "type": "string",
         },
         Object {
@@ -44,7 +44,7 @@ Object {
           "description": "Mainframe user name, which can be the same as your TSO login.",
           "group": "z/OS Ssh Connection Options",
           "name": "user",
-          "required": true,
+          "required": false,
           "type": "string",
         },
         Object {

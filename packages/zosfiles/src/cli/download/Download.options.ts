@@ -45,6 +45,17 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
+     * The encoding option
+     * @type {ICommandOptionDefinition}
+     */
+    encoding: {
+        name: "encoding",
+        aliases: ["ec"],
+        description: strings.ENCODING,
+        type: "number"
+    },
+
+    /**
      * The local file to download the data set to
      * @type {ICommandOptionDefinition}
      */
@@ -111,5 +122,21 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
         type: "number",
         defaultValue: 1,
         numericValueRange: [0, maxConcurrentRequestsMaxValue]
+    },
+
+    preserveOriginalLetterCase: {
+        name: "preserve-original-letter-case",
+        aliases: ["po"],
+        description: strings.PRESERVE_ORIGINAL_LETTER_CASE,
+        type: "boolean",
+        defaultValue: false
+    },
+
+    failFast: {
+        name: "fail-fast",
+        aliases: ["ff"],
+        description: strings.FAIL_FAST,
+        type: "boolean",
+        defaultValue: true
     }
 };

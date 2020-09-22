@@ -21,6 +21,12 @@ exports[`Create C Data Set Success scenarios should create a c partitioned data 
 }"
 `;
 
+exports[`Create C Data Set Success scenarios should create a c partitioned data set with response timeout 1`] = `
+"================Z/OS FILES CREATE DATA-SET-C===============
+Data set created successfully.
+"
+`;
+
 exports[`Create C Data Set Success scenarios should create a c partitioned data set with specified primary allocation 1`] = `
 "================Z/OS FILES CREATE DATA-SET-C===============
 dsorg:     PO

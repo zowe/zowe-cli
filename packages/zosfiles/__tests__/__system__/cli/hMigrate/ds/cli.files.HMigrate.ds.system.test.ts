@@ -23,6 +23,7 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let dataSetName1: string;
 let dataSetName2: string;
+let dataSetName3: string;
 let user: string;
 let REAL_SESSION: Session;
 
@@ -31,6 +32,7 @@ const listOptions: IListOptions = { attributes: true };
 const scriptsLocation = join(__dirname, "__scripts__", "command");
 const migrateScript = join(scriptsLocation, "command_migrate_data_set.sh");
 const migrateScriptWait = join(scriptsLocation, "command_migrate_data_set_wait.sh");
+const migrateScriptResponseTimeout = join(scriptsLocation, "command_migrate_data_set_response_timeout.sh");
 
 describe("Migrate Dataset", () => {
   beforeAll(async () => {
@@ -42,8 +44,9 @@ describe("Migrate Dataset", () => {
     REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
     user = defaultSystem.zosmf.user.trim().toUpperCase();
-    dataSetName1 = `${user}.SDATAC.SET`;
-    dataSetName2 = `${user}.PDATAC.SET`;
+    dataSetName1 = `${user}.SDATAC.MIGR`;
+    dataSetName2 = `${user}.PDATAC.MIGR`;
+    dataSetName3 = `${user}.FAIL.MIGR`;
   });
 
   afterAll(async () => {
@@ -52,8 +55,10 @@ describe("Migrate Dataset", () => {
 
   afterEach(async () => {
     try {
-      await Delete.dataSet(REAL_SESSION, dataSetName1);
-      await Delete.dataSet(REAL_SESSION, dataSetName2);
+      await Promise.all([
+        Delete.dataSet(REAL_SESSION, dataSetName1),
+        Delete.dataSet(REAL_SESSION, dataSetName2),
+        Delete.dataSet(REAL_SESSION, dataSetName3)]);
     } catch (err) {
       Imperative.console.info(`Error: ${inspect(err)}`);
     }
@@ -64,9 +69,29 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
+      });
+      it("Should migrate a data set", async () => {
+        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName1]);
+        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
+
+        expect(list1.apiResponse.items[0].migr).toBe("YES");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+      });
+      it("Should migrate a data set with response timeout", async () => {
+        const response = runCliScript(migrateScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1]);
+        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
+
+        expect(list1.apiResponse.items[0].migr).toBe("YES");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };
@@ -84,16 +109,36 @@ describe("Migrate Dataset", () => {
       beforeEach(async () => {
         try {
           await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
-      } catch (err) {
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
+      });
+      it("Should migrate a data set", async () => {
+        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, [dataSetName2]);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+        expect(list2.apiResponse.items[0].migr).toBe("YES");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
+      });
+      it("Should migrate a data set with response timeout", async () => {
+        const response = runCliScript(migrateScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2]);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+        expect(list2.apiResponse.items[0].migr).toBe("YES");
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("Data set migraton requested.");
       });
       it("Should migrate a data set with wait = true", async () => {
         const migrateOptions: IMigrateOptions = { wait: true };
         const response = runCliScript(migrateScriptWait, TEST_ENVIRONMENT, [dataSetName2, migrateOptions]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
-        expect(list1.apiResponse.items[0].migr).toBe("YES");
+        expect(list2.apiResponse.items[0].migr).toBe("YES");
 
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -105,13 +150,13 @@ describe("Migrate Dataset", () => {
     describe("Sequential Data Set", () => {
       beforeEach(async () => {
         try {
-          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
-      } catch (err) {
+          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
+        } catch (err) {
           Imperative.console.info(`Error: ${inspect(err)}`);
-      }
+        }
       });
       it("Should throw an error if a missing data set name is selected", async () => {
-        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, ["MISSING.DATA.SET", dataSetName1]);
+        const response = runCliScript(migrateScript, TEST_ENVIRONMENT, ["", dataSetName3]);
 
         expect(response.stderr.toString()).toBeTruthy();
         expect(response.status).toBe(1);

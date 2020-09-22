@@ -7,27 +7,6 @@ The following options conflict (mutually exclusive):
 --wait-for-active
 --directory
 
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---password (--pass,--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
-
 Example:
 
  - Submit the JCL in the file \\"iefbr14.txt\\":
@@ -44,27 +23,6 @@ Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
 --view-all-spool-content
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---password (--pass,--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
 Example:
 
@@ -93,27 +51,6 @@ exports[`zos-jobs submit local-file command syntax errors should occur if the lo
 Syntax Error:
 Missing Positional Argument: localFile
 Argument Description: The local file containing the JCL to submit.
-
-Syntax Error:
-Missing Required Option:
---host (-H)
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
-Missing Required Option:
---user (-u)
-
-Option Description:
-Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-Syntax Error:
-Missing Required Option:
---password (--pass,--pw)
-
-Option Description:
-Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
 Example:
 
