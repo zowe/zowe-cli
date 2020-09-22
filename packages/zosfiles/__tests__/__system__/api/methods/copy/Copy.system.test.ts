@@ -373,9 +373,9 @@ describe("Copy", () => {
                 try {
                     response = await Copy.dataSet(
                         REAL_SESSION,
-                        { dataSetName: toDataSetName, memberName: file2 },
+                        { dsn: toDataSetName, member: file2 },
                         {
-                            fromDataSet: { dataSetName: fromDataSetName, memberName: file1 },
+                            "from-dataset": { dsn: fromDataSetName, member: file1 },
                             responseTimeout: 5
                         }
                     );
