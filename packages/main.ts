@@ -11,74 +11,6 @@
 */
 
 import { PerfTiming } from "@zowe/perf-timing";
-import * as net from "net";
-
-
-// TODO(Kelosky): handle prompting cases from login command
-// TODO(Kelosky): can more of this be moved to imperative
-// TODO(Kelosky): console needs to be logs
-
-// get command args
-const numOfParms = process.argv.length - 2;
-
-let server: net.Server;
-const defaultPort = 4000;
-let port = defaultPort;
-let useServer = false;
-
-if (numOfParms > 0) {
-    const parm = process.argv[2];
-
-    const daemonKey = "--daemon";
-    const daemonPortKey = "--daemon=";
-    const portOffset = parm.indexOf(daemonKey);
-
-
-    if (portOffset > -1) {
-        const portKeyOffset = parm.indexOf(daemonPortKey);
-        if (portKeyOffset > -1) {
-            port = parseInt(parm.substr(daemonPortKey.length, parm.length - daemonPortKey.length), 10);
-        }
-        console.log(`port ${port}`);
-
-        server = net.createServer((c) => {
-            console.log('client connected');
-            c.on('end', () => {
-                console.log('client disconnected');
-            });
-            c.on('close', () => {
-                console.log('client closed');
-            })
-            c.on('data', (data: Buffer) => {
-                // TODO(Kelosky): get cwd from daemon client
-                const stopKey = "--shutdown";
-                const stopOffset = data.toString().indexOf(stopKey);
-                if (stopOffset > -1) {
-                    if (server) {
-                        console.log("shutting down")
-                        c.end();
-                        server.close()
-                    }
-                } else {
-                    console.log(`command ${data.toString()}`)
-                    Imperative.parse(data.toString(), { stream: c });
-                }
-            })
-        });
-
-        server.on('error', (err) => {
-            console.log(`server error`)
-            throw err;
-        });
-
-        server.on('close', () => {
-            console.log(`server closed`)
-        })
-    }
-
-
-}
-
 const timingApi = PerfTiming.api;
 
 timingApi.mark("PRE_IMPORT_IMPERATIVE");
@@ -86,6 +18,9 @@ timingApi.mark("PRE_IMPORT_IMPERATIVE");
 import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
+import * as net from "net";
+
+let sock: net.Socket;
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
@@ -99,6 +34,73 @@ const config: IImperativeConfig = {
     try {
         timingApi.mark("BEFORE_INIT");
         await Imperative.init(config);
+
+        // NOTE(Kelosky): DAEMON testing
+
+        // TODO(Kelosky): handle prompting cases from login command
+        // TODO(Kelosky): can more of this be moved to imperative
+        // TODO(Kelosky): console needs to be logs
+
+        // get command args
+        const numOfParms = process.argv.length - 2;
+
+        let server: net.Server;
+        const defaultPort = 4000;
+        let port = defaultPort;
+
+        if (numOfParms > 0) {
+            const parm = process.argv[2];
+
+            const daemonKey = "--daemon";
+            const daemonPortKey = "--daemon=";
+            const portOffset = parm.indexOf(daemonKey);
+
+            if (portOffset > -1) {
+                const portKeyOffset = parm.indexOf(daemonPortKey);
+                if (portKeyOffset > -1) {
+                    port = parseInt(parm.substr(daemonPortKey.length, parm.length - daemonPortKey.length), 10);
+                }
+                Imperative.api.appLogger.debug(`daemon server port ${port}`);
+
+                server = net.createServer((c) => {
+                    sock = c;
+                    Imperative.api.appLogger.trace('daemon client connected');
+                    c.on('end', () => {
+                        Imperative.api.appLogger.trace('daemon client disconnected');
+                    });
+                    c.on('close', () => {
+                        Imperative.api.appLogger.trace('client closed');
+                    })
+                    c.on('data', (data: Buffer) => {
+                        // TODO(Kelosky): get cwd from daemon client
+                        const stopKey = "--shutdown";
+                        const stopOffset = data.toString().indexOf(stopKey);
+                        if (stopOffset > -1) {
+                            if (server) {
+                                Imperative.api.appLogger.debug("shutting down")
+                                c.end();
+                                server.close()
+                            }
+                        } else {
+                            Imperative.api.appLogger.trace(`daemon input command: ${data.toString()}`)
+                            Imperative.parse(data.toString(), { stream: c });
+                        }
+                    })
+                });
+
+                server.on('error', (err) => {
+                    Imperative.api.appLogger.error(`daemon server error: ${err}`)
+                    throw err;
+                });
+
+                server.on('close', () => {
+                    Imperative.api.appLogger.debug(`server closed`)
+                })
+            }
+        }
+
+        // NOTE(Kelosky): DAEMON testing
+
         timingApi.mark("AFTER_INIT");
         timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");
 
@@ -108,7 +110,9 @@ const config: IImperativeConfig = {
 
         if (server) {
             server.listen(port, () => {
-                console.log(`server bound ${port}`);
+                Imperative.api.appLogger.debug(`daemon server bound ${port}`);
+                sock.write("got it");
+                sock.end();
             });
         } else {
             Imperative.parse();
