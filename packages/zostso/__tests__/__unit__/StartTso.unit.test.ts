@@ -277,9 +277,6 @@ describe("StartTso start", () => {
 
         expect((StartTso.startCommon as any)).toHaveBeenCalledTimes(1);
         expect((StartTso.startCommon as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_REQUIRED_PARMS);
-        console.log("eyecatcher");
-        console.log(error);
-        console.log(error.message);
         expectStartResponseSucceeded(response, error);
     });
 
