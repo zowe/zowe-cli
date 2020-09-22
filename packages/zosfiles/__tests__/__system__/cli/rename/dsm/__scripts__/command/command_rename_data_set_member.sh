@@ -5,7 +5,7 @@ afterMemberName=$3
 set -e
 
 echo "================Z/OS FILES RENAME DSM==============="
-zowe zos-files rename data-set-member $dataSetName $beforeMemberName $afterMemberName
+zowe zos-files rename data-set-member $dataSetName $beforeMemberName $afterMemberName $4
 
 if [ $? -gt 0 ]
 then

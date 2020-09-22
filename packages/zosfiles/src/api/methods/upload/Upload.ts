@@ -488,12 +488,14 @@ export class Upload {
                                         binary: boolean = false,
                                         localEncoding?: string,
                                         etag?: string,
-                                        returnEtag?: boolean) {
+                                        returnEtag?: boolean,
+                                        responseTimeout?: number) {
         return this.bufferToUssFile(session, ussname, buffer, {
             binary,
             localEncoding,
             etag,
-            returnEtag
+            returnEtag,
+            responseTimeout
         });
     }
 
@@ -1020,15 +1022,29 @@ export class Upload {
                 } else if (options.localEncoding) {
                     reqHeaders.push({"Content-Type": options.localEncoding});
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                } else if (options.encoding) {
+                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                    const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+                    header[keys[0]] = value;
+                    reqHeaders.push(header);
                 } else {
                     reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
                 }
+                if (options.responseTimeout != null) {
+                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                }
                 break;
             default:
-                if (options.binary) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
-                } else {
+                const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+                if (headers.length === 0) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                } else if (headers.length === 1 &&
+                           ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT in headers[0]) {
+                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                    reqHeaders.push(...headers);
+                } else {
+                    reqHeaders.push(...headers);
                 }
                 break;
         }

@@ -20,7 +20,11 @@ import {
     IHandlerResponseDataApi,
     IHandlerProgressApi,
     IImperativeError,
-    ImperativeError
+    ImperativeError,
+    IProfileLoaded,
+    ISession,
+    Session,
+    ConnectionPropsForSessCfg
 } from "@zowe/imperative";
 import { ZosmfSession } from "../index";
 
@@ -38,6 +42,11 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * Loaded z/OSMF profile if needed
      */
     protected mZosmfProfile: IProfile;
+
+    /**
+     * Loaded z/OSMF profile with meta information
+     */
+    protected mZosmfLoadedProfile: IProfileLoaded;
 
     /**
      * Command line arguments passed
@@ -60,7 +69,17 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
         this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
-        this.mSession = ZosmfSession.createBasicZosmfSessionFromArguments(commandParameters.arguments);
+        this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
+
+        const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
+            commandParameters.arguments
+        );
+
+        const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            sessCfg, commandParameters.arguments
+        );
+
+        this.mSession = new Session(sessCfgWithCreds);
         this.mArguments = commandParameters.arguments;
         await this.processCmd(commandParameters);
     }

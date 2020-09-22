@@ -34,7 +34,9 @@ export default class FileToDataSetHandler extends ZosFilesBaseHandler {
             {
                 volume: commandParameters.arguments.volumeSerial,
                 binary: commandParameters.arguments.binary,
-                task
+                encoding: commandParameters.arguments.encoding,
+                task,
+                responseTimeout: commandParameters.arguments.responseTimeout
             });
 
         if (response.apiResponse) {

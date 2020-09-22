@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files recall ds command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "w",
+    ],
+    "defaultValue": false,
+    "description": "If true then the function waits for completion of the request. If false (default) the request is queued.",
+    "name": "wait",
+    "required": false,
+    "type": "boolean",
+  },
+]
+`;
+
+exports[`zos-files recall ds command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Recall a data set using default options",
+    "options": "\\"USER.DATA.SET\\"",
+  },
+]
+`;

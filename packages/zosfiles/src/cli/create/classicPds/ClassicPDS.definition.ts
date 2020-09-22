@@ -49,7 +49,7 @@ export const ClassicPDSDefinition: ICommandDefinition = {
         {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.CLASSIC.recfm},
         {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.CLASSIC.blksize},
         {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.CLASSIC.lrecl},
-        ZosFilesCreateOptions.storeclass,
+        ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,

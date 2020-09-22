@@ -22,11 +22,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         const fromDataSet: IDataSet = getDataSet(commandParameters.arguments.fromDataSetName);
         const toDataSet: IDataSet = getDataSet(commandParameters.arguments.toDataSetName);
-        const options: ICopyDatasetOptions = {
-            "from-dataset": fromDataSet,
-            "enq": commandParameters.arguments.enq,
-            "replace": commandParameters.arguments.replace
-        };
+        const options: ICopyDatasetOptions = { "from-dataset": fromDataSet, responseTimeout: commandParameters.arguments.responseTimeout };
 
         return Copy.dataSet(session, toDataSet, options);
     }

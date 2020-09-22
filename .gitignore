@@ -92,3 +92,5 @@ imperative_debug.log
 .DS_Store
 
 /web-help/dist/
+
+*.bat

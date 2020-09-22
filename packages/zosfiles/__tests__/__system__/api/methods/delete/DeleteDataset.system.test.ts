@@ -67,6 +67,24 @@ describe("Delete Dataset", () => {
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletedSuccessfully.message);
         });
+
+        it("should delete a partitioned data set with response timeout", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.datasetDeletedSuccessfully.message);
+        });
     });
 
     describe("Failure scenarios", () => {

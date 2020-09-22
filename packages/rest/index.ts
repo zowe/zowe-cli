@@ -9,6 +9,6 @@
 *
 */
 
-export * from "./src/doc/IHeaderContent";
-export * from "./src/ZosmfHeaders";
-export * from "./src/ZosmfRestClient";
+export * from "./src/api/doc/IHeaderContent";
+export * from "./src/api/ZosmfHeaders";
+export * from "./src/api/ZosmfRestClient";

@@ -1,6 +1,6 @@
 # Versioning
 
-This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides [examples](#example-timeline) on how such scheme works.
+This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides [examples](#example-timeline) on how the scheme works.
 
 We highly recommend that consumers adhere to the [requirements](#requirements), [tentative release schedule](#tentative-release-schedule), and [tag usage](#tag-usage) for versioning.
 
@@ -42,29 +42,35 @@ We use the following terms for the three digits (instead of `major.minor.patch`)
 
 We tag various releases of our product in an NPM registry. End users install the product using these tags. The tag names are as follows:
 
-* **`daily`**
+* **`next`**
 
    This tag points to the most recent pre-release snapshot (alpha version) of the product. It is available for validation until the next snapshot is taken after a feature completion or bug fix.
 
+   **Note:** This version (what the tag points to) is pre-release. It may be unstable and is published sporadically. Breaking changes can be introduced to this version at any time.
+
 * **`latest`**
 
-   This tag points to the latest community edition version of the product. This version is intended for public consumption.
+   This tag points to the "Active Development" version of the CLI. Breaking changes can be introduced to this version at any time.
+
+* **`zowe-v1-lts`**
+
+   This tag points to the current Long Term Support (LTS) version of the product.
+
+   **Note:** This version (what the tag points to) will be updated to introduce backward-compatible enhancements and bug fixes, but *not* breaking changes.
 
 * **`lts-incremental`**
 
-   This tag points to a Long Term Support (LTS) Incremental version of the product.
+   This tag points to a a previous Long Term Support (LTS) version of the product.
 
-   **Note:** This version (what the tag points to) can and will be updated to introduce new backward-compatible enhancements as well as bug fixes.
+   **Note:** This version (what the tag points to) will only be updated to provide bug fixes.
 
-* **`lts-stable`**
-
-  This tag points to a Long Term Support (LTS) Stable version of the product.
-
-  **Note:** This version (what the tag points to) can and will be updated only when there are bug fixes.
-
-* **`next` *DEPRECATED***
+* **`lts-stable` *DEPRECATED***
 
   This tag is deprecated.
+
+* **`daily` *DEPRECATED***
+
+   This tag is deprecated.
 
 See the [example timeline](#example-timeline) for examples that show how the above versions will be updated.
 
@@ -73,7 +79,7 @@ See the [example timeline](#example-timeline) for examples that show how the abo
 Our versioning scheme has the following requirements:
 
 * New features are not introduced for bug fixes.
-* Support two stable releases: `@lts-incremental` and `@lts-stable`
+* Support two stable releases: `@zowe-v1-lts` and `@lts-incremental`
 * Each release must be supported for a minimum of one calendar year.
 
 ## Tentative Release Schedule
@@ -94,7 +100,7 @@ The following table shows a tentative Zowe CLI release schedule:
 
 ## Tag Usage
 
-The following is a list of commands that users issue to install product versions: 
+The following is a list of commands that users issue to install product versions:
 
 * To obtain the most current community edition version:
 
@@ -102,11 +108,11 @@ The following is a list of commands that users issue to install product versions
 
 * To obtain the supported incremental version:
 
-  `npm install -g @brightside/core@lts-incremental`
+  `npm install -g @zowe/cli@zowe-v1-lts`
 
 * To obtain the supported stable version:
 
-  `npm install -g @brightside/core@lts-stable`
+  `npm install -g @brightside/core@lts-incremental`
 
 
 ## Example timeline
@@ -268,7 +274,7 @@ You can specify pre-release versions for plug-ins using one of the following met
 
     Such a version matches only this one snapshot of the Zowe CLI or Imperative pre-release. The plug-in will have to change the version string with each new pre-release snapshot. This requires frequent updates to the plug-in's package.json file, but helps to ensure that the plug-in will never be accidentally compatible with a later stable version of that dependency.
 
-* The plug-in can specify that it wants any version of the peerDependency starting with the earliest version of the current pre-release and any later version going forward. 
+* The plug-in can specify that it wants any version of the peerDependency starting with the earliest version of the current pre-release and any later version going forward.
 
     **Example:**
 

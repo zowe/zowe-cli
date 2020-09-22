@@ -16,7 +16,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "../../../../../../rest";
-import { ZosmfHeaders } from "../../../../../../rest/src/ZosmfHeaders";
+import { ZosmfHeaders } from "../../../../../../rest/src/api/ZosmfHeaders";
 import { IZosmfListResponse } from "../../../../../src/api/methods/list/doc/IZosmfListResponse";
 import { Utilities, Tag } from "../../../../../src/api";
 
@@ -85,6 +85,24 @@ describe("Get", () => {
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname);
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.toString()).toEqual(data);
+            });
+
+            it("should get data set content with response timeout", async () => {
+                let error;
+                let response: Buffer;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
                 } catch (err) {
                     error = err;
                 }

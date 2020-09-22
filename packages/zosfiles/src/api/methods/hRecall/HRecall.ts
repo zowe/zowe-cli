@@ -9,18 +9,14 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, IHeaderContent, Headers } from "@zowe/imperative";
-
-import { posix } from "path";
-
-import { ZosmfRestClient } from "../../../../../rest";
-import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
+import { AbstractSession } from "@zowe/imperative";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IRecallOptions } from "./doc/IRecallOptions";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
+import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
 /**
- * This class holds helper functions that are used to recall files through the
+ * This class holds helper functions that are used to recall data sets through the
  * z/OSMF APIs.
  */
 export class HRecall {
@@ -35,39 +31,19 @@ export class HRecall {
      * @throws {ImperativeError} Data set name must be specified as a non-empty string
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      *
-     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
+     * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.4.0/com.ibm.zos.v2r4.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
-    public static async dataSet(session: AbstractSession,
-                                dataSetName: string,
-                                options: Partial<IRecallOptions> = {}): Promise<IZosFilesResponse> {
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
-
-        try {
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName);
-
-            Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
-
-            const payload = { request: "hrecall" } as any;
-
-            if(options.wait != null) {
-                payload.wait = options.wait;
-            }
-
-            const headers: IHeaderContent[] = [
-              Headers.APPLICATION_JSON,
-              { "Content-Length": JSON.stringify(payload).length.toString() }
-            ];
-
-            await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
-
-            return {
-                success        : true,
-                commandResponse: ZosFilesMessages.datasetRecalledSuccessfully.message
-            };
-        } catch (error) {
-            Logger.getAppLogger().error(error);
-            throw error;
-        }
+    public static async dataSet(
+        session: AbstractSession,
+        dataSetName: string,
+        options: Partial<IRecallOptions> = {}
+    ): Promise<IZosFilesResponse> {
+        return ZosFilesUtils.dfsmsHsmCommand(
+            session,
+            dataSetName,
+            ZosFilesMessages.datasetRecallRequested.message,
+            { request: "hrecall" },
+            options
+        );
     }
 }

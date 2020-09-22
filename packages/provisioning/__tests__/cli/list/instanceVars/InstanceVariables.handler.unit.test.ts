@@ -25,6 +25,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["provisioning", "list", "instance-variables"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
+    positionals: ["provisioning", "list", "instance-variables"],
     response: getMockedResponse(),
     definition: instanceVariables,
     fullDefinition: instanceVariables,

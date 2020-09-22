@@ -13,8 +13,7 @@ import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Log
 
 import { posix } from "path";
 
-import { ZosmfRestClient } from "../../../../../rest";
-import { ZosmfHeaders } from "../../../../../rest/src/ZosmfHeaders";
+import { ZosmfRestClient, ZosmfHeaders } from "../../../../../rest";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -47,7 +46,11 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName, ZosFilesConstants.RES_DS_MEMBERS);
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName, ZosFilesConstants.RES_DS_MEMBERS);
+
+            if (options.pattern) {
+                endpoint += `?pattern=${options.pattern}`;
+            }
 
             let reqHeaders: IHeaderContent[] = [];
             if (options.attributes) {
@@ -57,6 +60,9 @@ export class List {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);
@@ -106,6 +112,9 @@ export class List {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
             // Migrated recall options
@@ -164,6 +173,9 @@ export class List {
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -208,6 +220,9 @@ export class List {
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
             }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -249,6 +264,9 @@ export class List {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
                 reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
+            }
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
 
             this.log.debug(`Endpoint: ${endpoint}`);

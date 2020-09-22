@@ -6,7 +6,19 @@ Data set copied successfully.
 "
 `;
 
+exports[`Copy data set success scenarios member > member should copy a data set from the command with response timeout 1`] = `
+"================Z/OS FILES COPY DS===============
+Data set copied successfully.
+"
+`;
+
 exports[`Copy data set success scenarios member > sequential should copy a data set from the command 1`] = `
+"================Z/OS FILES COPY DS===============
+Data set copied successfully.
+"
+`;
+
+exports[`Copy data set success scenarios member > sequential should copy a data set from the command with response timeout 1`] = `
 "================Z/OS FILES COPY DS===============
 Data set copied successfully.
 "
@@ -18,7 +30,19 @@ Data set copied successfully.
 "
 `;
 
+exports[`Copy data set success scenarios sequential > member should copy a data set from the command with response timeout 1`] = `
+"================Z/OS FILES COPY DS===============
+Data set copied successfully.
+"
+`;
+
 exports[`Copy data set success scenarios sequential > sequential should copy a data set from the command 1`] = `
+"================Z/OS FILES COPY DS===============
+Data set copied successfully.
+"
+`;
+
+exports[`Copy data set success scenarios sequential > sequential should copy a data set from the command with response timeout 1`] = `
 "================Z/OS FILES COPY DS===============
 Data set copied successfully.
 "

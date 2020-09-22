@@ -69,6 +69,24 @@ describe("Delete a USS File", () => {
             expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
         });
 
+        it("should delete a uss file with response timeout", async () => {
+            let error;
+            let response;
+
+            try {
+                response = await Delete.ussFile(REAL_SESSION, filename, undefined, {responseTimeout: 5});
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(ZosFilesMessages.ussFileDeletedSuccessfully.message);
+        });
+
         it("should delete a uss file even if it has multiple slashes pre-pended", async () => {
             let error;
             let response;

@@ -113,7 +113,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return wfArray;
             });
@@ -197,7 +197,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return null;
             });
@@ -277,7 +277,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return null;
             });
@@ -432,7 +432,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListWorkflows.listWorkflows = jest.fn((session) => {
+            ListWorkflows.getWorkflows = jest.fn((session) => {
                 fakeSession = session;
                 return wfArray;
             });

@@ -40,6 +40,7 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
         _: ["provisioning", "list", "catalog-templates"],
         ...ZOSMF_PROF_OPTS
     },
+    positionals: ["provisioning", "list", "catalog-templates"],
     response: {
         data: {
             setMessage: jest.fn((setMsgArgs) => {

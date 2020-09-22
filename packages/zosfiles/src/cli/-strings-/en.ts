@@ -95,14 +95,14 @@ export default {
                     CYLS_PRI: "The number of primary cylinders to allocate for the ZFS.",
                     CYLS_SEC: "The number of secondary cylinders to allocate for the ZFS.",
                     VOLUMES: "The storage volumes on which to allocate the z/OS file system. Specify a single volume by its volume serial " +
-                    "(VOLSER). To specify more than one volume, separate each VOLSER with a space. You must specify the volumes option when your " +
-                    "cluster is not SMS-managed.",
+                        "(VOLSER). To specify more than one volume, separate each VOLSER with a space. You must specify the volumes option " +
+                        "when your cluster is not SMS-managed.",
                     TIMEOUT: `The number of seconds to wait for the underlying "zfsadm format" command to complete. If this command times out, ` +
-                    `the ZFS may have been created but not formatted correctly.`
+                        `the ZFS may have been created but not formatted correctly.`
                 },
                 EXAMPLES: {
                     DEFAULT_VALUES: `Create a ZFS named "HLQ.MYNEW.ZFS" using default values of 755 permissions, 10 primary and 2 secondary ` +
-                    `cylinders allocated, and a timeout of 20 seconds`,
+                        `cylinders allocated, and a timeout of 20 seconds`,
                     SPECIFY_CYLS: `Create a ZFS with 100 primary and 10 secondary cylinders allocated`,
                     SPECIFY_VOLUMES: `Create a ZFS specifying the volumes that should be used`
                 }
@@ -151,7 +151,7 @@ export default {
             RECFM: `The record format for the data set (for example, FB for "Fixed Block")`,
             BLKSIZE: "The block size for the data set (for example, 6160)",
             LRECL: "The logical record length. Analogous to the length of a line (for example, 80)",
-            STORECLASS: "The SMS storage class to use for the allocation",
+            STORCLASS: "The SMS storage class to use for the allocation",
             MGNTCLASS: "The SMS management class to use for the allocation",
             DATACLASS: "The SMS data class to use for the allocation",
             DSNTYPE: "The data set type",
@@ -198,6 +198,19 @@ export default {
                 EXAMPLES: {
                     EX1: "Delete the data set named 'ibmuser.cntl'",
                     EX2: "Delete the data set member named 'ibmuser.cntl(mem)'"
+                }
+            },
+            MIGRATED_DATA_SET: {
+                DESCRIPTION: "Delete migrated data sets.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the migrated data set you want to delete."
+                },
+                OPTIONS: {
+                    WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
+                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
+                },
+                EXAMPLES: {
+                    EX1: `Delete a migrated data set using default options`
                 }
             },
             VSAM: {
@@ -318,6 +331,9 @@ export default {
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each line as-is, without translation. No delimiters are added between records.",
+            ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " +
+                "specified.",
+            FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
             EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension.  When no extension " +
@@ -338,7 +354,8 @@ export default {
                 "the following message displays:\n" +
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to download all members at once" +
-                " without a maximum number of concurrent requests. "
+                " without a maximum number of concurrent requests. ",
+            PRESERVE_ORIGINAL_LETTER_CASE: "Specifies if the automatically generated directories and files use the original letter case"
         }
     },
     INVOKE: {
@@ -384,7 +401,8 @@ export default {
                 EXAMPLES: {
                     EX1: `Show members of the data set "ibmuser.asm"`,
                     EX2: `Show attributes of members of the data set "ibmuser.cntl"`,
-                    EX3: `Show the first 5 members of the data set "ibmuser.cntl"`
+                    EX3: `Show the first 5 members of the data set "ibmuser.cntl"`,
+                    EX4: `Show the first 4 members of the data set "ibmuser.cntl" matching an input pattern"`
                 }
             },
             DATA_SET: {
@@ -431,6 +449,7 @@ export default {
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
+            PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. \"*\".",
             PATH: "Specifies the path where the file system is mounted." +
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
@@ -459,6 +478,10 @@ export default {
                 }
             }
         }
+    },
+    OPTIONS: {
+        RESPONSETIMEOUT: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
+        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600"
     },
     UNMOUNT: {
         SUMMARY: "Unmount file systems",
@@ -526,31 +549,31 @@ export default {
             DIR_TO_USS: {
                 SUMMARY: "Upload a local directory to a USS directory",
                 DESCRIPTION: "Upload a local directory to a USS directory.\n\n" +
-                "An optional .zosattributes file in the source directory can be used to control file conversion and tagging.\n\n" +
-                "An example .zosattributes file:{{space}}{{space}}\n" +
-                "# pattern        local-encoding        remote-encoding{{space}}{{space}}\n" +
-                "# Don't upload the node_modules directory{{space}}{{space}\n" +
-                "node_modules     -{{space}}{{space}\n" +
-                "# Don't upload files that start with periods{{space}}{{space}}\n" +
-                ".*               - {{space}}{{space}\n" +
-                "# Upload jpg images in binary{{space}}{{space}}\n" +
-                "*.jpg            binary                binary{{space}}{{space}}\n" +
-                "# Convert CICS Node.js profiles to EBCDIC{{space}}{{space}}\n" +
-                "*.profile        ISO8859-1             EBCDIC{{space}}{{space}}\n\n" +
-                "Lines starting with the ‘#’ character are comments. Each line can specify up to three positional attributes:\n"+
+                    "An optional .zosattributes file in the source directory can be used to control file conversion and tagging.\n\n" +
+                    "An example .zosattributes file:{{space}}{{space}}\n" +
+                    "# pattern        local-encoding        remote-encoding{{space}}{{space}}\n" +
+                    "# Don't upload the node_modules directory{{space}}{{space}\n" +
+                    "node_modules     -{{space}}{{space}\n" +
+                    "# Don't upload files that start with periods{{space}}{{space}}\n" +
+                    ".*               - {{space}}{{space}\n" +
+                    "# Upload jpg images in binary{{space}}{{space}}\n" +
+                    "*.jpg            binary                binary{{space}}{{space}}\n" +
+                    "# Convert CICS Node.js profiles to EBCDIC{{space}}{{space}}\n" +
+                    "*.profile        ISO8859-1             EBCDIC{{space}}{{space}}\n\n" +
+                    "Lines starting with the ‘#’ character are comments. Each line can specify up to three positional attributes:\n" +
 
-                "{{bullet}} A pattern to match a set of files. Pattern-matching syntax follows the same rules as those that apply in .gitignore "+
-                "files (note that negated patterns that begin with ‘!’ are not supported). " +
-                "See https://git-scm.com/docs/gitignore#_pattern_format.\n" +
-                "{{bullet}} A local-encoding to identify a file’s encoding on the local workstation. If '-' is specified for local-encoding," +
-                "files that match the pattern are not transferred.\n" +
-                "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
-                "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are transferred " +
-                " in binary mode. Remote files are tagged either with the remote encoding or as binary. \n \n" +
-                "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the " +
-                "z/OS system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n " +
-                "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
-                "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",
+                    "{{bullet}} A pattern to match a set of files. Pattern-matching syntax follows the same rules as those that apply " +
+                    "in .gitignore files (note that negated patterns that begin with ‘!’ are not supported). " +
+                    "See https://git-scm.com/docs/gitignore#_pattern_format.\n" +
+                    "{{bullet}} A local-encoding to identify a file’s encoding on the local workstation. If '-' is specified for local-encoding," +
+                    "files that match the pattern are not transferred.\n" +
+                    "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
+                    "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are transferred " +
+                    " in binary mode. Remote files are tagged either with the remote encoding or as binary. \n \n" +
+                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the " +
+                    "z/OS system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n " +
+                    "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
+                    "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",
 
                 POSITIONALS: {
                     INPUTDIR: "The local directory path that you want to upload to a USS directory",
@@ -558,14 +581,14 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory:"`,
-                    EX2: `Upload all files from the "local_dir" directory and all its sub-directories, `+
-                    `to the "/a/ibmuser/my_dir" USS directory:`,
+                    EX2: `Upload all files from the "local_dir" directory and all its sub-directories, ` +
+                        `to the "/a/ibmuser/my_dir" USS directory:`,
                     EX3: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                    `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
+                        `in default ASCII mode, while specifying a list of file names (without path) to be uploaded in binary mode:`,
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
-                    `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`,
+                        `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode:`,
                     EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
-                    `specifying files to ignore and file encodings in the local file my_global_attributes:`
+                        `specifying files to ignore and file encodings in the local file my_global_attributes:`
                 }
             }
         },
@@ -574,30 +597,95 @@ export default {
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Data content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each record as-is, without translation. No delimiters are added between records.",
+            ENCODING: "Data content in encoding mode, which means that data conversion is performed according to the encoding specified.",
             RECALL: "The method by which migrated data set is handled. By default, a migrated data set is recalled synchronously. You can " +
                 "specify the following values: wait, nowait, error",
             RECURSIVE: "Upload all directories recursively.",
             BINARY_FILES: "Comma separated list of file names to be uploaded in binary mode. " +
-            "Use this option when you upload a directory in default ASCII mode, " +
-            "but you want to specify certain files to be uploaded in binary mode. " +
-            "All files matching specified file names will be uploaded in binary mode. " +
-            "If a .zosattributes file (or equivalent file specified via --attributes) is present, "+
-            "--binary-files will be ignored.",
+                "Use this option when you upload a directory in default ASCII mode, " +
+                "but you want to specify certain files to be uploaded in binary mode. " +
+                "All files matching specified file names will be uploaded in binary mode. " +
+                "If a .zosattributes file (or equivalent file specified via --attributes) is present, " +
+                "--binary-files will be ignored.",
             ASCII_FILES: "Comma separated list of file names to be uploaded in ASCII mode. " +
-            "Use this option when you upload a directory with --binary/-b flag, " +
-            "but you want to specify certain files to be uploaded in ASCII mode. "  +
-            "All files matching specified file names will be uploaded in ASCII mode. " +
-            "If a .zosattributes file (or equivalent file specified via --attributes) is present, "+
-            "--ascii-files will be ignored.",
+                "Use this option when you upload a directory with --binary/-b flag, " +
+                "but you want to specify certain files to be uploaded in ASCII mode. " +
+                "All files matching specified file names will be uploaded in ASCII mode. " +
+                "If a .zosattributes file (or equivalent file specified via --attributes) is present, " +
+                "--ascii-files will be ignored.",
             ATTRIBUTES: "Path of an attributes file to control how files are uploaded",
             MAX_CONCURRENT_REQUESTS: "Specifies the maximum number of concurrent z/OSMF REST API requests to upload files." +
-            " Increasing the value results in faster uploads. " +
-            "However, increasing the value increases resource consumption on z/OS and can be prone " +
-            "to errors caused by making too many concurrent requests. If the upload process encounters an error, " +
-            "the following message displays:\n" +
-            "The maximum number of TSO address spaces have been created. When you specify 0, " +
-            Constants.DISPLAY_NAME + " attempts to upload all members at once" +
-            " without a maximum number of concurrent requests. "
+                " Increasing the value results in faster uploads. " +
+                "However, increasing the value increases resource consumption on z/OS and can be prone " +
+                "to errors caused by making too many concurrent requests. If the upload process encounters an error, " +
+                "the following message displays:\n" +
+                "The maximum number of TSO address spaces have been created. When you specify 0, " +
+                Constants.DISPLAY_NAME + " attempts to upload all members at once" +
+                " without a maximum number of concurrent requests. "
+        }
+    },
+    HMIGRATE: {
+        DESCRIPTION: "Migrate data sets.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Migrate a data set.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to migrate."
+                },
+                EXAMPLES: {
+                    EX1: `Migrate a data set using default options`
+                }
+            }
+        },
+        OPTIONS: {
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued."
+        }
+    },
+    HRECALL: {
+        DESCRIPTION: "Recall migrated data sets.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Recall a migrated data set.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set you want to recall."
+                },
+                EXAMPLES: {
+                    EX1: `Recall a data set using default options`
+                }
+            }
+        },
+        OPTIONS: {
+            WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued."
+        }
+    },
+    RENAME: {
+        DESCRIPTION: "Rename a data set or member.",
+        ACTIONS: {
+            DATA_SET: {
+                DESCRIPTION: "Rename a data set.",
+                POSITIONALS: {
+                    BEFOREDSNAME: "The name of the data set that you want to rename.",
+                    AFTERDSNAME: "The name you want to rename the data set to."
+                },
+                OPTIONS: {
+                },
+                EXAMPLES: {
+                    EX1: "Rename the data set named 'USER.BEFORE.SET' to 'USER.AFTER.SET.'"
+                }
+            },
+            DATA_SET_MEMBER: {
+                DESCRIPTION: "Rename a data set member.",
+                POSITIONALS: {
+                    DSNAME: "The name of the data set the member belongs to.",
+                    BEFOREMEMBERNAME: "The name of the data set member that you want to rename.",
+                    AFTERMEMBERNAME: "The name you want to rename the data set member to."
+                },
+                OPTIONS: {
+                },
+                EXAMPLES: {
+                    EX1: "In the data set 'USER.DATA.SET', rename the member named 'MEM1' to 'MEM2'."
+                }
+            }
         }
     },
     HMIGRATE: {

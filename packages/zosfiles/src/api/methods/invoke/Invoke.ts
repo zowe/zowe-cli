@@ -14,11 +14,12 @@ import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger } f
 import { posix } from "path";
 import * as util from "util";
 
-import { IHeaderContent, ZosmfRestClient } from "../../../../../rest";
+import { IHeaderContent, ZosmfRestClient, ZosmfHeaders } from "../../../../../rest";
 import { getErrorContext } from "../../../../../utils";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 
 /**
  * This class holds helper functions that are used to execute AMS control statements through the z/OS MF APIs
@@ -37,7 +38,7 @@ export class Invoke {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_PUTIDCAMSAccessMethodsServices.htm
      */
-    public static async ams(session: AbstractSession, controlStatements: string | string[]): Promise<IZosFilesResponse> {
+    public static async ams(session: AbstractSession, controlStatements: string | string[], options?: IZosFilesOptions): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(controlStatements, ZosFilesMessages.missingStatements.message);
         ImperativeExpect.toNotBeEqual(controlStatements.length, 0, ZosFilesMessages.missingStatements.message);
@@ -83,6 +84,10 @@ export class Invoke {
                     [Headers.CONTENT_LENGTH]: JSON.stringify(reqPayload).length.toString()
                 }
             ];
+
+            if (options && options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
             const response = await ZosmfRestClient.putExpectJSON(session, endpoint, reqHeaders, reqPayload);
             return {

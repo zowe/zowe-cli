@@ -270,6 +270,6 @@ Object {
 
 exports[`Monitor Jobs constant defaults should have a job status 1`] = `"OUTPUT"`;
 
-exports[`Monitor Jobs constant defaults should have a max attempts 1`] = `100`;
+exports[`Monitor Jobs constant defaults should have a max attempts 1`] = `Infinity`;
 
 exports[`Monitor Jobs constant defaults should have a watch delay interval 1`] = `3000`;

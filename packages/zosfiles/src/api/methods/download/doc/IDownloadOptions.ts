@@ -10,21 +10,12 @@
 */
 
 import { ITaskWithStatus } from "@zowe/imperative";
+import { IOptions } from "../../../doc/IOptions";
 
 /**
  * This interface defines the options that can be sent into the download data set function
  */
-export interface IDownloadOptions {
-
-    /**
-     * The volume where the data set resides
-     */
-    volume?: string;
-
-    /**
-     * The indicator to download the data set in binary mode
-     */
-    binary?: boolean;
+export interface IDownloadOptions extends IOptions {
 
     /**
      * The local file to download the data set to
@@ -58,7 +49,6 @@ export interface IDownloadOptions {
      */
     extensionMap?: { [key: string]: string };
 
-
     /**
      * The maximum REST requests to perform at once
      * Increasing this value results in faster downloads but increases resource consumption
@@ -69,17 +59,26 @@ export interface IDownloadOptions {
     maxConcurrentRequests?: number;
 
     /**
-     * Task status object used by CLI handlers to create progress bars
-     * for certain download requests such as downloading all members
-     * Optional
-     */
-    task?: ITaskWithStatus;
-
-    /**
      * The indicator to force return of ETag.
      * If set to 'true' it forces the response to include an "ETag" header, regardless of the size of the response data.
      * If it is not present, the the default is to only send an Etag for data sets smaller than a system determined length,
      * which is at least 8MB.
      */
     returnEtag?: boolean;
+
+    /**
+     * Indicates if the created directories and files use the original letter case, which is for data sets always uppercase.
+     * The default value is false for backward compability.
+     * If the option "directory" or "file" is provided, this option doesn't have any effect.
+     * This option has only effect on automatically generated directories and files.
+     */
+    preserveOriginalLetterCase?: boolean;
+
+    /**
+     * Indicates if a download operation for multiple files/data sets should fail as soon as the first failure happens.
+     * If set to true, the first failure will throw an error and abort the download operation.
+     * If set to false, individual download failures will be reported after all other downloads have completed.
+     * The default value is true for backward compatibility.
+     */
+    failFast?: boolean;
 }
