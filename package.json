@@ -44,7 +44,8 @@
   "typings": "packages/cli/lib/index.d.ts",
   "scripts": {
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "build": "gulp updateLicense && npm run clean && lerna run build && npm run lint && npm run checkTestsCompile && madge -c lib",
+    "bootstrap": "lerna bootstrap",
+    "build": "gulp updateLicense && npm run clean && lerna run build && npm run lint && npm run checkTestsCompile",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
     "postinstall": "node ./scripts/validatePlugins",
