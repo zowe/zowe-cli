@@ -36,9 +36,6 @@ const config: IImperativeConfig = {
         await Imperative.init(config);
 
         // TODO(Kelosky): handle prompting cases from login command
-        // TODO(Kelosky): can more of this be moved to imperative
-        // TODO(Kelosky): console needs to be logs
-        // TODO(Kelosky): cwd likely broken
         // TODO(Kelosky): help web broken
         // TODO(Kelosky): prompt* broken - hangs, must restart daemon
         // TODO(Kelosky): login broken
