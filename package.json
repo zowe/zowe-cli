@@ -14,7 +14,8 @@
   },
   "bin": {
     "bright": "./lib/main.js",
-    "zowe": "./lib/main.js"
+    "zowe": "./lib/main.js",
+    "zowe-daemon": "./lib/daemon.js"
   },
   "keywords": [
     "zosmf",
@@ -70,6 +71,7 @@
     "get-stdin": "7.0.0",
     "js-yaml": "3.13.1",
     "minimatch": "3.0.4",
+    "pm2": "^4.4.1",
     "ssh2": "0.8.7",
     "string-width": "2.1.1"
   },

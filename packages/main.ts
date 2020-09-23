@@ -43,7 +43,6 @@ const config: IImperativeConfig = {
         // TODO(Kelosky): prompt* broken - hangs, must restart daemon
         // TODO(Kelosky): login broken
         // TODO(Kelosky): timeout on connection for both sides to allow later reconnect
-        // TODO(Kelosky): display `--daemon` keyword in CLI help
         // TODO(Kelosky): display daemon cli (Rust client) help
 
         // get command args
@@ -56,6 +55,7 @@ const config: IImperativeConfig = {
         if (numOfParms > 0) {
             const parm = process.argv[2];
 
+            // NOTE(Kelosky): undocumented `--daemon` or `--daemon=<PORT>`
             const daemonKey = "--daemon";
             const daemonPortKey = "--daemon=";
             const portOffset = parm.indexOf(daemonKey);
