@@ -61,6 +61,8 @@ fn main() -> std::io::Result<()> {
             _resp = b" ";
         }
 
+        // TODO(Kelosky): perhaps start daemon if not already started / socket connect error??
+
         let mut stream = TcpStream::connect(daemon_host).unwrap();
         stream.write(_resp).unwrap(); // write it
         
