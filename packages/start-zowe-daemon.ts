@@ -29,7 +29,7 @@ pm2.connect((err) => {
 
     // start Zowe CLI process / daemon
     pm2.start({
-        args: `--daemon`,
+        args: `--daemon=${port}`,
         name: "zowe-daemon",
         script: "./lib/main.js"
     }, (startErr) => {
@@ -37,4 +37,5 @@ pm2.connect((err) => {
             throw startErr;
         }
     });
+
 });
