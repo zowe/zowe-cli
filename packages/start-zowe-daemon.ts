@@ -21,6 +21,8 @@ port = parseInt(port as string, 10); // throw error if non number
  * installed.
  */
 
+process.stdout.write("Daemon starting...\n");
+
 // start true daemon (if not started already)
 pm2.connect((err) => {
 
@@ -37,6 +39,7 @@ pm2.connect((err) => {
         if (startErr) {
             throw startErr;
         }
+        process.stdout.write("...daemon started.\n");
         pm2.disconnect()
     });
 
