@@ -36,6 +36,7 @@ fn main() -> std::io::Result<()> {
 
     else if _args.len() > 0 && _args[0] == "stop" {
 
+        // TODO(Kelosky): handle case where zowe --daemon is run directly by writing `stop`?? 
         Command::new("cmd").args(&["/c", "stop-zowe-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
     }
 
