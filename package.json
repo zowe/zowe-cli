@@ -16,7 +16,7 @@
     "bright": "./lib/main.js",
     "zowe": "./lib/main.js",
     "start-zowe-daemon": "./lib/start-zowe-daemon.js",
-    "restart-zowe-daemon": "./lib/start-zowe-daemon.js",
+    "restart-zowe-daemon": "./lib/restart-zowe-daemon.js",
     "stop-zowe-daemon": "./lib/stop-zowe-daemon.js"
   },
   "keywords": [

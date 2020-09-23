@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import * as pm2 from "pm2";
 
 /**
