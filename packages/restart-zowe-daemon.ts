@@ -13,6 +13,7 @@ pm2.connect((err) => {
         if (startErr) {
             throw startErr;
         }
+        pm2.disconnect();
     });
 
 });
