@@ -27,28 +27,24 @@ fn main() -> std::io::Result<()> {
             let mut daemon_parm = "--daemon=".to_owned();
             daemon_parm.push_str(&port_string);
             // NOTE(Kelosky): running `zowe` directly doesnt appear to be found: https://github.com/rust-lang/rust/issues/42791
-            // let zowe = Command::new("cmd").args(&["/c", "start-zowe-daemon.cmd", &daemon_parm]).output().expect("failed to run zowe CLI - is it on your path?");
-            let zowe = Command::new("cmd").args(&["/c", "start-zowe-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
+            let zowe = Command::new("cmd").args(&["/c", "zowe-start-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
             io::stdout().write_all(&zowe.stdout).unwrap();
-        } 
+        }
         // TODO(Kelosky): handle linux / mac OS
     }
 
     else if _args.len() > 0 && _args[0] == "stop" {
 
-        // TODO(Kelosky): handle case where zowe --daemon is run directly by writing `stop`?? 
-        Command::new("cmd").args(&["/c", "stop-zowe-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
+        Command::new("cmd").args(&["/c", "zowe-stop-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
     }
 
     else if _args.len() > 0 && _args[0] == "restart" {
 
-        Command::new("cmd").args(&["/c", "restart-zowe-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
+        Command::new("cmd").args(&["/c", "zowe-restart-daemon.cmd", &port_string]).output().expect("failed to run zowe CLI - is it on your path?");
     }
 
     else {
 
-        // TODO(Kelosky): if `--cwd` or `--current-working-directory` already found skip adding this parm
-        
         let mut val = _args.join(" "); // convert to single string
         val.push_str(" --cwd ");
         let path = env::current_dir()?;
@@ -61,11 +57,9 @@ fn main() -> std::io::Result<()> {
             _resp = b" ";
         }
 
-        // TODO(Kelosky): perhaps start daemon if not already started / socket connect error??
-
         let mut stream = TcpStream::connect(daemon_host).unwrap();
         stream.write(_resp).unwrap(); // write it
-        
+
         let mut buf = String::new();
         stream.read_to_string(&mut buf)?; // get response
         println!("{}", buf); // print it
