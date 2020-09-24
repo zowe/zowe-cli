@@ -37,3 +37,5 @@ export * from "./ProvisioningConstants";
 export * from "./ProvisioningService";
 export * from "./ProvisioningValidator";
 export * from "./ProvisionPublishedTemplate";
+
+export * from "./Utils";

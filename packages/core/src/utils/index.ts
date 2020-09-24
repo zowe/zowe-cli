@@ -10,3 +10,4 @@
 */
 
 export * from "./CoreUtils";
+export * from "./Utils";
