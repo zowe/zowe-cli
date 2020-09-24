@@ -14,10 +14,10 @@
   },
   "bin": {
     "bright": "./lib/main.js",
-    "zowe": "./lib/main.js",
-    "start-zowe-daemon": "./lib/start-zowe-daemon.js",
-    "restart-zowe-daemon": "./lib/restart-zowe-daemon.js",
-    "stop-zowe-daemon": "./lib/stop-zowe-daemon.js"
+    "zowe-start-daemon": "./lib/zowe-start-daemon.js",
+    "zowe-restart-daemon": "./lib/zowe-restart-daemon.js",
+    "zowe-stop-daemon": "./lib/zowe-stop-daemon.js",
+    "zowe": "./lib/main.js"
   },
   "keywords": [
     "zosmf",
@@ -70,10 +70,10 @@
   "dependencies": {
     "@zowe/imperative": "5.0.0-next.202009221839",
     "@zowe/perf-timing": "1.0.7",
+    "forever": "^3.0.2",
     "get-stdin": "7.0.0",
     "js-yaml": "3.13.1",
     "minimatch": "3.0.4",
-    "pm2": "^4.4.1",
     "ssh2": "0.8.7",
     "string-width": "2.1.1"
   },
