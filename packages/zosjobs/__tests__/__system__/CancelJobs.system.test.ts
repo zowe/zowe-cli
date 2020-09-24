@@ -80,11 +80,6 @@ describe("CancelJobs System tests", () => {
                 await CancelJobs.cancelJob(REAL_SESSION, "FAKEJOB", "JOB00001");
             } catch (e) {
                 err = e;
-                console.log(err);
-                console.log(err.stack);
-                console.log(err.message);
-                console.log(err.constructor);
-                console.log(err.constructor.name === RestClientError.name);
             }
             expect(err).toBeDefined();
             expect(err instanceof ImperativeError).toEqual(true);
