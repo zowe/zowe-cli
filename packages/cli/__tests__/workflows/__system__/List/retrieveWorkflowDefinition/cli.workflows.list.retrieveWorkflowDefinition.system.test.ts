@@ -26,7 +26,7 @@ let system: string;
 let owner: string;
 let wfName: string;
 let uniqueFileName: string;
-const workflow = join(__dirname, "../../../testfiles/demo.xml");
+const workflow = join(__dirname, "../../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
 
 describe("Retrieve workflow definition cli system tests", () => {
     beforeAll(async () => {

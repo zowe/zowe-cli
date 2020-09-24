@@ -80,8 +80,8 @@ describe("zosmf check status", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
-                "The user '" + SYSTEM_PROPS.zosmf.user +
-                "' successfully connected to z/OSMF"
+                "The user " + SYSTEM_PROPS.zosmf.user +
+                " successfully connected to z/OSMF"
             );
         });
     });
@@ -91,13 +91,13 @@ describe("zosmf check status", () => {
         it("should display successful connection to z/OSMF", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment);
             expect(response.stderr.toString()).toBe("");
-            expect(stripNewLines(response.stdout.toString())).toContain("The user '" + user + "' successfully connected to z/OSMF");
+            expect(stripNewLines(response.stdout.toString())).toContain("The user " + user + " successfully connected to z/OSMF");
         });
 
         it("should display successful connection to z/OSMF and print attributes", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment, ["--rfj"]);
             expect(response.stderr.toString()).toBe("");
-            expect(stripNewLines(response.stdout.toString())).toContain("The user '" + user + "' successfully connected to z/OSMF");
+            expect(stripNewLines(response.stdout.toString())).toContain("The user " + user + " successfully connected to z/OSMF");
         });
     });
 

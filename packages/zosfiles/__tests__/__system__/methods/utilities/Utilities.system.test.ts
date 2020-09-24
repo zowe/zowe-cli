@@ -20,7 +20,7 @@ let testEnvironment: ITestEnvironment;
 
 describe("USS Utilities", () => {
 
-    const localfile = "./packages/zosfiles/__tests__/__system__/api/methods/utilities/__data__/tagfile.txt";
+    const localfile = "./packages/zosfiles/__tests__/__system__/methods/utilities/__data__/tagfile.txt";
     let ussname: string;
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({

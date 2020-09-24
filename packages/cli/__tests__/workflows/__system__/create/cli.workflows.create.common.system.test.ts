@@ -30,8 +30,8 @@ let system: string;
 let owner: string;
 let wfName: string;
 let fakeLocalFile: string;
-const workflow = join(__dirname, "../../testfiles/demo.xml");
-const workflowDs = join(__dirname, "../../testfiles/demods.xml");
+const workflow = join(__dirname, "../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
+const workflowDs = join(__dirname, "../../../../../workflows/__tests__/__system__/testfiles/demods.xml");
 
 describe("Create workflow cli system tests", () => {
     beforeAll(async () => {
