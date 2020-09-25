@@ -19,4 +19,4 @@ import { execSync } from "child_process";
  * for `forever` but are found for `forever-monitor.
  */
 
-process.stdout.write(`${execSync("pm2 start lib/main.js --name zowe-daemon -- --daemon").toString()}`);
+process.stdout.write(`${execSync(`pm2 start ${__dirname}/main.js --name zowe-daemon -- --daemon`).toString()}`);
