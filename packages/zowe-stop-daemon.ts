@@ -13,4 +13,4 @@
 
 import { execSync } from "child_process";
 
-process.stdout.write(`${execSync("pm2 restart zowe-daemon").toString()}`);
+process.stdout.write(`${execSync("pm2 stop zowe-daemon").toString()}`);
