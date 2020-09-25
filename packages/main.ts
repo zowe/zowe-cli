@@ -43,6 +43,7 @@ const config: IImperativeConfig = {
         // TODO(Kelosky): display daemon cli (Rust client) help, e.g. fast-zowe profiles -rfj (missing extra `-`)
         // TODO(Kelosky): some command errors hang and daemon must be restarted
         // TODO(Kelosky): colors dont come through on some terminals
+        // TODO(Kelosky): stderr and exit code 1
 
         // get command args
         const numOfParms = process.argv.length - 2;

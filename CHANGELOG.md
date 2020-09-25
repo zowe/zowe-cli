@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added daemon mode proof of concept.
+
 ## `6.23.0`
 
 - Added `--pattern` option to `zowe files list am`
