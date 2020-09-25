@@ -64,6 +64,12 @@ const config: IImperativeConfig = {
                 const portKeyOffset = parm.indexOf(daemonPortKey);
                 if (portKeyOffset > -1) {
                     port = parseInt(parm.substr(daemonPortKey.length, parm.length - daemonPortKey.length), 10);
+                } else if (process.env.Zowe_DAEMON) {
+                    try {
+                        port = parseInt(process.env.Zowe_DAEMON, 10);
+                    } catch (err) {
+                        // do nothing
+                    }
                 }
                 Imperative.api.appLogger.debug(`daemon server port ${port}`);
 
