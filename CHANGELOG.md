@@ -2,16 +2,22 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.23.0`
+
+- Added `--pattern` option to `zowe files list am`
+
+## `6.22.0`
+
+- Enhancement: Added the `--encoding` option for the `zowe zos-files upload dir-to-pds` command. This option lets you upload multiple members with a single command. [#764](https://github.com/zowe/zowe-cli/issues/764)
+- BugFix: Fixed an issue where the output of the `zowe zos-uss issue ssh` command would sometimes omit the last line. [#795](https://github.com/zowe/zowe-cli/issues/795)
+
 ## `6.21.1`
 
-- Rename the `storeclass` z/OS Files API Option to `storclass` to fix defining the storage class on create dataset commands
+- BugFix: Renamed the z/OS Files API option from `storeclass` to `storclass`. This fixed an issue where the CLI could define the wrong storage class on `create dataset` commands. [#503](https://github.com/zowe/zowe-cli/issues/503)
 
 ## `6.21.0`
 
-- Added optional responseTimeout option to zosFiles APIs and CLI
-- Specifying `--responseTimeout ###` sets the TSO servlet response timeout
-  - z/OSMF default is 30 seconds, can be set to between 5 and 600 seconds (inclusive)
-- Adds responseTimeout to z/OSMF profile
+- Enhancement: Added a `--responseTimeout` option to the z/OS Files APIs, CLI commands, and z/OSMF profiles. Specify `--responseTimeout <###>` to set the number of seconds that the TSO servlet request runs before a timout occurs. The default is 30 seconds. You can set the option to between 5 and 600 seconds (inclusive). [#760](https://github.com/zowe/zowe-cli/issues/760)
 
 ## `6.20.0`
 
