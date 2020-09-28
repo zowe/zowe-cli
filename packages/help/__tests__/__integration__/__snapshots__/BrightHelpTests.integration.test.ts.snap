@@ -68,5 +68,9 @@ exports[`Root level help tests top level help should contain support link 1`] = 
 
       Display HTML help in browser
 
+   --current-working-directory  | --cwd (string)
+
+      Alternate current working directory
+
 "
 `;
