@@ -14,7 +14,9 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all-features --manifest-path zowe2/Cargo.toml
-      - uses: actions-rs/cargo@v1
+          args: --release --all-features
+          working-directory: zowe2
+      - uses: marcopolo/cargo@master
         with:
-          command: test --manifest-path zowe2/Cargo.toml
+          command: test
+          working-directory: zowe2
