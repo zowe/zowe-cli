@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-tso start group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/start/Start.definition").StartCommand;
+        const definition: ICommandDefinition = require("../../../../src/zostso/start/Start.definition").StartCommand;
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(1);
         delete definition.children;

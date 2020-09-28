@@ -9,17 +9,17 @@
 *
 */
 
-import { CheckStatus } from "../../../../../../zosmf";
+import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
-import CmdHandler from "../../../../src/check/status/Status.handler";
-import * as cmdDef from "../../../../src/check/status/Status.definition";
+import CmdHandler from "../../../../../src/zosmf/check/status/Status.handler";
+import * as cmdDef from "../../../../../src/zosmf/check/status/Status.definition";
 import {
     getMockedResponse,
     UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
-jest.mock("../../../../../../../packages/zosmf/src/CheckStatus");
+jest.mock("@zowe/zosmf-for-zowe-sdk");
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {

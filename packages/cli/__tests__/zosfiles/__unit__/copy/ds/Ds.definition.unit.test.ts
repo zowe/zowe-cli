@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/-strings-/en";
-import { DsDefinition } from "../../../../src/copy/ds/Ds.definition";
+import i18nEnglish from "../../../../../src/zosfiles/-strings-/en";
+import { DsDefinition } from "../../../../../src/zosfiles/copy/ds/Ds.definition";
 
 describe("DsDefinition", () => {
     it("should use the correct object for strings", () => {

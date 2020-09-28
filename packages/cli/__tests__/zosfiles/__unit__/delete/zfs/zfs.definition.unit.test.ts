@@ -13,7 +13,7 @@ import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 
 describe("zos-files delete zfs command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/delete/zfs/zfs.definition").ZfsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/delete/zfs/zfs.definition").ZfsDefinition;
 
         expect(definition).toBeDefined();
 

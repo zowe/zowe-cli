@@ -13,7 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("provisioning list instance vars definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/list/instanceVariables/InstanceVariables.definition").instanceVariables;
+        const definition: ICommandDefinition = require("../../../../../src/provisioning/list/instanceVariables/InstanceVariables.definition")
+            .instanceVariables;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

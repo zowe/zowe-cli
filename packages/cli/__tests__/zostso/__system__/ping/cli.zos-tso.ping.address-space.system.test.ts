@@ -12,7 +12,7 @@
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import * as fs from "fs";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { StartTso, StopTso } from "../../../../../../packages/zostso/index";
+import { StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";

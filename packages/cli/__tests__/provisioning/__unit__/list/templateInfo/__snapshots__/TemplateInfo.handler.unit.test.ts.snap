@@ -7,3 +7,11 @@ exports[`list catalog templates handler tests should be able to list catalog 1`]
 `;
 
 exports[`list catalog templates handler tests should be able to list catalog 2`] = `Object {}`;
+
+exports[`list template info handler tests should be able to list catalog 1`] = `
+"
+
+"
+`;
+
+exports[`list template info handler tests should be able to list catalog 2`] = `Object {}`;

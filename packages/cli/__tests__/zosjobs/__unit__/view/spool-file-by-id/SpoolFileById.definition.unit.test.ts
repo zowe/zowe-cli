@@ -13,7 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs view spool-file-by-id definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/view/spool-file-by-id/SpoolFileById.definition").SpoolFileByIdDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosjobs/view/spool-file-by-id/SpoolFileById.definition")
+            .SpoolFileByIdDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         expect(definition).toMatchSnapshot();

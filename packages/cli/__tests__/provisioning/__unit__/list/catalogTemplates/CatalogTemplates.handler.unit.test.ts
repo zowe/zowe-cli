@@ -9,11 +9,11 @@
 *
 */
 
-import { ProvisioningListMocks } from "../../../../../../../packages/provisioning/__tests__/__resources__/api/ProvisioningListMocks";
-import { ListCatalogTemplates } from "../../../../../../provisioning";
+import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";
+import { ListCatalogTemplates } from "@zowe/provisioning-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
-import * as Handler from "../../../../src/list/catalogTemplates/CatalogTemplates.handler";
-import { catalogTemplates } from "../../../../src/list/catalogTemplates/CatalogTemplates.definition";
+import * as Handler from "../../../../../src/provisioning/list/catalogTemplates/CatalogTemplates.handler";
+import { catalogTemplates } from "../../../../../src/provisioning/list/catalogTemplates/CatalogTemplates.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF,

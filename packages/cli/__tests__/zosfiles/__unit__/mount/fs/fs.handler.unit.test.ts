@@ -19,7 +19,7 @@ describe("Mount file system handler", () => {
     describe("process method", () => {
         it("should mount a FS if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/mount/fs/fs.handler");
+            const handlerReq = require("../../../../../src/zosfiles/mount/fs/fs.handler");
             const handler = new handlerReq.default();
             const fileSystemName = "TEST.ZFS";
             const mountPoint = "/u/ibmuser/mount";
@@ -105,7 +105,7 @@ describe("Mount file system handler", () => {
 
     it("should fail to mount a FS when there is an API error", async () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../src/mount/fs/fs.handler");
+        const handlerReq = require("../../../../../src/zosfiles/mount/fs/fs.handler");
         const handler = new handlerReq.default();
         const fileSystemName = "TEST.ZFS";
         const mountPoint = "/u/ibmuser/mount";

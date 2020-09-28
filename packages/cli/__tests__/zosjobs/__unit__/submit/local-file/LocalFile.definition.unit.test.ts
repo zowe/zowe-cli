@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs submit local file definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/submit/local-file/localFile.definition").LocalFileDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosjobs/submit/local-file/localFile.definition").LocalFileDefinition;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files upload ftds command definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/upload/ftds/FileToDataSet.definition").FileToDataSetDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/upload/ftds/FileToDataSet.definition").FileToDataSetDefinition;
 
         expect(definition).toBeDefined();
 

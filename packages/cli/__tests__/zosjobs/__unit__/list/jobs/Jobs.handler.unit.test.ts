@@ -9,14 +9,13 @@
 *
 */
 
-import { IGetJobsParms } from "../../../../../..";
+import { IGetJobsParms, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { GetJobsData } from "../../../__resources__/GetJobsData";
 
-jest.mock("../../../../../../../packages/zosjobs/src/GetJobs");
+jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
-import { GetJobs } from "../../../../../../../packages/zosjobs/src/GetJobs";
-import { GetJobsData } from "../../../../../../../packages/zosjobs/__tests__/__resources__/api/GetJobsData";
-import * as JobsHandler from "../../../../src/list/jobs/Jobs.handler";
-import * as JobsDefinition from "../../../../src/list/jobs/Jobs.definition";
+import * as JobsHandler from "../../../../../src/zosjobs/list/jobs/Jobs.handler";
+import * as JobsDefinition from "../../../../../src/zosjobs/list/jobs/Jobs.definition";
 
 process.env.FORCE_COLOR = "0";
 

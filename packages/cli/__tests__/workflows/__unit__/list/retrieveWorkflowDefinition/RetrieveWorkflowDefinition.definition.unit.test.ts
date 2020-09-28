@@ -14,7 +14,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-workflows list definition-file-details", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition
-            = require("../../../../src/list/retrieveWorkflowDefinition/RetrieveWorkflowDefinition.definition").RetrieveWorkflowDefinition;
+            = require("../../../../../src/workflows/list/retrieveWorkflowDefinition/RetrieveWorkflowDefinition.definition")
+                .RetrieveWorkflowDefinition;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

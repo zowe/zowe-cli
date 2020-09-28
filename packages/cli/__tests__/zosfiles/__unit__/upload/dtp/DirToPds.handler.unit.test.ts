@@ -16,7 +16,7 @@ describe("Upload dir-to-pds handler", () => {
     describe("process method", () => {
         it("should upload a directory to a PDS if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/upload/dtp/DirToPds.handler");
+            const handlerReq = require("../../../../../src/zosfiles/upload/dtp/DirToPds.handler");
             const handler = new handlerReq.default();
             const inputdir = "test-dir";
             const dataSetName = "testing";

@@ -19,7 +19,7 @@ describe("Create z/OS file system handler", () => {
     describe("process method", () => {
         it("should create a ZFS if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/create/zfs/zfs.handler");
+            const handlerReq = require("../../../../../src/zosfiles/create/zfs/zfs.handler");
             const handler = new handlerReq.default();
             const fileSystemName = "testing";
 
@@ -103,7 +103,7 @@ describe("Create z/OS file system handler", () => {
 
     it("should raise an error", async () => {
         // Require the handler and create a new instance
-        const handlerReq = require("../../../../src/create/zfs/zfs.handler");
+        const handlerReq = require("../../../../../src/zosfiles/create/zfs/zfs.handler");
         const handler = new handlerReq.default();
         const fileSystemName = "testing";
 

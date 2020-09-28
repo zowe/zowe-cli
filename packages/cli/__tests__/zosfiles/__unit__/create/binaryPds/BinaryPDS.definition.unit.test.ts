@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files create bin command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/create/binaryPds/BinaryPDS.definition").BinaryPDSDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/create/binaryPds/BinaryPDS.definition").BinaryPDSDefinition;
 
         expect(definition).toBeDefined();
 

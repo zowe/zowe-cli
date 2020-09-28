@@ -28,11 +28,12 @@
     "clean": "rimraf lib",
     "lint": "npm run lint:packages && npm run lint:tests",
     "lint:packages": "tslint --format stylish -c ../../tslint-packages.json \"src/**/*.ts\"",
-    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\""
+    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\"",
+    "circularDependencyCheck": "madge -c lib"
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "6.21.1",
-    "@zowe/imperative": "4.7.4",
+    "@zowe/imperative": "4.8.1",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "6.21.1",
     "@zowe/zos-workflows-for-zowe-sdk": "6.21.1",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "js-yaml": "^3.14.0",
+    "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.8.0"
   }

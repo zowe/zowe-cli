@@ -9,11 +9,11 @@
 *
 */
 
-jest.mock("../../../../../../../packages/provisioning/src/ListTemplateInfo");
-import { ListTemplateInfo } from "../../../../../../provisioning";
+jest.mock("@zowe/provisioning-for-zowe-sdk");
+import { ListTemplateInfo } from "@zowe/provisioning-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
-import * as Handler from "../../../../src/list/templateInfo/TemplateInfo.handler";
-import { templateInfo } from "../../../../src/list/templateInfo/TemplateInfo.definition";
+import * as Handler from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.handler";
+import { templateInfo } from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,

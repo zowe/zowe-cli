@@ -11,11 +11,11 @@
 
 import { IO, Session } from "@zowe/imperative";
 import * as path from "path";
-import { getRandomBytes, getUniqueDatasetName, runCliScript } from "../../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Create, CreateDataSetTypeEnum, Delete, Get } from "../../../../../../../../packages/zosfiles";
+import { getRandomBytes, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { Create, CreateDataSetTypeEnum, Delete, Get } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment;

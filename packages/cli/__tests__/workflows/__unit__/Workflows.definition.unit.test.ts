@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-workflows group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../src/Workflows.definition");
+        const definition: ICommandDefinition = require("../../../src/workflows/Workflows.definition");
         expect(definition).toBeDefined();
         delete definition.children;
         expect(definition).toMatchSnapshot();

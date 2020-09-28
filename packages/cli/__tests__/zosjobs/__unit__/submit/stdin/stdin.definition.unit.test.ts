@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-jobs submit stdin definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/submit/stdin/stdin.definition").StdinDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosjobs/submit/stdin/stdin.definition").StdinDefinition;
         expect(definition).toBeDefined();
         delete definition.handler;
         expect(definition).toMatchSnapshot();

@@ -18,7 +18,7 @@ describe("Create USS file", () => {
     describe("process method", () => {
         it("should create a USS file if requested", async () => {
             // Require the handler and create a new instance
-            const handlerReq = require("../../../../src/create/ussFile/ussFile.handler");
+            const handlerReq = require("../../../../../src/zosfiles/create/ussFile/ussFile.handler");
             const handler = new handlerReq.default();
             const ussFile = "testing.text";
             const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};

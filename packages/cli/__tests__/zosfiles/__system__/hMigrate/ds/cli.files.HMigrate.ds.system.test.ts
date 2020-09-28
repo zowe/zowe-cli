@@ -9,14 +9,13 @@
 *
 */
 
-import { runCliScript } from "../../../../../../../../__tests__/__src__/TestUtils";
-import { TestEnvironment } from "../../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { Session, Imperative } from "@zowe/imperative";
-import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions } from "../../../../../../../../packages/zosfiles";
-import { IMigrateOptions } from "../../../../../../../../packages/zosfiles/src/methods/hMigrate/doc/IMigrateOptions";
+import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions, IMigrateOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { inspect } from "util";
 
 let TEST_ENVIRONMENT: ITestEnvironment;

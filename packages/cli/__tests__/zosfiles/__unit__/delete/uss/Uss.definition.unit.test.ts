@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/-strings-/en";
-import { UssDefinition } from "../../../../src/delete/uss/Uss.definition";
+import i18nEnglish from "../../../../../src/zosfiles/-strings-/en";
+import { UssDefinition } from "../../../../../src/zosfiles/delete/uss/Uss.definition";
 
 describe("UssDefinition", () => {
     it("should use the correct object for strings", () => {
