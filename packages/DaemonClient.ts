@@ -67,7 +67,7 @@ export class DaemonClient {
         const stopOffset = data.toString().indexOf(DaemonClient.STOP_KEY);
         if (stopOffset > -1) {
             if (this.mServer) {
-                Imperative.api.appLogger.debug("shutting down")
+            Imperative.api.appLogger.debug("shutting down")
                 this.mClient.write(`Terminating server`);
                 this.mClient.end();
                 this.mServer.close()
