@@ -55,15 +55,20 @@ const config: IImperativeConfig = {
         if (numOfParms > 0) {
             const parm = process.argv[2];
 
-            // NOTE(Kelosky): undocumented `--daemon` or `--daemon=<PORT>`
+            /**
+             * NOTE(Kelosky): For now, we use an undocumented paramter `--daemon` or `--daemon=<PORT>`.  If found first,
+             * we bypass `yargs` and begin running this as a persistent server.
+             */
             const daemonKey = "--daemon";
             const daemonPortKey = "--daemon=";
             const portOffset = parm.indexOf(daemonKey);
 
             if (portOffset > -1) {
                 const portKeyOffset = parm.indexOf(daemonPortKey);
+                // manually parse off the <PORT> if found
                 if (portKeyOffset > -1) {
                     port = parseInt(parm.substr(daemonPortKey.length, parm.length - daemonPortKey.length), 10);
+                // otherwise take the <PORT> from ENV var if found
                 } else if (process.env.Zowe_DAEMON) {
                     try {
                         port = parseInt(process.env.Zowe_DAEMON, 10);
@@ -73,6 +78,7 @@ const config: IImperativeConfig = {
                 }
                 Imperative.api.appLogger.debug(`daemon server port ${port}`);
 
+                // create our server
                 server = net.createServer((c) => {
                     sock = c;
                     Imperative.api.appLogger.trace('daemon client connected');
@@ -83,15 +89,19 @@ const config: IImperativeConfig = {
                         Imperative.api.appLogger.trace('client closed');
                     });
                     c.on('data', (data: Buffer) => {
-                        // TODO(Kelosky): get cwd from daemon client
+                        // NOTE(Kelosky): this is not exposed yet, but will allow for a clean shut down if undocumented `--shutdown`
+                        // is written to the persistent server.
                         const stopKey = "--shutdown";
                         const stopOffset = data.toString().indexOf(stopKey);
                         if (stopOffset > -1) {
                             if (server) {
                                 Imperative.api.appLogger.debug("shutting down")
+                                c.write(`Terminating server`);
                                 c.end();
                                 server.close()
                             }
+                        // accept input parameters as we do without running in a server mode and pass our clients stream
+                        // handle as context
                         } else {
                             Imperative.api.appLogger.trace(`daemon input command: ${data.toString()}`)
                             Imperative.commandLine = data.toString();
