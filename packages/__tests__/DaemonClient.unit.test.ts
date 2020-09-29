@@ -41,8 +41,8 @@ describe("DaemonClient tests", () => {
         }
 
         const fn = net.createServer as Mock<typeof net.createServer>;
-        let server: net.Server;
-        let client: net.Socket;
+        const server: net.Server = undefined;
+        const client: net.Socket = undefined;
         (client as any) = {
             on: jest.fn()
         };
@@ -81,8 +81,8 @@ describe("DaemonClient tests", () => {
         }
 
         const fn = net.createServer as Mock<typeof net.createServer>;
-        let server: net.Server;
-        let client: net.Socket;
+        const server: net.Server = undefined;
+        const client: net.Socket = undefined;
         const write = jest.fn((someWriteMessage) => {
             expect(someWriteMessage).toMatchSnapshot();
         });
@@ -117,8 +117,8 @@ describe("DaemonClient tests", () => {
         }
 
         const fn = net.createServer as Mock<typeof net.createServer>;
-        let server: net.Server;
-        let client: net.Socket;
+        const server: net.Server = undefined;
+        const client: net.Socket = undefined;
         (client as any) = {
             on: jest.fn()
         };
@@ -145,8 +145,8 @@ describe("DaemonClient tests", () => {
         }
 
         const fn = net.createServer as Mock<typeof net.createServer>;
-        let server: net.Server;
-        let client: net.Socket;
+        const server: net.Server = undefined;
+        const client: net.Socket = undefined;
         (client as any) = {
             on: jest.fn()
         };
