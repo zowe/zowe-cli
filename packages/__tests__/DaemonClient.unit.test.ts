@@ -42,15 +42,14 @@ describe("DaemonClient tests", () => {
 
         const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
-        const client: net.Socket = undefined;
-        (client as any) = {
+        const client = {
             on: jest.fn()
         };
         fn.mockImplementation((unusedclient, ...args: any[]) => {
             //
         });
 
-        const daemonClient = new DaemonClient(client, server);
+        const daemonClient = new DaemonClient(client as any, server);
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
@@ -82,11 +81,10 @@ describe("DaemonClient tests", () => {
 
         const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
-        const client: net.Socket = undefined;
         const write = jest.fn((someWriteMessage) => {
             expect(someWriteMessage).toMatchSnapshot();
         });
-        (client as any) = {
+        const client = {
             on: jest.fn(),
             write,
             end: jest.fn()
@@ -98,7 +96,7 @@ describe("DaemonClient tests", () => {
             //
         });
 
-        const daemonClient = new DaemonClient(client, server);
+        const daemonClient = new DaemonClient(client as any, server);
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
         (daemonClient as any).data(Buffer.from("--shutdown"), {whatever: "context I want"});
@@ -118,15 +116,14 @@ describe("DaemonClient tests", () => {
 
         const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
-        const client: net.Socket = undefined;
-        (client as any) = {
+        const client = {
             on: jest.fn()
         };
         fn.mockImplementation((unusedclient, ...args: any[]) => {
             //
         });
 
-        const daemonClient = new DaemonClient(client, server);
+        const daemonClient = new DaemonClient(client as any, server);
         daemonClient.run();
         (daemonClient as any).end();
         expect(log).toHaveBeenLastCalledWith('daemon client disconnected');
@@ -146,15 +143,14 @@ describe("DaemonClient tests", () => {
 
         const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
-        const client: net.Socket = undefined;
-        (client as any) = {
+        const client = {
             on: jest.fn()
         };
         fn.mockImplementation((unusedclient, ...args: any[]) => {
             //
         });
 
-        const daemonClient = new DaemonClient(client, server);
+        const daemonClient = new DaemonClient(client as any, server);
         daemonClient.run();
         (daemonClient as any).close();
         expect(log).toHaveBeenLastCalledWith('client closed');
