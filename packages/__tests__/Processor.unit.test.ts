@@ -10,5 +10,7 @@
 */
 
 describe("Processor tests", () => {
-
+    it("should wait until test is written", () => {
+        pending();
+    });
 });
