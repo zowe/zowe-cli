@@ -14,52 +14,74 @@ fn main() -> std::io::Result<()> {
     let mut daemon_host = "127.0.0.1:".to_owned();
     daemon_host.push_str(&port_string);
 
-    if _args.len() > 0 && _args[0] == "start" {
-        if cfg!(target_os = "windows") {
-            let mut daemon_parm = "--daemon=".to_owned();
-            daemon_parm.push_str(&port_string);
-            // NOTE(Kelosky): running `zowe` directly doesnt appear to be found: https://github.com/rust-lang/rust/issues/42791
-            let zowe = Command::new("cmd")
-                .args(&["/c", "zowe-start-daemon.cmd", &port_string])
-                .output()
-                .expect("failed to run zowe CLI - is it on your path?");
-            io::stdout().write_all(&zowe.stdout).unwrap();
-        }
-    // TODO(Kelosky): handle linux / mac OS
-    } else if _args.len() > 0 && _args[0] == "stop" {
-        Command::new("cmd")
-            .args(&["/c", "zowe-stop-daemon.cmd", &port_string])
-            .output()
-            .expect("failed to run zowe CLI - is it on your path?");
-    } else if _args.len() > 0 && _args[0] == "restart" {
-        Command::new("cmd")
-            .args(&["/c", "zowe-restart-daemon.cmd", &port_string])
-            .output()
-            .expect("failed to run zowe CLI - is it on your path?");
-    } else {
-        let mut val = _args.join(" "); // convert to single string
-        val.push_str(" --cwd ");
-        let path = env::current_dir()?;
-        val.push_str(path.to_str().unwrap());
-        val.push_str("/");
-        let mut _resp = val.as_bytes(); // as utf8 bytes
+    let args = _args.join(" ");
 
-        // make sure something is written
-        if _resp.is_empty() {
-            _resp = b" ";
-        }
-
-        let mut stream = TcpStream::connect(daemon_host).unwrap();
-        stream.write(_resp).unwrap(); // write it
-
-        let mut buf = String::new();
-        stream.read_to_string(&mut buf)?; // get response
-        println!("{}", buf); // print it
-
-        stream.shutdown(Shutdown::Both)?; // terminate
+    match args.as_ref() {
+        "start" => start_zowe_daemon(&port_string),
+        "stop" => stop_zowe_daemon(&port_string),
+        "restart" => restart_zowe_daemon(&port_string),
+        _=> run_zowe_command(args, &port_string).unwrap(),
     }
 
     Ok(())
+}
+
+fn run_zowe_command(mut args: String, port_string: &str) -> Result<(), io::Error> {
+    args.push_str(" --cwd ");
+    let path = env::current_dir()?;
+    args.push_str(path.to_str().unwrap());
+    args.push_str("/");
+    let mut _resp = args.as_bytes(); // as utf8 bytes
+
+    let mut daemon_host = "127.0.0.1:".to_owned();
+    daemon_host.push_str(&port_string);
+
+    // make sure something is written
+    if _resp.is_empty() {
+        _resp = b" ";
+    }
+
+    // TODO(Kelosky): if error for no daemon started - start daemon and redrive
+    let mut stream = TcpStream::connect(daemon_host).unwrap();
+    stream.write(_resp).unwrap(); // write it
+
+    let mut buf = String::new();
+    stream.read_to_string(&mut buf)?; // get response
+    println!("{}", buf); // print it
+
+    stream.shutdown(Shutdown::Both)?; // terminate
+
+    Ok(())
+}
+
+fn start_zowe_daemon(port_string: &str) {
+    let mut daemon_parm = "--daemon=".to_owned();
+    daemon_parm.push_str(&port_string);
+    if cfg!(target_os = "windows") {
+        // NOTE(Kelosky): running `zowe` directly doesnt appear to be found: https://github.com/rust-lang/rust/issues/42791
+        let zowe = Command::new("cmd")
+            .args(&["/c", "zowe-start-daemon.cmd", &port_string])
+            .output()
+            .expect("Failed to start Zowe CLI daemon, is your version current and on your PATH?");
+        io::stdout().write_all(&zowe.stdout).unwrap();
+    }
+    // TODO(Kelosky): handle linux / mac OS
+}
+
+fn stop_zowe_daemon(port_string: &str) {
+    let zowe = Command::new("cmd")
+        .args(&["/c", "zowe-stop-daemon.cmd", &port_string])
+        .output()
+        .expect("Failed to stop Zowe CLI daemon, is your version current and on your PATH?");
+    io::stdout().write_all(&zowe.stdout).unwrap();
+}
+
+fn restart_zowe_daemon(port_string: &str) {
+    let zowe = Command::new("cmd")
+        .args(&["/c", "zowe-restart-daemon.cmd", &port_string])
+        .output()
+        .expect("Failed to restart Zowe CLI daemon, is your version current and on your PATH?");
+    io::stdout().write_all(&zowe.stdout).unwrap();
 }
 
 fn get_port_string() -> String {
