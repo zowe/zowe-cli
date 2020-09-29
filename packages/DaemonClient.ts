@@ -1,3 +1,14 @@
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
 import { Imperative } from "@zowe/imperative";
 import * as net from "net";
 
@@ -67,7 +78,7 @@ export class DaemonClient {
         const stopOffset = data.toString().indexOf(DaemonClient.STOP_KEY);
         if (stopOffset > -1) {
             if (this.mServer) {
-            Imperative.api.appLogger.debug("shutting down")
+                Imperative.api.appLogger.debug("shutting down")
                 this.mClient.write(`Terminating server`);
                 this.mClient.end();
                 this.mServer.close()
