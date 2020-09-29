@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.23.0`
 
-- Added `--pattern` option to `zowe files list am`
+- Added a `--pattern` option to the `zowe files list all-members` command. The option lets you restrict returned member names to only names that match a given pattern. The argument syntax is the same as the "pattern" parameter of the ISPF LMMLIST service. [#810](https://github.com/zowe/zowe-cli/issues/810)
 
 ## `6.22.0`
 
