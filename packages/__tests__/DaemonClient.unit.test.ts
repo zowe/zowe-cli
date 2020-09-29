@@ -80,7 +80,9 @@ describe("DaemonClient tests", () => {
         }
 
         const fn = net.createServer as Mock<typeof net.createServer>;
-        const server: net.Server = undefined;
+        const server = {
+            close: jest.fn()
+        }
         const write = jest.fn((someWriteMessage) => {
             expect(someWriteMessage).toMatchSnapshot();
         });
@@ -89,9 +91,6 @@ describe("DaemonClient tests", () => {
             write,
             end: jest.fn()
         };
-        (server as any) = {
-            close: jest.fn()
-        }
         fn.mockImplementation((unusedclient, ...args: any[]) => {
             //
         });
