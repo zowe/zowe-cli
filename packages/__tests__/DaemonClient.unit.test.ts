@@ -95,7 +95,7 @@ describe("DaemonClient tests", () => {
             //
         });
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server as any);
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
         (daemonClient as any).data(Buffer.from("--shutdown"), {whatever: "context I want"});
