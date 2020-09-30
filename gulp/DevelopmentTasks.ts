@@ -61,7 +61,10 @@ lint.description = "Runs tslint on the project to check for style, " +
 
 const license: ITaskFunction = (done: (err: Error) => void) => {
     // process all typescript files
-    require("glob")("{__mocks__,packages,gulp,__tests__,jenkins}{/**/*.js,/**/*.ts}", (globErr: any, filePaths: string[]) => {
+    require("glob")(
+      "{__mocks__,packages,gulp,__tests__,jenkins}{/**/*.js,/**/*.ts}",
+      {"ignore":['**/node_modules/**','**/lib/**']},
+      (globErr: any, filePaths: string[]) => {
         if (globErr) {
             done(globErr);
             return;

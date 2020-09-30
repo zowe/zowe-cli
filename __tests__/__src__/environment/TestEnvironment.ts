@@ -19,7 +19,7 @@ import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import * as fs from "fs";
 import { Constants } from "../../../packages/cli/lib/Constants";
 import { TempTestProfiles } from "../profiles/TempTestProfiles";
-import { SshSession } from "../../../packages/zosuss/lib";
+import { SshSession } from "../../../packages/zosuss/src/SshSession";
 
 const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
