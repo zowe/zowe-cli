@@ -166,9 +166,9 @@ export class Processor {
                 if (portKeyOffset > -1) {
                     this.mPort = parseInt(parm.substr(Processor.DAEMON_PORT_KEY.length, parm.length - Processor.DAEMON_PORT_KEY.length), 10);
                     // otherwise take the <PORT> from ENV var if found
-                } else if (process.env.Zowe_DAEMON) {
+                } else if (process.env.ZOWE_DAEMON) {
                     try {
-                        this.mPort = parseInt(process.env.Zowe_DAEMON, 10);
+                        this.mPort = parseInt(process.env.ZOWE_DAEMON, 10);
                     } catch (err) {
                         // do nothing
                     }
