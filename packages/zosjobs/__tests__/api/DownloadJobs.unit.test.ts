@@ -120,10 +120,12 @@ describe("DownloadJobs", () => {
             });
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
             delete jobFile.procstep;
-            const outDir = "./myDir";
+            const outDir = "myDir";
+            const cwd = '.'
             await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
                 outDir,
-                jobFile
+                jobFile,
+                cwd
             });
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFile, false, outDir);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);

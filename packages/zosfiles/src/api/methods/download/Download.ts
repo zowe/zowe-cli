@@ -87,7 +87,11 @@ export class Download {
             // Note that the "extension" options do not affect the destination if the "file" options were provided
             const destination = (() => {
 
-                const cwd = options.cwd;
+                let cwd = options.cwd;
+
+                if (cwd && cwd[cwd.length - 1] !== '/') {
+                    cwd += '/';
+                }
 
                 if (options.file) {
                     return cwd ? cwd + options.file : options.file;
