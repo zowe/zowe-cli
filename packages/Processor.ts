@@ -94,7 +94,7 @@ export class Processor {
     public init() {
 
         this.initialParse();
-        if (this.mStartServer) {
+        if (this.startServer) {
 
             this.mServer = net.createServer((c) => {
                 new DaemonClient(c, this.mServer).run();
@@ -137,7 +137,7 @@ export class Processor {
      * @memberof Processor
      */
     private error(err: Error) {
-        Imperative.api.appLogger.error(`daemon server error: ${err}`)
+        Imperative.api.appLogger.error(`daemon server error: ${err.message}`)
         throw err;
     }
 

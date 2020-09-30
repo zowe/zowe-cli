@@ -40,14 +40,10 @@ describe("DaemonClient tests", () => {
             parse
         }
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
         const client = {
             on: jest.fn()
         };
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            //
-        });
 
         const daemonClient = new DaemonClient(client as any, server);
 
@@ -79,7 +75,6 @@ describe("DaemonClient tests", () => {
             parse
         }
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
         const server = {
             close: jest.fn()
         }
@@ -91,9 +86,6 @@ describe("DaemonClient tests", () => {
             write,
             end: jest.fn()
         };
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            //
-        });
 
         const daemonClient = new DaemonClient(client as any, server as any);
         daemonClient.run();
@@ -113,14 +105,10 @@ describe("DaemonClient tests", () => {
             }
         }
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
         const client = {
             on: jest.fn()
         };
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            //
-        });
 
         const daemonClient = new DaemonClient(client as any, server);
         daemonClient.run();
@@ -140,14 +128,10 @@ describe("DaemonClient tests", () => {
             }
         }
 
-        const fn = net.createServer as Mock<typeof net.createServer>;
         const server: net.Server = undefined;
         const client = {
             on: jest.fn()
         };
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            //
-        });
 
         const daemonClient = new DaemonClient(client as any, server);
         daemonClient.run();
