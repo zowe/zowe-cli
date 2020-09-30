@@ -55,9 +55,9 @@
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
-    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\" --coverage false",
-    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\" --coverage false",
-    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\" --coverage",
+    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\\$\" --coverage false",
+    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
+    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
     "watch": "tsc --pretty --watch",
     "watch:test": "jest --watch",
     "doc:clean": "rimraf docs/CLIReadme.md",
@@ -121,7 +121,8 @@
       ".*jest-stare.*\\.js"
     ],
     "modulePathIgnorePatterns": [
-      "__tests__/__snapshots__/"
+      "__tests__/__snapshots__/",
+      "/*/lib/"
     ],
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
