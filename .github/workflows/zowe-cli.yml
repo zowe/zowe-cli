@@ -38,7 +38,7 @@ jobs:
 
     - name: Build Source
       id: build
-      run: npm run bootstrap && npm run build --if-present
+      run: npm run build --if-present
 
     - name: Unit Tests
       id: unit
