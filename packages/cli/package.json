@@ -44,10 +44,10 @@
     "@zowe/zos-tso-for-zowe-sdk": "6.21.1",
     "@zowe/zos-uss-for-zowe-sdk": "6.21.1",
     "get-stdin": "7.0.0",
-    "minimatch": "^3.0.4"
+    "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "js-yaml": "^3.14.0",
+    "js-yaml": "3.13.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "typescript": "^3.8.0"
