@@ -83,7 +83,7 @@ describe("zowe uss issue ssh without running bash scripts", () => {
 
         checkResponse(response, 0);
         // match only "/"+cwd with no following alpha-numeric character e.g. "/cwd   "
-        expect(response.stdout.toString()).toMatch(new RegExp("\\" + cwd + "\\s"));
+        expect(response.stdout.toString()).toMatch(new RegExp(cwd.substring(1) + "\\s"));
     });
 
     it("should get directory invalid --cwd option", async () => {
@@ -114,7 +114,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
         // Imperative.console.info("Make test directory cmd:" + commandName);
         const response = await runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
         checkResponse(response, 0);
-        expect(response.stdout.toString()).toContain(directory + "usstest");
+        expect(response.stdout.toString()).toContain(directory.substring(1) + "usstest");
     });
     afterAll(async () => {
         // delete the test directory
@@ -160,7 +160,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
         ussname = `${defaultSystem.unix.testdir}/exit64.sh`;
         // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "exit64.txt");
-        response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
+        response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname]);
         // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
         // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);
@@ -168,7 +168,7 @@ describe("zowe uss issue ssh running bash scripts", () => {
         ussname = `${defaultSystem.unix.testdir}/killItself.sh`;
         // Imperative.console.info("Using ussfile:" + ussname);
         localFileName = path.join(__dirname, "__data__", "killItself.txt");
-        response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
+        response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname]);
         // Imperative.console.info("Response:" + response.stdout.toString());
         expect(response.stdout.toString()).toContain("USS file uploaded successfully");
         // Imperative.console.info("Uploaded :" + localFileName + "to" + ussname);

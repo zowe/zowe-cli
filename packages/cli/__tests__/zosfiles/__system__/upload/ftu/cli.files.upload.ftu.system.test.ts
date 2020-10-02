@@ -71,7 +71,7 @@ describe("Upload uss file", () => {
             const response = runCliScript(shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
                 [localFileName,
-                    ussname.substring(1),
+                    ussname,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -103,7 +103,7 @@ describe("Upload uss file", () => {
         it("should upload USS file from local file", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftu.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftu.txt");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1)]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file uploaded successfully");
@@ -111,7 +111,7 @@ describe("Upload uss file", () => {
         it("should upload USS file from local file with response timeout", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_ftu.sh");
             const localFileName = path.join(__dirname, "__data__", "command_upload_ftu.txt");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname.substring(1), "--responseTimeout 5"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localFileName, ussname, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file uploaded successfully");

@@ -112,7 +112,8 @@ describe("List all mounted filesystems", () => {
     describe("Expected failures", () => {
         it("should fail due to path not existing", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["-p /xxxx"]);
+            // Two leading slashes for path is required by some shells like Git Bash on Windows
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["-p //xxxx"]);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toEqual("");
             expect(response.stderr.toString()).toContain("HTTP(S) status 404");
