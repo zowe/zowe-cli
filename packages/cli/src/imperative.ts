@@ -42,7 +42,7 @@ const config: IImperativeConfig = {
     rootCommandDescription: Constants.DESCRIPTION,
     defaultHome: Constants.HOME_DIR,
     envVariablePrefix: Constants.ENV_PREFIX,
-    webHelpLogoImgPath: path.join(__dirname, "..", "..", "..", "web-help", "logo.png"),
+    webHelpLogoImgPath: path.join(__dirname, "..", "..", "..", "web-help-logo.png"),
     logging: {
         appLogging: {
             logFile: Constants.LOG_LOCATION

@@ -34,7 +34,7 @@
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
   },
   "scripts": {
-    "build": "gulp updateLicense && npm run clean && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
+    "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
     "postinstall": "lerna bootstrap --hoist",
@@ -49,7 +49,7 @@
     "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\\$\" --coverage false",
     "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
     "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
-    "watch": "tsc --pretty --watch",
+    "watch": "lerna run --parallel watch",
     "watch:test": "jest --watch",
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",
@@ -94,7 +94,7 @@
     "shebang-regex": "^2.0.0",
     "ts-jest": "^24.2.0",
     "ts-node": "^7.0.1",
-    "tslint": "^6.1.2",
+    "tslint": "^6.1.3",
     "typedoc": "^0.15.0",
     "typescript": "^3.8.0",
     "uuid": "^3.3.2"

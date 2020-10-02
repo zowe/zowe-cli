@@ -9,7 +9,6 @@
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "outDir": "./lib",
     "preserveConstEnums": true,
     "removeComments": false,
     "pretty": true,

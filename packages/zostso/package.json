@@ -39,6 +39,7 @@
   "devDependencies": {
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
+    "tslint": "^6.1.3",
     "typescript": "^3.8.0"
   }
 }
