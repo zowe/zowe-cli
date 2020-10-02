@@ -246,6 +246,7 @@ describe("Download Data Set", () => {
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
                 file = dsname.replace(regex, "/") + ".txt";
+                file = file.toLowerCase();
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}`).toString());
