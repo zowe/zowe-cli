@@ -4,7 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.23.0`
 
-- Added `--pattern` option to `zowe files list am`
+- Enhancement: Added a `--pattern` option to the `zowe files list all-members` command. The option lets you restrict returned member names to only names that match a given pattern. The argument syntax is the same as the "pattern" parameter of the ISPF LMMLIST service. [#810](https://github.com/zowe/zowe-cli/issues/810)
+- Enhancement: Added new options `--lrecl` and `--recfm` to the `zos-files create` command. Use these options to specify a logical record length and record format for data sets that you create. [#788](https://github.com/zowe/zowe-cli/issues/788)
 
 ## `6.22.0`
 
