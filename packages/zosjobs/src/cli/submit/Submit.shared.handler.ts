@@ -47,7 +47,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             viewAllSpoolContent: this.mArguments.viewAllSpoolContent,
             directory: this.mArguments.directory,
             extension: this.mArguments.extension,
-            cwd: this.mArguments.cwd,
+            lcd: this.mArguments.lcd,
             volume: this.mArguments.volume,
             waitForActive: this.mArguments.waitForActive,
             waitForOutput: this.mArguments.waitForOutput,

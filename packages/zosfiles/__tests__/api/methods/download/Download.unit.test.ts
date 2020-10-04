@@ -279,15 +279,15 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
-        it("should download a data set to the given file in encoding and cwd requested mode", async () => {
+        it("should download a data set to the given file in encoding and lcd requested mode", async () => {
             let response;
             let caughtError;
             const encoding = 285;
             const file = "my/test/file.xyz";
-            const cwd = "test";
+            const lcd = "test";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {encoding, file, cwd});
+                response = await Download.dataSet(dummySession, dsname, {encoding, file, lcd});
             } catch (e) {
                 caughtError = e;
             }
@@ -297,7 +297,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, `${cwd}/${file}`),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, `${lcd}/${file}`),
                 apiResponse: {}
             });
 
@@ -309,10 +309,10 @@ describe("z/OS Files - Download", () => {
                                                                         task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
-            expect(ioCreateDirSpy).toHaveBeenCalledWith(`${cwd}/${file}`);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(`${lcd}/${file}`);
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteStreamSpy).toHaveBeenCalledWith(`${cwd}/${file}`);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(`${lcd}/${file}`);
         });
 
         it("should download a data set using responseTimeout", async () => {

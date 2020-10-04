@@ -87,14 +87,14 @@ export class Download {
             // Note that the "extension" options do not affect the destination if the "file" options were provided
             const destination = (() => {
 
-                let cwd = options.cwd;
+                let lcd = options.lcd;
 
-                if (cwd && cwd[cwd.length - 1] !== '/') {
-                    cwd += '/';
+                if (lcd && lcd[lcd.length - 1] !== '/') {
+                    lcd += '/';
                 }
 
                 if (options.file) {
-                    return cwd ? cwd + options.file : options.file;
+                    return lcd ? lcd + options.file : options.file;
                 }
 
                 let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
@@ -104,7 +104,7 @@ export class Download {
                     generatedFilePath = generatedFilePath.toUpperCase();
                 }
 
-                return cwd ? cwd + generatedFilePath + IO.normalizeExtension(extension) : generatedFilePath + IO.normalizeExtension(extension);
+                return lcd ? lcd + generatedFilePath + IO.normalizeExtension(extension) : generatedFilePath + IO.normalizeExtension(extension);
             })();
 
             IO.createDirsSyncFromFilePath(destination);

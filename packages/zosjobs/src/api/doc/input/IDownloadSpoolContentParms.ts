@@ -27,11 +27,11 @@ export interface IDownloadSpoolContentParms {
     outDir?: string;
 
     /**
-     * Alternate current working directory
+     * Alternate local working directory
      * @type {string}
      * @memberof IDownloadSpoolContentParms
      */
-    cwd?: string;
+    lcd?: string;
 
     /**
      * Job file document for job output we want to download

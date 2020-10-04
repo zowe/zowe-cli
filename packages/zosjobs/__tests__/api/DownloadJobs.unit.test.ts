@@ -121,11 +121,11 @@ describe("DownloadJobs", () => {
             const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
             delete jobFile.procstep;
             const outDir = "myDir";
-            const cwd = '.'
+            const lcd = '.'
             await DownloadJobs.downloadSpoolContentCommon(fakeSession, {
                 outDir,
                 jobFile,
-                cwd
+                lcd
             });
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jobFile, false, outDir);
             expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
