@@ -11,12 +11,12 @@
 
 import { inspect } from "util";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import {
     IProvisionedInstance,
     ListInstanceInfo,
     noInstanceId,
     noSessionProvisioning,
-    nozOSMFVersion,
     ProvisioningConstants
 } from "../../";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";

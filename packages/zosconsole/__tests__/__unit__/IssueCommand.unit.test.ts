@@ -19,10 +19,10 @@ import {
     IZosmfIssueParms,
     IZosmfIssueResponse
 } from "../../../zosconsole";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { noConsoleInput, noConsoleName, noSession, noZosmfInput } from "../../src/ConsoleConstants";
+import { noConsoleInput, noConsoleName, noZosmfInput } from "../../src/ConsoleConstants";
 
 const PRETEND_SESSION = new Session({
     user: "user",

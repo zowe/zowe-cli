@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, TextUtils, ImperativeExpect, ImperativeError } from "@zowe/imperative";
-import { noSession } from "./WorkflowConstants";
+import { noSession } from "@zowe/core-for-zowe-sdk";
 
 /**
  * Class validates parameters for workflows commands.

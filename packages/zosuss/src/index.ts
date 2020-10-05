@@ -16,5 +16,3 @@ export * from "./SshSession";
 export * from "./constants/ZosUss.messages";
 
 export * from "./doc/ISshSession";
-
-export * from "./Utils";

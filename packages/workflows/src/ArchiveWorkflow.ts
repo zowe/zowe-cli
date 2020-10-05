@@ -9,9 +9,9 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { WorkflowConstants, noWorkflowKey, nozOSMFVersion } from "./WorkflowConstants";
+import { WorkflowConstants, noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IArchivedWorkflow } from "./doc/IArchivedWorkflow";
 

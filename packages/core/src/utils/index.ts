@@ -10,4 +10,4 @@
 */
 
 export * from "./CoreUtils";
-export * from "./Utils";
+export * from "./CommonConstants";

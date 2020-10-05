@@ -55,13 +55,9 @@
     "js-yaml": "3.13.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
-<<<<<<< Updated upstream
     "tslint": "^6.1.3",
-    "typescript": "^3.8.0"
-=======
     "typescript": "^3.8.0",
-    "typedoc": "^0.15.0"
->>>>>>> Stashed changes
+    "typedoc": "^0.16.0"
   },
   "imperative": {
     "configurationModule": "lib/imperative.js"

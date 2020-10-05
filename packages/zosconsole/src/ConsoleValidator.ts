@@ -12,7 +12,8 @@
 import { ICollectParms, IIssueParms } from "../src/";
 import { IZosmfIssueParms } from "../src/doc/zosmf/IZosmfIssueParms";
 import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
-import { noCollectParameters, noCommandKey, noConsoleInput, noConsoleName, noSession, noZosmfInput } from "./ConsoleConstants";
+import { noSession } from "@zowe/core-for-zowe-sdk";
+import { noCollectParameters, noCommandKey, noConsoleInput, noConsoleName, noZosmfInput } from "./ConsoleConstants";
 
 /**
  * Class validates parameters for console commands

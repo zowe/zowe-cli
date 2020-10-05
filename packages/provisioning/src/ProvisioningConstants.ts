@@ -103,17 +103,6 @@ export const noSessionProvisioning: IMessageDefinition = {
 };
 
 /**
- * Error message that no z/OSMF version parameter string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof ProvisioningConstants
- */
-export const nozOSMFVersion: IMessageDefinition = {
-    message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
-};
-
-
-/**
  * Error message that no template name parameter string was supplied.
  * @static
  * @type {IMessageDefinition}

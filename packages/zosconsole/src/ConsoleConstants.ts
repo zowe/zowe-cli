@@ -39,9 +39,6 @@ export const decreaseCounter: IMessageDefinition = {
 export const resetCounter: IMessageDefinition = {
     message: `Reset follow up counter`
 };
-export const noSession: IMessageDefinition = {
-    message: apiErrorHeader + `No session was supplied.`
-};
 export const noZosmfInput: IMessageDefinition = {
     message: apiErrorHeader + `No zosmf console input parameters were supplied.`
 };

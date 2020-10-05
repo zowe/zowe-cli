@@ -10,9 +10,9 @@
 */
 
 import { inspect } from "util";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, nozOSMFVersion, ProvisioningConstants } from "../../../provisioning";
+import { IProvisionedInstances, ListRegistryInstances, noSessionProvisioning, ProvisioningConstants } from "../../../provisioning";
 
 const type: string = "DB2";
 const externalName: string = "DB2FULL";

@@ -9,10 +9,10 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { ListWorkflows } from "../../";
-import { WorkflowConstants, wrongString, noSession, noWorkflowName } from "../../src/WorkflowConstants";
+import { WorkflowConstants, wrongString, noWorkflowName } from "../../src/WorkflowConstants";
 import { IWorkflowsInfo } from "../../src/doc/IWorkflowsInfo";
 import { IActiveWorkflows } from "../../src/doc/IActiveWorkflows";
 

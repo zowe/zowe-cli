@@ -10,10 +10,10 @@
 */
 
 import { CollectCommand, ConsoleConstants, ICollectParms, IConsoleResponse, IZosmfIssueResponse } from "../../";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { noCommandKey, noConsoleName, noSession } from "../../../zosconsole/src/ConsoleConstants";
+import { noCommandKey, noConsoleName } from "../../../zosconsole/src/ConsoleConstants";
 
 const PRETEND_SESSION = new Session({
     user: "user",

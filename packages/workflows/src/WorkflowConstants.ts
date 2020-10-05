@@ -196,26 +196,6 @@ export class WorkflowConstants {
 
 }
 
-/**
- * Error message that no session was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const noSession: IMessageDefinition = {
-    message: apiErrorHeader + `No session was supplied.`
-};
-
-/**
- * Error message that no z/OSMF version parameter string was supplied.
- * @static
- * @type {IMessageDefinition}
- * @memberof WorkflowConstants
- */
-export const nozOSMFVersion: IMessageDefinition = {
-    message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
-};
-
 
 /**
  * Error message that no workflow key string was supplied.

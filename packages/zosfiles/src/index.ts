@@ -41,4 +41,3 @@ export * from "./methods/utilities";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
-export * from "./utils/Utils";
