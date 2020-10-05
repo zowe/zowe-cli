@@ -1,7 +1,4 @@
 {
-  "name": "@zowe/cli",
-  "version": "6.21.1",
-  "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
   "private": true,
@@ -13,17 +10,6 @@
     "type": "git",
     "url": "https://github.com/zowe/zowe-cli.git"
   },
-  "keywords": [
-    "zosmf",
-    "mainframe",
-    "CLI",
-    "zos",
-    "z/OSMF",
-    "mvs",
-    "os390",
-    "z/OS",
-    "zowe"
-  ],
   "files": [
     "lib",
     "docs",
@@ -61,11 +47,7 @@
   "devDependencies": {
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^22.2.3",
-    "@types/js-yaml": "^3.11.1",
-    "@types/minimatch": "^3.0.3",
     "@types/node": "^12.12.24",
-    "@types/ssh2": "^0.5.38",
-    "@types/yargs": "^13.0.4",
     "@zowe/imperative": "4.8.1",
     "ansi-colors": "^4.1.1",
     "chalk": "^4.1.0",
@@ -87,6 +69,7 @@
     "jest-junit": "^6.3.0",
     "jest-sonar-reporter": "^2.0.0",
     "jest-stare": "^1.11.1",
+    "js-yaml": "^3.13.1",
     "jsonfile": "^4.0.0",
     "lerna": "^3.22.1",
     "madge": "^3.6.0",
