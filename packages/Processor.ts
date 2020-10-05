@@ -15,14 +15,10 @@ import * as net from "net";
 import { DaemonClient } from "./DaemonClient";
 
 // TODO(Kelosky): handle prompting cases from login command
-// TODO(Kelosky): help web broken
 // TODO(Kelosky): prompt* broken - hangs, must restart daemon
-// TODO(Kelosky): login broken
-// TODO(Kelosky): timeout on connection for both sides to allow later reconnect
-// TODO(Kelosky): display daemon cli (Rust client) help, e.g. fast-zowe profiles -rfj (missing extra `-`)
-// TODO(Kelosky): some command errors hang and daemon must be restarted
-// TODO(Kelosky): colors dont come through on some terminals
-// TODO(Kelosky): stderr and exit code 1
+// TODO(Kelosky): colors do not come through on some terminals
+// TODO(Kelosky): stderr
+// TODO(Kelosky): plugins install
 
 /**
  * Initial paramter parse to handle conditionally starting as a persistent process (e.g. daemon mode)
