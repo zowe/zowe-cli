@@ -9,7 +9,7 @@
 *
 */
 
-import { ITsoMessages, IZosfmMessages } from "../../../../../zostso";
+import { ITsoMessages, IZosmfMessages } from "../../../../../zostso";
 
 /**
  * z/OSMF synchronous most tso command response messages. See the z/OSMF REST API publication for complete details.
@@ -55,10 +55,10 @@ export interface IZosmfTsoResponse {
 
     /**
      * z/OSMF messages
-     * @type IZosfmMessages[]
+     * @type IZosmfMessages[]
      * @memberOf IZosmfTsoResponse
      */
-    msgData?: IZosfmMessages[];
+    msgData?: IZosmfMessages[];
 
     /**
      * id of the session

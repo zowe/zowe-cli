@@ -9,7 +9,7 @@
 *
 */
 
-import { IZosfmMessages } from "../../../../../zostso";
+import { IZosmfMessages } from "../../../../../zostso";
 
 /**
  * The z/OSMF Ping API parameters. See the z/OSMF REST API documentation for full details.
@@ -37,7 +37,7 @@ export interface IZosmfPingResponse {
      * @type {array}
      * @memberof IZosmfPingResponse
      */
-    "msgData"?: IZosfmMessages[];
+    "msgData"?: IZosmfMessages[];
 
     /**
      * Ping reused boolean.
