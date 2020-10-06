@@ -59,7 +59,7 @@ describe("Missing session", ()=>{
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
-            const expectedError: object = { msg: "[object Object]No session was supplied." };
+            const expectedError: object = { msg: "Imperative API Error No session was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
     });
@@ -69,7 +69,7 @@ describe("Missing session", ()=>{
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
-            const expectedError: object = { msg: "[object Object]No session was supplied." };
+            const expectedError: object = { msg: "Imperative API Error No session was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
     });
@@ -92,7 +92,7 @@ describe("Missing workflow key", ()=> {
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
-            const expectedError: object = { msg: "[object Object]No workflow key parameter was supplied." };
+            const expectedError: object = { msg: "Imperative API Error No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
     });
@@ -102,7 +102,7 @@ describe("Missing workflow key", ()=> {
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
-            const expectedError: object = { msg: "[object Object]No workflow key parameter was supplied." };
+            const expectedError: object = { msg: "Imperative API Error No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
     });
@@ -112,7 +112,7 @@ describe("Missing workflow key", ()=> {
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
-            const expectedError: object = { msg: "[object Object]No workflow key parameter was supplied." };
+            const expectedError: object = { msg: "Imperative API Error No workflow key parameter was supplied." };
             expect(error.mDetails).toEqual(expectedError);
         }
     });
