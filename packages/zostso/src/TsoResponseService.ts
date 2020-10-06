@@ -39,12 +39,12 @@ export class TsoResponseService {
             servletKey: zosmfResponse.servletKey
         };
 
-        if (isNullOrUndefined(zosmfResponse.servletKey) && zosmfResponse.msgData) {
+        if (!isNullOrUndefined(zosmfResponse.servletKey)) {
+            startResponse.success = true;
+        } else if (zosmfResponse.msgData) {
             startResponse.failureResponse = new ImperativeError({
                 msg: zosmfResponse.msgData[0].messageText
             });
-        } else {
-            startResponse.success = true;
         }
         return startResponse;
     }
@@ -65,12 +65,12 @@ export class TsoResponseService {
             messages: isNullOrUndefined(collectedResponses)? "" : collectedResponses.messages
         };
 
-        if (isNullOrUndefined(zosmfResponse.servletKey) && zosmfResponse.msgData) {
+        if (!isNullOrUndefined(zosmfResponse.servletKey)) {
+            startResponse.success = true;
+        } else if (zosmfResponse.msgData) {
             startResponse.failureResponse = new ImperativeError({
                 msg: zosmfResponse.msgData[0].messageText
             });
-        } else {
-            startResponse.success = true;
         }
         return startResponse;
     }
