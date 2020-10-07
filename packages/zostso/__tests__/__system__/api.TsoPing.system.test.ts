@@ -10,7 +10,7 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { IPingResponse, noPingInput, PingTso, StopTso } from "../../../zostso";
+import { IPingResponse, noPingInput, PingTso, StopTso } from "../../";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";

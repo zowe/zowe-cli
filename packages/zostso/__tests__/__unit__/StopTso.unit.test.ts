@@ -21,7 +21,7 @@ import {
     noSessionTso,
     StopTso,
     TsoConstants
-} from "../../../zostso";
+} from "../../";
 
 
 const SERVLET_KEY: string = "ZOSMFAD-SYS2-55-aaakaaac";

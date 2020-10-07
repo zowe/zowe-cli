@@ -18,7 +18,7 @@ import {
     DeleteInstance,
     ListRegistryInstances,
     ProvisioningConstants
-} from "../../../../../../provisioning";
+} from "@zowe/provisioning-for-zowe-sdk";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     getMockedResponse,

@@ -9,7 +9,7 @@
 *
 */
 
-import { ConsoleValidator, ICollectParms, IIssueParms, IZosmfIssueParms } from "../../../zosconsole";
+import { ConsoleValidator, ICollectParms, IIssueParms, IZosmfIssueParms } from "../../";
 import { Session } from "@zowe/imperative";
 
 const CONSOLE_NAME: string = "CN12345";

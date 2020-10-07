@@ -12,7 +12,7 @@
 import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { IPublishedTemplates, ListCatalogTemplates, noSessionProvisioning, ProvisioningConstants } from "../../../provisioning";
+import { IPublishedTemplates, ListCatalogTemplates, noSessionProvisioning, ProvisioningConstants } from "../../";
 
 const RESOURCES_QUERY: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/psc/`;
 

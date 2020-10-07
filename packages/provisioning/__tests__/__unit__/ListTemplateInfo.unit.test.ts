@@ -13,7 +13,7 @@ import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, Imperative, ImperativeError } from "@zowe/imperative";
 import { ListTemplateInfo, noSessionProvisioning,
-        noTemplateName, ProvisioningConstants } from "../../../provisioning";
+        noTemplateName, ProvisioningConstants } from "../../";
 
 
 const templateName: string = "EXAMPLE_TEMPLATE";

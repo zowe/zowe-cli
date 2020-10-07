@@ -10,7 +10,7 @@
 */
 
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { IPingResponse, IZosmfPingResponse, noPingInput, PingTso } from "../../../zostso";
+import { IPingResponse, IZosmfPingResponse, noPingInput, PingTso } from "../../";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 
