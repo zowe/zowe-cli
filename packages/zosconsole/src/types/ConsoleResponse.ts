@@ -9,6 +9,6 @@
 *
 */
 
-import { IConsoleResponse } from "../../src/doc/IConsoleResponse";
+import { IConsoleResponse } from "../doc/IConsoleResponse";
 
 export type ConsoleResponse = (response: IConsoleResponse) => void;
