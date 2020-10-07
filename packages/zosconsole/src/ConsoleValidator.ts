@@ -9,7 +9,7 @@
 *
 */
 
-import { ICollectParms, IIssueParms } from "../";
+import { ICollectParms, IIssueParms } from "./";
 import { IZosmfIssueParms } from "./doc/zosmf/IZosmfIssueParms";
 import { AbstractSession, ImperativeExpect, TextUtils } from "@zowe/imperative";
 import { noSession } from "@zowe/core-for-zowe-sdk";
