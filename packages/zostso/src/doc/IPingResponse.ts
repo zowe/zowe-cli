@@ -9,7 +9,7 @@
 *
 */
 
-import { IZosmfPingResponse } from "../../src/doc/zosmf/IZosmfPingResponse";
+import { IZosmfPingResponse } from "./zosmf/IZosmfPingResponse";
 import { ImperativeError } from "@zowe/imperative";
 
 export interface IPingResponse {

@@ -9,7 +9,7 @@
 *
 */
 
-import { JOB_STATUS } from "../../../src/types/JobStatus";
+import { JOB_STATUS } from "../../types/JobStatus";
 
 /**
  * MonitorJobs "waitFor..." APIs parameters interface
