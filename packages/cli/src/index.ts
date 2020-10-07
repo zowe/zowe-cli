@@ -10,6 +10,7 @@
 */
 
 export { Constants } from "./Constants";
+export * from "./Utils";
 export * from "@zowe/core-for-zowe-sdk";
 export * from "@zowe/provisioning-for-zowe-sdk";
 export * from "@zowe/zos-console-for-zowe-sdk";

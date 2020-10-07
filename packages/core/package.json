@@ -34,7 +34,6 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/imperative": "4.8.1",
     "string-width": "2.1.1"
   },
   "devDependencies": {
@@ -45,5 +44,8 @@
     "tslint": "^6.1.3",
     "typescript": "^3.8.0",
     "typedoc": "^0.16.0"
+  },
+  "peerDependencies": {
+    "@zowe/imperative": "^4.8.1"
   }
 }
