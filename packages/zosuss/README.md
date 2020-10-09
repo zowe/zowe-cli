@@ -1,6 +1,6 @@
 # z/OS USS Package
 
-Contains APIs and commands to interact with USS on z/OS (using z/OSMF USS REST endpoints).
+Contains APIs to interact with USS on z/OS (using z/OSMF USS REST endpoints).
 
 # API Examples
 

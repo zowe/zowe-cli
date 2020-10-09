@@ -1,6 +1,6 @@
 # z/OS Files Package
 
-Contains APIs and commands to work with files and datasets on z/OS (using z/OSMF files REST endpoints).
+Contains APIs to interact with files and data sets on z/OS (using z/OSMF files REST endpoints).
 
 # API Examples
 

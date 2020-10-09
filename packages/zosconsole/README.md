@@ -1,6 +1,6 @@
 # z/OS Console Package
 
-Contains APIs and commands to work with the z/OS console (using z/OSMF console REST endpoints).
+Contains APIs to interact with the z/OS console (using z/OSMF console REST endpoints).
 
 # API Examples
 

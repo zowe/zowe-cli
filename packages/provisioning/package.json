@@ -1,7 +1,7 @@
 {
   "name": "@zowe/provisioning-for-zowe-sdk",
   "version": "6.21.1",
-  "description": "",
+  "description": "Zowe SDK to interact with the z/OS provisioning APIs",
   "author": "Broadcom",
   "license": "EPL-2.0",
   "homepage": "https://github.com/zowe/zowe-cli/tree/master/packages/provisioning#readme",

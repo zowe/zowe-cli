@@ -1,6 +1,6 @@
 # Provisioning Package
 
-Contains APIs and commands to work with the provisioning APIs
+Contains APIs to interact with the z/OS provisioning APIs
 
 ## API Examples
 

@@ -1,6 +1,6 @@
 # z/OS Management Facility Package
 
-Contains APIs and commands to interact with the z/OS Management Facility (using z/OSMF REST endpoints).
+Contains APIs to interact with the z/OS Management Facility (using z/OSMF REST endpoints).
 
 # API Examples
 
