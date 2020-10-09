@@ -50,8 +50,8 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/core-for-zowe-sdk": "^6.21.1",
-    "@zowe/imperative": "^4.8.1",
+    "@zowe/core-for-zowe-sdk": "6.21.1",
+    "@zowe/imperative": "4.8.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",

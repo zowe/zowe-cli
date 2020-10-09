@@ -62,6 +62,7 @@
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
+    "syncpack": "^5.6.10",
     "ts-jest": "^24.2.0",
     "ts-node": "^7.0.1",
     "tslint": "^6.1.3",
