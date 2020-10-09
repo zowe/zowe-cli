@@ -4,6 +4,18 @@
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
+  "homepage": "https://github.com/zowe/zowe-cli#readme",
+  "bugs": {
+    "url": "https://github.com/zowe/zowe-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/zowe-cli.git"
+  },
+  "bin": {
+    "bright": "./lib/main.js",
+    "zowe": "./lib/main.js"
+  },
   "keywords": [
     "zosmf",
     "mainframe",
@@ -20,6 +32,12 @@
     "scripts",
     "web-help-logo.png"
   ],
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
+  "imperative": {
+    "configurationModule": "lib/imperative.js"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
@@ -57,13 +75,6 @@
     "tslint": "^6.1.3",
     "typedoc": "^0.16.0",
     "typescript": "^3.8.0"
-  },
-  "imperative": {
-    "configurationModule": "lib/imperative.js"
-  },
-  "bin": {
-    "bright": "./lib/main.js",
-    "zowe": "./lib/main.js"
   },
   "engines": {
     "node": ">=8.0.0"

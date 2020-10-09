@@ -1,25 +1,8 @@
 {
   "name": "@zowe/cli",
+  "private": true,
   "author": "Broadcom",
   "license": "EPL-2.0",
-  "private": true,
-  "homepage": "https://github.com/zowe/zowe-cli#readme",
-  "bugs": {
-    "url": "https://github.com/zowe/zowe-cli/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zowe/zowe-cli.git"
-  },
-  "files": [
-    "lib",
-    "docs",
-    "scripts",
-    "web-help/logo.png"
-  ],
-  "publishConfig": {
-    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
-  },
   "scripts": {
     "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "clean": "lerna run --parallel clean",
@@ -45,11 +28,14 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
+  "dependencies": {
+    "@zowe/imperative": "4.8.1",
+    "@zowe/perf-timing": "1.0.7"
+  },
   "devDependencies": {
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^22.2.3",
     "@types/node": "^12.12.24",
-    "@zowe/imperative": "4.8.1",
     "ansi-colors": "^4.1.1",
     "chalk": "^4.1.0",
     "clear-require": "^2.0.0",

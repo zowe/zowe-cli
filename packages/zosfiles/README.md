@@ -7,8 +7,8 @@ Contains APIs and commands to work with files and datasets on z/OS (using z/OSMF
 **Create a dataset**
 
 ```typescript
-import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -65,8 +65,8 @@ main();
 **Download all datasets in a partitioned dataset**
 
 ```typescript
-import { Download, IDownloadOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { Download, IDownloadOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -117,8 +117,8 @@ main();
 **List datasets on z/OS**
 
 ```typescript
-import { List, IListOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { List, IListOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -174,8 +174,8 @@ main();
 **Upload a file to Unix System Services**
 
 ```typescript
-import { Upload, IUploadOptions, IZosFilesResponse } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { Upload, IUploadOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";

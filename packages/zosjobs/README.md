@@ -7,8 +7,8 @@ Contains APIs and commands to interact with jobs on z/OS (using z/OSMF jobs REST
 **Cancel a job**
 
 ```typescript
-import { CancelJobs } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { CancelJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -60,8 +60,8 @@ main();
 **Download a job's output**
 
 ```typescript
-import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -117,8 +117,8 @@ main();
 **Get jobs by owner**
 
 ```typescript
-import { GetJobs, IJob } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";
@@ -169,8 +169,8 @@ main();
 **Submit a job**
 
 ```typescript
-import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/cli";
 import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Connection Options
 const hostname: string = "yourhost.yourdomain.net";

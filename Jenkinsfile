@@ -62,7 +62,7 @@ node('ca-jenkins-agent') {
 
     // Initialize the pipeline library, should create 5 steps.
     pipeline.setup()
-    
+
     // When we need to build the CLI with imperative from Github repo source,
     // we need lots of time to install imperative, since imperative
     // is also built from source during the NPM install.
@@ -73,18 +73,6 @@ node('ca-jenkins-agent') {
     //     time: 15,
     //     unit: 'MINUTES'
     // ])
-
-    // Create a custom lint stage that runs immediately after the setup.
-    pipeline.createStage(
-        name: "Lint",
-        stage: {
-            sh "npm run lint"
-        },
-        timeout: [
-            time: 2,
-            unit: 'MINUTES'
-        ]
-    )
 
     // Build the application
     pipeline.build(timeout: [
@@ -109,7 +97,8 @@ node('ca-jenkins-agent') {
             JEST_JUNIT_CLASSNAME: "Unit.{classname}",
             JEST_JUNIT_TITLE: "{title}",
             JEST_STARE_RESULT_DIR: "${UNIT_TEST_ROOT}/jest-stare",
-            JEST_STARE_RESULT_HTML: "index.html"
+            JEST_STARE_RESULT_HTML: "index.html",
+            NODE_OPTIONS: "--max_old_space_size=4096"
         ],
         testResults: [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Report"],
         coverageResults: [dir: "__tests__/__results__/unit/coverage/lcov-report", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Coverage Report"],
@@ -149,7 +138,8 @@ node('ca-jenkins-agent') {
             JEST_JUNIT_CLASSNAME: "Integration.{classname}",
             JEST_JUNIT_TITLE: "{title}",
             JEST_STARE_RESULT_DIR: "${INTEGRATION_TEST_ROOT}/jest-stare",
-            JEST_STARE_RESULT_HTML: "index.html"
+            JEST_STARE_RESULT_HTML: "index.html",
+            NODE_OPTIONS: "--max_old_space_size=4096"
         ],
         testResults: [dir: "$INTEGRATION_TEST_ROOT/jest-stare", files: "index.html", name: "$PRODUCT_NAME - Integration Test Report"],
         junitOutput: INTEGRATION_JUNIT_OUTPUT
@@ -199,16 +189,19 @@ node('ca-jenkins-agent') {
         header: "## Recent Changes"
     )
 
-    // Deploys the application if on a protected branch. Give the version input
-    // 30 minutes before an auto timeout approve.
-    pipeline.deploy(
-        versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+    // Perform the versioning email mechanism
+    pipeline.version(
+        timeout: [time: 30, unit: 'MINUTES']
     )
 
     pipeline.updateChangelog(
         file: "CHANGELOG.md",
         header: "## Recent Changes"
     )
+
+    // Deploys the application if on a protected branch. Give the version input
+    // 30 minutes before an auto timeout approve.
+    pipeline.deploy()
 
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.

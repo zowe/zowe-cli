@@ -8,7 +8,7 @@ Contains APIs and commands to interact with TSO on z/OS (using z/OSMF TSO REST e
 
 ```typescript
 import { ISession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
-import { IssueTso } from "@zowe/cli";
+import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
 
 Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
 
@@ -27,7 +27,7 @@ const command = "status";
 (async () => {
     const response = await IssueTso.issueTsoCommand(session, accountNumber, command);
     if (response.success) {
-        console.log(response.commandResponse);
+        console.log(response);
     } else {
         throw new Error(`Failed to issue TSO command "${command}"`);
     }
@@ -42,7 +42,7 @@ const command = "status";
 
 ```typescript
 import { ISession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
-import { PingTso, StartTso, StopTso } from "@zowe/cli";
+import { PingTso, StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
 
 Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
 
