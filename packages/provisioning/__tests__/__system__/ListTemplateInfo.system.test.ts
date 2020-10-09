@@ -18,7 +18,7 @@ import {
     noSessionProvisioning,
     noTemplateName,
     ProvisioningConstants
-} from "../../";
+} from "../../src";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 

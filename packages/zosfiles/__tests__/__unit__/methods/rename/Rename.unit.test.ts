@@ -11,7 +11,7 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-import { Rename, ZosFilesConstants, ZosFilesMessages } from "../../../../";
+import { Rename, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Rename", () => {

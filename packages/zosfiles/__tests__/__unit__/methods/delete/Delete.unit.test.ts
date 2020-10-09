@@ -13,11 +13,11 @@ jest.mock('@zowe/core-for-zowe-sdk');
 
 import { Session } from "@zowe/imperative";
 import { posix } from "path";
-import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
+import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
-import { Invoke } from "../../../../lib/methods/invoke";
+import { Invoke } from "../../../../src/methods/invoke";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 describe("Delete", () => {

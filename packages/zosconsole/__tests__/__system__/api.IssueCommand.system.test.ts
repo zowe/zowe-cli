@@ -18,7 +18,7 @@ import {
     IssueCommand,
     IZosmfIssueParms,
     IZosmfIssueResponse
-} from "../../";
+} from "../../src";
 import * as fs from "fs";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";

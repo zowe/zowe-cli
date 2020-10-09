@@ -13,7 +13,7 @@ import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForP
 import { MonitorJobs } from "../../src/MonitorJobs";
 import { IJob } from "../../src/doc/response/IJob";
 import { ImperativeError, Session } from "@zowe/imperative";
-import { GetJobs } from "../..";
+import { GetJobs } from "../../src";
 
 jest.mock("../../src/GetJobs");
 

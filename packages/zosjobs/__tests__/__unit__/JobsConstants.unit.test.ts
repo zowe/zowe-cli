@@ -9,7 +9,7 @@
 *
 */
 
-import { JobsConstants } from "../../";
+import { JobsConstants } from "../../src";
 
 describe("JobsConstants tests", () => {
 

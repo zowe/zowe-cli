@@ -9,7 +9,7 @@
 *
 */
 
-import { DefinitionWorkflow } from "../../../";
+import { DefinitionWorkflow } from "../../../src";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowDefinitionFile } from "../../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

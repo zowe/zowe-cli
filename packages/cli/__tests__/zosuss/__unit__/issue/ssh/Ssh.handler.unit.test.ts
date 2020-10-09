@@ -15,7 +15,7 @@ import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative"
 import * as SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
 import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";
 import { getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import * as Shell from "../../../../../../zosuss/lib/Shell";
+import * as Shell from "@zowe/zos-uss-for-zowe-sdk";
 
 process.env.FORCE_COLOR = "0";
 

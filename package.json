@@ -82,14 +82,15 @@
     ],
     "modulePathIgnorePatterns": [
       "__tests__/__snapshots__/",
-      "/*/lib/"
+      ".*/node_modules/.*",
+      ".*/lib/.*"
     ],
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
     "testResultsProcessor": "jest-stare",
     "transform": {
-      ".(ts)": "ts-jest"
+      "\\.ts$": "ts-jest"
     },
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
     "moduleFileExtensions": [

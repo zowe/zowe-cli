@@ -21,7 +21,7 @@ import {
     StartTso,
     TsoConstants,
     SendTso
-} from "../../lib";
+} from "../../src";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient } from "../../../core/lib/rest/ZosmfRestClient";

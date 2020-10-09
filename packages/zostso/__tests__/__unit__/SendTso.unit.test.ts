@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { ISendResponse, IZosmfTsoResponse, SendTso } from "../../";
+import { ISendResponse, IZosmfTsoResponse, SendTso } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 const PRETEND_SESSION = new Session({

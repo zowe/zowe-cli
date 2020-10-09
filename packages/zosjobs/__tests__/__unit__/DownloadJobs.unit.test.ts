@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
-import { DownloadJobs, GetJobs, IJobFile } from "../../";
+import { DownloadJobs, GetJobs, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");

@@ -10,7 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse,
-         Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../";
+         Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

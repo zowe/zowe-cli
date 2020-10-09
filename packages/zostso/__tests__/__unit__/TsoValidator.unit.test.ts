@@ -20,7 +20,7 @@ import {
     noTsoStopInput,
     noZosmfResponse,
     TsoValidator
-} from "../../";
+} from "../../src";
 import { Session } from "@zowe/imperative";
 
 const PRETEND_SESSION = new Session({

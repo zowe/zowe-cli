@@ -11,7 +11,7 @@
 
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
-import { ArchivedDeleteWorkflow, WorkflowConstants, noWorkflowKey } from "../../";
+import { ArchivedDeleteWorkflow, WorkflowConstants, noWorkflowKey } from "../../src";
 
 const wfKey = "1234567_abcde";
 

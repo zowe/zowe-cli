@@ -19,7 +19,7 @@ import {
     ListRegistryInstances,
     noSessionProvisioning,
     ProvisioningConstants
-} from "../../";
+} from "../../src";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 const TYPE: string = "CICS";

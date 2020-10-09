@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { IIssueResponse, IIssueTsoParms, IssueTso, IStartTsoParms } from "../../";
+import { IIssueResponse, IIssueTsoParms, IssueTso, IStartTsoParms } from "../../src";
 import * as fs from "fs";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

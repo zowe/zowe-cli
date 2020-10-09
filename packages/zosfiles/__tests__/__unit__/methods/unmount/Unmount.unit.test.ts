@@ -9,7 +9,7 @@
 *
 */
 
-import { Unmount, ZosFilesMessages } from "../../../..";
+import { Unmount, ZosFilesMessages } from "../../../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Unmount", () => {

@@ -15,7 +15,6 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { ImperativeError, IO, Session, IHeaderContent } from "@zowe/imperative";
-import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesResponse } from "../../../../src/doc/IZosFilesResponse";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
@@ -27,7 +26,7 @@ import { Utilities } from "../../../../src/methods/utilities/Utilities";
 import { ZosFilesUtils } from "../../../../src/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/methods/create";
-import { ZosFilesAttributes, TransferMode, Tag } from "../../../../src";
+import { Tag, TransferMode, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { Readable } from "stream";
 

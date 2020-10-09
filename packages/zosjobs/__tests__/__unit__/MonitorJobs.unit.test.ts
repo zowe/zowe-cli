@@ -14,7 +14,7 @@ jest.mock("@zowe/core-for-zowe-sdk");
 
 import { ImperativeError } from "@zowe/imperative";
 import { GetJobs } from "../../src/GetJobs";
-import { JOB_STATUS } from "../..";
+import { JOB_STATUS } from "../../src";
 import { sleep } from "@zowe/core-for-zowe-sdk";
 import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
 import { IJob } from "../../src/doc/response/IJob";

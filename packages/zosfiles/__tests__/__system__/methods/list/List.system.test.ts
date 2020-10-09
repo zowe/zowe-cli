@@ -9,7 +9,7 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload } from "../../../../";
+import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

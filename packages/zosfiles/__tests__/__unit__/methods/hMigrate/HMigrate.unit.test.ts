@@ -11,7 +11,7 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../..";
+import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IMigrateOptions } from "../../../../src/methods/hMigrate/doc/IMigrateOptions";

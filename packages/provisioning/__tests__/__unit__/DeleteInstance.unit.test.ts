@@ -12,7 +12,7 @@
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { DeleteInstance, IPerformActionResponse, noInstanceId,
-        noSessionProvisioning, ProvisioningConstants } from "../../../provisioning";
+        noSessionProvisioning, ProvisioningConstants } from "../../src";
 
 
 const instanceId: string = "1234567_abcde";

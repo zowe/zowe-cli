@@ -11,7 +11,7 @@
 
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { PropertiesWorkflow } from "../../";
+import { PropertiesWorkflow } from "../../src";
 import {
     WorkflowConstants,
     noWorkflowKey,

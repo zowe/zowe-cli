@@ -9,7 +9,7 @@
 *
 */
 
-import { Create, Delete, ZosFilesMessages } from "../../../../";
+import { Create, Delete, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";

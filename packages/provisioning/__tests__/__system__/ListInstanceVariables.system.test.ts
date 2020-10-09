@@ -20,7 +20,7 @@ import {
     noInstanceId,
     noSessionProvisioning,
     ProvisioningConstants
-} from "../../";
+} from "../../src";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 let testEnvironment: ITestEnvironment;

@@ -20,7 +20,7 @@ import {
     noTemplateName,
     ProvisioningConstants,
     ProvisionPublishedTemplate
-} from "../../";
+} from "../../src";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/${ProvisioningConstants.INSTANCES_RESOURCE}/`;

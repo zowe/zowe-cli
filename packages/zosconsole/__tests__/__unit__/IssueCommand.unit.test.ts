@@ -18,7 +18,7 @@ import {
     IssueCommand,
     IZosmfIssueParms,
     IZosmfIssueResponse
-} from "../../";
+} from "../../src";
 import { ZosmfRestClient, noSession } from "@zowe/core-for-zowe-sdk";
 import { Headers, Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";

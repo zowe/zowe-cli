@@ -15,7 +15,7 @@ import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowKey } from "../../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ArchivedDeleteWorkflow, ArchiveWorkflow, CreateWorkflow } from "../../..";
+import { ArchivedDeleteWorkflow, ArchiveWorkflow, CreateWorkflow } from "../../../src";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
