@@ -1,6 +1,6 @@
 # z/OS Jobs Package
 
-Contains APIs and commands to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
+Contains APIs to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
 
 # API Examples
 

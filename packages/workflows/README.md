@@ -1,6 +1,6 @@
 # z/OS Workflows Package
 
-Contains APIs and commands to work with the z/OS Workflows APIs
+Contains APIs to interact with the z/OS workflows APIs
 
 ## API Examples
 

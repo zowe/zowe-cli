@@ -4,8 +4,6 @@
 
 Zowe CLI is a command-line interface that lets you interact with the mainframe in a familiar format. Zowe CLI helps to increase overall productivity, reduce the learning curve for developing mainframe applications, and exploit the ease-of-use of off-platform tools. Zowe CLI lets you use common tools such as Integrated Development Environments (IDEs), shell commands, bash scripts, and build tools for mainframe development. Through its ecosystem of plug-ins, you can automate actions on systems such as IBM Db2, IBM CICS, and more. It provides a set of utilities and services that help developers, DevOps engineers, and more become efficient in supporting and building z/OS applications quickly.
 
-You can also leverage the underlying Zowe Node APIs in this repository to build applications that interface with the mainframe. For more information, see [Using the Zowe Node APIs](#using-the-zowe-node-apis).
-
 ## Contents  <!-- omit in toc -->
 
  - [Documentation](#documentation)
@@ -14,7 +12,6 @@ You can also leverage the underlying Zowe Node APIs in this repository to
  - [Install Zowe CLI from source](#install-zowe-cli-from-source)
  - [Uninstall Zowe CLI](#uninstall-zowe-cli)
  - [Configure Zowe CLI](#configure-zowe-cli)
- - [Using the Zowe Node APIs](#using-the-zowe-node-apis)
  - [Run system tests](#run-system-tests)
  - [FAQs](#frequently-asked-questions)
 
@@ -22,7 +19,7 @@ You can also leverage the underlying Zowe Node APIs in this repository to
 
 For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
-The `docs` directory in this repository contains auto-generated typescript documentation under the `docs/typedoc` directory. To access the typescript documentation locally, navigate to the local `node_modules` directory that contains the installed package and access the `docs` directory after you install the Zowe CLI package.
+The `docs` directory in this repository contains auto-generated typescript documentation under the `docs/typedoc` directory. To access the Typescript documentation online, navigate to the Zowe docs site mentioned above.
 
 **Note:** Some links in the auto-generated typescript documentation are not functional at this time.
 
@@ -34,7 +31,6 @@ The following information is critical to working with the code, running/writing/
 | ------------------------------ | ----- |
 | General guidelines that apply to contributing to Zowe CLI and Plug-ins | [Contribution Guidelines](./CONTRIBUTING.md) |
 | Conventions and best practices for creating packages and plug-ins for Zowe CLI | [Package and Plug-in Guidelines](./docs/PackagesAndPluginGuidelines.md)|
-Guidelines for contributing to Zowe SDKs| [SDK Guidelines](./docs/SDKGuidelines.md) |
 | Guidelines for running tests on Zowe CLI | [Testing Guidelines](./docs/TESTING.md) |
 | Guidelines for running tests on the plug-ins that you build| [Plug-in Testing Guidelines](./docs/PluginTESTINGGuidelines.md) |
 | Documentation that describes the features of the Imperative CLI Framework | [About Imperative CLI Framework](https://github.com/zowe/imperative/wiki) |
@@ -99,31 +95,6 @@ zowe zosmf check status
 **Tip:** When you confirm that your profile connects to and communicates with your mainframe system successfully, you can issue the same command at any time to verify the availability and status of the z/OSMF subsystem on your mainframe.
 
 For detailed information about creating service profiles, creating base profiles, or integrating with Zowe API ML, see [Using Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-usingcli.html).
-
-## Using the Zowe Node APIs
-
-The Zowe Node APIs are programamatic APIs that enable Zowe CLI to interface with the mainframe. You can use the APIs to build your own applications or automation scripts independent of Zowe CLI.
-
-### Accessing the APIs
-
-The Zowe Node APIs are maintained in this repository. Each set of functionality, such as z/OS Jobs, is stored in a folder that contains the API and CLI code.
-
-To get started, import Zowe CLI into your project and call the individual APIs. We provide a Readme with usage examples for each API package:
-
-```
-zowe-cli/packages/<package-name>/README.md
-```
-
-Refer to each Readme for more information:
-
-- [Provisioning](https://github.com/zowe/zowe-cli/tree/master/packages/provisioning): Provision middleware and resources such as IBM CICS, IBM Db2, IBM MQ, and more.
-- [z/OS Console](https://github.com/zowe/zowe-cli/tree/master/packages/zosconsole): Perform z/OS console operations.
-- [z/OS Data Sets](https://github.com/zowe/zowe-cli/tree/master/packages/zosfiles): Work with data sets on z/OS.
-- [z/OS Jobs](https://github.com/zowe/zowe-cli/tree/master/packages/zosjobs): Work with batch jobs on z/OS.
-- [z/OSMF](https://github.com/zowe/zowe-cli/tree/master/packages/zosmf): Return data about z/OSMF, such as connection status or a list of available systems.
-- [z/OS TSO](https://github.com/zowe/zowe-cli/tree/master/packages/zostso): Interact with TSO/E adress spaces on z/OS.
-- [z/OS USS](https://github.com/zowe/zowe-cli/tree/master/packages/zosuss): Work with UNIX system services (USS) files on z/OS.
-- [z/OS Workflows](https://github.com/zowe/zowe-cli/tree/master/packages/workflows): Create and manage z/OSMF workflows on z/OS.
 
 ## Run system tests
 
