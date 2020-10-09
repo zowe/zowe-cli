@@ -10,7 +10,7 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript, delay } from "../../../../../../../__tests__/__src__/TestUtils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -24,6 +24,7 @@ let dataSetName: string;
 let user: string;
 const beforeMemberName = "mem1";
 const afterMemberName = "mem2";
+const delayTime = 2000;
 
 describe("Rename data set member", () => {
     beforeAll(async () => {
@@ -36,7 +37,7 @@ describe("Rename data set member", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dataSetName = `${user}.DATA.SET`;
+        dataSetName = `${user}.PUBLIC.DATA.SET`;
     });
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
@@ -60,6 +61,7 @@ describe("Rename data set member", () => {
                         TEST_ENVIRONMENT,
                         [dataSetName, beforeMemberName, afterMemberName]
                     );
+                    await delay(delayTime);
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {
                     error = err;
@@ -81,6 +83,7 @@ describe("Rename data set member", () => {
                         TEST_ENVIRONMENT,
                         [dataSetName, beforeMemberName, afterMemberName, "--responseTimeout 5"]
                     );
+                    await delay(delayTime);
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {
                     error = err;

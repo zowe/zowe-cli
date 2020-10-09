@@ -15,7 +15,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, delay } from "../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -23,6 +23,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let path: string;
 let filename: string;
+const delayTime = 2000;
 
 describe("List command group", () => {
 
@@ -53,7 +54,9 @@ describe("List command group", () => {
             beforeEach(async () => {
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await delay(delayTime);
                     await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+                    await delay(delayTime);
                 } catch (err) {
                     throw err;
                 }
@@ -62,6 +65,7 @@ describe("List command group", () => {
             afterEach(async () => {
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     throw err;
                 }
@@ -135,6 +139,7 @@ describe("List command group", () => {
 
                 try {
                     await Delete.dataSet(REAL_SESSION, `${dsname}(${testString})`);
+                    await delay(delayTime);
                     response = await List.allMembers(REAL_SESSION, dsname);
                 } catch (err) {
                     error = err;
@@ -185,6 +190,7 @@ describe("List command group", () => {
             beforeEach(async () => {
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     throw err;
                 }
@@ -193,6 +199,7 @@ describe("List command group", () => {
             afterEach(async () => {
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     throw err;
                 }
@@ -283,6 +290,7 @@ describe("List command group", () => {
                 let response;
                 try {
                     response = await Create.uss(REAL_SESSION, path, "directory");
+                    await delay(delayTime);
                     response = await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
                 } catch (err) {
                     error = err;

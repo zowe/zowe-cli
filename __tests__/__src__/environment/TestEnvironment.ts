@@ -10,7 +10,7 @@
 */
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, Session, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger, LoggingConfigurer, Session, TextUtils } from "@zowe/imperative";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirpSync } from "fs-extra";
@@ -20,7 +20,6 @@ import * as fs from "fs";
 import { Constants } from "../../../packages/cli/src/Constants";
 import { TempTestProfiles } from "../profiles/TempTestProfiles";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
-
 const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
 
@@ -77,6 +76,8 @@ export class TestEnvironment {
 
         // the result of the test environment setup so far is used to create profiles
         result.tempProfiles = await TempTestProfiles.createProfiles(result, params.tempProfileTypes);
+
+        Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
 
         // Return the test environment including working directory that the tests should be using
         return result;
