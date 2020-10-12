@@ -19,7 +19,7 @@ echo "$SPOOL_FILES"
 IFS='
 '
 for FILE in $SPOOL_FILES; do
-    if [[ $FILE = *"SYSTSPRT"* ]]
+    if [ $FILE = *"SYSTSPRT"* ]
     then 
         echo "*********************************************************************"
         echo "*   !!!SPOOL FILE!!!"
