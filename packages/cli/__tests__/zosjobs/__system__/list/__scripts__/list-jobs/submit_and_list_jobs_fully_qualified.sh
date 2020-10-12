@@ -16,7 +16,7 @@ echo "Listing jobs to find job IDs $JOBID1 and $JOBID2"
 
 LIST_JOB_OUTPUT=`zowe zos-jobs list jobs --host $HOST --port $PORT --user $USER --password $PASS --ru=false`
 echo $LIST_JOB_OUTPUT
-if [[ $LIST_JOB_OUTPUT =~ $JOBID1 ]]
+if [ $LIST_JOB_OUTPUT =~ $JOBID1 ]
 then
    echo "First job ID $JOBID1 found"
 else
