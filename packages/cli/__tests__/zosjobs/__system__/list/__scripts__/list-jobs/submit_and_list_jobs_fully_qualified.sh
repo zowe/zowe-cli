@@ -24,7 +24,7 @@ else
    exit 1
 fi
 
-if [[ $LIST_JOB_OUTPUT =~ $JOBID2 ]]
+if [ $LIST_JOB_OUTPUT =~ $JOBID2 ]
 then
    echo "Second job ID $JOBID2 found"
 else

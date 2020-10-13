@@ -39,7 +39,7 @@ fi
 IFS='
 '
 for FILE in $SPOOL_FILES; do
-    IFS=' ' read -a ARRAY <<< "${FILE}"
+    echo "${FILE}" | IFS=' ' read -a ARRAY
     echo "*********************************************************************"
     echo "*   !!!SPOOL FILE ${ARRAY[1]}!!!"
     echo "*********************************************************************"
