@@ -270,15 +270,7 @@ mod tests {
     }
 
     #[test]
-
-    fn test_get_port_string_default() {
-        // expect default port with no env
-        let port_string = get_port_string();
-        assert_eq!("4000", port_string);
-    }
-
-    #[test]
-    fn test_get_port_string_env_override() {
+    fn test_get_port_string() {
         // expect default port with no env
         let port_string = get_port_string();
         assert_eq!("4000", port_string);
