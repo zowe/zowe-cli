@@ -16,7 +16,7 @@ import { DaemonClient } from "./DaemonClient";
 
 // TODO(Kelosky): handle prompting cases from login command
 // TODO(Kelosky): prompt* broken - hangs, must restart daemon
-// TODO(Kelosky): colors do not come through on some terminals
+// TODO(Kelosky): colors do not come through on some terminals (must be started via `node lib/main --daemon` to see colors)
 // TODO(Kelosky): stderr
 // TODO(Kelosky): plugins install
 
@@ -74,7 +74,6 @@ export class Processor {
      * @memberof Processor
      */
     private mStartServer: boolean;
-
 
     /**
      * Creates an instance of Processor.

@@ -16,17 +16,29 @@ use std::io::{self, Write};
 use std::net::Shutdown;
 use std::net::TcpStream;
 use std::process::Command;
+use std::str;
 
 // NOTE(Kelosky): these sync with imperative header values
 const X_ZOWE_DAEMON_HEADERS: &str = "x-zowe-daemon-headers";
 const X_ZOWE_DAEMON_EXIT: &str = "x-zowe-daemon-exit";
 const X_ZOWE_DAEMON_END: &str = "x-zowe-daemon-end";
+const X_ZOWE_DAEMON_PROGRESS: &str = "x-zowe-daemon-progress";
 const X_ZOWE_DAEMON_VERSION: &str = "x-zowe-daemon-version";
-const X_HEADERS_VERSION_ONE_LENGTH: usize = 7;
+const X_HEADERS_VERSION_ONE_LENGTH: usize = 8;
 
 // TODO(Kelosky): add version command
 // TODO(Kelosky): add help command??
 // TODO(Kelosky): escape quotes?? zowe uss issue ssh "ls -la" causes command errors in zowe2
+
+// TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
+// 0.8225 zowe2 vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
+
+// PS C:\Users\...\Desktop> 1..10 | ForEach-Object {
+//     >>     Measure-Command {
+//     >>         zowe2 -h
+//     >>     }
+//     >> } | Measure-Object -Property TotalSeconds -Average
+// 3.6393932 and 0.76156812 zowe average over 10 run sample = 2.87782508 sec faster on windows
 
 fn main() -> std::io::Result<()> {
     // turn args into vector
@@ -72,12 +84,38 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
 
     loop {
         let mut line = String::new();
+
         if reader.read_line(&mut line).unwrap() > 0 {
-            headers = parse_headers(&line);
+            // returns nothing if no new headers
+            let new_headers = parse_headers(&line);
+            let mut got_new_headers = false;
+
+            // adjust so that `headers` always contains the last sent headers
+            if new_headers.len() > 0 {
+                headers = new_headers;
+                got_new_headers = true;
+            }
+
             // if no headers, print the later
             // NOTE(Kelosky): later, if stderr, print stderr
             if headers.len() == 0 {
+                // line.truncate(line.len() - 1);
+                // let newline: Vec<&str> = line.split('\n').collect();
                 print!("{}", line);
+                io::stdout().flush().unwrap();
+            } else {
+                if got_new_headers == false {
+                    let &progress = headers.get(X_ZOWE_DAEMON_PROGRESS).unwrap();
+                    // println!("progress `{}`", &progress);
+                    if progress == 1i32 {
+                        print!("{}", &line[0..(line.len() - 1)]);
+                        io::stdout().flush().unwrap();
+                    }
+                    else {
+                        print!("{}", line);
+                        io::stdout().flush().unwrap();
+                    }
+                }
             }
         } else {
             break;
@@ -104,12 +142,16 @@ fn parse_headers(buf: &String) -> HashMap<String, i32> {
     let first = lines.next().unwrap();
 
     let raw_headers: Vec<&str> = first.split(';').collect();
-    if raw_headers.len() == X_HEADERS_VERSION_ONE_LENGTH {
-        if raw_headers[0].contains(X_ZOWE_DAEMON_HEADERS) && raw_headers[6].contains(X_ZOWE_DAEMON_END) {
+    // must match minimum length
+    if raw_headers.len() >= X_HEADERS_VERSION_ONE_LENGTH {
+        // first and last headers must be as expected
+        if raw_headers[0].contains(X_ZOWE_DAEMON_HEADERS)
+            && raw_headers[7].contains(X_ZOWE_DAEMON_END)
+        {
             for raw_header in raw_headers.iter() {
                 let parts: Vec<&str> = raw_header.split(':').collect();
                 let key = parts[0].to_owned();
-                let char_value = parts[1];
+                let char_value = parts[1].trim();
                 let int_value = char_value.parse::<i32>().unwrap();
                 headers.insert(key, int_value);
             }
@@ -169,6 +211,10 @@ fn get_port_string() -> String {
     return port_string;
 }
 
+//
+// Unit tests
+//
+
 #[cfg(test)]
 mod tests {
 
@@ -176,20 +222,63 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_parse_headers() {
-        // expect 2 entries in the map
-        let headers = "length:2;exit:5".to_string();
+    fn test_parse_headers_get_total_length() {
+        let headers = "x-zowe-daemon-headers:8;x-zowe-daemon-version:1;x-zowe-daemon-exit:1;x-zowe-daemon-stdout:1;x-zowe-daemon-stderr:0;x-zowe-daemon-prompt:0;x-zowe-daemon-progress:0;x-zowe-daemon-end:0".to_string();
         let headers_map = parse_headers(&headers);
-        assert_eq!(2, headers_map.len());
+
+        // expect 8 entries in the map
+        assert_eq!(8, headers_map.len());
+    }
+
+    #[test]
+    fn test_parse_headers_get_length() {
+        let headers = "x-zowe-daemon-headers:8;x-zowe-daemon-version:1;x-zowe-daemon-exit:1;x-zowe-daemon-stdout:1;x-zowe-daemon-stderr:0;x-zowe-daemon-prompt:0;x-zowe-daemon-progress:0;x-zowe-daemon-end:0".to_string();
+        let headers_map = parse_headers(&headers);
+
+        let &len = headers_map
+        .get(&("x-zowe-daemon-headers".to_string()))
+        .unwrap();
+
+        // expect len code set from header
+        assert_eq!(8, len);
+    }
+
+    #[test]
+    fn test_parse_headers_get_version() {
+        let headers = "x-zowe-daemon-headers:8;x-zowe-daemon-version:1;x-zowe-daemon-exit:1;x-zowe-daemon-stdout:1;x-zowe-daemon-stderr:0;x-zowe-daemon-prompt:0;x-zowe-daemon-progress:0;x-zowe-daemon-end:0".to_string();
+        let headers_map = parse_headers(&headers);
+
+        let &len = headers_map
+        .get(&("x-zowe-daemon-version".to_string()))
+        .unwrap();
+
+        // expect version code set from header
+        assert_eq!(1, len);
+    }
+
+    #[test]
+    fn test_parse_headers_get_exit() {
+        let headers = "x-zowe-daemon-headers:8;x-zowe-daemon-version:1;x-zowe-daemon-exit:1;x-zowe-daemon-stdout:1;x-zowe-daemon-stderr:0;x-zowe-daemon-prompt:0;x-zowe-daemon-progress:0;x-zowe-daemon-end:0".to_string();
+        let headers_map = parse_headers(&headers);
+
+        let &exit = headers_map
+        .get(&("x-zowe-daemon-exit".to_string()))
+        .unwrap();
 
         // expect exit code set from header
-        let &exit = headers_map.get(&("exit".to_string())).unwrap();
-        assert_eq!(5, exit);
+        assert_eq!(1, exit);
     }
 
     #[test]
 
-    fn test_get_port_string() {
+    fn test_get_port_string_default() {
+        // expect default port with no env
+        let port_string = get_port_string();
+        assert_eq!("4000", port_string);
+    }
+
+    #[test]
+    fn test_get_port_string_env_override() {
         // expect default port with no env
         let port_string = get_port_string();
         assert_eq!("4000", port_string);
@@ -199,5 +288,4 @@ mod tests {
         let port_string = get_port_string();
         assert_eq!("777", port_string);
     }
-
 }
