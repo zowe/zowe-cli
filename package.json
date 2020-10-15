@@ -14,9 +14,6 @@
   },
   "bin": {
     "bright": "./lib/main.js",
-    "zowe-start-daemon": "./lib/zowe-start-daemon.js",
-    "zowe-restart-daemon": "./lib/zowe-restart-daemon.js",
-    "zowe-stop-daemon": "./lib/zowe-stop-daemon.js",
     "zowe": "./lib/main.js"
   },
   "keywords": [
