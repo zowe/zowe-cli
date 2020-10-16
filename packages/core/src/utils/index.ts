@@ -11,3 +11,4 @@
 
 export * from "./CoreUtils";
 export * from "./CommonConstants";
+export * from "./ProfileUtils";
