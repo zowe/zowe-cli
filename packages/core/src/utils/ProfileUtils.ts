@@ -94,7 +94,7 @@ export async function getDefaultProfile(profileType: string, mergeWithBase?: boo
         throw new ImperativeError({msg: `Failed to load default profiles of types "${profileType}" and "base"`});
     }
 
-    const combinedProfile: IProfile = baseProfileLoaded.profile;
+    const combinedProfile: IProfile = JSON.parse(JSON.stringify(baseProfileLoaded.profile));
 
     for (const propertyName in profileLoaded.profile) {
         // tslint:disable-next-line: triple-equals
