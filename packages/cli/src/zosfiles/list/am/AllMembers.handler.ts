@@ -23,6 +23,7 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
             volume: commandParameters.arguments.volumeSerial,
             attributes: commandParameters.arguments.attributes,
             maxLength: commandParameters.arguments.maxLength,
+            pattern: commandParameters.arguments.pattern,
             responseTimeout: commandParameters.arguments.responseTimeout
         });
 

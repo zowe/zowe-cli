@@ -41,4 +41,9 @@ export interface IListOptions extends IZosFilesOptions {
      * An optional parameter that specifies how to handle migrated data sets
      */
     recall?: ZosmfMigratedRecallOptions;
+
+    /**
+     * An optional pattern for restricting the response list
+     */
+    pattern?: string;
 }

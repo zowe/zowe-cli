@@ -47,7 +47,8 @@ export const DirToPdsDefinition: ICommandDefinition = {
     options: [
         UploadOptions.volume,
         UploadOptions.binary,
-        UploadOptions.recall
+        UploadOptions.recall,
+        UploadOptions.encoding
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
