@@ -44,8 +44,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(1);
             expect(error).not.toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(1);
             expect(profile).toEqual(fakeServiceProfile);
         })
         it("Should return a service profile even though base is missing", async() => {
@@ -59,8 +59,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error).not.toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual(fakeServiceProfile);
         })
         it("Should return a base profile", async() => {
@@ -74,8 +74,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error).not.toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual(fakeBaseProfile);
         })
         it("Should return a service profile even though base was specified", async() => {
@@ -89,8 +89,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error).not.toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual(fakeServiceProfile);
         })
         it("Should properly combine profiles", async() => {
@@ -104,8 +104,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error).not.toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual({name: "fakeServiceProfile", type: "zosmf", host: "fakeHostBase"});
         })
         it("Should throw an error if it cannot get the service profile", async() => {
@@ -116,8 +116,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(1);
             expect(error).toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(1);
             expect(error.message).toContain("zosmf");
         })
         it("Should throw an error if it cannot get both profiles", async() => {
@@ -128,8 +128,8 @@ describe("CoreUtils", () => {
             } catch (err) {
                 error = err;
             }
-            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error).toBeDefined();
+            expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error.message).toContain("zosmf");
             expect(error.message).toContain("base");
         })
