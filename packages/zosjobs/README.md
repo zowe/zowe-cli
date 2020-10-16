@@ -151,7 +151,6 @@ import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/zos-jobs-for-zowe-sdk";
     const jobDataSet: string = "ZOWEUSER.PUBLIC.MY.DATASET.JCL(MEMBER)"
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IJob;
-    // This may take awhile...
     response = await SubmitJobs.submitJob(session, jobDataSet);
     console.log(response);
     process.exit(0);
