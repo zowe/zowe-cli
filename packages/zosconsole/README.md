@@ -37,14 +37,9 @@ import { IssueCommand, IIssueParms, IConsoleResponse } from "@zowe/zos-console-f
 
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IConsoleResponse;
-    try {
-        response = await IssueCommand.issue(session, parms);
-        console.log(response);
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+    response = await IssueCommand.issue(session, parms);
+    console.log(response);
+    process.exit(0);
 })().catch((err) => {
     console.error(err);
     process.exit(1);
@@ -83,14 +78,9 @@ import { CollectCommand, ICollectParms, IConsoleResponse } from "@zowe/zos-conso
 
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IConsoleResponse;
-    try {
-        response = await CollectCommand.collect(session, parms);
-        console.log(response);
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+    response = await CollectCommand.collect(session, parms);
+    console.log(response);
+    process.exit(0);
 })().catch((err) => {
     console.error(err);
     process.exit(1);

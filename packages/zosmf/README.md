@@ -28,14 +28,9 @@ import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
 
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IZosmfInfoResponse;
-    try {
-        response = await CheckStatus.getZosmfInfo(session);
-        console.log(response);
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+    response = await CheckStatus.getZosmfInfo(session);
+    console.log(response);
+    process.exit(0);
 })().catch((err) => {
     console.error(err);
     process.exit(1);
@@ -67,14 +62,9 @@ import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
 
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IZosmfListDefinedSystemsResponse;
-    try {
-        response = await ListDefinedSystems.listDefinedSystems(session);
-        console.log(response);
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
+    response = await ListDefinedSystems.listDefinedSystems(session);
+    console.log(response);
+    process.exit(0);
 })().catch((err) => {
     console.error(err);
     process.exit(1);
