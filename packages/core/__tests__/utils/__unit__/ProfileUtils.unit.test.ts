@@ -32,11 +32,14 @@ const fakeProfileMissingInformation: imperative.IProfile = {
 
 const fs = require("fs");
 
+Object.defineProperty(imperative, "CliProfileManager", jest.fn(
+    () => ({ load: jest.fn()})
+));
+
 describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {
         beforeEach(() => {
             jest.resetAllMocks();
-            jest.mock("@zowe/imperative", "CliProfileManager");
         })
         it("Should return a service profile", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValueOnce({profile: fakeServiceProfile});
