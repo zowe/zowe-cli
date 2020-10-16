@@ -11,7 +11,6 @@
 
 import * as imperative from "@zowe/imperative";
 import * as profileUtils from "../../../src/utils/ProfileUtils";
-import * as path from "path";
 
 const fakeServiceProfile: imperative.IProfile = {
     name: "fakeServiceProfile",
@@ -35,19 +34,9 @@ const fs = require("fs");
 
 describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {
-        beforeAll(() => {
-            // Stuff for CI tools
-            const zoweDir = path.join(require("os").homedir(), ".zowe")
-            const zoweProfilesDir = path.join(zoweDir, "profiles");
-            if(!fs.existsSync(zoweDir)) {
-                fs.mkdirSync(zoweDir);
-            }
-            if(!fs.existsSync(zoweProfilesDir)){
-                fs.mkdirSync(zoweProfilesDir);
-            }
-        })
         beforeEach(() => {
             jest.resetAllMocks();
+            jest.mock("@zowe/imperative", "CliProfileManager");
         })
         it("Should return a service profile", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValueOnce({profile: fakeServiceProfile});

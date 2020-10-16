@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeConfig, IProfileLoaded, CliProfileManager, IProfile, Logger, ImperativeError, ICommandArguments, CliUtils, CommandProfiles } from "@zowe/imperative";
+import { ImperativeConfig, IProfileLoaded, CliProfileManager, IProfile, Logger, ImperativeError } from "@zowe/imperative";
 import * as path from "path";
 
 /**
