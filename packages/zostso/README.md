@@ -7,24 +7,31 @@ Contains APIs to interact with TSO on z/OS (using z/OSMF TSO REST endpoints).
 **Issue the TSO command "status" to display info about jobs for your user ID**
 
 ```typescript
-import { ISession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
 import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
 
-Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
-
-const sessCfg: ISession = {
-    hostname: "example.com",
-    port: 443,
-    rejectUnauthorized: false,
-    user: "ibmuser",
-    password: "password",
-    type: "basic"
-};
-const session = new Session(sessCfg);
-const accountNumber = "ACCT#";
-const command = "status";
-
 (async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
+
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    let defaultTsoProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+        defaultTsoProfile = await getDefaultProfile("tso", false);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
+
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    const accountNumber = defaultTsoProfile.account;
+    const command = "status";
     const response = await IssueTso.issueTsoCommand(session, accountNumber, command);
     if (response.success) {
         console.log(response);
@@ -41,26 +48,34 @@ const command = "status";
 **Demonstrate starting, pinging, and stopping a TSO address space**
 
 ```typescript
-import { ISession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
 import { PingTso, StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
 
-Logger.initLogger(LoggingConfigurer.configureLogger("lib", {name: "test"}));
-
-const sessCfg: ISession = {
-    hostname: "example.com",
-    port: 443,
-    rejectUnauthorized: false,
-    user: "ibmuser",
-    password: "password",
-    type: "basic"
-};
-const session = new Session(sessCfg);
-const accountNumber = "ACCT#";
-
 (async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
+
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    let defaultTsoProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+        defaultTsoProfile = await getDefaultProfile("tso", false);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
+
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    const accountNumber = defaultTsoProfile.account;
     const startResponse = await StartTso.start(session, accountNumber, {
         codePage: "285"
     });
+
     const servletKey = startResponse.servletKey;
     if (startResponse.success) {
         console.log(`[${servletKey}] Started`);

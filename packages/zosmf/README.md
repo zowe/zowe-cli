@@ -7,38 +7,26 @@ Contains APIs to interact with the z/OS Management Facility (using z/OSMF REST e
 **Check z/OSMF status**
 
 ```typescript
-import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { CheckStatus, IZosmfInfoResponse } from "@zowe/zosmf-for-zowe-sdk";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession, CheckStatus, IZosmfInfoResponse } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
 
-// Connection Options
-const hostname: string = "yourhost.yourdomain.net";
-const port: number = 443;
-const user: string = "ZOWEUSER";
-const password: string = "ZOWEPASS";
-const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
-const basePath: string = undefined;
-const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
-const tokenType: string = undefined;
-const tokenValue: string = undefined;
-const rejectUnauthorized: boolean = false;
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Session Options
-const sessionConfig: ISession = {
-    hostname,
-    port,
-    user,
-    password,
-    protocol,
-    basePath,
-    type,
-    tokenType,
-    tokenValue,
-    rejectUnauthorized
-}
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
 
-const session = new Session(sessionConfig);
-
-async function main() {
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IZosmfInfoResponse;
     try {
         response = await CheckStatus.getZosmfInfo(session);
@@ -48,47 +36,36 @@ async function main() {
         console.error(err);
         process.exit(1);
     }
-}
-
-main();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 #
 **List systems defined to z/OSMF**
 
 ```typescript
-import { Session, ISession, SessConstants } from "@zowe/imperative";
-import { ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "@zowe/zosmf-for-zowe-sdk";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession, ListDefinedSystems, IZosmfListDefinedSystemsResponse } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
 
-// Connection Options
-const hostname: string = "yourhost.yourdomain.net";
-const port: number = 443;
-const user: string = "ZOWEUSER";
-const password: string = "ZOWEPASS";
-const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
-const basePath: string = undefined;
-const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
-const tokenType: string = undefined;
-const tokenValue: string = undefined;
-const rejectUnauthorized: boolean = false;
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Session Options
-const sessionConfig: ISession = {
-    hostname,
-    port,
-    user,
-    password,
-    protocol,
-    basePath,
-    type,
-    tokenType,
-    tokenValue,
-    rejectUnauthorized
-}
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
 
-const session = new Session(sessionConfig);
-
-async function main() {
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IZosmfListDefinedSystemsResponse;
     try {
         response = await ListDefinedSystems.listDefinedSystems(session);
@@ -98,7 +75,8 @@ async function main() {
         console.error(err);
         process.exit(1);
     }
-}
-
-main();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```

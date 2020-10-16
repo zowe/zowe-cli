@@ -30,5 +30,8 @@ import { IActiveWorkflows, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sd
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     const response: IActiveWorkflows = await ListWorkflows.getWorkflows(session);
     console.log(response.workflows);
-})();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```

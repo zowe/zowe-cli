@@ -41,7 +41,10 @@ import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCa
     let response = "z/OSMF Service Catalog templates\n";
     response = response + TextUtils.prettyJson(prettifiedTemplates);
     console.log(response);
-})();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 **Provision a Published Software Service Template**
@@ -75,7 +78,10 @@ import { ProvisioningConstants, explainProvisionTemplateResponse,
     let prettyResponse = TextUtils.explainObject(response, explainProvisionTemplateResponse, false);
     prettyResponse = TextUtils.prettyJson(prettyResponse);
     console.log(prettyResponse);
-})();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 **List Provisioned Instances and Perform an Action to the Matching Instance**
@@ -118,5 +124,8 @@ import { explainActionResponse, PerformAction, ListRegistryInstances, IProvision
     } else if (instances.length > 1) {
         console.error("Multiple instances with name " + instanceName + " were found");
     }
-})();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```

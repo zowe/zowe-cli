@@ -28,12 +28,12 @@ import { IssueCommand, IIssueParms, IConsoleResponse } from "@zowe/zos-console-f
     }
 
     // Console Options
-const parms: IIssueParms = {
-    command: "D IPLINFO",
-    sysplexSystem: undefined,
-    solicitedKeyword: undefined,
-    async: "N"
-}
+    const parms: IIssueParms = {
+        command: "D IPLINFO",
+        sysplexSystem: undefined,
+        solicitedKeyword: undefined,
+        async: "N"
+    }
 
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
     let response: IConsoleResponse;
@@ -45,7 +45,10 @@ const parms: IIssueParms = {
         console.error(err);
         process.exit(1);
     }
-})();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 #
@@ -88,5 +91,8 @@ import { CollectCommand, ICollectParms, IConsoleResponse } from "@zowe/zos-conso
         console.error(err);
         process.exit(1);
     }
-})();
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
