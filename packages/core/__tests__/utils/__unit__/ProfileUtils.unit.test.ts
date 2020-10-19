@@ -9,22 +9,22 @@
 *
 */
 
-import * as imperative from "@zowe/imperative";
+import { CliProfileManager, IProfile } from "@zowe/imperative";
 import * as profileUtils from "../../../src/utils/ProfileUtils";
 
-const fakeServiceProfile: imperative.IProfile = {
+const fakeServiceProfile: IProfile = {
     name: "fakeServiceProfile",
     type: "zosmf",
     host: "fakeHostService"
 };
 
-const fakeBaseProfile: imperative.IProfile = {
+const fakeBaseProfile: IProfile = {
     name: "fakeBaseProfile",
     type: "base",
     host: "fakeHostBase"
 };
 
-const fakeProfileMissingInformation: imperative.IProfile = {
+const fakeProfileMissingInformation: IProfile = {
     name: "fakeServiceProfile",
     type: "zosmf",
     host: undefined
@@ -36,14 +36,11 @@ describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {
         beforeEach(() => {
             jest.resetAllMocks();
-            Object.defineProperty(imperative.CliProfileManager, "prototype", jest.fn(
-                () => ({ load: jest.fn()})
-            ));
         })
         it("Should return a service profile", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValueOnce({profile: fakeServiceProfile});
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load").mockReturnValueOnce({profile: fakeServiceProfile});
             let error;
-            let profile: imperative.IProfile;
+            let profile: IProfile;
             try {
                 profile = await profileUtils.getDefaultProfile("zosmf", false);
             } catch (err) {
@@ -54,11 +51,11 @@ describe("CoreUtils", () => {
             expect(profile).toEqual(fakeServiceProfile);
         })
         it("Should return a service profile even though base is missing", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load")
                 .mockReturnValueOnce({profile: fakeServiceProfile})
                 .mockReturnValueOnce(undefined);
             let error;
-            let profile: imperative.IProfile;
+            let profile: IProfile;
             try {
                 profile = await profileUtils.getDefaultProfile("zosmf", true);
             } catch (err) {
@@ -69,11 +66,11 @@ describe("CoreUtils", () => {
             expect(profile).toEqual(fakeServiceProfile);
         })
         it("Should return a base profile", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load")
                 .mockReturnValueOnce(undefined)
                 .mockReturnValueOnce({profile: fakeBaseProfile});
             let error;
-            let profile: imperative.IProfile;
+            let profile: IProfile;
             try {
                 profile = await profileUtils.getDefaultProfile("zosmf", true);
             } catch (err) {
@@ -84,11 +81,11 @@ describe("CoreUtils", () => {
             expect(profile).toEqual(fakeBaseProfile);
         })
         it("Should return a service profile even though base was specified", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load")
                 .mockReturnValueOnce({profile: fakeServiceProfile})
                 .mockReturnValueOnce({profile: fakeBaseProfile});
             let error;
-            let profile: imperative.IProfile;
+            let profile: IProfile;
             try {
                 profile = await profileUtils.getDefaultProfile("zosmf", true);
             } catch (err) {
@@ -99,11 +96,11 @@ describe("CoreUtils", () => {
             expect(profile).toEqual(fakeServiceProfile);
         })
         it("Should properly combine profiles", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load")
                 .mockReturnValueOnce({profile: fakeProfileMissingInformation})
                 .mockReturnValueOnce({profile: fakeBaseProfile});
             let error;
-            let profile: imperative.IProfile;
+            let profile: IProfile;
             try {
                 profile = await profileUtils.getDefaultProfile("zosmf", true);
             } catch (err) {
@@ -114,7 +111,7 @@ describe("CoreUtils", () => {
             expect(profile).toEqual({name: "fakeServiceProfile", type: "zosmf", host: "fakeHostBase"});
         })
         it("Should throw an error if it cannot get the service profile", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValueOnce({profile: undefined});
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load").mockReturnValueOnce({profile: undefined});
             let error;
             try {
                 await profileUtils.getDefaultProfile("zosmf", false);
@@ -126,7 +123,7 @@ describe("CoreUtils", () => {
             expect(error.message).toContain("zosmf");
         })
         it("Should throw an error if it cannot get both profiles", async() => {
-            const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValue({profile: undefined});
+            const profileManagerSpy = jest.spyOn(CliProfileManager.prototype, "load").mockReturnValue({profile: undefined});
             let error;
             try {
                 await profileUtils.getDefaultProfile("zosmf", true);
