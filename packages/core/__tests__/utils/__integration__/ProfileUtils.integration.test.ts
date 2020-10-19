@@ -9,12 +9,15 @@
 *
 */
 
+
 import * as imperative from "@zowe/imperative";
 import * as profileUtils from "../../../src/utils/ProfileUtils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
 
+jest.mock("os");
+const os = require("os");
 const fs = require("fs");
 
 const fakeServiceProfile: imperative.IProfile = {
@@ -41,14 +44,22 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {
         beforeAll(async () => {
+
             TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                testName: "core_utils_get_default_profile",
+                testName: "core_utils_get_default_profile/.zowe",
+                // Need to append `.zowe` so that everything gets created inside it
+                // TODO: maybe we want to expose an option on the TEST_ENV to allow for this?
                 skipProperties: true
             });
+
             runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
                         ["zosmf", "fakeServiceProfile", "--host fake --dd"]);
             runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
                         ["base", "fakeBaseProfile", "--host fake --dd"]);
+
+            // Have to `/..` (go back) out of the .zowe forlder we added on the name so that tests are able to find the file.
+            // This could be resolved if we don't have the `.zowe` on the name (and expose an option in the TEST_ENV)
+            os.__setValues({homedir: TEST_ENVIRONMENT.workingDir + "/.."});
         })
         beforeEach(() => {
             jest.resetAllMocks();
