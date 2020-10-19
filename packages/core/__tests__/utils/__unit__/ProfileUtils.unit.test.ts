@@ -36,7 +36,7 @@ describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {
         beforeEach(() => {
             jest.resetAllMocks();
-            Object.defineProperty(imperative, "CliProfileManager", jest.fn(
+            Object.defineProperty(imperative.CliProfileManager, "prototype", jest.fn(
                 () => ({ load: jest.fn()})
             ));
         })
