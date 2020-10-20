@@ -128,6 +128,7 @@ describe("start address-space handler tests", () => {
         }
         expect(error).toBeDefined();
         expect(error.message).toMatchSnapshot();
+        expect(error instanceof ImperativeError).toBe(true);
     });
 
     it("should throw an error if the response is not successful", async () => {

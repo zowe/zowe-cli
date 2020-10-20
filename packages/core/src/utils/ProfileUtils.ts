@@ -97,8 +97,7 @@ export async function getDefaultProfile(profileType: string, mergeWithBase?: boo
     const combinedProfile: IProfile = JSON.parse(JSON.stringify(baseProfileLoaded.profile));
 
     for (const propertyName in profileLoaded.profile) {
-        // tslint:disable-next-line: triple-equals
-        if (profileLoaded.profile[propertyName] != undefined) {
+        if (profileLoaded.profile[propertyName] != null) {
             combinedProfile[propertyName] = profileLoaded.profile[propertyName];
         }
     }

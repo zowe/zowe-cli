@@ -13,12 +13,10 @@ jest.mock("../../src/GetJobs");
 jest.mock("@zowe/core-for-zowe-sdk");
 
 import { ImperativeError } from "@zowe/imperative";
-import { GetJobs } from "../../src/GetJobs";
-import { JOB_STATUS } from "../../src";
+import { JOB_STATUS, MonitorJobs, GetJobs } from "../../src";
 import { sleep } from "@zowe/core-for-zowe-sdk";
 import { IMonitorJobWaitForParms } from "../../src/doc/input/IMonitorJobWaitForParms";
 import { IJob } from "../../src/doc/response/IJob";
-import { MonitorJobs } from "../../src/MonitorJobs";
 
 describe("MonitorJobs", () => {
     // Use this so that editors don't complain about us accessing private stuff

@@ -23,14 +23,8 @@ import { homedir } from "os";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
-    configurationModule: "imperative.js"
+    configurationModule: __dirname + "/imperative"
 };
-
-const logConfig: IImperativeConfig = {
-    name: Constants.DISPLAY_NAME
-};
-
-const homeDir = homedir();
 
 (async () => {
     timingApi.mark("POST_IMPORT_IMPERATIVE");

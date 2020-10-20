@@ -27,7 +27,7 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
-const workflow = join(__dirname, "../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
+const workflow = join(__dirname, "../../../testfiles/demo.xml");
 
 describe("Archive workflow cli system tests", () => {
     beforeAll(async () => {

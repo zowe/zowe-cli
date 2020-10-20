@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Logger, LoggingConfigurer } from "@zowe/imperative";
+import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
 
 import { posix } from "path";
 
