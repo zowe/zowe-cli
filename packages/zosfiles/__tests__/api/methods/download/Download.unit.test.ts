@@ -13,7 +13,7 @@ import { IO, Session } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../../../";
 import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
 import { Download } from "../../../../src/api/methods/download/Download";
-import { posix } from "path";
+import { posix, sep } from "path";
 import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
 import * as util from "util";
 import { List } from "../../../../src/api/methods/list";
@@ -297,7 +297,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, `${lcd}/${file}`),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, `${lcd}${sep}${file}`),
                 apiResponse: {}
             });
 
@@ -309,10 +309,10 @@ describe("z/OS Files - Download", () => {
                                                                         task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
-            expect(ioCreateDirSpy).toHaveBeenCalledWith(`${lcd}/${file}`);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(`${lcd}${sep}${file}`);
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteStreamSpy).toHaveBeenCalledWith(`${lcd}/${file}`);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(`${lcd}${sep}${file}`);
         });
 
         it("should download a data set using responseTimeout", async () => {

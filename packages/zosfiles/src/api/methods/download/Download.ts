@@ -87,7 +87,7 @@ export class Download {
             // Note that the "extension" options do not affect the destination if the "file" options were provided
             const destination = (() => {
 
-                const lcd = options.lcd ? normalize(join(normalize(options.lcd), sep)) : null;
+                const lcd = options.lcd ? normalize(join(options.lcd, sep)) : null;
 
                 if (options.file) {
                     return lcd ? lcd + options.file : options.file;

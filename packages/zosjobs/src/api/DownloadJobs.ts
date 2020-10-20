@@ -108,7 +108,7 @@ export class DownloadJobs {
         }
 
         if (parms.lcd) {
-            const lcd = parms.lcd ? path.normalize(path.join(path.normalize(parms.lcd), path.sep)) : null;
+            const lcd = parms.lcd ? path.normalize(path.join(parms.lcd, path.sep)) : null;
             parms.outDir = path.normalize(lcd + parms.outDir);
         }
 
