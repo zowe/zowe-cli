@@ -93,7 +93,7 @@ describe("Processor tests", () => {
             return {on, listen}
         });
 
-        const processor = new Processor(["some/file/path", "zowe", "--daemon=444"]);
+        const processor = new Processor(["some/file/path", "zowe", "--daemon"]);
         processor.init();
         expect(on).toHaveBeenCalledTimes(2);
         processor.process();

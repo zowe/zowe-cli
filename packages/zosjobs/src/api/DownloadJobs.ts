@@ -108,10 +108,8 @@ export class DownloadJobs {
         }
 
         if (parms.lcd) {
-            if (parms.lcd[parms.lcd.length - 1] !== '/') {
-                parms.lcd += '/';
-            }
-            parms.outDir = path.normalize(parms.lcd + parms.outDir);
+            const lcd = parms.lcd ? path.normalize(path.join(parms.lcd, "/")) : null;
+            parms.outDir = path.normalize(lcd + parms.outDir);
         }
 
         const file = DownloadJobs.getSpoolDownloadFile(parms.jobFile, parms.omitJobidDirectory, parms.outDir);
