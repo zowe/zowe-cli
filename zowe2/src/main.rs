@@ -15,7 +15,6 @@ use std::io::BufReader;
 use std::io::{self, Write};
 use std::net::Shutdown;
 use std::net::TcpStream;
-use std::process::Command;
 use std::str;
 
 // NOTE(Kelosky): these sync with imperative header values
@@ -51,12 +50,7 @@ fn main() -> std::io::Result<()> {
 
     let args = _args.join(" ");
 
-    match args.as_ref() {
-        "start" => start_zowe_daemon(&port_string),
-        "stop" => stop_zowe_daemon(&port_string),
-        "restart" => restart_zowe_daemon(&port_string),
-        _ => run_zowe_command(args, &port_string).unwrap(),
-    }
+    run_zowe_command(args, &port_string).unwrap();
 
     Ok(())
 }
@@ -168,36 +162,6 @@ fn parse_headers(buf: &String) -> HashMap<String, i32> {
     }
 
     headers
-}
-
-fn start_zowe_daemon(port_string: &str) {
-    let mut daemon_parm = "--daemon=".to_owned();
-    daemon_parm.push_str(&port_string);
-    if cfg!(target_os = "windows") {
-        // NOTE(Kelosky): running `zowe` directly doesnt appear to be found: https://github.com/rust-lang/rust/issues/42791
-        let zowe = Command::new("cmd")
-            .args(&["/c", "zowe-start-daemon.cmd", &port_string])
-            .output()
-            .expect("Failed to start Zowe CLI daemon, is your version current and on your PATH?");
-        io::stdout().write_all(&zowe.stdout).unwrap();
-    }
-    // TODO(Kelosky): handle linux / mac OS
-}
-
-fn stop_zowe_daemon(port_string: &str) {
-    let zowe = Command::new("cmd")
-        .args(&["/c", "zowe-stop-daemon.cmd", &port_string])
-        .output()
-        .expect("Failed to stop Zowe CLI daemon, is your version current and on your PATH?");
-    io::stdout().write_all(&zowe.stdout).unwrap();
-}
-
-fn restart_zowe_daemon(port_string: &str) {
-    let zowe = Command::new("cmd")
-        .args(&["/c", "zowe-restart-daemon.cmd", &port_string])
-        .output()
-        .expect("Failed to restart Zowe CLI daemon, is your version current and on your PATH?");
-    io::stdout().write_all(&zowe.stdout).unwrap();
 }
 
 fn get_port_string() -> String {
