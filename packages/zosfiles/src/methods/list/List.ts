@@ -46,7 +46,11 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName, ZosFilesConstants.RES_DS_MEMBERS);
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName, ZosFilesConstants.RES_DS_MEMBERS);
+
+            if (options.pattern) {
+                endpoint += `?pattern=${options.pattern}`;
+            }
 
             let reqHeaders: IHeaderContent[] = [];
             if (options.attributes) {

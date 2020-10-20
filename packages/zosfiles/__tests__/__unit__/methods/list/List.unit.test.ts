@@ -153,6 +153,33 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
+        it("should list members from given data set with a matching pattern", async () => {
+            let response;
+            let caughtError;
+
+            const pattern = "TEST*";
+            const query = `?pattern=${pattern}`;
+
+            try {
+                response = await List.allMembers(dummySession, dsname, {
+                    pattern: "TEST*"
+                });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS + query);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: null,
+                apiResponse: listApiResponse
+            });
+            expect(expectJsonSpy).toHaveBeenCalledTimes(1);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+        });
+
         it("should list members from given data set with additional attributes", async () => {
             let response;
             let caughtError;

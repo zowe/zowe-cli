@@ -284,6 +284,37 @@ describe("z/OS Files - Upload", () => {
             expect(dataSetSpy).toHaveBeenCalledTimes(1);
             expect(dataSetSpy).toHaveBeenLastCalledWith(dummySession, testPath, dsName, {responseTimeout: 5});
         });
+        it("return with proper response with encoding", async () => {
+            const encoding = 1048;
+            const testReturn = {};
+            const testPath = "test/path";
+            isDirSpy.mockReturnValueOnce(true);
+            dataSetSpy.mockReturnValueOnce(testReturn);
+            lsStatSpy.mockImplementationOnce((somePath, callback) => {
+                callback(null, {isFile: () => false});
+            });
+
+            try {
+                response = await Upload.dirToPds(
+                    dummySession,
+                    testPath,
+                    dsName,
+                    { encoding: 1048 }
+                );
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(dataSetSpy).toHaveBeenCalledTimes(1);
+            expect(dataSetSpy).toHaveBeenLastCalledWith(
+                dummySession,
+                testPath,
+                dsName,
+                { encoding }
+            );
+        });
     });
 
     describe("bufferToDataSet", () => {

@@ -40,7 +40,8 @@ export const AllMembersDefinition: ICommandDefinition = {
     ],
     options: [
         ListOptions.attributes,
-        ListOptions.maxLength
+        ListOptions.maxLength,
+        ListOptions.pattern
     ],
     examples: [
         {
@@ -54,6 +55,10 @@ export const AllMembersDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX3,
             options: `"ibmuser.cntl" --max 5`
+        },
+        {
+            description: strings.EXAMPLES.EX4,
+            options: `"sys1.maclib" --pattern IJK* --max 4`
         }
     ]
 };

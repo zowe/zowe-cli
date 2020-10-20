@@ -401,7 +401,8 @@ export default {
                 EXAMPLES: {
                     EX1: `Show members of the data set "ibmuser.asm"`,
                     EX2: `Show attributes of members of the data set "ibmuser.cntl"`,
-                    EX3: `Show the first 5 members of the data set "ibmuser.cntl"`
+                    EX3: `Show the first 5 members of the data set "ibmuser.cntl"`,
+                    EX4: `Show the first 4 members of the data set "ibmuser.cntl" matching an input pattern"`
                 }
             },
             DATA_SET: {
@@ -448,6 +449,7 @@ export default {
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
+            PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. \"*\".",
             PATH: "Specifies the path where the file system is mounted." +
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
