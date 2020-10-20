@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError } from "@zowe/imperative";
 
-import { posix, normalize, join } from "path";
+import { posix, normalize, join, sep } from "path";
 import * as util from "util";
 
 import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "../../../../../rest";
@@ -87,7 +87,7 @@ export class Download {
             // Note that the "extension" options do not affect the destination if the "file" options were provided
             const destination = (() => {
 
-                const lcd = options.lcd ? normalize(join(options.lcd, "/")) : null;
+                const lcd = options.lcd ? normalize(join(normalize(options.lcd), sep)) : null;
 
                 if (options.file) {
                     return lcd ? lcd + options.file : options.file;
