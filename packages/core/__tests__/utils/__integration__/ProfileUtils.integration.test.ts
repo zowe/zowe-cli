@@ -16,8 +16,6 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
 
-jest.mock("os");
-const os = require("os");
 const fs = require("fs");
 
 const fakeServiceProfile: imperative.IProfile = {
@@ -44,11 +42,8 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {
         beforeAll(async () => {
-
             TEST_ENVIRONMENT = await TestEnvironment.setUp({
-                testName: "core_utils_get_default_profile/.zowe",
-                // Need to append `.zowe` so that everything gets created inside it
-                // TODO: maybe we want to expose an option on the TEST_ENV to allow for this?
+                testName: "core_utils_get_default_profile",
                 skipProperties: true
             });
 
@@ -57,19 +52,16 @@ describe("CoreUtils", () => {
                         ["zosmf", "fakeServiceProfile", "--host fake --dd"]);
             runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
                         ["base", "fakeBaseProfile", "--host fake --dd"]);
-
-            // Have to `/..` (go back) out of the .zowe forlder we added on the name so that tests are able to find the file.
-            // This could be resolved if we don't have the `.zowe` on the name (and expose an option in the TEST_ENV)
-            os.__setValues({homedir: TEST_ENVIRONMENT.workingDir + "/.."});
-        })
+            process.env.ZOWE_CLI_HOME = TEST_ENVIRONMENT.workingDir;
+        });
         beforeEach(() => {
             jest.resetAllMocks();
-        })
+        });
         afterAll(async () => {
             runCliScript(__dirname + "/__scripts__/delete_profile.sh", TEST_ENVIRONMENT, ["zosmf", "fakeServiceProfile"]);
             runCliScript(__dirname + "/__scripts__/delete_profile.sh", TEST_ENVIRONMENT, ["base", "fakeBaseProfile"]);
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        })
+        });
         it("Should return a service profile", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValueOnce({profile: fakeServiceProfile});
             let error;
@@ -82,7 +74,7 @@ describe("CoreUtils", () => {
             expect(error).not.toBeDefined();
             expect(profileManagerSpy).toHaveBeenCalledTimes(1);
             expect(profile).toEqual(fakeServiceProfile);
-        })
+        });
         it("Should return a service profile even though base is missing", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
                 .mockReturnValueOnce({profile: fakeServiceProfile})
@@ -97,7 +89,7 @@ describe("CoreUtils", () => {
             expect(error).not.toBeDefined();
             expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual(fakeServiceProfile);
-        })
+        });
         it("Should return a base profile", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
                 .mockReturnValueOnce(undefined)
@@ -112,7 +104,7 @@ describe("CoreUtils", () => {
             expect(error).not.toBeDefined();
             expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual(fakeBaseProfile);
-        })
+        });
         it("Should return a service profile even though base was specified", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
                 .mockReturnValueOnce({profile: fakeServiceProfile})
@@ -127,7 +119,7 @@ describe("CoreUtils", () => {
             expect(error).not.toBeDefined();
             expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual(fakeServiceProfile);
-        })
+        });
         it("Should properly combine profiles", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load")
                 .mockReturnValueOnce({profile: fakeProfileMissingInformation})
@@ -142,7 +134,7 @@ describe("CoreUtils", () => {
             expect(error).not.toBeDefined();
             expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(profile).toEqual({name: "fakeServiceProfile", type: "zosmf", host: "fakeHostBase"});
-        })
+        });
         it("Should throw an error if it cannot get the service profile", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValueOnce({profile: undefined});
             let error;
@@ -154,7 +146,7 @@ describe("CoreUtils", () => {
             expect(error).toBeDefined();
             expect(profileManagerSpy).toHaveBeenCalledTimes(1);
             expect(error.message).toContain("zosmf");
-        })
+        });
         it("Should throw an error if it cannot get both profiles", async() => {
             const profileManagerSpy = jest.spyOn(imperative.CliProfileManager.prototype, "load").mockReturnValue({profile: undefined});
             let error;
@@ -167,6 +159,6 @@ describe("CoreUtils", () => {
             expect(profileManagerSpy).toHaveBeenCalledTimes(2);
             expect(error.message).toContain("zosmf");
             expect(error.message).toContain("base");
-        })
-    })
+        });
+    });
 });
