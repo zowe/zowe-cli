@@ -44,14 +44,6 @@ export class Processor {
     private static readonly DAEMON_KEY = "--daemon";
 
     /**
-     * Undocumented paramter for launching in server mode with a port
-     * @private
-     * @static
-     * @memberof Processor
-     */
-    private static readonly DAEMON_PORT_KEY = "--daemon=";
-
-    /**
      * Hold instance of a running server
      * @private
      * @type {net.Server}
@@ -149,19 +141,14 @@ export class Processor {
             const parm = this.mParms[2];
 
             /**
-             * NOTE(Kelosky): For now, we use an undocumented paramter `--daemon` or `--daemon=<PORT>`.  If found first,
+             * NOTE(Kelosky): For now, we use an undocumented paramter `--daemon`.  If found first,
              * we bypass `yargs` and begin running this as a persistent Processor.
              */
             const portOffset = parm.indexOf(Processor.DAEMON_KEY);
 
             if (portOffset > -1) {
                 this.startServer = true;
-                const portKeyOffset = parm.indexOf(Processor.DAEMON_PORT_KEY);
-                // manually parse off the <PORT> if found
-                if (portKeyOffset > -1) {
-                    this.mPort = parseInt(parm.substr(Processor.DAEMON_PORT_KEY.length, parm.length - Processor.DAEMON_PORT_KEY.length), 10);
-                    // otherwise take the <PORT> from ENV var if found
-                } else if (process.env.ZOWE_DAEMON) {
+                if (process.env.ZOWE_DAEMON) {
                     try {
                         this.mPort = parseInt(process.env.ZOWE_DAEMON, 10);
                     } catch (err) {
