@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Processor tests should call normal parse method if no daemon keyword 1`] = `undefined`;
-
-exports[`Processor tests should call normal parse method if no daemon keyword 2`] = `undefined`;

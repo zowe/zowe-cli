@@ -30,9 +30,8 @@ describe("Processor tests", () => {
         });
 
         const parse = jest.fn( (data, context) => {
-            // NOTE(Kelosky): these values should be undefined
-            expect(data).toMatchSnapshot();
-            expect(context).toMatchSnapshot();
+            expect(data).toBe(undefined);
+            expect(context).toBe(undefined);
         });
 
         (Imperative as any) = {
