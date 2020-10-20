@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 const os = jest.genMockFromModule("os") as any;
 const realOs = require.requireActual("os");
 
