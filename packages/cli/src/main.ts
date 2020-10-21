@@ -19,7 +19,6 @@ timingApi.mark("PRE_IMPORT_IMPERATIVE");
 import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
-import { homedir } from "os";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {

@@ -12,9 +12,8 @@
 
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { WorkflowConstants, noOwner, noWorkflowDefinitionFile } from "./WorkflowConstants";
+import { WorkflowConstants, noWorkflowDefinitionFile } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
-import { isNullOrUndefined } from "util";
 import { IWorkflowDefinition } from "./doc/IWorkflowDefinition";
 
 export class DefinitionWorkflow {
