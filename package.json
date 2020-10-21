@@ -8,7 +8,7 @@
     "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
-    "postinstall": "lerna bootstrap",
+    "postinstall": "lerna bootstrap --hoist",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
     "lint": "npm run lint:packages && npm run lint:tests",
