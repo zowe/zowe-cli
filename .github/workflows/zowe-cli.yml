@@ -36,6 +36,10 @@ jobs:
       id: install
       run: npm ci
 
+    - name: Bootstrap
+      id: Bootstrap
+      run: npx lerna bootstrap --hoist
+
     - name: Build Source
       id: build
       run: npm run build --if-present
