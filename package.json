@@ -56,7 +56,7 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-junit": "^6.3.0",
     "jest-sonar-reporter": "^2.0.0",
-    "jest-stare": "^1.11.1",
+    "jest-stare": "^2.2.0",
     "js-yaml": "^3.13.1",
     "jsonfile": "^4.0.0",
     "lerna": "^3.22.1",
