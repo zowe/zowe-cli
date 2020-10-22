@@ -2,6 +2,20 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Published the APIs in Zowe CLI as separate SDK packages. [#750](https://github.com/zowe/zowe-cli/issues/750)
+- The "@zowe/cli" package still includes both API and CLI methods. In addition, the following SDK packages are now available:
+  - @zowe/provisioning-for-zowe-sdk
+  - @zowe/zos-console-for-zowe-sdk
+  - @zowe/zos-files-for-zowe-sdk
+  - @zowe/zos-jobs-for-zowe-sdk
+  - @zowe/zos-tso-for-zowe-sdk
+  - @zowe/zos-uss-for-zowe-sdk
+  - @zowe/zos-workflows-for-zowe-sdk
+  - @zowe/zosmf-for-zowe-sdk
+  - @zowe/core-for-zowe-sdk
+
 ## `6.23.0`
 
 - Enhancement: Added a `--pattern` option to the `zowe files list all-members` command. The option lets you restrict returned member names to only names that match a given pattern. The argument syntax is the same as the "pattern" parameter of the ISPF LMMLIST service. [#810](https://github.com/zowe/zowe-cli/issues/810)

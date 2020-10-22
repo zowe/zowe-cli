@@ -22,6 +22,7 @@ def PRODUCT_NAME = "Zowe CLI"
 node('ca-jenkins-agent') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
+    pipeline.isLernaMonorepo = true
 
     // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.

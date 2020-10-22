@@ -2,6 +2,6 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
-## `6.21.1`
+## Recent Changes
 
 - Initial release
