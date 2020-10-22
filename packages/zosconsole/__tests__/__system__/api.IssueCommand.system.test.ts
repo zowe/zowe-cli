@@ -18,7 +18,7 @@ import {
     IssueCommand,
     IZosmfIssueParms,
     IZosmfIssueResponse
-} from "../../../zosconsole";
+} from "../../src";
 import * as fs from "fs";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";

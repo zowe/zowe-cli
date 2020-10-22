@@ -189,11 +189,3 @@ export function asyncPool(poolLimit: number, array: any[],
     };
     return enqueue().then(() => Promise.all(ret));
 }
-
-/**
- * Get the Imperative config object which defines properties of the CLI.
- * This allows it to be accessed without calling Imperative.init.
- */
-export function getImperativeConfig(): IImperativeConfig {
-    return require("../../imperative");
-}

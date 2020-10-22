@@ -1,224 +1,168 @@
 # z/OS Files Package
 
-Contains APIs and commands to work with files and datasets on z/OS (using z/OSMF files REST endpoints).
+Contains APIs to interact with files and data sets on z/OS (using z/OSMF files REST endpoints).
 
 # API Examples
 
 **Create a dataset**
 
 ```typescript
-import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "@zowe/cli";
-import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { Create, ICreateDataSetOptions, IZosFilesResponse, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
 
-// Connection Options
-const hostname: string = "yourhost.yourdomain.net";
-const port: number = 443;
-const user: string = "ZOWEUSER";
-const password: string = "ZOWEPASS";
-const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
-const basePath: string = undefined;
-const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
-const tokenType: string = undefined;
-const tokenValue: string = undefined;
-const rejectUnauthorized: boolean = false;
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Create Options
-const dataset: string = "ZOWEUSER.PUBLIC.NEW.DATASET";
-const options: ICreateDataSetOptions = {
-    primary: 10,
-    secondary: 1,
-    alcunit: "TRK",
-    lrecl: 80
-};
-const dataSetType = CreateDataSetTypeEnum.DATA_SET_CLASSIC
-const sessionConfig: ISession = {
-    hostname,
-    port,
-    user,
-    password,
-    protocol,
-    basePath,
-    type,
-    tokenType,
-    tokenValue,
-    rejectUnauthorized
-}
-
-const session = new Session(sessionConfig);
-
-async function main() {
-    let response: IZosFilesResponse;
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
     try {
-        response = await Create.dataSet(session, dataSetType, dataset, options);
-        console.log(response);
-        process.exit(0);
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
     } catch (err) {
-        console.error(err);
-        process.exit(1);
+        throw new ImperativeError({msg: "Failed to get a profile."});
     }
-}
 
-main();
+    // Create Options
+    const dataset: string = "ZOWEUSER.PUBLIC.NEW.DATASET";
+    const dataSetType = CreateDataSetTypeEnum.DATA_SET_CLASSIC;
+    const options: ICreateDataSetOptions = {
+        primary: 10,
+        secondary: 1,
+        alcunit: "TRK",
+        lrecl: 80
+    };
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: IZosFilesResponse;
+    response = await Create.dataSet(session, dataSetType, dataset, options);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 #
 **Download all datasets in a partitioned dataset**
 
 ```typescript
-import { Download, IDownloadOptions, IZosFilesResponse } from "@zowe/cli";
-import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { IDownloadOptions, Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
-// Connection Options
-const hostname: string = "yourhost.yourdomain.net";
-const port: number = 443;
-const user: string = "ZOWEUSER";
-const password: string = "ZOWEPASS";
-const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
-const basePath: string = undefined;
-const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
-const tokenType: string = undefined;
-const tokenValue: string = undefined;
-const rejectUnauthorized: boolean = false;
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Download Options
-const dataset: string = "ZOWEUSER.PUBLIC.YOUR.DATASET.HERE";
-const options: IDownloadOptions = {failFast: false};
-const sessionConfig: ISession = {
-    hostname,
-    port,
-    user,
-    password,
-    protocol,
-    basePath,
-    type,
-    tokenType,
-    tokenValue,
-    rejectUnauthorized
-}
-
-const session = new Session(sessionConfig);
-
-async function main() {
-    let response: IZosFilesResponse;
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
     try {
-        response = await Download.allMembers(session, dataset, options);
-        console.log(response);
-        process.exit(0);
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
     } catch (err) {
-        console.error(err);
-        process.exit(1);
+        throw new ImperativeError({msg: "Failed to get a profile."});
     }
-}
 
-main();
+    // Download Options
+    const dataset: string = "ZOWEUSER.PUBLIC.YOUR.DATASET.HERE";
+    const options: IDownloadOptions = {failFast: false};
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: IZosFilesResponse;
+    response = await Download.allMembers(session, dataset, options);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 #
 **List datasets on z/OS**
 
 ```typescript
-import { List, IListOptions, IZosFilesResponse } from "@zowe/cli";
-import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { List, IListOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
-// Connection Options
-const hostname: string = "yourhost.yourdomain.net";
-const port: number = 443;
-const user: string = "ZOWEUSER";
-const password: string = "ZOWEPASS";
-const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
-const basePath: string = undefined;
-const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
-const tokenType: string = undefined;
-const tokenValue: string = undefined;
-const rejectUnauthorized: boolean = false;
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// List Options
-const dataset: string = "ZOWEUSER.*";
-const options: IListOptions = {};
-const sessionConfig: ISession = {
-    hostname,
-    port,
-    user,
-    password,
-    protocol,
-    basePath,
-    type,
-    tokenType,
-    tokenValue,
-    rejectUnauthorized
-}
-
-const session = new Session(sessionConfig);
-
-async function main() {
-    let response: IZosFilesResponse;
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
     try {
-        response = await List.dataSet(session, dataset, options);
-        const objArray = response.apiResponse.items;
-        for (const obj of objArray) {
-            if (obj) {
-                console.log(obj.dsname.toString());
-            }
-        };
-        process.exit(0);
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
     } catch (err) {
-        console.error(err);
-        process.exit(1);
+        throw new ImperativeError({msg: "Failed to get a profile."});
     }
-}
 
-main();
+    // List Options
+    const dataset: string = "ZOWEUSER.*";
+    const options: IListOptions = {};
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: IZosFilesResponse;
+    response = await List.dataSet(session, dataset, options);
+    const objArray = response.apiResponse.items;
+    for (const obj of objArray) {
+        if (obj) {
+            console.log(obj.dsname.toString());
+        }
+    };
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
 #
 **Upload a file to Unix System Services**
 
 ```typescript
-import { Upload, IUploadOptions, IZosFilesResponse } from "@zowe/cli";
-import { Session, ISession, SessConstants } from "@zowe/imperative";
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { Upload, IUploadOptions, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 
-// Connection Options
-const hostname: string = "yourhost.yourdomain.net";
-const port: number = 443;
-const user: string = "ZOWEUSER";
-const password: string = "ZOWEPASS";
-const protocol: SessConstants.HTTP_PROTOCOL_CHOICES = "https";
-const basePath: string = undefined;
-const type: SessConstants.AUTH_TYPE_CHOICES = "basic";
-const tokenType: string = undefined;
-const tokenValue: string = undefined;
-const rejectUnauthorized: boolean = false;
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Upload Options
-const localFile: string = "C:/Users/zoweuser/Documents/testFile.txt";
-const remoteLocation: string = "/u/zoweuser/file.txt"
-const options: IUploadOptions = {binary: true};
-const sessionConfig: ISession = {
-    hostname,
-    port,
-    user,
-    password,
-    protocol,
-    basePath,
-    type,
-    tokenType,
-    tokenValue,
-    rejectUnauthorized
-}
-
-const session = new Session(sessionConfig);
-
-async function main() {
-    let response: IZosFilesResponse;
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
     try {
-        response = await Upload.fileToUssFile(session, localFile, remoteLocation, options);
-        console.log(response);
-        process.exit(0);
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
     } catch (err) {
-        console.log(err.message);
-        process.exit(1);
+        throw new ImperativeError({msg: "Failed to get a profile."});
     }
-}
 
-main();
+    // Upload Options
+    const localFile: string = "C:/Users/zoweuser/Documents/testFile.txt";
+    const remoteLocation: string = "/u/zoweuser/file.txt";
+    const options: IUploadOptions = {binary: true};
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: IZosFilesResponse;
+    response = await Upload.fileToUssFile(session, localFile, remoteLocation, options);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```

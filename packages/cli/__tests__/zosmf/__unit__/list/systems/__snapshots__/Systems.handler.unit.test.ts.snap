@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`check status behavior should display system properties 1`] = `
+exports[`List systems behavior should display system properties 1`] = `
 Object {
   "fields": Array [
     "systemNickName",
@@ -20,7 +20,7 @@ Object {
 }
 `;
 
-exports[`check status behavior should display system properties 2`] = `
+exports[`List systems behavior should display system properties 2`] = `
 Object {
   "items": Array [
     Object {
@@ -33,9 +33,9 @@ Object {
 }
 `;
 
-exports[`check status behavior should pass the rest client error to the command processor (no transformation) 1`] = `"Mock GetInfo Error"`;
+exports[`List systems behavior should pass the rest client error to the command processor (no transformation) 1`] = `"Mock GetInfo Error"`;
 
-exports[`check status behavior should return a json object with the right properties 1`] = `
+exports[`List systems behavior should return a json object with the right properties 1`] = `
 Object {
   "items": Array [
     Object {

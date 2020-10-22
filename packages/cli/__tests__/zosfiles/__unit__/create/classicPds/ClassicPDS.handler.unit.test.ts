@@ -9,8 +9,7 @@
 *
 */
 
-import { Create } from "../../../../../../../packages/zosfiles/src/methods/create/Create";
-import { CreateDataSetTypeEnum } from "../../../../../../../packages/zosfiles/src/methods/create/CreateDataSetType.enum";
+import { Create, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Create classic PDS data set handler", () => {

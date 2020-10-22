@@ -9,10 +9,8 @@
 *
 */
 
-import { Invoke } from "../../../../../../../packages/zosfiles/src/methods/invoke";
+import { Invoke, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { IZosFilesOptions } from "../../../../../../../packages/zosfiles/src/doc/IZosFilesOptions";
-
 describe("Invoke AMS files handler", () => {
     describe("process method", () => {
         // Require the handler and create a new instance

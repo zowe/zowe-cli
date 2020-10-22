@@ -12,7 +12,7 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 
-import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../../";
+import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Copy", () => {

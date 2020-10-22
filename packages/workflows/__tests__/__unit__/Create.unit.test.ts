@@ -9,23 +9,21 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { CreateWorkflow } from "../../";
+import { CreateWorkflow } from "../../src";
 import {
     WorkflowConstants,
-    noSession,
     noWorkflowName,
     noWorkflowDefinitionFile,
     noSystemName,
     noOwner,
-    nozOSMFVersion,
     wrongOwner
 } from "../../src/WorkflowConstants";
 import { ICreatedWorkflow } from "../../src/doc/ICreatedWorkflow";
 import { ICreateWorkflow } from "../../src/doc/ICreateWorkflow";
 import { IVariable } from "../../src/doc/IVariable";
-import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload, Delete } from "@zowe/zos-files-for-zowe-sdk";
 
 const wfName = "Test-Workflow";
 const wfDefinitionFile = "/tmp/workflow.xml";

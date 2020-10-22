@@ -16,7 +16,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../src/methods/delete";
-import { ZosFilesMessages } from "../../../../";
+import { ZosFilesMessages } from "../../../../src";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 

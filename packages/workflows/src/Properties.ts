@@ -11,9 +11,8 @@
 
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { WorkflowConstants, nozOSMFVersion,
-        noWorkflowKey } from "./WorkflowConstants";
+import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
+import { WorkflowConstants, noWorkflowKey } from "./WorkflowConstants";
 import { WorkflowValidator } from "./WorkflowValidator";
 import { IWorkflowInfo } from "./doc/IWorkflowInfo";
 import { IStepSummary } from "./doc/IStepSummary";

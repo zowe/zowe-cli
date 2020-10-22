@@ -11,7 +11,7 @@
 
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
-import { DeleteJobs, IJob } from "../../";
+import { DeleteJobs, IJob } from "../../src";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 

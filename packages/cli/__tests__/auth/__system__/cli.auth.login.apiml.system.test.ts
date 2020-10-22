@@ -78,7 +78,7 @@ describe("auth login/logout apiml show token", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("Login successful. To revoke this token, please review the 'zowe auth logout' command.");
+        expect(response.stdout.toString()).toContain("Login successful. To revoke this token, review the 'zowe auth logout' command.");
     });
 
     it("should successfully issue the login command with rfj and show token", () => {

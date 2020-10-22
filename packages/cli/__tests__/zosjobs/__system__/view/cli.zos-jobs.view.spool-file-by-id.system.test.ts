@@ -14,10 +14,9 @@ import { TestEnvironment } from "./../../../../../../__tests__/__src__/environme
 import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
 import { Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
-import { IJob } from "../../../../../../packages/zosjobs/src/doc/response/IJob";
+import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
 import { join } from "path";
-import { SubmitJobs } from "../../../../../../packages/zosjobs/src/SubmitJobs";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();

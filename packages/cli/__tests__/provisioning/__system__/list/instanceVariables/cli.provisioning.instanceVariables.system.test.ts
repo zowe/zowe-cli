@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Imperative, Session } from "@zowe/imperative";
-import { IProvisionedInstance, ProvisioningConstants } from "../../../../../../../packages/provisioning";
+import { IProvisionedInstance, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 import { ProvisioningTestUtils } from "../../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 

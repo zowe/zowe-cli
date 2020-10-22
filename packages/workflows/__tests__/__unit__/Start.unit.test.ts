@@ -9,10 +9,10 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { StartWorkflow } from "../../";
-import { WorkflowConstants, noSession, noWorkflowKey, nozOSMFVersion } from "../../src/WorkflowConstants";
+import { StartWorkflow } from "../../src";
+import { WorkflowConstants, noWorkflowKey } from "../../src/WorkflowConstants";
 import { IStartWorkflow, startT } from "../../src/doc/IStartWorkflow";
 
 const wfKey = "1234567_abcde";

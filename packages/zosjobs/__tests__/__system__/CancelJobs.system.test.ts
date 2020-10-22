@@ -9,9 +9,8 @@
 *
 */
 
-import { ImperativeError, Session } from "@zowe/imperative";
-import { CancelJobs, SubmitJobs } from "../../";
-import { IJob } from "../../src/doc/response/IJob";
+import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
+import { CancelJobs, SubmitJobs, IJob } from "../../src";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
@@ -75,7 +74,7 @@ describe("CancelJobs System tests", () => {
 
     describe("Negative tests", () => {
         it("should surface errors from z/OSMF when trying to cancel a non existent job with cancelJob", async () => {
-            let err: Error | ImperativeError;
+            let err: ImperativeError | RestClientError | Error;
             try {
                 await CancelJobs.cancelJob(REAL_SESSION, "FAKEJOB", "JOB00001");
             } catch (e) {

@@ -9,7 +9,7 @@
 *
 */
 
-import { Mount } from "../../../../../../../packages/zosfiles/src/methods/mount/Mount";
+import { Mount } from "@zowe/zos-files-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 

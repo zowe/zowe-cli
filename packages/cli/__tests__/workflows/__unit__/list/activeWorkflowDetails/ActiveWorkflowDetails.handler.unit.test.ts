@@ -20,8 +20,7 @@
 *
 */
 
-import { PropertiesWorkflow } from "../../../../../../../packages/workflows/src/Properties";
-import { ListWorkflows } from "../../../../../../../packages/workflows/src/ListWorkflows";
+import { PropertiesWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 describe("List workflow details handler", () => {
     describe("process method", () => {

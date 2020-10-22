@@ -13,7 +13,7 @@ import { Imperative, Session } from "@zowe/imperative";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ProvisioningConstants } from "../../../../../../packages/provisioning";
+import { ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 import * as fs from "fs";
 import { ProvisioningTestUtils } from "../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";

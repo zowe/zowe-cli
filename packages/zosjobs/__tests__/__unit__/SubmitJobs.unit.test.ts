@@ -11,7 +11,7 @@
 
 // unit tests for submit jobs
 
-import { IJob, MonitorJobs, SubmitJobs } from "../../";
+import { IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
 

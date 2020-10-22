@@ -11,7 +11,7 @@
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { AbstractSession, ImperativeError, ProcessUtils, Session } from "@zowe/imperative";
-import { GetJobs } from "../../";
+import { GetJobs } from "../../src";
 import { GetJobsData } from "../__resources__/api/GetJobsData";
 
 const pretendSession = new Session({user: "test", password: "test", hostname: "Test"});

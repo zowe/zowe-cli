@@ -79,7 +79,7 @@ describe("Invoke AMS CLI", () => {
 
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
-                process.cwd() + "/packages/zosfiles/__tests__/__system__/api/methods/invoke/DefineVSAM.ams",
+                process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams",
                 dsname);
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -108,7 +108,7 @@ describe("Invoke AMS CLI", () => {
 
             // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
             controlStatementFile = createTestAMSStatementFileFromTemplate(
-                process.cwd() + "/packages/zosfiles/__tests__/__system__/api/methods/invoke/DeleteVSAM.ams",
+                process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams",
                 dsname);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file_fully_qualified.sh",
@@ -135,7 +135,7 @@ describe("Invoke AMS CLI", () => {
 
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
-                process.cwd() + "/packages/zosfiles/__tests__/__system__/api/methods/invoke/DefineVSAM.ams",
+                process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams",
                 dsname);
 
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
@@ -150,7 +150,7 @@ describe("Invoke AMS CLI", () => {
 
             // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
             controlStatementFile = createTestAMSStatementFileFromTemplate(
-                process.cwd() + "/packages/zosfiles/__tests__/__system__/api/methods/invoke/DeleteVSAM.ams",
+                process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams",
                 dsname);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
@@ -168,7 +168,7 @@ describe("Invoke AMS CLI", () => {
 
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
-                process.cwd() + "/packages/zosfiles/__tests__/__system__/api/methods/invoke/DefineVSAM.ams",
+                process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams",
                 dsname);
 
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
@@ -183,7 +183,7 @@ describe("Invoke AMS CLI", () => {
 
             // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
             controlStatementFile = createTestAMSStatementFileFromTemplate(
-                process.cwd() + "/packages/zosfiles/__tests__/__system__/api/methods/invoke/DeleteVSAM.ams",
+                process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams",
                 dsname);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",

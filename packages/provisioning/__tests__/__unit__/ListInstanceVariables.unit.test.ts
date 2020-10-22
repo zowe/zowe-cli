@@ -10,10 +10,10 @@
 */
 
 import { inspect } from "util";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { IProvisionedInstanceVariables, noInstanceId, ProvisioningConstants,
-        noSessionProvisioning, nozOSMFVersion, ListInstanceVariables } from "../../../provisioning";
+        noSessionProvisioning, ListInstanceVariables } from "../../src";
 
 const instanceId: string = "123456_abcd1";
 

@@ -30,7 +30,7 @@ let wfName: string;
 const fakewfkey: string = "FAKEKEY";
 const fakeName: string = "FAKENAME";
 
-const workflow = join(__dirname, "../../testfiles/demo.xml");
+const workflow = join(__dirname, "../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
 
 describe("Delete workflow cli system tests", () => {
     beforeAll(async () => {

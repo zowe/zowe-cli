@@ -14,10 +14,9 @@ jest.mock("@zowe/core-for-zowe-sdk");
 
 import { Headers, Session } from "@zowe/imperative";
 import { posix } from "path";
-import { IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../";
+import { Invoke, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, getErrorContext } from "@zowe/core-for-zowe-sdk";
-import { Invoke } from "../../../../src";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 const fs = require("fs");

@@ -21,4 +21,4 @@ jobs:
         node-version: 12.x
 
     - name: Check Vulnerabilities
-      run: npm audit --production --audit-level=moderate
+      run: npx lerna exec -- npm audit --production --audit-level=moderate

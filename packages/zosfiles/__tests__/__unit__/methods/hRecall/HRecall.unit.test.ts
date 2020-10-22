@@ -11,10 +11,9 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-import { ZosFilesConstants, ZosFilesMessages, HRecall } from "../../../..";
+import { ZosFilesConstants, ZosFilesMessages, HRecall, IRecallOptions } from "../../../../src";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IRecallOptions } from "../../../../src";
 
 describe("hRecall data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

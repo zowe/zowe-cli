@@ -9,7 +9,9 @@
 *
 */
 
-import { CheckStatus, ListDefinedSystems } from "@zowe/zosmf-for-zowe-sdk";
+jest.mock("../../../../../../zosmf/lib/ListDefinedSystems");
+
+import { ListDefinedSystems } from "@zowe/zosmf-for-zowe-sdk";
 import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../../src/zosmf/list/systems/Systems.handler";
 import * as cmdDef from "../../../../../src/zosmf/list/systems/Systems.definition";
@@ -18,8 +20,6 @@ import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-
-jest.mock("@zowe/zosmf-for-zowe-sdk");
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {

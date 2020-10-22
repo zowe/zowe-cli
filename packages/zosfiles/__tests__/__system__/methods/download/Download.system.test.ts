@@ -19,18 +19,19 @@ import {
     IZosFilesResponse,
     ZosFilesConstants,
     ZosFilesMessages
-} from "../../../../";
+} from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, stripNewLines, delay } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { readdirSync, readFileSync } from "fs";
 import { posix } from "path";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 const rimraf = require("rimraf").sync;
+const delayTime = 2000;
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -69,6 +70,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                 }
@@ -80,6 +82,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                 }
@@ -99,6 +102,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname);
@@ -129,6 +133,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -161,6 +166,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
@@ -224,6 +230,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
                 await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -246,6 +253,7 @@ describe("Download Data Set", () => {
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
                 file = dsname.replace(regex, "/") + ".txt";
+                file = file.toLowerCase();
 
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`${file}`).toString());
@@ -265,6 +273,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
@@ -297,6 +306,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                 }
@@ -308,6 +318,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                 }
@@ -326,6 +337,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
@@ -358,6 +370,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -390,6 +403,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
@@ -429,6 +443,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 const options: IDownloadOptions = {
                     binary: true
@@ -461,6 +476,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
                 const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
 
                 const options: IDownloadOptions = {
                     extension: "dat"
@@ -492,6 +508,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                 }
@@ -503,6 +520,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                 }
@@ -589,6 +607,7 @@ describe("Download Data Set", () => {
 
             try {
                 (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await delay(delayTime);
             } catch (err) {
                 Imperative.console.error(err);
             }
@@ -608,6 +627,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
                 (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await delay(delayTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname);
@@ -630,6 +650,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
                 (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await delay(delayTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, {responseTimeout: 5});
@@ -653,6 +674,7 @@ describe("Download Data Set", () => {
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
                 (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await delay(delayTime);
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -684,6 +706,7 @@ describe("Download Data Set", () => {
                 const data = Buffer.from(buffer);
 
                 (await Upload.bufferToUSSFile(REAL_SESSION, ussname, data));
+                await delay(delayTime);
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -711,6 +734,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
                 (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data));
+                await delay(delayTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -736,6 +760,7 @@ describe("Download Data Set", () => {
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
                 (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data));
+                await delay(delayTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);

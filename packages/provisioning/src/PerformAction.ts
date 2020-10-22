@@ -9,10 +9,10 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { ProvisioningValidator } from "./ProvisioningValidator";
-import { noActionName, noInstanceId, nozOSMFVersion, ProvisioningConstants } from "./ProvisioningConstants";
+import { noActionName, noInstanceId, ProvisioningConstants } from "./ProvisioningConstants";
 import { IPerformActionResponse } from "./doc/zosmf/IPerformActionResponse";
 
 /**

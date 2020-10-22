@@ -9,14 +9,12 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
-import { DefinitionWorkflow } from "../../";
+import { DefinitionWorkflow } from "../../src";
 import {
     WorkflowConstants,
-    noSession,
-    noWorkflowDefinitionFile,
-    nozOSMFVersion
+    noWorkflowDefinitionFile
 } from "../../src/WorkflowConstants";
 
 import { IWorkflowDefinition } from "../../src/doc/IWorkflowDefinition";

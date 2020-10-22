@@ -7,11 +7,3 @@ exports[`perform action handler tests should be able to provision template 1`] =
 `;
 
 exports[`perform action handler tests should be able to provision template 2`] = `Object {}`;
-
-exports[`provision template handler tests should be able to provision template 1`] = `
-"
-
-"
-`;
-
-exports[`provision template handler tests should be able to provision template 2`] = `Object {}`;

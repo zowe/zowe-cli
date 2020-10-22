@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../../../packages/zosfiles/src/doc/IZosFilesResponse";
+import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("ZosFilesBaseHandler", () => {

@@ -114,7 +114,7 @@ describe("Download USS File", () => {
                 shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
                 [
-                    ussname.substr(1, ussname.length),
+                    ussname,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -171,9 +171,7 @@ describe("Download USS File", () => {
                 "command",
                 "command_download_uss_file.sh"
             );
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
-                ussname.substr(1, ussname.length)
-            ]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(
@@ -183,7 +181,7 @@ describe("Download USS File", () => {
 
         it("should download an uss file with response timeout", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_uss_file.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname.substr(1, ussname.length), "--responseTimeout 5"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file downloaded successfully.");
@@ -196,10 +194,7 @@ describe("Download USS File", () => {
                 "command",
                 "command_download_uss_file.sh"
             );
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
-                ussname.substr(1, ussname.length),
-                "--rfj"
-            ]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.stdout.toString()).toContain(
                 "USS file downloaded successfully."
@@ -215,11 +210,7 @@ describe("Download USS File", () => {
                 "command_download_uss_file.sh"
             );
             const fileName = "testFile.txt";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
-                ussname.substr(1, ussname.length),
-                `-f ${fileName}`,
-                "--rfj"
-            ]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, `-f ${fileName}`, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.stdout.toString()).toContain(
                 "USS file downloaded successfully."

@@ -9,13 +9,12 @@
 *
 */
 
-import { Create, List, Delete, CreateDataSetTypeEnum, ZosFilesMessages } from "../../../../";
+import { Create, CreateDataSetTypeEnum, Delete, List, Rename, Upload, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Rename, Upload } from "../../../../src";
 import { join } from "path";
 
 let REAL_SESSION: Session;

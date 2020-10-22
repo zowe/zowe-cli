@@ -10,7 +10,7 @@
 */
 
 import { TEST_RESOURCES_DIR } from "./../__src__/ZosJobsTestConstants";
-import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../";
+import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";

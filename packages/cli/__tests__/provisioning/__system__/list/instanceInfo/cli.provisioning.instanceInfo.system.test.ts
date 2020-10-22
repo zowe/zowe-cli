@@ -16,9 +16,8 @@ import * as fs from "fs";
 import { Imperative, Session } from "@zowe/imperative";
 import {
     IProvisionedInstance,
-    ListRegistryInstances,
     ProvisioningConstants
-} from "../../../../../../../packages/provisioning";
+} from "@zowe/provisioning-for-zowe-sdk";
 import { ProvisioningTestUtils } from "../../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 

@@ -18,7 +18,7 @@ import {
     ISubmitJobNotifyParm,
     ISubmitJobParms,
     JOB_STATUS
-} from "../src";
+} from "./";
 import { JobsConstants } from "./JobsConstants";
 import { ZosJobsMessages } from "./JobsMessages";
 import { ISubmitParms } from "./doc/input/ISubmitParms";

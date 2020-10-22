@@ -20,7 +20,7 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../../../../../packages/workflows";
+import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 
 
 describe("Create workflow common handler", () => {

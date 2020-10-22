@@ -52,7 +52,7 @@ describe("zowe uss issue ssh api call test", () => {
         await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
             stdoutData += data;
         });
-        expect(stdoutData).toMatch(new RegExp("\\" + cwd + "\\s"));
+        expect(stdoutData).toMatch(new RegExp(cwd.substring(1) + "\\s"));
     }, TIME_OUT);
 
     it("should receive return code for valid command", async () => {
@@ -148,7 +148,8 @@ describe("zowe uss issue ssh api call test", () => {
         if (process.platform === "win32") {
             expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
         } else {
-            expect(error.toString()).toContain(ZosUssMessages.allAuthMethodsFailed.message);
+            expect(error.toString().includes(ZosUssMessages.allAuthMethodsFailed.message) ||
+                   error.toString().includes(ZosUssMessages.connectionRefused.message));
         }
 
     }, TIME_OUT);

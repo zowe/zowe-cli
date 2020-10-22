@@ -9,10 +9,10 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
-import { ProvisionPublishedTemplate, IProvisionTemplateResponse, noSessionProvisioning, noTemplateName, nozOSMFVersion,
-        ProvisioningConstants, IProvisionOptionals, ProvisioningService, noAccountInfo } from "../../../provisioning";
+import { ProvisionPublishedTemplate, IProvisionTemplateResponse, noSessionProvisioning, noTemplateName,
+        ProvisioningConstants, IProvisionOptionals, ProvisioningService, noAccountInfo } from "../../src";
 
 
 const templateName: string = "1234567_abcde";

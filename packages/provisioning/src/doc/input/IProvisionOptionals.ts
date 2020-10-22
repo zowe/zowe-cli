@@ -9,7 +9,7 @@
 *
 */
 
-import { IPropertiesInput } from "../../../src/doc/input/IPropertiesInput";
+import { IPropertiesInput } from "../../doc/input/IPropertiesInput";
 
 /**
  * Interface for provisioning the template command of the z/OSMF parameters.
