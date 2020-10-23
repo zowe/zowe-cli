@@ -19,7 +19,7 @@ import org.zowe.pipelines.nodejs.models.SemverLevel
  */
 def PRODUCT_NAME = "Zowe CLI"
 
-node('jenkins-nvm-keytar-agent') {
+node('jenkins-nvm-keytar') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
     pipeline.isLernaMonorepo = true
