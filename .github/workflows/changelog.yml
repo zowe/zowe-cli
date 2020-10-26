@@ -13,11 +13,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Get Changed Package List
+      id: lernachanged
+      run: echo "::set-output name=json::$(npx lerna changed --json)"
+
     - name: Check Changelog Updated
       id: checkchangelogupdated
       if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
-      uses: awharn/check_changelog_action@v0.0.1
+      uses: awharn/check_changelog_action@lerna-update
       with:
         header: '## Recent Changes'
         file: 'CHANGELOG.md'
         token: ${{ secrets.GITHUB_TOKEN }}
+        lerna: true
+        lerna-json: ${{ steps.lernachanged.outputs.json }}
