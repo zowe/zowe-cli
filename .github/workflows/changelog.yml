@@ -12,16 +12,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: Get Changed Package List
-      id: lernachanged
-      # https://github.community/t/set-output-truncates-multiline-strings/16852
-      run: |
-        output="$(npx lerna changed --json)"
-        output="${output//'%'/'%25'}"
-        output="${output//$'\n'/'%0A'}"
-        output="${output//$'\r'/'%0D'}"
-        echo "::set-output name=json::$output"
+      with:
+        fetch-depth: 0
 
     - name: Check Changelog Updated
       id: checkchangelogupdated
@@ -32,4 +24,3 @@ jobs:
         file: 'CHANGELOG.md'
         token: ${{ secrets.GITHUB_TOKEN }}
         lerna: true
-        lerna-json: ${{ steps.lernachanged.outputs.json }}
