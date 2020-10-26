@@ -15,7 +15,12 @@ jobs:
 
     - name: Get Changed Package List
       id: lernachanged
-      run: echo "::set-output name=json::$(npx lerna changed --json)"
+      run: |
+        output="$(npx lerna changed --json)"
+        output="${output//'%'/'%25'}"
+        output="${output//$'\n'/'%0A'}"
+        output="${output//$'\r'/'%0D'}"
+        echo "::set-output name=json::$output"
 
     - name: Check Changelog Updated
       id: checkchangelogupdated
