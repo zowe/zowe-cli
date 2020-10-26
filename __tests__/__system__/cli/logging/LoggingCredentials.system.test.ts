@@ -15,7 +15,7 @@ import { runCliScript } from "../../../__src__/TestUtils";
 import { join } from "path";
 import * as fs from "fs";
 import { TempTestProfiles } from "../../../__src__/profiles/TempTestProfiles";
-import { Constants } from "../../../../packages";
+import { Constants } from "../../../../packages/cli/src/Constants";
 
 // Test environment created in the before all
 let TEST_ENVIRONMENT: ITestEnvironment;

@@ -9,16 +9,12 @@
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
-    "outDir": "./lib",
     "preserveConstEnums": true,
     "removeComments": false,
     "pretty": true,
     "sourceMap": true,
     "newLine": "lf"
   },
-  "include": [
-    "packages/**/*"
-  ],
   "exclude": [
     "lib",
     "node_modules",
