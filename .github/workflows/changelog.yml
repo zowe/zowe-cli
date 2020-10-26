@@ -22,5 +22,4 @@ jobs:
       with:
         header: '## Recent Changes'
         file: 'CHANGELOG.md'
-        token: ${{ secrets.GITHUB_TOKEN }}
         lerna: true
