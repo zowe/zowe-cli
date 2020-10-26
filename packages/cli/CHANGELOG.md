@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.24.0`
 
 - Enhancement: Published the APIs in Zowe CLI as separate SDK packages. [#750](https://github.com/zowe/zowe-cli/issues/750)
 - The "@zowe/cli" package still includes both API and CLI methods. In addition, the following SDK packages are now available:
