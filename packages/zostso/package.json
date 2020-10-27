@@ -44,12 +44,12 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/imperative": "4.8.1",
     "@zowe/zosmf-for-zowe-sdk": "6.24.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@zowe/core-for-zowe-sdk": "6.24.0",
+    "@zowe/imperative": "4.8.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
