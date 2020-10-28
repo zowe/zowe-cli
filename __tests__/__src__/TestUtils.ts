@@ -13,9 +13,9 @@ import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { randomBytes } from "crypto";
-import { ZosFilesConstants } from "../../packages/zosfiles/src/api";
+import { ZosFilesConstants } from "../../packages/zosfiles/src";
 import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../packages/rest";
+import { ZosmfRestClient } from "../../packages/core";
 
 /**
  * Execute a CLI script
@@ -121,3 +121,12 @@ export function delay(ms: number) {
 }
 
 export const delTime = 500;
+
+/**
+ * Use instead of `util.inspect` to get consistently formatted output that can be used in snapshots.
+ * Does not inspect nested objects.
+ * @param obj Object to stringify
+ */
+export function inspect(obj: any) : string {
+    return JSON.stringify(Object.keys(obj).reduce((newObj, key) => ({...newObj, [key]: obj[key]}), {}));
+}

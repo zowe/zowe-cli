@@ -1,6 +1,7 @@
 coverage/
 node_modules/
 npm-debug.log
+lerna-debug.log
 local.json
 output/
 logs/
@@ -67,7 +68,7 @@ typings/
 /gui/BrightSide-darwin-x64/
 /brightside.iml
 /config/
-/docs/typedoc/
+**/docs/typedoc/
 __tests__/__results__/
 packages/zosunix/__tests__/__results__/
 /__tests__/tmpproj/
@@ -92,3 +93,8 @@ imperative_debug.log
 .DS_Store
 
 /web-help/dist/
+
+*.bat
+
+/packages/cli/lib
+/packages/cli/__tests__/__results__

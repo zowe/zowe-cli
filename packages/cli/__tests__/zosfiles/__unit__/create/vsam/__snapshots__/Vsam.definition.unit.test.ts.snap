@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files create vsam command definition should not have changed 1`] = `
+Array [
+  Object {
+    "aliases": Array [
+      "dc",
+    ],
+    "description": "The SMS data class to use for the allocation",
+    "name": "data-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "dso",
+      "dsorg",
+    ],
+    "allowableValues": Object {
+      "caseSensitive": false,
+      "values": Array [
+        "INDEXED",
+        "IXD",
+        "LINEAR",
+        "LIN",
+        "NONINDEXED",
+        "NIXD",
+        "NUMBERED",
+        "NUMD",
+        "ZFS",
+      ],
+    },
+    "defaultValue": "INDEXED",
+    "description": "The data set organization.",
+    "name": "data-set-organization",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "mc",
+    ],
+    "description": "The SMS management class to use for the allocation",
+    "name": "management-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "rf",
+    ],
+    "conflictsWith": Array [
+      "retain-to",
+    ],
+    "description": "The number of days that the VSAM cluster will be retained on the system. You can delete the cluster at any time when neither retain-for nor retain-to is specified.",
+    "name": "retain-for",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "rt",
+    ],
+    "conflictsWith": Array [
+      "retain-for",
+    ],
+    "description": "The earliest date that a command without the PURGE parameter can delete an entry. Specify the expiration date in the form yyyyddd, where yyyy is a four-digit year (maximum value: 2155) and ddd is the three-digit day of the year from 001 through 365 (for non-leap years) or 366 (for leap years). You can delete the cluster at any time when neither retain-for nor retain-to is used. You cannot specify both the 'retain-to' and 'retain-for' options.",
+    "name": "retain-to",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "ss",
+    ],
+    "description": "The number of items for the secondary space allocation (for example, 840). The type of item allocated is the same as the type used for the '--size' option. If you do not specify a secondary allocation, a value of ~10% of the primary allocation is used.",
+    "name": "secondary-space",
+    "type": "number",
+  },
+  Object {
+    "aliases": Array [
+      "pa",
+    ],
+    "description": "Show the full allocation attributes",
+    "name": "show-attributes",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
+      "sz",
+    ],
+    "defaultValue": "840KB",
+    "description": "The primary size to allocate for the VSAM cluster. Specify size as the number of items to allocate (nItems). You specify the type of item by keyword.",
+    "name": "size",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "sc",
+    ],
+    "description": "The SMS storage class to use for the allocation",
+    "name": "storage-class",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
+      "v",
+    ],
+    "description": "The storage volumes on which to allocate a VSAM cluster. Specify a single volume by its volume serial (VOLSER). To specify more than one volume, enclose the option in double-quotes and separate each VOLSER with a space. You must specify the volumes option when your cluster is not SMS-managed.",
+    "name": "volumes",
+    "type": "string",
+  },
+]
+`;
+
+exports[`zos-files create vsam command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Create a VSAM data set named \\"SOME.DATA.SET.NAME\\" using default values of INDEXED, 840 KB primary storage and 84 KB secondary storage",
+    "options": "SOME.DATA.SET.NAME",
+  },
+  Object {
+    "description": "Create a 5 MB LINEAR VSAM data set named \\"SOME.DATA.SET.NAME\\" with 1 MB of secondary space. Show the properties of the data set when it is created",
+    "options": "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes",
+  },
+  Object {
+    "description": "Create a VSAM data set named \\"SOME.DATA.SET.NAME\\", which is retained for 100 days",
+    "options": "SOME.DATA.SET.NAME --retain-for 100 ",
+  },
+]
+`;

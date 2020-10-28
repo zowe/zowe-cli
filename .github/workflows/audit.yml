@@ -1,0 +1,29 @@
+name: Audit
+
+on:
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: '0 10 * * *'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+
+    - name: Install Dependencies
+      run: npm install --ignore-scripts && npx lerna bootstrap --no-ci
+
+    - name: Check Vulnerabilities
+      uses: t1m0thyj/lerna-audit@master
+      with:
+        npm-audit-args: --production --audit-level=moderate

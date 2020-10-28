@@ -9,7 +9,15 @@
 *
 */
 
-import { ICommandArguments, ICommandOptionDefinition, IProfile, Logger, Session } from "@zowe/imperative";
+import {
+    ICommandArguments,
+    ICommandOptionDefinition,
+    IProfile,
+    Logger,
+    SessConstants,
+    Session,
+    ISession
+} from "@zowe/imperative";
 
 /**
  * Utility Methods for Brightside
@@ -27,8 +35,13 @@ export class ZosmfSession {
         aliases: ["H"],
         description: "The z/OSMF server host name.",
         type: "string",
-        required: true,
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_HOST,
+        required: false
     };
 
     /**
@@ -51,8 +64,13 @@ export class ZosmfSession {
         aliases: ["u"],
         description: "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
         type: "string",
-        required: true,
+        required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_USER_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_USER,
+        required: false
     };
 
     /**
@@ -63,8 +81,13 @@ export class ZosmfSession {
         aliases: ["pass", "pw"],
         description: "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
         type: "string",
-        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
-        required: true
+        required: false,
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    public static ZOSMF_OPTION_PASSWORD_PROFILE: ICommandOptionDefinition = {
+        ...ZosmfSession.ZOSMF_OPTION_PASSWORD,
+        required: false
     };
 
     /**
@@ -105,9 +128,21 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_BASE_PATH
     ];
 
+    /**
+     * Given command line arguments, create an session configuration object.
+     * @param {IProfile} args - The arguments specified by the user
+     * @returns {ISession} - A session configuration to be used for a session.
+     */
+    public static createSessCfgFromArgs(args: ICommandArguments): ISession {
+        return {
+            rejectUnauthorized: args.rejectUnauthorized,
+            basePath: args.basePath
+        };
+    }
 
     /**
      * Given a z/OSMF profile, create a REST Client Session.
+     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
      * @static
      * @param {IProfile} profile - The z/OSMF profile contents
      * @returns {Session} - A session for usage in the z/OSMF REST Client
@@ -115,12 +150,11 @@ export class ZosmfSession {
     public static createBasicZosmfSession(profile: IProfile): Session {
         this.log.debug("Creating a z/OSMF session from the profile named %s", profile.name);
         return new Session({
-            type: "basic",
+            type: SessConstants.AUTH_TYPE_BASIC,
             hostname: profile.host,
             port: profile.port,
             user: profile.user,
             password: profile.password,
-            base64EncodedAuth: profile.auth,
             rejectUnauthorized: profile.rejectUnauthorized,
             basePath: profile.basePath
         });
@@ -129,21 +163,33 @@ export class ZosmfSession {
     /**
      * Given command line arguments, create a REST Client Session.
      * @static
+     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
      * @param {IProfile} args - The arguments specified by the user
      * @returns {Session} - A session for usage in the z/OSMF REST Client
      */
     public static createBasicZosmfSessionFromArguments(args: ICommandArguments): Session {
         this.log.debug("Creating a z/OSMF session from arguments");
-        return new Session({
-            type: "basic",
+
+        const sessionConfig: ISession = {
             hostname: args.host,
             port: args.port,
-            user: args.user,
-            password: args.password,
-            base64EncodedAuth: args.auth,
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath
-        });
+        };
+
+        sessionConfig.type = SessConstants.AUTH_TYPE_BASIC;
+        sessionConfig.user = args.user;
+        sessionConfig.password = args.password;
+        if (sessionConfig.user && sessionConfig.password) {
+            this.log.debug("Using basic authentication");
+        } else if (args.tokenType && args.tokenValue) {
+            this.log.debug("Using token authentication");
+            sessionConfig.type = SessConstants.AUTH_TYPE_TOKEN;
+            sessionConfig.tokenType = args.tokenType;
+            sessionConfig.tokenValue = args.tokenValue;
+        }
+
+        return new Session(sessionConfig);
     }
 
 

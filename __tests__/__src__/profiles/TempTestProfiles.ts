@@ -15,7 +15,7 @@
 import { ITestEnvironment } from "../environment/doc/response/ITestEnvironment";
 import { ImperativeError, IO } from "@zowe/imperative";
 import { runCliScript } from "../TestUtils";
-import { Constants } from "../../../packages/Constants";
+import { Constants } from "../../../packages/cli/src/Constants";
 import * as fs from "fs";
 
 const uuidv4 = require("uuid");
@@ -53,7 +53,7 @@ export class TempTestProfiles {
      * @throws errors if any of the profile creations fail or if requested to create an unknown profile type
      */
     public static async createProfiles(testEnvironment: ITestEnvironment, profileTypes: string[] = []) {
-        const profileNames: { [key: string]: string[] } = {zosmf: [], tso: [], ssh: []};
+        const profileNames: { [key: string]: string[] } = {zosmf: [], tso: [], ssh: [], base: []};
         this.log(testEnvironment, "Creating the following profileTypes: " + profileTypes);
         for (const type of profileTypes) {
             if (type === "zosmf") {
@@ -62,6 +62,8 @@ export class TempTestProfiles {
                 profileNames.tso.push(await TempTestProfiles.createTsoProfile(testEnvironment));
             } else if (type === "ssh") {
                 profileNames.ssh.push(await TempTestProfiles.createSshProfile(testEnvironment));
+            } else if (type === "base") {
+                profileNames.base.push(await TempTestProfiles.createBaseProfile(testEnvironment));
             } else {
                 throw new ImperativeError({msg: "asked to create unknown profile type '" + type + "'"});
             }
@@ -192,6 +194,42 @@ export class TempTestProfiles {
         }
         IO.deleteFile(scriptPath);
         this.log(testEnvironment, `Created ssh profile '${profileName}'. Stdout from creation:\n${output.stdout.toString()}`);
+        return profileName;
+    }
+
+    /**
+     * Helper to create a base profile from test properties
+     * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
+     * @returns {Promise<string>} promise that resolves to the name of the created profile on success
+     * @throws errors if the profile creation fails
+     */
+    private static async createBaseProfile(testEnvironment: ITestEnvironment): Promise<string> {
+        const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_base";
+        const baseProperties = testEnvironment.systemTestProperties.base;
+        let createProfileScript = this.SHEBANG +
+            `${Constants.BINARY_NAME} profiles create base ${profileName} --user ${baseProperties.user} --pw ` +
+            `${baseProperties.pass} --ru ${baseProperties.rejectUnauthorized}` +
+            ` --host ${baseProperties.host} --port ${baseProperties.port}`;
+        // if basePath has been entered in custom_properties, add it to the
+        // create base profile arguments
+        if (baseProperties.tokenType != null) {
+            createProfileScript += ` --token-type ${baseProperties.tokenType}`;
+        }
+        if (baseProperties.tokenValue != null) {
+            createProfileScript += ` --token-value ${baseProperties.tokenValue}`;
+        }
+        const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
+        await IO.writeFileAsync(scriptPath, createProfileScript);
+        const output = runCliScript(scriptPath, testEnvironment, []);
+        if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
+            throw new ImperativeError({
+                msg: "Creation of base profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
+                    "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString() +
+                    TempTestProfiles.GLOBAL_INSTALL_NOTE
+            });
+        }
+        IO.deleteFile(scriptPath);
+        this.log(testEnvironment, `Created base profile '${profileName}'. Stdout from creation:\n${output.stdout.toString()}`);
         return profileName;
     }
 

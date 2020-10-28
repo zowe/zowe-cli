@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zosmf list systems definition should not have changed 1`] = `
+Object {
+  "description": "Obtain a list of systems that are defined to a z/OSMF instance.",
+  "examples": Array [
+    Object {
+      "description": "Obtain a list of systems defined to a z/OSMF instance with your default z/OSMF profile",
+      "options": "",
+    },
+    Object {
+      "description": "Obtain a list of systems defined to a z/OSMF instance for the specified z/OSMF profile",
+      "options": "--zosmf-profile SomeZosmfProfileName",
+    },
+    Object {
+      "description": "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
+      "options": "--host myhost --port 443 --user myuser --password mypass",
+    },
+  ],
+  "name": "systems",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "H",
+      ],
+      "description": "The z/OSMF server host name.",
+      "group": "Zosmf Connection Options",
+      "name": "host",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "P",
+      ],
+      "defaultValue": 443,
+      "description": "The z/OSMF server port.",
+      "group": "Zosmf Connection Options",
+      "name": "port",
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "u",
+      ],
+      "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
+      "group": "Zosmf Connection Options",
+      "name": "user",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "pass",
+        "pw",
+      ],
+      "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
+      "group": "Zosmf Connection Options",
+      "name": "password",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ru",
+      ],
+      "defaultValue": true,
+      "description": "Reject self-signed certificates.",
+      "group": "Zosmf Connection Options",
+      "name": "reject-unauthorized",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "bp",
+      ],
+      "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
+      "group": "Zosmf Connection Options",
+      "name": "base-path",
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "type": "command",
+}
+`;

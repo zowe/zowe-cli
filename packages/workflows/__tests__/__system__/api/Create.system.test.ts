@@ -9,26 +9,24 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow } from "../../..";
+import { CreateWorkflow, DeleteWorkflow } from "../../../src";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload, Delete, ZosFilesConstants } from "../../../../zosfiles/src/api";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
+import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 import {
     noOwner,
-    noSession,
     noSystemName,
     noWorkflowDefinitionFile,
     noWorkflowName,
-    nozOSMFVersion,
     wrongOwner
-} from "../../../src/api/WorkflowConstants";
-import { ICreatedWorkflowLocal } from "../../../src/api/doc/ICreatedWorkflowLocal";
+} from "../../../src/WorkflowConstants";
+import { ICreatedWorkflowLocal } from "../../../src/doc/ICreatedWorkflowLocal";
+import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
@@ -441,7 +439,7 @@ describe("Create workflow", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expect(error.errorCode).toEqual(wrongPath);
+            expect(error.errorCode).toEqual(notFound);
         });
         it("Throws an error with wrong format of workflow definition file. Path not from root.", async () => {
             //

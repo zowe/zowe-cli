@@ -20,7 +20,8 @@
       -1,
       0,
       1,
-      2
+      2,
+      5
     ],
     "no-consecutive-blank-lines": [
       true,
@@ -28,7 +29,8 @@
     ],
     "prefer-conditional-expression": false,
     "indent": [true, "spaces", 4],
-    "whitespace": [true, "check-module"]
+    "whitespace": [true, "check-module"],
+    "array-type": false
   },
   "type-check": true
 }

@@ -49,6 +49,20 @@ zosmf:
   # such as a base path exposed from a gateway/ API mediation layer
   basePath: null
 #-------------------------------------------------------------------------#
+#  Connection details/credentials for Base Profile / API ML               #
+#-------------------------------------------------------------------------#
+base:
+  # your Base User ID
+  user: base-user
+  # your Base password
+  pass: base-password
+  # host for your base / API ML instance
+  host: base-host
+  # port for your base / API ML instance
+  port: base-port
+  # false to allow self signed certificates when connecting
+  rejectUnauthorized: false
+#-------------------------------------------------------------------------#
 #  TSO testing properties                                                 #
 #-------------------------------------------------------------------------#
 tso:

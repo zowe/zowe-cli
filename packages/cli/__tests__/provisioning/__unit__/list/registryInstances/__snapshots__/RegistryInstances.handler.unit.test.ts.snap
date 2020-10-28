@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list registry instances handler tests should be able to list registry 1`] = `"z/OSMF Service Registry"`;
+
+exports[`list registry instances handler tests should be able to list registry 2`] = `
+"[90mnull[39m
+
+"
+`;
+
+exports[`list registry instances handler tests should be able to list registry 3`] = `Object {}`;

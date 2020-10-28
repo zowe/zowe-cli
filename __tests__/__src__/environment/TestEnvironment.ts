@@ -10,17 +10,16 @@
 */
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, Session, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger, LoggingConfigurer, Session, TextUtils } from "@zowe/imperative";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirpSync } from "fs-extra";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import * as fs from "fs";
-import { Constants } from "../../../packages/Constants";
+import { Constants } from "../../../packages/cli/src/Constants";
 import { TempTestProfiles } from "../profiles/TempTestProfiles";
-import { SshSession } from "../../../packages/zosuss";
-
+import { SshSession } from "../../../packages/zosuss/src/SshSession";
 const uuidv4 = require("uuid");
 const yaml = require("js-yaml");
 
@@ -78,6 +77,8 @@ export class TestEnvironment {
         // the result of the test environment setup so far is used to create profiles
         result.tempProfiles = await TempTestProfiles.createProfiles(result, params.tempProfileTypes);
 
+        Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+
         // Return the test environment including working directory that the tests should be using
         return result;
     }
@@ -125,6 +126,23 @@ export class TestEnvironment {
             type: "basic",
             rejectUnauthorized: SYSTEM_PROPS.zosmf.rejectUnauthorized,
             basePath: SYSTEM_PROPS.zosmf.basePath
+        });
+    }
+
+    /**
+     * Create a ZOSMF session through the APIML from properties present in your test environment
+     * @param testEnvironment - your test environment with system test properties populated
+     */
+    public static createBaseSession(testEnvironment: ITestEnvironment): AbstractSession {
+        const SYSTEM_PROPS = testEnvironment.systemTestProperties;
+        return new Session({
+            user: SYSTEM_PROPS.base.user,
+            password: SYSTEM_PROPS.base.pass,
+            hostname: SYSTEM_PROPS.base.host,
+            port: SYSTEM_PROPS.base.port,
+            type: "token",
+            tokenType: "apimlAuthenticationToken",
+            rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized
         });
     }
 

@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set 1`] = `
+"================Z/OS FILES CREATE PDS===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set and print attributes 1`] = `
+"================Z/OS FILES CREATE PDS===============
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"Data set created successfully.\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set created successfully.\\"
+  }
+}"
+`;
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set extended (PDSE) 1`] = `
+"================Z/OS FILES CREATE PDS===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with response timeout 1`] = `
+"================Z/OS FILES CREATE PDS===============
+Data set created successfully.
+"
+`;
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with specified primary allocation 1`] = `
+"================Z/OS FILES CREATE PDS===============
+alcunit:   CYL
+dsorg:     PO
+primary:   20
+dirblk:    5
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 1
+
+Data set created successfully.
+"
+`;
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with specified primary and secondary allocation 1`] = `
+"================Z/OS FILES CREATE PDS===============
+alcunit:   CYL
+dsorg:     PO
+primary:   20
+dirblk:    5
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 5
+
+Data set created successfully.
+"
+`;
+
+exports[`Create Partitioned Data Set Success scenarios should create a partitioned data set with specified size 1`] = `
+"================Z/OS FILES CREATE PDS===============
+alcunit:   CYL
+dsorg:     PO
+primary:   2
+dirblk:    5
+recfm:     FB
+blksize:   6160
+lrecl:     80
+secondary: 0
+
+Data set created successfully.
+"
+`;
+
+exports[`Create Partitioned Data Set without profiles should create a partitioned data set 1`] = `
+"Data set created successfully.
+"
+`;

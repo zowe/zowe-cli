@@ -1,105 +1,161 @@
 # z/OS Jobs Package
-Contains APIs & commands to work with z/OS batch jobs (using z/OSMF Jobs REST endpoints).
+
+Contains APIs to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
+
 # API Examples
-**Submit JCL Text:**
-```
-const iefbr14JCL = "//SAMPLEJ JOB 123" +
-    ",'Brightside Test',MSGLEVEL=(1,1),MSGCLASS=4,CLASS=C\n" +
-    "//EXEC PGM=IEFBR14";
 
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
+**Cancel a job**
 
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({loadDefault: true});
+```typescript
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { CancelJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Submit the JCL 
-const response: IJob = await SubmitJobs.submitJcl(session, iefbr14JCL);
-```
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
 
-**Get Job Details:**
-```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
-
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
-
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
-
-// Submit the JCL
-const response: IJob = await GetJobs.getJob(session, "JOB123");
+    // Job Options
+    const jobName: string = "MYJOB";
+    const jobId: string = "JOBID";
+    const version: string = undefined;
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: any;
+    response = await CancelJobs.cancelJob(session, jobName, jobId, version);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
-**Get Job Details:**
-```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/brightside");
+#
+**Download a job's output**
 
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
+```typescript
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { DownloadJobs, IDownloadAllSpoolContentParms } from "@zowe/zos-jobs-for-zowe-sdk";
 
-// Create the session for the REST client
-const session: Session = Utils.createZosmfSession(zosmfProfile.profile);
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
 
-// Get the job details
-const response: IJob = await GetJobs.getJob(session, "JOB123");
-```
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
 
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
-
-**Get Job Spool Files:**
-```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
-
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
-
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
-
-// Get the spool files for the job
-const job: IJob[] = await GetJobs.getJob(session, "JOB123");
-const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(session, job);
-```
-
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
-
-**Get Spool File Contents:**
-```
-// Initialize the secure credential manager
-CredentialManagerFactory.initialize(DefaultCredentialManager, "@brightside/core");
-
-// Load the profile contents
-const zosmfProfile = await new CliProfileManager({
-    profileRootDirectory: PROFILE_ROOT_DIR,
-    type: "zosmf"
-}).load({ loadDefault: true });
-
-// Create the session for the REST client
-const session: Session = ZosmfSession.createBasicZosmfSession(zosmfProfile.profile);
-
-// Get the spool content
-const content = await GetJobs.getSpoolContentById(session, "MYJOB", "JOB123", 2);
+    // Job Options
+    const jobParms: IDownloadAllSpoolContentParms = {
+        jobname: "JOBNAME",
+        jobid: "JOBID",
+        outDir: undefined,
+        extension: ".txt",
+        omitJobidDirectory: false
+    }
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: any;
+    response = await DownloadJobs.downloadAllSpoolContentCommon(session, jobParms);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
 ```
 
-**Note:** The `@brightside/imperative` package contains the `CliProfileManager` and `CredentialManagerFactory`
+#
+**Get jobs by owner**
 
+```typescript
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
+
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
+
+    // Job Options
+    const owner: string = defaultZosmfProfile.user;
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: IJob[];
+    // This may take awhile...
+    response = await GetJobs.getJobsByOwner(session, owner);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
+```
+
+#
+**Submit a job**
+
+```typescript
+import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
+         CredentialManagerFactory } from "@zowe/imperative";
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
+import { SubmitJobs, IJob, ISubmitJobParms } from "@zowe/zos-jobs-for-zowe-sdk";
+
+(async () => {
+    //Initialize the Imperative Credential Manager Factory and Logger
+    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
+    // Uncommment the below line if the Secure Credential Store is in use
+    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
+
+    // Get the default z/OSMF profile and create a z/OSMF session with it
+    let defaultZosmfProfile: IProfile;
+    try {
+        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
+    } catch (err) {
+        throw new ImperativeError({msg: "Failed to get a profile."});
+    }
+
+    // Job Options
+    const jobDataSet: string = "ZOWEUSER.PUBLIC.MY.DATASET.JCL(MEMBER)"
+    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
+    let response: IJob;
+    response = await SubmitJobs.submitJob(session, jobDataSet);
+    console.log(response);
+    process.exit(0);
+})().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
+```

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Rename data set member success scenarios partitioned should rename a data set member from the command 1`] = `
+"================Z/OS FILES RENAME DSM===============
+Data set renamed successfully.
+"
+`;
+
+exports[`Rename data set member success scenarios partitioned should rename a data set member from the command with response timeout 1`] = `
+"================Z/OS FILES RENAME DSM===============
+Data set renamed successfully.
+"
+`;
