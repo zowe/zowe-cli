@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines@sonar-scan') import org.zowe.pipelines.nodejs.NodeJSPipeline
+@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
