@@ -11,7 +11,7 @@
 
 import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError } from "@zowe/imperative";
 
-import { posix, normalize, join, sep } from "path";
+import { posix } from "path";
 import * as util from "util";
 
 import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "../../../../../rest";
