@@ -9,9 +9,9 @@
 *
 */
 
-import { ZosmfBaseHandler } from "../../zosmf/src/ZosmfBaseHandler";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
-import { IStartTsoParms } from "./api/doc/input/IStartTsoParms";
+import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 
 export abstract class ZosTsoBaseHandler extends ZosmfBaseHandler {
     /**

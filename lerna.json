@@ -1,0 +1,13 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "6.24.1",
+  "command": {
+    "publish": {
+      "ignoreChanges": [
+        "**/__tests__/**"
+      ]
+    }
+  }
+}

@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List systems behavior should display system properties 1`] = `
+Object {
+  "fields": Array [
+    "systemNickName",
+    "systemName",
+    "url",
+    "jesMemberName",
+  ],
+  "format": "table",
+  "header": true,
+  "output": Array [
+    Object {
+      "systemName": "SYS1_001",
+      "systemNickName": "SYS1",
+      "url": "some.zosmf.url",
+    },
+  ],
+}
+`;
+
+exports[`List systems behavior should display system properties 2`] = `
+Object {
+  "items": Array [
+    Object {
+      "systemName": "SYS1_001",
+      "systemNickName": "SYS1",
+      "url": "some.zosmf.url",
+    },
+  ],
+  "numRows": "1",
+}
+`;
+
+exports[`List systems behavior should pass the rest client error to the command processor (no transformation) 1`] = `"Mock GetInfo Error"`;
+
+exports[`List systems behavior should return a json object with the right properties 1`] = `
+Object {
+  "items": Array [
+    Object {
+      "systemName": "SYS1_001",
+      "systemNickName": "SYS1",
+      "url": "some.zosmf.url",
+    },
+  ],
+  "numRows": "1",
+}
+`;

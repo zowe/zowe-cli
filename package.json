@@ -1,88 +1,44 @@
 {
   "name": "@zowe/cli",
-  "version": "6.23.0",
+  "private": true,
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
-  "homepage": "https://github.com/zowe/zowe-cli#readme",
-  "bugs": {
-    "url": "https://github.com/zowe/zowe-cli/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zowe/zowe-cli.git"
-  },
-  "bin": {
-    "bright": "./lib/main.js",
-    "zowe": "./lib/main.js"
-  },
-  "keywords": [
-    "zosmf",
-    "mainframe",
-    "CLI",
-    "zos",
-    "z/OSMF",
-    "mvs",
-    "os390",
-    "z/OS",
-    "zowe"
-  ],
-  "files": [
-    "lib",
-    "docs",
-    "scripts",
-    "web-help/logo.png"
-  ],
-  "publishConfig": {
-    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
-  },
-  "imperative": {
-    "configurationModule": "lib/imperative.js"
-  },
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
   "scripts": {
-    "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "build": "gulp updateLicense && tsc --pretty && npm run lint && npm run checkTestsCompile && madge -c lib",
+    "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
+    "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
-    "postinstall": "node ./scripts/validatePlugins",
-    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit ",
+    "postinstall": "lerna bootstrap --hoist @zowe/*",
+    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
+    "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
     "lint": "npm run lint:packages && npm run lint:tests",
-    "lint:packages": "tslint --format stylish -c ./tslint-packages.json \"packages/**/*.ts\"",
-    "lint:tests": "tslint --format stylish -c ./tslint-tests.json \"**/__tests__/**/*.ts\"",
+    "lint:packages": "lerna run --parallel lint",
+    "lint:tests": "tslint --format stylish -c ./tslint-tests.json \"/__tests__/**/*.ts\"",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
-    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.integration\\.(spec|test)\\.ts\" --coverage false",
-    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.system\\.(spec|test)\\.ts\" --coverage false",
-    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\.unit\\.(spec|test)\\.ts\" --coverage",
-    "watch": "tsc --pretty --watch",
+    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\\$\" --coverage false",
+    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
+    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
+    "watch": "lerna run --parallel watch",
     "watch:test": "jest --watch",
-    "typedoc": "typedoc --options ./typedoc.json ./packages/",
-    "doc:generate": "npm run doc:clean && gulp doc",
     "doc:clean": "rimraf docs/CLIReadme.md",
+    "doc:generate": "npm run doc:clean && gulp doc",
+    "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
+    "typedoc": "typedoc --options ./typedoc.json ./packages/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
     "@zowe/imperative": "4.8.1",
-    "@zowe/perf-timing": "1.0.7",
-    "get-stdin": "7.0.0",
-    "js-yaml": "3.13.1",
-    "minimatch": "3.0.4",
-    "ssh2": "0.8.7",
-    "string-width": "2.1.1"
+    "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
     "@types/fs-extra": "^8.0.1",
     "@types/jest": "^22.2.3",
-    "@types/js-yaml": "^3.11.1",
-    "@types/minimatch": "^3.0.3",
     "@types/node": "^12.12.24",
-    "@types/ssh2": "^0.5.38",
-    "@types/yargs": "^13.0.4",
     "ansi-colors": "^4.1.1",
-    "chalk": "^2.4.2",
+    "chalk": "^4.1.0",
     "clear-require": "^2.0.0",
     "codepage": "^1.10.1",
     "cross-env": "^5.1.4",
@@ -100,20 +56,21 @@
     "jest-environment-node-debug": "^2.0.0",
     "jest-junit": "^6.3.0",
     "jest-sonar-reporter": "^2.0.0",
-    "jest-stare": "^1.11.1",
+    "jest-stare": "^2.2.0",
+    "js-yaml": "^3.13.1",
     "jsonfile": "^4.0.0",
+    "lerna": "^3.22.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
+    "syncpack": "^5.6.10",
     "ts-jest": "^24.2.0",
     "ts-node": "^7.0.1",
-    "tslint": "^6.1.2",
-    "typedoc": "^0.15.0",
+    "tslint": "^6.1.3",
+    "typedoc": "^0.16.0",
+    "typedoc-plugin-external-module-map": "^1.2.1",
     "typescript": "^3.8.0",
     "uuid": "^3.3.2"
-  },
-  "engines": {
-    "node": ">=8.0.0"
   },
   "jest": {
     "globals": {
@@ -125,14 +82,16 @@
       ".*jest-stare.*\\.js"
     ],
     "modulePathIgnorePatterns": [
-      "__tests__/__snapshots__/"
+      "__tests__/__snapshots__/",
+      ".*/node_modules/.*",
+      ".*/lib/.*"
     ],
     "setupFilesAfterEnv": [
       "./__tests__/beforeTests.js"
     ],
     "testResultsProcessor": "jest-stare",
     "transform": {
-      ".(ts)": "ts-jest"
+      "\\.ts$": "ts-jest"
     },
     "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
     "moduleFileExtensions": [
