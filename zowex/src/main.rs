@@ -56,7 +56,7 @@ fn main() -> std::io::Result<()> {
 }
 
 fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> {
-    args.push_str(" --lcd ");
+    args.push_str(" --dcd ");
     let path = env::current_dir()?;
     args.push_str(path.to_str().unwrap());
     args.push_str("/");
