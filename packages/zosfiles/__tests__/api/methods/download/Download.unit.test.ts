@@ -10,14 +10,14 @@
 */
 
 import { IO, Session } from "@zowe/imperative";
-import { ZosFilesMessages } from "../../../../";
-import { ZosmfHeaders, ZosmfRestClient } from "../../../../../rest";
-import { Download } from "../../../../src/api/methods/download/Download";
-import { posix, sep } from "path";
-import { ZosFilesConstants } from "../../../../src/api/constants/ZosFiles.constants";
+import { ZosFilesMessages } from "../../../../src";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { Download } from "../../../../src/methods/download/Download";
+import { posix } from "path";
+import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import * as util from "util";
-import { List } from "../../../../src/api/methods/list";
-import { CLIENT_PROPERTY } from "../../../../src/api/doc/types/ZosmfRestClientProperties";
+import { List } from "../../../../src/methods/list";
+import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -279,15 +279,14 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
-        it("should download a data set to the given file in encoding and lcd requested mode", async () => {
+        it("should download a data set to the given file in encoding requested mode", async () => {
             let response;
             let caughtError;
             const encoding = 285;
             const file = "my/test/file.xyz";
-            const lcd = "test";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {encoding, file, lcd});
+                response = await Download.dataSet(dummySession, dsname, {encoding, file});
             } catch (e) {
                 caughtError = e;
             }
@@ -297,7 +296,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, `${lcd}${sep}${file}`),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, file),
                 apiResponse: {}
             });
 
@@ -309,10 +308,10 @@ describe("z/OS Files - Download", () => {
                                                                         task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
-            expect(ioCreateDirSpy).toHaveBeenCalledWith(`${lcd}${sep}${file}`);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
 
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
-            expect(ioWriteStreamSpy).toHaveBeenCalledWith(`${lcd}${sep}${file}`);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
 
         it("should download a data set using responseTimeout", async () => {
