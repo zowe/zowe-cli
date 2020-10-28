@@ -27,13 +27,6 @@ export interface IDownloadSpoolContentParms {
     outDir?: string;
 
     /**
-     * Alternate local working directory
-     * @type {string}
-     * @memberof IDownloadSpoolContentParms
-     */
-    lcd?: string;
-
-    /**
      * Job file document for job output we want to download
      * @type {IJobFile}
      * @memberof IDownloadSpoolContentParms

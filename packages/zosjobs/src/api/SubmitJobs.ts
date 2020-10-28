@@ -247,7 +247,6 @@ export class SubmitJobs {
                 jobid: job.jobid,
                 jobname: job.jobname,
                 outDir: parms.directory,
-                lcd: parms.lcd
             };
             if (parms.extension) {
                 downloadParms.extension = IO.normalizeExtension(parms.extension);

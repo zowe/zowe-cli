@@ -83,7 +83,6 @@ export class DownloadJobs {
             await DownloadJobs.downloadSpoolContentCommon(session, {
                 jobFile: {...file, ddname: uniqueDDName},
                 outDir: parms.outDir,
-                lcd: parms.lcd,
                 omitJobidDirectory: parms.omitJobidDirectory
             });
             usedStepNames[file.stepname] = [...usedStepNames[file.stepname] || [], uniqueDDName];
@@ -105,11 +104,6 @@ export class DownloadJobs {
 
         if (parms.outDir == null) {
             parms.outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
-        }
-
-        if (parms.lcd) {
-            const lcd = parms.lcd ? path.normalize(path.join(parms.lcd, path.sep)) : null;
-            parms.outDir = path.normalize(lcd + parms.outDir);
         }
 
         const file = DownloadJobs.getSpoolDownloadFile(parms.jobFile, parms.omitJobidDirectory, parms.outDir);
