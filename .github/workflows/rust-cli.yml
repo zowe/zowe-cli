@@ -5,7 +5,9 @@ on:
     branches-ignore:
         - "master"
         - "next"
+    paths: "zowex/**"
   pull_request:
+    paths: "zowex/**"
 
 jobs:
   build:

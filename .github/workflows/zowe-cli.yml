@@ -3,7 +3,11 @@
 
 name: Zowe CLI CI
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore: 'zowex/**'
+  pull_request:
+    paths-ignore: 'zowex/**'
 
 jobs:
   test:
