@@ -38,7 +38,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
                 });
             });
         });
-        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+        const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
         const expected: IArchivedWorkflow = {
             workflowKey: workflowKeyConst
         };
@@ -54,7 +54,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
 describe("Missing session", ()=>{
     it("Undefined session", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -64,7 +64,7 @@ describe("Missing session", ()=>{
     });
     it("Null session", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -74,7 +74,7 @@ describe("Missing session", ()=>{
     });
     it("Empty session", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -87,7 +87,7 @@ describe("Missing session", ()=>{
 describe("Missing workflow key", ()=> {
     it("Undefined workflow key", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -97,7 +97,7 @@ describe("Missing workflow key", ()=> {
     });
     it("Null workflow key", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -107,7 +107,7 @@ describe("Missing workflow key", ()=> {
     });
     it("Empty workflow key", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -131,7 +131,7 @@ describe("Missing z/OSMF version", ()=>{
                 });
             });
         });
-        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst);
+        const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst);
         const expected: IArchivedWorkflow = {
             workflowKey: workflowKeyConst
         };
@@ -160,7 +160,7 @@ describe("Errors caused by the user interaction", ()=>{
         });
 
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -182,7 +182,7 @@ describe("Errors caused by the user interaction", ()=>{
         });
 
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -204,7 +204,7 @@ describe("Errors caused by the user interaction", ()=>{
         });
 
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -226,7 +226,7 @@ describe("Errors caused by the user interaction", ()=>{
         });
 
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -248,7 +248,7 @@ describe("Errors caused by the user interaction", ()=>{
         });
 
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
