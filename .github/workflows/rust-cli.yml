@@ -1,6 +1,11 @@
 name: Rust CLI CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches-ignore:
+        - "master"
+        - "next"
+  pull_request:
 
 jobs:
   build:
@@ -9,7 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Build
-      run: cargo build --verbose --manifest-path=zowe2/Cargo.toml
+      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+
     - name: Run tests
-      run: cargo test --verbose --manifest-path=zowe2/Cargo.toml
+      run: cargo test --verbose --manifest-path=zowex/Cargo.toml
