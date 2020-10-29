@@ -53,6 +53,7 @@
     "typescript": "^3.8.0"
   },
   "peerDependencies": {
-    "@zowe/core-for-zowe-sdk": "^6.24.0"
+    "@zowe/core-for-zowe-sdk": "^6.24.1",
+    "@zowe/imperative": "^4.8.1"
   }
 }
