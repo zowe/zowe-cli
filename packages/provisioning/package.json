@@ -44,7 +44,6 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/imperative": "4.8.1",
     "js-yaml": "3.13.1"
   },
   "devDependencies": {
@@ -59,6 +58,7 @@
     "typescript": "^3.8.0"
   },
   "peerDependencies": {
-    "@zowe/core-for-zowe-sdk": "^6.24.0"
+    "@zowe/core-for-zowe-sdk": "^6.21.1",
+    "@zowe/imperative": "^4.8.1"
   }
 }
