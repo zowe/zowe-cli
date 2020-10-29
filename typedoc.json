@@ -2,13 +2,13 @@
     "out": "./docs/typedoc/",
     "exclude": [
         "**/node_modules/**",
-        "**/__tests__/**"
+        "**/__tests__/**",
+        "packages/cli/**"
     ],
     "disableOutputCheck": true,
     "ignoreCompilerErrors": true,
     "mode": "file",
     "external-modulemap": ".*packages\/([^\/]+)\/.*",
     "readme": "./README.md",
-    "name": "Zowe CLI",
-    "includeVersion": true
+    "name": "Zowe Node.js SDK"
 }
