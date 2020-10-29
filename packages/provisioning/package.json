@@ -44,6 +44,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
+    "@zowe/imperative": "4.8.1",
     "js-yaml": "3.13.1"
   },
   "devDependencies": {
