@@ -90,17 +90,18 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                 got_new_headers = true;
             }
 
-            // if no headers, print the later
-            // NOTE(Kelosky): later, if stderr, print stderr
+            // if no headers, print the line as it comes in
+            // TODO(Kelosky): if stderr, print stderr
             if headers.len() == 0 {
-                // line.truncate(line.len() - 1);
-                // let newline: Vec<&str> = line.split('\n').collect();
                 print!("{}", line);
                 io::stdout().flush().unwrap();
             } else {
+
+                // we have headers but this statement that we read does not contain header values
                 if got_new_headers == false {
                     let &progress = headers.get(X_ZOWE_DAEMON_PROGRESS).unwrap();
-                    // println!("progress `{}`", &progress);
+
+                    // if progress bar is in place, strip off the newline character
                     if progress == 1i32 {
                         print!("{}", &line[0..(line.len() - 1)]);
                         io::stdout().flush().unwrap();
@@ -112,6 +113,7 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                 }
             }
         } else {
+            // end of reading
             break;
         }
     }

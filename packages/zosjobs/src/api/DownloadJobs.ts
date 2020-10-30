@@ -15,7 +15,6 @@ import { IDownloadSpoolContentParms, IJobFile } from "../../../zosjobs";
 import { ZosmfRestClient } from "../../../rest";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { GetJobs } from "./GetJobs";
-import * as path from "path";
 
 
 /**
