@@ -30,8 +30,7 @@
     "prefer-conditional-expression": false,
     "indent": [true, "spaces", 4],
     "whitespace": [true, "check-module"],
-    "array-type": false,
-    "no-implicit-dependencies": [true, ["@zowe/imperative"]]
+    "array-type": false
   },
   "type-check": true
 }
