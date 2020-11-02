@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "6.24.1",
+  "version": "6.24.2",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -44,16 +44,19 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/imperative": "4.8.1",
     "string-width": "2.1.1"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
+    "@zowe/imperative": "4.8.1",
     "chalk": "^4.1.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
     "typedoc": "^0.16.0",
     "typescript": "^3.8.0"
+  },
+  "peerDependencies": {
+    "@zowe/imperative": "^4.8.1"
   }
 }

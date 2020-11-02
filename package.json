@@ -25,7 +25,7 @@
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "typedoc": "typedoc --options ./typedoc.json ./packages/",
+    "typedoc": "gulp typedoc",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
