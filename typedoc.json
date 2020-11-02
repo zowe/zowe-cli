@@ -9,6 +9,6 @@
     "ignoreCompilerErrors": true,
     "mode": "file",
     "external-modulemap": ".*packages\/([^\/]+)\/.*",
-    "readme": "./README.md",
+    "readme": "none",
     "name": "Zowe Node.js SDK"
 }
