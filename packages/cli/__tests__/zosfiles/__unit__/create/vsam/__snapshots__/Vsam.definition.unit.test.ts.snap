@@ -116,7 +116,7 @@ Array [
   },
   Object {
     "description": "Create a 5 MB LINEAR VSAM data set named \\"SOME.DATA.SET.NAME\\" with 1 MB of secondary space. Show the properties of the data set when it is created",
-    "options": "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes",
+    "options": "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --show-attributes",
   },
   Object {
     "description": "Create a VSAM data set named \\"SOME.DATA.SET.NAME\\", which is retained for 100 days",
