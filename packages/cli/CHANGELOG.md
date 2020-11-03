@@ -35,6 +35,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 =======
 - Enhancement: Improved cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
 - Bugfix: Remove "[object Object]" that appeared in some error messages
+<<<<<<< HEAD
+>>>>>>> 47acaca8 (Update changelog files)
+=======
 >>>>>>> 47acaca8 (Update changelog files)
 
 ## `6.24.2`

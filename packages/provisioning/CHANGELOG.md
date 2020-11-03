@@ -2,7 +2,11 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
+<<<<<<< HEAD
 ## `6.25.0`
+=======
+## Recent Changes
+>>>>>>> 47acaca8 (Update changelog files)
 
 - Bugfix: Remove "[object Object]" that appeared in some error messages
 
