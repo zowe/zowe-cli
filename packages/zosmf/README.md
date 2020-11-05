@@ -2,7 +2,7 @@
 
 Contains APIs to interact with the z/OS Management Facility (using z/OSMF REST endpoints).
 
-# API Examples
+## API Examples
 
 **Check z/OSMF status**
 

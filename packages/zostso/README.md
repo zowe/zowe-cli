@@ -2,7 +2,7 @@
 
 Contains APIs to interact with TSO on z/OS (using z/OSMF TSO REST endpoints).
 
-# API Examples
+## API Examples
 
 **Issue the TSO command "status" to display info about jobs for your user ID**
 

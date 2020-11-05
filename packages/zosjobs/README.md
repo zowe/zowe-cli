@@ -2,7 +2,7 @@
 
 Contains APIs to interact with jobs on z/OS (using z/OSMF jobs REST endpoints).
 
-# API Examples
+## API Examples
 
 **Cancel a job**
 
