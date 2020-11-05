@@ -1,6 +1,6 @@
 # z/OS USS Package
 
-Contains APIs to interact with USS on z/OS (using z/OSMF USS REST endpoints).
+Contains APIs to interact with USS on z/OS (using the z/OS SSH service).
 
 # API Examples
 

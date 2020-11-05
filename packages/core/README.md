@@ -1,4 +1,4 @@
-# Provisioning Package
+# Core SDK Package
 
 Core libraries shared by Zowe SDK packages
 
