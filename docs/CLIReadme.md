@@ -2654,7 +2654,7 @@ default values of INDEXED, 840 KB primary storage and 84 KB secondary storage:
 "SOME.DATA.SET.NAME" with 1 MB of secondary space. Show the properties of the
 data set when it is created:
 
-      * `$  zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes`
+      * `$  zowe zos-files create data-set-vsam SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --show-attributes`
 
 *  Create a VSAM data set named "SOME.DATA.SET.NAME", which is
 retained for 100 days:
