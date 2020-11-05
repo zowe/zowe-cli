@@ -18,7 +18,7 @@ jobs:
     - name: Check Changelog Updated
       id: checkchangelogupdated
       if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
-      uses: awharn/check_changelog_action@v0.0.2
+      uses: awharn/check_changelog_action@fix-lerna-change-detection
       with:
         header: '## Recent Changes'
         file: 'CHANGELOG.md'
