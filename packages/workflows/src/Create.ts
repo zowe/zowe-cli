@@ -67,12 +67,14 @@ export class CreateWorkflow{
      * @param {accessT} AccessType                          - Specifies the access type for the workflow. Public, Restricted or Private.
      * @param {boolean} DeleteCompletedJobs                 - Specifies whether the job is deleted from the JES spool after it completes successfully.
      * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
+     * @param {Array<string>} jobStatement                  - List of the job statement lines.
      * @returns {Promise<ICreatedWorkflow>}
      */
     public static createWorkflow(session: AbstractSession, WorkflowName: string, WorkflowDefinitionFile: string,
                                  systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
                                  AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
-                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION
+                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
+                                 JobStatement?: Array<string>
                                     // add job statement, account info, comments and resolveGlobalConflictByUsing,
                                     ): Promise<ICreatedWorkflow> {
         WorkflowValidator.validateSession(session);
@@ -94,7 +96,8 @@ export class CreateWorkflow{
             owner: Owner,
             assignToOwner: AssignToOwner,
             accessType: AccessType,
-            deleteCompletedJobs: DeleteCompletedJobs
+            deleteCompletedJobs: DeleteCompletedJobs,
+            jobStatement: JobStatement
         };
         if (!isNullOrUndefined(VariableInputFile)){
             if (VariableInputFile.charAt(0) === "/" && VariableInputFile.charAt(1) === "/") {
@@ -140,7 +143,8 @@ export class CreateWorkflow{
                                             systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
                                             AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
                                             keepFiles?: boolean, customDir?: string,
-                                            zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<ICreatedWorkflowLocal> {
+                                            zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
+                                            JobStatement?: Array<string>): Promise<ICreatedWorkflowLocal> {
 
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
@@ -162,7 +166,7 @@ export class CreateWorkflow{
 
         const resp: ICreatedWorkflowLocal = await this.createWorkflow(session, WorkflowName, tempDefinitionFile,
                                                systemName, Owner, tempVariableInputFile, Variables,
-                                               AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
+                                               AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion, JobStatement);
 
         if (!keepFiles){
             resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];

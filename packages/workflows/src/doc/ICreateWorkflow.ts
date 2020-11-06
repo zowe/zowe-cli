@@ -89,6 +89,7 @@ export interface ICreateWorkflow {
     // TODO
     // resolveGlobalConflictByUsing?: "global" | "input";
     // accountInfo?: string;
-    // jobStatement?: string;
     // comments?: string;
+
+    jobStatement?: Array<string>;
 }
