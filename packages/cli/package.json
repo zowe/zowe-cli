@@ -65,6 +65,7 @@
     "@zowe/zos-workflows-for-zowe-sdk": "6.24.2",
     "@zowe/zosmf-for-zowe-sdk": "6.24.2",
     "get-stdin": "7.0.0",
+    "keytar": "6.0.1",
     "minimatch": "3.0.4"
   },
   "devDependencies": {
