@@ -80,7 +80,7 @@ export const VsamDefinition: ICommandDefinition = {
         },
         {
             description: vsamStrings.EXAMPLES.SHOW_FIVE_MB,
-            options: "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1MB --show-attributes"
+            options: "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --show-attributes"
         },
         {
             description: vsamStrings.EXAMPLES.RETAIN_100_DAYS,

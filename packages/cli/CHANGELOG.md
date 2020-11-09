@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.24.3`
+
+- Bugfix: Fixed incorrect syntax of example for `zowe files create data-set-vsam`. [#823](https://github.com/zowe/zowe-cli/issues/823)
+
 ## `6.24.2`
 
 - Revert: Revert changes made in 6.24.1, problem was determined to be bundling pipeline
