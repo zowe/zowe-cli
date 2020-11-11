@@ -6,7 +6,8 @@
   "command": {
     "publish": {
       "ignoreChanges": [
-        "**/__tests__/**"
+        "**/__tests__/**",
+        "packages/**/package-lock.json"
       ]
     }
   }
