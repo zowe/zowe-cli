@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency
+
 ## `6.24.2`
 
 - Revert: Revert changes made in 6.24.1, problem was determined to be bundling pipeline
