@@ -176,6 +176,20 @@ node('jenkins-nvm-keytar') {
         ]
     )
 
+    pipeline.createStage(
+        name: "Bundle Native Code",
+        shouldExecute: {
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+        },
+        stage: {
+            def packageJson = readJSON file: "packages/cli/package.json"
+            def keytarVer = packageJson.dependencies['keytar']
+            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                sh "bash jenkins/bundleKeytar.sh ${keytarVer} \"${USERNAME}:${TOKEN}\""
+            }
+        }
+    )
+
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
     pipeline.deploy()
