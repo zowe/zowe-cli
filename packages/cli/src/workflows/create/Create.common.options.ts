@@ -197,8 +197,8 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
      * @type {ICommandOptionDefinition}
      */
     jobStatement: {
-        name: "job-statement",
-        aliases: ["js"],
+        name: "workflow-job-statement",
+        aliases: ["wjs"],
         description: "Allows the customized job statement to be added.",
         type: "array",
         required: false

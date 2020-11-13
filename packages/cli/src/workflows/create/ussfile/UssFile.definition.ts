@@ -46,7 +46,8 @@ export const UssFile: ICommandDefinition = {
         CreateCommonOptions.assignToOwner,
         CreateCommonOptions.accessType,
         CreateCommonOptions.deleteCompleted,
-        CreateCommonOptions.overwrite
+        CreateCommonOptions.overwrite,
+        CreateCommonOptions.jobStatement
         // CreateCommonOptions.zosmfVersion
     ]),
     outputFormatOptions: true,
