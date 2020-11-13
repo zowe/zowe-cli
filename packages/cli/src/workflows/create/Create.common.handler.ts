@@ -72,6 +72,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                 }
             }
         }
+
         switch (sourceType) {
             case "dataset":
                 try {
@@ -85,7 +86,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.variables,
                         this.arguments.assignToOwner,
                         this.arguments.accessType,
-                        this.arguments.deleteCompleted
+                        this.arguments.deleteCompleted,
+                        this.arguments.workflowJobStatement
                     );
                 } catch (err) {
                     error =
@@ -117,7 +119,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.variables,
                         this.arguments.assignToOwner,
                         this.arguments.accessType,
-                        this.arguments.deleteCompleted
+                        this.arguments.deleteCompleted,
+                        this.arguments.workflowJobStatement
                     );
                 } catch (err) {
                     error =
@@ -151,7 +154,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         this.arguments.accessType,
                         this.arguments.deleteCompleted,
                         this.arguments.keepFiles,
-                        this.arguments.remoteDirectory
+                        this.arguments.remoteDirectory,
+                        this.arguments.workflowJobStatement
                     );
                 } catch (err) {
                     error =
