@@ -81,7 +81,7 @@ export const UssFile: ICommandDefinition = {
             "on system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF "+
             "with a custom JOB statement",
             options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite "+
-            "--workflow-job-statement \"//JOBNAME JOB (000000000),\" --workflow-job-statment \"//    CLASS=A,MSGCLASS=A,REGION=0M\""
+            "--workflow-job-statement \"//JOBNAME JOB (000000000),\" --workflow-job-statement \"//    CLASS=A,MSGCLASS=A,REGION=0M\""
         }
     ]
 };
