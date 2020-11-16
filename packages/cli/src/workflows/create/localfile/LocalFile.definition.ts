@@ -63,7 +63,7 @@ export const LocalFile: ICommandDefinition = {
             description: "Create a workflow with name \"testworfklow\" from local file TEST_WF.xml with a JOB statement",
             options: "\"testworkflow\" --local-file \"TEST_WF.xml\" " +
                 "--owner \"OTHERID\" --system-name \"TESTM1\" " +
-                "--workflow-job-statement \"//JOBNAME JOB (127300030),\" --workflow-job-statement \"\\    CLASS=A,MSGCLASS=A,REGION=8M\""
+                "--workflow-job-statement \"//JOBNAME JOB (127300030),\" \"//    CLASS=A,MSGCLASS=A,REGION=8M\""
         }
     ]
 };
