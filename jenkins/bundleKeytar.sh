@@ -1,7 +1,7 @@
 #!/bin/bash
 # Usage: bash bundleKeytar.sh [githubAuthHeader]
 # Requires "jq" binary to be on your PATH or in packages/cli/node_modules/.bin
-set -e
+set -ex
 
 cd packages/cli
 githubAuthHeader=$1
