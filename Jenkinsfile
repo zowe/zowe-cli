@@ -182,10 +182,11 @@ node('jenkins-nvm-keytar') {
             return pipeline.protectedBranches.isProtected(BRANCH_NAME)
         },
         stage: {
-            def packageJson = readJSON file: "packages/cli/package.json"
-            def keytarVer = packageJson.dependencies['keytar']
+            // Download JQ binary to node_modules/.bin folder
+            sh "cd packages/cli/node_modules/.bin && curl -fsL -o jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64 && chmod +x ./jq"
             withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
-                sh "bash jenkins/bundleKeytar.sh ${keytarVer} \"${USERNAME}:${TOKEN}\""
+                // Bundle Keytar binaries with CLI package
+                sh "bash jenkins/bundleKeytar.sh \"${USERNAME}:${TOKEN}\""
             }
         }
     )

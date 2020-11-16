@@ -1,21 +1,19 @@
 #!/bin/bash
-# Usage: bash bundleKeytar.sh <keytarVersion> [githubAuthHeader]
-set -ex
+# Usage: bash bundleKeytar.sh [githubAuthHeader]
+# Requires "jq" binary to be on your PATH or in packages/cli/node_modules/.bin
+set -e
 
-keytarVersion=$1
-githubAuthHeader=$2
+cd packages/cli
+githubAuthHeader=$1
 
-cd "$(git rev-parse --show-toplevel)/packages/cli"
 rm -rf prebuilds
 mkdir prebuilds && cd prebuilds
 
-curl -fsL -o jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64
-chmod +x ./jq
+jqBin=`which jq || echo "npx jq"`
+keytarVersion=`node -e "console.log(require('../package.json').dependencies.keytar)"`
 
 curl -fs https://$githubAuthHeader@api.github.com/repos/atom/node-keytar/releases/tags/v$keytarVersion |
-    ./jq -c '.assets[] | select (.name | contains("node"))' |
-    ./jq -cr 'select (.browser_download_url) | .browser_download_url' |
+    $jqBin -c '.assets[] | select (.name | contains("node"))' |
+    $jqBin -cr 'select (.browser_download_url) | .browser_download_url' |
+    dos2unix |
     while read -r bdu; do curl -fsL -o `echo -n $(echo -n $bdu | md5sum | cut -c1-6)'-'$(basename $bdu)` $bdu; done
-
-rm ./jq
-cd ..
