@@ -10,5 +10,6 @@
         "packages/**/package-lock.json"
       ]
     }
-  }
+  },
+  "useWorkspaces": true
 }
