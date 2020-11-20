@@ -162,6 +162,7 @@ const config: IImperativeConfig = {
             description: Constants.AUTH_GROUP_DESCRIPTION
         }
     },
+    templateProfileName: "lpar1",
     profiles: [
         {
             type: "zosmf",
