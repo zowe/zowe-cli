@@ -237,7 +237,8 @@ describe("Create workflow common handler", () => {
                                                                         variables,
                                                                         assignToOwner,
                                                                         accessType,
-                                                                        deleteCompleted);
+                                                                        deleteCompleted,
+                                                                        undefined);
         });
         it("should create a workflow using a local file", async () => {
             // Require the handler and create a new instance
