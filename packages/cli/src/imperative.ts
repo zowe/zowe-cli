@@ -66,16 +66,19 @@ const config: IImperativeConfig = {
                 user: {
                     type: "string",
                     secure: true,
-                    optionDefinition: Constants.BASE_OPTION_USER
+                    optionDefinition: Constants.BASE_OPTION_USER,
+                    includeInTemplate: true
                 },
                 password: {
                     type: "string",
                     secure: true,
-                    optionDefinition: Constants.BASE_OPTION_PASSWORD
+                    optionDefinition: Constants.BASE_OPTION_PASSWORD,
+                    includeInTemplate: true
                 },
                 rejectUnauthorized: {
                     type: "boolean",
-                    optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
+                    includeInTemplate: true
                 },
                 tokenType: {
                     type: "string",
@@ -159,6 +162,7 @@ const config: IImperativeConfig = {
             description: Constants.AUTH_GROUP_DESCRIPTION
         }
     },
+    templateProfileName: "lpar1",
     profiles: [
         {
             type: "zosmf",
@@ -169,11 +173,13 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST_PROFILE
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST_PROFILE,
+                        includeInTemplate: true
                     },
                     port: {
                         type: "number",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT,
+                        includeInTemplate: true
                     },
                     user: {
                         type: "string",
@@ -252,7 +258,8 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE
+                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE,
+                        includeInTemplate: true
                     },
                     characterSet: {
                         type: "string",
@@ -312,11 +319,13 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST_PROFILE
+                        optionDefinition: SshSession.SSH_OPTION_HOST_PROFILE,
+                        includeInTemplate: true
                     },
                     port: {
                         type: "number",
-                        optionDefinition: SshSession.SSH_OPTION_PORT
+                        optionDefinition: SshSession.SSH_OPTION_PORT,
+                        includeInTemplate: true
                     },
                     user: {
                         type: "string",
