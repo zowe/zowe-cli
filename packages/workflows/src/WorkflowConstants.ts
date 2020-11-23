@@ -267,6 +267,16 @@ export const noSystemName: IMessageDefinition = {
 };
 
 /**
+ * Error message with a wrong job statement.
+ * @static
+ * @type {IMessageDefinition}
+ * @memberof WorkflowConstants
+ */
+export const wrongJobStatement: IMessageDefinition = {
+    message: `The specified parameter name or parameter value "jobStatement:MALFORMED JOB STATEMENT`
+}
+
+/**
  * Error message that no system name parameter string was supplied.
  * @static
  * @type {IMessageDefinition}
