@@ -67,7 +67,6 @@ export class CreateWorkflow{
      * @param {accessT} AccessType                          - Specifies the access type for the workflow. Public, Restricted or Private.
      * @param {boolean} DeleteCompletedJobs                 - Specifies whether the job is deleted from the JES spool after it completes successfully.
      * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
-     * @param {Array<string>} jobStatement                  - List of the job statement lines.
      * @returns {Promise<ICreatedWorkflow>}
      */
     public static createWorkflow(session: AbstractSession, WorkflowName: string, WorkflowDefinitionFile: string,
