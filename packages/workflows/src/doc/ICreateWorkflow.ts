@@ -92,5 +92,5 @@ export interface ICreateWorkflow {
     // jobStatement?: string;
     // comments?: string;
 
-    jobStatement?: string;
+    jobStatement?: Array<string>;
 }
