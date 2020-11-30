@@ -56,6 +56,12 @@ export const LocalFile: ICommandDefinition = {
             description: "Create a workflow with name \"testworkflow\" using the local file \"TESTID_WKFLOW.xml\" that contains the workflow " +
             "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF",
             options: "\"testworkflow\" --local-file \"TESTID_WKFLOW.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite"
+        },
+        {
+            description: "Create a workflow with name \"testworfklow\" from local file TEST_WF.xml with a JOB statement",
+            options: "\"testworkflow\" --local-file \"TEST_WF.xml\" " +
+                "--owner \"OTHERID\" --system-name \"TESTM1\" " +
+                "--workflow-job-statement \"//JOBNAME JOB (127300030),\" \"//    CLASS=A,MSGCLASS=A,REGION=8M\""
         }
     ]
 };

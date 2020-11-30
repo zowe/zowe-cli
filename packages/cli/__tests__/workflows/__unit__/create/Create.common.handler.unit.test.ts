@@ -146,7 +146,8 @@ describe("Create workflow common handler", () => {
                                                                         variables,
                                                                         assignToOwner,
                                                                         accessType,
-                                                                        deleteCompleted);
+                                                                        deleteCompleted,
+                                                                        undefined);
         });
         it("should create a workflow using a uss file", async () => {
             // Require the handler and create a new instance
@@ -237,7 +238,8 @@ describe("Create workflow common handler", () => {
                                                                         variables,
                                                                         assignToOwner,
                                                                         accessType,
-                                                                        deleteCompleted);
+                                                                        deleteCompleted,
+                                                                        undefined);
         });
         it("should create a workflow using a local file", async () => {
             // Require the handler and create a new instance
@@ -332,7 +334,8 @@ describe("Create workflow common handler", () => {
                                                                         accessType,
                                                                         deleteCompleted,
                                                                         keepFiles,
-                                                                        remoteDirectory);
+                                                                        remoteDirectory,
+                                                                        undefined);
         });
         it("should fail if definition file is not a uss file or dataset", async () => {
             // Require the handler and create a new instance

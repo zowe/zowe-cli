@@ -190,5 +190,17 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         description: "Identifies the version of the zOSMF workflow service.",
         type: "boolean",
         required: false
+    },
+
+    /**
+     * Allows the customized job statement to be added.
+     * @type {ICommandOptionDefinition}
+     */
+    jobStatement: {
+        name: "workflow-job-statement",
+        aliases: ["wjs"],
+        description: "Allows the customized job statement to be added.",
+        type: "array",
+        required: false
     }
 };

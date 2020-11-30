@@ -74,6 +74,13 @@ export const UssFile: ICommandDefinition = {
             options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\"" +
                 "--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 " +
                 "--owner \"MYSYSID\" --assign-to-owner"
+        },
+        {
+            description: "Create a workflow with name \"testworkflow\" using uss file \"/path/workflow.xml\" containing workflow definition, " +
+            "on system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF "+
+            "with a custom JOB statement",
+            options: "\"testworkflow\" --uss-file \"/path/workflow.xml\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite "+
+            "--workflow-job-statement \"//JOBNAME JOB (000000000),\" \"//    CLASS=A,MSGCLASS=A,REGION=0M\""
         }
     ]
 };
