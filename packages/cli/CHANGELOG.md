@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ## `6.25.0`
 
@@ -12,6 +13,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Bugfix: Removed "[object Object]" text that appeared in some error messages. The proper text "Imperative API Error" is now displayed. [#836](https://github.com/zowe/zowe-cli/pull/836)
 
 >>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
+=======
+>>>>>>> cf489eaf (Bump version to 6.24.6 [ci skip])
 ## `6.24.6`
 
 <<<<<<< HEAD

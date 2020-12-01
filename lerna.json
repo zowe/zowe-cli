@@ -2,7 +2,11 @@
   "packages": [
     "packages/*"
   ],
+<<<<<<< HEAD
   "version": "6.25.0",
+=======
+  "version": "6.24.6",
+>>>>>>> cf489eaf (Bump version to 6.24.6 [ci skip])
   "command": {
     "publish": {
       "ignoreChanges": [
