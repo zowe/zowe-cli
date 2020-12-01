@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Added `--replace` option to `zowe zos-files copy data-set`.
+
 ## `6.24.5`
 
 - Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency
