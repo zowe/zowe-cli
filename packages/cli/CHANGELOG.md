@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Improved performance of `zowe zos-files list` commands when very long lists are printed to console. [#861](https://github.com/zowe/zowe-cli/issues/861)
+
 ## `6.24.5`
 
 - Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency
