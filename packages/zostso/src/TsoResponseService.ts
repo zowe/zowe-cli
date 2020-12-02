@@ -39,7 +39,7 @@ export class TsoResponseService {
             servletKey: zosmfResponse.servletKey
         };
 
-        if (!isNullOrUndefined(zosmfResponse.servletKey)) {
+        if (zosmfResponse.servletKey != null) {
             startResponse.success = true;
         } else if (zosmfResponse.msgData) {
             startResponse.failureResponse = new ImperativeError({
@@ -65,7 +65,7 @@ export class TsoResponseService {
             messages: isNullOrUndefined(collectedResponses)? "" : collectedResponses.messages
         };
 
-        if (!isNullOrUndefined(zosmfResponse.servletKey)) {
+        if (zosmfResponse.servletKey != null) {
             startResponse.success = true;
         } else if (zosmfResponse.msgData) {
             startResponse.failureResponse = new ImperativeError({
