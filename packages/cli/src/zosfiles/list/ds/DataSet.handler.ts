@@ -29,7 +29,8 @@ export default class DataSetHandler extends ZosFilesBaseHandler {
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {
             commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse.items));
         } else {
-            response.apiResponse.items.forEach((mem: any) => commandParameters.response.console.log(mem.dsname));
+            const dsnameList = response.apiResponse.items.map((mem: any) => mem.dsname);
+            commandParameters.response.console.log(dsnameList.join("\n"));
         }
 
         return response;

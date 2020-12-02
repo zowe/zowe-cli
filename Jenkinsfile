@@ -169,12 +169,11 @@ node('jenkins-nvm-keytar') {
 
     // Perform the versioning email mechanism
     pipeline.version(
-        timeout: [time: 30, unit: 'MINUTES']
-    )
-
-    pipeline.updateChangelog(
-        file: "CHANGELOG.md",
-        header: "## Recent Changes"
+        timeout: [time: 30, unit: 'MINUTES'],
+        updateChangelogArgs: [
+            file: "CHANGELOG.md",
+            header: "## Recent Changes"
+        ]
     )
 
     // Deploys the application if on a protected branch. Give the version input

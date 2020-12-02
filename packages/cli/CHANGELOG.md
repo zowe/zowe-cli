@@ -7,6 +7,18 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Improved cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
 - Bugfix: Remove "[object Object]" that appeared in some error messages
 
+## `6.24.6`
+
+- BugFix: Improved performance of `zowe zos-files list` commands when very long lists are printed to console. [#861](https://github.com/zowe/zowe-cli/issues/861)
+
+## `6.24.5`
+
+- Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency
+
+## `6.24.3`
+
+- Bugfix: Fixed incorrect syntax of example for `zowe files create data-set-vsam`. [#823](https://github.com/zowe/zowe-cli/issues/823)
+
 ## `6.24.2`
 
 - Revert: Revert changes made in 6.24.1, problem was determined to be bundling pipeline
