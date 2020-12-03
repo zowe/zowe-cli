@@ -1,6 +1,6 @@
 # Using global profile configuration with Zowe CLI <!-- omit in toc -->
 
-**Validation feature:** This validation feature is available in the `@next` version of Zowe CLI. If you already installed the supported version `@zowe-v1-lts`, you must switch versions to try this feature. The functionality will be included in the next major release, Zowe V2.0.0-LTS.
+**Validation feature:** Global profiles are available in the `@next` version of Zowe CLI. If you installed the supported version `@zowe-v1-lts`, you must switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
 
 **Table of Contents:**
 - [Overview and feature benefits](#overview-and-feature-benefits)
@@ -15,13 +15,13 @@
 
 ## Overview and feature benefits
 
-In the V1.x.x-LTS version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile type, such as `zosmf-profile`, contains the host, port, username, and password for a mainframe service instance. While this approach is effective, the user may need to duplicate values across profiles and spend time managing them separately.
+In the `@zowe-v1-lts` version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile type, such as `zosmf-profile`, contains the host, port, username, and password for a specific mainframe service instance. While this approach is effective, users often need to duplicate values across profiles and spend time managing many profiles separately.
 
-The global profile functionality simplifies profile management by letting you edit and store mainframe configuration details for all services in one location. You can use a text editor to populate a `zowe.config.json` file with connection details for all of your services.
+The **global profile functionality** simplifies profile management by letting you edit and store mainframe configuration details for all services in one location. You can use a text editor to populate a configuration file with connection details for all of your services.
 
-**Note:** The `profiles` command group is backwards compatible with this version. You can continue to use commands as an alternate method for defining services.
+**Note:** The `profiles` command group is backwards compatible with this version. You can continue to use commands as an alternate method for defining services
 
-### Feature benefits
+### Benefits
 
 Using global profile configuration can improve your Zowe CLI experience in the following ways:
 
@@ -38,7 +38,7 @@ Fresh install vs update? to the `@next` version of the core CLI. (including migr
 
 ### Changes to secure credential storage
 
-In this version, Secure Credential Store Plug-in is deprecated and the equivalent functionality is included directly in the core CLI. You will be prompted to secure credentials when initializing your config file, and later you can manage credential storage with commands in the `zowe cnfg` group.
+In this version, Secure Credential Store Plug-in is deprecated and the equivalent functionality is included directly in the core CLI. You will be prompted to secure credentials by default when initializing your config file, and later you can manage credential storage with commands in the `zowe cnfg` group.
 
 ## Creating the initial configuration files
 
