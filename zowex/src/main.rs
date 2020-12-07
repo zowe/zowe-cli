@@ -24,10 +24,7 @@ const X_ZOWE_DAEMON_END: &str = "x-zowe-daemon-end";
 const X_ZOWE_DAEMON_PROGRESS: &str = "x-zowe-daemon-progress";
 const X_ZOWE_DAEMON_VERSION: &str = "x-zowe-daemon-version";
 const X_HEADERS_VERSION_ONE_LENGTH: usize = 8;
-
-// TODO(Kelosky): add version command
-// TODO(Kelosky): add help command??
-// TODO(Kelosky): escape quotes?? zowe uss issue ssh "ls -la" causes command errors in zowex
+const DEFAULT_PORT: i32 = 4000;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
@@ -62,13 +59,12 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
     args.push_str("/");
     let mut _resp = args.as_bytes(); // as utf8 bytes
 
-    let mut daemon_host = "127.0.0.1:".to_owned();
-    daemon_host.push_str(&port_string);
-
-    // make sure something is written
     if _resp.is_empty() {
         _resp = b" ";
     }
+
+    let mut daemon_host = "127.0.0.1:".to_owned();
+    daemon_host.push_str(&port_string);
 
     let mut stream = TcpStream::connect(daemon_host).unwrap();
     stream.write(_resp).unwrap(); // write it
@@ -96,7 +92,6 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                 print!("{}", line);
                 io::stdout().flush().unwrap();
             } else {
-
                 // we have headers but this statement that we read does not contain header values
                 if got_new_headers == false {
                     let &progress = headers.get(X_ZOWE_DAEMON_PROGRESS).unwrap();
@@ -105,8 +100,7 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                     if progress == 1i32 {
                         print!("{}", &line[0..(line.len() - 1)]);
                         io::stdout().flush().unwrap();
-                    }
-                    else {
+                    } else {
                         print!("{}", line);
                         io::stdout().flush().unwrap();
                     }
@@ -142,7 +136,7 @@ fn parse_headers(buf: &String) -> HashMap<String, i32> {
     if raw_headers.len() >= X_HEADERS_VERSION_ONE_LENGTH {
         // first and last headers must be as expected
         if raw_headers[0].contains(X_ZOWE_DAEMON_HEADERS)
-            && raw_headers[7].contains(X_ZOWE_DAEMON_END)
+            && raw_headers[X_HEADERS_VERSION_ONE_LENGTH - 1].contains(X_ZOWE_DAEMON_END)
         {
             for raw_header in raw_headers.iter() {
                 let parts: Vec<&str> = raw_header.split(':').collect();
@@ -167,11 +161,11 @@ fn parse_headers(buf: &String) -> HashMap<String, i32> {
 }
 
 fn get_port_string() -> String {
-    let mut _port = 4000;
+    let mut _port = DEFAULT_PORT;
 
     match env::var("ZOWE_DAEMON") {
         Ok(val) => _port = val.parse::<i32>().unwrap(),
-        Err(_e) => _port = 4000,
+        Err(_e) => _port = DEFAULT_PORT,
     }
     let port_string = _port.to_string();
     return port_string;
@@ -202,8 +196,8 @@ mod tests {
         let headers_map = parse_headers(&headers);
 
         let &len = headers_map
-        .get(&("x-zowe-daemon-headers".to_string()))
-        .unwrap();
+            .get(&("x-zowe-daemon-headers".to_string()))
+            .unwrap();
 
         // expect len code set from header
         assert_eq!(8, len);
@@ -215,8 +209,8 @@ mod tests {
         let headers_map = parse_headers(&headers);
 
         let &len = headers_map
-        .get(&("x-zowe-daemon-version".to_string()))
-        .unwrap();
+            .get(&("x-zowe-daemon-version".to_string()))
+            .unwrap();
 
         // expect version code set from header
         assert_eq!(1, len);
@@ -228,8 +222,8 @@ mod tests {
         let headers_map = parse_headers(&headers);
 
         let &exit = headers_map
-        .get(&("x-zowe-daemon-exit".to_string()))
-        .unwrap();
+            .get(&("x-zowe-daemon-exit".to_string()))
+            .unwrap();
 
         // expect exit code set from header
         assert_eq!(1, exit);
