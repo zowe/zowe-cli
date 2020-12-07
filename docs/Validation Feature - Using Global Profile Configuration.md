@@ -1,9 +1,9 @@
 # Using global profile configuration with Zowe CLI <!-- omit in toc -->
 
-**Validation feature:** Global profiles are available in the `@next` version of Zowe CLI. If you installed the supported version `@zowe-v1-lts`, you must switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
+**Validation feature:** Global profiles are available in the `@next` version of Zowe CLI. If you already installed the supported version `@zowe-v1-lts`, you must switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
 
 **Table of Contents:**
-- [Overview and feature benefits](#overview-and-feature-benefits)
+- [Overview and benefits](#overview-and-feature-benefits)
 - [Installing @next version](#installing-next-version)
 - [Creating the initial configuration files](#creating-the-initial-configuration-files)
 - [Converting existing user profiles](#converting-existing-user-profiles)
@@ -15,11 +15,11 @@
 
 ## Overview and feature benefits
 
-In the `@zowe-v1-lts` version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile type, such as `zosmf-profile`, contains the host, port, username, and password for a specific mainframe service instance. While this approach is effective, users often need to duplicate values across profiles and spend time managing many profiles separately.
+In the LTS version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile contains the host, port, username, and password for a specific mainframe service instance. While this approach is effective, users often need to duplicate values across profiles and spend time managing many profiles separately.
 
 The **global profile functionality** simplifies profile management by letting you edit and store mainframe configuration details for all services in one location. You can use a text editor to populate a configuration file with connection details for all of your services.
 
-**Note:** The `profiles` command group is backwards compatible with this version. You can continue to use commands as an alternate method for defining services
+**Note:** The `profiles` command group is backwards compatible with this version. You can continue to using commands as an alternate method to define your services.
 
 ### Benefits
 
@@ -31,14 +31,47 @@ Using global profile configuration can improve your Zowe CLI experience in the f
 
 ## Installing @next version
 
-Install the @next version of Zowe CLI from the npm registry.
+Install the `@next` version of Zowe CLI from the npm registry.
 
-<!-- TODO
-Fresh install vs update? to the `@next` version of the core CLI. (including migrating profiles and plugins, addressing breaking changes). Copy the procedure from active-dev branch in /docs-site to start writing this. -->
+**Follow these steps:**
+
+1. To install Zowe CLI, issue the following command:
+
+   ```
+   npm install -g @zowe/cli@next
+   ```
+
+2. To install the plug-ins, issue the following command:
+
+    ```
+    zowe plugins install @zowe/cics@next @zowe/zos-ftp-for-zowe-cli@next @zowe/ims@next @zowe/mq@next @zowe/db2@next
+    ```
+
+   The CLI and plug-ins are installed!
+
+## Updating from @zowe-v1-lts
+
+If you already have @zowe-v1-lts installed, or update to the `@next` version of Zowe CLI from the npm registry.
+
+**Follow these steps:**
+
+1. To update Zowe CLI to `@next`, issue the following command:
+
+   ```
+   npm install -g @zowe/cli@next
+   ```
+
+2. To update the plug-ins, issue the following command:
+
+```
+zowe plugins install @zowe/cics@next @zowe/zos-ftp-for-zowe-cli@next @zowe/ims@next @zowe/mq@next @zowe/db2@next
+```
 
 ### Changes to secure credential storage
 
-In this version, Secure Credential Store Plug-in is deprecated and the equivalent functionality is included directly in the core CLI. You will be prompted to secure credentials by default when initializing your config file, and later you can manage credential storage with commands in the `zowe cnfg` group.
+In this version, Secure Credential Store Plug-in is deprecated. The equivalent functionality that encrypts your credentials is now included in the core CLI.
+
+You will be prompted to enter username and password securely by default, and later you can use commands in the `zowe cnfg` command group to manage security for any option value.
 
 ## Creating the initial configuration files
 
