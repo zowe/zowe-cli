@@ -1,6 +1,6 @@
 # Using global profile configuration with Zowe CLI <!-- omit in toc -->
 
-**Validation feature:** Global profiles are available in the `@next` version of Zowe CLI. If you already installed the supported version `@zowe-v1-lts`, you must switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
+**Early access:** Global profiles are available in the `@next` version of Zowe CLI. If you already installed the supported version `@zowe-v1-lts`, you must switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
 
 **Table of Contents:**
 - [Overview and benefits](#overview-and-feature-benefits)
