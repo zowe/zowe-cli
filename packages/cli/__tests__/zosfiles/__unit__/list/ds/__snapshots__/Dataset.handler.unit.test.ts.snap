@@ -16,6 +16,6 @@ exports[`List Dataset handler process method should list a data set if requested
 
 exports[`List Dataset handler process method should list a data set if requested 3`] = `
 "
-undefined
+
 listed"
 `;
