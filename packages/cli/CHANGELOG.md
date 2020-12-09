@@ -5,6 +5,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Added `--replace` option to `zowe zos-files copy data-set`.
+- Enhancement: Improved cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
+- Bugfix: Remove "[object Object]" that appeared in some error messages
 
 ## `6.24.6`
 

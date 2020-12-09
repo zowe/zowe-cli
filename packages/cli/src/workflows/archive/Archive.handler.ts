@@ -50,7 +50,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
         switch (sourceType) {
             case "workflowKey":
                 try{
-                    resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, this.arguments.workflowKey, undefined);
+                    resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, this.arguments.workflowKey, undefined);
                 } catch (err){
                     error = "Archive workflow: " + err;
                     throw error;
@@ -70,7 +70,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                     const failedWfs: IWorkflowsInfo[] = [];
                     for(const element of getWfKey.workflows){
                         try {
-                            resp = await ArchiveWorkflow.archiveWorfklowByKey(this.mSession, element.workflowKey);
+                            resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, element.workflowKey);
                             successWfs.push(element);
                         } catch (err) {
                             failedWfs.push(element);
