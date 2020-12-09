@@ -3,6 +3,13 @@
 All notable changes to the Zowe core SDK package will be documented in this file.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+## `6.25.0`
+
+- Bugfix: Remove "[object Object]" that appeared in some error messages
+
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
 ## `6.24.5`
 
 - Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency
