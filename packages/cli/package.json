@@ -1,10 +1,14 @@
 {
   "name": "@zowe/cli",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "6.25.0",
 =======
   "version": "6.24.6",
 >>>>>>> cf489eaf (Bump version to 6.24.6 [ci skip])
+=======
+  "version": "6.25.0",
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -58,10 +62,14 @@
   },
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@zowe/core-for-zowe-sdk": "6.25.0",
 =======
     "@zowe/core-for-zowe-sdk": "6.24.5",
 >>>>>>> f584ee74 (Updating dependencies [ci skip])
+=======
+    "@zowe/core-for-zowe-sdk": "6.25.0",
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
     "@zowe/imperative": "4.10.0",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "6.25.0",

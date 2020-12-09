@@ -3,10 +3,14 @@
     "packages/*"
   ],
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "6.25.0",
 =======
   "version": "6.24.6",
 >>>>>>> cf489eaf (Bump version to 6.24.6 [ci skip])
+=======
+  "version": "6.25.0",
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
   "command": {
     "publish": {
       "ignoreChanges": [

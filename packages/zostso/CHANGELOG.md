@@ -3,10 +3,14 @@
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## `6.25.0`
 =======
 ## Recent Changes
 >>>>>>> 47acaca8 (Update changelog files)
+=======
+## `6.25.0`
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
 
 - Enhancement: Improved cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
 - Bugfix: Remove "[object Object]" that appeared in some error messages

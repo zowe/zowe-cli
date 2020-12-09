@@ -49,10 +49,14 @@
   "devDependencies": {
     "@types/node": "^12.12.24",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@zowe/core-for-zowe-sdk": "6.25.0",
 =======
     "@zowe/core-for-zowe-sdk": "6.24.5",
 >>>>>>> f584ee74 (Updating dependencies [ci skip])
+=======
+    "@zowe/core-for-zowe-sdk": "6.25.0",
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
     "@zowe/imperative": "4.10.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",

@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ## `6.25.0`
 
@@ -22,6 +23,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Improved performance of `zowe zos-files list` commands when very long lists are printed to console. [#861](https://github.com/zowe/zowe-cli/issues/861)
 =======
 ## Recent Changes
+=======
+## `6.25.0`
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
 
 - Added `--replace` option to `zowe zos-files copy data-set`.
 >>>>>>> 50bff078 (Correcting Changelog Files)

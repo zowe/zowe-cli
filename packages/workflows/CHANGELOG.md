@@ -5,6 +5,7 @@ All notable changes to the Zowe z/OS workflows SDK package will be documented in
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## `6.25.0`
 =======
 ## Recent Changes
@@ -12,6 +13,9 @@ All notable changes to the Zowe z/OS workflows SDK package will be documented in
 =======
 ## Recent Changes
 >>>>>>> 28cf3918 (Restore update to workflows changelog)
+=======
+## `6.25.0`
+>>>>>>> 5f92dc41 (Bump version to 6.25.0 [ci skip])
 
 - Enhancement: Deprecate misspelled version of `ArchiveWorkflow.archiveWorkflowByKey`
 - Bugfix: Remove "[object Object]" that appeared in some error messages
