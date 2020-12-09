@@ -5,8 +5,8 @@
 **Table of Contents:**
 - [Feature overview and benefits](#feature-overview-and-benefits)
 - [Installing @next version](#installing-next-version)
-- [Initializing your configuration files](#initializing-your-configuration-files)
-- [Editing your configuration](#editing-your-configuration)
+- [Initializing  global configuration](#initializing-your-global-configuration)
+- [Editing  configuration](#editing-your-configuration)
 - [Efficiency tips for configuration](#efficiency-tips-for-configuration)
 - [Sharing global configuration](#sharing-global-configuration)
 - [Managing credential security](#managing-credential-security)
@@ -22,15 +22,15 @@ The **global profile functionality** simplifies profile management by letting yo
 
 Global profile configuration can improve your Zowe CLI experience in the following ways:
 
-- As a CLI user, managing your connection details is more efficient when all services are defined in one place.
-- As a team leader, you can share a configuration file with your team so that they can easily access mainframe services.
+- As a CLI user, you can manage your connection details efficiently in one location.
+- As a team leader, you can share a configuration file with your team members so that they can easily access mainframe services.
 - As a new team member, you can onboard quickly by consuming your team's configuration file.
 
 ### Changes to secure credential storage
 
 In this version, Secure Credential Store (SCS) Plug-in is deprecated. The `zowe scs` and `zowe config` command groups are obsolete. The equivalent functionality that encrypts your credentials is now included in the core CLI.
 
-With the new configuration, you are prompted to enter username and password securely by default. You can use commands in the `zowe cnfg` command group to manage security for any particular option value.
+With the new configuration, you are prompted to enter username and password securely by default. Commands in the new `zowe cnfg` command group let you manage security for any option value.
 
 ## Installing @next version
 
@@ -40,7 +40,7 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 
 1. Meet the [software requirements for Zowe CLI](https://docs.zowe.org/stable/user-guide/systemrequirements.html#zowe-cli-requirements).
 
-2. To install or update the core CLI, issue the following command:
+2. To install or update the core CLI, open a command-line window and issue the following command:
 
    ```
    npm install -g @zowe/cli@next
@@ -56,11 +56,11 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 
    The `@next` version of Zowe CLI and plug-ins are installed!
 
-5. If you previously had an instance of Zowe CLI installed, the old configuration is no longer used in this version. Delete the following files:
+5. If you previously had an instance of Zowe CLI installed, your old configuration files are no longer used in this version. Delete the following files:
    - `.zowe/settings/imperative.json`
    - `.zowe/profiles`
 
-   **Tip:** Prior to deleting the contents of the `/profiles` directory, take note of any mainframe service details that you need.
+   **Important!** Prior to deleting the contents of the `/profiles` directory, take note of any mainframe service details that you need (host, port, etc...). You might want to save the entire `/profiles` directory to another location on your computer so that you can reference or restore the profiles later.
 
 6. If you previously had the Secure Credential Store plug-in installed, uninstall it now to avoid unexpected behavior. Issue the following command:
 
@@ -68,39 +68,33 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
     zowe plugins uninstall @zowe/secure-credential-store-for-zowe-cli
     ```
 
-You can now initialize your global configuration.
-## Initializing your configuration files
+You can now configure the CLI and issue commands.
+## Initializing global configuration
 
-Zowe CLI uses two types of configuration files:
-
-- `.zowe/config.json`. Global configuration  that lets you do your setup, share it, etc..
-
-- You can override `.zowe/config.user.json`
-
-  lets you ovverride global config as desired.
-
-<!-- TODO
-
-Issue the following command:
+To get started with configuration, issue the following command:
 
 ```
 zowe cnfg init --global
 ```
 
-**Note:** Alternatively, you can specify the `--user` option to initialize your configuration files. We recommend that you use `--global`, because it securely stores your mainframe credentials by default.
+Two files are automatically created in your local `.zowe/config` directory:
+
+- `config.json` - A *global* configuration file. This file is intended for you to define mainframe service details such as host, port, etc... for MF services.
+
+- `.zowe/config.user.json` - An optional, *user-specific* configuration file that can override global configuration. When you initialize configuration with the `--global` option, this file and the
 
 
-2 config files are produced in  folder. What are the 2 config files for -
-.zowe/config.json
-.zowe/config.user.json
 
--->
+
+
 <!-- TODO - **Tip:** We recommend that you become familiar with the new config and stick with it (don't mix and match with user profiles). They don't work nicely between eachother.
 The `profiles` command group is still functional in this version, but the information in your user profiles is not automatically available converted in your global config schema. Similarly, if you define a service to global configuration, a profile will not be created -->
 
-## Editing your configuration
+## Editing and overriding configuration
 
 <!-- After you have your files all set up, it's time to POPULATE. Get in there and start adding stuff into the .zowe/config.json and get it how you like it. Then you're ready to test. Try commands and such. Works? good. Doesn't work? Go back and check your work in the json file dude. -->
+
+**Note:**  option to initialize your configuration files. We recommend that you use `--global`, because it securely stores your mainframe credentials by default.
 
 <!-- How to edit your config files as an individual. Which of the 2 files to edit and for what reasons. -->
 
