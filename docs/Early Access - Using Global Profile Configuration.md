@@ -5,14 +5,14 @@
 **Table of Contents:**
 - [Feature overview and benefits](#feature-overview-and-benefits)
 - [Installing @next version](#installing-next-version)
-- [Initializing  global configuration](#initializing-your-global-configuration)
-- [Editing  configuration](#editing-your-configuration)
+- [Initializing your global configuration](#initializing-your-global-configuration)
+- [Editing configuration](#editing-your-configuration)
 - [Efficiency tips for configuration](#efficiency-tips-for-configuration)
 - [Sharing global configuration](#sharing-global-configuration)
 - [Managing credential security](#managing-credential-security)
 - [Example use cases](#example-use-cases)
 
-## Feature overview and benefits
+## Feature overview
 
 In the V1-LTS version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile contains the host, port, username, and password for a specific mainframe service instance. While that approach is effective, users often need to duplicate values across profiles and spend time managing many profiles separately.
 
@@ -71,23 +71,27 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 You can now configure the CLI and issue commands.
 ## Initializing global configuration
 
-To get started with configuration, issue the following command:
+Get started by defining a connection to z/OSMF and initializing your configuration files.
 
-```
-zowe cnfg init --global
-```
+**Follow these steps:**
 
-Two files are automatically created in your local `.zowe/config` directory:
+1. Issue the following command:
 
-- `config.json` - A *global* configuration file. This file is intended for you to define mainframe service details such as host, port, etc... for MF services.
+   ```
+   zowe cnfg init --global
+   ```
 
-- `.zowe/config.user.json` - An optional, *user-specific* configuration file that can override global configuration. When you initialize configuration with the `--global` option, this file and the
+   The CLI provides a series of prompts.
 
+2. Respond to the prompts to enter a service name, username, and password for a mainframe service such as z/OSMF. The `--global` option ensures that your credentials are stored securely on your computer by default.
 
+   After you respond to the prompts, the following two files are added to your local `.zowe/settings` directory:
 
+   - `config.json` - A *global* configuration file. This is the primary location where your MF service connection details such as host, port, etc... are defined.
 
+   - `config.user.json` - An optional, *user-specific* configuration file that can override global configuration. When you initialize configuration with the `--global` option, this file is simply an exact copy of your `config.json` file. Any values that you change here will override the value that is defined in `config.json`.
 
-<!-- TODO - **Tip:** We recommend that you become familiar with the new config and stick with it (don't mix and match with user profiles). They don't work nicely between eachother.
+<!-- TODO - **Note:**
 The `profiles` command group is still functional in this version, but the information in your user profiles is not automatically available converted in your global config schema. Similarly, if you define a service to global configuration, a profile will not be created -->
 
 ## Editing and overriding configuration
@@ -118,17 +122,16 @@ zowe cnfg set secure --password would prompt you specifically for password
 
  -->
 
-## Example use cases
+## Example configurations
 
-<!-- Shall we provide examples here of different use cases and the .json for each? At the least we should give one for z/osmf -->
-
-
+<!-- Shall we provide examples here of different use cases and the .json for each? -->
 
 
-<!-- Brandon - Other questions for the team:
+
+
+<!-- Brandon's questions for the team:
 
 - Am I missing something about any of these items? I recall them from conversation but not sure if need to discuss here:
-  - VSCode snippet templates
   - IntelliSense to easily fill in fields
   - Comments in the JSON file
   - a VSCode settings GUI
@@ -136,6 +139,6 @@ zowe cnfg set secure --password would prompt you specifically for password
 - Any other key concepts missing? Something you want to see here?
 - Anything misleading in the writing?
 - Switching from LTS and back seems like a pain for the user. Can I simplify that procedure in any way without losing important details?
-- Same goes for the whole document - is there anything you feel that is too wordy, info is repeated unnecessarily, or should otherwise be removed/reduced?
+- Anything else?
 
 -->
