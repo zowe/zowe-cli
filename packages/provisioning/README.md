@@ -29,7 +29,7 @@ import { explainPublishedTemplatesFull, explainPublishedTemplatesSummary, ListCa
     }
 
     const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
-    const templates: IPublishedTemplates = await ListCatalogTemplates.listCatalogCommon(session, 
+    const templates: IPublishedTemplates = await ListCatalogTemplates.listCatalogCommon(session,
         ProvisioningConstants.ZOSMF_VERSION);
 
     let prettifiedTemplates: any = {};

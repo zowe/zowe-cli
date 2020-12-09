@@ -2,7 +2,7 @@
 
 Contains APIs to interact with the z/OS console (using z/OSMF console REST endpoints).
 
-# API Examples
+## API Examples
 
 **Submit a command to the z/OS console**
 

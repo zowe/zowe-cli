@@ -2,6 +2,18 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Added `--replace` option to `zowe zos-files copy data-set`.
+
+## `6.24.6`
+
+- BugFix: Improved performance of `zowe zos-files list` commands when very long lists are printed to console. [#861](https://github.com/zowe/zowe-cli/issues/861)
+
+## `6.24.5`
+
+- Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency
+
 ## `6.24.3`
 
 - Bugfix: Fixed incorrect syntax of example for `zowe files create data-set-vsam`. [#823](https://github.com/zowe/zowe-cli/issues/823)
