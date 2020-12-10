@@ -3,14 +3,14 @@
 **Early access feature:** Global profiles are available in the `@next` version of Zowe CLI. If you already installed the supported version `@zowe-v1-lts`, switch versions to try this feature. The functionality will be included in the next major Zowe release, V2.0.0-LTS.
 
 **Table of Contents:**
-- [Feature overview and benefits](#feature-overview-and-benefits)
+- [Feature overview](#feature-overview)
 - [Installing @next version](#installing-next-version)
-- [Initializing your global configuration](#initializing-your-global-configuration)
-- [Editing configuration](#editing-your-configuration)
+- [Initializing global configuration](#initializing-global-configuration)
+- [Editing and overriding configuration](#editing-and-overriding-configuration)
 - [Efficiency tips for configuration](#efficiency-tips-for-configuration)
 - [Sharing global configuration](#sharing-global-configuration)
 - [Managing credential security](#managing-credential-security)
-- [Example use cases](#example-use-cases)
+- [Example configurations](#example-configurations)
 
 ## Feature overview
 
@@ -87,12 +87,12 @@ Get started by defining a connection to z/OSMF and initializing your configurati
 
    After you respond to the prompts, the following two files are added to your local `.zowe/settings` directory:
 
-   - `config.json` - A *global* configuration file. This is the primary location where your MF service connection details such as host, port, etc... are defined.
+   - `config.json` - A *global* configuration file. This is the primary location where your MF service connection details such as host, port, etc... are defined. We recommend that you begin by working with this file.
 
    - `config.user.json` - An optional, *user-specific* configuration file that can override global configuration. When you initialize configuration with the `--global` option, this file is simply an exact copy of your `config.json` file. Any values that you change here will override the value that is defined in `config.json`.
 
-<!-- TODO - **Note:**
-The `profiles` command group is still functional in this version, but the information in your user profiles is not automatically available converted in your global config schema. Similarly, if you define a service to global configuration, a profile will not be created -->
+
+**Note:** The `profiles` command group is still functional in this version, but the information in user profiles *is not* converted converted to the global config schema. Conversely, if you define a service to global configuration, a corresponding user profile is not created. For the most consistent experience, we recommend that you use global configuration only.
 
 ## Editing and overriding configuration
 
