@@ -89,23 +89,37 @@ Get started by defining a connection to z/OSMF and initializing your configurati
 
    - `config.json` - A *global* configuration file. This is the primary location where your MF service connection details such as host, port, etc... are defined. We recommend that you begin by working with this file.
 
-   - `config.user.json` - An optional, *user-specific* configuration file that can override global configuration. When you initialize configuration with the `--global` option, this file is simply an exact copy of your `config.json` file. Any values that you change here will override the value that is defined in `config.json`.
+   - `config.user.json` - A *user-specific* configuration file. When you initialize configuration with the `--global` option, this file is created as an exact copy of your `config.json`. Values that you change in this file override the values that defined in `config.json`.
 
+      Alternatively, you can specify `--user` on your initialization command to generate only this file. Note that your credentials will be stored in plaintext when you use this option.
 
-**Note:** The `profiles` command group is still functional in this version, but the information in user profiles *is not* converted converted to the global config schema. Conversely, if you define a service to global configuration, a corresponding user profile is not created. For the most consistent experience, we recommend that you use global configuration only.
+3. Issue a Zowe CLI command to test that you can access z/OSMF. For example, list all data sets under your user ID:
+
+   ```
+   zowe zos-files list data-set "MY.DATASET.*"
+   ```
+
+   A list of data sets is returned. You successfully configured Zowe CLI to access a z/OSMF instance!
+
+   If the CLI returns an error message, verify that you have access to the target system. Examine your configuration files in a text editor to verify that the information you entered is correct.
+
+**Note:** The `profiles` command group is still functional in this version, but user profiles *are not* converted to the global configuration schema automatically. For the most consistent experience, we recommend that you use the new global configuration only.
 
 ## Editing and overriding configuration
 
-<!-- After you have your files all set up, it's time to POPULATE. Get in there and start adding stuff into the .zowe/config.json and get it how you like it. Then you're ready to test. Try commands and such. Works? good. Doesn't work? Go back and check your work in the json file dude. -->
+<!--Now you can start doing more advanced things with the config, adding multiple LPARS with multiple services on an LPAR, using the Secure Array, --reject-unauthorized, web token . -->
 
-**Note:**  option to initialize your configuration files. We recommend that you use `--global`, because it securely stores your mainframe credentials by default.
+<!-- I think this is a good time to share the most basic syntax for a config that targets zosmf. -->
 
-<!-- How to edit your config files as an individual. Which of the 2 files to edit and for what reasons. -->
+<!-- Basic editing flow - edit file, command to test, edit again, etc... -->
+
+<!-- Explain which file to edit here and why, user vs global -->
 
 ## Efficiency tips for configuration
 
-<!-- One could build a global config that works, but is less efficient (you'll have values to change in multiple places). Provide tips on how to set this up efficiently. i.e a global username for all services, --reject-unauthorized, apiml token in base -->
+<!-- Describe commands like "set" that let you change the file w/ out opening in a text editor. -->
 
+<!-- Order of precedence lets you avoid duplicating some values -->
 ## Sharing global configuration
 
 <!-- How to push global config to a code repository, and how to consume one -->
