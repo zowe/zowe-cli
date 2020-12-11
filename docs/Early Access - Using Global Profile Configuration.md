@@ -91,7 +91,7 @@ Get started by defining a connection to z/OSMF and initializing your configurati
 
    - `config.user.json` - A *user-specific* configuration file. When you initialize configuration with the `--global` option, this file is created as an exact copy of your `config.json`. Values that you change in this file override the values that defined in `config.json`.
 
-      Alternatively, you can specify `--user` on your initialization command to generate only this file. Note that your credentials will be stored in plaintext when you use this option.
+      Alternatively, you can specify `--user` on your initialization command to generate *only* a user config file. Note that your credentials will be stored in plaintext when you use this option.
 
 3. Issue a Zowe CLI command to test that you can access z/OSMF. For example, list all data sets under your user ID:
 
@@ -103,32 +103,53 @@ Get started by defining a connection to z/OSMF and initializing your configurati
 
    If the CLI returns an error message, verify that you have access to the target system. Examine your configuration files in a text editor to verify that the information you entered is correct.
 
-**Note:** The `profiles` command group is still functional in this version, but user profiles *are not* converted to the global configuration schema automatically. For the most consistent experience, we recommend that you use the new global configuration only.
+**Note:** The `profiles` command group is still functional in this version, but user profiles *are not* converted to the global config schema automatically. For the most consistent experience, we recommend that you use the new global configuration only.
 
-## Editing and overriding configuration
+## Editing configuration
 
-<!--Now you can start doing more advanced things with the config, adding multiple LPARS with multiple services on an LPAR, using the Secure Array, --reject-unauthorized, web token . -->
+<!--Now you can start doing more advanced things with the config, adding multiple LPARS with multiple services on an LPAR, using the Secure Array, etc...  -->
 
-<!-- I think this is a good time to share the most basic syntax for a config that targets zosmf. -->
+<!-- Basic editing flow - edit file, issue a command to test, edit file again, etc... -->
 
-<!-- Basic editing flow - edit file, command to test, edit again, etc... -->
+<!-- Remember, anything in user config will override global config -->
+### Defining a mainframe service
 
-<!-- Explain which file to edit here and why, user vs global -->
+<!-- example of a config that targets zosmf. -->
 
-## Efficiency tips for configuration
+### Using the secure array
 
-<!-- Describe commands like "set" that let you change the file w/ out opening in a text editor. -->
+<!-- After initializing, the profiles.base.properties.user and profiles.base.properties.password fields are defined to the secure array in global zowe.config.json.
 
-<!-- Order of precedence lets you avoid duplicating some values -->
+Zowe cnfg secure command can re-prompt for all secure fields when you want to update them (such as password change)
+
+zowe cnfg set secure --password would prompt you specifically for password only.
+ -->
+### Using the base array
+
+<!-- describe using this for values that apply to ANY profile. Such as --reject-unauthorized, web token, etc... . Confirm that there is such thing as a base array first, might be confusing this. -->
+
+### Efficiency tips for configuration
+
+<!-- in general, what do you mean by efficiency? Basically not having to enter and maintain values in a bunch of different places -->
+
+
+<!-- Order of precedence lets you avoid duplicating some values due to inheritance -->
+
+<!--What else? -->
 ## Sharing global configuration
 
-<!-- How to push global config to a code repository, and how to consume one -->
+<!-- How to push global config to a code repository, and how to consume config in a project -->
+
+## Overriding global configuration
+
+<!-- How to set certain values for yourself in your config file, after you've begun to consume global config. -->
+
 ## Managing credential security
 
 <!--
-After initializing, the profiles.base.properties.user and profiles.base.properties.password fields are defined to the secure array in global zowe.config.json.
+when you init --global, you get config where your username and password are set to secure.
 
-Users can define other fields there manually as well to secure them!.
+Users can define other fields in the secure array manually as well to secure them.
 
 Zowe cnfg secure command can re-prompt for all secure fields.
 
@@ -138,7 +159,7 @@ zowe cnfg set secure --password would prompt you specifically for password
 
 ## Example configurations
 
-<!-- Shall we provide examples here of different use cases and the .json for each? -->
+<!-- Shall we provide a handful of examples here of different use cases and the .json for each? -->
 
 
 
@@ -151,8 +172,9 @@ zowe cnfg set secure --password would prompt you specifically for password
   - a VSCode settings GUI
 
 - Any other key concepts missing? Something you want to see here?
-- Anything misleading in the writing?
-- Switching from LTS and back seems like a pain for the user. Can I simplify that procedure in any way without losing important details?
+- Anything misleading in the writing thus far?
+- Switching from LTS and back. Can I simplify that procedure in any way without losing important details?
+- Similarly, having the two methods (global profiles vs user profiles) seems confusing since they aren't compatible with eachother. Why not just say "this is the way now, your old profiles go away"
 - Anything else?
 
 -->
