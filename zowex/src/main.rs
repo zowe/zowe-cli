@@ -77,7 +77,13 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
 
         if reader.read_line(&mut line).unwrap() > 0 {
             // returns nothing if no new headers
-            let new_headers = parse_headers(&line);
+            let pieces = get_beg(&line);
+            let new_headers: HashMap<std::string::String, i32>;
+            if pieces.len() > 1 {
+                new_headers = parse_headers(&pieces[0]);
+            } else {
+                new_headers = parse_headers(&line);
+            }
             let mut got_new_headers = false;
 
             // adjust so that `headers` always contains the last sent headers
@@ -103,6 +109,10 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                     } else {
                         print!("{}", line);
                         io::stdout().flush().unwrap();
+                    }
+                } else {
+                    if pieces.len() > 1 {
+                        print!("{}", pieces[1]);
                     }
                 }
             }
@@ -169,6 +179,36 @@ fn get_port_string() -> String {
     }
     let port_string = _port.to_string();
     return port_string;
+}
+
+fn get_beg(buf: &str) -> Vec<String> {
+
+    let mut parts: Vec<String> = Vec::new();
+
+    let ss: Vec<char>  = buf.chars().collect();
+
+    if ss.len() >= 2 {
+        if ss[0] == 'x' && ss[1] == '-' {
+            parts.push(buf.to_owned());
+        } else {
+            // println!("extra data");
+
+            for (i, x) in ss.iter().enumerate() {
+                if *x == 'x'  && ss[i + 1] == '-' {
+                    let first: String = ss.iter().skip(0).take(i).collect();
+                    let second: String = ss.iter().skip(i).take(ss.len() - 1).collect();
+                    parts.push(second);
+                    parts.push(first);
+                    break;
+                }
+            }
+
+        }
+    } else {
+        parts.push(buf.to_owned());
+    }
+
+    return parts;
 }
 
 //
