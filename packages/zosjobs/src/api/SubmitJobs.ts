@@ -246,7 +246,7 @@ export class SubmitJobs {
             const downloadParms: IDownloadAllSpoolContentParms = {
                 jobid: job.jobid,
                 jobname: job.jobname,
-                outDir: parms.directory,
+                outDir: parms.directory
             };
             if (parms.extension) {
                 downloadParms.extension = IO.normalizeExtension(parms.extension);
