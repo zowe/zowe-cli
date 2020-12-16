@@ -267,7 +267,8 @@ const config: IImperativeConfig = {
                     },
                     codePage: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_CODE_PAGE
+                        optionDefinition: TSO_OPTION_CODE_PAGE,
+                        includeInTemplate: true
                     },
                     columns: {
                         type: "number",
@@ -275,7 +276,8 @@ const config: IImperativeConfig = {
                     },
                     logonProcedure: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE
+                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
+                        includeInTemplate: true
                     },
                     regionSize: {
                         type: "number",
