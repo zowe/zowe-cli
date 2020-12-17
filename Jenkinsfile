@@ -79,7 +79,9 @@ node('jenkins-nvm-keytar') {
     pipeline.createStage(
         name: "Install imperative@json-config-next",
         stage: {
-            sh "npm install zowe/imperative#json-config-next"
+            sh "git clone https://github.com/zowe/imperative.git"
+            sh "cd imperative && git checkout json-config-next && npm install && npm link"
+            sh "npm link @zowe/imperative"
         }
     )
 
