@@ -79,7 +79,7 @@ node('jenkins-nvm-keytar') {
     pipeline.createStage(
         name: "Install imperative@json-config-next",
         stage: {
-            sh "npm install @zowe/imperative@json-config-next"
+            sh "npm install zowe/imperative#json-config-next"
         }
     )
 
