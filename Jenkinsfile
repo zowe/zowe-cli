@@ -75,6 +75,14 @@ node('jenkins-nvm-keytar') {
     //     unit: 'MINUTES'
     // ])
 
+    // TODO Remove before json-config-next branch is merged
+    pipeline.createStage(
+        name: "Install imperative@json-config-next",
+        stage: {
+            sh "npm install @zowe/imperative@json-config-next"
+        }
+    )
+
     // Build the application
     pipeline.build(timeout: [
         time: 5,
