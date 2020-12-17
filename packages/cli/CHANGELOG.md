@@ -10,7 +10,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 =======
 ## `6.25.0`
 
+<<<<<<< HEAD
 - Enhancement: Added a `--replace` option to the `zowe zos-files copy data-set` command. Use this option if you want to replace like-named members in the target data set. [#808](https://github.com/zowe/zowe-cli/issues/808)
+=======
+- Enhancement: Added a `--replace` option to the `zowe zos-files copy data-set` command. Use this option if you want to replace like-named members in the target directory. [#808](https://github.com/zowe/zowe-cli/issues/808)
+>>>>>>> fc185213 (edit changelog for v1.18.0)
 - Enhancement: Improved a cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
 - Bugfix: Removed "[object Object]" text that appeared in some error messages. The proper text "Imperative API Error" is now displayed. [#836](https://github.com/zowe/zowe-cli/pull/836)
 
