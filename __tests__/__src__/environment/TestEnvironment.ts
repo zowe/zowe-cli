@@ -116,7 +116,7 @@ export class TestEnvironment {
      * Create a ZOSMF session from properties present in your test environment
      * @param testEnvironment - your test environment with system test properties populated
      */
-    public static createZosmfSession(testEnvironment: ITestEnvironment): AbstractSession {
+    public static createZosmfSession(testEnvironment: ITestEnvironment): Session {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
         return new Session({
             user: SYSTEM_PROPS.zosmf.user,
