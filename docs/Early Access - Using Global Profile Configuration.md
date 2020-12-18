@@ -6,10 +6,10 @@
 - [Feature overview](#feature-overview)
 - [Installing @next version](#installing-next-version)
 - [Initializing global configuration](#initializing-global-configuration)
-- [Editing and overriding configuration](#editing-and-overriding-configuration)
-- [Efficiency tips for configuration](#efficiency-tips-for-configuration)
-- [Sharing global configuration](#sharing-global-configuration)
+- [Editing configuration](#editing-configuration)
 - [Managing credential security](#managing-credential-security)
+- [Sharing global configuration](#sharing-global-configuration)
+- [Overriding global configuration](#overriding-global-configuration)
 - [Example configurations](#example-configurations)
 
 ## Feature overview
@@ -71,7 +71,7 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 You can now configure the CLI and issue commands.
 ## Initializing global configuration
 
-Get started by defining a connection to z/OSMF and initializing your configuration files.
+To begin, define a connection to z/OSMF and initializing your configuration files. We recommend this method for getting started, but you can choose create the configuration files manually if desired.
 
 **Follow these steps:**
 
@@ -91,7 +91,7 @@ Get started by defining a connection to z/OSMF and initializing your configurati
 
    - `config.user.json` - A *user-specific* configuration file. When you initialize configuration with the `--global` option, this file is created as an exact copy of your `config.json`. Values that you change in this file override the values that defined in `config.json`.
 
-      Alternatively, you can specify `--user` on your initialization command to generate *only* a user config file. Note that your credentials will be stored in plaintext when you use this option.
+      Alternatively, you can specify `--user` on your initialization command to generate *only* a user config file. Note that your credentials will be stored in plaintext by default when you use this option.
 
 3. Issue a Zowe CLI command to test that you can access z/OSMF. For example, list all data sets under your user ID:
 
@@ -103,46 +103,30 @@ Get started by defining a connection to z/OSMF and initializing your configurati
 
    If the CLI returns an error message, verify that you have access to the target system. Examine your configuration files in a text editor to verify that the information you entered is correct.
 
-**Note:** The `profiles` command group is still functional in this version, but user profiles *are not* converted to the global config schema automatically. For the most consistent experience, we recommend that you use the new global configuration only.
+**Important!:** After the configuration files are in place (either via the `zowe cnfg init` command or by manually creating the files), the old `zowe profiles` commands will no longer function. Expect to see errors if you attempt to make use of old profiles.
 
 ## Editing configuration
 
-<!--Now you can start doing more advanced things with the config, adding multiple LPARS with multiple services on an LPAR, using the Secure Array, etc...  -->
+<!-- Describe that now you can start doing more advanced things with the config, adding multiple LPARS with multiple services on an LPAR, using the Secure Array, etc...  -->
 
-<!-- Basic editing flow - edit file, issue a command to test, edit file again, etc... -->
+<!-- Insert an example here of the config for a visual -->
 
-<!-- Remember, anything in user config will override global config -->
+<!-- Describe the basic editing flow - edit file, issue a command to test, edit file again to add more services or fix error, etc...... -->
+
+<!-- Remember, anything you put in your user config will override global config file -->
 ### Defining a mainframe service
 
-<!-- example of a config that targets zosmf. -->
-
-### Using the secure array
-
-<!-- After initializing, the profiles.base.properties.user and profiles.base.properties.password fields are defined to the secure array in global zowe.config.json.
-
-Zowe cnfg secure command can re-prompt for all secure fields when you want to update them (such as password change)
-
-zowe cnfg set secure --password would prompt you specifically for password only.
- -->
-### Using the base array
-
-<!-- describe using this for values that apply to ANY profile. Such as --reject-unauthorized, web token, etc... . Confirm that there is such thing as a base array first, might be confusing this. -->
+<!-- insert example example of a config that targets zosmf, on perhaps 2 different LPARS? Just a slightly more advanced example where we can explain how the arrays work together. -->
 
 ### Efficiency tips for configuration
 
-<!-- in general, what do you mean by efficiency? Basically not having to enter and maintain values in a bunch of different places -->
-
+<!-- in general, what can you do to make this config work to your advantage? -->
 
 <!-- Order of precedence lets you avoid duplicating some values due to inheritance -->
 
-<!--What else? -->
-## Sharing global configuration
+<!-- Using the base array for values that apply to ANY mainframe service. Such as --reject-unauthorized, apiml web token, or other things that you truly want to apply globally to all commands. Confirm w/ SME that there is such thing as a base array first, might be confusing this part. -->
 
-<!-- How to push global config to a code repository, and how to consume config in a project -->
-
-## Overriding global configuration
-
-<!-- How to set certain values for yourself in your config file, after you've begun to consume global config. -->
+<!--Any tips or examples you can think of that could be helpful here? -->
 
 ## Managing credential security
 
@@ -156,6 +140,22 @@ Zowe cnfg secure command can re-prompt for all secure fields.
 zowe cnfg set secure --password would prompt you specifically for password
 
  -->
+### Using the secure array
+
+<!-- After initializing, the profiles.base.properties.user and profiles.base.properties.password fields are defined to the secure array in global zowe.config.json. Any option that you define to secure array will become secure/prompted for.
+
+The `zowe cnfg secure` command can re-prompt for all secure fields when you want to update them (such as password change)
+
+The command `zowe cnfg set secure --password` prompts you specifically for password only (substitute whatever option name you want instead of password)
+ -->
+
+ ## Sharing global configuration
+
+<!-- How to push global config to a code repository, and how to consume config as a member of a project -->
+
+## Overriding global configuration
+
+<!-- How to set certain values for yourself in your config file, after you've begun to consume global config. -->
 
 ## Example configurations
 
