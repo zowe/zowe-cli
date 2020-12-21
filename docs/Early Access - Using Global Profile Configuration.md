@@ -16,7 +16,7 @@
 
 In the V1-LTS version of the CLI, users issue commands from the `zowe profiles` group to create, edit, and manage user profiles. Each profile contains the host, port, username, and password for a specific mainframe service instance. While that approach is effective, users often need to duplicate values across profiles and spend time managing many profiles separately.
 
-The **global profile functionality** simplifies profile management by letting you edit, store, and share mainframe configuration details in one location. You can use a text editor to populate configuration files with connection details for your mainframe services services.
+The **global profile functionality** simplifies profile management by letting you edit, store, and share mainframe configuration details in one location. You can use a text editor to populate configuration files with connection details for your mainframe services.
 
 ### Benefits
 
@@ -30,11 +30,11 @@ Global profile configuration can improve your Zowe CLI experience in the followi
 
 In this version, Secure Credential Store (SCS) Plug-in is deprecated. The `zowe scs` and `zowe config` command groups are obsolete. The equivalent functionality that encrypts your credentials is now included in the core CLI.
 
-With the new configuration, you are prompted to enter username and password securely by default. Commands in the new `zowe cnfg` command group let you manage security for any option value.
+With the new configuration, the CLI prompts you to enter username and password securely by default. Commands in the new `zowe cnfg` command group let you manage security for any option value.
 
 ## Installing @next version
 
-To get started, install the Zowe CLI `@next` version from the online registry. You can follow this procedure to update your currently installed version, or to perform a first-time installation.
+To get started, install the Zowe CLI `@next` version from the online registry. You can follow this procedure for a first-time installation, or to update a currently installed version.
 
 **Follow these steps:**
 
@@ -56,7 +56,7 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 
    The `@next` version of Zowe CLI and plug-ins are installed!
 
-5. If you previously had an instance of Zowe CLI installed, your old configuration files are no longer used in this version. Delete the following files:
+5. If you previously had an instance of Zowe CLI installed, your old configuration files are no longer used in this version. Delete the following files from your local `.zowe/` directory:
    - `.zowe/settings/imperative.json`
    - `.zowe/profiles`
 
@@ -71,7 +71,7 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 You can now configure the CLI and issue commands.
 ## Initializing global configuration
 
-To begin, define a connection to z/OSMF and initializing your configuration files. We recommend this method for getting started, but you can choose create the configuration files manually if desired.
+To begin, define a connection to z/OSMF and initialize your configuration files. We recommend this method for getting started, but you can choose create the configuration files manually if desired.
 
 **Follow these steps:**
 
@@ -107,74 +107,88 @@ To begin, define a connection to z/OSMF and initializing your configuration file
 
 ## Editing configuration
 
-<!-- Describe that now you can start doing more advanced things with the config, adding multiple LPARS with multiple services on an LPAR, using the Secure Array, etc...  -->
+After the initial setup, you can define additional mainframe services to your global or user config.
 
-<!-- Insert an example here of the config for a visual -->
+Open the `/.zowe/settings/config.json` file in a text editor or IDE on your computer. The JSON arrays contain your initial z/OSMF connection details. For example:
 
-<!-- Describe the basic editing flow - edit file, issue a command to test, edit file again to add more services or fix error, etc...... -->
+<!-- Insert an example here of the json for just a simple z/osmf instance, for a visual -->
 
-<!-- Remember, anything you put in your user config will override global config file -->
-### Defining a mainframe service
+From here, you can edit the details as needed and save the file. For example, you might change the password field if your mainframe password changed.
 
-<!-- insert example example of a config that targets zosmf, on perhaps 2 different LPARS? Just a slightly more advanced example where we can explain how the arrays work together. -->
+To add a new service, for example add a new instance of z/OSMF that runs on a different mainframe LPAR, you can build on the existing array as follows:
 
-### Efficiency tips for configuration
+<!-- Insert a JSON example here where a second instance of z/OSMF on a different LPAR is added to config -->
 
-<!-- in general, what can you do to make this config work to your advantage? -->
+You can continue to add more LPARs, and more services within each LPAR. After you make changes, save the file and issue a Zowe CLI command to the service to verify connection.
 
-<!-- Order of precedence lets you avoid duplicating some values due to inheritance -->
+## Managing configuration efficiently
 
-<!-- Using the base array for values that apply to ANY mainframe service. Such as --reject-unauthorized, apiml web token, or other things that you truly want to apply globally to all commands. Confirm w/ SME that there is such thing as a base array first, might be confusing this part. -->
+There are several methods you can employ to more efficiently update and maintain your configuration.
 
-<!--Any tips or examples you can think of that could be helpful here? -->
+Zowe CLI uses a "command option order of precedence" that lets your service definitions inherit option values. You can use this to your advantage, because it lets you avoid duplicating the same option value in several places.
 
+The CLI checks for option values in the following order. If not found, the next location is checked:
+1. Options you define explicitly on the command-line
+2. Environment variables
+3. Service array definitions
+4. Base array definitions
+5. If no value is found, the default value for the option is used.
+
+If you have two services that share the same username and password on the mainframe, you can define your username and password just once in the base array and leave those fields blank in each service definition.
+
+In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are empty to allow them to inherit values from the base array:
+
+<!-- Add JSON example here where 2 zosmf services are inheriting user and pass from base array -->
+
+### Tips for using the base array
+
+The base array is a useful tool for sharing option values between services. You might define options to the base array in the following situations:
+- You have multiple services that share the same username, password, or other value.
+- You want to store a web token to access all services through Zowe API Mediation Layer.
+- You want to trust a known self-signed certificate, or your site does not have server certificates configured. You can define `reject-unauthorized` in the base array with a value of  `false` to apply to all services. Understand the security implications of accepting self-signed certificates at your site before you use this method.
+
+<!-- Any tips or examples you can think of that could be helpful here in this "Managing configuration efficiently" section, besides the base array? -->
 ## Managing credential security
 
-<!--
-when you init --global, you get config where your username and password are set to secure.
+<!-- This section is in progress, just need to turn the notes into better writing. -->
 
-Users can define other fields in the secure array manually as well to secure them.
+When you first run the `cnfg init --global` command, you get config where your username and password are set to secure.
 
-Zowe cnfg secure command can re-prompt for all secure fields.
-
-zowe cnfg set secure --password would prompt you specifically for password
-
- -->
-### Using the secure array
-
-<!-- After initializing, the profiles.base.properties.user and profiles.base.properties.password fields are defined to the secure array in global zowe.config.json. Any option that you define to secure array will become secure/prompted for.
+You can define other fields in the secure array manually as well to secure them. After initializing, the profiles.base.properties.user and profiles.base.properties.password fields are defined to the secure array in global zowe.config.json. Any option that you define to secure array will become secure/prompted for.
 
 The `zowe cnfg secure` command can re-prompt for all secure fields when you want to update them (such as password change)
 
 The command `zowe cnfg set secure --password` prompts you specifically for password only (substitute whatever option name you want instead of password)
- -->
 
  ## Sharing global configuration
 
-<!-- How to push global config to a code repository, and how to consume config as a member of a project -->
+<!-- How to push global config to a code repository, and how to consume config as a member of a project.
+
+I don't know much about this. I assume you'd need to post your config file somewhere in github (or even as simple as sending it in an email) and that other person needs to grab it and place it in their .zowe/settings folder. Then issue commands to test. -->
 
 ## Overriding global configuration
 
-<!-- How to set certain values for yourself in your config file, after you've begun to consume global config. -->
+<!--
+You can edit your user config to explicitly do something different from what's defined in global.
+
+You don't really need to use this. But you can use this if you don't plan to share, or want to override things others have shared.
+
+If you don't use it, it's just a copy of your init config file.
+-->
 
 ## Example configurations
 
-<!-- Shall we provide a handful of examples here of different use cases and the .json for each? -->
+<!--
+Shall we provide a handful of examples here of different use cases and the .json for each? The article covered the basics, how much will people be able to extrapolate from there?
+-->
 
 
-
-
-<!-- Brandon's questions for the team:
+<!--
+Questions:
 
 - Am I missing something about any of these items? I recall them from conversation but not sure if need to discuss here:
   - IntelliSense to easily fill in fields
   - Comments in the JSON file
   - a VSCode settings GUI
-
-- Any other key concepts missing? Something you want to see here?
-- Anything misleading in the writing thus far?
-- Switching from LTS and back. Can I simplify that procedure in any way without losing important details?
-- Similarly, having the two methods (global profiles vs user profiles) seems confusing since they aren't compatible with eachother. Why not just say "this is the way now, your old profiles go away"
-- Anything else?
-
+- Any other key concepts missing, nything misleading, anything else?
 -->
