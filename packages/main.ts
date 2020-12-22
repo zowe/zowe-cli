@@ -11,7 +11,6 @@
 */
 
 import { PerfTiming } from "@zowe/perf-timing";
-
 const timingApi = PerfTiming.api;
 
 timingApi.mark("PRE_IMPORT_IMPERATIVE");
@@ -19,6 +18,7 @@ timingApi.mark("PRE_IMPORT_IMPERATIVE");
 import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
+import { Processor } from "./Processor";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
@@ -32,13 +32,19 @@ const config: IImperativeConfig = {
     try {
         timingApi.mark("BEFORE_INIT");
         await Imperative.init(config);
+
+        const processor = new Processor(process.argv);
+        processor.init();
+
         timingApi.mark("AFTER_INIT");
         timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");
 
         Imperative.api.appLogger.trace("Init was successful");
 
         timingApi.mark("BEFORE_PARSE");
-        Imperative.parse();
+
+        processor.process();
+
         timingApi.mark("AFTER_PARSE");
         timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
     } catch (initErr) {

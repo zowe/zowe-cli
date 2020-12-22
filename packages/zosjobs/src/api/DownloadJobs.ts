@@ -105,7 +105,6 @@ export class DownloadJobs {
             parms.outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
         }
 
-
         const file = DownloadJobs.getSpoolDownloadFile(parms.jobFile, parms.omitJobidDirectory, parms.outDir);
         this.log.debug("Downloading spool file %s for job %s(%s) to file %s",
             parms.jobFile.ddname, parms.jobFile.jobname, parms.jobFile.jobid, file);
