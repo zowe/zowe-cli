@@ -17,11 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cd zowex
-
     - name: Get version
-      run: "echo ::set-output name=ZOWEX_VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
       id: get-version
+      run: |
+        cd zowex
+        echo "::set-output name=ZOWEX_VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
 
     - name: Create Release
       id: create_release
@@ -45,7 +45,7 @@ jobs:
       with:
         name: repo
         path: |
-          **
+          zowex/**
           !.git
 
   build-ubuntu-mac:
