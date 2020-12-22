@@ -5,7 +5,9 @@ on:
     branches:
         - "master"
         - "next"
-    paths: "zowex/**"
+    paths:
+    - 'zowex/**'
+    - '.github/workflows/rust-cli*.yml'
 
 jobs:
 
