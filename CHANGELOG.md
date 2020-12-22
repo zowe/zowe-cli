@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202012221518`
 
 - Enhancement: Added daemon mode proof of concept.
 
