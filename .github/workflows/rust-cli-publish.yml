@@ -31,15 +31,15 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.get-version.outputs.ZOWEX_VERSION }}
-        release_name: Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        tag_name: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        release_name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
         body: |
-          Native Zowe CLI client
+          Native Zowe CLI client which communicates with a "daemon" version of Zowe CLI.
         draft: false
         prerelease: false
 
     - name: Output Release URL File
-      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > zowex/release_url.txt
 
     - run: "ls -la"
 
