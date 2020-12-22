@@ -193,6 +193,10 @@ const config: IImperativeConfig = {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH
                     },
+                    protocol: {
+                        type: "string",
+                        optionDefinition: ZosFilesOptions.httpProtocol
+                    },
                     encoding: {
                         type: "number",
                         optionDefinition: {
