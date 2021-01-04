@@ -42,9 +42,13 @@ const config: IImperativeConfig = {
         timingApi.mark("AFTER_PARSE");
         timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
     } catch (initErr) {
-        Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
-            ":\n "
-            + inspect(initErr));
+        if (initErr?.suppressDump) {
+            Imperative.console.fatal(initErr.message);
+        } else {
+            Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
+                ":\n "
+                + inspect(initErr));
+        }
         process.exit(1);
     }
 })();
