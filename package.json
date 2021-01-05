@@ -5,7 +5,7 @@
   "author": "Broadcom",
   "license": "EPL-2.0",
   "scripts": {
-    "build": "npm install --save-dev gulp && gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck && echo Fix build and remove Git dependencies before publishing to NPM.",
+    "build": "npm install --save-dev gulp lerna && gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck && echo Fix build and remove Git dependencies before publishing to NPM.",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
     "postinstall": "lerna bootstrap --hoist @zowe/*",
