@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/imperative": "4.9.0",
+    "@zowe/imperative": "git@github.com:zowe/imperative#json-config-next",
     "chalk": "^4.1.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",

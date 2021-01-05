@@ -99,3 +99,6 @@ imperative_debug.log
 /packages/cli/lib
 /packages/cli/__tests__/__results__
 /packages/cli/prebuilds
+zowe.config.json
+zowe.config.user.json
+zowe.schema.json
