@@ -128,11 +128,11 @@ You can continue to add more LPARs, and more services within each LPAR. After yo
 
 When you first run the `zowe config init --global` command, the `profiles.base.properties.user` and `profiles.base.properties.password` fields are defined to the "secure" array in your configuration file. This ensures that username and password are stored securely on your computer.
 
-You can also use the `zowe config secure` command to re-prompt for all securely-set fields when you want to update them (for example, when you want to change your username and password.)
+Issue the `zowe config secure` command to re-prompt for all secure fields when you want to update them (for example, when you want to change your username and password).
 
-To secure or re-prompt for a specific field, use the command `zowe config set secure --password`. In this case, `--password` is already set securely by default, so the CLI re-prompts you for a password on the command line.
+To secure a specific field, use the command `zowe config set secure --<option-name>`. For example, you can issue `zowe config set secure --host`. If you issue the command for an option that is already secure, the CLI re-prompts you to enter a new option value.
 
-You can define additional options to the secure array manually in an editor. Any option that you define to secure array becomes secure/prompted-for.
+Alternatively, you can use an editor to define options to the secure array in `zowe.config.json` manually. Any option that you define to there becomes secure/prompted-for.
 
 ## Managing configuration efficiently
 
@@ -162,14 +162,10 @@ The base array is a useful tool for sharing option values between services. You 
 
  ## Sharing global configuration
 
-You might want to share global configuration in the following scenarios:
-- Share global config with other developers. so that another developer can easily begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `~/.zowe` folder before issuing CLI commands.
-- Place global config within your project directory a project source control management tool such as GitHub.
-
-
-In order to share global config, I would send you a zowe.config.json file and you would manually place it in your ~/.zowe folder.
-
-In order to share project config, I would commit the project's zowe.config.json to source control and then you would pull the project to your local machine. Any command you issued from within that project directory would use the project's zowe.config.json and the global config would simply be ignored. Very useful for test automation or CI/CD projects.
+You might want to share configuration in the following scenarios:
+- Share global config with developers so that they can begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `~/.zowe` folder before issuing CLI commands.
+- Add global config to your project directory in an SCM tool such as GitHub. This lets other developers pull the project to their local machine and make use of the defined configuration. Zowe CLI commands that you issue from within the project directory automatically use the project config scheme.
+- Enable test automation and CI/CD, letting your pipelines make use of the shared project configuration.
 
 ## Example configurations
 
