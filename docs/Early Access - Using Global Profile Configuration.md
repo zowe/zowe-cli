@@ -6,10 +6,10 @@
 - [Feature overview](#feature-overview)
 - [Installing @next version](#installing-next-version)
 - [Initializing global configuration](#initializing-global-configuration)
-- [(Optional) Initialize user-specific configuration](#optional-initialize-user-specific-configuration)
+- [(Optional) Initializing user-specific configuration](#optional-initializing-user-specific-configuration)
 - [Editing configuration](#editing-configuration)
 - [Managing credential security](#managing-credential-security)
-- [Managing configuration efficiently](#managing-configuration-efficiently)
+- [Tips for efficient configuration](#tips-for-efficient-configuration)
 - [Sharing global configuration](#sharing-global-configuration)
 - [Example configurations](#example-configurations)
 
@@ -102,7 +102,7 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
 **Important!:** After the configuration files are in place (either via the `zowe config init` command or by manually creating the files), the old `zowe profiles` commands will no longer function. Expect to see errors if you attempt to make use of old profiles.
 
-## (Optional) Initialize user-specific configuration
+## (Optional) Initializing user-specific configuration
 
 Additionally, you can generate a *user-specific* configuration file. In your user config, you can override values that are defined in the global `zowe.config.json`.
 
@@ -115,13 +115,16 @@ After the initial setup, you can define additional mainframe services to your gl
 
 Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The JSON arrays contain your initial z/OSMF connection details. For example:
 
-<!-- Insert an example here of the JSON for a simple z/osmf connection, for a visual. -->
+<!--
+Insert an example here of the JSON for a simple z/osmf connection, for a visual. -->
 
 From here, you can edit the details as needed and save the file. For example, you might change the password field if your mainframe password changed.
 
 To add a new service, for example add a new instance of z/OSMF that runs on a different mainframe LPAR, you can build on the existing array as follows:
 
-<!-- Insert a JSON example here where a second instance of z/OSMF on a different LPAR is added to config, or similar. Mike B - "I would use host or port info as an example. Username and password should be specified in the secure array and therefore will not be edited in plain text." -->
+<!-- TODO
+Insert a JSON example here where a second instance of z/OSMF on a different LPAR is added to config, or similar. Mike B - "I would use host or port info as an example. Username and password should be specified in the secure array and therefore will not be edited in plain text."
+-->
 
 You can continue to add more LPARs, and more services within each LPAR. After you make changes, save the file and issue a Zowe CLI command to the service to verify connection.
 ## Managing credential security
@@ -134,7 +137,7 @@ To secure a specific field, use the command `zowe config set secure --<option-na
 
 Alternatively, you can use an editor to define options to the secure array in `zowe.config.json` manually. Any option that you define to there becomes secure/prompted-for.
 
-## Managing configuration efficiently
+## Tips for efficient configuration
 
 There are several methods you can employ to more efficiently update and maintain your configuration.
 
@@ -151,7 +154,9 @@ If you have two services that share the same username and password on the mainfr
 
 In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are empty to allow them to inherit values from the base array:
 
-<!-- Worth adding a JSON example here where 2 zosmf services are inheriting user and pass from base array? -->
+<!-- TODO
+Worth adding a JSON example here where 2 zosmf services are inheriting user and pass from base array?
+-->
 
 ### Tips for using the base array
 
@@ -160,16 +165,16 @@ The base array is a useful tool for sharing option values between services. You 
 - You want to store a web token to access all services through Zowe API Mediation Layer.
 - You want to trust a known self-signed certificate, or your site does not have server certificates configured. You can define `reject-unauthorized` in the base array with a value of  `false` to apply to all services. Understand the security implications of accepting self-signed certificates at your site before you use this method.
 
- ## Sharing global configuration
+## Sharing global configuration
 
 You might want to share configuration in the following scenarios:
 - Share global config with developers so that they can begin working with a defined set of mainframe services. The recipient of the file manually places it in their local `~/.zowe` folder before issuing CLI commands.
-- Add global config to your project directory in an SCM tool such as GitHub. This lets other developers pull the project to their local machine and make use of the defined configuration. Zowe CLI commands that you issue from within the project directory automatically use the project config scheme.
-- Enable test automation and CI/CD, letting your pipelines make use of the shared project configuration.
+- Add global config to your project directory in an SCM tool such as GitHub. This lets other developers pull the project to their local machine and make use of the defined configuration. Zowe CLI commands that you issue from within the project directory automatically use the project's config scheme.
+- Enable test automation and CI/CD, letting your pipelines make use of the project configuration.
 
 ## Example configurations
 
-<!--
+<!-- TODO
 Shall we provide a handful of examples here of different use cases and the .json for each?
 
 Mike B - "I'd cover at least two. One for accessing multiple services directly on multiple LPARs that share the same username/password. One for accessing multiple services via the API ML (where MFA/SSO is achievable via token-based auth).
