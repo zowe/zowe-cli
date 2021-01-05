@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@zowe/core-for-zowe-sdk": "6.24.5",
-    "@zowe/imperative": "git@github.com:zowe/imperative#json-config-next",
+    "@zowe/imperative": "https://github.com:zowe/imperative#json-config-next",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
