@@ -48,7 +48,11 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
+<<<<<<< HEAD
     "@zowe/imperative": "https://github.com:zowe/imperative#json-config-next",
+=======
+    "@zowe/imperative": "4.10.0",
+>>>>>>> master
     "chalk": "^4.1.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",

@@ -55,8 +55,13 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/core-for-zowe-sdk": "6.25.0",
+<<<<<<< HEAD
+    "@zowe/core-for-zowe-sdk": "6.24.5",
     "@zowe/imperative": "https://github.com:zowe/imperative#json-config-next",
+=======
+    "@zowe/core-for-zowe-sdk": "6.25.0",
+    "@zowe/imperative": "4.10.0",
+>>>>>>> master
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "6.25.0",
     "@zowe/zos-console-for-zowe-sdk": "6.25.0",

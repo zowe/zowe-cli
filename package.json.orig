@@ -1,0 +1,135 @@
+{
+  "name": "@zowe/cli",
+  "private": true,
+  "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
+  "author": "Broadcom",
+  "license": "EPL-2.0",
+  "scripts": {
+    "build": "npm install --save-dev gulp && gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck && echo Fix build and remove Git dependencies before publishing to NPM.",
+    "clean": "lerna run --parallel clean",
+    "installWithBuild": "npm install && npm run build",
+    "postinstall": "lerna bootstrap --hoist @zowe/*",
+    "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
+    "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
+    "lint": "npm run lint:packages && npm run lint:tests",
+    "lint:packages": "lerna run --parallel lint",
+    "lint:tests": "tslint --format stylish -c ./tslint-tests.json \"/__tests__/**/*.ts\"",
+    "test": "npm run test:unit && npm run test:integration && npm run test:system",
+    "test:cleanResults": "rimraf __tests__/__results__",
+    "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
+    "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\\$\" --coverage false",
+    "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
+    "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
+    "watch": "lerna run --parallel watch",
+    "watch:test": "jest --watch",
+    "doc:clean": "rimraf docs/CLIReadme.md",
+    "doc:generate": "npm run doc:clean && gulp doc",
+    "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
+    "typedoc": "gulp typedoc",
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
+    "audit:public": "npm audit --registry https://registry.npmjs.org/"
+  },
+  "dependencies": {
+<<<<<<< HEAD
+    "@zowe/imperative": "https://github.com:zowe/imperative#json-config-next",
+=======
+    "@zowe/imperative": "4.10.0",
+>>>>>>> master
+    "@zowe/perf-timing": "1.0.7"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/jest": "^22.2.3",
+    "@types/node": "^12.12.24",
+    "ansi-colors": "^4.1.1",
+    "chalk": "^4.1.0",
+    "clear-require": "^2.0.0",
+    "codepage": "^1.10.1",
+    "cross-env": "^5.1.4",
+    "fancy-log": "^1.3.3",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.0.1",
+    "gulp-debug": "^4.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-replace": "^0.6.1",
+    "jest": "^24.9.0",
+    "jest-cli": "^24.9.0",
+    "jest-environment-node": "^24.1.0",
+    "jest-environment-node-debug": "^2.0.0",
+    "jest-junit": "^6.3.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "jest-stare": "^2.2.0",
+    "js-yaml": "^3.13.1",
+    "jsonfile": "^4.0.0",
+    "lerna": "^3.22.1",
+    "madge": "^3.6.0",
+    "rimraf": "^2.6.3",
+    "shebang-regex": "^2.0.0",
+    "syncpack": "^5.6.10",
+    "ts-jest": "^24.2.0",
+    "ts-node": "^7.0.1",
+    "tslint": "^6.1.3",
+    "typedoc": "^0.16.0",
+    "typedoc-plugin-external-module-map": "^1.2.1",
+    "typescript": "^3.8.0",
+    "uuid": "^3.3.2"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "disableSourceMapSupport": true
+      }
+    },
+    "watchPathIgnorePatterns": [
+      ".*jest-stare.*\\.js"
+    ],
+    "modulePathIgnorePatterns": [
+      "__tests__/__snapshots__/",
+      ".*/node_modules/.*",
+      ".*/lib/.*"
+    ],
+    "setupFilesAfterEnv": [
+      "./__tests__/beforeTests.js"
+    ],
+    "testResultsProcessor": "jest-stare",
+    "transform": {
+      "\\.ts$": "ts-jest"
+    },
+    "testRegex": "__tests__.*\\.(spec|test)\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "packages/**/*.ts",
+      "!**/__tests__/**",
+      "!packages/**/doc/I*.ts",
+      "!**/main.ts"
+    ],
+    "collectCoverage": false,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "cobertura"
+    ],
+    "coverageDirectory": "<rootDir>/__tests__/__results__/unit/coverage"
+  },
+  "jestSonar": {
+    "reportPath": "__tests__/__results__/jest-sonar"
+  },
+  "jest-stare": {
+    "resultDir": "__tests__/__results__/jest-stare",
+    "coverageLink": "../unit/coverage/lcov-report/index.html",
+    "additionalResultsProcessors": [
+      "jest-junit",
+      "jest-sonar-reporter"
+    ]
+  },
+  "jest-junit": {
+    "output": "__tests__/__results__/junit.xml"
+  }
+}

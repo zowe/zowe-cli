@@ -99,7 +99,7 @@ export class ProvisioningConstants {
  * @memberof ProvisioningConstants
  */
 export const noSessionProvisioning: IMessageDefinition = {
-    message: apiErrorHeader + `No session was supplied.`
+    message: apiErrorHeader.message + ` No session was supplied.`
 };
 
 /**
@@ -109,7 +109,7 @@ export const noSessionProvisioning: IMessageDefinition = {
  * @memberof ProvisioningConstants
  */
 export const noTemplateName: IMessageDefinition = {
-    message: apiErrorHeader + `No template name parameter was supplied.`
+    message: apiErrorHeader.message + ` No template name parameter was supplied.`
 };
 
 /**
@@ -119,7 +119,7 @@ export const noTemplateName: IMessageDefinition = {
  * @memberof ProvisioningConstants
  */
 export const noAccountInfo: IMessageDefinition = {
-    message: apiErrorHeader + `No account number was supplied.`
+    message: apiErrorHeader.message + ` No account number was supplied.`
 };
 
 /**
@@ -129,7 +129,7 @@ export const noAccountInfo: IMessageDefinition = {
  * @memberof ProvisioningConstants
  */
 export const noInstanceId: IMessageDefinition = {
-    message: apiErrorHeader + `No instance-id parameter was supplied.`
+    message: apiErrorHeader.message + ` No instance-id parameter was supplied.`
 };
 
 /**
@@ -139,5 +139,5 @@ export const noInstanceId: IMessageDefinition = {
  * @memberof ProvisioningConstants
  */
 export const noActionName: IMessageDefinition = {
-    message: apiErrorHeader + `No action name parameter was supplied.`
+    message: apiErrorHeader.message + ` No action name parameter was supplied.`
 };

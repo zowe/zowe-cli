@@ -41,7 +41,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -93,8 +93,8 @@ describe("Archive workflow details handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledWith(
                 fakeSession,
                 workflowKey,
                 undefined);
@@ -113,7 +113,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -176,8 +176,8 @@ describe("Archive workflow details handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(fakeSession, workflowKey);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledWith(fakeSession, workflowKey);
 
         });
     });
@@ -203,7 +203,7 @@ describe("Archive workflow details handler", () => {
             });
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `archive failed`});
             });
@@ -252,8 +252,8 @@ describe("Archive workflow details handler", () => {
             }
 
             expect(error.toString()).toContain(`archive failed`);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(fakeSession, workflowKey, undefined);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledWith(fakeSession, workflowKey, undefined);
 
         });
         it("should fail when no workflows match the provided wf name", async () => {
@@ -271,7 +271,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `archive failed`});
             });
@@ -331,7 +331,7 @@ describe("Archive workflow details handler", () => {
             }
 
             expect(error.toString()).toContain("No workflows match the provided workflow name.");
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(0);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledTimes(0);
 
         });
         it("should fail when archivation with workflow name fails", async () => {
@@ -349,7 +349,7 @@ describe("Archive workflow details handler", () => {
             let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
                 fakeSession = session;
                 throw new ImperativeError ({msg: `archive failed`});
             });
@@ -409,8 +409,8 @@ describe("Archive workflow details handler", () => {
             }
 
             expect(error.toString()).toContain(`Some workflows were not archived, please check the message above.`);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(1);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledWith(fakeSession, workflowKey);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledTimes(1);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledWith(fakeSession, workflowKey);
         });
         it("should fail when neither workflow key or name is chosen", async () => {
             // Require the handler and create a new instance
@@ -427,7 +427,7 @@ describe("Archive workflow details handler", () => {
             let logMessage = "";
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorfklowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
                 throw new ImperativeError ({msg: `archive failed`});
             });
 
@@ -480,7 +480,7 @@ describe("Archive workflow details handler", () => {
             }
 
             expect(error.toString()).toContain(`Internal create error:`);
-            expect(ArchiveWorkflow.archiveWorfklowByKey).toHaveBeenCalledTimes(0);
+            expect(ArchiveWorkflow.archiveWorkflowByKey).toHaveBeenCalledTimes(0);
         });
     });
 });
