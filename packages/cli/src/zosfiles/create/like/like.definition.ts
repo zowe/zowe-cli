@@ -60,10 +60,14 @@ export const DataSet: ICommandDefinition = {
         ZosFilesCreateOptions.dsntype,
         ZosFilesCreateExtraOptions.showAttributes,
 <<<<<<< HEAD
+<<<<<<< HEAD
         ZosFilesCreateExtraOptions.like
 =======
         ZosFilesCreateExtraOptions.like,
 >>>>>>> 6f26d50e (trying to add the like parameter)
+=======
+        ZosFilesCreateExtraOptions.like
+>>>>>>> 282d5cde (removed an extra comma)
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
