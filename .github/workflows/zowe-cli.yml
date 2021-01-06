@@ -34,7 +34,7 @@ jobs:
 
     - name: Install Node Package Dependencies
       id: install
-      run: npm ci
+      run: npm install
 
     - name: Build Source
       id: build
