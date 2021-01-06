@@ -59,7 +59,7 @@ export const DataSet: ICommandDefinition = {
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
         ZosFilesCreateExtraOptions.showAttributes,
-        ZosFilesCreateExtraOptions.like,
+        ZosFilesCreateExtraOptions.like
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
