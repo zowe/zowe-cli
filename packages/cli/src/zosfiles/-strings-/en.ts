@@ -141,7 +141,7 @@ export default {
                     SPECIFY_MODE: `Create a USS directory named "testDir" with mode "rwxrwxrwx" `
                 }
             }
-        },
+        }, 
         POSITIONALS: {
             DATASETNAME: "The name of the data set that you want to create",
             LIKEDATASETNAME: "Name of the dataset to be liked"
