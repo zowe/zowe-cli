@@ -10,8 +10,8 @@
 */
 
 import { resolve } from "path";
-import { TestEnvironment } from '../../__tests__/__src__/environment/TestEnvironment';
-import { ITestEnvironment } from '../../__tests__/__src__/environment/doc/response/ITestEnvironment';
+import { TestEnvironment } from '../../../__tests__/__src__/environment/TestEnvironment';
+import { ITestEnvironment } from '../../../__tests__/__src__/environment/doc/response/ITestEnvironment';
 
 let testEnvironment: ITestEnvironment;
 
