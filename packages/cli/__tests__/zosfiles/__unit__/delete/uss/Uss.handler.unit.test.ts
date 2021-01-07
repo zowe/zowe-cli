@@ -12,8 +12,6 @@
 import { Delete, IZosFilesResponse, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import UssHandler from "../../../../../src/zosfiles/delete/uss/Uss.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
-
 describe("UssHandler", () => {
     const defaultReturn: IZosFilesResponse = {
         success        : true,

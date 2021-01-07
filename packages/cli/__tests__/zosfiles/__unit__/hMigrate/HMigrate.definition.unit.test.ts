@@ -9,10 +9,9 @@
 *
 */
 
-import i18nEnglish from "../../../src/cli/-strings-/en";
-import { HMigrateDefinition } from "../../../src/cli/hMigrate/HMigrate.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { HMigrateDefinition } from "../../../../src/zosfiles/hMigrate/HMigrate.definition";
 import { ICommandDefinition } from "@zowe/imperative";
-
 describe("zos-files migrate group definition", () => {
     it ("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../src/cli/hMigrate/HMigrate.definition").HMigrateDefinition;

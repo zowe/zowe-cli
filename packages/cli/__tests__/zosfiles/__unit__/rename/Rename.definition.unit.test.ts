@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../src/cli/-strings-/en";
-import { RenameDefinition } from "../../../src/cli/rename/Rename.definition";
+import i18nEnglish from "../../../../src/zosfiles/-strings-/en";
+import { RenameDefinition } from "../../../../src/zosfiles/rename/Rename.definition";
 
 describe("Rename Definition", () => {
     it("should be using the correct string field in the object", () => {

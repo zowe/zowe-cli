@@ -134,14 +134,6 @@ describe("Download Jobs - System tests", () => {
                 outDir: downloadDir,
                 jobid: job.jobid,
                 jobname: job.jobname
-
-            await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, job);
-
-            const downloadDir = outputDirectory + "/downloadsteps/";
-            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
-                outDir: downloadDir,
-                jobid: job.jobid,
-                jobname: job.jobname
             });
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;

@@ -15,8 +15,7 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { Session, Imperative } from "@zowe/imperative";
-import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions } from "../../../../..";
-import { IMigrateOptions } from "../../../../../src/api/methods/hMigrate/doc/IMigrateOptions";
+import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions, IMigrateOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { inspect } from "util";
 
 let TEST_ENVIRONMENT: ITestEnvironment;

@@ -11,10 +11,10 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-import { HDelete, ZosFilesConstants, ZosFilesMessages } from "../../../..";
+import { HDelete, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 
-import { ZosmfRestClient } from "../../../../../rest";
-import { IDeleteOptions } from "../../../../src/api/methods/hDelete/doc/IDeleteOptions";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { IDeleteOptions } from "../../../../src/methods/hDelete/doc/IDeleteOptions";
 
 describe("hDelete data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");

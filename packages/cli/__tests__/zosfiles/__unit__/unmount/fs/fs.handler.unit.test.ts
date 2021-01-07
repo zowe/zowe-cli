@@ -12,7 +12,6 @@
 import { Unmount, IZosFilesResponse, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import FsHandler from "../../../../../src/zosfiles/unmount/fs/fs.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("FsHandler", () => {
     const defaultReturn: IZosFilesResponse = {

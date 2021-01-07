@@ -9,13 +9,12 @@
 *
 */
 
-import { Create, Delete, CreateDataSetTypeEnum, HRecall, ZosFilesMessages } from "../../../../..";
+import { Create, Delete, CreateDataSetTypeEnum, HMigrate, HRecall, IListOptions, IRecallOptions, List, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List, IListOptions, IRecallOptions, HMigrate } from "../../../../../src/api";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

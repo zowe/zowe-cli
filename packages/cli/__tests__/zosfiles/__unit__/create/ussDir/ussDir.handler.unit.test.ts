@@ -12,7 +12,6 @@
 import { Create, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 // import { CreateDataSetTypeEnum } from "../../../../src/api/methods/create/CreateDataSetType.enum";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("Create USS Directory", () => {
     describe("process method", () => {

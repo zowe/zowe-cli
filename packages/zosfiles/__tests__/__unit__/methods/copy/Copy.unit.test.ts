@@ -90,7 +90,7 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
                         { "X-IBM-Response-Timeout": "10"}
                     ];
 
@@ -133,8 +133,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName }, responseTimeout: 10 }
+                        { dsn : toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, responseTimeout: 10 }
                     );
 
                     expect(response).toEqual({
@@ -203,7 +203,7 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -247,8 +247,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName, memberName: toMemberName },
-                        { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName }, responseTimeout: 10 }
+                        { dsn: toDataSetName, member: toMemberName },
+                        { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }, responseTimeout: 10 }
                     );
 
                     expect(response).toEqual({
@@ -315,7 +315,7 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -358,8 +358,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName, memberName: toMemberName },
-                        { fromDataSet: { dataSetName: fromDataSetName}, responseTimeout: 10 }
+                        { dsn: toDataSetName, member: toMemberName },
+                        { "from-dataset": { dsn: fromDataSetName}, responseTimeout: 10 }
                     );
 
                     expect(response).toEqual({
@@ -428,7 +428,7 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -472,8 +472,8 @@ describe("Copy", () => {
 
                     const response = await Copy.dataSet(
                         dummySession,
-                        { dataSetName: toDataSetName },
-                        { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName }, responseTimeout: 10 }
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName, member: fromMemberName }, responseTimeout: 10 }
                     );
 
                     expect(response).toEqual({

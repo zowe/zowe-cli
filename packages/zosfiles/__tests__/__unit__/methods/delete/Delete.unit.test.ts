@@ -19,7 +19,6 @@ import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDelet
 import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
 import { Invoke } from "../../../../src/methods/invoke";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
-import { IZosFilesOptions } from "../../../../src/api/doc/IZosFilesOptions";
 
 describe("Delete", () => {
     const deleteExpectStringSpy = jest.spyOn(ZosmfRestClient, "deleteExpectString");

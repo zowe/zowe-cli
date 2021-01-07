@@ -19,7 +19,6 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
-import * as fs from "fs";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

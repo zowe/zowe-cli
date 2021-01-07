@@ -13,9 +13,9 @@ jest.mock("net");
 import * as net from "net";
 import Mock = jest.Mock;
 import { Imperative } from "@zowe/imperative";
-import { Processor } from "../Processor";
-import { DaemonClient } from "../DaemonClient";
-jest.mock("../DaemonClient");
+import { Processor } from "../src/Processor";
+import { DaemonClient } from "../src/DaemonClient";
+jest.mock("../src/DaemonClient");
 
 describe("Processor tests", () => {
 

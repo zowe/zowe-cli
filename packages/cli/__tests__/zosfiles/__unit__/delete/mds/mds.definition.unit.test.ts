@@ -9,8 +9,8 @@
 *
 */
 
-import i18nEnglish from "../../../../src/cli/-strings-/en";
-import { MdsDefinition } from "../../../../src/cli/delete/mds/Mds.definition";
+import i18nEnglish from "../../../../../src/zosfiles/-strings-/en";
+import { MdsDefinition } from "../../../../../src/zosfiles/delete/mds/Mds.definition";
 
 describe("MdsDefinition", () => {
     it("should use the correct object for strings", () => {

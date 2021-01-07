@@ -9,10 +9,9 @@
 *
 */
 
-import { IZosFilesResponse, HDelete } from "../../../../src/api";
-import DSHandler from "../../../../src/cli/delete/mds/Mds.handler";
-import { ZosFilesBaseHandler } from "../../../../src/cli/ZosFilesBase.handler";
-import { IDeleteOptions } from "../../../../src/api/methods/hDelete/doc/IDeleteOptions";
+import { IZosFilesResponse, HDelete, IDeleteOptions } from "@zowe/zos-files-for-zowe-sdk";
+import DSHandler from "../../../../../src/zosfiles/delete/mds/Mds.handler";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("MdsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
