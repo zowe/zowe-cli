@@ -23,7 +23,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
  */
 export const DataSet: ICommandDefinition = {
     name: "data-set",
-    aliases: ["like"],
+    aliases: ["ds"],
     description: strings.ACTIONS.DATA_SET_LIKE.DESCRIPTION,
     type: "command",
     handler: __dirname + "/like.handler",
@@ -35,12 +35,6 @@ export const DataSet: ICommandDefinition = {
             name: "dataSetName",
             type: "string",
             description: strings.POSITIONALS.DATASETNAME,
-            required: true
-        },
-        {
-            name: "likeDataSetName",
-            type: "string",
-            description: strings.POSITIONALS.LIKEDATASETNAME,
             required: true
         }
     ],
@@ -64,7 +58,7 @@ export const DataSet: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_LIKE.EXAMPLES.EX1,
-            options: "NEW.CLASSIC.DATASET"
+            options: "NEW.DATASET --like EXISTING.DATASET"
         }
 
     ]
