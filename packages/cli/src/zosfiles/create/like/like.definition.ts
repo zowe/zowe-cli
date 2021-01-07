@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { CreateDefaults } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
 import i18nTypings from "../../-strings-/en";
 
@@ -23,7 +22,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
  */
 export const DataSet: ICommandDefinition = {
     name: "data-set",
-    aliases: ["like"],
+    aliases: ["ds"],
     description: strings.ACTIONS.DATA_SET_LIKE.DESCRIPTION,
     type: "command",
     handler: __dirname + "/like.handler",
@@ -36,15 +35,10 @@ export const DataSet: ICommandDefinition = {
             type: "string",
             description: strings.POSITIONALS.DATASETNAME,
             required: true
-        },
-        {
-            name: "likeDataSetName",
-            type: "string",
-            description: strings.POSITIONALS.LIKEDATASETNAME,
-            required: true
         }
     ],
     options: [
+<<<<<<< HEAD
         ZosFilesCreateExtraOptions.size,
         {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.CLASSIC.primary},
         ZosFilesCreateOptions.volser,
@@ -61,6 +55,8 @@ export const DataSet: ICommandDefinition = {
         ZosFilesCreateExtraOptions.showAttributes,
 <<<<<<< HEAD
 <<<<<<< HEAD
+=======
+>>>>>>> 8837122f (made changes suggested by andrew)
         ZosFilesCreateExtraOptions.like
 =======
         ZosFilesCreateExtraOptions.like,
@@ -72,7 +68,7 @@ export const DataSet: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_LIKE.EXAMPLES.EX1,
-            options: "NEW.CLASSIC.DATASET"
+            options: "NEW.DATASET --like EXISTING.DATASET"
         }
 
     ]
