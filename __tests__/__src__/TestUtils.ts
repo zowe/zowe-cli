@@ -13,9 +13,9 @@ import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { randomBytes } from "crypto";
-import { ZosFilesConstants } from "../../packages/zosfiles/src/api";
+import { ZosFilesConstants } from "../../packages/zosfiles/src";
 import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../packages/rest";
+import { ZosmfRestClient } from "../../packages/core";
 
 /**
  * Execute a CLI script

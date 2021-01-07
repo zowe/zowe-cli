@@ -10,7 +10,7 @@
 */
 
 import { IGulpError, ITaskFunction } from "./GulpHelpers";
-import { Constants } from "../packages/Constants";
+import { Constants } from "../packages/cli/src/Constants";
 import { SpawnSyncReturns } from "child_process";
 import * as util from "util";
 import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@zowe/imperative";
@@ -116,7 +116,7 @@ const doc: ITaskFunction = async () => {
     // Get all command definitions
     const myConfig = ImperativeConfig.instance;
     // myConfig.callerLocation = __dirname;
-    myConfig.loadedConfig = require("../packages/imperative");
+    myConfig.loadedConfig = require("../packages/cli/src/imperative");
 
     // Need to avoid any .definition file inside of __tests__ folders
     myConfig.loadedConfig.commandModuleGlobs = ["**/!(__tests__)/cli/*.definition!(.d).*s"];
@@ -222,6 +222,25 @@ const doc: ITaskFunction = async () => {
 };
 doc.description = "Create documentation from the CLI help";
 
+const typedoc: ITaskFunction = (done) => {
+    const { version } = require("../lerna.json");
+    const { name } = require("../typedoc.json");
+    let docProcess: SpawnSyncReturns<string>;
+
+    try {
+        docProcess = childProcess.spawnSync(npx, ["typedoc",
+            "--options", "./typedoc.json", "--name", `"${name} - v${version}"`, "./packages/"], {stdio: "inherit"});
+
+    } catch (e) {
+        fancylog(ansiColors.red("Error encountered trying to run typedoc"));
+        done(e);
+        return;
+    }
+    done();
+};
+typedoc.description = "Runs typedoc to generate API docs for the Zowe Node.js SDK";
+
 exports.doc = doc;
 exports.lint = lint;
 exports.license = license;
+exports.typedoc = typedoc;

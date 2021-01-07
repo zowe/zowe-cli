@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`list template info handler tests should be able to list catalog 1`] = `
+"
+
+"
+`;
+
+exports[`list template info handler tests should be able to list catalog 2`] = `Object {}`;

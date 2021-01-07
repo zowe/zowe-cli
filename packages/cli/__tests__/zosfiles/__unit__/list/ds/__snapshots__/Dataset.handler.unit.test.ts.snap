@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List Dataset handler process method should list a data set if requested 1`] = `
+Object {
+  "apiResponse": Object {
+    "items": Array [
+      "test-items",
+    ],
+  },
+  "commandResponse": "listed",
+  "success": true,
+}
+`;
+
+exports[`List Dataset handler process method should list a data set if requested 2`] = `""`;
+
+exports[`List Dataset handler process method should list a data set if requested 3`] = `
+"
+
+listed"
+`;

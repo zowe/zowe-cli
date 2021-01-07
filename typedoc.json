@@ -1,7 +1,14 @@
 {
     "out": "./docs/typedoc/",
-    "exclude": "**/__tests__/**",
+    "exclude": [
+        "**/node_modules/**",
+        "**/__tests__/**",
+        "packages/cli/**"
+    ],
     "disableOutputCheck": true,
     "ignoreCompilerErrors": true,
-    "mode": "file"
+    "mode": "file",
+    "external-modulemap": ".*packages\/([^\/]+)\/.*",
+    "readme": "none",
+    "name": "Zowe Node.js SDK"
 }

@@ -20,5 +20,10 @@ jobs:
       with:
         node-version: 12.x
 
+    - name: Install Dependencies
+      run: npm install --ignore-scripts && npx lerna bootstrap --no-ci
+
     - name: Check Vulnerabilities
-      run: npm audit --production --audit-level=moderate
+      uses: t1m0thyj/lerna-audit@master
+      with:
+        npm-audit-args: --production --audit-level=moderate

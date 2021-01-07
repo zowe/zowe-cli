@@ -1,0 +1,205 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`auth login/logout apiml help should display the login help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   apiml
+
+ DESCRIPTION
+ -----------
+
+   Log in to Zowe API Mediation Layer authentication service and obtain or update a
+   token.
+
+   The token provides authentication to services that support the API ML SSO
+   (Single Sign-On) capability. When you log in, the token is stored in your
+   default base profile until it expires. Base profiles store connection
+   information shared by multiple services (e.g., z/OSMF), and are used if you do
+   not supply connection information in a service profile. To take advantage of the
+   API ML SSO capability, you should omit username and password in service profiles
+   so that the token in the base profile is used.
+
+ USAGE
+ -----
+
+   zowe auth login apiml [options]
+
+ OPTIONS
+ -------
+
+   --show-token  | --st (boolean)
+
+      Show the token when login is successful. If specified, does not save the token
+      to a profile.
+
+ BASE CONNECTION OPTIONS
+ -----------------------
+
+   --host  | -H (string)
+
+      Host name of service on the mainframe.
+
+   --port  | -P (number)
+
+      Port number of service on the mainframe.
+
+   --user  | -u (string)
+
+      User name to authenticate to service on the mainframe.
+
+   --password  | --pass | --pw (string)
+
+      Password to authenticate to service on the mainframe.
+
+   --reject-unauthorized  | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+ PROFILE OPTIONS
+ ---------------
+
+   --base-profile  | --base-p (string)
+
+      The name of a (base) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Log in to an API ML instance to obtain or update the token
+   stored in your base profile:
+
+      $ zowe auth login apiml
+
+   - Log in to an API ML instance to obtain a token without
+   storing it in a profile:
+
+      $ zowe auth login apiml --show-token
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: apiml.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   apiml\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Log in to Zowe API Mediation Layer authentication service and obtain or update a\\\\n   token.\\\\n\\\\n   The token provides authentication to services that support the API ML SSO\\\\n   (Single Sign-On) capability. When you log in, the token is stored in your\\\\n   default base profile until it expires. Base profiles store connection\\\\n   information shared by multiple services (e.g., z/OSMF), and are used if you do\\\\n   not supply connection information in a service profile. To take advantage of the\\\\n   API ML SSO capability, you should omit username and password in service profiles\\\\n   so that the token in the base profile is used.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe auth login apiml [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --show-token  | --st (boolean)\\\\n\\\\n      Show the token when login is successful. If specified, does not save the token\\\\n      to a profile.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      Host name of service on the mainframe.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      Port number of service on the mainframe.\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      User name to authenticate to service on the mainframe.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Password to authenticate to service on the mainframe.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Log in to an API ML instance to obtain or update the token\\\\n   stored in your base profile:\\\\n\\\\n      $ zowe auth login apiml\\\\n\\\\n   - Log in to an API ML instance to obtain a token without\\\\n   storing it in a profile:\\\\n\\\\n      $ zowe auth login apiml --show-token\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   apiml\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Log in to Zowe API Mediation Layer authentication service and obtain or update a\\\\n   token.\\\\n\\\\n   The token provides authentication to services that support the API ML SSO\\\\n   (Single Sign-On) capability. When you log in, the token is stored in your\\\\n   default base profile until it expires. Base profiles store connection\\\\n   information shared by multiple services (e.g., z/OSMF), and are used if you do\\\\n   not supply connection information in a service profile. To take advantage of the\\\\n   API ML SSO capability, you should omit username and password in service profiles\\\\n   so that the token in the base profile is used.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe auth login apiml [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --show-token  | --st (boolean)\\\\n\\\\n      Show the token when login is successful. If specified, does not save the token\\\\n      to a profile.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      Host name of service on the mainframe.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      Port number of service on the mainframe.\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      User name to authenticate to service on the mainframe.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Password to authenticate to service on the mainframe.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Log in to an API ML instance to obtain or update the token\\\\n   stored in your base profile:\\\\n\\\\n      $ zowe auth login apiml\\\\n\\\\n   - Log in to an API ML instance to obtain a token without\\\\n   storing it in a profile:\\\\n\\\\n      $ zowe auth login apiml --show-token\\\\n\\\\n\\"
+}"
+`;
+
+exports[`auth login/logout apiml help should display the logout help 1`] = `
+"
+ COMMAND NAME
+ ------------
+
+   apiml
+
+ DESCRIPTION
+ -----------
+
+   Log out of the Zowe API Mediation Layer authentication service and revoke the
+   token so it can no longer authenticate. Also remove the token from the default
+   base profile, if it is stored on disk.
+
+ USAGE
+ -----
+
+   zowe auth logout apiml [options]
+
+ BASE CONNECTION OPTIONS
+ -----------------------
+
+   --host  | -H (string)
+
+      Host name of service on the mainframe.
+
+   --port  | -P (number)
+
+      Port number of service on the mainframe.
+
+   --token-type  | --tt (string)
+
+      The type of token to get and use for the API. Omit this option to use the
+      default token type, which is provided by 'zowe auth login'.
+
+      Allowed values: apimlAuthenticationToken, jwtToken, LtpaToken2
+
+   --token-value  | --tv (string)
+
+      The value of the token to pass to the API.
+
+   --reject-unauthorized  | --ru (boolean)
+
+      Reject self-signed certificates.
+
+      Default value: true
+
+ PROFILE OPTIONS
+ ---------------
+
+   --base-profile  | --base-p (string)
+
+      The name of a (base) profile to load for this command execution.
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a the group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+ EXAMPLES
+ --------
+
+   - Log out of an API ML instance to revoke the token that was
+   in use and remove it from your base profile:
+
+      $ zowe auth logout apiml
+
+   - Log out of an API ML instance to revoke a token that was
+   not stored in a profile:
+
+      $ zowe auth logout apiml --token-value <token>
+
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: apiml.\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   apiml\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Log out of the Zowe API Mediation Layer authentication service and revoke the\\\\n   token so it can no longer authenticate. Also remove the token from the default\\\\n   base profile, if it is stored on disk.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe auth logout apiml [options]\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      Host name of service on the mainframe.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      Port number of service on the mainframe.\\\\n\\\\n   --token-type  | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n      Allowed values: apimlAuthenticationToken, jwtToken, LtpaToken2\\\\n\\\\n   --token-value  | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Log out of an API ML instance to revoke the token that was\\\\n   in use and remove it from your base profile:\\\\n\\\\n      $ zowe auth logout apiml\\\\n\\\\n   - Log out of an API ML instance to revoke a token that was\\\\n   not stored in a profile:\\\\n\\\\n      $ zowe auth logout apiml --token-value <token>\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   apiml\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Log out of the Zowe API Mediation Layer authentication service and revoke the\\\\n   token so it can no longer authenticate. Also remove the token from the default\\\\n   base profile, if it is stored on disk.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe auth logout apiml [options]\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      Host name of service on the mainframe.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      Port number of service on the mainframe.\\\\n\\\\n   --token-type  | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n      Allowed values: apimlAuthenticationToken, jwtToken, LtpaToken2\\\\n\\\\n   --token-value  | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a the group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Log out of an API ML instance to revoke the token that was\\\\n   in use and remove it from your base profile:\\\\n\\\\n      $ zowe auth logout apiml\\\\n\\\\n   - Log out of an API ML instance to revoke a token that was\\\\n   not stored in a profile:\\\\n\\\\n      $ zowe auth logout apiml --token-value <token>\\\\n\\\\n\\"
+}"
+`;

@@ -26,7 +26,7 @@ import {
     Session,
     ConnectionPropsForSessCfg
 } from "@zowe/imperative";
-import { ZosmfSession } from "../index";
+import { ZosmfSession } from "./ZosmfSession";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
