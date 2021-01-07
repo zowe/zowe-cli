@@ -9,12 +9,6 @@
 *
 */
 
-<<<<<<< HEAD:packages/auth/index.ts
-export * from "./src/api/Login";
-export * from "./src/api/LoginConstants";
-export * from "./src/api/Logout";
-export * from "./src/api/LogoutConstants";
-=======
 export * from "./constants/Zosmf.constants";
 export * from "./constants/Zosmf.messages";
 
@@ -27,4 +21,4 @@ export * from "./CheckStatus";
 export * from "./ListDefinedSystems";
 export * from "./ZosmfBaseHandler";
 export * from "./ZosmfSession";
->>>>>>> next-merge2:packages/zosmf/src/index.ts
+

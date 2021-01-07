@@ -52,13 +52,11 @@ export class Copy {
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const payload = {
-            request: "copy",
         const payload: any = {
             "request": "copy",
             "from-dataset": {
-                dsn: options.fromDataSet.dataSetName,
-                member: options.fromDataSet.memberName
+                dsn: options["from-dataset"].dsn,
+                member: options["from-dataset"].member
             },
             ...options
         };
