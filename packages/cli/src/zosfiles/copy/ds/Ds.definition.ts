@@ -72,7 +72,7 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX4,
             options: `"USER.FROM.SET(mem1)" "USER.TO.SET"`
-        }
+        },
         {
             description: strings.EXAMPLES.EX5,
             options: `"USER.FROM.SET" "USER.TO.SET" --replace`

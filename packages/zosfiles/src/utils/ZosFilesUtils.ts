@@ -18,7 +18,6 @@ import { IZosFilesResponse } from "../doc/IZosFilesResponse";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
-import { ZosmfHeaders } from "../../../../rest";
 
 /**
  * Common IO utilities

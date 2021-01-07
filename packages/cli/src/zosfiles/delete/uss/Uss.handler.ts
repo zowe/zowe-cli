@@ -12,7 +12,6 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Delete, IZosFilesResponse, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to delete a USS file.

@@ -12,8 +12,6 @@
 import { AbstractSession, IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { IZosFilesResponse, Invoke, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
-
 /**
  * Handler to create a PDS data set
  * @export

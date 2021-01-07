@@ -12,7 +12,6 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse, Create, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IZosFilesOptions } from "../../../api/doc/IZosFilesOptions";
 
 /**
  * Handler to create a USS file

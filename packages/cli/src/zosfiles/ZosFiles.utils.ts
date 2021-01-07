@@ -24,11 +24,11 @@ export function getDataSet(name: string): IDataSet {
         const [, dsn, member] = match;
         return {
             dsn,
-            memberName
+            member
         };
     } else {
         return {
-            dataSetName: name
+            dsn: name
         };
     }
 }

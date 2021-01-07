@@ -24,7 +24,6 @@ import { IDownloadOptions } from "./doc/IDownloadOptions";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
-import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs

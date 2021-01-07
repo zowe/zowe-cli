@@ -10,10 +10,8 @@
 */
 
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
-import { IZosFilesResponse } from "../../../api/doc/IZosFilesResponse";
+import { IZosFilesResponse, HRecall } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { HRecall } from "../../../api";
-
 /**
  * Handler to rename a Data Set
  */
