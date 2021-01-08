@@ -34,7 +34,13 @@ jobs:
 
     - name: Install Node Package Dependencies
       id: install
-      run: rm package-lock.json && rm packages/*/package-lock.json && npm install
+      run: npm ci
+
+    - name: Install imperative@json-config-next
+      run: |
+        git clone https://github.com/zowe/imperative.git
+        cd imperative && git checkout json-config-next && npm install && npm run build && npm link
+        npm link @zowe/imperative
 
     - name: Build Source
       id: build
