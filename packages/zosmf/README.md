@@ -35,22 +35,6 @@ import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
     console.error(err);
     process.exit(1);
 });
-
-const session = new Session(sessionConfig);
-
-async function main() {
-    let response: IZosmfInfoResponse;
-    try {
-        response = await CheckStatus.getZosmfInfo(session);
-        console.log(response);
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
-}
-
-main();
 ```
 
 #
@@ -85,20 +69,4 @@ import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
     console.error(err);
     process.exit(1);
 });
-
-const session = new Session(sessionConfig);
-
-async function main() {
-    let response: IZosmfListDefinedSystemsResponse;
-    try {
-        response = await ListDefinedSystems.listDefinedSystems(session);
-        console.log(response);
-        process.exit(0);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
-}
-
-main();
 ```
