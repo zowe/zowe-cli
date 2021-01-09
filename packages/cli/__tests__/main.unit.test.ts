@@ -29,7 +29,7 @@ describe("behavior of main.ts", () => {
 
         it("should exit with non zero return code if Imperative.init() fails - calling main.ts directly", async () => {
 
-            const mainTs = resolve(__dirname, '../../packages/main');
+            const mainTs = resolve(__dirname, '../src/main');
 
             const realImperative = require("@zowe/imperative").Imperative;
             const imperativeMock = jest.spyOn(realImperative, "init");

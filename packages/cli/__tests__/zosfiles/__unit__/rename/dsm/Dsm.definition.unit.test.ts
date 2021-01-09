@@ -12,7 +12,7 @@
 import i18nEnglish from "../../../../../src/zosfiles/-strings-/en";
 import { DsmDefinition } from "../../../../../src/zosfiles/rename/dsm/Dsm.definition";
 
-describe("DsDefinition", () => {
+describe("DsmDefinition", () => {
     it("should use the correct object for strings", () => {
         const strings = i18nEnglish.RENAME.ACTIONS.DATA_SET_MEMBER;
 
