@@ -51,6 +51,16 @@ export const ZosFilesCreateExtraOptions: { [key: string]: ICommandOptionDefiniti
         aliases: ["sz"],
         description: strings.SIZE,
         type: "string"
+    },
+     /**
+     * The like value of data set
+     * @type {ICommandOptionDefinition}
+     */
+    like: {
+        name: "like",
+        aliases: ["lk"],
+        description: strings.LIKE,
+        type: "string"
     }
 };
 

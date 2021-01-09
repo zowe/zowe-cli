@@ -26,6 +26,7 @@ export class ArchiveWorkflow {
      * Archives the workflow based on the workflow key
      *
      * @static
+     * @deprecated Use `archiveWorkflowByKey` instead because it is spelled correctly
      * @param {AbstractSession} session z/OSMF session
      * @param {string} workflowKey Workflow key of the workflow to be archived
      * @param {string} [zOSMFVersion=WorkflowConstants.ZOSMF_VERSION] z/OSMF REST API version
@@ -33,6 +34,22 @@ export class ArchiveWorkflow {
      * @memberof ArchiveWorkflow
      */
     public static archiveWorfklowByKey(session: AbstractSession,
+                                       workflowKey: string,
+                                       zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
+        return this.archiveWorkflowByKey(session, workflowKey, zOSMFVersion);
+    }
+
+    /**
+     * Archives the workflow based on the workflow key
+     *
+     * @static
+     * @param {AbstractSession} session z/OSMF session
+     * @param {string} workflowKey Workflow key of the workflow to be archived
+     * @param {string} [zOSMFVersion=WorkflowConstants.ZOSMF_VERSION] z/OSMF REST API version
+     * @returns {Promise<IArchivedWorkflow>} Promise of the output of the workflow archiving
+     * @memberof ArchiveWorkflow
+     */
+    public static archiveWorkflowByKey(session: AbstractSession,
                                        workflowKey: string,
                                        zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
         WorkflowValidator.validateSession(session);

@@ -40,6 +40,12 @@ export default {
                     EX1: "Create an empty C code PDS with default parameters"
                 }
             },
+            DATA_SET_LIKE: {
+                DESCRIPTION: "Create data sets based on the properties of an existing data set",
+                EXAMPLES: {
+                    EX1: "Create an dataset with default parameters and like flag"
+                }
+            },
             DATA_SET_PARTITIONED: {
                 DESCRIPTION: "Create partitioned data sets (PDS)",
                 EXAMPLES: {
@@ -134,7 +140,7 @@ export default {
                     CREATE_DIRECTORY: `Create a USS directory named "testDir" `,
                     SPECIFY_MODE: `Create a USS directory named "testDir" with mode "rwxrwxrwx" `
                 }
-            }
+            }    
         },
         POSITIONALS: {
             DATASETNAME: "The name of the data set that you want to create"
@@ -150,16 +156,17 @@ export default {
             AVGBLK: "The number of average blocks (for example, 25)",
             RECFM: `The record format for the data set (for example, FB for "Fixed Block")`,
             BLKSIZE: "The block size for the data set (for example, 6160)",
+            LIKE: "Name of an existing data set to base your new data set's properties on",
             LRECL: "The logical record length. Analogous to the length of a line (for example, 80)",
             STORCLASS: "The SMS storage class to use for the allocation",
             MGNTCLASS: "The SMS management class to use for the allocation",
             DATACLASS: "The SMS data class to use for the allocation",
             DSNTYPE: "The data set type",
             FLATFILE: "Indicates that you want to create the data set as a physical sequential file (flat file). A physical sequential file " +
-                "differs from a partitioned data set (PDS) because it cannot contain members, only file contents.",
+            "differs from a partitioned data set (PDS) because it cannot contain members, only file contents.",
             SHOWATTRIBUTES: "Show the full allocation attributes",
             SIZE: "The size of the data set (specified as nCYL or nTRK - where n is the number of cylinders or tracks). Sets the primary " +
-                "allocation (the secondary allocation becomes ~10% of the primary)."
+            "allocation (the secondary allocation becomes ~10% of the primary)."
         }
     },
     COPY: {
@@ -172,12 +179,14 @@ export default {
                     TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)"
                 },
                 OPTIONS: {
+                    REPLACE: "Specify this option as true if you wish to replace like-named members in the target dataset"
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
                     EX2: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
                     EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
-                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'"
+                    EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
+                    EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members"
                 }
             }
         }
