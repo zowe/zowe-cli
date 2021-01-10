@@ -67,6 +67,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * @returns {Promise<void>}
      */
     public async process(commandParameters: IHandlerParameters) {
+
         this.mHandlerParams = commandParameters;
         this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
         this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
@@ -76,7 +77,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         );
 
         const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments
+            sessCfg, commandParameters.arguments, {}, commandParameters
         );
 
         this.mSession = new Session(sessCfgWithCreds);

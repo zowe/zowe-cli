@@ -27,6 +27,7 @@ export class DaemonClient {
      * @memberof DaemonClient
      */
     private static readonly STOP_KEY = "--shutdown";
+    private static readonly ZOWE_DEAMON_HEADER_KEY = "x-zowe-daemon";
 
     /**
      * Creates an instance of DaemonClient.
@@ -73,8 +74,11 @@ export class DaemonClient {
      * @memberof DaemonClient
      */
     private data(data: Buffer) {
+        if (data.toString().indexOf(DaemonClient.ZOWE_DEAMON_HEADER_KEY) > -1) {
+            return;
+        }
         // NOTE(Kelosky): this is not exposed yet, but will allow for a clean shut down if undocumented `--shutdown`
-        // is written to the persistent Processor.
+        // is written to the persistent Processor.  It should be wrapped in a new header and handled in DaemonClient.ts, e.g. x-zowe-daemon-shutdown
         const stopOffset = data.toString().indexOf(DaemonClient.STOP_KEY);
         if (stopOffset > -1) {
             if (this.mServer) {
