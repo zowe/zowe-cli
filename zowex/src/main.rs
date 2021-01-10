@@ -8,6 +8,9 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+extern crate rpassword;
+use rpassword::read_password;
+
 use std::collections::HashMap;
 use std::env;
 use std::io::prelude::*;
@@ -89,7 +92,7 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
             // if headers include other data on the same line, isolate them
             if pieces.len() > 1 {
                 new_headers = parse_headers(&pieces[0]);
-                // println!("@debug data on pieces");
+            // println!("@debug data on pieces");
             // otherwise, get raw headers
             } else {
                 new_headers = parse_headers(&line);
@@ -100,7 +103,7 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
             if new_headers.len() > 0 {
                 headers = new_headers;
                 got_new_headers = true;
-                // println!("@debug got new headers");
+            // println!("@debug got new headers");
             } else {
                 // do nothing
                 // println!("@debug did not got new headers");
@@ -121,27 +124,7 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                     if progress == 1i32 {
                         print!("{}", &line[0..(line.len() - 1)]);
                         io::stdout().flush().unwrap();
-
-                    }
-                    // else if prompt == 1i32 {
-
-                    //     // prompt
-                    //     let mut reply = String::new();
-                    //     io::stdin().read_line(&mut reply).unwrap();
-
-                    //     // append response to header
-                    //     let mut full_reply = X_ZOWE_DAEMON_REPLY.to_owned();
-                    //     full_reply.push_str(&reply);
-
-                    //     // adjust our state that prompting has been resolved
-                    //     headers.insert(X_ZOWE_DAEMON_PROMPT.to_string(), 0i32);
-
-                    //     // write response
-                    //     stream_clone.write(full_reply.as_bytes()).unwrap();
-
-                    // // else, just write this line
-                    // }
-                    else {
+                    } else {
                         print!("{}", line);
                         io::stdout().flush().unwrap();
                     }
@@ -152,11 +135,17 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                         io::stdout().flush().unwrap();
                         let &prompt = headers.get(X_ZOWE_DAEMON_PROMPT).unwrap();
 
-                        if prompt == 1i32 {
-
+                        if prompt > 0i32 {
                             // prompt
                             let mut reply = String::new();
-                            io::stdin().read_line(&mut reply).unwrap();
+
+                            // type 2 indicates secure fields
+                            if prompt == 2i32 {
+                                reply = read_password().unwrap();
+                            // else regular prompting
+                            } else {
+                                io::stdin().read_line(&mut reply).unwrap();
+                            }
 
                             // append response to header
                             let mut full_reply = X_ZOWE_DAEMON_REPLY.to_owned();
@@ -168,7 +157,7 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                             // write response
                             stream_clone.write(full_reply.as_bytes()).unwrap();
 
-                        // else, just write this line
+                            // else, just write this line
                         }
                     }
                 }
@@ -190,7 +179,6 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
 
     Ok(())
 }
-
 
 fn parse_headers(buf: &String) -> HashMap<String, i32> {
     let mut headers: HashMap<String, i32> = HashMap::new();
@@ -244,10 +232,9 @@ fn get_port_string() -> String {
 }
 
 fn get_beg(buf: &str) -> Vec<String> {
-
     let mut parts: Vec<String> = Vec::new();
 
-    let ss: Vec<char>  = buf.chars().collect();
+    let ss: Vec<char> = buf.chars().collect();
 
     // if this line is long enough to contain headers
     if ss.len() >= 2 {
@@ -258,7 +245,7 @@ fn get_beg(buf: &str) -> Vec<String> {
         // into two pieces to pass back
         } else {
             for (i, x) in ss.iter().enumerate() {
-                if *x == 'x'  && ss[i + 1] == '-' {
+                if *x == 'x' && ss[i + 1] == '-' {
                     let first: String = ss.iter().skip(0).take(i).collect();
                     let second: String = ss.iter().skip(i).take(ss.len() - 1).collect();
                     parts.push(second);
@@ -266,7 +253,6 @@ fn get_beg(buf: &str) -> Vec<String> {
                     break;
                 }
             }
-
         }
     // line cannot have headers, just return the line
     } else {
