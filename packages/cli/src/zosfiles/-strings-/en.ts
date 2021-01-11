@@ -140,7 +140,7 @@ export default {
                     CREATE_DIRECTORY: `Create a USS directory named "testDir" `,
                     SPECIFY_MODE: `Create a USS directory named "testDir" with mode "rwxrwxrwx" `
                 }
-            }    
+            }
         },
         POSITIONALS: {
             DATASETNAME: "The name of the data set that you want to create"
