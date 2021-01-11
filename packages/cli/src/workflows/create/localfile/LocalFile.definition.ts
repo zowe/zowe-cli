@@ -48,7 +48,8 @@ export const LocalFile: ICommandDefinition = {
         CreateCommonOptions.deleteCompleted,
         CreateCommonOptions.overwrite,
         CreateCommonOptions.remoteDirectory,
-        CreateCommonOptions.keepFiles
+        CreateCommonOptions.keepFiles,
+        CreateCommonOptions.jobStatement
     ]),
     outputFormatOptions: true,
     examples: [
