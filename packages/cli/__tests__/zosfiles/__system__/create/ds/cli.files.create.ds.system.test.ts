@@ -21,7 +21,6 @@ const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let dsnameSuffix: string;
