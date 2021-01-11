@@ -17,7 +17,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to like a data set
  */
 
-export default class BinaryPDSHandler extends ZosFilesBaseHandler {
+export default class DataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
         return Create.dataSetLike(
             session,

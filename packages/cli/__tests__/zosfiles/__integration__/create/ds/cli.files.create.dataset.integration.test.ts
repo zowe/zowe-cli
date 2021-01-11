@@ -38,10 +38,10 @@ describe("Create  Data Set", () => {
 
     describe("Expected failures", () => {
 
-        it("should fail creating a binary partitioned data set due to missing data set name", () => {
-            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ds_like.sh", TEST_ENVIRONMENT);
+        it("should fail creating a data set due to missing like data set name", () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_create_ds_fail_missing_like.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("dataSetName");
+            expect(response.stderr.toString()).toContain("like");
         });
     });
 });
