@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-files create  command definition should not have changed 1`] = `
+Array [
+  
+  Object {
+    "aliases": Array [],
+    "description": "The like flag to like a dataset",
+    "name": "like",
+    "type": "string",
+  },
+]
+`;
+

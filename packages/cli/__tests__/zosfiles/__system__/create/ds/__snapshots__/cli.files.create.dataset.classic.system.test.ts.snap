@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Data Set Success scenarios should create a  data set 1`] = `
+"================Z/OS FILES CREATE DATA-SET===============
+Data set created successfully.
+"
+`;
+
+exports[`Create  Data Set Success scenarios should  data set and print attributes 1`] = `
+"================Z/OS FILES CREATE DATA-SET ===============
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"\\",
+  \\"stdout\\": \\"Data set created successfully.\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set created successfully.\\"
+  }
+}"
+`;
+
+exports[`Create Classic Data Set Success scenarios should create a data set with response timeout 1`] = `
+"================Z/OS FILES CREATE DATA-SET===============
+Data set created successfully.
+"
+`;
+
