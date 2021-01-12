@@ -116,7 +116,37 @@ After the initial setup, you can define additional mainframe services to your gl
 Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The JSON arrays contain your initial z/OSMF connection details. For example:
 
 <!--
-Insert an example here of the JSON for a simple z/osmf connection, for a visual. -->
+Insert an example here of the JSON for a simple z/osmf connection, for a visual.
+t1m0thyj - Added minimal JSON example below
+-->
+```json
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                }
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "lpar1.zosmf"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.lpar1.properties.user",
+        "profiles.lpar1.properties.password"
+    ]
+}
+```
 
 From here, you can edit the details as needed and save the file. For example, you might change the password field if your mainframe password changed.
 
@@ -124,7 +154,53 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
 
 <!-- TODO
 Insert a JSON example here where a second instance of z/OSMF on a different LPAR is added to config, or similar. Mike B - "I would use host or port info as an example. Username and password should be specified in the secure array and therefore will not be edited in plain text."
+t1m0thyj - Added JSON example below that shows "lpar2" config
 -->
+```json
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                }
+            }
+        },
+        "lpar2": {
+            "properties": {
+                "host": "example2.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1443
+                    }
+                }
+            }
+        }
+    },
+    "defaults": {
+        // Change to lpar2.zosmf if you wish to change default profile
+        "zosmf": "lpar1.zosmf"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.lpar1.properties.user",
+        "profiles.lpar1.properties.password",
+        // See below about tips for using base array to avoid duplicating these
+        "profiles.lpar2.properties.user",
+        "profiles.lpar2.properties.password"
+    ]
+}
+```
 
 You can continue to add more LPARs, and more services within each LPAR. After you make changes, save the file and issue a Zowe CLI command to the service to verify connection.
 ## Managing credential security
@@ -156,7 +232,56 @@ In the following example, the username and password fields for ZOSMF1 and ZOSMF2
 
 <!-- TODO
 Worth adding a JSON example here where 2 zosmf services are inheriting user and pass from base array?
+t1m0thyj - Added JSON example below that shows base profile shared by 2 services
 -->
+```json
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                }
+            }
+        },
+        "lpar2": {
+            "properties": {
+                "host": "example2.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1443
+                    }
+                }
+            }
+        },
+        "my_base": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "lpar1.zosmf",
+        "base": "my_base"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.my_base.properties.password",
+        "profiles.my_base.properties.user"
+    ]
+}
+```
 
 ### Tips for using the base array
 
@@ -182,5 +307,269 @@ Mike B - "I'd cover at least two. One for accessing multiple services directly o
 Another example could be accessing multiple services directly on LPAR1 and LPAR2 where username/password varies between LPAR1 & LPAR2 services.
 
 Yet another example could be a situation where API ML is leveraged to access production services but services on a dev-test environment can be accessed directly."
--->
 
+t1m0thyj - Added JSON examples below
+-->
+```json
+// accessing multiple services directly on multiple LPARs that share the same username/password
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                },
+                "tso": {
+                    "type": "tso",
+                    "properties": {
+                        "account": "ACCT#",
+                        "codePage": "1047",
+                        "logonProcedure": "IZUFPROC"
+                    }
+                },
+                "ssh": {
+                    "type": "ssh",
+                    "properties": {
+                        "port": 22
+                    }
+                }
+            }
+        },
+        "lpar2": {
+            "properties": {
+                "host": "example2.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1443
+                    }
+                }
+            }
+        },
+        "my_base": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "lpar2.zosmf",
+        "tso": "lpar1.tso",
+        "ssh": "lpar1.ssh",
+        "base": "my_base"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.my_base.properties.user",
+        "profiles.my_base.properties.password"
+    ]
+}
+```
+
+```json
+// accessing multiple services via the API ML (where MFA/SSO is achievable via token-based auth)
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "basePath": "api/v1"
+                    }
+                },
+                "cics": {
+                    "type": "cics",
+                    "properties": {
+                        "basePath": "api/v1/my_cics"
+                    }
+                },
+                "db2": {
+                    "type": "db2",
+                    "properties": {
+                        "basePath": "api/v1/my_db2"
+                    }
+                }
+            }
+        },
+        "my_base": {
+            "type": "base",
+            "properties": {
+                "host": "example1.com",
+                "port": 443,
+                "rejectUnauthorized": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "lpar1.zosmf",
+        "cics": "lpar1.cics",
+        "db2": "lpar1.db2",
+        "base": "my_base"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.my_base.properties.authToken"
+    ]
+}
+```
+
+```json
+// accessing multiple services directly on LPAR1 and LPAR2 where username/password varies between LPAR1 & LPAR2 services
+// identical to first example except for secure array at the bottom
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                },
+                "tso": {
+                    "type": "tso",
+                    "properties": {
+                        "account": "ACCT#",
+                        "codePage": "1047",
+                        "logonProcedure": "IZUFPROC"
+                    }
+                },
+                "ssh": {
+                    "type": "ssh",
+                    "properties": {
+                        "port": 22
+                    }
+                }
+            }
+        },
+        "lpar2": {
+            "properties": {
+                "host": "example2.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1443
+                    }
+                }
+            }
+        },
+        "my_base": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "lpar2.zosmf",
+        "tso": "lpar1.tso",
+        "ssh": "lpar1.ssh",
+        "base": "my_base"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.lpar1.properties.user",
+        "profiles.lpar1.properties.password",
+        "profiles.lpar2.properties.user",
+        "profiles.lpar2.properties.password"
+    ]
+}
+```
+
+```json
+// API ML is leveraged to access production services but services on a dev-test environment can be accessed directly
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "prod": {
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "basePath": "api/v1"
+                    }
+                },
+                "cics": {
+                    "type": "cics",
+                    "properties": {
+                        "basePath": "api/v1/my_cics"
+                    }
+                },
+                "db2": {
+                    "type": "db2",
+                    "properties": {
+                        "basePath": "api/v1/my_db2"
+                    }
+                }
+            }
+        },
+        "dev": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 443
+                    }
+                },
+                "tso": {
+                    "type": "tso",
+                    "properties": {
+                        "account": "ACCT#",
+                        "codePage": "1047",
+                        "logonProcedure": "IZUFPROC"
+                    }
+                },
+                "ssh": {
+                    "type": "ssh",
+                    "properties": {
+                        "port": 22
+                    }
+                }
+            }
+        },
+        "my_base": {
+            "type": "base",
+            "properties": {
+                "host": "example1.com",
+                "port": 443,
+                "rejectUnauthorized": true
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "prod.zosmf",
+        "cics": "prod.cics",
+        "db2": "prod.db2",
+        "tso": "dev.tso",
+        "ssh": "dev.ssh",
+        "base": "my_base"
+    },
+    "plugins": [],
+    "secure": [
+        "profiles.dev.properties.user",
+        "profiles.dev.properties.password",
+        "profiles.my_base.properties.authToken"
+    ]
+}
+```
