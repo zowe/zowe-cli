@@ -19,17 +19,18 @@ describe("Create data set handler", () => {
             const handlerReq = require("../../../../../src/zosfiles/create/ds/ds.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
+            const likeDataSetName = "testing";
 
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
-            let fakeSession = null;
+            let AbstractSession = null;
 
             // Mock the create function
             Create.dataSetLike = jest.fn((session) => {
-                fakeSession = session;
+                AbstractSession = session;
                 return {
                     success: true,
                     commandResponse: "created"
@@ -52,9 +53,10 @@ describe("Create data set handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process({
                     arguments: {
-                        $0: "fake",
-                        _: ["fake"],
+                        $0: "abstract",
+                        _: ["abstract"],
                         dataSetName,
+                        likeDataSetName,
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
@@ -91,7 +93,7 @@ describe("Create data set handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.dataSet).toHaveBeenCalledTimes(1);
-            expect(Create.dataSetLike).toHaveBeenCalledWith(fakeSession, dataSetName, dataSetName);
+            expect(Create.dataSetLike).toHaveBeenCalledWith(AbstractSession, dataSetName, likeDataSetName);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
