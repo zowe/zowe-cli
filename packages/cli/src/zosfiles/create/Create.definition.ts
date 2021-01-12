@@ -44,6 +44,6 @@ export const CreateDefinition: ICommandDefinition = {
         VsamDefinition,
         ZfsDefinition,
         UssFileDefinition,
-        UssDirDefinition,
+        UssDirDefinition
     ]
 };
