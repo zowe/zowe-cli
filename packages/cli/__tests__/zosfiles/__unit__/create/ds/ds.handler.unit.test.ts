@@ -28,7 +28,7 @@ describe("Create data set handler", () => {
             let fakeSession = null;
 
             // Mock the create function
-            Create.dataSet = jest.fn((session) => {
+            Create.dataSetLike = jest.fn((session) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -91,7 +91,7 @@ describe("Create data set handler", () => {
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(Create.dataSet).toHaveBeenCalledTimes(1);
-            expect(Create.dataSet).toHaveBeenCalledWith(fakeSession, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dataSetName, {});
+            expect(Create.dataSetLike).toHaveBeenCalledWith(fakeSession, dataSetName, dataSetName);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

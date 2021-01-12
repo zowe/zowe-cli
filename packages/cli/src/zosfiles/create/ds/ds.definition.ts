@@ -20,7 +20,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
  * Create dataSet command definition containing its description, examples and/or options
  * @type {ICommandDefinition}
  */
-export const DataSet: ICommandDefinition = {
+export const DsDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
     description: strings.ACTIONS.DATA_SET_LIKE.DESCRIPTION,
