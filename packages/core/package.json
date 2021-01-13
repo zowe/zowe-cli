@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/imperative": "4.10.0",
+    "@zowe/imperative": "4.10.2",
     "chalk": "^4.1.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
