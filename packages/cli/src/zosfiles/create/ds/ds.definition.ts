@@ -25,7 +25,7 @@ export const DsDefinition: ICommandDefinition = {
     aliases: ["ds"],
     description: strings.ACTIONS.DATA_SET_LIKE.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/like.handler",
+    handler: __dirname + "/ds.handler",
     profile: {
         optional: ["zosmf"]
     },

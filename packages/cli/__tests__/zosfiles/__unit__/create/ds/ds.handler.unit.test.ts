@@ -92,7 +92,7 @@ describe("Create data set handler", () => {
 
             expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
-            expect(Create.dataSet).toHaveBeenCalledTimes(1);
+            expect(Create.dataSetLike).toHaveBeenCalledTimes(1);
             expect(Create.dataSetLike).toHaveBeenCalledWith(AbstractSession, dataSetName, likeDataSetName);
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();

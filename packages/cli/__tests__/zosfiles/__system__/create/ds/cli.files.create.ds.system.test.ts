@@ -62,9 +62,9 @@ describe("Create Data Set", () => {
         });
 
         it("should create a data set", () => {
-            dsnameSuffix = "";
+            dsnameSuffix = "like";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ds_like.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [user,defaultSystem.zosjobs.iefbr14PSDataSet]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

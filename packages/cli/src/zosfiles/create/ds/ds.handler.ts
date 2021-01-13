@@ -22,7 +22,7 @@ export default class DataSetHandler extends ZosFilesBaseHandler {
         return Create.dataSetLike(
             session,
             commandParameters.arguments.dataSetName,
-            commandParameters.arguments.likeDataSetName
+            commandParameters.arguments.like
         );
     }
 }
