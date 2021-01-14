@@ -31,7 +31,7 @@ export class PingTso {
     public static async ping(session: AbstractSession, servletKey: string) {
         TsoValidator.validatePingParms(session, servletKey, noPingInput.message);
         const res = await ZosmfRestClient.putExpectJSON<IZosmfPingResponse>(session, PingTso.getResource(servletKey),
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON], null);
+            [Headers.APPLICATION_JSON], null);
         TsoValidator.validateErrorMessageFromZosmf(res);
         const result: IPingResponse = TsoResponseService.populatePing(res);
         return result;

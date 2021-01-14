@@ -38,9 +38,9 @@ export class ZosmfRestClient extends RestClient {
      */
     protected appendHeaders(headers: any[] | undefined): any[] {
         if (headers == null) {
-            headers = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER];
+            headers = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, ZosmfHeaders.ACCEPT_ENCODING];
         } else {
-            headers.push(ZosmfHeaders.X_CSRF_ZOSMF_HEADER);
+            headers.push(ZosmfHeaders.X_CSRF_ZOSMF_HEADER, ZosmfHeaders.ACCEPT_ENCODING);
         }
         return headers;
     }

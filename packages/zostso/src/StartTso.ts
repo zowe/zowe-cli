@@ -42,7 +42,7 @@ export class StartTso {
         const startResources = this.getResourcesQuery(commandParms);
 
         return ZosmfRestClient.postExpectJSON<IZosmfTsoResponse>(session, startResources,
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON]);
+            [Headers.APPLICATION_JSON]);
     }
     /**
      * Start TSO address space with provided parameters.

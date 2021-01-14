@@ -41,7 +41,7 @@ export class StopTso {
         const resources = this.getResources(commandParms.servletKey);
 
         return ZosmfRestClient.deleteExpectJSON<IZosmfTsoResponse>(session, resources,
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON]);
+            [Headers.APPLICATION_JSON]);
     }
 
     /**
