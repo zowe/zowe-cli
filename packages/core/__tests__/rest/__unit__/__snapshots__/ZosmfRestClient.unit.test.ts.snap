@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ZosmfRestClient tests should append the cmrf and gzip header to all requests 1`] = `
+exports[`ZosmfRestClient tests should append the csrf and gzip header to all requests 1`] = `
 Array [
   Object {
     "X-CSRF-ZOSMF-HEADER": true,

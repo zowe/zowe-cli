@@ -13,7 +13,7 @@ import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
 import { IImperativeError, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
-    it("should append the cmrf and gzip header to all requests", () => {
+    it("should append the csrf and gzip header to all requests", () => {
         const zosmfRestClient = new ZosmfRestClient(new Session({hostname: "dummy"}));
         expect((zosmfRestClient as any).appendHeaders([])).toMatchSnapshot();
     });
