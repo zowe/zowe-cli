@@ -56,7 +56,7 @@ describe("Create data set handler", () => {
                         $0: "abstract",
                         _: ["abstract"],
                         dataSetName,
-                        likeDataSetName,
+                        like: likeDataSetName,
                         ...UNIT_TEST_ZOSMF_PROF_OPTS
                     },
                     response: {
