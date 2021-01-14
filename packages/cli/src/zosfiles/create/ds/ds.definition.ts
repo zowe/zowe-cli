@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { ZosFilesCreateExtraOptions, ZosFilesCreateOptions } from "../Create.options";
+import { ZosFilesCreateExtraOptions } from "../Create.options";
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.
