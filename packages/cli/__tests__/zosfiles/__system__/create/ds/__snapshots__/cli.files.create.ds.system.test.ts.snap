@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create Data Set Success scenarios should create a data set 1`] = `
+"================Z/OS FILES CREATE DS===============
+Data set created successfully.
+"
+`;
