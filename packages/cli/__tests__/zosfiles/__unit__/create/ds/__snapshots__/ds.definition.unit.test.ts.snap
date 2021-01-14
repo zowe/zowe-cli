@@ -2,13 +2,22 @@
 
 exports[`zos-files create  command definition should not have changed 1`] = `
 Array [
-  
   Object {
-    "aliases": Array [],
-    "description": "The like flag to like a dataset",
+    "aliases": Array [
+      "lk",
+    ],
+    "description": "Name of an existing data set to base your new data set's properties on",
     "name": "like",
     "type": "string",
   },
 ]
 `;
 
+exports[`zos-files create  command definition should not have changed 2`] = `
+Array [
+  Object {
+    "description": "Create an dataset with default parameters and like flag",
+    "options": "NEW.DATASET --like EXISTING.DATASET",
+  },
+]
+`;
