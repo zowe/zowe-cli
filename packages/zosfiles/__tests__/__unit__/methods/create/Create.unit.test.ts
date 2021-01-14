@@ -1417,7 +1417,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
                 {type: optionDir});
         });
 
@@ -1426,7 +1426,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
                 {type: optionFile});
         });
 
@@ -1435,7 +1435,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
                 {type: optionDir, mode: optionMode});
         });
 
@@ -1444,7 +1444,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
                 {type: optionFile, mode: optionMode});
         });
 
@@ -1464,7 +1464,7 @@ describe("Create uss file or directory", () => {
                 error = err.message;
             }
 
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-CSRF-ZOSMF-HEADER": true}, {"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
                 {type: "directory"});
             expect(error).toContain(errorMsg);
         });
