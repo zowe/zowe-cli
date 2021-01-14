@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Workflows can now be created with a custom job statement header
+
 ## `6.25.0`
 
 - Enhancement: Deprecate misspelled version of `ArchiveWorkflow.archiveWorkflowByKey`
