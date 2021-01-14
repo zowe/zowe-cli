@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent changes
+## Recent Changes
 
 - Added job statement to the workflow creation command (`zowe wf create`) as `workflow-job-statement`
 
