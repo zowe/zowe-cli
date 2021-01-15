@@ -1010,7 +1010,7 @@ export class Upload {
      * @param {string} context         - context method from where you call this function (can be "buffer", "stream" or undefined)
      */
     private static generateHeadersBasedOnOptions(options: IUploadOptions, context?: string): IHeaderContent[] {
-        const reqHeaders: IHeaderContent[] = [];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
 
         switch (context) {
             case "stream":

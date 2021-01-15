@@ -52,7 +52,7 @@ export class List {
                 endpoint += `?pattern=${options.pattern}`;
             }
 
-            let reqHeaders: IHeaderContent[] = [];
+            let reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.attributes) {
                 reqHeaders = [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE];
             }
@@ -104,7 +104,7 @@ export class List {
                 endpoint = `${endpoint}&start=${options.start}`;
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.attributes) {
                 reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
@@ -167,7 +167,7 @@ export class List {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
@@ -211,7 +211,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             // if (options.path) {
             //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             // }
@@ -259,7 +259,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {

@@ -75,7 +75,7 @@ export class Get {
         const encodedFileName = encodeURIComponent(USSFileName);
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
-        let reqHeaders: IHeaderContent[] = [];
+        let reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
 
         if (options.binary) {
             if (options.binary === true) {

@@ -79,9 +79,8 @@ export class Invoke {
             // The request headers
             const reqHeaders: IHeaderContent[] = [
                 Headers.APPLICATION_JSON,
-                {
-                    [Headers.CONTENT_LENGTH]: JSON.stringify(reqPayload).length.toString()
-                }
+                { [Headers.CONTENT_LENGTH]: JSON.stringify(reqPayload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING
             ];
 
             if (options && options.responseTimeout != null) {

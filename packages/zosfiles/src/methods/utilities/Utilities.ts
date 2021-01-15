@@ -14,7 +14,7 @@ import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
-import { ZosmfRestClient, IHeaderContent } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
 
 export class Utilities {
@@ -45,7 +45,11 @@ export class Utilities {
         USSFileName = encodeURIComponent(USSFileName);
 
         const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
-        const reqHeaders: IHeaderContent[] = [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH] : JSON.stringify(payload).length.toString() }];
+        const reqHeaders: IHeaderContent[] = [
+            Headers.APPLICATION_JSON,
+            { [Headers.CONTENT_LENGTH] : JSON.stringify(payload).length.toString() },
+            ZosmfHeaders.ACCEPT_ENCODING
+        ];
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
         return response;
     }

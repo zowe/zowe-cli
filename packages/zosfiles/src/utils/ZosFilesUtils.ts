@@ -121,7 +121,7 @@ export class ZosFilesUtils {
      * @memberof ZosFilesUtils
      */
     public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
-        let reqHeaders: IHeaderContent[] = [];
+        let reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
 
         if (options.binary) {
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY];

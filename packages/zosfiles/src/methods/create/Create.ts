@@ -409,7 +409,7 @@ export class Create {
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const headers: IHeaderContent[] = [Headers.APPLICATION_JSON];
+        const headers: IHeaderContent[] = [Headers.APPLICATION_JSON, ZosmfHeaders.ACCEPT_ENCODING];
         if (options && options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
