@@ -93,7 +93,7 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
    The CLI provides a series of prompts.
 
-2. Respond to the prompts to enter a username, and password for a mainframe service such as z/OSMF. The `--global` option ensures that your credentials are stored securely on your computer by default.
+2. Respond to the prompts to enter a username and password for a mainframe service such as z/OSMF. The `--global` option ensures that your credentials are stored securely on your computer by default.
 
    After you respond to the prompts, the following file is added to your local `.zowe` directory:
 
@@ -227,9 +227,9 @@ The CLI checks for option values in the following order. If not found, the next 
 4. Base type profiles
 5. If no value is found, the default value for the option is used.
 
-If you have two services that share the same username and password on the mainframe, you can define your username and password just once in the base array, leaving those fields blank in each service definition.
+The user name and password fields are not supplied in the service definitions.
 
-In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are empty to allow them to inherit values from the base array:
+In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are user name and password fields are not supplied in the service definitions to allow them to inherit values from the base array:
 
 ```json
 {
