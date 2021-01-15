@@ -52,9 +52,9 @@ export class List {
                 endpoint += `?pattern=${options.pattern}`;
             }
 
-            let reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.attributes) {
-                reqHeaders = [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE];
+                reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
@@ -98,7 +98,7 @@ export class List {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            let  endpoint = posix.join(ZosFilesConstants.RESOURCE,
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
             if (options.start) {
                 endpoint = `${endpoint}&start=${options.start}`;

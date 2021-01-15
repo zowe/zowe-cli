@@ -47,7 +47,7 @@ export class Utilities {
         const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
-            { [Headers.CONTENT_LENGTH] : JSON.stringify(payload).length.toString() },
+            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
         ];
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
@@ -129,7 +129,7 @@ export class Utilities {
     public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(newFilePath, ZosFilesMessages.missingUSSFileName.message);
         const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
-        const payload = { request: "move",  from: path.posix.normalize(oldFilePath) };
+        const payload = { request: "move", from: path.posix.normalize(oldFilePath) };
         const response = await Utilities.putUSSPayload(session, newFilePath, payload);
         return response;
     }

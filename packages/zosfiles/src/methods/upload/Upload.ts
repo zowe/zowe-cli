@@ -1010,7 +1010,7 @@ export class Upload {
      * @param {string} context         - context method from where you call this function (can be "buffer", "stream" or undefined)
      */
     private static generateHeadersBasedOnOptions(options: IUploadOptions, context?: string): IHeaderContent[] {
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders: IHeaderContent[] = [];
 
         switch (context) {
             case "stream":
@@ -1030,21 +1030,18 @@ export class Upload {
                 } else {
                     reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
                 }
+                reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {
                     reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
                 }
                 break;
             default:
                 const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-                if (headers.length === 0) {
+                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
+                if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                } else if (headers.length === 1 &&
-                           ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT in headers[0]) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                    reqHeaders.push(...headers);
-                } else {
-                    reqHeaders.push(...headers);
                 }
+                reqHeaders.push(...headers);
                 break;
         }
 

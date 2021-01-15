@@ -11,7 +11,7 @@
 
 import { ImperativeError, TextUtils } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, ZosFilesConstants, CreateDefaults, Invoke, ICreateVsamOptions } from "../../../../src";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
@@ -801,44 +801,44 @@ describe("Create data set  Validator", () => {
     describe("Success scenarios", () => {
 
         it("alcunit should default to 'TRK' if not specified", async () => {
-            const testOptioins: any = {
+            const testOptions: any = {
                 alcunit: undefined
             };
 
-            Create.dataSetValidateOptions(testOptioins);
+            Create.dataSetValidateOptions(testOptions);
 
-            expect(testOptioins.alcunit).toEqual("TRK");  // Should be changed during create validation to zOSMF default of "TRK"
+            expect(testOptions.alcunit).toEqual("TRK");  // Should be changed during create validation to zOSMF default of "TRK"
         });
 
         it("blksize should default to lrecl if not specified", async () => {
-            const testOptioins: any = {
+            const testOptions: any = {
                 blksize: undefined,
                 lrecl: 160
             };
 
-            Create.dataSetValidateOptions(testOptioins);
+            Create.dataSetValidateOptions(testOptions);
 
-            expect(testOptioins.blksize).toEqual(testOptioins.blksize);  // Should be changed during create validation to zOSMF default of lrecl value
+            expect(testOptions.blksize).toEqual(testOptions.blksize);  // Should be changed during create validation to zOSMF default of lrecl value
         });
 
         it("secondary should default to 0 if not specified", async () => {
-            const testOptioins: any = {
+            const testOptions: any = {
                 secondary: undefined
             };
 
-            Create.dataSetValidateOptions(testOptioins);
+            Create.dataSetValidateOptions(testOptions);
 
-            expect(testOptioins.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
+            expect(testOptions.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
         });
 
         it("recfm should default to 'F' if not specified", async () => {
-            const testOptioins: any = {
+            const testOptions: any = {
                 recfm: undefined
             };
 
-            Create.dataSetValidateOptions(testOptioins);
+            Create.dataSetValidateOptions(testOptions);
 
-            expect(testOptioins.recfm).toEqual("F");  // Should be changed during create validation to zOSMF default of 'F'
+            expect(testOptions.recfm).toEqual("F");  // Should be changed during create validation to zOSMF default of 'F'
         });
     });
 
@@ -1417,7 +1417,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING],
                 {type: optionDir});
         });
 
@@ -1426,7 +1426,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING],
                 {type: optionFile});
         });
 
@@ -1435,7 +1435,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING],
                 {type: optionDir, mode: optionMode});
         });
 
@@ -1444,7 +1444,7 @@ describe("Create uss file or directory", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING],
                 {type: optionFile, mode: optionMode});
         });
 
@@ -1464,7 +1464,7 @@ describe("Create uss file or directory", () => {
                 error = err.message;
             }
 
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}],
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING],
                 {type: "directory"});
             expect(error).toContain(errorMsg);
         });

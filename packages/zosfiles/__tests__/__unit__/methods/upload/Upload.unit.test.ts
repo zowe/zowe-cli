@@ -345,8 +345,6 @@ describe("z/OS Files - Upload", () => {
         });
         it("return error that throw by the ZosmfRestClient", async () => {
             const buffer: Buffer = Buffer.from("testing");
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            const options = [ZosmfHeaders.X_IBM_TEXT];
             const testError = new ImperativeError({
                 msg: "test error"
             });
@@ -366,7 +364,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload buffer to a data set", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 response = await Upload.bufferToDataSet(dummySession, buffer, dsName);
@@ -386,7 +384,7 @@ describe("z/OS Files - Upload", () => {
             const buffer: Buffer = Buffer.from("testing");
             const testDsName = `${dsName}(member)`;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, testDsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 response = await Upload.bufferToDataSet(dummySession, buffer, testDsName);
@@ -414,13 +412,13 @@ describe("z/OS Files - Upload", () => {
 
             beforeEach(() => {
                 uploadOptions = {};
-                reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+                reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
                 zosmfPutFullSpy.mockClear();
             });
 
             it("should return with proper response when uploading with 'binary' option", async () => {
                 uploadOptions.binary = true;
-                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+                reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
 
                 try {
                     response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
@@ -439,7 +437,7 @@ describe("z/OS Files - Upload", () => {
             it("should return with proper response when uploading with 'encoding' option", async () => {
                 const anotherEncoding = 285;
                 uploadOptions.encoding = anotherEncoding;
-                reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }];
+                reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING];
 
                 try {
                     response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
@@ -593,7 +591,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload dataset with specify volume option", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(TEST)`, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
             const uploadOptions: IUploadOptions = {
                 volume: "TEST"
             };
@@ -657,7 +655,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("return with proper response when upload stream to a data set", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName);
@@ -677,7 +675,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload stream to a PDS member", async () => {
             const testDsName = `${dsName}(member)`;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, testDsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, testDsName);
@@ -699,7 +697,7 @@ describe("z/OS Files - Upload", () => {
                 binary: true
             };
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            let reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+            let reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -719,7 +717,7 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for wait option
             uploadOptions.recall = "wait";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -739,7 +737,7 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for no wait option
             uploadOptions.recall = "nowait";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -759,7 +757,7 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for no error option
             uploadOptions.recall = "error";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -779,7 +777,7 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test default value
             uploadOptions.recall = "non-existing";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -799,7 +797,8 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for pass etag option
             uploadOptions.etag = etagValue;
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT, {"If-Match" : uploadOptions.etag}];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+                          {"If-Match" : uploadOptions.etag}];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -820,6 +819,7 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.ACCEPT_ENCODING,
                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
                 {"If-Match" : uploadOptions.etag},
                 ZosmfHeaders.X_IBM_RETURN_ETAG];
@@ -845,6 +845,7 @@ describe("z/OS Files - Upload", () => {
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.ACCEPT_ENCODING,
                 {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"},
                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
                 {"If-Match" : uploadOptions.etag},
@@ -868,7 +869,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("return with proper response when upload dataset with specify volume option", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(TEST)`, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
             const uploadOptions: IUploadOptions = {
                 volume: "TEST"
             };
@@ -891,7 +892,7 @@ describe("z/OS Files - Upload", () => {
         it("should allow uploading a data set with encoding", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            const reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }];
+            const reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING];
             const uploadOptions: IUploadOptions = {
                 encoding: 285
             };
@@ -1333,7 +1334,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.TEXT_PLAIN];
+            const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data);
@@ -1351,7 +1352,7 @@ describe("z/OS Files - Upload", () => {
             const data: Buffer = Buffer.from("testing");
             const responseTimeout = 5;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.TEXT_PLAIN, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
+            const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
                 USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, undefined, undefined, false, responseTimeout);
@@ -1368,7 +1369,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file in binary", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY];
+            const headers = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, true);
@@ -1385,7 +1386,7 @@ describe("z/OS Files - Upload", () => {
         it("return with proper response when upload USS file with Etag", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.TEXT_PLAIN, {"If-Match": etagValue}];
+            const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
                 USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, undefined, etagValue);
@@ -1402,7 +1403,7 @@ describe("z/OS Files - Upload", () => {
         it("should set local encoding if specified", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT];
+            const headers = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, "UCS-2");
@@ -1468,7 +1469,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("return with proper response when upload USS file", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN];
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream);
@@ -1488,7 +1489,7 @@ describe("z/OS Files - Upload", () => {
                                                                         });
         it("return with proper response when upload USS file with responseTimeout", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {responseTimeout: 5});
@@ -1508,7 +1509,7 @@ describe("z/OS Files - Upload", () => {
                                                                         });
         it("return with proper response when upload USS file in binary", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY];
+            const reqHeaders = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {binary: true});
@@ -1529,7 +1530,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("return with proper response when upload USS file with Etag", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, {"If-Match": etagValue}];
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {etag: etagValue});
@@ -1550,7 +1551,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("return with proper response when upload USS file and request Etag back", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.X_IBM_RETURN_ETAG];
+            const reqHeaders = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
             zosmfExpectFullSpy.mockImplementationOnce(() => fakeResponseWithEtag);
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {returnEtag: true});
@@ -1574,7 +1575,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("should set local encoding if specified", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT];
+            const reqHeaders = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {localEncoding: "UCS-2"});
