@@ -530,7 +530,7 @@ export class Upload {
         if (options.returnEtag) {
             restOptions.dataToReturn = [CLIENT_PROPERTY.response];
         }
-        const uploadRequest: IRestClientResponse =  await ZosmfRestClient.putExpectFullResponse(session, restOptions);
+        const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
 
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {};
@@ -765,7 +765,8 @@ export class Upload {
         ussname = encodeURIComponent(ussname);
         const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
-            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);
+            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
+                [ZosmfHeaders.ACCEPT_ENCODING]);
             if (response.items) {
                 return true;
             }

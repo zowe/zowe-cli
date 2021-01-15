@@ -41,7 +41,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...dsOptions,
@@ -63,7 +63,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...dsOptions,
@@ -86,7 +86,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...dsOptions,
@@ -129,7 +129,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.SEQUENTIAL,
                     ...dsOptions,
@@ -152,7 +152,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.SEQUENTIAL,
                     ...dsOptions,
@@ -187,7 +187,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         alcunit: "CYL",
@@ -218,7 +218,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         alcunit: "CYL",
@@ -241,7 +241,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.CLASSIC,
                     ...dsOptions,
@@ -267,7 +267,7 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify({
                 ...CreateDefaults.DATA_SET.BINARY,
                 ...dsClassicOptions,
                 ...{
@@ -296,7 +296,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         alcunit: "CYL",
@@ -329,7 +329,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         alcunit: "CYL",
@@ -353,7 +353,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.C,
                     ...dsOptions,
@@ -379,7 +379,7 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify({
                 ...CreateDefaults.DATA_SET.BINARY,
                 ...dsCOptions,
                 ...{
@@ -407,7 +407,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         dsorg: "PO",
@@ -440,7 +440,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         dsorg: "PO",
@@ -464,7 +464,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.BINARY,
                     ...dsOptions,
@@ -489,7 +489,7 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify({
                 ...CreateDefaults.DATA_SET.BINARY,
                 ...dsBinaryOptions,
                 ...{
@@ -514,7 +514,7 @@ describe("Create data set", () => {
 
             expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
-            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [], JSON.stringify({
+            expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify({
                 ...CreateDefaults.DATA_SET.BINARY,
                 ...dsBinaryOptions,
                 ...{
@@ -543,7 +543,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         dsorg: "PO",
@@ -576,7 +576,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...{
                         dsorg: "PO",
@@ -599,7 +599,7 @@ describe("Create data set", () => {
             expect(response.commandResponse).toContain("created successfully");
             expect(mySpy).toHaveBeenCalledWith(dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...{
@@ -625,7 +625,7 @@ describe("Create data set", () => {
             expect(response.commandResponse).not.toMatch(/dsorg.*PO/);
             expect(mySpy).toHaveBeenCalledWith(dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...{
@@ -652,7 +652,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...{
@@ -681,7 +681,7 @@ describe("Create data set", () => {
         expect(mySpy).toHaveBeenCalledWith(
             dummySession,
             endpoint,
-            [],
+            [ZosmfHeaders.ACCEPT_ENCODING],
             JSON.stringify({
                 ...{
                     alcunit: "CYL",
@@ -714,7 +714,7 @@ describe("Create data set", () => {
         expect(mySpy).toHaveBeenCalledWith(
             dummySession,
             endpoint,
-            [],
+            [ZosmfHeaders.ACCEPT_ENCODING],
             JSON.stringify({
                 ...{
                     alcunit: "CYL",
@@ -747,7 +747,7 @@ describe("Create data set", () => {
             expect(mySpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                [],
+                [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({
                     ...CreateDefaults.DATA_SET.PARTITIONED,
                     ...dsOptions,
