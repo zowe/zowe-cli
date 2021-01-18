@@ -172,7 +172,7 @@ export class Upload {
                 fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
             }
 
-        // Options to use the buffer to write a file
+            // Options to use the buffer to write a file
             const requestOptions: IOptionsFullResponse = {
                 resource: endpoint,
                 reqHeaders,

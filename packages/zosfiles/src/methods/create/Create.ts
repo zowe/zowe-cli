@@ -126,7 +126,7 @@ export class Create {
 
                 Create.dataSetValidateOptions(tempOptions);
 
-                const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
+                await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
 
                 return {
                     success: true,
@@ -146,7 +146,7 @@ export class Create {
         try {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            const data = await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING],
+            await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING],
                 JSON.stringify({ like: likeDataSetName }));
 
             return {
