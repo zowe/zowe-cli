@@ -146,7 +146,7 @@ export class ZosmfSession {
         return {
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
-            protocol: args.protocol
+            protocol: args.httpProtocol.toLowerCase()
         };
     }
 
@@ -166,7 +166,8 @@ export class ZosmfSession {
             user: profile.user,
             password: profile.password,
             rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath
+            basePath: profile.basePath,
+            protocol: profile.protocol
         });
     }
 
