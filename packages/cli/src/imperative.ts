@@ -195,7 +195,7 @@ const config: IImperativeConfig = {
                     },
                     protocol: {
                         type: "string",
-                        optionDefinition: ZosFilesOptions.httpProtocol
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PROTOCOL
                     },
                     encoding: {
                         type: "number",

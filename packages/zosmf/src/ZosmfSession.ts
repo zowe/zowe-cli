@@ -115,9 +115,12 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
+    /**
+     * Option used to specify HTTP or HTTPS Protocol
+     */
     public static ZOSMF_OPTION_PROTOCOL: ICommandOptionDefinition = {
-        name: "http-protocol",
-        aliases: ["pcol"],
+        name: "protocol",
+        aliases: ["o"],
         description: "The protocol used (HTTP or HTTPS)",
         type: "string",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
@@ -146,7 +149,7 @@ export class ZosmfSession {
         return {
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
-            protocol: args.httpProtocol.toLowerCase()
+            protocol: args.protocol ? args.protocol.toLowerCase() : 'https'
         };
     }
 
