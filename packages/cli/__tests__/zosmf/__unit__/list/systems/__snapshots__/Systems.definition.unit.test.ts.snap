@@ -79,6 +79,15 @@ Object {
       "name": "base-path",
       "type": "string",
     },
+    Object {
+      "aliases": Array [
+        "o",
+      ],
+      "description": "The protocol used (HTTP or HTTPS)",
+      "group": "Zosmf Connection Options",
+      "name": "protocol",
+      "type": "string",
+    },
   ],
   "profile": Object {
     "optional": Array [
