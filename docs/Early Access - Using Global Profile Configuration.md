@@ -4,12 +4,15 @@
 
 **Table of Contents:**
 - [Feature overview](#feature-overview)
+  - [Benefits](#benefits)
+  - [Changes to secure credential storage](#changes-to-secure-credential-storage)
 - [Installing @next version](#installing-next-version)
 - [Initializing global configuration](#initializing-global-configuration)
 - [(Optional) Initializing user-specific configuration](#optional-initializing-user-specific-configuration)
 - [Editing configuration](#editing-configuration)
 - [Managing credential security](#managing-credential-security)
 - [Tips for efficient configuration](#tips-for-efficient-configuration)
+  - [Tips for using the base array](#tips-for-using-the-base-array)
 - [Sharing global configuration](#sharing-global-configuration)
 - [Example configurations](#example-configurations)
 
@@ -57,17 +60,23 @@ To get started, install the Zowe CLI `@next` version from the online registry. Y
 
    Zowe CLI and optional plug-ins are installed!
 
-5. If you previously had an instance of Zowe CLI installed, your old configuration files are no longer used in this version. Delete the following files from your local `.zowe/` directory:
-   - `.zowe/settings/imperative.json`
-   - `.zowe/profiles`
+5. Open a command-line window and issue the following command:
 
-   **Important!** Prior to deleting the contents of the `/profiles` directory, take note of any mainframe service details that you need (host, port, etc...). You might want to save the entire `/profiles` directory to another location on your computer so that you can reference or restore the profiles later.
+   ```
+   zowe scs revert --force
+   ```
 
 6. If you previously had the Secure Credential Store plug-in installed, uninstall it now to avoid unexpected behavior. Issue the following command:
 
     ```
     zowe plugins uninstall @zowe/secure-credential-store-for-zowe-cli
     ```
+
+7. If you previously had an instance of Zowe CLI installed, your current configuration files are ignored if zowe.config.json is found globally, at the project level, or up the directory structure. Delete the following files from your local `.zowe/` directory:
+   - `.zowe/settings/imperative.json`
+   - `.zowe/profiles`
+
+   **Important!** Prior to deleting the contents of the `/profiles` directory, take note of any mainframe service details that you need (host, port, etc...). You might want to save the entire `/profiles` directory to another location on your computer so that you can reference or restore the profiles later.
 
 You can now configure the CLI and issue commands.
 ## Initializing global configuration
@@ -84,11 +93,11 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
    The CLI provides a series of prompts.
 
-2. Respond to the prompts to enter a service name, username, and password for a mainframe service such as z/OSMF. The `--global` option ensures that your credentials are stored securely on your computer by default.
+2. Respond to the prompts to enter a username and password for a mainframe service such as z/OSMF. The `--global` option ensures that your credentials are stored securely on your computer by default.
 
    After you respond to the prompts, the following file is added to your local `.zowe` directory:
 
-   - `zowe.config.json` - A global configuration file. This is the primary location where your MF service connection details such as host, port, etc... are defined. We recommend that you begin by working with this file.
+   - `zowe.config.json` - A global configuration file. This is the primary location where your MF service connection details such as host and port are defined. Use this configuration file for the following procedures.
 
 3. Issue a Zowe CLI command to test that you can access z/OSMF. For example, list all data sets under your user ID:
 
@@ -113,12 +122,8 @@ In your user-specific file, notice that the top level defaults, plugins, and sec
 
 After the initial setup, you can define additional mainframe services to your global or user config.
 
-Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The JSON arrays contain your initial z/OSMF connection details. For example:
+Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The profiles object should contain connection and other frequently needed information for accessing various services. For example:
 
-<!--
-Insert an example here of the JSON for a simple z/osmf connection, for a visual.
-t1m0thyj - Added minimal JSON example below
--->
 ```json
 {
     "$schema": "./zowe.schema.json",
@@ -148,14 +153,10 @@ t1m0thyj - Added minimal JSON example below
 }
 ```
 
-From here, you can edit the details as needed and save the file. For example, you might change the password field if your mainframe password changed.
+From here, you can edit the details as needed and save the file. For example, you might change the host or port fields if those values changed.
 
 To add a new service, for example add a new instance of z/OSMF that runs on a different mainframe LPAR, you can build on the existing array as follows:
 
-<!-- TODO
-Insert a JSON example here where a second instance of z/OSMF on a different LPAR is added to config, or similar. Mike B - "I would use host or port info as an example. Username and password should be specified in the secure array and therefore will not be edited in plain text."
-t1m0thyj - Added JSON example below that shows "lpar2" config
--->
 ```json
 {
     "$schema": "./zowe.schema.json",
@@ -222,18 +223,14 @@ Zowe CLI uses a "command option order of precedence" that lets your service defi
 The CLI checks for option values in the following order. If not found, the next location is checked:
 1. Options you define explicitly on the command-line
 2. Environment variables
-3. Service array definitions
-4. Base array definitions
+3. Service type profiles
+4. Base type profiles
 5. If no value is found, the default value for the option is used.
 
-If you have two services that share the same username and password on the mainframe, you can define your username and password just once in the base array, leaving those fields blank in each service definition.
+The user name and password fields are not supplied in the service definitions.
 
-In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are empty to allow them to inherit values from the base array:
+In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are user name and password fields are not supplied in the service definitions to allow them to inherit values from the base array:
 
-<!-- TODO
-Worth adding a JSON example here where 2 zosmf services are inheriting user and pass from base array?
-t1m0thyj - Added JSON example below that shows base profile shared by 2 services
--->
 ```json
 {
     "$schema": "./zowe.schema.json",
@@ -299,19 +296,9 @@ You might want to share configuration in the following scenarios:
 
 ## Example configurations
 
-<!-- TODO
-Shall we provide a handful of examples here of different use cases and the .json for each?
+In this example configuration, the settings are accessing multiple services directly on multiple LPARs that share the same username and password.
 
-Mike B - "I'd cover at least two. One for accessing multiple services directly on multiple LPARs that share the same username/password. One for accessing multiple services via the API ML (where MFA/SSO is achievable via token-based auth).
-
-Another example could be accessing multiple services directly on LPAR1 and LPAR2 where username/password varies between LPAR1 & LPAR2 services.
-
-Yet another example could be a situation where API ML is leveraged to access production services but services on a dev-test environment can be accessed directly."
-
-t1m0thyj - Added JSON examples below
--->
 ```json
-// accessing multiple services directly on multiple LPARs that share the same username/password
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -375,9 +362,8 @@ t1m0thyj - Added JSON examples below
     ]
 }
 ```
-
+In this example configuration, the settings are accessing multiple services via the API ML (where MFA/SSO is achievable via token-based authorization).
 ```json
-// accessing multiple services via the API ML (where MFA/SSO is achievable via token-based auth)
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -424,10 +410,8 @@ t1m0thyj - Added JSON examples below
     ]
 }
 ```
-
+In this example configuration, the settings are accessing multiple services directly on LPAR1 and LPAR2 where username and password varies between the LPAR1 and LPAR2 services. This example is identical to first example except for the secure array at the end.
 ```json
-// accessing multiple services directly on LPAR1 and LPAR2 where username/password varies between LPAR1 & LPAR2 services
-// identical to first example except for secure array at the bottom
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -494,8 +478,8 @@ t1m0thyj - Added JSON examples below
 }
 ```
 
+In this example configuration, API ML is leveraged to access production services but services on a dev-test environment can be accessed directly.
 ```json
-// API ML is leveraged to access production services but services on a dev-test environment can be accessed directly
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
