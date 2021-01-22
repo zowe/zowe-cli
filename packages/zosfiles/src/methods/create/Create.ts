@@ -134,7 +134,10 @@ export class Create {
         }
     }
 
-    public static async dataSetLike(session: AbstractSession, dataSetName: string, likeDataSetName: string, options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+    public static async dataSetLike(session: AbstractSession,
+                                    dataSetName: string,
+                                    likeDataSetName: string, 
+                                    options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
