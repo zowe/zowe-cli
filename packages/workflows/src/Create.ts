@@ -29,6 +29,7 @@ import { IVariable } from "./doc/IVariable";
 import { Upload, Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { basename } from "path";
 import { IParamsCreateWorkflow } from "./doc/IParamsCreateWorkflow";
+import { IParamsCreateWorkflowLocal } from "./doc/IParamsCreateWorkflowLocal";
 
 /**
  * Class to handle creation of zOSMF workflow instance
@@ -126,7 +127,7 @@ export class CreateWorkflow {
      * @param {IParamsCreateWorkflow} createWorkflowParams  - Parameters for the creation of the workflow
      * @returns {Promise<ICreatedWorkflow>}
      */
-    public static createWorkflow2(createWorkflowParams:IParamsCreateWorkflow
+    public static createWorkflow2(createWorkflowParams: IParamsCreateWorkflow
     ): Promise<ICreatedWorkflow> {
         WorkflowValidator.validateSession(createWorkflowParams.session);
         WorkflowValidator.validateNotEmptyString(createWorkflowParams.zOSMFVersion, nozOSMFVersion.message);
@@ -177,6 +178,7 @@ export class CreateWorkflow {
     }
     /**
      * Create a zOSMF workflow instance using local files
+     * @deprecated Use createWorkflowLocal2 instead
      * @param {AbstractSession} session                     - z/OSMF connection info
      * @param {string} WorkflowName                         - Name of the workflow that will be created
      * @param {string} WorkflowDefinitionFile               - Local workflow definition file
@@ -196,7 +198,6 @@ export class CreateWorkflow {
                                             systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
                                             AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
                                             keepFiles?: boolean, customDir?: string,
-                                            JobStatement?: Array<string>,
                                             zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<ICreatedWorkflowLocal> {
 
         WorkflowValidator.validateSession(session);
@@ -219,7 +220,7 @@ export class CreateWorkflow {
 
         const resp: ICreatedWorkflowLocal = await this.createWorkflow(session, WorkflowName, tempDefinitionFile,
             systemName, Owner, tempVariableInputFile, Variables,
-            AssignToOwner, AccessType, DeleteCompletedJobs, JobStatement, zOSMFVersion);
+            AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
 
         if (!keepFiles) {
             resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];
@@ -231,6 +232,79 @@ export class CreateWorkflow {
         } else {
             resp.filesKept = [tempDefinitionFile];
             if (VariableInputFile) {
+                resp.filesKept.push(tempVariableInputFile);
+            }
+        }
+
+        return resp;
+    }
+
+    /**
+     * Create a zOSMF workflow instance using local files
+     * @param {AbstractSession} session                     - z/OSMF connection info
+     * @param {string} WorkflowName                         - Name of the workflow that will be created
+     * @param {string} WorkflowDefinitionFile               - Local workflow definition file
+     * @param {string} systemName                           - System where the workflow will run
+     * @param {string} Owner                                - User ID of the workflow owner.
+     * @param {string} VariableInputFile                    - Local properties file with pre-specify values for workflow variables
+     * @param {string} Variables                            - A list of one or more variables for the workflow.
+     * @param {boolean} AssignToOwner                       - Indicates whether the workflow steps are assigned to the workflow owner
+     * @param {accessT} AccessType                          - Specifies the access type for the workflow. Public, Restricted or Private.
+     * @param {boolean} DeleteCompletedJobs                 - Specifies whether the job is deleted from the JES spool after it completes successfully.
+     * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
+     * @param {boolean} keepFiles                           - Identifies if the uploaded uss files should be kept.
+     * @param {string} customDir                            - Path to specific USS directory in which to upload the temp files.
+     * @returns {Promise<ICreatedWorkflowLocal>}
+     */
+    public static async createWorkflowLocal2(createWorkflowLocalParams: IParamsCreateWorkflowLocal): Promise<ICreatedWorkflowLocal> {
+
+        WorkflowValidator.validateSession(createWorkflowLocalParams.session);
+        WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.zOSMFVersion, nozOSMFVersion.message);
+        WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.WorkflowName, noWorkflowName.message);
+        WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
+        WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.systemName, noSystemName.message);
+        WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.Owner, noOwner.message);
+        WorkflowValidator.validateOwner(createWorkflowLocalParams.Owner, wrongOwner.message);
+
+        const tempDefinitionFile: string = CreateWorkflow.getTempFile(createWorkflowLocalParams.session.ISession.user,
+            createWorkflowLocalParams.WorkflowDefinitionFile, createWorkflowLocalParams.customDir);
+        await CreateWorkflow.uploadTempFile(createWorkflowLocalParams.session, createWorkflowLocalParams.WorkflowDefinitionFile, tempDefinitionFile);
+
+        let tempVariableInputFile: string;
+
+        if (createWorkflowLocalParams.VariableInputFile) {
+            tempVariableInputFile = CreateWorkflow.getTempFile(createWorkflowLocalParams.session.ISession.user,
+                createWorkflowLocalParams.VariableInputFile, createWorkflowLocalParams.customDir);
+            await CreateWorkflow.uploadTempFile(createWorkflowLocalParams.session, createWorkflowLocalParams.VariableInputFile,
+                tempVariableInputFile);
+        }
+
+        const workflowParams: IParamsCreateWorkflow = {
+            Owner: createWorkflowLocalParams.Owner,
+            WorkflowDefinitionFile: tempDefinitionFile,
+            WorkflowName: createWorkflowLocalParams.WorkflowName,
+            session: createWorkflowLocalParams.session,
+            systemName: createWorkflowLocalParams.systemName,
+            AccessType: createWorkflowLocalParams.AccessType,
+            AssignToOwner: createWorkflowLocalParams.AssignToOwner,
+            DeleteCompletedJobs: createWorkflowLocalParams.DeleteCompletedJobs,
+            JobStatement: createWorkflowLocalParams.JobStatement,
+            VariableInputFile: createWorkflowLocalParams.VariableInputFile,
+            Variables: createWorkflowLocalParams.Variables,
+            zOSMFVersion: createWorkflowLocalParams.zOSMFVersion
+        };
+        const resp: ICreatedWorkflowLocal = await this.createWorkflow2(workflowParams);
+
+        if (!createWorkflowLocalParams.keepFiles) {
+            resp.failedToDelete = [await CreateWorkflow.deleteTempFile(createWorkflowLocalParams.session, tempDefinitionFile)];
+            if (createWorkflowLocalParams.VariableInputFile) {
+                !resp.failedToDelete[0] ?
+                    resp.failedToDelete = [await CreateWorkflow.deleteTempFile(createWorkflowLocalParams.session, tempVariableInputFile)] :
+                    resp.failedToDelete.push(await CreateWorkflow.deleteTempFile(createWorkflowLocalParams.session, tempVariableInputFile));
+            }
+        } else {
+            resp.filesKept = [tempDefinitionFile];
+            if (createWorkflowLocalParams.VariableInputFile) {
                 resp.filesKept.push(tempVariableInputFile);
             }
         }
