@@ -1,19 +1,18 @@
 import { AbstractSession } from "@zowe/imperative";
 import { accessT } from "./ICreateWorkflow";
 
-
 /**
- * Parameters for the createWorkflow method.
+ * Parameters for the createWorkflowLocal method.
  *
  * @export
- * @interface IParamsCreateWorkflow
+ * @interface IParamsCreateWorkflowLocal
  */
-export interface IParamsCreateWorkflow {
+export interface IParamsCreateWorkflowLocal {
     /**
      * z/OSMF session for the workflow creation.
      *
      * @type {AbstractSession}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     session: AbstractSession;
 
@@ -21,15 +20,15 @@ export interface IParamsCreateWorkflow {
      * Workflow title.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     WorkflowName: string;
 
     /**
-     * Workflow definition file on the mainframe.
+     * Workflow definition file on the local computer.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     WorkflowDefinitionFile: string;
 
@@ -37,7 +36,7 @@ export interface IParamsCreateWorkflow {
      * Name of the LPAR where the workflow will be executed.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     systemName: string;
 
@@ -45,7 +44,7 @@ export interface IParamsCreateWorkflow {
      * Owner that will be associated with the workflow.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     Owner: string;
 
@@ -53,7 +52,7 @@ export interface IParamsCreateWorkflow {
      * Variable input file to supply the workflow with parameters.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     VariableInputFile?: string;
 
@@ -61,7 +60,7 @@ export interface IParamsCreateWorkflow {
      * Additional variables you wish to supply to the workflow.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     Variables?: string;
 
@@ -69,7 +68,7 @@ export interface IParamsCreateWorkflow {
      * Choose whether the steps of the workflow should be assigned to the owner of the workflow.
      *
      * @type {boolean}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     AssignToOwner?: boolean;
 
@@ -77,7 +76,7 @@ export interface IParamsCreateWorkflow {
      * Access type for the workflow
      *
      * @type {accessT}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     AccessType?: accessT;
 
@@ -85,15 +84,31 @@ export interface IParamsCreateWorkflow {
      * Choose whether the jobs submitted by the workflow should be deleted upon completion.
      *
      * @type {boolean}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     DeleteCompletedJobs?: boolean;
+
+    /**
+     * Specify whether the temp files uploaded to the mainframe should be kept or deleted.
+     *
+     * @type {boolean}
+     * @memberof IParamsCreateWorkflowLocal
+     */
+    keepFiles?: boolean;
+
+    /**
+     * Custom USS directory where workflow, etc will be uploaded before registration.
+     *
+     * @type {string}
+     * @memberof IParamsCreateWorkflowLocal
+     */
+    customDir?: string;
 
     /**
      * Custom JOB statement to be used by the workflow instead of the default one.
      *
      * @type {Array<string>}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
     JobStatement?: Array<string>;
 
@@ -101,7 +116,7 @@ export interface IParamsCreateWorkflow {
      * Version of the z/OSMF REST API.
      *
      * @type {string}
-     * @memberof IParamsCreateWorkflow
+     * @memberof IParamsCreateWorkflowLocal
      */
-    zOSMFVersion?: string;
+    zOSMFVersion: string;
 }
