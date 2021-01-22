@@ -1,15 +1,21 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
+import {
+    AbstractSession,
+    ImperativeError,
+    ImperativeExpect,
+    Logger,
+    TextUtils,
+} from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -39,36 +45,58 @@ export class Create {
      * @param {Partial<ICreateDataSetOptions>} [options={}] - additional options for the creation of the data set
      * @returns {Promise<IZosFilesResponse>}
      */
-    public static async dataSet(session: AbstractSession,
-                                cmdType: CreateDataSetTypeEnum,
-                                dataSetName: string,
-                                options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+    public static async dataSet(
+        session: AbstractSession,
+        cmdType: CreateDataSetTypeEnum,
+        dataSetName: string,
+        options?: Partial<ICreateDataSetOptions>
+    ): Promise<IZosFilesResponse> {
         let validCmdType = true;
 
         // Removes undefined properties
-        let tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
+        let tempOptions = !isNullOrUndefined(options)
+            ? JSON.parse(JSON.stringify(options))
+            : {};
 
         // Required
-        ImperativeExpect.toNotBeNullOrUndefined(cmdType, ZosFilesMessages.missingDatasetType.message);
+        ImperativeExpect.toNotBeNullOrUndefined(
+            cmdType,
+            ZosFilesMessages.missingDatasetType.message
+        );
 
         // Required
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(
+            dataSetName,
+            ZosFilesMessages.missingDatasetName.message
+        );
 
         switch (cmdType) {
             case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
-                tempOptions = { ...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions };
+                tempOptions = {
+                    ...CreateDefaults.DATA_SET.PARTITIONED,
+                    ...tempOptions,
+                };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL:
-                tempOptions = { ...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions };
+                tempOptions = {
+                    ...CreateDefaults.DATA_SET.SEQUENTIAL,
+                    ...tempOptions,
+                };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_BINARY:
-                tempOptions = { ...CreateDefaults.DATA_SET.BINARY, ...tempOptions };
+                tempOptions = {
+                    ...CreateDefaults.DATA_SET.BINARY,
+                    ...tempOptions,
+                };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_C:
                 tempOptions = { ...CreateDefaults.DATA_SET.C, ...tempOptions };
                 break;
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
-                tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
+                tempOptions = {
+                    ...CreateDefaults.DATA_SET.CLASSIC,
+                    ...tempOptions,
+                };
                 break;
             default:
                 validCmdType = false;
@@ -76,23 +104,31 @@ export class Create {
         }
 
         if (!validCmdType) {
-            throw new ImperativeError({ msg: ZosFilesMessages.unsupportedDatasetType.message });
+            throw new ImperativeError({
+                msg: ZosFilesMessages.unsupportedDatasetType.message,
+            });
         } else {
             try {
                 // Handle the size option
                 if (!isNullOrUndefined(tempOptions.size)) {
-                    const tAlcunit = tempOptions.size.toString().match(/[a-zA-Z]+/g);
+                    const tAlcunit = tempOptions.size
+                        .toString()
+                        .match(/[a-zA-Z]+/g);
                     if (!isNullOrUndefined(tAlcunit)) {
                         tempOptions.alcunit = tAlcunit.join("").toUpperCase();
                     }
 
-                    const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
+                    const tPrimary = tempOptions.size
+                        .toString()
+                        .match(/[0-9]+/g);
                     if (!isNullOrUndefined(tPrimary)) {
-                        tempOptions.primary = +(tPrimary.join(""));
+                        tempOptions.primary = +tPrimary.join("");
 
                         if (isNullOrUndefined(tempOptions.secondary)) {
-                            const TEN_PERCENT = 0.10;
-                            tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
+                            const TEN_PERCENT = 0.1;
+                            tempOptions.secondary = Math.round(
+                                tempOptions.primary * TEN_PERCENT
+                            );
                         }
                     }
                 } else {
@@ -118,15 +154,26 @@ export class Create {
                     }
                 }
 
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+                const endpoint: string =
+                    ZosFilesConstants.RESOURCE +
+                    ZosFilesConstants.RES_DS_FILES +
+                    "/" +
+                    dataSetName;
 
                 Create.dataSetValidateOptions(tempOptions);
 
-                const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
+                const data = await ZosmfRestClient.postExpectString(
+                    session,
+                    endpoint,
+                    [],
+                    JSON.stringify(tempOptions)
+                );
 
                 return {
                     success: true,
-                    commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
+                    commandResponse:
+                        response +
+                        ZosFilesMessages.dataSetCreatedSuccessfully.message,
                 };
             } catch (error) {
                 throw error;
@@ -134,19 +181,40 @@ export class Create {
         }
     }
 
-    public static async dataSetLike(session: AbstractSession, dataSetName: string, likeDataSetName: string): Promise<IZosFilesResponse> {
+    public static async dataSetLike(
+        session: AbstractSession,
+        dataSetName: string,
+        likeDataSetName: string,
+        options?: Partial<ICreateDataSetOptions>
+    ): Promise<IZosFilesResponse> {
         // Required
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
-        ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(
+            dataSetName,
+            ZosFilesMessages.missingDatasetName.message
+        );
+        ImperativeExpect.toNotBeNullOrUndefined(
+            likeDataSetName,
+            ZosFilesMessages.missingDatasetLikeName.message
+        );
 
         try {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+            const endpoint: string =
+                ZosFilesConstants.RESOURCE +
+                ZosFilesConstants.RES_DS_FILES +
+                "/" +
+                dataSetName;
 
-            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify({ like: likeDataSetName }));
+            const data = await ZosmfRestClient.postExpectString(
+                session,
+                endpoint,
+                [],
+                JSON.stringify({ like: likeDataSetName })
+            );
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+                commandResponse:
+                    ZosFilesMessages.dataSetCreatedSuccessfully.message,
             };
         } catch (error) {
             throw error;
@@ -159,15 +227,16 @@ export class Create {
      * @param options - additional options for the creation of the data set
      */
     public static dataSetValidateOptions(options: ICreateDataSetOptions) {
-
-        ImperativeExpect.toNotBeNullOrUndefined(options, ZosFilesMessages.missingFilesCreateOptions.message);
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options,
+            ZosFilesMessages.missingFilesCreateOptions.message
+        );
 
         const tempOptions: any = options;
 
         for (const option in tempOptions) {
             if (tempOptions.hasOwnProperty(option)) {
                 switch (option) {
-
                     case "alcunit":
                         // zOSMF defaults to TRK if missing so mimic it's behavior
                         if (isNullOrUndefined(tempOptions.alcunit)) {
@@ -180,7 +249,11 @@ export class Create {
                             case "TRK":
                                 break;
                             default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidAlcunitOption.message + tempOptions.alcunit });
+                                throw new ImperativeError({
+                                    msg:
+                                        ZosFilesMessages.invalidAlcunitOption
+                                            .message + tempOptions.alcunit,
+                                });
                         }
 
                         break;
@@ -198,18 +271,37 @@ export class Create {
 
                     case "lrecl":
                         // Required
-                        ImperativeExpect.toNotBeNullOrUndefined(tempOptions.lrecl, ZosFilesMessages.missingRecordLength.message);
+                        ImperativeExpect.toNotBeNullOrUndefined(
+                            tempOptions.lrecl,
+                            ZosFilesMessages.missingRecordLength.message
+                        );
 
                         break;
 
                     case "dirblk":
                         // Validate non-zero if dsorg is PS
-                        if (tempOptions.dirblk !== 0 && tempOptions.dsorg === "PS") {
-                            throw new ImperativeError({ msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message });
+                        if (
+                            tempOptions.dirblk !== 0 &&
+                            tempOptions.dsorg === "PS"
+                        ) {
+                            throw new ImperativeError({
+                                msg:
+                                    ZosFilesMessages
+                                        .invalidPSDsorgDirblkCombination
+                                        .message,
+                            });
                         }
                         // Validate non-zero if 'dsorg' is PO
-                        if (tempOptions.dirblk === 0 && tempOptions.dsorg === "PO") {
-                            throw new ImperativeError({ msg: ZosFilesMessages.invalidPODsorgDirblkCombination.message });
+                        if (
+                            tempOptions.dirblk === 0 &&
+                            tempOptions.dsorg === "PO"
+                        ) {
+                            throw new ImperativeError({
+                                msg:
+                                    ZosFilesMessages
+                                        .invalidPODsorgDirblkCombination
+                                        .message,
+                            });
                         }
 
                         break;
@@ -217,9 +309,22 @@ export class Create {
                     case "dsntype":
                         // Key to create a PDSE.
                         const type: string = tempOptions.dsntype.toUpperCase();
-                        const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
+                        const availableTypes = [
+                            "BASIC",
+                            "EXTPREF",
+                            "EXTREQ",
+                            "HFS",
+                            "LARGE",
+                            "PDS",
+                            "LIBRARY",
+                            "PIPE",
+                        ];
                         if (availableTypes.indexOf(type) === -1) {
-                            throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
+                            throw new ImperativeError({
+                                msg:
+                                    ZosFilesMessages.invalidDsntypeOption
+                                        .message + tempOptions.dsntype,
+                            });
                         }
                         break;
 
@@ -231,18 +336,33 @@ export class Create {
                                 break;
 
                             default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidDsorgOption.message + tempOptions.dsorg });
+                                throw new ImperativeError({
+                                    msg:
+                                        ZosFilesMessages.invalidDsorgOption
+                                            .message + tempOptions.dsorg,
+                                });
                         }
 
                         break;
 
                     case "primary":
                         // Required
-                        ImperativeExpect.toNotBeNullOrUndefined(tempOptions.primary, ZosFilesMessages.missingPrimary.message);
+                        ImperativeExpect.toNotBeNullOrUndefined(
+                            tempOptions.primary,
+                            ZosFilesMessages.missingPrimary.message
+                        );
 
                         // Validate maximum allocation quantity
-                        if (tempOptions.primary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'primary'." });
+                        if (
+                            tempOptions.primary >
+                            ZosFilesConstants.MAX_ALLOC_QUANTITY
+                        ) {
+                            throw new ImperativeError({
+                                msg:
+                                    ZosFilesMessages
+                                        .maximumAllocationQuantityExceeded
+                                        .message + " for 'primary'.",
+                            });
                         }
                         break;
 
@@ -253,8 +373,16 @@ export class Create {
                         }
 
                         // Validate maximum allocation quantity
-                        if (tempOptions.secondary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'secondary'." });
+                        if (
+                            tempOptions.secondary >
+                            ZosFilesConstants.MAX_ALLOC_QUANTITY
+                        ) {
+                            throw new ImperativeError({
+                                msg:
+                                    ZosFilesMessages
+                                        .maximumAllocationQuantityExceeded
+                                        .message + " for 'secondary'.",
+                            });
                         }
                         break;
 
@@ -274,7 +402,11 @@ export class Create {
                             case "U":
                                 break;
                             default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidRecfmOption.message + tempOptions.recfm });
+                                throw new ImperativeError({
+                                    msg:
+                                        ZosFilesMessages.invalidRecfmOption
+                                            .message + tempOptions.recfm,
+                                });
                         }
                         break;
 
@@ -294,8 +426,11 @@ export class Create {
                         break;
 
                     default:
-                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
-
+                        throw new ImperativeError({
+                            msg:
+                                ZosFilesMessages.invalidFilesCreateOption
+                                    .message + option,
+                        });
                 }
             }
         }
@@ -342,19 +477,26 @@ export class Create {
     public static async vsam(
         session: AbstractSession,
         dataSetName: string,
-        options?: Partial<ICreateVsamOptions>)
-        : Promise<IZosFilesResponse> {
+        options?: Partial<ICreateVsamOptions>
+    ): Promise<IZosFilesResponse> {
         // We require the dataset name
-        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(
+            dataSetName,
+            ZosFilesMessages.missingDatasetName.message
+        );
 
-        const idcamsOptions: ICreateVsamOptions = this.vsamConvertToIdcamsOptions(options);
+        const idcamsOptions: ICreateVsamOptions = this.vsamConvertToIdcamsOptions(
+            options
+        );
 
         // format the attributes to show, and remove the option
         let attribText = "";
         if (!isNullOrUndefined(idcamsOptions.showAttributes)) {
             if (idcamsOptions.showAttributes) {
                 delete idcamsOptions.showAttributes;
-                attribText = ZosFilesMessages.attributeTitle.message + TextUtils.prettyJson(idcamsOptions);
+                attribText =
+                    ZosFilesMessages.attributeTitle.message +
+                    TextUtils.prettyJson(idcamsOptions);
             } else {
                 delete idcamsOptions.showAttributes;
             }
@@ -362,32 +504,42 @@ export class Create {
 
         let respTimeout: number;
         if (options) {
-            respTimeout = options.responseTimeout
+            respTimeout = options.responseTimeout;
         }
 
         try {
             this.vsamValidateOptions(idcamsOptions);
 
             // We invoke IDCAMS to create the VSAM cluster
-            const idcamsCmds = this.vsamFormIdcamsCreateCmd(dataSetName, idcamsOptions);
-            Logger.getAppLogger().debug("Invoking this IDCAMS command:\n" + idcamsCmds.join("\n"));
-            const idcamsResponse: IZosFilesResponse = await Invoke.ams(session, idcamsCmds, {responseTimeout: respTimeout});
+            const idcamsCmds = this.vsamFormIdcamsCreateCmd(
+                dataSetName,
+                idcamsOptions
+            );
+            Logger.getAppLogger().debug(
+                "Invoking this IDCAMS command:\n" + idcamsCmds.join("\n")
+            );
+            const idcamsResponse: IZosFilesResponse = await Invoke.ams(
+                session,
+                idcamsCmds,
+                { responseTimeout: respTimeout }
+            );
             return {
                 success: true,
-                commandResponse: attribText + ZosFilesMessages.dataSetCreatedSuccessfully.message,
-                apiResponse: idcamsResponse
+                commandResponse:
+                    attribText +
+                    ZosFilesMessages.dataSetCreatedSuccessfully.message,
+                apiResponse: idcamsResponse,
             };
         } catch (error) {
             const impErr = new ImperativeError({
                 msg: attribText + error.mDetails.msg,
                 causeErrors: error.mDetails.causeErrors,
-                additionalDetails: error.mDetails.additionalDetails
+                additionalDetails: error.mDetails.additionalDetails,
             });
             Logger.getAppLogger().error(impErr.toString());
             throw impErr;
         }
     }
-
 
     /**
      * Create a uss file or folder
@@ -397,47 +549,74 @@ export class Create {
      * @param {string} mode                          - the characters to describe permissions
      * @returns {Promise<IZosFilesResponse>}
      */
-    public static async uss(session: AbstractSession,
-                            ussPath: string,
-                            type: string,
-                            mode?: string,
-                            options?: IZosFilesOptions)
-        : Promise<IZosFilesResponse> {
-        ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
-        ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
+    public static async uss(
+        session: AbstractSession,
+        ussPath: string,
+        type: string,
+        mode?: string,
+        options?: IZosFilesOptions
+    ): Promise<IZosFilesResponse> {
+        ImperativeExpect.toNotBeNullOrUndefined(
+            type,
+            ZosFilesMessages.missingRequestType.message
+        );
+        ImperativeExpect.toNotBeEqual(
+            type,
+            "",
+            ZosFilesMessages.missingRequestType.message
+        );
         ussPath = path.posix.normalize(ussPath);
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, { "Content-Type": "application/json" }];
+        const headers: object[] = [
+            ZosmfHeaders.X_CSRF_ZOSMF_HEADER,
+            { "Content-Type": "application/json" },
+        ];
         if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            headers.push({
+                [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString(),
+            });
         }
         let payload: object = { type };
         if (mode) {
             payload = { ...payload, ...{ mode } };
         }
-        const data = await ZosmfRestClient.postExpectString(session, parameters, headers, payload);
+        const data = await ZosmfRestClient.postExpectString(
+            session,
+            parameters,
+            headers,
+            payload
+        );
 
         return {
             success: true,
             commandResponse: ZosFilesMessages.ussCreatedSuccessfully.message,
-            apiResponse: data
+            apiResponse: data,
         };
     }
 
     public static async zfs(
         session: AbstractSession,
         fileSystemName: string,
-        options?: Partial<ICreateZfsOptions>)
-        : Promise<IZosFilesResponse> {
+        options?: Partial<ICreateZfsOptions>
+    ): Promise<IZosFilesResponse> {
         // We require the file system name
-        ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(
+            fileSystemName,
+            ZosFilesMessages.missingFileSystemName.message
+        );
 
         // Removes undefined properties
-        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
+        const tempOptions = !isNullOrUndefined(options)
+            ? JSON.parse(JSON.stringify(options))
+            : {};
 
-        let endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
+        let endpoint: string =
+            ZosFilesConstants.RESOURCE +
+            ZosFilesConstants.RES_ZFS_FILES +
+            "/" +
+            fileSystemName;
 
         this.zfsValidateOptions(tempOptions);
         tempOptions.JSONversion = 1;
@@ -450,12 +629,17 @@ export class Create {
         const jsonContent = JSON.stringify(tempOptions);
         const headers = [{ "Content-Length": jsonContent.length }];
 
-        const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
+        const data = await ZosmfRestClient.postExpectString(
+            session,
+            endpoint,
+            headers,
+            jsonContent
+        );
 
         return {
             success: true,
             commandResponse: ZosFilesMessages.zfsCreatedSuccessfully.message,
-            apiResponse: data
+            apiResponse: data,
         };
     }
 
@@ -465,9 +649,13 @@ export class Create {
      * @param {ICreateVsamOptions} cliOptions - The set of options from our CLI
      * @returns {ICreateVsamOptions} - Options to provide to IDCAMS.
      */
-    private static vsamConvertToIdcamsOptions(cliOptions: ICreateVsamOptions): ICreateVsamOptions {
+    private static vsamConvertToIdcamsOptions(
+        cliOptions: ICreateVsamOptions
+    ): ICreateVsamOptions {
         // Removes undefined properties
-        let idcamsOptions = isNullOrUndefined(cliOptions) ? {} : JSON.parse(JSON.stringify(cliOptions));
+        let idcamsOptions = isNullOrUndefined(cliOptions)
+            ? {}
+            : JSON.parse(JSON.stringify(cliOptions));
 
         // convert the zowe size into IDCAMS allocationUnit and primarySpace
         let matchArray;
@@ -493,8 +681,10 @@ export class Create {
 
         // when secondary is not specified, use 10% of primary
         if (isNullOrUndefined(idcamsOptions.secondary)) {
-            const tenPercent = 0.10;
-            idcamsOptions.secondary = Math.round(idcamsOptions.primary * tenPercent);
+            const tenPercent = 0.1;
+            idcamsOptions.secondary = Math.round(
+                idcamsOptions.primary * tenPercent
+            );
         }
 
         return idcamsOptions;
@@ -509,21 +699,40 @@ export class Create {
      */
     private static vsamFormIdcamsCreateCmd(
         dataSetName: string,
-        options: ICreateVsamOptions)
-        : string[] {
+        options: ICreateVsamOptions
+    ): string[] {
         return [
             "DEFINE CLUSTER -\n" +
-            "(" +
-            "NAME('" + dataSetName.toUpperCase() + "') -\n" +
-            options.dsorg.toUpperCase() + " -\n" +
-            options.alcunit.toUpperCase() + "(" + options.primary + " " + options.secondary + ")" + " -\n" +
-            (options.retainTo ? "TO(" + options.retainTo + ") -\n" : "") +
-            (options.retainFor ? "FOR(" + options.retainFor + ") -\n" : "") +
-            (options.volumes ? "VOLUMES(" + options.volumes.toUpperCase() + ") -\n" : "") +
-            (options.storclass ? "STORAGECLASS(" + options.storclass + ") -\n" : "") +
-            (options.mgntclass ? "MANAGEMENTCLASS(" + options.mgntclass + ") -\n" : "") +
-            (options.dataclass ? "DATACLASS(" + options.dataclass + ") -\n" : "") +
-            ")"
+                "(" +
+                "NAME('" +
+                dataSetName.toUpperCase() +
+                "') -\n" +
+                options.dsorg.toUpperCase() +
+                " -\n" +
+                options.alcunit.toUpperCase() +
+                "(" +
+                options.primary +
+                " " +
+                options.secondary +
+                ")" +
+                " -\n" +
+                (options.retainTo ? "TO(" + options.retainTo + ") -\n" : "") +
+                (options.retainFor
+                    ? "FOR(" + options.retainFor + ") -\n"
+                    : "") +
+                (options.volumes
+                    ? "VOLUMES(" + options.volumes.toUpperCase() + ") -\n"
+                    : "") +
+                (options.storclass
+                    ? "STORAGECLASS(" + options.storclass + ") -\n"
+                    : "") +
+                (options.mgntclass
+                    ? "MANAGEMENTCLASS(" + options.mgntclass + ") -\n"
+                    : "") +
+                (options.dataclass
+                    ? "DATACLASS(" + options.dataclass + ") -\n"
+                    : "") +
+                ")",
         ];
     }
 
@@ -533,23 +742,28 @@ export class Create {
      * @param options - options for the creation of the cluster
      */
     private static vsamValidateOptions(options: ICreateVsamOptions): void {
-        ImperativeExpect.toNotBeNullOrUndefined(options,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options,
             ZosFilesMessages.missingFilesCreateOptions.message
         );
 
         /* If our caller does not supply these options, we supply default values for them,
          * so they should exist at this point.
          */
-        ImperativeExpect.toNotBeNullOrUndefined(options.dsorg,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.dsorg,
             ZosFilesMessages.missingVsamOption.message + "dsorg"
         );
-        ImperativeExpect.toNotBeNullOrUndefined(options.alcunit,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.alcunit,
             ZosFilesMessages.missingVsamOption.message + "alcunit"
         );
-        ImperativeExpect.toNotBeNullOrUndefined(options.primary,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.primary,
             ZosFilesMessages.missingVsamOption.message + "primary"
         );
-        ImperativeExpect.toNotBeNullOrUndefined(options.secondary,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.secondary,
             ZosFilesMessages.missingVsamOption.message + "secondary"
         );
 
@@ -557,19 +771,30 @@ export class Create {
         for (const option in options) {
             if (options.hasOwnProperty(option)) {
                 switch (option) {
-
                     case "dsorg":
-                        if (!ZosFilesConstants.VSAM_DSORG_CHOICES.includes(options.dsorg.toUpperCase())) {
+                        if (
+                            !ZosFilesConstants.VSAM_DSORG_CHOICES.includes(
+                                options.dsorg.toUpperCase()
+                            )
+                        ) {
                             throw new ImperativeError({
-                                msg: ZosFilesMessages.invalidDsorgOption.message + options.dsorg
+                                msg:
+                                    ZosFilesMessages.invalidDsorgOption
+                                        .message + options.dsorg,
                             });
                         }
                         break;
 
                     case "alcunit":
-                        if (!ZosFilesConstants.VSAM_ALCUNIT_CHOICES.includes(options.alcunit.toUpperCase())) {
+                        if (
+                            !ZosFilesConstants.VSAM_ALCUNIT_CHOICES.includes(
+                                options.alcunit.toUpperCase()
+                            )
+                        ) {
                             throw new ImperativeError({
-                                msg: ZosFilesMessages.invalidAlcunitOption.message + options.alcunit
+                                msg:
+                                    ZosFilesMessages.invalidAlcunitOption
+                                        .message + options.alcunit,
                             });
                         }
                         break;
@@ -577,25 +802,46 @@ export class Create {
                     case "primary":
                     case "secondary":
                         // Validate maximum allocation quantity
-                        if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                        if (
+                            options[option] >
+                            ZosFilesConstants.MAX_ALLOC_QUANTITY
+                        ) {
                             throw new ImperativeError({
-                                msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
-                                    ZosFilesMessages.commonFor.message + " '" + option + "' " + ZosFilesMessages.commonWithValue.message +
-                                    " = " + options[option] + "."
+                                msg:
+                                    ZosFilesMessages
+                                        .maximumAllocationQuantityExceeded
+                                        .message +
+                                    " " +
+                                    ZosFilesMessages.commonFor.message +
+                                    " '" +
+                                    option +
+                                    "' " +
+                                    ZosFilesMessages.commonWithValue.message +
+                                    " = " +
+                                    options[option] +
+                                    ".",
                             });
                         }
                         break;
 
                     case "retainFor":
-                        if (options[option] < ZosFilesConstants.MIN_RETAIN_DAYS ||
-                            options[option] > ZosFilesConstants.MAX_RETAIN_DAYS) {
+                        if (
+                            options[option] <
+                                ZosFilesConstants.MIN_RETAIN_DAYS ||
+                            options[option] > ZosFilesConstants.MAX_RETAIN_DAYS
+                        ) {
                             throw new ImperativeError({
-                                msg: TextUtils.formatMessage(ZosFilesMessages.valueOutOfBounds.message, {
-                                    optionName: option,
-                                    value: options[option],
-                                    minValue: ZosFilesConstants.MIN_RETAIN_DAYS,
-                                    maxValue: ZosFilesConstants.MAX_RETAIN_DAYS
-                                })
+                                msg: TextUtils.formatMessage(
+                                    ZosFilesMessages.valueOutOfBounds.message,
+                                    {
+                                        optionName: option,
+                                        value: options[option],
+                                        minValue:
+                                            ZosFilesConstants.MIN_RETAIN_DAYS,
+                                        maxValue:
+                                            ZosFilesConstants.MAX_RETAIN_DAYS,
+                                    }
+                                ),
                             });
                         }
                         break;
@@ -610,8 +856,11 @@ export class Create {
                         break;
 
                     default:
-                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
-
+                        throw new ImperativeError({
+                            msg:
+                                ZosFilesMessages.invalidFilesCreateOption
+                                    .message + option,
+                        });
                 } // end switch
             }
         } // end for
@@ -623,23 +872,28 @@ export class Create {
      * @param options - options for the creation of the file system
      */
     private static zfsValidateOptions(options: ICreateZfsOptions): void {
-        ImperativeExpect.toNotBeNullOrUndefined(options,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options,
             ZosFilesMessages.missingFilesCreateOptions.message
         );
 
         /* If our caller does not supply these options, we supply default values for them,
          * so they should exist at this point.
          */
-        ImperativeExpect.toNotBeNullOrUndefined(options.perms,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.perms,
             ZosFilesMessages.missingZfsOption.message + "perms"
         );
-        ImperativeExpect.toNotBeNullOrUndefined(options.cylsPri,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.cylsPri,
             ZosFilesMessages.missingZfsOption.message + "cyls-pri"
         );
-        ImperativeExpect.toNotBeNullOrUndefined(options.cylsSec,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.cylsSec,
             ZosFilesMessages.missingZfsOption.message + "cyls-sec"
         );
-        ImperativeExpect.toNotBeNullOrUndefined(options.timeout,
+        ImperativeExpect.toNotBeNullOrUndefined(
+            options.timeout,
             ZosFilesMessages.missingZfsOption.message + "timeout"
         );
 
@@ -647,12 +901,13 @@ export class Create {
         for (const option in options) {
             if (options.hasOwnProperty(option)) {
                 switch (option) {
-
                     case "perms":
                         const maxPerm = 777;
-                        if ((options.perms < 0) || (options.perms > maxPerm)) {
+                        if (options.perms < 0 || options.perms > maxPerm) {
                             throw new ImperativeError({
-                                msg: ZosFilesMessages.invalidPermsOption.message + options.perms
+                                msg:
+                                    ZosFilesMessages.invalidPermsOption
+                                        .message + options.perms,
                             });
                         }
                         break;
@@ -660,11 +915,24 @@ export class Create {
                     case "cylsPri":
                     case "cylsSec":
                         // Validate maximum allocation quantity
-                        if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                        if (
+                            options[option] >
+                            ZosFilesConstants.MAX_ALLOC_QUANTITY
+                        ) {
                             throw new ImperativeError({
-                                msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
-                                    ZosFilesMessages.commonFor.message + " '" + option + "' " + ZosFilesMessages.commonWithValue.message +
-                                    " = " + options[option] + "."
+                                msg:
+                                    ZosFilesMessages
+                                        .maximumAllocationQuantityExceeded
+                                        .message +
+                                    " " +
+                                    ZosFilesMessages.commonFor.message +
+                                    " '" +
+                                    option +
+                                    "' " +
+                                    ZosFilesMessages.commonWithValue.message +
+                                    " = " +
+                                    options[option] +
+                                    ".",
                             });
                         }
                         break;
@@ -681,8 +949,11 @@ export class Create {
                         break;
 
                     default:
-                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
-
+                        throw new ImperativeError({
+                            msg:
+                                ZosFilesMessages.invalidFilesCreateOption
+                                    .message + option,
+                        });
                 } // end switch
             }
         } // end for
