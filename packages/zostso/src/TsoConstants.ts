@@ -177,7 +177,7 @@ export class TsoConstants {
  * @memberof TsoConstants
  */
 export const noSessionTso: IMessageDefinition = {
-    message: apiErrorHeader + `No session was supplied.`
+    message: apiErrorHeader.message + ` No session was supplied.`
 };
 
 /**
@@ -187,7 +187,7 @@ export const noSessionTso: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noTsoStartInput: IMessageDefinition = {
-    message: apiErrorHeader + `No tso start address space parameters were supplied.`
+    message: apiErrorHeader.message + ` No tso start address space parameters were supplied.`
 };
 
 /**
@@ -197,7 +197,7 @@ export const noTsoStartInput: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noTsoIssueInput: IMessageDefinition = {
-    message: apiErrorHeader + `No tso issue command parameters were supplied.`
+    message: apiErrorHeader.message + ` No tso issue command parameters were supplied.`
 };
 
 /**
@@ -207,7 +207,7 @@ export const noTsoIssueInput: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noTsoStopInput: IMessageDefinition = {
-    message: apiErrorHeader + `No tso stop address space parameters were supplied.`
+    message: apiErrorHeader.message + ` No tso stop address space parameters were supplied.`
 };
 
 /**
@@ -217,7 +217,7 @@ export const noTsoStopInput: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noZosmfResponse: IMessageDefinition = {
-    message: apiErrorHeader + `No z/OSMF response was received.`
+    message: apiErrorHeader.message + ` No z/OSMF response was received.`
 };
 
 /**
@@ -227,7 +227,7 @@ export const noZosmfResponse: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noPingInput: IMessageDefinition = {
-    message: apiErrorHeader + `No servlet supplied.`
+    message: apiErrorHeader.message + ` No servlet supplied.`
 };
 
 /**
@@ -237,7 +237,7 @@ export const noPingInput: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noAccountNumber: IMessageDefinition = {
-    message: apiErrorHeader + `No account number was supplied.`
+    message: apiErrorHeader.message + ` No account number was supplied.`
 };
 
 /**
@@ -247,7 +247,7 @@ export const noAccountNumber: IMessageDefinition = {
  * @memberOf TsoConstants
  */
 export const noServletKeyInput: IMessageDefinition = {
-    message: apiErrorHeader + `No servlet key was supplied.`
+    message: apiErrorHeader.message + ` No servlet key was supplied.`
 };
 
 /**
@@ -257,7 +257,7 @@ export const noServletKeyInput: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noDataInput: IMessageDefinition = {
-    message: apiErrorHeader + `No data parameter string was supplied.`
+    message: apiErrorHeader.message + ` No data parameter string was supplied.`
 };
 
 /**
@@ -267,6 +267,6 @@ export const noDataInput: IMessageDefinition = {
  * @memberof TsoConstants
  */
 export const noCommandInput: IMessageDefinition = {
-    message: apiErrorHeader + `No command text was provided.`
+    message: apiErrorHeader.message + ` No command text was provided.`
 };
 

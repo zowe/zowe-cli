@@ -99,6 +99,41 @@ describe("TsoResponseService populateStartAndStop", () => {
         }
         expectStartResponseFailed(startResponse, error, noZosmfResponse.message);
     });
+
+    it("should fail and return object if response is missing servlet key", () => {
+        let startResponse;
+        let error;
+        try {
+            startResponse = TsoResponseService.populateStartAndStop({
+                ...PRETEND_ZOSMF_RESPONSE,
+                servletKey: undefined
+            });
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(startResponse).toBeDefined();
+        expect(startResponse.success).toBe(false);
+        expect(error).not.toBeDefined();
+    });
+});
+
+describe("TsoResponseService populateStartAndStopCollectAll", () => {
+
+    it("should fail and return object if response is missing servlet key", () => {
+        let startResponse;
+        let error;
+        try {
+            startResponse = TsoResponseService.populateStartAndStopCollectAll({
+                ...PRETEND_ZOSMF_RESPONSE,
+                servletKey: undefined
+            });
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(startResponse).toBeDefined();
+        expect(startResponse.success).toBe(false);
+        expect(error).not.toBeDefined();
+    });
 });
 
 describe("TsoResponseService populatePing", () => {

@@ -82,7 +82,7 @@ describe("Delete archived workflow", () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
             // Archive workflow
-            await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
+            await ArchiveWorkflow.archiveWorkflowByKey(REAL_SESSION, wfKey);
         });
         it("Should delete archived workflow in zOSMF.", async () => {
             let error;
