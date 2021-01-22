@@ -124,7 +124,7 @@ After the initial setup, you can define additional mainframe services to your gl
 
 Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your computer. The profiles object should contain connection and other frequently needed information for accessing various services. For example:
 
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -157,7 +157,7 @@ From here, you can edit the details as needed and save the file. For example, yo
 
 To add a new service, for example add a new instance of z/OSMF that runs on a different mainframe LPAR, you can build on the existing array as follows:
 
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -231,7 +231,7 @@ The user name and password fields are not supplied in the service definitions.
 
 In the following example, the username and password fields for ZOSMF1 and ZOSMF2 are user name and password fields are not supplied in the service definitions to allow them to inherit values from the base array:
 
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -298,7 +298,7 @@ You might want to share configuration in the following scenarios:
 
 In this example configuration, the settings are accessing multiple services directly on multiple LPARs that share the same username and password.
 
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -363,30 +363,20 @@ In this example configuration, the settings are accessing multiple services dire
 }
 ```
 In this example configuration, the settings are accessing multiple services via the API ML (where MFA/SSO is achievable via token-based authorization).
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
-        "lpar1": {
-            "profiles": {
-                "zosmf": {
-                    "type": "zosmf",
-                    "properties": {
-                        "basePath": "api/v1"
-                    }
-                },
-                "cics": {
-                    "type": "cics",
-                    "properties": {
-                        "basePath": "api/v1/my_cics"
-                    }
-                },
-                "db2": {
-                    "type": "db2",
-                    "properties": {
-                        "basePath": "api/v1/my_db2"
-                    }
-                }
+        "my_zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "basePath": "my_zosmf/api/v1"
+            }
+        },
+        "my_cics": {
+            "type": "cics",
+            "properties": {
+                "basePath": "my_cics/api/v1"
             }
         },
         "my_base": {
@@ -399,9 +389,8 @@ In this example configuration, the settings are accessing multiple services via 
         }
     },
     "defaults": {
-        "zosmf": "lpar1.zosmf",
-        "cics": "lpar1.cics",
-        "db2": "lpar1.db2",
+        "zosmf": "my_zosmf",
+        "cics": "my_cics",
         "base": "my_base"
     },
     "plugins": [],
@@ -411,7 +400,7 @@ In this example configuration, the settings are accessing multiple services via 
 }
 ```
 In this example configuration, the settings are accessing multiple services directly on LPAR1 and LPAR2 where username and password varies between the LPAR1 and LPAR2 services. This example is identical to first example except for the secure array at the end.
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -479,7 +468,7 @@ In this example configuration, the settings are accessing multiple services dire
 ```
 
 In this example configuration, API ML is leveraged to access production services but services on a dev-test environment can be accessed directly.
-```json
+```javascript
 {
     "$schema": "./zowe.schema.json",
     "profiles": {
@@ -488,19 +477,13 @@ In this example configuration, API ML is leveraged to access production services
                 "zosmf": {
                     "type": "zosmf",
                     "properties": {
-                        "basePath": "api/v1"
+                        "basePath": "my_zosmf/api/v1"
                     }
                 },
                 "cics": {
                     "type": "cics",
                     "properties": {
-                        "basePath": "api/v1/my_cics"
-                    }
-                },
-                "db2": {
-                    "type": "db2",
-                    "properties": {
-                        "basePath": "api/v1/my_db2"
+                        "basePath": "my_cics/api/v1"
                     }
                 }
             }
@@ -544,7 +527,6 @@ In this example configuration, API ML is leveraged to access production services
     "defaults": {
         "zosmf": "prod.zosmf",
         "cics": "prod.cics",
-        "db2": "prod.db2",
         "tso": "dev.tso",
         "ssh": "dev.ssh",
         "base": "my_base"
