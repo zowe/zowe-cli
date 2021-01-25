@@ -13,7 +13,8 @@ import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import {
     ListWorkflows,
     DeleteWorkflow,
-    CreateWorkflow
+    CreateWorkflow,
+    WorkflowConstants
 } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -75,19 +76,19 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
         switch (sourceType) {
             case "dataset":
                 try {
-                    resp = await CreateWorkflow.createWorkflow(
-                        this.mSession,
-                        this.arguments.workflowName,
-                        this.arguments.dataSet,
-                        this.arguments.systemName,
-                        this.arguments.owner,
-                        this.arguments.variablesInputFile,
-                        this.arguments.variables,
-                        this.arguments.assignToOwner,
-                        this.arguments.accessType,
-                        this.arguments.deleteCompleted,
-                        this.arguments.workflowJobStatement
-                    );
+                    resp = await CreateWorkflow.createWorkflow2({
+                        session: this.mSession,
+                        WorkflowName: this.arguments.workflowName,
+                        WorkflowDefinitionFile: this.arguments.dataSet,
+                        systemName: this.arguments.systemName,
+                        Owner: this.arguments.owner,
+                        VariableInputFile: this.arguments.variablesInputFile,
+                        Variables: this.arguments.variables,
+                        AssignToOwner: this.arguments.assignToOwner,
+                        AccessType: this.arguments.accessType,
+                        DeleteCompletedJobs: this.arguments.deleteCompleted,
+                        JobStatement: this.arguments.workflowJobStatement
+                    });
                 } catch (err) {
                     error =
                         "Creating zOS/MF workflow with data set: " +
@@ -108,19 +109,19 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
 
             case "uss-file":
                 try {
-                    resp = await CreateWorkflow.createWorkflow(
-                        this.mSession,
-                        this.arguments.workflowName,
-                        this.arguments.ussFile,
-                        this.arguments.systemName,
-                        this.arguments.owner,
-                        this.arguments.variablesInputFile,
-                        this.arguments.variables,
-                        this.arguments.assignToOwner,
-                        this.arguments.accessType,
-                        this.arguments.deleteCompleted,
-                        this.arguments.workflowJobStatement
-                    );
+                    resp = await CreateWorkflow.createWorkflow2({
+                        session: this.mSession,
+                        WorkflowName: this.arguments.workflowName,
+                        WorkflowDefinitionFile: this.arguments.ussFile,
+                        systemName: this.arguments.systemName,
+                        Owner: this.arguments.owner,
+                        VariableInputFile: this.arguments.variablesInputFile,
+                        Variables: this.arguments.variables,
+                        AssignToOwner: this.arguments.assignToOwner,
+                        AccessType: this.arguments.accessType,
+                        DeleteCompletedJobs: this.arguments.deleteCompleted,
+                        JobStatement: this.arguments.workflowJobStatement
+                    });
                 } catch (err) {
                     error =
                         "Creating z/OSMF workflow with uss file: " +
@@ -141,21 +142,22 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
 
             case "local-file":
                 try {
-                    resp = await CreateWorkflow.createWorkflowLocal(
-                        this.mSession,
-                        this.arguments.workflowName,
-                        this.arguments.localFile,
-                        this.arguments.systemName,
-                        this.arguments.owner,
-                        this.arguments.variablesInputFile,
-                        this.arguments.variables,
-                        this.arguments.assignToOwner,
-                        this.arguments.accessType,
-                        this.arguments.deleteCompleted,
-                        this.arguments.keepFiles,
-                        this.arguments.remoteDirectory,
-                        this.arguments.workflowJobStatement
-                    );
+                    resp = await CreateWorkflow.createWorkflowLocal2({
+                        session: this.mSession,
+                        WorkflowName: this.arguments.workflowName,
+                        WorkflowDefinitionFile: this.arguments.localFile,
+                        systemName: this.arguments.systemName,
+                        Owner: this.arguments.owner,
+                        VariableInputFile: this.arguments.variablesInputFile,
+                        Variables: this.arguments.variables,
+                        AssignToOwner: this.arguments.assignToOwner,
+                        AccessType: this.arguments.accessType,
+                        DeleteCompletedJobs: this.arguments.deleteCompleted,
+                        keepFiles: this.arguments.keepFiles,
+                        customDir: this.arguments.remoteDirectory,
+                        JobStatement: this.arguments.workflowJobStatement,
+                        zOSMFVersion: WorkflowConstants.ZOSMF_VERSION
+                    });
                 } catch (err) {
                     error =
                         "Creating z/OSMF workflow with local file: " +
