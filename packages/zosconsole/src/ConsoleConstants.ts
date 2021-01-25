@@ -25,13 +25,13 @@ export const displayResponse: IMessageDefinition = {
     message: `Populating console response: {{data}}`
 };
 export const displayError: IMessageDefinition = {
-    message: apiErrorHeader + ` Populating console error: {{data}}`
+    message: apiErrorHeader.message + ` Populating console error: {{data}}`
 };
 export const displayCollectResponse: IMessageDefinition = {
     message: `Collect response: {{data}}`
 };
 export const displayCollectError: IMessageDefinition = {
-    message: apiErrorHeader + ` Collect error: {{data}}`
+    message: apiErrorHeader.message + ` Collect error: {{data}}`
 };
 export const decreaseCounter: IMessageDefinition = {
     message: `Decreasing follow up counter`
@@ -40,19 +40,19 @@ export const resetCounter: IMessageDefinition = {
     message: `Reset follow up counter`
 };
 export const noZosmfInput: IMessageDefinition = {
-    message: apiErrorHeader + `No zosmf console input parameters were supplied.`
+    message: apiErrorHeader.message + ` No zosmf console input parameters were supplied.`
 };
 export const noConsoleInput: IMessageDefinition = {
-    message: apiErrorHeader + `No console issue parameters were supplied.`
+    message: apiErrorHeader.message + ` No console issue parameters were supplied.`
 };
 export const noConsoleName: IMessageDefinition = {
-    message: apiErrorHeader + `No console name was supplied.`
+    message: apiErrorHeader.message + ` No console name was supplied.`
 };
 export const noCommandKey: IMessageDefinition = {
-    message: apiErrorHeader + `No command response key was supplied.`
+    message: apiErrorHeader.message + ` No command response key was supplied.`
 };
 export const noCollectParameters: IMessageDefinition = {
-    message: apiErrorHeader + `No console collect parameters were supplied.`
+    message: apiErrorHeader.message + ` No console collect parameters were supplied.`
 };
 export const collectProcessingDetails: IMessageDefinition = {
     message: `Collect processing - timeout: {{timer}}, followUpCounter: {{counter}}`
