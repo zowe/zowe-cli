@@ -241,19 +241,7 @@ export class CreateWorkflow {
 
     /**
      * Create a zOSMF workflow instance using local files
-     * @param {AbstractSession} session                     - z/OSMF connection info
-     * @param {string} WorkflowName                         - Name of the workflow that will be created
-     * @param {string} WorkflowDefinitionFile               - Local workflow definition file
-     * @param {string} systemName                           - System where the workflow will run
-     * @param {string} Owner                                - User ID of the workflow owner.
-     * @param {string} VariableInputFile                    - Local properties file with pre-specify values for workflow variables
-     * @param {string} Variables                            - A list of one or more variables for the workflow.
-     * @param {boolean} AssignToOwner                       - Indicates whether the workflow steps are assigned to the workflow owner
-     * @param {accessT} AccessType                          - Specifies the access type for the workflow. Public, Restricted or Private.
-     * @param {boolean} DeleteCompletedJobs                 - Specifies whether the job is deleted from the JES spool after it completes successfully.
-     * @param {string} zOSMFVersion                         - Identifies the version of the zOSMF workflow service.
-     * @param {boolean} keepFiles                           - Identifies if the uploaded uss files should be kept.
-     * @param {string} customDir                            - Path to specific USS directory in which to upload the temp files.
+     * @param {IParamsCreateWorkflowLocal} createWorkflowLocalParams - Parameters for the workflow creation
      * @returns {Promise<ICreatedWorkflowLocal>}
      */
     public static async createWorkflowLocal2(createWorkflowLocalParams: IParamsCreateWorkflowLocal): Promise<ICreatedWorkflowLocal> {

@@ -53,8 +53,15 @@ describe("Create workflow common handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn((session) => {
+            // Mock the create functions
+            CreateWorkflow.createWorkflow = jest.fn(({session: session}) => {
+                fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "deleted"
+                };
+            });
+            CreateWorkflow.createWorkflow2 = jest.fn(({session: session}) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -136,18 +143,18 @@ describe("Create workflow common handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
-                                                                        workflowName,
-                                                                        dataSet,
-                                                                        systemName,
-                                                                        owner,
-                                                                        variablesInputFile,
-                                                                        variables,
-                                                                        assignToOwner,
-                                                                        accessType,
-                                                                        deleteCompleted,
-                                                                        undefined);
+            expect(CreateWorkflow.createWorkflow2).toHaveBeenCalledTimes(1);
+            expect(CreateWorkflow.createWorkflow2).toHaveBeenCalledWith({session: fakeSession,
+                                                                         WorkflowName: workflowName,
+                                                                         WorkflowDefinitionFile: dataSet,
+                                                                         systemName,
+                                                                         Owner: owner,
+                                                                         VariableInputFile: variablesInputFile,
+                                                                         Variables: variables,
+                                                                         AssignToOwner: assignToOwner,
+                                                                         AccessType: accessType,
+                                                                         DeleteCompletedJobs: deleteCompleted,
+                                                                         JobStatement: undefined});
         });
         it("should create a workflow using a uss file", async () => {
             // Require the handler and create a new instance
@@ -165,6 +172,13 @@ describe("Create workflow common handler", () => {
             // Mock the create function
             CreateWorkflow.createWorkflow = jest.fn((session) => {
                 fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "deleted"
+                };
+            });
+            CreateWorkflow.createWorkflow2 = jest.fn((params) => {
+                fakeSession = params.session;
                 return {
                     success: true,
                     commandResponse: "deleted"
@@ -228,18 +242,19 @@ describe("Create workflow common handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
-                                                                        workflowName,
-                                                                        ussFile,
-                                                                        systemName,
-                                                                        owner,
-                                                                        variablesInputFile,
-                                                                        variables,
-                                                                        assignToOwner,
-                                                                        accessType,
-                                                                        deleteCompleted,
-                                                                        undefined);
+            expect(CreateWorkflow.createWorkflow2).toHaveBeenCalledTimes(1);
+            expect(CreateWorkflow.createWorkflow2).toHaveBeenCalledWith({session: fakeSession,
+                                                                         WorkflowName: workflowName,
+                                                                         WorkflowDefinitionFile: ussFile,
+                                                                         systemName,
+                                                                         Owner: owner,
+                                                                         VariableInputFile: variablesInputFile,
+                                                                         Variables: variables,
+                                                                         AssignToOwner: assignToOwner,
+                                                                         AccessType: accessType,
+                                                                         DeleteCompletedJobs: deleteCompleted,
+                                                                         JobStatement: undefined
+                                                                        });
         });
         it("should create a workflow using a local file", async () => {
             // Require the handler and create a new instance
@@ -257,6 +272,13 @@ describe("Create workflow common handler", () => {
             // Mock the create function
             CreateWorkflow.createWorkflowLocal = jest.fn((session) => {
                 fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "deleted"
+                };
+            });
+            CreateWorkflow.createWorkflowLocal2 = jest.fn((params) => {
+                fakeSession = params.session;
                 return {
                     success: true,
                     commandResponse: "deleted"
@@ -322,20 +344,21 @@ describe("Create workflow common handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(CreateWorkflow.createWorkflowLocal).toHaveBeenCalledTimes(1);
-            expect(CreateWorkflow.createWorkflowLocal).toHaveBeenCalledWith(fakeSession,
-                                                                        workflowName,
-                                                                        localFile,
-                                                                        systemName,
-                                                                        owner,
-                                                                        variablesInputFile,
-                                                                        variables,
-                                                                        assignToOwner,
-                                                                        accessType,
-                                                                        deleteCompleted,
-                                                                        keepFiles,
-                                                                        remoteDirectory,
-                                                                        undefined);
+            expect(CreateWorkflow.createWorkflowLocal2).toHaveBeenCalledTimes(1);
+            expect(CreateWorkflow.createWorkflowLocal2).toHaveBeenCalledWith({session: fakeSession,
+                                                                              WorkflowName: workflowName,
+                                                                              WorkflowDefinitionFile: localFile,
+                                                                              systemName,
+                                                                              Owner: owner,
+                                                                              VariableInputFile: variablesInputFile,
+                                                                              Variables: variables,
+                                                                              AssignToOwner: assignToOwner,
+                                                                              AccessType: accessType,
+                                                                              DeleteCompletedJobs: deleteCompleted,
+                                                                              keepFiles,
+                                                                              customDir: remoteDirectory,
+                                                                              JobStatement: undefined,
+                                                                              zOSMFVersion: "1.0"});
         });
         it("should fail if definition file is not a uss file or dataset", async () => {
             // Require the handler and create a new instance
@@ -350,9 +373,16 @@ describe("Create workflow common handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the create function
+            // Mock the create functions
             CreateWorkflow.createWorkflow = jest.fn((session) => {
                 fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "deleted"
+                };
+            });
+            CreateWorkflow.createWorkflow2 = jest.fn((params) => {
+                fakeSession = params.session;
                 return {
                     success: true,
                     commandResponse: "deleted"
@@ -410,7 +440,7 @@ describe("Create workflow common handler", () => {
                 error = e;
             }
             expect(error).toBeDefined();
-            expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(0);
+            expect(CreateWorkflow.createWorkflow2).toHaveBeenCalledTimes(0);
             expect(error).toMatchSnapshot();
         });
     });

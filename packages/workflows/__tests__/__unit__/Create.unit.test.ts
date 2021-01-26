@@ -69,7 +69,6 @@ const PRETEND_INPUT_PARMS_NO_INPUT: ICreateWorkflow = {
     assignToOwner: assign,
     accessType: access,
     deleteCompletedJobs: deleteJobs,
-    jobStatement: jobStatement.join("\n")
 };
 const PRETEND_INPUT_PARMS_EMPTY_VAR: ICreateWorkflow = {
     workflowName: wfName,
@@ -143,7 +142,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,
-                    null, null, null, null, null, jobStatement);
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -194,7 +193,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,  null,
-                    null, null, null, null, jobStatement);
+                    null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -221,7 +220,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, definitionFile, systemName, wfOwner,
-                    null, null, null, null, null, jobStatement);
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -248,7 +247,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, definitionFile, systemName, wfOwner,
-                    null, null, null, null, null, jobStatement);
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -275,7 +274,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, definitionFile, systemName, wfOwner,
-                    null, null, null, null, null, jobStatement);
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -379,7 +378,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,  null,
-                    null, null, null, null, null, "");
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -479,7 +478,7 @@ describe("Create workflow from local file", () => {
             expect((Delete.ussFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
                 systemName, wfOwner, PRETEND_INPUT_PARMS.workflowDefinitionFile, variables, assign, access, deleteJobs,
-                undefined, WorkflowConstants.ZOSMF_VERSION);
+                WorkflowConstants.ZOSMF_VERSION);
             expect((Delete.ussFile as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_INPUT_PARMS.workflowDefinitionFile.slice(1));
         });
         it("Should succeed and keep files", async () => {
@@ -515,7 +514,7 @@ describe("Create workflow from local file", () => {
             expect((CreateWorkflow.getTempFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
                 systemName, wfOwner, PRETEND_INPUT_PARMS.workflowDefinitionFile, variables, assign, access, deleteJobs,
-                undefined, WorkflowConstants.ZOSMF_VERSION);
+                WorkflowConstants.ZOSMF_VERSION);
             expect(response.filesKept).toBeDefined();
             expect(response.filesKept).toContain(PRETEND_INPUT_PARMS.workflowDefinitionFile);
         });
@@ -598,7 +597,7 @@ describe("Create workflow from local file", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflowLocal(PRETEND_SESSION, wfName, wfDefinitionFile, systemName, wfOwner,  null,
-                    null, null, null, null, false, null, null, "");
+                    null, null, null, null, false, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
