@@ -57,7 +57,8 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
             error: jest.fn((errors) => {
                 expect(errors.toString()).toMatchSnapshot();
             }),
-            errorHeader: jest.fn(() => undefined)
+            errorHeader: jest.fn(() => undefined),
+            prompt: jest.fn()
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
