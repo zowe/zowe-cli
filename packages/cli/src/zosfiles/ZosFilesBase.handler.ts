@@ -47,7 +47,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
             commandParameters.arguments
         );
         const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments
+            sessCfg, commandParameters.arguments, { parms: commandParameters }
         );
 
         const session = new Session(sessCfgWithCreds);

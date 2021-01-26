@@ -14,7 +14,7 @@ import { HMigrateDefinition } from "../../../../src/zosfiles/hMigrate/HMigrate.d
 import { ICommandDefinition } from "@zowe/imperative";
 describe("zos-files migrate group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/hMigrate/HMigrate.definition").HMigrateDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/hMigrate/HMigrate.definition").HMigrateDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.options).toBeUndefined();

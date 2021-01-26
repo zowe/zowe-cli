@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files migrate ds command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/hMigrate/ds/Ds.definition").DsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/hMigrate/ds/Ds.definition").DsDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.children).toBeUndefined();

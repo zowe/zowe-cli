@@ -77,7 +77,7 @@ export function getMockedResponse(): IHandlerResponseApi {
                 expect(errors.toString()).toMatchSnapshot();
             }),
             errorHeader: jest.fn(() => undefined),
-            prompt: jest.fn()
+            prompt: jest.fn(() => null)
         },
         progress: {
             startBar: jest.fn((parms) => undefined),

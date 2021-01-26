@@ -121,6 +121,7 @@ describe("start address-space handler tests", () => {
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.user = "FakeUser";
         params.arguments.password = "FakePassword";
+        params.response.console.prompt.mockReturnValue(null);
         let error;
         try {
             await handler.process(params);

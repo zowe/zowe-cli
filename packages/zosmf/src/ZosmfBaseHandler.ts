@@ -76,7 +76,7 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
         );
 
         const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments
+            sessCfg, commandParameters.arguments, { parms: commandParameters }
         );
 
         this.mSession = new Session(sessCfgWithCreds);
