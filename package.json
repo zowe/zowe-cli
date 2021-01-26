@@ -5,7 +5,7 @@
   "author": "Broadcom",
   "license": "EPL-2.0",
   "scripts": {
-    "build": "npm install --save-dev gulp && gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck && echo Fix build and remove Git dependencies before publishing to NPM.",
+    "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
     "postinstall": "lerna bootstrap --hoist @zowe/*",
@@ -30,7 +30,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@zowe/imperative": "https://github.com:zowe/imperative#json-config-next",
+    "@zowe/imperative": "4.10.2",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
