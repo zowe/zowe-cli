@@ -36,12 +36,6 @@ jobs:
       id: install
       run: npm ci
 
-    - name: Install imperative@json-config-next
-      run: |
-        git clone https://github.com/zowe/imperative.git
-        cd imperative && git checkout json-config-next && npm install && npm run build && npm link
-        npm link @zowe/imperative
-
     - name: Build Source
       id: build
       run: npm run build --if-present

@@ -75,16 +75,6 @@ node('jenkins-nvm-keytar') {
     //     unit: 'MINUTES'
     // ])
 
-    // TODO Remove before json-config-next branch is merged
-    pipeline.createStage(
-        name: "Install imperative@json-config-next",
-        stage: {
-            sh "git clone https://github.com/zowe/imperative.git"
-            sh "cd imperative && git checkout json-config-next && npm install && npm run build && npm link"
-            sh "npm link @zowe/imperative"
-        }
-    )
-
     // Build the application
     pipeline.build(timeout: [
         time: 5,
