@@ -68,7 +68,7 @@ const PRETEND_INPUT_PARMS_NO_INPUT: ICreateWorkflow = {
     owner: wfOwner,
     assignToOwner: assign,
     accessType: access,
-    deleteCompletedJobs: deleteJobs,
+    deleteCompletedJobs: deleteJobs
 };
 const PRETEND_INPUT_PARMS_EMPTY_VAR: ICreateWorkflow = {
     workflowName: wfName,
