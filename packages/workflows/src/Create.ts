@@ -245,7 +245,6 @@ export class CreateWorkflow {
      * @returns {Promise<ICreatedWorkflowLocal>}
      */
     public static async createWorkflowLocal2(createWorkflowLocalParams: IParamsCreateWorkflowLocal): Promise<ICreatedWorkflowLocal> {
-
         WorkflowValidator.validateSession(createWorkflowLocalParams.session);
         WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(createWorkflowLocalParams.WorkflowName, noWorkflowName.message);

@@ -20,7 +20,7 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { CreateWorkflow, DeleteWorkflow, ListWorkflows, WorkflowConstants } from "@zowe/zos-workflows-for-zowe-sdk";
 
 
 describe("Create workflow common handler", () => {
@@ -253,7 +253,8 @@ describe("Create workflow common handler", () => {
                                                                          AssignToOwner: assignToOwner,
                                                                          AccessType: accessType,
                                                                          DeleteCompletedJobs: deleteCompleted,
-                                                                         JobStatement: undefined
+                                                                         JobStatement: undefined,
+                                                                         zOSMFVersion: WorkflowConstants.ZOSMF_VERSION
                                                                         });
         });
         it("should create a workflow using a local file", async () => {

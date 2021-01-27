@@ -120,7 +120,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         AssignToOwner: this.arguments.assignToOwner,
                         AccessType: this.arguments.accessType,
                         DeleteCompletedJobs: this.arguments.deleteCompleted,
-                        JobStatement: this.arguments.workflowJobStatement
+                        JobStatement: this.arguments.workflowJobStatement,
+                        zOSMFVersion: WorkflowConstants.ZOSMF_VERSION
                     });
                 } catch (err) {
                     error =
