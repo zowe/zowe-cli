@@ -15,7 +15,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files recall group definition", () => {
     it ("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../src/cli/hRecall/HRecall.definition").HRecallDefinition;
+        const definition: ICommandDefinition = require("../../../../src/zosfiles/hRecall/HRecall.definition").HRecallDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.options).toBeUndefined();

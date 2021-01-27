@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files recall ds command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/cli/hRecall/ds/Ds.definition").DsDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosfiles/hRecall/ds/Ds.definition").DsDefinition;
 
         expect(definition).toBeDefined();
         expect(definition.children).toBeUndefined();

@@ -56,6 +56,16 @@ describe("CoreUtils", () => {
         });
         beforeEach(() => {
             jest.resetAllMocks();
+
+            // Pretend that we have no team config
+            Object.defineProperty(imperative.ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false
+                    };
+                })
+            });
         });
         afterAll(async () => {
             runCliScript(__dirname + "/__scripts__/delete_profile.sh", TEST_ENVIRONMENT, ["zosmf", "fakeServiceProfile"]);

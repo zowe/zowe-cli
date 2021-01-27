@@ -42,7 +42,7 @@ jobs:
 
     - name: Install Node Package Dependencies
       id: install
-      run: rm package-lock.json && rm packages/*/package-lock.json && npm install
+      run: npm ci
 
     - name: Build Source
       id: build
