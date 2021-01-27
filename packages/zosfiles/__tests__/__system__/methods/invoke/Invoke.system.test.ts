@@ -153,7 +153,7 @@ describe("Invoke AMS", () => {
 
         // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
         let controlStatementFile: string =
-            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/api/methods/invoke/DefineVSAM.ams");
+            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams");
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile, {responseTimeout: 5});
@@ -174,7 +174,7 @@ describe("Invoke AMS", () => {
 
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
-            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/api/methods/invoke/DeleteVSAM.ams");
+            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams");
 
         try {
             response = await Invoke.ams(REAL_SESSION, controlStatementFile, {responseTimeout: 5});

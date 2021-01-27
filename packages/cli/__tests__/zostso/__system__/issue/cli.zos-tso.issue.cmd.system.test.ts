@@ -63,7 +63,7 @@ describe("zos-tso issue command", () => {
             systemProps.tso.account,
             fakeProc
         ]);
-        expect(response.stderr.toString()).toBe("");
+        expect(response.stderr.toString()).toMatch(/^\s*Warning:.+'profiles create' is deprecated.+'config init' command\s*$/s);
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain(fakeProc);
     });
