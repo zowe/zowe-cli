@@ -78,49 +78,18 @@ export class CreateWorkflow {
                                  zOSMFVersion = WorkflowConstants.ZOSMF_VERSION
         // add job statement, account info, comments and resolveGlobalConflictByUsing,
     ): Promise<ICreatedWorkflow> {
-        WorkflowValidator.validateSession(session);
-        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
-        WorkflowValidator.validateNotEmptyString(WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
-        WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
-        WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
-        WorkflowValidator.validateOwner(Owner, wrongOwner.message);
-
-        if (WorkflowDefinitionFile.charAt(0) === "/" && WorkflowDefinitionFile.charAt(1) === "/") {
-            WorkflowDefinitionFile = WorkflowDefinitionFile.substring(1);
-        }
-
-        const data: ICreateWorkflow = {
-            workflowName: WorkflowName,
-            workflowDefinitionFile: WorkflowDefinitionFile,
-            system: systemName,
-            owner: Owner,
-            assignToOwner: AssignToOwner,
-            accessType: AccessType,
-            deleteCompletedJobs: DeleteCompletedJobs
-        };
-        if (!isNullOrUndefined(VariableInputFile)) {
-            if (VariableInputFile.charAt(0) === "/" && VariableInputFile.charAt(1) === "/") {
-                VariableInputFile = VariableInputFile.substring(1);
-            }
-            data.variableInputFile = VariableInputFile;
-        }
-        if (!isNullOrUndefined(Variables)) {
-            data.variables = this.parseProperties(Variables);
-        }
-        if (isNullOrUndefined(AssignToOwner)) {
-            data.assignToOwner = true;
-        }
-        if (isNullOrUndefined(AccessType)) {
-            data.accessType = "Public";
-        }
-        if (isNullOrUndefined(DeleteCompletedJobs)) {
-            data.deleteCompletedJobs = false;
-        }
-
-        const resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
-
-        return ZosmfRestClient.postExpectJSON<ICreatedWorkflow>(session, resourcesQuery, [Headers.APPLICATION_JSON], data);
+        return this.createWorkflow2({session,
+                                     WorkflowName,
+                                     WorkflowDefinitionFile,
+                                     systemName,
+                                     Owner,
+                                     VariableInputFile,
+                                     Variables,
+                                     AssignToOwner,
+                                     AccessType,
+                                     DeleteCompletedJobs,
+                                     zOSMFVersion
+        });
     }
     /**
      * Create a zOSMF workflow instance
@@ -199,44 +168,21 @@ export class CreateWorkflow {
                                             AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
                                             keepFiles?: boolean, customDir?: string,
                                             zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<ICreatedWorkflowLocal> {
-
-        WorkflowValidator.validateSession(session);
-        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
-        WorkflowValidator.validateNotEmptyString(WorkflowDefinitionFile, noWorkflowDefinitionFile.message);
-        WorkflowValidator.validateNotEmptyString(systemName, noSystemName.message);
-        WorkflowValidator.validateNotEmptyString(Owner, noOwner.message);
-        WorkflowValidator.validateOwner(Owner, wrongOwner.message);
-
-        const tempDefinitionFile: string = CreateWorkflow.getTempFile(session.ISession.user, WorkflowDefinitionFile, customDir);
-        await CreateWorkflow.uploadTempFile(session, WorkflowDefinitionFile, tempDefinitionFile);
-
-        let tempVariableInputFile: string;
-
-        if (VariableInputFile) {
-            tempVariableInputFile = CreateWorkflow.getTempFile(session.ISession.user, VariableInputFile, customDir);
-            await CreateWorkflow.uploadTempFile(session, VariableInputFile, tempVariableInputFile);
-        }
-
-        const resp: ICreatedWorkflowLocal = await this.createWorkflow(session, WorkflowName, tempDefinitionFile,
-            systemName, Owner, tempVariableInputFile, Variables,
-            AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
-
-        if (!keepFiles) {
-            resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];
-            if (VariableInputFile) {
-                !resp.failedToDelete[0] ?
-                    resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempVariableInputFile)] :
-                    resp.failedToDelete.push(await CreateWorkflow.deleteTempFile(session, tempVariableInputFile));
-            }
-        } else {
-            resp.filesKept = [tempDefinitionFile];
-            if (VariableInputFile) {
-                resp.filesKept.push(tempVariableInputFile);
-            }
-        }
-
-        return resp;
+        return this.createWorkflowLocal2({
+            session,
+            WorkflowName,
+            WorkflowDefinitionFile,
+            systemName,
+            Owner,
+            VariableInputFile,
+            Variables,
+            AssignToOwner,
+            AccessType,
+            DeleteCompletedJobs,
+            keepFiles,
+            customDir,
+            zOSMFVersion
+        })
     }
 
     /**
