@@ -212,7 +212,7 @@ When you first run the `zowe config init --global` command, the `profiles.base.p
 
 Issue the `zowe config secure` command to re-prompt for all secure fields when you want to update them (for example, when you want to change your username and password).
 
-To secure a specific field, use the command `zowe config set secure --<option-name>`. For example, you can issue `zowe config set secure --host`. If you issue the command for an option that is already secure, the CLI re-prompts you to enter a new option value.
+To secure a specific field, use the command `zowe config set --secure <property-path>`. For example, you can issue `zowe config set --secure profiles.base.properties.password`. If you issue the command for an option that is already secure, the CLI re-prompts you to enter a new option value.
 
 Alternatively, you can use an editor to define options to the secure array in `zowe.config.json` manually. Any option that you define to there becomes secure/prompted-for.
 
