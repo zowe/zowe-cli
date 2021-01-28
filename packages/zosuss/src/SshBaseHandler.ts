@@ -66,7 +66,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
 
         const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
         const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-            sshSessCfg, commandParameters.arguments, { parms: commandParameters }
+            sshSessCfg, commandParameters.arguments, {parms: commandParameters}
         );
         this.mSession = new SshSession(sshSessCfgWithCreds);
 
