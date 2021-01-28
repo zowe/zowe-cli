@@ -93,13 +93,15 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
    The CLI provides a series of prompts.
 
-2. Respond to the prompts to enter a username and password for a mainframe service such as z/OSMF. The `--global` option ensures that your credentials are stored securely on your computer by default.
+2. Respond to the prompts to enter a username and password for a mainframe service such as z/OSMF. The `config init` command ensures that your credentials are stored securely on your computer by default.
 
    After you respond to the prompts, the following file is added to your local `.zowe` directory:
 
    - `zowe.config.json` - A global configuration file. This is the primary location where your MF service connection details such as host and port are defined. Use this configuration file for the following procedures.
 
-3. Issue a Zowe CLI command to test that you can access z/OSMF. For example, list all data sets under your user ID:
+3. Edit the zowe.config.json file to change the name of the LPAR, to supply a value for the host name, and to change the port number if needed.
+
+4. Issue a Zowe CLI command to test that you can access z/OSMF. For example, list all data sets under your user ID:
 
    ```
    zowe zos-files list data-set "MY.DATASET.*"
