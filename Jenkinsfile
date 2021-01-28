@@ -192,19 +192,9 @@ node('jenkins-nvm-keytar') {
         }
     )
 
-    pipeline.checkChangelog(
-        file: "CHANGELOG.md",
-        header: "## Recent Changes"
-    )
-
     // Deploys the application if on a protected branch. Give the version input
     // 30 minutes before an auto timeout approve.
     pipeline.deploy()
-    )
-
-    pipeline.updateChangelog(
-        file: "CHANGELOG.md",
-        header: "## Recent Changes"
 
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.
