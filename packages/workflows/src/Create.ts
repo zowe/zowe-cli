@@ -140,6 +140,9 @@ export class CreateWorkflow {
         if (!isNullOrUndefined(createWorkflowParams.JobStatement)) {
             data.jobStatement = createWorkflowParams.JobStatement.join("\n");
         }
+        if (!isNullOrUndefined(createWorkflowParams.zOSMFVersion)) {
+            createWorkflowParams.zOSMFVersion = WorkflowConstants.ZOSMF_VERSION;
+        }
 
         const resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${createWorkflowParams.zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
 
@@ -182,7 +185,7 @@ export class CreateWorkflow {
             keepFiles,
             customDir,
             zOSMFVersion
-        })
+        });
     }
 
     /**

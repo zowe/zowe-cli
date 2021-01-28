@@ -130,8 +130,14 @@ describe("Create workflow", () => {
             ]
 
             try {
-                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner,
-                    null, null, null, null, null, jobStatement);
+                response = await CreateWorkflow.createWorkflow2({
+                    session: REAL_SESSION,
+                    WorkflowName: wfName,
+                    WorkflowDefinitionFile: definitionFile,
+                    systemName: system,
+                    Owner: owner,
+                    JobStatement: jobStatement
+                });
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -180,7 +186,7 @@ describe("Create workflow", () => {
 
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, inputFile,
-                    "GREETING=HELLO WORLD", true, "Public", false, null, "1.0");
+                    "GREETING=HELLO WORLD", true, "Public", false, "1.0");
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -275,8 +281,12 @@ describe("Create workflow", () => {
                 "//*THIS WILL FAIL"
             ]
             try {
-                response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner,
-                    null, null, null, null, null, jobStatement);
+                response = await CreateWorkflow.createWorkflow2({
+                    session: REAL_SESSION, WorkflowName: wfName,
+                    WorkflowDefinitionFile: definitionFile,
+                    systemName: system, Owner: owner,
+                    JobStatement: jobStatement
+                });
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -313,7 +323,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, null,
-                    null, null, null, null, null, "");
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
