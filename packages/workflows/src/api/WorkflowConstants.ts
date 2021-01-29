@@ -307,3 +307,6 @@ export const noOwner: IMessageDefinition = {
 export const wrongOwner: IMessageDefinition = {
     message: apiErrorHeader + `Wrong format of user ID supplied.`
 };
+export const wrongJobStatement: IMessageDefinition = {
+    message: apiErrorHeader.message + ` Wrong format of the JOB statement supplied.`
+};

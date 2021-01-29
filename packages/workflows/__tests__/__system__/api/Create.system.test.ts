@@ -26,6 +26,7 @@ import {
     noWorkflowDefinitionFile,
     noWorkflowName,
     nozOSMFVersion,
+    wrongJobStatement,
     wrongOwner
 } from "../../../src/api/WorkflowConstants";
 import { ICreatedWorkflowLocal } from "../../../src/api/doc/ICreatedWorkflowLocal";
@@ -113,6 +114,32 @@ describe("Create workflow", () => {
 
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expectZosmfResponseSucceeded(response, error);
+            expect(response.workflowKey).toBeDefined();
+            wfKey = response.workflowKey;
+        });
+        it("Should create workflow in zOSMF with a job statement.", async () => {
+            let error;
+            let response: ICreatedWorkflow;
+            const jobStatement = [
+                "//MAINJOB1 JOB (ACCOUNTIF),NOTIFY=&SYSUID,",
+                "//    CLASS=A,MSGCLASS=A,REGION=16K"
+            ]
+
+            try {
+                response = await CreateWorkflow.createWorkflow2({
+                    session: REAL_SESSION,
+                    WorkflowName: wfName,
+                    WorkflowDefinitionFile: definitionFile,
+                    systemName: system,
+                    Owner: owner,
+                    JobStatement: jobStatement
+                });
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -248,6 +275,27 @@ describe("Create workflow", () => {
             }
             expectZosmfResponseFailed(response, error, noSystemName.message);
         });
+        it("Throws an error with a wrong job statement.", async () => {
+            let error: ImperativeError;
+            let response: any;
+            const jobStatement = [
+                "MALFORMED JOB STATEMENT",
+                "//*THIS WILL FAIL"
+            ]
+            try {
+                response = await CreateWorkflow.createWorkflow2({
+                    session: REAL_SESSION, WorkflowName: wfName,
+                    WorkflowDefinitionFile: definitionFile,
+                    systemName: system, Owner: owner,
+                    JobStatement: jobStatement
+                });
+                Imperative.console.info(`Response ${response}`);
+            } catch (thrownError) {
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
+            }
+            expectZosmfResponseFailed(response, error, wrongJobStatement.message);
+        });
         it("Throws an error with undefined owner.", async () => {
             let error: ImperativeError;
             let response: any;
@@ -277,7 +325,7 @@ describe("Create workflow", () => {
             let response: any;
             try {
                 response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner, null,
-                    null, null, null, null, "");
+                    null, null, null, null, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

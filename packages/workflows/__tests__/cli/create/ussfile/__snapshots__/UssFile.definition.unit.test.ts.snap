@@ -23,6 +23,10 @@ Object {
       "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"MYSYSID\\" and with variables VAR1 and VAR2 with values DUMMYVAL1 and DUMMYVAL2, and assign it to the owner",
       "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\"--variables VAR1=DUMMYVAL1,VAR2=DUMMYVAL2 --owner \\"MYSYSID\\" --assign-to-owner",
     },
+    Object {
+      "description": "Create a workflow with name \\"testworkflow\\" using uss file \\"/path/workflow.xml\\" containing workflow definition, on system \\"TESTM1\\" with owner \\"OTHERID\\" and delete workflow with the same name if it already exist in z/OSMF with a custom JOB statement",
+      "options": "\\"testworkflow\\" --uss-file \\"/path/workflow.xml\\" --system-name \\"TESTM1\\" --owner \\"OTHERID\\" --overwrite --workflow-job-statement \\"//JOBNAME JOB (000000000),\\" \\"//    CLASS=A,MSGCLASS=A,REGION=0M\\"",
+    },
   ],
   "name": "workflow-from-uss-file",
   "options": Array [
@@ -114,6 +118,15 @@ Object {
       "name": "overwrite",
       "required": false,
       "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "wjs",
+      ],
+      "description": "Allows the customized job statement to be added.",
+      "name": "workflow-job-statement",
+      "required": false,
+      "type": "array",
     },
   ],
   "outputFormatOptions": true,
