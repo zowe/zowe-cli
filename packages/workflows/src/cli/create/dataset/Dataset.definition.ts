@@ -46,7 +46,8 @@ export const DataSet: ICommandDefinition = {
         CreateCommonOptions.assignToOwner,
         CreateCommonOptions.accessType,
         CreateCommonOptions.deleteCompleted,
-        CreateCommonOptions.overwrite
+        CreateCommonOptions.overwrite,
+        CreateCommonOptions.jobStatement
         // CreateCommonOptions.zosmfVersion
     ]),
     outputFormatOptions: true,
@@ -72,6 +73,13 @@ export const DataSet: ICommandDefinition = {
             ", on a system \"TESTM1\" with owner \"MYSYSID\" and with the variable name DUMMYVAR and the value DUMMYVAL. Assign it to the owner",
             options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --owner \"MYSYSID\" --variables DUMMYVAR=DUMMYVAL " +
                 "--assign-to-owner"
+        },
+        {
+            description: "Create a workflow with name \"testworkflow\" using the data set \"TESTID.WKFLOW\" that contains the workflow " +
+            "definition xml on the system \"TESTM1\" with owner \"OTHERID\" and delete workflow with the same name if it already exist in z/OSMF " +
+            "with a custom JOB statement",
+            options: "\"testworkflow\" --data-set \"TESTID.WKFLOW\" --system-name \"TESTM1\" --owner \"OTHERID\" --overwrite " +
+                "--workflow-job-statement \"//JOBNAME JOB (000000000),\" \"//    CLASS=A,MSGCLASS=A,REGION=0M\""
         }
     ]
 };

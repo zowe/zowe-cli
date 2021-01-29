@@ -91,4 +91,6 @@ export interface ICreateWorkflow {
     // accountInfo?: string;
     // jobStatement?: string;
     // comments?: string;
+
+    jobStatement?: string;
 }
