@@ -19,6 +19,10 @@ Zowe CLI is a command-line interface that lets you interact with the mainframe i
 
 For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
+For documentation about early access features in the "next" release, see these files:
+- [Using Global Profile Configuration](../../docs/Early%20Access%20-%20Using%20Global%20Profile%20Configuration.md)
+- [Using Daemon Mode with "zowex"](../../zowex/design.md)
+
 The `docs` directory in this repository contains auto-generated typescript documentation under the `docs/typedoc` directory. To access the Typescript documentation online, navigate to the Zowe docs site mentioned above.
 
 **Note:** Some links in the auto-generated typescript documentation are not functional at this time.
