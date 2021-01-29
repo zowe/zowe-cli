@@ -49,11 +49,11 @@ export class Shell {
                     stream.on("exit", (exitcode) => {
                         Logger.getAppLogger().debug("Return Code: " + exitcode);
                         if (dataBuffer.trim().length > 1) {
-                          // normally the last line is "\r\n$ " and we don't care about it
-                          // but we need to handle the case of an incomplete line at the end
-                          // which can happen when commands terminate abruptly
-                          stdoutHandler(dataBuffer.slice(0, dataBuffer.lastIndexOf("$")));
-                      }
+                            // normally the last line is "\r\n$ " and we don't care about it
+                            // but we need to handle the case of an incomplete line at the end
+                            // which can happen when commands terminate abruptly
+                            stdoutHandler(dataBuffer.slice(0, dataBuffer.lastIndexOf("$")));
+                        }
                         rc = exitcode;
                     });
                     stream.on("close", () => {

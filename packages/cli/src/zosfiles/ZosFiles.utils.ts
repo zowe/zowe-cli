@@ -21,14 +21,14 @@ import { IDataSet } from "@zowe/zos-files-for-zowe-sdk";
 export function getDataSet(name: string): IDataSet {
     const match = name.match(/(.*)\((.*)\)/);
     if (match) {
-        const [, dataSetName, memberName] = match;
+        const [, dsn, member] = match;
         return {
-            dataSetName,
-            memberName
+            dsn,
+            member
         };
     } else {
         return {
-            dataSetName: name
+            dsn: name
         };
     }
 }

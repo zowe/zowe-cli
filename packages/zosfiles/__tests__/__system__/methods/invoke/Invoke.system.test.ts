@@ -147,6 +147,53 @@ describe("Invoke AMS", () => {
         fs.unlinkSync(controlStatementFile);
     });
 
+    it("should create and delete a VSAM data set from command statement in files with response timeout", async () => {
+        let error;
+        let response;
+
+        // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
+        let controlStatementFile: string =
+            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams");
+
+        try {
+            response = await Invoke.ams(REAL_SESSION, controlStatementFile, {responseTimeout: 5});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+
+        // Delete the temp file
+        fs.unlinkSync(controlStatementFile);
+
+        // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
+        controlStatementFile =
+            createTestAMSStatementFileFromTemplate("./packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams");
+
+        try {
+            response = await Invoke.ams(REAL_SESSION, controlStatementFile, {responseTimeout: 5});
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
+
+        // Delete the temp file
+        fs.unlinkSync(controlStatementFile);
+    });
+
     it("should create and delete a VSAM data set from command statements", async () => {
         let error;
         let response;

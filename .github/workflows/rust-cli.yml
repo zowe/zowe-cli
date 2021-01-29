@@ -1,0 +1,24 @@
+name: Rust CLI CI
+
+on:
+  push:
+    branches-ignore:
+        - "master"
+        - "next"
+    paths: "zowex/**"
+  pull_request:
+    paths: "zowex/**"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+
+    - name: Run tests
+      run: cargo test --verbose --manifest-path=zowex/Cargo.toml

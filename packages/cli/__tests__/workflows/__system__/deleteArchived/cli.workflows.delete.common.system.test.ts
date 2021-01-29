@@ -72,7 +72,7 @@ describe("Delete workflow cli system tests", () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
             // Archive workflow
-            await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
+            await ArchiveWorkflow.archiveWorkflowByKey(REAL_SESSION, wfKey);
         });
         it("Should delete workflow in zOSMF by key.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh",
@@ -92,7 +92,7 @@ describe("Delete workflow cli system tests", () => {
         it("Should delete workflows in zOSMF using wild card in the name", async () => {
             const secondWf = await CreateWorkflow.createWorkflow(REAL_SESSION, `${wfName}2`, definitionFile, system, owner);
             wfKey = secondWf.workflowKey;
-            await ArchiveWorkflow.archiveWorfklowByKey(REAL_SESSION, wfKey);
+            await ArchiveWorkflow.archiveWorkflowByKey(REAL_SESSION, wfKey);
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",
                 testEnvironment, [`${wfName}.*`]);
             expect(response.stderr.toString()).toBe("");

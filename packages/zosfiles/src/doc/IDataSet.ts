@@ -19,11 +19,11 @@ export interface IDataSet {
      * The name of the data set
      * @type {string}
      */
-    dataSetName: string;
+    dsn: string;
 
     /**
      * The name of the member
      * @type {string}
      */
-    memberName?: string;
+    member?: string;
 }

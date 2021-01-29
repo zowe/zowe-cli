@@ -42,7 +42,7 @@ export class Rename {
         return this.rename(
             session,
             afterDataSetName.trim(),
-            { dataSetName: beforeDataSetName.trim() },
+            { dsn: beforeDataSetName.trim() },
             options
         );
     }
@@ -69,7 +69,7 @@ export class Rename {
         return this.rename(
             session,
             `${dataSetName.trim()}(${afterMemberName.trim()})`,
-            { dataSetName: dataSetName.trim(), memberName: beforeMemberName.trim() },
+            { dsn: dataSetName.trim(), member: beforeMemberName.trim() },
             options
         );
     }
@@ -83,7 +83,7 @@ export class Rename {
     private static async rename(
         session: AbstractSession,
         afterDataSetName: string,
-        { dataSetName: beforeDataSetName, memberName: beforeMemberName }: IDataSet,
+        { dsn: beforeDataSetName, member: beforeMemberName }: IDataSet,
         options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
         const endpoint: string = posix.join(

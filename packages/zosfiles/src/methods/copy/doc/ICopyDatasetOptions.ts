@@ -20,7 +20,7 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
      * The dataset to copy from.
      * @type {IDataSet}
      */
-    fromDataSet: IDataSet;
+    "from-dataset": IDataSet;
 
     /**
      * Enq option

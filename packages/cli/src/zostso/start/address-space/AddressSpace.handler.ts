@@ -36,7 +36,7 @@ export default class Handler extends ZosTsoBaseHandler {
         } else {
             throw new ImperativeError({
                 msg: `TSO address space failed to start.`,
-                additionalDetails: response.failureResponse.message
+                additionalDetails: response.failureResponse?.message
             });
         }
     }

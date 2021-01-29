@@ -77,7 +77,8 @@ const DEFAULT_PARAMTERS: IHandlerParameters = {
             error: jest.fn((errors) => {
                 expect(errors).toMatchSnapshot();
             }),
-            errorHeader: jest.fn(() => undefined)
+            errorHeader: jest.fn(() => undefined),
+            prompt: jest.fn()
         },
         progress: {
             startBar: jest.fn((parms) => undefined),
@@ -120,6 +121,7 @@ describe("start address-space handler tests", () => {
         const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
         params.arguments.user = "FakeUser";
         params.arguments.password = "FakePassword";
+        params.response.console.prompt.mockReturnValue(null);
         let error;
         try {
             await handler.process(params);

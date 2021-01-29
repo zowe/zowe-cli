@@ -46,10 +46,7 @@ describe("DsHandler", () => {
             type: "basic"
         };
 
-        const response = await handler.processWithSession(
-            commandParameters,
-            dummySession as any
-        );
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
         expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
@@ -83,10 +80,7 @@ describe("DsHandler", () => {
 
         const expectedOptions: IMigrateOptions = { wait: true, responseTimeout: 5 };
 
-        const response = await handler.processWithSession(
-            commandParameters,
-            dummySession as any
-        );
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(migrateDataSetSpy).toHaveBeenCalledTimes(1);
         expect(migrateDataSetSpy).toHaveBeenLastCalledWith(
