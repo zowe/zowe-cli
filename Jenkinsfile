@@ -20,7 +20,7 @@ import org.zowe.pipelines.nodejs.models.SemverLevel
 def PRODUCT_NAME = "Zowe CLI"
 
 node('zowe-jenkins-agent') {
-    steps.sh "sudo apt-get install -y expect"
+    steps.sh "apt-get install -y expect"
 
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
