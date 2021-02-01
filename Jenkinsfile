@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
+@Library('shared-pipelines@sonar-test') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
@@ -20,8 +20,6 @@ import org.zowe.pipelines.nodejs.models.SemverLevel
 def PRODUCT_NAME = "Zowe CLI"
 
 node('zowe-jenkins-agent') {
-    steps.sh "apt-get install -y expect"
-
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
     pipeline.isLernaMonorepo = true
