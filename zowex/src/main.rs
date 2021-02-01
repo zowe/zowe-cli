@@ -118,7 +118,6 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                 // we have headers but this statement that we read does not contain new header values
                 if got_new_headers == false {
                     let &progress = headers.get(X_ZOWE_DAEMON_PROGRESS).unwrap();
-                    // let &prompt = headers.get(X_ZOWE_DAEMON_PROMPT).unwrap();
 
                     // if progress bar is in place, strip off the newline character
                     if progress == 1i32 {
