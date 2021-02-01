@@ -2,7 +2,7 @@
   "packages": [
     "packages/*"
   ],
-  "version": "6.25.1",
+  "version": "7.0.0-next.202102011525",
   "command": {
     "publish": {
       "ignoreChanges": [
