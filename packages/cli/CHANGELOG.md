@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.25.2`
 
 - Documented early access features that are available in "next" release.
 
