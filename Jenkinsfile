@@ -19,9 +19,10 @@ import org.zowe.pipelines.nodejs.models.SemverLevel
  */
 def PRODUCT_NAME = "Zowe CLI"
 
-node('ca-jenkins-agent') {
+node('jenkins-nvm-keytar') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
+    pipeline.isLernaMonorepo = true
 
     // Build admins, users that can approve the build and receieve emails for
     // all protected branch builds.
@@ -75,18 +76,6 @@ node('ca-jenkins-agent') {
     //     unit: 'MINUTES'
     // ])
 
-    // Create a custom lint stage that runs immediately after the setup.
-    pipeline.createStage(
-        name: "Lint",
-        stage: {
-            sh "npm run lint"
-        },
-        timeout: [
-            time: 2,
-            unit: 'MINUTES'
-        ]
-    )
-
     // Build the application
     pipeline.build(timeout: [
         time: 5,
@@ -110,7 +99,8 @@ node('ca-jenkins-agent') {
             JEST_JUNIT_CLASSNAME: "Unit.{classname}",
             JEST_JUNIT_TITLE: "{title}",
             JEST_STARE_RESULT_DIR: "${UNIT_TEST_ROOT}/jest-stare",
-            JEST_STARE_RESULT_HTML: "index.html"
+            JEST_STARE_RESULT_HTML: "index.html",
+            NODE_OPTIONS: "--max_old_space_size=4096"
         ],
         testResults: [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Report"],
         coverageResults: [dir: "__tests__/__results__/unit/coverage/lcov-report", files: "index.html", name: "${PRODUCT_NAME} - Unit Test Coverage Report"],
@@ -150,7 +140,8 @@ node('ca-jenkins-agent') {
             JEST_JUNIT_CLASSNAME: "Integration.{classname}",
             JEST_JUNIT_TITLE: "{title}",
             JEST_STARE_RESULT_DIR: "${INTEGRATION_TEST_ROOT}/jest-stare",
-            JEST_STARE_RESULT_HTML: "index.html"
+            JEST_STARE_RESULT_HTML: "index.html",
+            NODE_OPTIONS: "--max_old_space_size=4096"
         ],
         testResults: [dir: "$INTEGRATION_TEST_ROOT/jest-stare", files: "index.html", name: "$PRODUCT_NAME - Integration Test Report"],
         junitOutput: INTEGRATION_JUNIT_OUTPUT
@@ -167,30 +158,7 @@ node('ca-jenkins-agent') {
     )
 
     // Perform sonar qube operations
-    pipeline.createStage(
-        name: "Code Analysis",
-        stage: {
-            // append sonar.links.ci, sonar.branch.name or sonar.pullrequest to sonar-project.properties
-            def sonarProjectFile = 'sonar-project.properties'
-            sh "echo sonar.links.ci=${env.BUILD_URL} >> ${sonarProjectFile}"
-            if (env.CHANGE_BRANCH) { // is pull request
-                sh "echo sonar.pullrequest.key=${env.CHANGE_ID} >> ${sonarProjectFile}"
-                // we may see warnings like these
-                //  WARN: Parameter 'sonar.pullrequest.branch' can be omitted because the project on SonarCloud is linked to the source repository.
-                //  WARN: Parameter 'sonar.pullrequest.base' can be omitted because the project on SonarCloud is linked to the source repository.
-                // if we provide parameters below
-                sh "echo sonar.pullrequest.branch=${env.CHANGE_BRANCH} >> ${sonarProjectFile}"
-                sh "echo sonar.pullrequest.base=${env.CHANGE_TARGET} >> ${sonarProjectFile}"
-            } else {
-                sh "echo sonar.branch.name=${env.BRANCH_NAME} >> ${sonarProjectFile}"
-            }
-
-            def scannerHome = tool 'sonar-scanner-4.0.0'
-            withSonarQubeEnv('sonarcloud-server') {
-                sh "${scannerHome}/bin/sonar-scanner"
-            }
-        }
-    )
+    pipeline.sonarScan()
 
     // Check Vulnerabilities
     pipeline.checkVulnerabilities()
@@ -200,16 +168,33 @@ node('ca-jenkins-agent') {
         header: "## Recent Changes"
     )
 
-    // Deploys the application if on a protected branch. Give the version input
-    // 30 minutes before an auto timeout approve.
-    pipeline.deploy(
-        versionArguments: [timeout: [time: 30, unit: 'MINUTES']]
+    // Perform the versioning email mechanism
+    pipeline.version(
+        timeout: [time: 30, unit: 'MINUTES'],
+        updateChangelogArgs: [
+            file: "CHANGELOG.md",
+            header: "## Recent Changes"
+        ]
     )
 
-    pipeline.updateChangelog(
-        file: "CHANGELOG.md",
-        header: "## Recent Changes"
+    pipeline.createStage(
+        name: "Bundle Native Code",
+        shouldExecute: {
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+        },
+        stage: {
+            // Download JQ binary to node_modules/.bin folder
+            sh "cd packages/cli/node_modules/.bin && curl -fsL -o jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64 && chmod +x ./jq"
+            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                // Bundle Keytar binaries with CLI package
+                sh "bash jenkins/bundleKeytar.sh \"${USERNAME}:${TOKEN}\""
+            }
+        }
     )
+
+    // Deploys the application if on a protected branch. Give the version input
+    // 30 minutes before an auto timeout approve.
+    pipeline.deploy()
 
     // Once called, no stages can be added and all added stages will be executed. On completion
     // appropriate emails will be sent out by the shared library.

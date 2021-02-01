@@ -23,8 +23,8 @@ import {
     ImperativeError,
     ConnectionPropsForSessCfg
 } from "@zowe/imperative";
-import { SshSession } from "../index";
-import { ISshSession } from "./api/doc/ISshSession";
+import { SshSession } from "./SshSession";
+import { ISshSession } from "./doc/ISshSession";
 
 
 /**
@@ -66,7 +66,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
 
         const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
         const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-            sshSessCfg, commandParameters.arguments
+            sshSessCfg, commandParameters.arguments, {parms: commandParameters}
         );
         this.mSession = new SshSession(sshSessCfgWithCreds);
 

@@ -1,0 +1,87 @@
+{
+  "name": "@zowe/cli",
+  "version": "7.0.0-next.202012221958",
+  "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
+  "author": "Broadcom",
+  "license": "EPL-2.0",
+  "homepage": "https://github.com/zowe/zowe-cli/tree/master/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/zowe/zowe-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/zowe-cli.git"
+  },
+  "bin": {
+    "bright": "./lib/main.js",
+    "zowe": "./lib/main.js"
+  },
+  "keywords": [
+    "zosmf",
+    "mainframe",
+    "CLI",
+    "zos",
+    "z/OSMF",
+    "mvs",
+    "os390",
+    "z/OS",
+    "zowe"
+  ],
+  "files": [
+    "lib",
+    "prebuilds",
+    "scripts",
+    "web-help-logo.png"
+  ],
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
+  "imperative": {
+    "configurationModule": "lib/imperative.js"
+  },
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "preinstall": "node ./scripts/copyPrebuilds",
+    "postinstall": "node ./scripts/validatePlugins",
+    "build": "tsc --pretty",
+    "watch": "tsc --pretty --watch",
+    "clean": "rimraf lib",
+    "lint": "npm run lint:packages && npm run lint:tests",
+    "lint:packages": "tslint --format stylish -c ../../tslint-packages.json \"src/**/*.ts\"",
+    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\"",
+    "circularDependencyCheck": "madge -c lib",
+    "typedoc": "typedoc --options ./typedoc.json ./src/",
+    "typedocSpecifySrc": "typedoc --options ./typedoc.json"
+  },
+  "dependencies": {
+    "@zowe/core-for-zowe-sdk": "6.25.1",
+    "@zowe/imperative": "5.0.0-next.202101292016",
+    "@zowe/perf-timing": "1.0.7",
+    "@zowe/provisioning-for-zowe-sdk": "6.25.1",
+    "@zowe/zos-console-for-zowe-sdk": "6.25.1",
+    "@zowe/zos-files-for-zowe-sdk": "6.25.1",
+    "@zowe/zos-jobs-for-zowe-sdk": "6.25.1",
+    "@zowe/zos-tso-for-zowe-sdk": "6.25.1",
+    "@zowe/zos-uss-for-zowe-sdk": "6.25.1",
+    "@zowe/zos-workflows-for-zowe-sdk": "6.25.1",
+    "@zowe/zosmf-for-zowe-sdk": "6.25.1",
+    "get-stdin": "7.0.0",
+    "minimatch": "3.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.24",
+    "js-yaml": "^3.13.1",
+    "madge": "^3.6.0",
+    "rimraf": "^2.6.3",
+    "tslint": "^6.1.3",
+    "typedoc": "^0.16.0",
+    "typescript": "^3.8.0"
+  },
+  "optionalDependencies": {
+    "keytar": "7.2.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}

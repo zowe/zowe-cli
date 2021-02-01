@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs submit local-file command syntax errors should occur if --wfa and --directory are both specified 1`] = `
+"
+Syntax Error:
+The following options conflict (mutually exclusive):
+--wait-for-active
+--directory
+
+Example:
+
+ - Submit the JCL in the file \\"iefbr14.txt\\":
+
+      $ zowe zos-jobs submit local-file \\"iefbr14.txt\\"
+
+Use \\"zowe zos-jobs submit local-file --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs submit local-file command syntax errors should occur if --wfa and --vasc are both specified  1`] = `
+"
+Syntax Error:
+The following options conflict (mutually exclusive):
+--wait-for-active
+--view-all-spool-content
+
+Example:
+
+ - Submit the JCL in the file \\"iefbr14.txt\\":
+
+      $ zowe zos-jobs submit local-file \\"iefbr14.txt\\"
+
+Use \\"zowe zos-jobs submit local-file --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`zos-jobs submit local-file command syntax errors should occur if an extra unknown option is specified 1`] = `
+"Command Error:
+Unknown argument: blah
+Command failed due to improper syntax
+Command entered: \\"zowe zos-jobs submit local-file ../../../../packages/cli/__tests__/zosjobs/__integration__/submit/local-file/testFileOfLocalJCL.txt blah\\"
+Available commands are \\"data-set, local-file, stdin\\".
+Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
+Error Details:
+Unknown argument: blah
+"
+`;
+
+exports[`zos-jobs submit local-file command syntax errors should occur if the local file name is missing 1`] = `
+"
+Syntax Error:
+Missing Positional Argument: localFile
+Argument Description: The local file containing the JCL to submit.
+
+Example:
+
+ - Submit the JCL in the file \\"iefbr14.txt\\":
+
+      $ zowe zos-jobs submit local-file \\"iefbr14.txt\\"
+
+Use \\"zowe zos-jobs submit local-file --help\\" to view command description, usage, and options.
+"
+`;

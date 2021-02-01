@@ -9,19 +9,18 @@
 *
 */
 
-import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../..";
+import { CreateWorkflow, DeleteWorkflow, ListWorkflows } from "../../../src";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../../../rest";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../../zosfiles/src/api/methods/upload";
 import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ZosFilesConstants } from "../../../../zosfiles/src/api";
-import { ICreatedWorkflow } from "../../../src/api/doc/ICreatedWorkflow";
+import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
-import { noSession, nozOSMFVersion, wrongString } from "../../../src/api/WorkflowConstants";
-import { IWorkflowsInfo } from "../../../src/api/doc/IWorkflowsInfo";
+import { wrongString } from "../../../src/WorkflowConstants";
+import { IWorkflowsInfo } from "../../../src/doc/IWorkflowsInfo";
+import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;

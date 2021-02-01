@@ -10,14 +10,14 @@
 */
 
 import { Session, Imperative } from "@zowe/imperative";
-import { IArchivedWorkflow } from "../../src/api/doc/IArchivedWorkflow";
-import { ArchiveWorkflow } from "../..";
-import { WorkflowConstants } from "../../src/api/WorkflowConstants";
+import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
+import { ArchiveWorkflow } from "../../src";
+import { WorkflowConstants } from "../../src/WorkflowConstants";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { Upload } from "../../../zosfiles/src/api";
-import { CreateWorkflow } from "../../src/api/Create";
-import { ZosmfRestClient } from "../../../rest";
+import { CreateWorkflow } from "../../src/Create";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 
 let session: Session;
 let testEnvironment: ITestEnvironment;
@@ -62,7 +62,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
     });
 
     it("Successful archive", async ()=>{
-        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
+        const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
         const expected: IArchivedWorkflow = {
             workflowKey: workflowKeyActual
         };
@@ -71,7 +71,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
     });
 
     it("Missing z/OSMF REST API version", async ()=>{
-        const response = await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual);
+        const response = await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyActual);
         const expected: IArchivedWorkflow = {
             workflowKey: workflowKeyActual
         };
@@ -89,7 +89,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
 describe("Missing session", ()=>{
     it("Undefined session", async ()=>{
         try {
-            await ArchiveWorkflow.archiveWorfklowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(undefined, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -99,7 +99,7 @@ describe("Missing session", ()=>{
     });
     it("Null session", async ()=>{
         try {
-            await ArchiveWorkflow.archiveWorfklowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(null, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -109,7 +109,7 @@ describe("Missing session", ()=>{
     });
     it("Empty session", async ()=>{
         try {
-            await ArchiveWorkflow.archiveWorfklowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(new Session({}), workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -125,7 +125,7 @@ describe("Missing workflow key", ()=> {
     });
     it("Undefined workflow key", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -135,7 +135,7 @@ describe("Missing workflow key", ()=> {
     });
     it("Null workflow key", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -145,7 +145,7 @@ describe("Missing workflow key", ()=> {
     });
     it("Empty workflow key", async ()=>{
         try {
-            const response = await ArchiveWorkflow.archiveWorfklowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
+            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);
@@ -166,7 +166,7 @@ describe("Errors caused by the user interaction", ()=>{
     });
     it("404 Not Found", async ()=>{
         try {
-            await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyConst, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(JSON.stringify(error));
@@ -182,8 +182,8 @@ describe("Errors caused by the user interaction", ()=>{
         allWorkflowKeys.push(workflowKeyActual);
 
         try {
-            await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
-            await ArchiveWorkflow.archiveWorfklowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(session, workflowKeyActual, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch(error) {
             Imperative.console.info(error);

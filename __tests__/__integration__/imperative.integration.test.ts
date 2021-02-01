@@ -52,7 +52,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("FAKEHOST");
@@ -71,7 +71,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("443");
@@ -100,7 +100,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_ssh_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("FAKEHOST");
@@ -118,7 +118,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_ssh_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("22");
@@ -144,7 +144,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_tso_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
         });
@@ -157,7 +157,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_tso_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).not.toContain("FAKEACCT");

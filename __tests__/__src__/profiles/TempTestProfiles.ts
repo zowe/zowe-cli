@@ -15,7 +15,7 @@
 import { ITestEnvironment } from "../environment/doc/response/ITestEnvironment";
 import { ImperativeError, IO } from "@zowe/imperative";
 import { runCliScript } from "../TestUtils";
-import { Constants } from "../../../packages/Constants";
+import { Constants } from "../../../packages/cli/src/Constants";
 import * as fs from "fs";
 
 const uuidv4 = require("uuid");
@@ -122,7 +122,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
+        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
             throw new ImperativeError({
                 msg: "Creation of zosmf profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString() +
@@ -147,7 +147,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
+        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
             throw new ImperativeError({
                 msg: "Creation of tso profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
@@ -185,7 +185,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
+        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
             throw new ImperativeError({
                 msg: "Creation of ssh profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString() +
@@ -221,7 +221,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
+        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
             throw new ImperativeError({
                 msg: "Creation of base profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString() +
@@ -246,7 +246,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_delete_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, deleteProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || output.stderr.toString().trim().length > 0) {
+        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
             throw new ImperativeError({
                 msg: "Deletion of " + profileType + " profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
@@ -265,4 +265,15 @@ export class TempTestProfiles {
         fs.appendFileSync(testEnvironment.workingDir + "/" + TempTestProfiles.LOG_FILE_NAME, message + "\n");
     }
 
+    /**
+     * Check if stderr output is empty for profile command. Ignores any message
+     * about profiles being deprecated.
+     */
+    private static isStderrEmpty(output: Buffer): boolean {
+        return output.toString()
+                     .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./, "")
+                     .replace(/Recommended replacement: The 'config [a-z]+' command/, "")
+                     .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/, "")
+                     .trim().length === 0;
+    }
 }
