@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.25.2`
+
+- Documented early access features that are available in "next" release.
+
 ## `6.25.1`
 
 - Bugfix: Updated Imperative version to fix vulnerability.
