@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Added job statement to the workflow creation command (`zowe wf create`) as `workflow-job-statement`
 
+## `6.25.2`
+
+- Documented early access features that are available in "next" release.
+
 ## `6.25.1`
 
 - Bugfix: Updated Imperative version to fix vulnerability.
