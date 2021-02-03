@@ -9,7 +9,7 @@
 *                                                                                 *
 */
 
-@Library('shared-pipelines@sonar-test') import org.zowe.pipelines.nodejs.NodeJSPipeline
+@Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
 
@@ -62,7 +62,7 @@ node('zowe-jenkins-agent-dind') {
     ]
 
     // Initialize the pipeline library, should create 5 steps.
-    pipeline.setup(nodeJsVersion: 'v10.23.0')
+    pipeline.setup(nodeJsVersion: 'v10.23.2')
 
     // When we need to build the CLI with imperative from Github repo source,
     // we need lots of time to install imperative, since imperative
