@@ -62,7 +62,7 @@ node('zowe-jenkins-agent') {
     ]
 
     // Initialize the pipeline library, should create 5 steps.
-    pipeline.setup()
+    pipeline.setup(nodeJsVersion: 'v10.23.0')
 
     // When we need to build the CLI with imperative from Github repo source,
     // we need lots of time to install imperative, since imperative
