@@ -18,7 +18,7 @@ import { IMessageDefinition, apiErrorHeader } from "@zowe/imperative";
  * @memberof CommonConstants
  */
 export const nozOSMFVersion: IMessageDefinition = {
-    message: apiErrorHeader + `No z/OSMF version parameter was supplied.`
+    message: apiErrorHeader.message + ` No z/OSMF version parameter was supplied.`
 };
 
 
@@ -29,5 +29,5 @@ export const nozOSMFVersion: IMessageDefinition = {
  * @memberof CommonConstants
  */
 export const noSession: IMessageDefinition = {
-    message: apiErrorHeader + `No session was supplied.`
+    message: apiErrorHeader.message + ` No session was supplied.`
 };

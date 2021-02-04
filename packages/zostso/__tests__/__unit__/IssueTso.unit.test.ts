@@ -10,7 +10,8 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { IIssueTsoParms, ISendResponse, IssueTso, IStartTsoParms, SendTso, StartTso, StopTso, IZosmfTsoResponse } from "../../src";
+import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
+         StartTso, StopTso } from "../../src";
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -53,6 +54,11 @@ const ZOSMF_RESPONSE: IZosmfTsoResponse = {
         }
     }]
 };
+const START_RESPONSE: IStartStopResponse = {
+    success: true,
+    zosmfTsoResponse: ZOSMF_RESPONSE,
+    servletKey: ZOSMF_RESPONSE.servletKey
+}
 
 
 describe("TsoIssue issueTsoCommand - failing scenarios", () => {
@@ -105,6 +111,22 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         expect(response).not.toBeDefined();
         expect(error).toBeDefined();
     });
+    it("should fail when StartTSO fails", async () => {
+        let error: ImperativeError;
+        let response: ISendResponse;
+
+        jest.spyOn(StartTso, "start").mockResolvedValueOnce({ success: false });
+
+        try {
+            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "acc", "command");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(StartTso.start).toHaveBeenCalledTimes(1);
+        expect(response).not.toBeDefined();
+        expect(error).toBeDefined();
+        expect(error.message).toBe("TSO address space failed to start.");
+    });
 });
 
 describe("TsoIssue issueTsoCommand", () => {
@@ -112,7 +134,7 @@ describe("TsoIssue issueTsoCommand", () => {
         (StartTso.start as any) = jest.fn<object>((): Promise<object> => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
-                    resolve(ZOSMF_RESPONSE);
+                    resolve(START_RESPONSE);
                 });
             });
         });
@@ -168,4 +190,3 @@ describe("TsoIssue issueTsoCommand", () => {
         expect(response).toBeDefined();
     });
 });
-

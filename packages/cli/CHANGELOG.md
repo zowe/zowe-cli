@@ -2,6 +2,24 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.25.2`
+
+- Documented early access features that are available in "next" release.
+
+## `6.25.1`
+
+- Bugfix: Updated Imperative version to fix vulnerability.
+
+## `6.25.0`
+
+- Enhancement: Added a `--replace` option to the `zowe zos-files copy data-set` command. Use this option if you want to replace like-named members in the target data set. [#808](https://github.com/zowe/zowe-cli/issues/808)
+- Enhancement: Improved a cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
+- Bugfix: Removed "[object Object]" text that appeared in some error messages. The proper text "Imperative API Error" is now displayed. [#836](https://github.com/zowe/zowe-cli/pull/836)
+
+## `6.24.6`
+
+- BugFix: Improved performance of `zowe zos-files list` commands when very long lists are printed to console. [#861](https://github.com/zowe/zowe-cli/issues/861)
+
 ## `6.24.5`
 
 - Bugfix: Updated Imperative dependency version to one that does not contain a vulnerable dependency

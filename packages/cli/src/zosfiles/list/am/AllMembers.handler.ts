@@ -30,7 +30,8 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {
             commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse.items));
         } else {
-            response.apiResponse.items.forEach((mem: any) => commandParameters.response.console.log(mem.member));
+            const memberList = response.apiResponse.items.map((mem: any) => mem.member);
+            commandParameters.response.console.log(memberList.join("\n"));
         }
 
         return response;
