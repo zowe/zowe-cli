@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added a `--protocol` option to allow you to specify the HTTP or HTTPS protocol used. Default value remains HTTPS.[#498](https://github.com/zowe/zowe-cli/issues/498)
 
+## `6.25.2`
+
+- Documented early access features that are available in "next" release.
+
 ## `6.25.1`
 
 - Bugfix: Updated Imperative version to fix vulnerability.

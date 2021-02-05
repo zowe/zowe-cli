@@ -8,6 +8,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 
 ## Contents  <!-- omit in toc -->
 
+ - [Early Access Features](#early-access-features)
  - [Documentation](#documentation)
  - [Contribution guidelines](#contribution-guidelines)
  - [Build Zowe CLI from source](#build-zowe-cli-from-source)
@@ -17,6 +18,15 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
  - [Zowe Node Client SDK](#zowe-node-client-sdk)
  - [Run system tests](#run-system-tests)
  - [FAQs](#frequently-asked-questions)
+
+## Early Access Features
+
+To try out early access features, install the "next" release of Zowe CLI (`npm install -g @zowe/cli@next`). This version may receive breaking changes and is intended to gather early feedback on what may become a future LTS release.
+
+For documentation about these features, see these files:
+
+- [Using Global Profile Configuration](https://github.com/zowe/zowe-cli/blob/next/docs/Early%20Access%20-%20Using%20Global%20Profile%20Configuration.md)
+- [Using Daemon Mode with "zowex"](https://github.com/zowe/zowe-cli/blob/next/zowex/design.md)
 
 ## Documentation
 
