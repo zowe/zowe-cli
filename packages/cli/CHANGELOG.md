@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.26.0`
 
 - Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
 
