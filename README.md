@@ -73,7 +73,7 @@ npm run build
 When you update `package.json` to include new dependencies, or when you pull changes that affect `package.json`, issue the `npm update` command to download the dependencies.
 
 ## Install Zowe CLI from source
-From your copy of this repository, after a build, issue the following command to install Zowe CLI from source:
+From your copy of this repository, after a build, navigate to the `packages/cli` directory, then issue the following command to install Zowe CLI from source:
 
 ```
 npm install -g
