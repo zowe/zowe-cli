@@ -10,6 +10,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.26.0`
+
+- Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
+
+## `6.25.2`
+
+- Documented early access features that are available in "next" release.
+
 ## `6.25.1`
 
 - Bugfix: Updated Imperative version to fix vulnerability.
