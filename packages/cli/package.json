@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.0.0-next.202102011525",
-    "@zowe/imperative": "5.0.0-next.202101292016",
+    "@zowe/imperative": "5.0.0-next.202102122209",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202102011525",
     "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202102011525",
