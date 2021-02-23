@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added "Accept-Encoding: gzip" header to all z/OSMF requests
+
 ## `6.24.4`
 
 - Bugfix: Removed unnecessary dependency on zosuss SDK.
