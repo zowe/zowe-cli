@@ -19,7 +19,7 @@ import org.zowe.pipelines.nodejs.models.SemverLevel
  */
 def PRODUCT_NAME = "Zowe CLI"
 
-node('jenkins-nvm-keytar') {
+node('zowe-jenkins-agent-dind') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
     pipeline.isLernaMonorepo = true
@@ -62,7 +62,7 @@ node('jenkins-nvm-keytar') {
     ]
 
     // Initialize the pipeline library, should create 5 steps.
-    pipeline.setup()
+    pipeline.setup(nodeJsVersion: 'v10.23.2')
 
     // When we need to build the CLI with imperative from Github repo source,
     // we need lots of time to install imperative, since imperative
