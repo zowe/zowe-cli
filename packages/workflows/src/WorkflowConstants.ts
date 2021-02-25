@@ -196,7 +196,6 @@ export class WorkflowConstants {
 
 }
 
-
 /**
  * Error message that no workflow key string was supplied.
  * @static
@@ -204,7 +203,7 @@ export class WorkflowConstants {
  * @memberof WorkflowConstants
  */
 export const noWorkflowKey: IMessageDefinition = {
-    message: apiErrorHeader + `No workflow key parameter was supplied.`
+    message: apiErrorHeader.message + ` No workflow key parameter was supplied.`
 };
 
 /**
@@ -225,7 +224,7 @@ export const WrongWorkflowKey: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noSteps: IMessageDefinition = {
-        message: apiErrorHeader + `No steps parameter was supplied.`
+        message: apiErrorHeader.message + ` No steps parameter was supplied.`
 };
 
 /**
@@ -235,7 +234,7 @@ export const noSteps: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noVariables: IMessageDefinition = {
-        message: apiErrorHeader + `No variables parameter was supplied.`
+        message: apiErrorHeader.message + ` No variables parameter was supplied.`
 };
 
 /**
@@ -245,7 +244,7 @@ export const noVariables: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noWorkflowDefinitionFile: IMessageDefinition = {
-    message: apiErrorHeader + `No workflow definition file parameter was supplied.`
+    message: apiErrorHeader.message + ` No workflow definition file parameter was supplied.`
 };
 /**
  * Error message that no workflow name parameter string was supplied.
@@ -254,7 +253,7 @@ export const noWorkflowDefinitionFile: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noWorkflowName: IMessageDefinition = {
-    message: apiErrorHeader + `No workflow name parameter was supplied.`
+    message: apiErrorHeader.message + ` No workflow name parameter was supplied.`
 };
 /**
  * Error message that no system name parameter string was supplied.
@@ -263,7 +262,7 @@ export const noWorkflowName: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noSystemName: IMessageDefinition = {
-    message: apiErrorHeader + `No system name parameter was supplied.`
+    message: apiErrorHeader.message + ` No system name parameter was supplied.`
 };
 
 /**
@@ -273,7 +272,7 @@ export const noSystemName: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const wrongString: IMessageDefinition = {
-    message: apiErrorHeader + `Parameter contains wrong character - & or ?.`
+    message: apiErrorHeader.message + ` Parameter contains wrong character - & or ?.`
 };
 /**
  * Error message that no owner parameter string was supplied.
@@ -282,8 +281,8 @@ export const wrongString: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noOwner: IMessageDefinition = {
-    message: apiErrorHeader + `No owner parameter was supplied.`
+    message: apiErrorHeader.message + ` No owner parameter was supplied.`
 };
 export const wrongOwner: IMessageDefinition = {
-    message: apiErrorHeader + `Wrong format of user ID supplied.`
+    message: apiErrorHeader.message + ` Wrong format of user ID supplied.`
 };

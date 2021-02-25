@@ -47,7 +47,15 @@ export const DsDefinition: ICommandDefinition = {
         }
     ],
     options: ([
-    ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
+        {
+            name: "replace",
+            aliases: ["rep"],
+            description: strings.OPTIONS.REPLACE,
+            type: "boolean"
+        }
+    ] as ICommandOptionDefinition[]).sort((a, b) =>
+        a.name.localeCompare(b.name)
+    ),
     examples: [
         {
             description: strings.EXAMPLES.EX1,
@@ -64,6 +72,10 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX4,
             options: `"USER.FROM.SET(mem1)" "USER.TO.SET"`
+        },
+        {
+            description: strings.EXAMPLES.EX5,
+            options: `"USER.FROM.SET" "USER.TO.SET" --replace`
         }
     ]
 };

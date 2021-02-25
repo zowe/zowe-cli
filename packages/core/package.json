@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "6.24.5",
+  "version": "6.26.0",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/imperative": "4.9.0",
+    "@zowe/imperative": "4.11.0",
     "chalk": "^4.1.0",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@zowe/imperative";
+import { AbstractSession, ImperativeError } from "@zowe/imperative";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { noAccountNumber, noCommandInput } from "./TsoConstants";
 import { SendTso } from "./SendTso";
@@ -43,13 +43,18 @@ export class IssueTso {
         let response: IIssueResponse;
         response = {success: false, startResponse: null, startReady: false, zosmfResponse: null, commandResponse: null, stopResponse: null};
         response.startResponse = await StartTso.start(session, accountNumber, startParams || {});
-        if (response.startResponse.success) {
 
-            const sendResponse = await SendTso.sendDataToTSOCollect(session, response.startResponse.servletKey, command);
-            response.success = sendResponse.success;
-            response.zosmfResponse = sendResponse.zosmfResponse;
-            response.commandResponse = sendResponse.commandResponse;
+        if (!response.startResponse.success) {
+            throw new ImperativeError({
+                msg: `TSO address space failed to start.`,
+                additionalDetails: response.startResponse.failureResponse?.message
+            });
         }
+
+        const sendResponse = await SendTso.sendDataToTSOCollect(session, response.startResponse.servletKey, command);
+        response.success = sendResponse.success;
+        response.zosmfResponse = sendResponse.zosmfResponse;
+        response.commandResponse = sendResponse.commandResponse;
         response.stopResponse = await StopTso.stop(session, response.startResponse.servletKey);
         return response;
     }
