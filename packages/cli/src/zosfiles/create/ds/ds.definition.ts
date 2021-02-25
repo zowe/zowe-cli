@@ -41,12 +41,12 @@ export const DsDefinition: ICommandDefinition = {
     options: [
         ZosFilesCreateExtraOptions.size,
         ZosFilesCreateOptions.volser,
-        {...ZosFilesCreateOptions.primary, defaultValue: CreateDefaults.DATA_SET.C.primary},
+        ZosFilesCreateOptions.primary, 
         ZosFilesCreateOptions.secondary,
-        {...ZosFilesCreateOptions.dirblk, defaultValue: CreateDefaults.DATA_SET.C.dirblk},
-        {...ZosFilesCreateOptions.recfm, defaultValue: CreateDefaults.DATA_SET.C.recfm},
-        {...ZosFilesCreateOptions.blksize, defaultValue: CreateDefaults.DATA_SET.C.blksize},
-        {...ZosFilesCreateOptions.lrecl, defaultValue: CreateDefaults.DATA_SET.C.lrecl},
+        ZosFilesCreateOptions.dirblk, 
+        ZosFilesCreateOptions.recfm, 
+        ZosFilesCreateOptions.blksize, 
+        ZosFilesCreateOptions.lrecl, 
         ZosFilesCreateOptions.storclass,
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
@@ -58,7 +58,8 @@ export const DsDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_LIKE.EXAMPLES.EX1,
-            options: "NEW.DATASET --like EXISTING.DATASET"
+            options: {"NEW.DATASET --like EXISTING.DATASET",
+                      "NEW.DATASET --like EXISTING.DATASET --lrecl 1024"
         }
 
     ]

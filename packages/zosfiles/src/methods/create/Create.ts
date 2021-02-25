@@ -142,6 +142,13 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
+        // Removes undefined properties
+        let tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) })) : {};
+        Create.dataSetValidateOptions(tempOptions);
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+
+        const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
+
         try {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
