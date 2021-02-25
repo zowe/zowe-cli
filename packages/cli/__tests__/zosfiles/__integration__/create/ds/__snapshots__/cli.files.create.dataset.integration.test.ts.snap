@@ -28,9 +28,68 @@ exports[`Create  Data Set should display the help 1`] = `
  OPTIONS
  -------
 
+   --block-size  | --bs | --blksize (number)
+
+      The block size for the data set (for example, 6160)
+
+   --data-class  | --dc (string)
+
+      The SMS data class to use for the allocation
+
+   --data-set-type  | --dst | --dsntype (string)
+
+      The data set type
+
+   --device-type  | --dt | --unit (string)
+
+      The device type, also known as 'unit'
+
+   --directory-blocks  | --db | --dirblks (number)
+
+      The number of directory blocks (for example, 25)
+
    --like  | --lk (string)
 
       Name of an existing data set to base your new data set's properties on
+
+   --management-class  | --mc (string)
+
+      The SMS management class to use for the allocation
+
+   --primary-space  | --ps (number)
+
+      The primary space allocation (for example, 5)
+
+   --record-format  | --rf | --recfm (string)
+
+      The record format for the data set (for example, FB for \\"Fixed Block\\")
+
+   --record-length  | --rl | --lrecl (number)
+
+      The logical record length. Analogous to the length of a line (for example, 80)
+
+   --secondary-space  | --ss (number)
+
+      The secondary space allocation (for example, 1)
+
+   --show-attributes  | --pa (boolean)
+
+      Show the full allocation attributes
+
+   --size  | --sz (string)
+
+      The size of the data set (specified as nCYL or nTRK - where n is the number of
+      cylinders or tracks). Sets the primary allocation (the secondary allocation
+      becomes ~10% of the primary).
+
+   --storage-class  | --sc (string)
+
+      The SMS storage class to use for the allocation
+
+   --volume-serial  | --vs | --volser (string)
+
+      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
+      is analogous to a drive name on a PC.
 
    --responseTimeout  | --rto (number)
 
@@ -119,6 +178,11 @@ exports[`Create  Data Set should display the help 1`] = `
    - Create an dataset with default parameters and like flag:
 
       $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET
+
+   - Create an dataset with default parameters and like flag and
+   lrect flag:
+
+      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --lrecl 1024
 
 "
 `;
