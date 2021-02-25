@@ -7,7 +7,6 @@ Array [
       "bs",
       "blksize",
     ],
-    "defaultValue": 32760,
     "description": "The block size for the data set (for example, 6160)",
     "name": "block-size",
     "type": "number",
@@ -43,7 +42,6 @@ Array [
       "db",
       "dirblks",
     ],
-    "defaultValue": 25,
     "description": "The number of directory blocks (for example, 25)",
     "name": "directory-blocks",
     "type": "number",
@@ -68,7 +66,6 @@ Array [
     "aliases": Array [
       "ps",
     ],
-    "defaultValue": 1,
     "description": "The primary space allocation (for example, 5)",
     "name": "primary-space",
     "type": "number",
@@ -78,7 +75,6 @@ Array [
       "rf",
       "recfm",
     ],
-    "defaultValue": "VB",
     "description": "The record format for the data set (for example, FB for \\"Fixed Block\\")",
     "name": "record-format",
     "type": "string",
@@ -88,7 +84,6 @@ Array [
       "rl",
       "lrecl",
     ],
-    "defaultValue": 260,
     "description": "The logical record length. Analogous to the length of a line (for example, 80)",
     "name": "record-length",
     "type": "number",
@@ -142,6 +137,10 @@ Array [
   Object {
     "description": "Create an dataset with default parameters and like flag",
     "options": "NEW.DATASET --like EXISTING.DATASET",
+  },
+  Object {
+    "description": "Create an dataset with default parameters and like flag and lrect flag",
+    "options": "NEW.DATASET --like EXISTING.DATASET --lrecl 1024",
   },
 ]
 `;
