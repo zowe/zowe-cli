@@ -2,9 +2,19 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+<<<<<<< HEAD
 ## Recent Changes
 
 - Enhancement: Added a `like` option to the `zowe zos-files create data-set` command. Use this option to like datasets. [#771](https://github.com/zowe/zowe-cli/issues/771)
+=======
+## `6.26.0`
+
+- Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
+
+## `6.25.2`
+
+- Documented early access features that are available in "next" release.
+>>>>>>> c404a11215db69d2d88261788293f2c5f7843865
 
 ## `6.25.1`
 
