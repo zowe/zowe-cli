@@ -42,7 +42,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
         {
             name: "commandtext",
             type: "string",
-            description: "The z/OS console command to issue",
+            description: "The z/OS console command to issue.",
             required: true
         }
     ],
@@ -119,7 +119,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
         {
             name: "follow-up-attempts",
             aliases: ["fua", "a"],
-            description: "Number of request attempts if no response returned",
+            description: "Number of request attempts if no response returned.",
             type: "number",
             defaultValue: "1"
         }
@@ -132,6 +132,10 @@ export const IssueCommandDefinition: ICommandDefinition = {
         {
             description: "Issue a z/OS console command to display the local and coordinated universal time and date",
             options: "\"D T\""
+        },
+        {
+            description: "Issue a Db2 command to display information about the status and configuration of DDF",
+            options: "\"\\-DB1G DISPLAY DDF\""
         }
     ]
 };
