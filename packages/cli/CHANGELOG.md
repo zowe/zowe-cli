@@ -2,18 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 ## Recent Changes
 
 - Enhancement: Added a `like` option to the `zowe zos-files create data-set` command. Use this option to like datasets. [#771](https://github.com/zowe/zowe-cli/issues/771)
-=======
-=======
-## Recent Changes
-
 - Enhancement: Added an example for running a Db2 command with the `zowe zos-console issue command` command. [#641](https://github.com/zowe/zowe-cli/issues/641)
 
->>>>>>> 97950db1adf21b5a3ffd21082a44b3a46bb27075
 ## `6.26.0`
 
 - Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
@@ -21,7 +14,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `6.25.2`
 
 - Documented early access features that are available in "next" release.
->>>>>>> c404a11215db69d2d88261788293f2c5f7843865
 
 ## `6.25.1`
 
