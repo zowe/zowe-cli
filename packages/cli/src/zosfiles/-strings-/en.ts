@@ -44,7 +44,7 @@ export default {
                 DESCRIPTION: "Create data sets based on the properties of an existing data set",
                 EXAMPLES: {
                     EX1: "Create an dataset with default parameters and like flag",
-                    EX2: "Create an dataset with default parameters and like flag and lrect flag"                }
+                    EX2: "Create an dataset with default parameters and like flag and lrecl flag"                }
             },
             DATA_SET_PARTITIONED: {
                 DESCRIPTION: "Create partitioned data sets (PDS)",

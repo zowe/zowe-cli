@@ -139,7 +139,7 @@ Array [
     "options": "NEW.DATASET --like EXISTING.DATASET",
   },
   Object {
-    "description": "Create an dataset with default parameters and like flag and lrect flag",
+    "description": "Create an dataset with default parameters and like flag and lrecl flag",
     "options": "NEW.DATASET --like EXISTING.DATASET --lrecl 1024",
   },
 ]
