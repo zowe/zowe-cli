@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added an example for running a Db2 command with the `zowe zos-console issue command` command. [#641](https://github.com/zowe/zowe-cli/issues/641)
+
 ## `6.26.0`
 
 - Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
