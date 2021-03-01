@@ -180,7 +180,7 @@ exports[`Create  Data Set should display the help 1`] = `
       $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET
 
    - Create an dataset with default parameters and like flag and
-   lrect flag:
+   lrecl flag:
 
       $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --lrecl 1024
 
