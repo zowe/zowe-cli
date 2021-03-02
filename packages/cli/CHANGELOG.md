@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.26.1`
+
+- Enhancement: made changes to definition files for zowe ssh commands [#603](https://github.com/zowe/zowe-cli/issues/603)
+
 ## `6.26.0`
 
 - Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
