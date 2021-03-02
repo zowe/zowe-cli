@@ -123,7 +123,8 @@ export class ZosmfSession {
         aliases: ["o"],
         description: "The protocol used (HTTP or HTTPS)",
         type: "string",
-        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
+        allowableValues: {values: ["http", "https"], caseSensitive: false}
     };
 
     /**
