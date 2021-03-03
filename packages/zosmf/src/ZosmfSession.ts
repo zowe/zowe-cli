@@ -116,6 +116,19 @@ export class ZosmfSession {
     };
 
     /**
+     * Option used to specify HTTP or HTTPS Protocol
+     */
+    public static ZOSMF_OPTION_PROTOCOL: ICommandOptionDefinition = {
+        name: "protocol",
+        aliases: ["o"],
+        description: "The protocol used (HTTP or HTTPS)",
+        type: "string",
+        defaultValue: "https",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
+        allowableValues: {values: ["http", "https"], caseSensitive: false}
+    };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -125,7 +138,8 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_USER,
         ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
-        ZosmfSession.ZOSMF_OPTION_BASE_PATH
+        ZosmfSession.ZOSMF_OPTION_BASE_PATH,
+        ZosmfSession.ZOSMF_OPTION_PROTOCOL
     ];
 
     /**
@@ -136,7 +150,8 @@ export class ZosmfSession {
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
         return {
             rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath
+            basePath: args.basePath,
+            protocol: args.protocol ? args.protocol.toLowerCase() : 'https'
         };
     }
 
@@ -156,7 +171,8 @@ export class ZosmfSession {
             user: profile.user,
             password: profile.password,
             rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath
+            basePath: profile.basePath,
+            protocol: profile.protocol ? profile.protocol.toLowerCase() : 'https'
         });
     }
 
