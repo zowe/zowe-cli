@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `6.27.0`
 
 - Enhancement: Adds a protocol option to ZosmfSession
 
