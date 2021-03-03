@@ -90,6 +90,7 @@ Important! Before you use commands in the zos-console command group, ensure that
               "https",
             ],
           },
+          "defaultValue": "https",
           "description": "The protocol used (HTTP or HTTPS)",
           "group": "Zosmf Connection Options",
           "name": "protocol",

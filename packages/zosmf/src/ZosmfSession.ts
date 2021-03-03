@@ -123,6 +123,7 @@ export class ZosmfSession {
         aliases: ["o"],
         description: "The protocol used (HTTP or HTTPS)",
         type: "string",
+        defaultValue: "https",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP,
         allowableValues: {values: ["http", "https"], caseSensitive: false}
     };
@@ -171,7 +172,7 @@ export class ZosmfSession {
             password: profile.password,
             rejectUnauthorized: profile.rejectUnauthorized,
             basePath: profile.basePath,
-            protocol: profile.protocol
+            protocol: profile.protocol ? profile.protocol.toLowerCase() : 'https'
         });
     }
 

@@ -90,6 +90,7 @@ Object {
           "https",
         ],
       },
+      "defaultValue": "https",
       "description": "The protocol used (HTTP or HTTPS)",
       "group": "Zosmf Connection Options",
       "name": "protocol",
