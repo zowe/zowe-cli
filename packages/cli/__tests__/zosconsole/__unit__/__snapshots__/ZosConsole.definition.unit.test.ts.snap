@@ -80,9 +80,6 @@ Important! Before you use commands in the zos-console command group, ensure that
           "type": "string",
         },
         Object {
-          "aliases": Array [
-            "o",
-          ],
           "allowableValues": Object {
             "caseSensitive": false,
             "values": Array [
