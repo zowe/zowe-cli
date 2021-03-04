@@ -78,9 +78,6 @@ Object {
           "type": "string",
         },
         Object {
-          "aliases": Array [
-            "o",
-          ],
           "allowableValues": Object {
             "caseSensitive": false,
             "values": Array [
