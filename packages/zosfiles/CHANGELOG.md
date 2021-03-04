@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `6.27.0`
+
+- Enhancement: Added a `like` option to the `zowe zos-files create data-set` command. Use this option to like datasets. Here the arguments were added for the same. [#771](https://github.com/zowe/zowe-cli/issues/771)
+
 ## `6.24.4`
 
 - Bugfix: Removed unnecessary dependency on zosuss SDK.

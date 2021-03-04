@@ -6,6 +6,12 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: made changes to definition files for zowe ssh commands [#603](https://github.com/zowe/zowe-cli/issues/603)
 
+## `6.27.0`
+
+- Enhancement: Added a `like` option to the `zowe zos-files create data-set` command. Use this option to like datasets. [#771](https://github.com/zowe/zowe-cli/issues/771)
+- Enhancement: Added a `--protocol` option to allow you to specify the HTTP or HTTPS protocol used. Default value remains HTTPS.[#498](https://github.com/zowe/zowe-cli/issues/498)
+- Enhancement: Added an example for running a Db2 command with the `zowe zos-console issue command` command. [#641](https://github.com/zowe/zowe-cli/issues/641)
+
 ## `6.26.0`
 
 - Enhancement: Updated Imperative version to support npm@7. This fixes an error when installing plugins.
