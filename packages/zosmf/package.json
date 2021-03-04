@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zosmf-for-zowe-sdk",
-  "version": "6.27.0",
+  "version": "6.27.1",
   "description": "Zowe SDK to interact with the z/OS Management Facility",
   "author": "Broadcom",
   "license": "EPL-2.0",
