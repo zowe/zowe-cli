@@ -214,6 +214,13 @@ exports[`zos-console issue command should display the help 1`] = `
       prepend the base path to all z/OSMF resources when making REST requests. Do not
       specify this option if you are not using an API mediation layer.
 
+   --protocol  (string)
+
+      The protocol used (HTTP or HTTPS)
+
+      Default value: https
+      Allowed values: http, https
+
  PROFILE OPTIONS
  ---------------
 
