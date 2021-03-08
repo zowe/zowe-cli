@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Create data set handler process method should create a  data set if requested 1`] = `
+Object {
+  "commandResponse": "created",
+  "success": true,
+}
+`;
+
+exports[`Create data set handler process method should create a  data set if requested 2`] = `""`;
+
+exports[`Create data set handler process method should create a  data set if requested 3`] = `
+"
+created"
+`;

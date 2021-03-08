@@ -138,16 +138,22 @@ export class Create {
         }
     }
 
-    public static async dataSetLike(session: AbstractSession, dataSetName: string, likeDataSetName: string): Promise<IZosFilesResponse> {
+    public static async dataSetLike(session: AbstractSession,
+                                    dataSetName: string,
+                                    likeDataSetName: string,
+                                    options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
+        // Removes undefined properties
+        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) })) : {};
+        Create.dataSetValidateOptions(tempOptions);
+
         try {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING],
-                JSON.stringify({ like: likeDataSetName }));
+            await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
 
             return {
                 success: true,
@@ -294,6 +300,7 @@ export class Create {
                     case "unit":
                     case "volser":
                     case "responseTimeout":
+                    case "like":
                         // no validation
 
                         break;
