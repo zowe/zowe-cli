@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.28.0`
 
 - Enhancement: Updated Imperative version to handle GZIP compression on REST requests.
 
