@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 import { isNullOrUndefined } from "util";
 import { TsoValidator } from "./TsoValidator";
@@ -56,7 +56,7 @@ export class SendTso {
         const parameters: string = "/" + TsoConstants.RES_START_TSO + "/" + commandParams.servletKey + TsoConstants.RES_DONT_READ_REPLY;
         const jobObj: any = {"TSO RESPONSE": {VERSION: "0100", DATA: commandParams.data}};
         return ZosmfRestClient.putExpectJSON<IZosmfTsoResponse>
-        (session, TsoConstants.RESOURCE + parameters, [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON], jobObj);
+        (session, TsoConstants.RESOURCE + parameters, [Headers.APPLICATION_JSON], jobObj);
 
     }
 
@@ -72,7 +72,7 @@ export class SendTso {
 
         const parameters: string = "/" + TsoConstants.RES_START_TSO + "/" + servletKey;
         return ZosmfRestClient.getExpectJSON<IZosmfTsoResponse>(session, TsoConstants.RESOURCE + parameters,
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON]);
+            [Headers.APPLICATION_JSON]);
     }
 
     /**

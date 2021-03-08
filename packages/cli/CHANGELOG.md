@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated Imperative version to handle GZIP compression on REST requests.
+
 ## `6.27.1`
 
 - BugFix: Removed the conflicting alias `-o` for `--protocol` option.

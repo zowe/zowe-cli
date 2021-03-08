@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
 import { isNullOrUndefined } from "util";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -119,10 +119,14 @@ export class Create {
                 }
 
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+                const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+                if (options && options.responseTimeout != null) {
+                    headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                }
 
                 Create.dataSetValidateOptions(tempOptions);
 
-                const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
+                await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
 
                 return {
                     success: true,
@@ -149,7 +153,7 @@ export class Create {
         try {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            const data = await ZosmfRestClient.postExpectString(session, endpoint, [], JSON.stringify(tempOptions));
+            await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
 
             return {
                 success: true,
@@ -417,7 +421,7 @@ export class Create {
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const headers: object[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, { "Content-Type": "application/json" }];
+        const headers: IHeaderContent[] = [Headers.APPLICATION_JSON, ZosmfHeaders.ACCEPT_ENCODING];
         if (options && options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
@@ -456,7 +460,7 @@ export class Create {
         }
 
         const jsonContent = JSON.stringify(tempOptions);
-        const headers = [{ "Content-Length": jsonContent.length }];
+        const headers = [{ "Content-Length": jsonContent.length }, ZosmfHeaders.ACCEPT_ENCODING];
 
         const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
 

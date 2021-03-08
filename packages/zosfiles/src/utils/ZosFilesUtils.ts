@@ -121,22 +121,23 @@ export class ZosFilesUtils {
      * @memberof ZosFilesUtils
      */
     public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
-        let reqHeaders: IHeaderContent[] = [];
+        const reqHeaders: IHeaderContent[] = [];
 
         if (options.binary) {
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+            reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
         } else if (options.encoding) {
 
             const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
             const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
             const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
             header[keys[0]] = value;
-            reqHeaders = [header];
+            reqHeaders.push(header);
 
         } else {
             // do nothing
         }
 
+        reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
         if (options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
@@ -251,7 +252,8 @@ export class ZosFilesUtils {
 
             const headers: IHeaderContent[] = [
                 Headers.APPLICATION_JSON,
-                { "Content-Length": JSON.stringify(payload).length.toString() }
+                { "Content-Length": JSON.stringify(payload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING
             ];
 
             if (options.responseTimeout != null) {
