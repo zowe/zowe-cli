@@ -13,7 +13,7 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Copy, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Copy", () => {
     const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -54,7 +54,8 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING
                     ];
 
                     const response = await Copy.dataSet(
@@ -91,6 +92,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10"}
                     ];
 
@@ -166,7 +168,8 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING
                     ];
 
                     const response = await Copy.dataSet(
@@ -242,6 +245,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -279,7 +283,8 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING
                     ];
 
                     const response = await Copy.dataSet(
@@ -316,6 +321,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -391,7 +397,8 @@ describe("Copy", () => {
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
-                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING
                     ];
 
                     const response = await Copy.dataSet(
@@ -467,6 +474,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -600,7 +608,8 @@ describe("Copy", () => {
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING
                 ];
                 try {
                     await Copy.dataSet(
