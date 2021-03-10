@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeError, Logger, RestClient, TextUtils, RestConstants, SessConstants, AbstractSession } from "@zowe/imperative";
+import { IImperativeError, Logger, RestClient, TextUtils, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
 /**
