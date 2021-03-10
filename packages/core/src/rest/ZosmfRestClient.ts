@@ -22,14 +22,6 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
 export class ZosmfRestClient extends RestClient {
 
     /**
-     * Construct zosmf rest client to use content decoding
-     * @param mSession The session object to use
-     */
-    constructor(mSession: AbstractSession){
-        super(mSession);
-    }
-
-    /**
      * Use the Brightside logger instead of the imperative logger
      * @type {Logger}
      */
