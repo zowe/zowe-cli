@@ -748,7 +748,7 @@ describe("Create data set", () => {
         expect(mySpy).toHaveBeenCalledWith(
             dummySession,
             endpoint,
-            [ZosmfHeaders.ACCEPT_ENCODING,],
+            [ZosmfHeaders.ACCEPT_ENCODING],
             JSON.stringify({
                 ...{
                     alcunit: "CYL",
@@ -781,7 +781,7 @@ describe("Create data set", () => {
         expect(mySpy).toHaveBeenCalledWith(
             dummySession,
             endpoint,
-            [ZosmfHeaders.ACCEPT_ENCODING,],
+            [ZosmfHeaders.ACCEPT_ENCODING],
             JSON.stringify({
                 ...{
                     alcunit: "CYL",
