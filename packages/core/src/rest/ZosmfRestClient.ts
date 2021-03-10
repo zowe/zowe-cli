@@ -27,7 +27,6 @@ export class ZosmfRestClient extends RestClient {
      */
     constructor(mSession: AbstractSession){
         super(mSession);
-        this.mDecode = true;
     }
 
     /**
