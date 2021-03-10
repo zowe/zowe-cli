@@ -130,6 +130,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10"}
                     ];
 
@@ -207,6 +208,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -359,6 +361,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
@@ -436,6 +439,7 @@ describe("Copy", () => {
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
                         { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING,
                         { "X-IBM-Response-Timeout": "10" }
                     ];
 
