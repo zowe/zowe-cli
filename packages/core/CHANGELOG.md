@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a standard data set template with no parameters set.
+
 ## `6.28.0`
 
 - Enhancement: Added Accept-Encoding header to `ZosmfHeaders` class
