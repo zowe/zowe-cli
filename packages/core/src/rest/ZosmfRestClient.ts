@@ -20,6 +20,7 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  * @extends {RestClient}
  */
 export class ZosmfRestClient extends RestClient {
+    mDecode: boolean;
 
     /**
      * Construct zosmf rest client to use content decoding

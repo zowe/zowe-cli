@@ -22,7 +22,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
  */
 export const BlankPDSDefinition: ICommandDefinition = {
     name: "data-set-blank",
-    aliases: ["bin"],
+    aliases: ["blank"],
     description: strings.ACTIONS.DATA_SET_BLANK.DESCRIPTION,
     type: "command",
     handler: __dirname + "/BlankPDS.handler",
