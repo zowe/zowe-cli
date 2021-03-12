@@ -3,162 +3,30 @@
 exports[`Create  Data Set should display the help 1`] = `
 "================Z/OS FILES CREATE DATA-SET HELP===============
 
- COMMAND NAME
- ------------
-
-   data-set | ds
-
  DESCRIPTION
  -----------
 
-   Create data sets based on the properties of an existing data set
+   Create data sets
 
  USAGE
  -----
 
-   zowe zos-files create data-set <dataSetName> [options]
-
- POSITIONAL ARGUMENTS
- --------------------
-
-   dataSetName		 (string)
-
-      The name of the data set that you want to create
-
- OPTIONS
- -------
-
-   --block-size  | --bs | --blksize (number)
-
-      The block size for the data set (for example, 6160)
-
-   --data-class  | --dc (string)
-
-      The SMS data class to use for the allocation
-
-   --data-set-type  | --dst | --dsntype (string)
-
-      The data set type
-
-   --device-type  | --dt | --unit (string)
-
-      The device type, also known as 'unit'
-
-   --directory-blocks  | --db | --dirblks (number)
-
-      The number of directory blocks (for example, 25)
-
-   --like  | --lk (string)
-
-      Name of an existing data set to base your new data set's properties on
-
-   --management-class  | --mc (string)
-
-      The SMS management class to use for the allocation
-
-   --primary-space  | --ps (number)
-
-      The primary space allocation (for example, 5)
-
-   --record-format  | --rf | --recfm (string)
-
-      The record format for the data set (for example, FB for \\"Fixed Block\\")
-
-   --record-length  | --rl | --lrecl (number)
-
-      The logical record length. Analogous to the length of a line (for example, 80)
-
-   --secondary-space  | --ss (number)
-
-      The secondary space allocation (for example, 1)
-
-   --show-attributes  | --pa (boolean)
-
-      Show the full allocation attributes
-
-   --size  | --sz (string)
-
-      The size of the data set (specified as nCYL or nTRK - where n is the number of
-      cylinders or tracks). Sets the primary allocation (the secondary allocation
-      becomes ~10% of the primary).
-
-   --storage-class  | --sc (string)
-
-      The SMS storage class to use for the allocation
-
-   --volume-serial  | --vs | --volser (string)
-
-      The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
-      is analogous to a drive name on a PC.
-
-   --responseTimeout  | --rto (number)
-
-      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run
-      before returning a response. Any request exceeding this amount of time will be
-      terminated and return an error. Allowed values: 5 - 600
-
- ZOSMF CONNECTION OPTIONS
- ------------------------
-
-   --host  | -H (string)
-
-      The z/OSMF server host name.
-
-   --port  | -P (number)
-
-      The z/OSMF server port.
-
-      Default value: 443
-
-   --user  | -u (string)
-
-      Mainframe (z/OSMF) user name, which can be the same as your TSO login.
-
-   --password  | --pass | --pw (string)
-
-      Mainframe (z/OSMF) password, which can be the same as your TSO password.
-
-   --reject-unauthorized  | --ru (boolean)
-
-      Reject self-signed certificates.
-
-      Default value: true
-
-   --base-path  | --bp (string)
-
-      The base path for your API mediation layer instance. Specify this option to
-      prepend the base path to all z/OSMF resources when making REST requests. Do not
-      specify this option if you are not using an API mediation layer.
-
-   --protocol  (string)
-
-      The protocol used (HTTP or HTTPS)
-
-      Default value: https
-      Allowed values: http, https
-
- PROFILE OPTIONS
- ---------------
-
-   --zosmf-profile  | --zosmf-p (string)
-
-      The name of a (zosmf) profile to load for this command execution.
-
-   --base-profile  | --base-p (string)
-
-      The name of a (base) profile to load for this command execution.
-
- BASE CONNECTION OPTIONS
- -----------------------
-
-   --token-type  | --tt (string)
-
-      The type of token to get and use for the API. Omit this option to use the
-      default token type, which is provided by 'zowe auth login'.
-
-   --token-value  | --tv (string)
-
-      The value of the token to pass to the API.
+   zowe zos-files create <command>
+
+   Where <command> is one of the following:
+
+ COMMANDS
+ --------
+
+   data-set-binary | bin      Create executable data sets                       
+   data-set-c | dsc           Create data sets for C code programming           
+   data-set-classic | classic Create classic data sets (JCL, HLASM, CBL, etc...)
+   data-set-partitioned | pds Create partitioned data sets (PDS)                
+   data-set-sequential | ps   Create physical sequential data sets (PS)         
+   data-set-vsam | vsam       Create a VSAM cluster                             
+   uss-directory | dir        Create a UNIX directory                           
+   uss-file | file            Create a UNIX file                                
+   zos-file-system | zfs      Create a z/OS file system                         
 
  GLOBAL OPTIONS
  --------------
@@ -178,18 +46,6 @@ exports[`Create  Data Set should display the help 1`] = `
    --help-web  | --hw (boolean)
 
       Display HTML help in browser
-
- EXAMPLES
- --------
-
-   - Create an dataset with default parameters and like flag:
-
-      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET
-
-   - Create an dataset with default parameters and like flag and
-   lrecl flag:
-
-      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --lrecl 1024
 
 "
 `;
