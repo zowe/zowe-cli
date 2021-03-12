@@ -101,7 +101,7 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get data set content in binary mode", async () => {
@@ -121,7 +121,7 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get data set content with encoding", async () => {
@@ -141,7 +141,8 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [{ "X-IBM-Data-Type": "text;fileEncoding=285" }]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get data set content with responseTimeout", async () => {
@@ -161,7 +162,7 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [{ "X-IBM-Response-Timeout": "5" }]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }]);
         });
 
         it("should get data set content with volume option", async () => {
@@ -183,7 +184,7 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         describe("uss file", () => {
@@ -256,7 +257,7 @@ describe("z/OS Files - View", () => {
                 expect(response).toEqual(content);
 
                 expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-                expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, []);
+                expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING]);
             });
 
             it("should get uss file content in binary mode", async () => {
@@ -276,7 +277,7 @@ describe("z/OS Files - View", () => {
                 expect(response).toEqual(content);
 
                 expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-                expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+                expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
             });
         });
     });

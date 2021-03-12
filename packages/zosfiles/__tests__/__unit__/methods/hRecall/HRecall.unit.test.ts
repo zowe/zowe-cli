@@ -13,7 +13,7 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { ZosFilesConstants, ZosFilesMessages, HRecall, IRecallOptions } from "../../../../src";
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("hRecall data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -48,7 +48,8 @@ describe("hRecall data set", () => {
 
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING
             ];
 
             const response = await HRecall.dataSet(dummySession, dataSetName);
@@ -80,7 +81,8 @@ describe("hRecall data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING
             ];
 
             const response = await HRecall.dataSet(dummySession, dataSetName, options);
@@ -111,6 +113,7 @@ describe("hRecall data set", () => {
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
                 { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING,
                 { "X-IBM-Response-Timeout": "5" }
             ];
 
@@ -146,7 +149,8 @@ describe("hRecall data set", () => {
             );
             const expectedHeaders = [
                 { "Content-Type": "application/json" },
-                { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING
             ];
 
             let error;

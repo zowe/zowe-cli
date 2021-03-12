@@ -14,7 +14,7 @@ jest.mock('@zowe/core-for-zowe-sdk');
 import { Session } from "@zowe/imperative";
 import { posix } from "path";
 import { Delete, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDeleteDatasetOptions";
 import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
 import { Invoke } from "../../../../src/methods/invoke";
@@ -92,7 +92,7 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataset),
-                []
+                [ZosmfHeaders.ACCEPT_ENCODING]
             );
         });
 
@@ -112,7 +112,7 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
-                []
+                [ZosmfHeaders.ACCEPT_ENCODING]
             );
         });
 
@@ -133,7 +133,7 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
-                [{"X-IBM-Response-Timeout": "5"}]
+                [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}]
             );
         });
 

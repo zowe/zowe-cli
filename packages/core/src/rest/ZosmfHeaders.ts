@@ -195,4 +195,12 @@ export class ZosmfHeaders {
      * @memberof ZosmfHeaders
      */
     public static readonly X_IBM_RETURN_ETAG: IHeaderContent = {"X-IBM-Return-Etag": "true"};
+
+    /**
+     * Header that specifies GZIP compression is supported
+     * Recent versions of z/OSMF issue a warning if this header is omitted
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly ACCEPT_ENCODING: IHeaderContent = { "Accept-Encoding": "gzip" };
 }

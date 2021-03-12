@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added a standard data set template with no parameters set.
 
+## `6.28.0`
+
+- Enhancement: Updated Imperative version to handle GZIP compression on REST requests.
+
 ## `6.27.1`
 
 - BugFix: Removed the conflicting alias `-o` for `--protocol` option.

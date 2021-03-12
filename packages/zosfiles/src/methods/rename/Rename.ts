@@ -103,7 +103,8 @@ export class Rename {
 
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
-            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() }
+            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
+            ZosmfHeaders.ACCEPT_ENCODING
         ];
 
         if (options && options.responseTimeout != null) {
