@@ -18,6 +18,8 @@ exports[`Create  Data Set should display the help 1`] = `
  COMMANDS
  --------
 
+   data-set | ds              Create data sets based on the properties of an    
+                              existing data set                                 
    data-set-binary | bin      Create executable data sets                       
    data-set-c | dsc           Create data sets for C code programming           
    data-set-classic | classic Create classic data sets (JCL, HLASM, CBL, etc...)
