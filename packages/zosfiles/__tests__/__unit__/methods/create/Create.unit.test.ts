@@ -747,7 +747,7 @@ describe("Create data set", () => {
             ...CreateDefaults.DATA_SET.BLANK,
             ...dsBlankOptions,
             ...{
-                secondary: 1,
+                secondary: 1
             }
         }));
     });
