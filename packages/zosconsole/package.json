@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@zowe/core-for-zowe-sdk": "7.0.0-next.202102171306",
-    "@zowe/imperative": "5.0.0-next.202103101438",
+    "@zowe/imperative": "5.0.0-next.202103111923",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
