@@ -58,12 +58,6 @@ export default {
                     EX1: "Create an empty physical sequential data set with default parameters"
                 }
             },
-            DATA_SET_BLANK: {
-                DESCRIPTION: "Create blank data sets",
-                EXAMPLES: {
-                    EX1: "Create a data set using only passed-in parameters (no defaults set)"
-                }
-            },
             VSAM: {
                 DESCRIPTION: "Create a VSAM cluster",
                 POSITIONALS: {

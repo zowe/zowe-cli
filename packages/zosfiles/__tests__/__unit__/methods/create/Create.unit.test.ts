@@ -730,6 +730,28 @@ describe("Create data set", () => {
         );
     });
 
+    it("should be able to create a blank data set with minimum options", async () => {
+        const dsBlankOptions: any = {
+            alcunit: "CYL",
+            dsorg: "PO",
+            primary: 20,
+            recfm: "FB",
+            lrecl: 80
+        };
+
+        const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_BLANK, dataSetName, dsBlankOptions);
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain("created successfully");
+        expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify({
+            ...CreateDefaults.DATA_SET.BLANK,
+            ...dsBlankOptions,
+            ...{
+                secondary: 1,
+            }
+        }));
+    });
+
     describe("Expected failures", () => {
         it("should fail if the zOSMF REST client fails", async () => {
             const errorMsg = "Dummy error message";
