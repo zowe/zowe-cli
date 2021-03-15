@@ -1789,7 +1789,7 @@ interval\.
 
 *   `commandtext`		 *(string)*
 
-	* The z/OS console command to issue
+	* The z/OS console command to issue.
 
 #### Options
 
@@ -1847,7 +1847,7 @@ interval\.
 
 *   `--follow-up-attempts`  | `--fua` | `-a` *(number)*
 
-	* Number of request attempts if no response returned
+	* Number of request attempts if no response returned.
 
       Default value: 1
 
@@ -1900,6 +1900,11 @@ for the system:
 coordinated universal time and date:
 
       * `$  zowe zos-console issue command "D T"`
+
+*  Issue a Db2 command to display information about the status
+and configuration of DDF:
+
+      * `$  zowe zos-console issue command "\-DB1G DISPLAY DDF"`
 
 # zos-files | files<a name="zos-files"></a>
 Manage z/OS data sets, create data sets, and more

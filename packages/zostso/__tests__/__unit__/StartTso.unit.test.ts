@@ -27,7 +27,7 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosmfRestClient } from "../../../core/lib/rest/ZosmfRestClient";
 import { inspect } from "util";
 
-const START_HEADERS: any[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON];
+const START_HEADERS: any[] = [Headers.APPLICATION_JSON];
 
 const ACCOUNT_NUMBER: string = "DEFAULT";
 

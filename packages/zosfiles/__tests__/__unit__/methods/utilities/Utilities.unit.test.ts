@@ -11,7 +11,7 @@
 
 import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src";
 import { Session, Headers } from "@zowe/imperative";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
 
 describe("USS utiliites", () => {
@@ -86,7 +86,8 @@ describe("USS utiliites", () => {
             expect(response.success).toBeTruthy();
             const expectedUrl = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/testfile";
             expect(restClientSpy).toHaveBeenCalledWith(dummySession, expectedUrl,
-                [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH] : JSON.stringify(expectedPayload).length.toString() }],
+                [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH]: JSON.stringify(expectedPayload).length.toString() },
+                 ZosmfHeaders.ACCEPT_ENCODING],
                 expectedPayload);
         }
     });
@@ -201,7 +202,7 @@ describe("Utilities.putUSSPayload", () => {
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
     });
     describe("isFileTagBinOrAscii", () => {
@@ -260,7 +261,7 @@ describe("Utilities.putUSSPayload", () => {
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
     });
     describe("isFileTagBinOrAscii changing content", () => {
@@ -284,7 +285,7 @@ describe("Utilities.putUSSPayload", () => {
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
         it("should get a positive indication to binary", async () => {
             let response;
@@ -305,7 +306,7 @@ describe("Utilities.putUSSPayload", () => {
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
         it("should get a negative indication to untagged", async () => {
             let response;
@@ -326,7 +327,7 @@ describe("Utilities.putUSSPayload", () => {
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
         it("should get a negative indication to empty", async () => {
             let response;
@@ -347,7 +348,7 @@ describe("Utilities.putUSSPayload", () => {
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
     });
 });

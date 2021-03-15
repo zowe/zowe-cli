@@ -52,9 +52,9 @@ export class List {
                 endpoint += `?pattern=${options.pattern}`;
             }
 
-            let reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.attributes) {
-                reqHeaders = [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE];
+                reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
@@ -98,13 +98,13 @@ export class List {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            let  endpoint = posix.join(ZosFilesConstants.RESOURCE,
+            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
             if (options.start) {
                 endpoint = `${endpoint}&start=${options.start}`;
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.attributes) {
                 reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             }
@@ -167,7 +167,7 @@ export class List {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {
@@ -211,7 +211,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             // if (options.path) {
             //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
             // }
@@ -259,7 +259,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.maxLength) {
                 reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
             } else {

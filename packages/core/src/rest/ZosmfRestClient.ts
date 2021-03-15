@@ -21,7 +21,6 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  */
 export class ZosmfRestClient extends RestClient {
 
-
     /**
      * Use the Brightside logger instead of the imperative logger
      * @type {Logger}

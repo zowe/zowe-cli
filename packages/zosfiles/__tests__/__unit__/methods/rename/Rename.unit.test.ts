@@ -12,7 +12,7 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { Rename, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Rename", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -47,7 +47,8 @@ describe("Rename", () => {
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING
                 ];
                 const response = await Rename.dataSet(dummySession, beforeDataSetName, afterDataSetName);
 
@@ -73,6 +74,7 @@ describe("Rename", () => {
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
                     { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING,
                     { "X-IBM-Response-Timeout": "5"}
                 ];
                 const response = await Rename.dataSet(dummySession, beforeDataSetName, afterDataSetName, {responseTimeout: 5});
@@ -138,7 +140,8 @@ describe("Rename", () => {
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING
                 ];
 
                 let error;
@@ -180,7 +183,8 @@ describe("Rename", () => {
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING
                 ];
 
                 const response = await Rename.dataSetMember(dummySession, dataSetName, beforeMemberName, afterMemberName);
@@ -213,6 +217,7 @@ describe("Rename", () => {
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
                     { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING,
                     { "X-IBM-Response-Timeout": "5" }
                 ];
 
@@ -268,7 +273,8 @@ describe("Rename", () => {
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
-                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() }
+                    { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                    ZosmfHeaders.ACCEPT_ENCODING
                 ];
 
                 let error;

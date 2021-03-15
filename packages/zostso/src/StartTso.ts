@@ -12,7 +12,7 @@
 import { AbstractSession, Headers } from "@zowe/imperative";
 
 import { isNullOrUndefined } from "util";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { SendTso } from "./SendTso";
 import { IStartStopResponses } from "./doc/IStartStopResponses";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
@@ -42,7 +42,7 @@ export class StartTso {
         const startResources = this.getResourcesQuery(commandParms);
 
         return ZosmfRestClient.postExpectJSON<IZosmfTsoResponse>(session, startResources,
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON]);
+            [Headers.APPLICATION_JSON]);
     }
     /**
      * Start TSO address space with provided parameters.

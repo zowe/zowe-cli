@@ -28,7 +28,7 @@ const SERVLET_KEY: string = "ZOSMFAD-SYS2-55-aaakaaac";
 
 const STOP_PARMS: IStopTsoParms = {servletKey: SERVLET_KEY};
 
-const STOP_HEADERS: any[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON];
+const STOP_HEADERS: any[] = [Headers.APPLICATION_JSON];
 
 const RESOURCES_QUERY: string = `${TsoConstants.RESOURCE}/${TsoConstants.RES_START_TSO}/${SERVLET_KEY}`;
 

@@ -47,8 +47,7 @@ export class Unmount {
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
         const jsonContent = JSON.stringify({action: "unmount"});
-        const headers = [];
-        headers.push({"Content-Length": jsonContent.length});
+        const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];
 
         if (options && options.responseTimeout) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
