@@ -19,7 +19,8 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  * @class ZosmfRestClient
  * @extends {RestClient}
  */
-export class ZosmfRestClient extends RestClient {
+ export class ZosmfRestClient extends RestClient {
+
     /**
      * Construct zosmf rest client to use content decoding
      * @param mSession The session object to use
