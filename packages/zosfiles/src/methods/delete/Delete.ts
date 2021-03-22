@@ -59,7 +59,7 @@ export class Delete {
                 endpoint = posix.join(endpoint, `-(${options.volume})`);
             }
 
-            const reqHeaders: IHeaderContent[] = [];
+            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options && options.responseTimeout != null) {
                 reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
             }
@@ -155,7 +155,7 @@ export class Delete {
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders: IHeaderContent[] = [];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
         }
@@ -194,7 +194,7 @@ export class Delete {
 
         // Format the endpoint to send the request to
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName;
-        const reqHeaders: IHeaderContent[] = [];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
         if (options && options.responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }

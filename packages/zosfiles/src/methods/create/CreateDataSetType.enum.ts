@@ -17,5 +17,6 @@ export const enum CreateDataSetTypeEnum {
     DATA_SET_C,
     DATA_SET_CLASSIC,
     DATA_SET_PARTITIONED,
-    DATA_SET_SEQUENTIAL
+    DATA_SET_SEQUENTIAL,
+    DATA_SET_BLANK
 }

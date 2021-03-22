@@ -120,7 +120,6 @@ export class ZosmfSession {
      */
     public static ZOSMF_OPTION_PROTOCOL: ICommandOptionDefinition = {
         name: "protocol",
-        aliases: ["o"],
         description: "The protocol used (HTTP or HTTPS)",
         type: "string",
         defaultValue: "https",
