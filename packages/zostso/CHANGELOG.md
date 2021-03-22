@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## `6.28.0`
+
+- Bugfix: Fixed duplicate occurrence of "X-CSRF-ZOSMF-HEADER" on z/OSMF requests
+
 ## `6.25.0`
 
 - Enhancement: Improved cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)

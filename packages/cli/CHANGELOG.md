@@ -6,6 +6,18 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: made changes to definition files for zowe ssh commands [#603](https://github.com/zowe/zowe-cli/issues/603)
 
+## `6.29.0`
+
+- Enhancement: Added a standard data set template with no parameters set.
+
+## `6.28.0`
+
+- Enhancement: Updated Imperative version to handle GZIP compression on REST requests.
+
+## `6.27.1`
+
+- BugFix: Removed the conflicting alias `-o` for `--protocol` option.
+
 ## `6.27.0`
 
 - Enhancement: Added a `like` option to the `zowe zos-files create data-set` command. Use this option to like datasets. [#771](https://github.com/zowe/zowe-cli/issues/771)

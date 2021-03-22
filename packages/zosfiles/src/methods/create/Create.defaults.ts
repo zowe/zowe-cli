@@ -87,7 +87,13 @@ export const CreateDefaults = {
             blksize: 27998,
             lrecl: 27998,
             dirblk: 25
-        }
+        },
+
+        /**
+         * Specifies the defaults used by the Zos Files API to create a blank data set
+         * @type {ICreateDataSetOptions}
+         */
+        BLANK: {}
     },
     /**
      * Specifies the defaults used by the Zos Files API to create a VSAM cluster
