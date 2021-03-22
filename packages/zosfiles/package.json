@@ -52,7 +52,7 @@
     "@zowe/core-for-zowe-sdk": "6.28.0",
     "@zowe/imperative": "4.12.0",
     "@zowe/zos-uss-for-zowe-sdk": "6.28.0",
-    "madge": "^3.6.0",
+    "madge": "^4.0.1",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
     "typedoc": "^0.16.0",
