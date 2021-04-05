@@ -49,6 +49,11 @@ export const StdinDefinition: ICommandDefinition = {
             name: "extension", aliases: ["e"],
             description: "A file extension to save the job output with. Default is '.txt'.",
             type: "string"
+        },
+        {
+            name: "jcl-symbols", aliases: ["js"],
+            description: "A string of JCL symbols to use for substitution. Strings should be in 'key1:value1 key2:value2' format.",
+            type: "string"
         }
     ] as ICommandOptionDefinition[]),
     profile: {

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import {
     IJob,
     ISubmitJclNotifyParm,
@@ -41,6 +41,7 @@ export class SubmitJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobDataSet - job data set to be translated into parms object
+     * @param {string} substitutionString - jcl substitution string
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
@@ -63,8 +64,10 @@ export class SubmitJobs {
         this.log.debug("Submitting a job located in the data set '%s'", parms.jobDataSet);
         const fullyQualifiedDataset: string = "//'" + parms.jobDataSet + "'";
         const jobObj: object = {file: fullyQualifiedDataset};
+        let extraHeaders: IHeaderContent[] = [];
+        if (parms.jclSymbols) {extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);}
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE,
-            [Headers.APPLICATION_JSON], jobObj);
+            [Headers.APPLICATION_JSON, ...extraHeaders], jobObj);
     }
 
     /**
@@ -77,16 +80,17 @@ export class SubmitJobs {
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
-    public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string, internalReaderLrecl?: string) {
-        this.log.trace("submitJcl called with jcl of length %d. internalReaderRecfm %s internalReaderLrecl %s",
-            jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl);
-        return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl});
+    public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string,
+                            internalReaderLrecl?: string, jclSymbols?: string) {
+        this.log.trace("submitJcl called with jcl of length %d. internalReaderRecfm %s internalReaderLrecl %s substitutionString %s",
+            jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl, jclSymbols);
+        return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl, jclSymbols});
     }
 
     public static async submitJclString(session: AbstractSession, jcl: string, parms: ISubmitParms): Promise<IJob | ISpoolFile[]> {
         ImperativeExpect.toNotBeNullOrUndefined(jcl, ZosJobsMessages.missingJcl.message);
         ImperativeExpect.toNotBeEqual(jcl, "", ZosJobsMessages.missingJcl.message);
-        const responseJobInfo: IJob = await SubmitJobs.submitJclCommon(session, {jcl});
+        const responseJobInfo: IJob = await SubmitJobs.submitJclCommon(session, {jcl, jclSymbols: parms.jclSymbols});
         const response: Promise<IJob | ISpoolFile[]> = this.checkSubmitOptions(session, parms, responseJobInfo);
         return response;
     }
@@ -118,6 +122,12 @@ export class SubmitJobs {
         } else {
             // default to fixed format records
             headers.push(ZosmfHeaders.X_IBM_INTRDR_RECFM_F);
+        }
+        if (parms.jclSymbols) {
+            const extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);
+            for (const header of extraHeaders) {
+                headers.push(header);
+            }
         }
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE, headers, parms.jcl);
     }
@@ -287,6 +297,33 @@ export class SubmitJobs {
                 status,
                 watchDelay
             });
+    }
+
+    /**
+     * Parse input string for JCL substitution
+     * @param {string} symbols - JCL substitution symbols
+     * @returns {IHeaderContent[]} headers - Headers to add to the request
+     * @memberof SubmitJobs
+     */
+    private static getSubstitutionHeaders(symbols: string): IHeaderContent[] {
+        const headers: IHeaderContent[] = [];
+        const splitList = symbols.split(" "); // Split on spaces
+        for (const pair of splitList) {
+            const keyValuePair = pair.split(":", 2); // Split again on colons
+            if (keyValuePair.length === 2) {
+                // tslint:disable-next-line: no-magic-numbers
+                if (keyValuePair[0].length > 8) {
+                    throw new ImperativeError({msg: `Key of ${keyValuePair[0]} is too long. Keys must be 1-8 characters long.`});
+                }
+                const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + keyValuePair[0].toUpperCase();
+                const value = keyValuePair[1];
+                const header: IHeaderContent = {[key]: value};
+                headers.push(header);
+            } else {
+                throw new ImperativeError({msg: `Supposed pair of values ${pair} contained ${keyValuePair.length} arguments, expected 2.`});
+            }
+        }
+        return headers;
     }
 
     /**
