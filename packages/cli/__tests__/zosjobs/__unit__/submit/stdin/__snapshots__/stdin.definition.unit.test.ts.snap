@@ -53,6 +53,14 @@ Object {
       "name": "extension",
       "type": "string",
     },
+    Object {
+      "aliases": Array [
+        "js",
+      ],
+      "description": "A string of JCL symbols to use for substitution. Strings should be in 'key1:value1 key2:value2' format.",
+      "name": "jcl-symbols",
+      "type": "string",
+    },
   ],
   "outputFormatOptions": true,
   "profile": Object {
