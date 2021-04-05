@@ -13,7 +13,7 @@
 
 import { IJob, MonitorJobs, SubmitJobs } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ImperativeError } from "@zowe/imperative";
+import { IHeaderContent, ImperativeError } from "@zowe/imperative";
 
 jest.mock("@zowe/core-for-zowe-sdk/src/rest/ZosmfRestClient");
 jest.mock("../../src/MonitorJobs");
@@ -42,6 +42,23 @@ describe("Submit Jobs API", () => {
         });
 
 
+        it("should allow users to call submitJCLCommon with jcl substitution", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJclCommon(fakeSession, {
+                jcl: "//EXEC PGM=IEFBR14",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+
         it("should allow users to call submitJCL with correct parameters (no internal reader settings)",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
@@ -64,6 +81,7 @@ describe("Submit Jobs API", () => {
                 // mocking worked if this fake job name is filled in
                 expect(job.jobname).toEqual(fakeJobName);
             });
+
 
         it("should allow users to call submitJCL and wait for output status",
             async () => {
@@ -123,6 +141,30 @@ describe("Submit Jobs API", () => {
                 expect(job.jobname).toEqual(fakeJobName);
             });
 
+
+        it("should allow users to call submitJCLNotifyCommon with jcl substitution",
+            async () => {
+                (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+                let receivedHeaders: IHeaderContent[] = [];
+                (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                    receivedHeaders = headers;
+                    return returnIJob();
+                });
+                const job = await SubmitJobs.submitJclNotifyCommon(fakeSession,
+                    {
+                        jcl: "//EXEC PGM=IEFBR14",
+                        internalReaderLrecl: "VB",
+                        internalReaderRecfm: "256",
+                        jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+                    }
+                );
+                // mocking worked if this fake job name is filled in
+                expect(job.jobname).toEqual(fakeJobName);
+                expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+                expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+            });
+
+
         it("should allow users to call submitDataSetJobCommon with correct parameters", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             const job = await SubmitJobs.submitJobCommon(fakeSession, {
@@ -130,6 +172,22 @@ describe("Submit Jobs API", () => {
             });
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
+        });
+
+        it("should allow users to call submitDataSetJobCommon with jcl substitution", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJobCommon(fakeSession, {
+                jobDataSet: "DUMMY.DATA.SET",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
         });
 
         it("should allow users to call submitJobNotifyCommon with correct parameters (using data set)", async () => {
@@ -140,6 +198,23 @@ describe("Submit Jobs API", () => {
             });
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
+        });
+
+        it("should allow users to call submitJobNotifyCommon with jcl substitution", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+            const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                jobDataSet: "DUMMY.DATA.SET",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
         });
 
         it("should allow users to call submitJCLNotify with correct parameters", async () => {

@@ -81,10 +81,10 @@ export class SubmitJobs {
      * @memberof SubmitJobs
      */
     public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string,
-                            internalReaderLrecl?: string, jclSymbols?: string) {
-        this.log.trace("submitJcl called with jcl of length %d. internalReaderRecfm %s internalReaderLrecl %s substitutionString %s",
-            jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl, jclSymbols);
-        return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl, jclSymbols});
+                            internalReaderLrecl?: string) {
+        this.log.trace("submitJcl called with jcl of length %d. internalReaderRecfm %s internalReaderLrecl %s",
+            jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl);
+        return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl});
     }
 
     public static async submitJclString(session: AbstractSession, jcl: string, parms: ISubmitParms): Promise<IJob | ISpoolFile[]> {
@@ -309,7 +309,7 @@ export class SubmitJobs {
         const headers: IHeaderContent[] = [];
         const splitList = symbols.split(" "); // Split on spaces
         for (const pair of splitList) {
-            const keyValuePair = pair.split(":", 2); // Split again on colons
+            const keyValuePair = pair.split("=", 2); // Split again on equals
             if (keyValuePair.length === 2) {
                 // tslint:disable-next-line: no-magic-numbers
                 if (keyValuePair[0].length > 8) {
