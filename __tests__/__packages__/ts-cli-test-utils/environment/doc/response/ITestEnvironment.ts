@@ -9,14 +9,12 @@
 *
 */
 
-import { ITestPropertiesSchema } from "../../../properties/ITestPropertiesSchema";
-
 /**
  * The test environment for your test.
  * @export
  * @interface ITestEnvironment
  */
-export interface ITestEnvironment {
+export interface ITestEnvironment<TestPropertiesSchema> {
     /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create
      * their home folders (for imperative, etc.) and you can use the area as scratch for any files, etc. that
@@ -27,14 +25,14 @@ export interface ITestEnvironment {
     workingDir: string;
 
     /**
-     * The system test properties configured and loaded as part of the test lifecyle. This field may be null
+     * The system test properties configured and loaded as part of the test lifecycle. This field may be null
      * in the case that no system test properties were configured or could be loaded.
      *
      * Not present if skipProperties is specified on ISetupEnvironmentParms
-     * @type {ITestPropertiesSchema}
+     * @type {TestPropertiesSchema}
      * @memberof ITestEnvironment
      */
-    systemTestProperties: ITestPropertiesSchema;
+    systemTestProperties: TestPropertiesSchema;
 
     /**
      * Set of environmental variables (such as profile/logging home directory)
@@ -53,4 +51,8 @@ export interface ITestEnvironment {
      */
     tempProfiles?: { [profileType: string]: string[] };
 
+    /**
+     * Was the plugin installed in the working directory
+     */
+    pluginInstalled?: boolean;
 }

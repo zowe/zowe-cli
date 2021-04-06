@@ -46,4 +46,11 @@ export interface ISetupEnvironmentParms {
      * Default: false
      */
     skipProperties?: boolean;
+
+    /**
+     * Is your project a CLI plugin which should be installed to your home
+     * directory before the tests? There is no need to specify this unless
+     * you are trying to execute plugin commands installed into Zowe CLI.
+     */
+    installPlugin?: boolean;
 }
