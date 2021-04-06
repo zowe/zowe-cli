@@ -651,5 +651,29 @@ describe("Submit Jobs API", () => {
             expect(err).toBeDefined();
             expect(err.message).toContain("No JCL provided");
         });
+
+        it("should throw an error if JCL substitution key value pairs are not pairs", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJclString(fakeSession, "Fake string", {jclSource: "stdin", jclSymbols: "NotAKey:ValuePair"});
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("Supposed pair of values");
+            expect(err.message).toContain("arguments, expected 2");
+        });
+
+        it("should throw an error if JCL substitution key is too long", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJclString(fakeSession, "Fake string", {jclSource: "stdin", jclSymbols: "TooLongKey=Value"});
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("Key of");
+            expect(err.message).toContain("is too long. Keys must be 1-8 characters long.");
+        });
     });
 });
