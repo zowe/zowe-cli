@@ -41,7 +41,6 @@ export class SubmitJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobDataSet - job data set to be translated into parms object
-     * @param {string} substitutionString - jcl substitution string
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
@@ -80,8 +79,7 @@ export class SubmitJobs {
      * @returns {Promise<IJob>} - Promise that resolves to an IJob document with details about the submitted job
      * @memberof SubmitJobs
      */
-    public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string,
-                            internalReaderLrecl?: string) {
+    public static submitJcl(session: AbstractSession, jcl: string, internalReaderRecfm?: string, internalReaderLrecl?: string) {
         this.log.trace("submitJcl called with jcl of length %d. internalReaderRecfm %s internalReaderLrecl %s",
             jcl == null ? "no jcl!" : jcl.length, internalReaderRecfm, internalReaderLrecl);
         return SubmitJobs.submitJclCommon(session, {jcl, internalReaderRecfm, internalReaderLrecl});
