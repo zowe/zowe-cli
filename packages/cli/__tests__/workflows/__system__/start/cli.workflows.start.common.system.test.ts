@@ -11,10 +11,10 @@
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session, Imperative } from "@zowe/imperative";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow, startT, IWorkflowInfo, WorkflowConstants, IStepInfo } from "@zowe/zos-workflows-for-zowe-sdk";
@@ -24,7 +24,7 @@ const stepName = "echo";
 const performFollowingSteps = false;
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;

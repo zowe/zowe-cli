@@ -20,9 +20,9 @@ import {
     StartTso,
     StopTso
 } from "../../src";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { inspect } from "util";
 
 /**
@@ -30,7 +30,7 @@ import { inspect } from "util";
  * Use proper credentials in case you want to use different.
  */
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;

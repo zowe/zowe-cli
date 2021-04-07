@@ -9,16 +9,15 @@
 *
 */
 
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "../../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { Session, Imperative } from "@zowe/imperative";
 import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions, IMigrateOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { inspect } from "util";
 
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dataSetName1: string;
 let dataSetName2: string;

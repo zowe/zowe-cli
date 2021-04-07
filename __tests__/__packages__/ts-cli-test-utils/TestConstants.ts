@@ -9,12 +9,19 @@
 *
 */
 
-import { resolve } from "path";
+import * as nodePath from "path";
+import * as findUp from "find-up";
+
+// The root directory of the project - where package.json lives.
+export const PROJECT_ROOT_DIR = findUp.sync("package.json", { type: "directory" }) || process.cwd();
+
+// The test resources directory name - properties files are placed here.
+export const TEST_RESOURCE_DIR = nodePath.join(PROJECT_ROOT_DIR, "__tests__", "__resources__") + "/";
 
 // The test results directory name - all tests results - logs, test home dirs,
 // coverage reports, etc. are placed in the results directory.
-export const TEST_RESULT_DIR = resolve(__dirname + "/../__results__/");
+export const TEST_RESULT_DIR = nodePath.join(PROJECT_ROOT_DIR, "__tests__", "__results__") + "/";
 
 // The test data directory is where all data that a test (API/CLI) generates
 // will be placed. Data such as logs, downloaded files, imperative homes, etc.
-export const TEST_RESULT_DATA_DIR = resolve(TEST_RESULT_DIR + "/data/");
+export const TEST_RESULT_DATA_DIR = nodePath.join(TEST_RESULT_DIR, "data") + "/";

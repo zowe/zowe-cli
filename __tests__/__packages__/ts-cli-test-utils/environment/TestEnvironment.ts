@@ -12,22 +12,20 @@
 import * as fs from "fs";
 import * as nodePath from "path";
 
-import * as findUp from "find-up";
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
 import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { Constants } from "./Constants";
 import { TempTestProfiles } from "./TempTestProfiles";
-import { TEST_RESULT_DATA_DIR } from "../TestConstants";
+import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { runCliScript } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
  * and CLIs. Imperative will always touch the filesystem in some capacity
- * and these utilties help contanerize the tests.
+ * and these utilties help containerize the tests.
  * @export
  * @class TestEnvironment
  */
@@ -45,7 +43,7 @@ export class TestEnvironment {
      * @returns {Promise<ITestEnvironment>}
      * @memberof TestEnvironment
      */
-    public static async setUp<T>(params: ISetupEnvironmentParms): Promise<ITestEnvironment<T>> {
+    public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment<any>> {
         // Validate the input parameters
         ImperativeExpect.toNotBeNullOrUndefined(params,
             `${TestEnvironment.ERROR_TAG} createTestEnv(): No parameters supplied.`);
@@ -65,9 +63,9 @@ export class TestEnvironment {
         const env: { [key: string]: string } = {};
         env[this.HOME_ENV_KEY] = testDirectory;
 
-        const result: ITestEnvironment<T> = {
+        const result: ITestEnvironment<any> = {
             workingDir: testDirectory,
-            systemTestProperties: systemProps as any,
+            systemTestProperties: systemProps,
             env
         };
 
@@ -115,7 +113,7 @@ export class TestEnvironment {
     }
 
     private static readonly DEFAULT_PROPERTIES = "custom_properties.yaml";
-    private static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(__dirname + "/../../__resources__/properties/") + "/";
+    private static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(TEST_RESOURCE_DIR + "/properties") + "/";
 
     /**
      *  Load the properties file specified with system test configuration information.
@@ -163,13 +161,12 @@ export class TestEnvironment {
      * @returns {Promise<void>} - promise that resolves on completion of the install
      */
     private static async installPlugin(testEnvironment: ITestEnvironment<any>) {
-        const packageJsonPath = findUp.sync("package.json", { cwd: testEnvironment.workingDir }) as string;
-        const pluginPath = nodePath.dirname(packageJsonPath);
-        const packageJson = require(packageJsonPath);
-        const pluginConfig = require(nodePath.join(pluginPath, packageJson.imperative.configurationModule));
+        const pluginRelPath = nodePath.relative(testEnvironment.workingDir, PROJECT_ROOT_DIR).replace(/\\/g, "/");
+        const packageJson = require(nodePath.join(PROJECT_ROOT_DIR, "package.json"));
+        const pluginConfig = require(nodePath.join(PROJECT_ROOT_DIR, packageJson.imperative.configurationModule));
 
-        let installScript: string = Constants.SHEBANG;
-        installScript += `zowe plugins install ${nodePath.relative(pluginPath, testEnvironment.workingDir)}\n`; // install plugin from root of project
+        let installScript: string = TempTestProfiles.SHEBANG;
+        installScript += `zowe plugins install ${pluginRelPath}\n`; // install plugin from root of project
         installScript += `zowe plugins validate ${packageJson.name}\n`;
         installScript += `zowe ${pluginConfig.name} --help\n`; // check that the plugin help is available
         const scriptPath = testEnvironment.workingDir + "/install_plugin.sh";

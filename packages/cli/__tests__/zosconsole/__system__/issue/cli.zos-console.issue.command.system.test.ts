@@ -10,16 +10,15 @@
 */
 
 import { ICommandResponse } from "@zowe/imperative";
-import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
-import * as fs from "fs";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import * as fs from "fs";
 
 const MAX_CN_LENGTH: number = 10;
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 // Expected length constants
 const FOLLOW_UP_ATTEMPTS: number = 3;
@@ -158,7 +157,7 @@ describe("zos-console issue command", () => {
 
     describe("without profiles", () => {
         let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 
         // Create the unique test environment
         beforeAll(async () => {

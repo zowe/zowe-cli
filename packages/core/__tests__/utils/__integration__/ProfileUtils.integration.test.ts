@@ -12,9 +12,9 @@
 
 import * as imperative from "@zowe/imperative";
 import * as profileUtils from "../../../src/utils/ProfileUtils";
+import { ITestEnvironment, runCliScript } from "../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 const fs = require("fs");
 
@@ -37,7 +37,7 @@ const fakeProfileMissingInformation: imperative.IProfile = {
 };
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("CoreUtils", () => {
     describe("getDefaultProfile", () => {

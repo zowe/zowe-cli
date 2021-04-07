@@ -9,13 +9,13 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestBaseSchema } from "../../../../../__tests__/__src__/properties/ITestBaseSchema";
 
 describe("auth login/logout apiml with profile", () => {
-    let TEST_ENVIRONMENT: ITestEnvironment;
+    let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
@@ -47,7 +47,7 @@ describe("auth login/logout apiml with profile", () => {
 });
 
 describe("auth login/logout apiml show token", () => {
-    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
     let token: string[];
 
@@ -118,7 +118,7 @@ describe("auth login/logout apiml show token", () => {
 });
 
 describe("auth login/logout apiml create profile", () => {
-    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
 
     beforeAll(async () => {
@@ -160,7 +160,7 @@ describe("auth login/logout apiml create profile", () => {
 });
 
 describe("auth login/logout apiml do not create profile", () => {
-    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
 
     beforeAll(async () => {

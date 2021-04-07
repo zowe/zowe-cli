@@ -16,15 +16,14 @@
 import * as fs from "fs";
 
 import { v4 as uuidv4 } from "uuid";
-import { ImperativeError, IO } from "@zowe/imperative";
+import { Config } from "@zowe/imperative";
 
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { runCliScript } from "../TestUtils";
 
 /**
  * Utilities for creating and cleaning up temporary profiles for tests
  */
-export class TempTestProfiles {
+export class TempTestConfig {
     /**
      * Shebang to generated start script files with
      */
@@ -39,18 +38,18 @@ export class TempTestProfiles {
      * The log name for output from the create profiles commands
      * @static
      * @type {string}
-     * @memberof TempTestProfiles
+     * @memberof TempTestConfig
      */
-    public static LOG_FILE_NAME: string = "TempTestProfiles.log";
+    public static LOG_FILE_NAME: string = "TempTestConfig.log";
 
     /**
      * Note reminding the user that failed profile creation may be the result of not installing brightside
      * globally
      * @type {string}
-     * @memberof TempTestProfiles
+     * @memberof TempTestConfig
      */
     public static GLOBAL_INSTALL_NOTE: string = `\n\nNote: Make sure you have the current version of Zowe CLI ` +
-        `installed or linked globally so that '${TempTestProfiles.BINARY_NAME}' can be issued to create profiles and ` +
+        `installed or linked globally so that '${TempTestConfig.BINARY_NAME}' can be issued to create profiles and ` +
         `issue other commands.`;
 
     /**
@@ -67,7 +66,7 @@ export class TempTestProfiles {
         const profileNames: { [key: string]: string[] } = {};
         this.log(testEnvironment, "Creating the following profileTypes: " + profileTypes);
         for (const type of profileTypes) {
-            profileNames[type] = [await TempTestProfiles.createProfileForType(testEnvironment, type)];
+            profileNames[type] = [await TempTestConfig.createProfileForType(testEnvironment, type)];
         }
         return profileNames;
     }
@@ -97,30 +96,25 @@ export class TempTestProfiles {
     private static MAX_UUID_LENGTH = 20;
 
     /**
-     * Helper to create a temporary old school profile from test properties
+     * Helper to create a temporary team config profile from test properties
      * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
      * @returns {Promise<string>} promise that resolves to the name of the created profile on success
      * @throws errors if the profile creation fails
      */
     private static async createProfileForType(testEnvironment: ITestEnvironment<any>, profileType: string): Promise<string> {
-        const profileName: string = uuidv4().substring(0, TempTestProfiles.MAX_UUID_LENGTH) + "_tmp_" + profileType;
-        let createProfileScript = this.SHEBANG +
-            `${this.BINARY_NAME} profiles create ${profileType} ${profileName}`;
-        for (const [k, v] of Object.entries(testEnvironment.systemTestProperties[profileType])) {
-            createProfileScript += ` ${(k.length > 1) ? "--" : "-"}${k} ${v}`;
+        // Load global config layer
+        const config = await Config.load(this.BINARY_NAME, { homeDir: testEnvironment.workingDir });
+        config.api.layers.activate(false, true);
+
+        // Add profile to config JSON
+        const profileName: string = uuidv4().substring(0, TempTestConfig.MAX_UUID_LENGTH) + "_tmp_" + profileType;
+        config.api.profiles.set(profileName, testEnvironment.systemTestProperties[profileType]);
+        if (config.api.profiles.defaultGet(profileType) == null) {
+            config.api.profiles.defaultSet(profileType, profileName);
         }
-        const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
-        await IO.writeFileAsync(scriptPath, createProfileScript);
-        const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
-            throw new ImperativeError({
-                msg: `Creation of ${profileType} profile '${profileName}' failed! You should delete the script: ` +
-                    `'${scriptPath}' after reviewing it to check for possible errors. Stderr of the profile create ` +
-                    `command:\n` + output.stderr.toString() + TempTestProfiles.GLOBAL_INSTALL_NOTE
-            });
-        }
-        IO.deleteFile(scriptPath);
-        this.log(testEnvironment, `Created ${profileType} profile '${profileName}'. Stdout from creation:\n${output.stdout.toString()}`);
+
+        await config.api.layers.write();
+        this.log(testEnvironment, `Created ${profileType} profile '${profileName}'`);
         return profileName;
     }
 
@@ -133,19 +127,18 @@ export class TempTestProfiles {
      * @throws errors if the profile delete fails
      */
     private static async deleteProfile(testEnvironment: ITestEnvironment<any>, profileType: string, profileName: string): Promise<string> {
-        const deleteProfileScript = this.SHEBANG + `${this.BINARY_NAME} profiles delete ${profileType} ${profileName} --force`;
-        const scriptPath = testEnvironment.workingDir + "_delete_profile_" + profileName;
-        await IO.writeFileAsync(scriptPath, deleteProfileScript);
-        const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
-            throw new ImperativeError({
-                msg: "Deletion of " + profileType + " profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
-                    "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
-                    + TempTestProfiles.GLOBAL_INSTALL_NOTE
-            });
+        // Load global config layer
+        const config = await Config.load(this.BINARY_NAME, { homeDir: testEnvironment.workingDir });
+        config.api.layers.activate(false, true);
+
+        // Remove profile from config JSON
+        config.delete(config.api.profiles.expandPath(profileName));
+        if (config.layerActive().properties.defaults[profileType] === profileName) {
+            config.delete(`defaults.${profileType}`);
         }
-        this.log(testEnvironment, `Deleted ${profileType} profile '${profileName}'. Stdout from deletion:\n${output.stdout.toString()}`);
-        IO.deleteFile(scriptPath);
+        await config.api.layers.write();
+
+        this.log(testEnvironment, `Deleted ${profileType} profile '${profileName}'`);
         return profileName;
     }
 
@@ -153,18 +146,6 @@ export class TempTestProfiles {
      * log a message to a file in the working directory
      */
     private static log(testEnvironment: ITestEnvironment<any>, message: string) {
-        fs.appendFileSync(testEnvironment.workingDir + "/" + TempTestProfiles.LOG_FILE_NAME, message + "\n");
-    }
-
-    /**
-     * Check if stderr output is empty for profile command. Ignores any message
-     * about profiles being deprecated.
-     */
-    private static isStderrEmpty(output: Buffer): boolean {
-        return output.toString()
-                     .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./, "")
-                     .replace(/Recommended replacement: The 'config [a-z]+' command/, "")
-                     .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/, "")
-                     .trim().length === 0;
+        fs.appendFileSync(testEnvironment.workingDir + "/" + TempTestConfig.LOG_FILE_NAME, message + "\n");
     }
 }

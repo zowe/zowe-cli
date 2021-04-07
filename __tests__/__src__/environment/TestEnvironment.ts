@@ -12,15 +12,15 @@
 import * as nodePath from "path";
 
 import { AbstractSession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
-import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment } from "@zowe/ts-cli-test-utils";
 
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
+import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment } from "../../__packages__/ts-cli-test-utils";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
  * and CLIs. Imperative will always touch the filesystem in some capacity
- * and these utilties help contanerize the tests.
+ * and these utilties help containerize the tests.
  * @export
  * @class TestEnvironment
  */
@@ -53,7 +53,7 @@ export class TestEnvironment extends BaseTestEnvironment {
      * Create a ZOSMF session from properties present in your test environment
      * @param testEnvironment - your test environment with system test properties populated
      */
-    public static createZosmfSession(testEnvironment: ITestEnvironment): Session {
+    public static createZosmfSession(testEnvironment: ITestEnvironment<ITestPropertiesSchema>): Session {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
         return new Session({
             user: SYSTEM_PROPS.zosmf.user,
@@ -70,7 +70,7 @@ export class TestEnvironment extends BaseTestEnvironment {
      * Create a ZOSMF session through the APIML from properties present in your test environment
      * @param testEnvironment - your test environment with system test properties populated
      */
-    public static createBaseSession(testEnvironment: ITestEnvironment): AbstractSession {
+    public static createBaseSession(testEnvironment: ITestEnvironment<ITestPropertiesSchema>): AbstractSession {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
         return new Session({
             user: SYSTEM_PROPS.base.user,
@@ -87,7 +87,7 @@ export class TestEnvironment extends BaseTestEnvironment {
      * Create a SSH session from properties present in your test environment
      * @param testEnvironment - your test environment with system test properties populated
      */
-    public static createSshSession(testEnvironment: ITestEnvironment): SshSession {
+    public static createSshSession(testEnvironment: ITestEnvironment<ITestPropertiesSchema>): SshSession {
         const defaultSystem = testEnvironment.systemTestProperties;
         return new SshSession({
             user: defaultSystem.ssh.user,

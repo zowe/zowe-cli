@@ -11,8 +11,8 @@
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../src";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { MonitorJobs } from "../../src/MonitorJobs";
@@ -28,7 +28,7 @@ let DOWNLOAD_JOB_NAME: string;
 let JOBCLASS: string;
 let SYSAFF: string;
 let defaultSystem: ITestPropertiesSchema;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 const LONG_TIMEOUT = 200000;
 

@@ -11,7 +11,9 @@
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import {
     IPublishedTemplateInfo,
     ListTemplateInfo,
@@ -19,10 +21,9 @@ import {
     noTemplateName,
     ProvisioningConstants
 } from "../../src";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let TEMPLATE_NAME: string;
 let REAL_SESSION: Session;
 

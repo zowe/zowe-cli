@@ -11,16 +11,16 @@
 
 import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
 import { CancelJobs, SubmitJobs, IJob } from "../../src";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
 
 let REAL_SESSION: Session;
 let iefbr14JCL: string;
 
 let systemProps: ITestPropertiesSchema;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
 
 describe("CancelJobs System tests", () => {

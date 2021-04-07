@@ -22,8 +22,9 @@ import {
 import * as fs from "fs";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { inspect } from "util";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 /**
  * These tests runs on mainframe, be pretared to provide proper credentials.
@@ -33,7 +34,7 @@ import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/
  * Be ready to run these tests separately, exclude them from "dev" unit tests suites.
  */
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 const PRETEND_SESSION = new Session({
     user: "user",

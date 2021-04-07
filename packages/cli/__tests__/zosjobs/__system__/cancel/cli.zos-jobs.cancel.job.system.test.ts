@@ -9,15 +9,14 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "../../../../../zosjobs/__tests__/__system__/JobTestsUtils";
 import { IO } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 const LOCAL_JCL_FILE: string = __dirname + "/" + "testFileOfLocalJCL.txt";
 
 describe("zos-jobs cancel job command", () => {
@@ -63,7 +62,7 @@ describe("zos-jobs cancel job command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
             let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {

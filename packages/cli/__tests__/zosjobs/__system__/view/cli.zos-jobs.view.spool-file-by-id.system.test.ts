@@ -9,18 +9,17 @@
 *
 */
 
-import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
 import { join } from "path";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
 let REAL_SESSION: Session;
 let ACCOUNT: string;
@@ -81,7 +80,7 @@ describe("zos-jobs view spool-file-by-id command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
             let SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {

@@ -12,9 +12,7 @@
 import { randomBytes } from "crypto";
 import { ZosFilesConstants } from "../../packages/zosfiles/src";
 import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../packages/core/lib";
-
-export * from "../__packages__/ts-cli-test-utils/TestUtils";
+import { ZosmfRestClient } from "../../packages/core/src";
 
 /**
  * This function strips any new lines out of the string passed.

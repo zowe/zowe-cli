@@ -13,14 +13,14 @@ import * as fs from "fs";
 import { Imperative, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { Invoke } from "../../../../src/methods/invoke/Invoke";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let dsname: string;

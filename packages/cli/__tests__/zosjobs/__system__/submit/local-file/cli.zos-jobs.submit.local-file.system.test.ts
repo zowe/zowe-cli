@@ -9,9 +9,8 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "../../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
 import { Get } from "../../../../../../zosfiles/src/methods/get";
@@ -20,7 +19,7 @@ import { Get } from "../../../../../../zosfiles/src/methods/get";
 process.env.FORCE_COLOR = "0";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let systemProps: ITestPropertiesSchema;
 let account: string;
@@ -99,7 +98,7 @@ describe("zos-jobs submit local-file command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
             let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {

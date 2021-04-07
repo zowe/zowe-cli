@@ -9,12 +9,11 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import * as fs from "fs";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import * as fs from "fs";
+import { Session } from "@zowe/imperative";
 import * as nodePath from "path";
 
 const yaml = require("js-yaml");
@@ -24,7 +23,7 @@ const propfile: string = propfiledir + propfilename;
 const jsonObject = yaml.safeLoad(fs.readFileSync(propfile, "utf8"));
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let acc: string = jsonObject.tso.account;
@@ -71,7 +70,7 @@ describe("zos-tso issue command", () => {
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
         let SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {

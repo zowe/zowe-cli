@@ -14,7 +14,7 @@ import { inspect } from "util";
 import { Create } from "../../../../src/methods/create";
 import { Mount, IMountFsOptions } from "../../../../src/methods/mount";
 import { Unmount } from "../../../../src/methods/unmount";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../src/methods/delete";
@@ -24,7 +24,7 @@ import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfs
 import { SshSession, Shell } from "@zowe/zos-uss-for-zowe-sdk";
 
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let volume: string;

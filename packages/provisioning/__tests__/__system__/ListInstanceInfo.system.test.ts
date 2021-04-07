@@ -19,11 +19,12 @@ import {
     noSessionProvisioning,
     ProvisioningConstants
 } from "../../src";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 let templateName: string;
 let instanceID: string;

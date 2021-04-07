@@ -10,10 +10,11 @@
 */
 
 import { resolve } from "path";
-import { TestEnvironment } from '../../../__tests__/__src__/environment/TestEnvironment';
-import { ITestEnvironment } from '../../../__tests__/__src__/environment/doc/response/ITestEnvironment';
+import { ITestEnvironment } from "../../../__tests__/__packages__/ts-cli-test-utils";
+import { TestEnvironment } from "../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("behavior of main.ts", () => {
 

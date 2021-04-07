@@ -82,7 +82,7 @@ In your system test files, set up and clean up your test environment with  a cal
 Example use of TestEnvironment.ts: 
 ``` typescript
 
-let testEnvironment: ITestEnvironment; 
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>; 
 let myTestFile: string;
 describe ("my tests", =>{ 
 
