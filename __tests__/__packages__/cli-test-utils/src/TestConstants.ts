@@ -10,10 +10,12 @@
 */
 
 import * as nodePath from "path";
-import * as findUp from "find-up";
 
 // The root directory of the project - where package.json lives.
-export const PROJECT_ROOT_DIR = findUp.sync("package.json", { type: "directory" }) || process.cwd();
+// It should always be 4 levels up from `__dirname`:
+//   zowe-cli/__tests__/__packages__/cli-test-utils/src
+//   zowe-cli-sample-plugin/node_modules/@zowe/cli-test-utils/src
+export const PROJECT_ROOT_DIR = nodePath.join(__dirname, "..", "..", "..", "..") + "/";
 
 // The test resources directory name - properties files are placed here.
 export const TEST_RESOURCE_DIR = nodePath.join(PROJECT_ROOT_DIR, "__tests__", "__resources__") + "/";
