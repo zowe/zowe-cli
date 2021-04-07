@@ -407,8 +407,10 @@ export class SubmitJobs {
 
         let logMsg = "Formed the following JCL symbol headers:\n";
         headers.forEach((nextHeader) => {
-            for (let key in nextHeader) {
-                logMsg += "    " + key + " = " + nextHeader[key] + "\n";
+            for (const key in nextHeader) {
+                if (nextHeader.hasOwnProperty(key)) {
+                    logMsg += "    " + key + " = " + nextHeader[key] + "\n";
+                }
             }
         });
         this.log.debug(logMsg);
