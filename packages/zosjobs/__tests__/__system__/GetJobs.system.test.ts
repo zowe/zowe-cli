@@ -17,7 +17,7 @@ import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
 import { join } from "path";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/cli-test-utils/environment/doc/response/ITestEnvironment";
 
 /**********************************************************************************/
 let ACCOUNT: string;

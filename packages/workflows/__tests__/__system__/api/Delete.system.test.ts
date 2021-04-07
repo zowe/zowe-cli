@@ -12,7 +12,7 @@
 import { CreateWorkflow, DeleteWorkflow } from "../../../src";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowKey } from "../../../src/WorkflowConstants";
-import { ITestEnvironment } from "../../../../../__tests__/__packages__/ts-cli-test-utils";
+import { ITestEnvironment } from "../../../../../__tests__/__packages__/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { inspect } from "util";

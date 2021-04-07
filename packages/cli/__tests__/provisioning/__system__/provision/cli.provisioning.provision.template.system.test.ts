@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import { Imperative, Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ProvisioningTestUtils } from "../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";

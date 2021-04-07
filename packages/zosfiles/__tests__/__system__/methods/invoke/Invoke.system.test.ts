@@ -13,7 +13,7 @@ import * as fs from "fs";
 import { Imperative, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
-import { ITestEnvironment } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__packages__/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";

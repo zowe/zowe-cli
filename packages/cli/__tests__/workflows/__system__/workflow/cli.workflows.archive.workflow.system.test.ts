@@ -11,7 +11,7 @@
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/ts-cli-test-utils";
+import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";

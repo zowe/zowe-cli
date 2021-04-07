@@ -11,7 +11,7 @@
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
-import { ITestEnvironment } from "../../../../__tests__/__packages__/ts-cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__packages__/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import {
