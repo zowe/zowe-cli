@@ -86,7 +86,7 @@ describe("Upload Data Set", () => {
                     systemProps.zosmf.host,
                     systemProps.zosmf.port,
                     systemProps.zosmf.user,
-                    systemProps.zosmf.pass
+                    systemProps.zosmf.password
                     ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

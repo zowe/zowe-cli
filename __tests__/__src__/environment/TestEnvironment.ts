@@ -54,7 +54,7 @@ export class TestEnvironment extends BaseTestEnvironment {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
         return new Session({
             user: SYSTEM_PROPS.zosmf.user,
-            password: SYSTEM_PROPS.zosmf.pass,
+            password: SYSTEM_PROPS.zosmf.password,
             hostname: SYSTEM_PROPS.zosmf.host,
             port: SYSTEM_PROPS.zosmf.port,
             type: "basic",
@@ -71,7 +71,7 @@ export class TestEnvironment extends BaseTestEnvironment {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
         return new Session({
             user: SYSTEM_PROPS.base.user,
-            password: SYSTEM_PROPS.base.pass,
+            password: SYSTEM_PROPS.base.password,
             hostname: SYSTEM_PROPS.base.host,
             port: SYSTEM_PROPS.base.port,
             type: "token",

@@ -56,7 +56,7 @@ describe("List workflow details handler", () => {
                     host: "fake",
                     port: "fake",
                     user: "fake",
-                    pass: "fake",
+                    password: "fake",
                     auth: "fake",
                     rejectUnauthorized: "fake"
                 };
@@ -142,7 +142,7 @@ describe("List workflow details handler", () => {
                     host: "fake",
                     port: "fake",
                     user: "fake",
-                    pass: "fake",
+                    password: "fake",
                     auth: "fake",
                     rejectUnauthorized: "fake"
                 };

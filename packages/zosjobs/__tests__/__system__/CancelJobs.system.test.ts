@@ -33,7 +33,7 @@ describe("CancelJobs System tests", () => {
 
         REAL_SESSION = new Session({
             user: systemProps.zosmf.user,
-            password: systemProps.zosmf.pass,
+            password: systemProps.zosmf.password,
             hostname: systemProps.zosmf.host,
             port: systemProps.zosmf.port,
             type: "basic",

@@ -74,7 +74,7 @@ describe("provisioning perform action", () => {
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
-                    zOSMF.pass
+                    zOSMF.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

@@ -35,7 +35,7 @@ describe("zosmf check status", () => {
         host = systemProps.zosmf.host;
         port = systemProps.zosmf.port;
         user = systemProps.zosmf.user;
-        pass = systemProps.zosmf.pass;
+        pass = systemProps.zosmf.password;
     });
 
     afterAll(async () => {
@@ -65,7 +65,7 @@ describe("zosmf check status", () => {
                 "--host", SYSTEM_PROPS.zosmf.host,
                 "--port", SYSTEM_PROPS.zosmf.port,
                 "--user", SYSTEM_PROPS.zosmf.user,
-                "--password", SYSTEM_PROPS.zosmf.pass,
+                "--password", SYSTEM_PROPS.zosmf.password,
                 "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 

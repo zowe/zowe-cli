@@ -103,7 +103,7 @@ describe("zos-tso start address-space", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass
+                    SYSTEM_PROPS.zosmf.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -130,7 +130,7 @@ describe("zos-tso start address-space", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass
+                    SYSTEM_PROPS.zosmf.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

@@ -74,7 +74,7 @@ describe("provisioning provision template", () => {
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
-                    zOSMF.pass
+                    zOSMF.password
                 ]);
 
             // Get instanceID later delete that instance

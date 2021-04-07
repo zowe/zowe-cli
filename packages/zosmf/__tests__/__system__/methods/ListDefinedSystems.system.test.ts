@@ -73,7 +73,7 @@ describe("List Defined Systems Api", () => {
             const badHostName = "badHost";
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
+                password: defaultSystem.zosmf.password,
                 hostname: badHostName,
                 port: defaultSystem.zosmf.port,
                 type: "basic",
@@ -99,7 +99,7 @@ describe("List Defined Systems Api", () => {
             const badPort = 9999;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
+                password: defaultSystem.zosmf.password,
                 hostname: defaultSystem.zosmf.host,
                 port: badPort,
                 type: "basic",

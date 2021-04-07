@@ -102,7 +102,7 @@ describe("zos-tso issue command", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass,
+                    SYSTEM_PROPS.zosmf.password,
                     SYSTEM_PROPS.tso.account
                 ]
             );
@@ -128,7 +128,7 @@ describe("zos-tso issue command", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass,
+                    SYSTEM_PROPS.zosmf.password,
                     "ACCT#"
                 ]
             );

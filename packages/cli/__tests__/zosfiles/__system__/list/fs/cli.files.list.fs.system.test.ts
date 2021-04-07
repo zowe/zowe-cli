@@ -74,7 +74,7 @@ describe("List all mounted filesystems", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass
+                    defaultSys.zosmf.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

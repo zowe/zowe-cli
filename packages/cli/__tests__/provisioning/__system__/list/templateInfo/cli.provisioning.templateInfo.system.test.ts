@@ -63,7 +63,7 @@ describe("provisioning list template-info", () => {
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
-                    zOSMF.pass
+                    zOSMF.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

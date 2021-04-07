@@ -74,14 +74,14 @@ describe("Delete z/OS File System", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [fsname, "--for-sure",
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

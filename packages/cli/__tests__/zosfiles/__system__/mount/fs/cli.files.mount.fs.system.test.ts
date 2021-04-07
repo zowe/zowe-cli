@@ -95,7 +95,7 @@ describe("Mount and unmount file system", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
 
@@ -105,7 +105,7 @@ describe("Mount and unmount file system", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(mountPoint.slice(1));
@@ -116,7 +116,7 @@ describe("Mount and unmount file system", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
 
@@ -126,7 +126,7 @@ describe("Mount and unmount file system", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBeTruthy();
             expect(response.status).toBe(1);
         });
