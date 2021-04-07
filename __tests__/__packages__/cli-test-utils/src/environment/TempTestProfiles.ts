@@ -109,7 +109,8 @@ export class TempTestProfiles {
      * profiles.
      */
     private static get usingTeamConfig(): boolean {
-        return process.env.ZOWE_CLI_TEST_PROFILE_VER === "2";
+        const envOldProfiles = process.env.ZOWE_CLI_TEST_OLD_PROFILES;
+        return envOldProfiles !== "1" && envOldProfiles?.toLowerCase() !== "true";
     }
 
     /**
