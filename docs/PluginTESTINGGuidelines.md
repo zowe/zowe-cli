@@ -75,7 +75,7 @@ zowe bp-sample list directory-contents "$directory"
 
 A number of test utilities are available to you to aid in writing automated tests for your plug-in. 
 
-TestEnvironment.ts contains functionality for creating an isolated environment from which to test your CLI. A new directory under `__tests__/__results__/data` is created, and logs, installed plugins, and profiles are stored under this directory. Your CLI home is automatically set to this new directory when using the `runCliScript` function from `TestUtils.ts`, so any plugins or profiles that you use with your globally installed copy of Zowe CLI will not interfere with running the tests. 
+TestEnvironment.ts (in the @zowe/cli-test-utils package) contains functionality for creating an isolated environment from which to test your CLI. A new directory under `__tests__/__results__/data` is created, and logs, installed plugins, and profiles are stored under this directory. Your CLI home is automatically set to this new directory when using the `runCliScript` function from `TestUtils.ts`, so any plugins or profiles that you use with your globally installed copy of Zowe CLI will not interfere with running the tests.
 
 In your system test files, set up and clean up your test environment with  a call to `TestEnvironment.setUp` and `TestEnvironment.cleanUp` as shown in the following example. After you call `TestEnvironment.setUp`, you can access the values of the system properties, and also use the working directory
 
