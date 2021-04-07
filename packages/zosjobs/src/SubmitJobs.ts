@@ -307,22 +307,113 @@ export class SubmitJobs {
      */
     private static getSubstitutionHeaders(symbols: string): IHeaderContent[] {
         const headers: IHeaderContent[] = [];
-        const splitList = symbols.split(" "); // Split on spaces
-        for (const pair of splitList) {
-            const keyValuePair = pair.split("=", 2); // Split again on equals
-            if (keyValuePair.length === 2) {
-                // tslint:disable-next-line: no-magic-numbers
-                if (keyValuePair[0].length > 8) {
-                    throw new ImperativeError({msg: `Key of ${keyValuePair[0]} is too long. Keys must be 1-8 characters long.`});
+        const blank = " ";
+        const equals = "=";
+        const quote = "'";
+        const maxSymLen = 8;
+        let symStartInx = 0;
+
+        moreSymLoop:
+        while(symStartInx < symbols.length) {
+            // skip all blanks at the start of a sym def
+            while (symbols[symStartInx] === blank) {
+                if (++symStartInx >= symbols.length) {
+                    break moreSymLoop;
                 }
-                const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + keyValuePair[0].toUpperCase();
-                const value = keyValuePair[1];
-                const header: IHeaderContent = {[key]: value};
-                headers.push(header);
-            } else {
-                throw new ImperativeError({msg: `Supposed pair of values ${pair} contained ${keyValuePair.length} arguments, expected 2.`});
             }
+
+            // navigate to the end of the symbol
+            let symName: string = null;
+            let symEndInx: number;
+            for (symEndInx = symStartInx + 1; symEndInx < symbols.length; symEndInx++) {
+                if (symbols[symEndInx] === equals) {
+                    symName = symbols.substring(symStartInx, symEndInx);
+                    break;
+                }
+            }
+            if (symName == null) {
+                throw new ImperativeError({
+                    msg: `No equals '${equals}' character was specified to define a symbol name.`
+                });
+            }
+            if (symName.length === 0) {
+                throw new ImperativeError({
+                    msg: `No symbol name specified before the equals '${equals}' character.`
+                });
+            }
+            if (symName.length > maxSymLen) {
+                throw new ImperativeError({
+                    msg: `The symbol name '${symName}' is too long. It must 1 to ${maxSymLen} characters.`
+                });
+            }
+
+            let valStartInx = ++symEndInx;
+            if (valStartInx >= symbols.length) {
+                throw new ImperativeError({msg: `No value specified for symbol name '${symName}'.`});
+            }
+
+            // is our value in quotes?
+            let valEndChar: string = blank;
+            if (symbols[valStartInx] === quote ) {
+                // do we have an escaped quote (two in a row).
+                if (++valStartInx >= symbols.length) {
+                    throw new ImperativeError({msg: "A JCL symbol value is missing a terminating quote"});
+                }
+                if (symbols[valStartInx] === quote ) {
+                    // point to the first of the two quotes
+                    --valStartInx;
+                } else {
+                    valEndChar = quote;
+                }
+            }
+
+            // find the end of the value
+            let symVal: string = "";
+            let valEndInx: number;
+            for (valEndInx = valStartInx; valEndInx < symbols.length; valEndInx++) {
+                if (symbols[valEndInx] === valEndChar) {
+                    if (valEndChar === quote) {
+                        // do we have an escaped quote (two in a row).
+                        if (valEndInx + 1 < symbols.length  && symbols[valEndInx + 1] === quote) {
+                            // keep looking for a terminating quote
+                            valEndInx++;
+                            continue;
+                        }
+                    }
+
+                    // place the next sym def into our array of headers
+                    symVal = symbols.substring(valStartInx, valEndInx);
+                    const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
+                    const header: IHeaderContent = {[key]: symVal};
+                    headers.push(header);
+                    break;
+                }
+            }
+
+            if (valEndInx >= symbols.length) {
+                if (valEndChar === quote) {
+                    throw new ImperativeError({msg: "A JCL symbol value is missing a terminating quote"});
+                } else {
+                    // Since it is unlikely to have a trailing blank at the end of the last symbol
+                    // value, just accept all remaining characters in the argument for this option.
+                    symVal = symbols.substring(valStartInx, symbols.length);
+                    const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
+                    const header: IHeaderContent = {[key]: symVal};
+                    headers.push(header);
+                }
+            }
+
+            // start the search for our next symbol definition
+            symStartInx = ++valEndInx;
         }
+
+        let logMsg = "Formed the following JCL symbol headers:\n";
+        headers.forEach((nextHeader) => {
+            for (let key in nextHeader) {
+                logMsg += "    " + key + " = " + nextHeader[key] + "\n";
+            }
+        });
+        this.log.debug(logMsg);
         return headers;
     }
 
