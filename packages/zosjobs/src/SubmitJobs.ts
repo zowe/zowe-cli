@@ -396,7 +396,10 @@ export class SubmitJobs {
 
             if (valEndInx >= symbols.length) {
                 if (valEndChar === SubmitJobs.singleQuote) {
-                    throw new ImperativeError({msg: "A JCL symbol value is missing a terminating quote"});
+                    throw new ImperativeError({
+                        msg: "A JCL symbol value is missing a terminating quote (" +
+                            SubmitJobs.singleQuote + ")."
+                    });
                 } else {
                     /* Since it is unlikely to have a trailing blank at the end of the
                      * last symbol value, just accept all remaining characters in the
