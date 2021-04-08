@@ -325,7 +325,7 @@ export class SubmitJobs {
             // navigate to the end of the symbol
             let symName: string = null;
             let symEndInx: number;
-            for (symEndInx = symStartInx + 1; symEndInx < symbols.length; symEndInx++) {
+            for (symEndInx = symStartInx; symEndInx < symbols.length; symEndInx++) {
                 if (symbols[symEndInx] === equals) {
                     symName = symbols.substring(symStartInx, symEndInx);
                     break;
