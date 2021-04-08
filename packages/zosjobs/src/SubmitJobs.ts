@@ -36,6 +36,9 @@ import { ISpoolFile } from "./doc/response/ISpoolFile";
  */
 export class SubmitJobs {
 
+    // used to delimit a value in a JCL symbol definition
+    private static readonly singleQuote = "'";
+
     /**
      * Submit a job that resides in a z/OS data set.
      * @static
@@ -307,7 +310,6 @@ export class SubmitJobs {
         const headers: IHeaderContent[] = [];
         const blank = " ";
         const equals = "=";
-        const quote = "'";
         const maxSymLen = 8;
         let symStartInx = 0;
 
@@ -352,51 +354,57 @@ export class SubmitJobs {
 
             // is our value in quotes?
             let valEndChar: string = blank;
-            if (symbols[valStartInx] === quote ) {
+            if (symbols[valStartInx] === SubmitJobs.singleQuote ) {
                 // do we have an escaped quote (two in a row).
                 if (++valStartInx >= symbols.length) {
-                    throw new ImperativeError({msg: "A JCL symbol value is missing a terminating quote"});
+                    throw new ImperativeError({
+                        msg: "A JCL symbol value is missing a terminating quote (" +
+                            SubmitJobs.singleQuote + ")."
+                    });
                 }
-                if (symbols[valStartInx] === quote ) {
+                if (symbols[valStartInx] === SubmitJobs.singleQuote ) {
                     // point to the first of the two quotes
                     --valStartInx;
                 } else {
-                    valEndChar = quote;
+                    valEndChar = SubmitJobs.singleQuote;
                 }
             }
 
             // find the end of the value
-            let symVal: string = "";
             let valEndInx: number;
             for (valEndInx = valStartInx; valEndInx < symbols.length; valEndInx++) {
                 if (symbols[valEndInx] === valEndChar) {
-                    if (valEndChar === quote) {
+                    if (valEndChar === SubmitJobs.singleQuote) {
                         // do we have an escaped quote (two in a row).
-                        if (valEndInx + 1 < symbols.length  && symbols[valEndInx + 1] === quote) {
+                        if (valEndInx + 1 < symbols.length &&
+                            symbols[valEndInx + 1] === SubmitJobs.singleQuote)
+                        {
                             // keep looking for a terminating quote
                             valEndInx++;
                             continue;
                         }
                     }
 
-                    // place the next sym def into our array of headers
-                    symVal = symbols.substring(valStartInx, valEndInx);
-                    const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
-                    const header: IHeaderContent = {[key]: symVal};
+                    // place the next sym def into our array of headers.
+                    const header = SubmitJobs.formSubstitutionHeader(
+                        symName, symbols, valStartInx, valEndInx
+                    );
                     headers.push(header);
                     break;
                 }
             }
 
             if (valEndInx >= symbols.length) {
-                if (valEndChar === quote) {
+                if (valEndChar === SubmitJobs.singleQuote) {
                     throw new ImperativeError({msg: "A JCL symbol value is missing a terminating quote"});
                 } else {
-                    // Since it is unlikely to have a trailing blank at the end of the last symbol
-                    // value, just accept all remaining characters in the argument for this option.
-                    symVal = symbols.substring(valStartInx, symbols.length);
-                    const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
-                    const header: IHeaderContent = {[key]: symVal};
+                    /* Since it is unlikely to have a trailing blank at the end of the
+                     * last symbol value, just accept all remaining characters in the
+                     * argument as the value for the last symbol.
+                     */
+                    const header = SubmitJobs.formSubstitutionHeader(
+                        symName, symbols, valStartInx, symbols.length
+                    );
                     headers.push(header);
                 }
             }
@@ -415,6 +423,42 @@ export class SubmitJobs {
         });
         this.log.debug(logMsg);
         return headers;
+    }
+
+    /**
+     * Form a header used for JCL symbol substitution
+     *
+     * @param {string} symName
+     *     The name of the JCL substitution symbol
+     *
+     * @param {string} symDefs
+     *       The CLI argument that contains all of the JCL substitution symbol definitions
+     *
+     * @param {string} valStartInx
+     *       Index into symDefs to the start of the value for symName.
+     *
+     * @param {string} valEndInx
+     *       Index into symDefs that is one past the end of the value for symName.
+     *
+     * @returns {IHeaderContent}
+     *      Header to add to our set of headers
+     * @memberof SubmitJobs
+     */
+    private static formSubstitutionHeader(
+        symName: string,
+        symDefs: string,
+        valStartInx: number,
+        valEndInx: number
+    ): IHeaderContent {
+        // now that we identified the value, reduce occurrences of two quotes to one.
+        const twoQuoteRegex = new RegExp(SubmitJobs.singleQuote + SubmitJobs.singleQuote, "g");
+        let symVal = symDefs.substring(valStartInx, valEndInx);
+        symVal = symVal.replace(twoQuoteRegex, SubmitJobs.singleQuote);
+
+        // construct the required header
+        const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
+        const header: IHeaderContent = {[key]: symVal};
+        return header;
     }
 
     /**
