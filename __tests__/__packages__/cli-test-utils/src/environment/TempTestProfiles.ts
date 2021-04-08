@@ -19,7 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Config, ImperativeError, IO } from "@zowe/imperative";
 
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { runCliScript } from "../TestUtils";
+import { runCliScript, isStderrEmptyForProfilesCommand } from "../TestUtils";
 
 /**
  * Utilities for creating and cleaning up temporary profiles for tests
@@ -129,7 +129,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_create_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, createProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
+        if (output.status !== 0 || !isStderrEmptyForProfilesCommand(output.stderr)) {
             throw new ImperativeError({
                 msg: `Creation of ${profileType} profile '${profileName}' failed! You should delete the script: ` +
                     `'${scriptPath}' after reviewing it to check for possible errors. Stderr of the profile create ` +
@@ -179,7 +179,7 @@ export class TempTestProfiles {
         const scriptPath = testEnvironment.workingDir + "_delete_profile_" + profileName;
         await IO.writeFileAsync(scriptPath, deleteProfileScript);
         const output = runCliScript(scriptPath, testEnvironment, []);
-        if (output.status !== 0 || !this.isStderrEmpty(output.stderr)) {
+        if (output.status !== 0 || !isStderrEmptyForProfilesCommand(output.stderr)) {
             throw new ImperativeError({
                 msg: "Deletion of " + profileType + " profile '" + profileName + "' failed! You should delete the script: '" + scriptPath + "' " +
                     "after reviewing it to check for possible errors. Stderr of the profile create command:\n" + output.stderr.toString()
@@ -220,17 +220,5 @@ export class TempTestProfiles {
      */
     private static log(testEnvironment: ITestEnvironment<any>, message: string) {
         fs.appendFileSync(testEnvironment.workingDir + "/" + TempTestProfiles.LOG_FILE_NAME, message + "\n");
-    }
-
-    /**
-     * Check if stderr output is empty for profile command. Ignores any message
-     * about profiles being deprecated.
-     */
-    private static isStderrEmpty(output: Buffer): boolean {
-        return output.toString()
-                     .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./, "")
-                     .replace(/Recommended replacement: The 'config [a-z]+' command/, "")
-                     .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/, "")
-                     .trim().length === 0;
     }
 }

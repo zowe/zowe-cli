@@ -41,3 +41,15 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
 
     }
 }
+
+/**
+ * Check if stderr output is empty for profiles command. Ignores any message
+ * about profiles being deprecated.
+ */
+export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
+    return output.toString()
+                 .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./, "")
+                 .replace(/Recommended replacement: The 'config [a-z]+' command/, "")
+                 .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/, "")
+                 .trim().length === 0;
+}
