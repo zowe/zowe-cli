@@ -10,12 +10,25 @@
 */
 
 import * as nodePath from "path";
+import * as findUp from "find-up";
+
+function projectRootDir() {
+    // First look for lerna.json in case we're in a monorepo
+    const lernaJson = findUp.sync("lerna.json");
+    if (lernaJson != null) {
+        return nodePath.dirname(lernaJson);
+    }
+    // Next look for package.json in single-package repo
+    const packageJson = findUp.sync("package.json");
+    if (packageJson != null) {
+        return nodePath.dirname(packageJson);
+    }
+    // Finally fallback to using working directory
+    return process.cwd();
+}
 
 // The root directory of the project - where package.json lives.
-// It should always be 4 levels up from `__dirname`:
-//   zowe-cli/__tests__/__packages__/cli-test-utils/src
-//   zowe-cli-sample-plugin/node_modules/@zowe/cli-test-utils/src
-export const PROJECT_ROOT_DIR = nodePath.join(__dirname, "..", "..", "..", "..") + "/";
+export const PROJECT_ROOT_DIR = projectRootDir() + "/";
 
 // The test resources directory name - properties files are placed here.
 export const TEST_RESOURCE_DIR = nodePath.join(PROJECT_ROOT_DIR, "__tests__", "__resources__") + "/";
