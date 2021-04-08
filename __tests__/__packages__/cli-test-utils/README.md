@@ -1,4 +1,4 @@
-# Test utils package
+# Test Utils Package
 
 The Zowe CLI test utils package contains utilities that can be used by CLI plug-ins to automatically manage an environment for system tests.
 
