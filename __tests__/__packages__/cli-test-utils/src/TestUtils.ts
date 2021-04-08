@@ -48,8 +48,8 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
  */
 export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
     return output.toString()
-                 .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./, "")
-                 .replace(/Recommended replacement: The 'config [a-z]+' command/, "")
-                 .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/, "")
+                 .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./g, "")
+                 .replace(/Recommended replacement: The 'config [a-z]+' command/g, "")
+                 .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/g, "")
                  .trim().length === 0;
 }
