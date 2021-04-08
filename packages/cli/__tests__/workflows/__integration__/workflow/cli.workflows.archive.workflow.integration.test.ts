@@ -10,7 +10,7 @@
 */
 
 import * as path from "path";
-import { ITestEnvironment, runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 

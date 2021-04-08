@@ -11,7 +11,7 @@
 
 import { CreateWorkflow, DeleteWorkflow } from "../../../src";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
-import { ITestEnvironment } from "../../../../../__tests__/__packages__/cli-test-utils";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
