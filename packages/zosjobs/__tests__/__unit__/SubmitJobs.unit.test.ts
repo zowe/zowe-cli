@@ -652,7 +652,7 @@ describe("Submit Jobs API", () => {
             expect(err.message).toContain("No JCL provided");
         });
 
-        it("should throw an error if JCL substitution key value pairs are not pairs", async () => {
+        it("should throw an error if equals is not supplied in a JCL symbol definition", async () => {
             let err: any;
             try {
                 await SubmitJobs.submitJclString(fakeSession, "Fake string", {jclSource: "stdin", jclSymbols: "NotAKey:ValuePair"});
@@ -660,11 +660,10 @@ describe("Submit Jobs API", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err.message).toContain("Supposed pair of values");
-            expect(err.message).toContain("arguments, expected 2");
+            expect(err.message).toContain("No equals '=' character was specified to define a symbol name.");
         });
 
-        it("should throw an error if JCL substitution key is too long", async () => {
+        it("should throw an error if substitution symbol name is too long", async () => {
             let err: any;
             try {
                 await SubmitJobs.submitJclString(fakeSession, "Fake string", {jclSource: "stdin", jclSymbols: "TooLongKey=Value"});
@@ -672,8 +671,7 @@ describe("Submit Jobs API", () => {
                 err = e;
             }
             expect(err).toBeDefined();
-            expect(err.message).toContain("Key of");
-            expect(err.message).toContain("is too long. Keys must be 1-8 characters long.");
+            expect(err.message).toContain("The symbol name 'TooLongKey' is too long. It must 1 to 8 characters.");
         });
     });
 });
