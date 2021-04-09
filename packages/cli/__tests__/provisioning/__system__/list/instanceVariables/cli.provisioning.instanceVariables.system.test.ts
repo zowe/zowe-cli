@@ -9,17 +9,17 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import * as fs from "fs";
 import { Imperative, Session } from "@zowe/imperative";
 import { IProvisionedInstance, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 import { ProvisioningTestUtils } from "../../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 
-let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let instance: IProvisionedInstance;
 let templateName: string;
@@ -69,7 +69,7 @@ describe("provisioning list instance-variables", () => {
                     zOSMF.host,
                     zOSMF.port,
                     zOSMF.user,
-                    zOSMF.pass
+                    zOSMF.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

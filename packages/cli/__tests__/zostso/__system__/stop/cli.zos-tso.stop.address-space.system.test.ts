@@ -9,14 +9,14 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import * as fs from "fs";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import * as fs from "fs";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+
 describe("zos-tso start address-space", () => {
 
     // Create the unique test environment
@@ -71,7 +71,7 @@ describe("zos-tso start address-space", () => {
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
         let SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
@@ -104,7 +104,7 @@ describe("zos-tso start address-space", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass
+                    SYSTEM_PROPS.zosmf.password
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

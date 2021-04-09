@@ -12,15 +12,14 @@
 import { Imperative, Session } from "@zowe/imperative";
 import { Create } from "@zowe/zos-files-for-zowe-sdk";
 import { inspect } from "util";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
 let user: string;
@@ -90,7 +89,7 @@ describe("Delete Directory", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass]);
+                    defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

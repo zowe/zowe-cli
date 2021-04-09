@@ -12,13 +12,13 @@
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { IPingResponse, noPingInput, PingTso, StopTso, StartTso, IStartTsoParms } from "../../src";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let servletKey: string;
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProperties: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 

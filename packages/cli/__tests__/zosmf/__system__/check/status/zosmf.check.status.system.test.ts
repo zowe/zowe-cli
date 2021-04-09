@@ -9,13 +9,13 @@
 *
 */
 
-import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { IO } from "@zowe/imperative";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let host: string;
 let port: number;
 let user: string;
@@ -35,7 +35,7 @@ describe("zosmf check status", () => {
         host = systemProps.zosmf.host;
         port = systemProps.zosmf.port;
         user = systemProps.zosmf.user;
-        pass = systemProps.zosmf.pass;
+        pass = systemProps.zosmf.password;
     });
 
     afterAll(async () => {
@@ -45,7 +45,7 @@ describe("zosmf check status", () => {
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
         let SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
@@ -65,7 +65,7 @@ describe("zosmf check status", () => {
                 "--host", SYSTEM_PROPS.zosmf.host,
                 "--port", SYSTEM_PROPS.zosmf.port,
                 "--user", SYSTEM_PROPS.zosmf.user,
-                "--password", SYSTEM_PROPS.zosmf.pass,
+                "--password", SYSTEM_PROPS.zosmf.password,
                 "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 

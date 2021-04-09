@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.0.0-next.202103152050",
-    "@zowe/imperative": "5.0.0-next.202103111923",
+    "@zowe/imperative": "5.0.0-next.202104081433",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202103152050",
     "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202103152050",
@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
+    "@zowe/cli-test-utils": "7.0.0-next.202103152050",
     "js-yaml": "^3.13.1",
     "madge": "^3.6.0",
     "rimraf": "^2.6.3",

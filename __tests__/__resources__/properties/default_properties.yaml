@@ -38,7 +38,7 @@ zosmf:
   # your z/OSMF User ID
   user: zosmf-user
   # your z/OSMF password
-  pass: zosmf-password
+  password: zosmf-password
   # host for your instance of z/OSMF
   host: zosmf-host
   # port for your instance of z/OSMF
@@ -55,7 +55,7 @@ base:
   # your Base User ID
   user: base-user
   # your Base password
-  pass: base-password
+  password: base-password
   # host for your base / API ML instance
   host: base-host
   # port for your base / API ML instance

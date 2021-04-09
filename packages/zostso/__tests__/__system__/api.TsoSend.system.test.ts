@@ -12,11 +12,11 @@
 import { ImperativeError, Session } from "@zowe/imperative";
 import { ISendResponse, IStartStopResponse, SendTso, StartTso, StopTso } from "../../src";
 import * as fs from "fs";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProperties: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;

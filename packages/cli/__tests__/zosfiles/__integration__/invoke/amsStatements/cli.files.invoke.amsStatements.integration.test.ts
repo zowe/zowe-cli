@@ -9,11 +9,12 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("Invoke AMS CLI", () => {
 

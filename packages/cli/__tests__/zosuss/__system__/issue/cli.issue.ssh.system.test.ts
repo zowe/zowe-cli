@@ -11,17 +11,16 @@
 
 import { Imperative, IO, Session } from "@zowe/imperative";
 import * as path from "path";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { startCmdFlag } from "@zowe/zos-uss-for-zowe-sdk";
 
 
 // Test environment will be populated in the "beforeAll"
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;

@@ -9,11 +9,11 @@
 *
 */
 
-import { runCliScript } from "../__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "../__packages__/cli-test-utils";
 import { TestEnvironment } from "../__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../__src__/properties/ITestPropertiesSchema";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("imperative create profile", () => {
 

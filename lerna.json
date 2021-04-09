@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/*"
+    "packages/*",
+    "__tests__/__packages__/*"
   ],
   "version": "7.0.0-next.202103152050",
   "command": {

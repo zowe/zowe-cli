@@ -9,42 +9,10 @@
 *
 */
 
-import * as fs from "fs";
-import { spawnSync, SpawnSyncReturns } from "child_process";
-import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { randomBytes } from "crypto";
 import { ZosFilesConstants } from "../../packages/zosfiles/src";
 import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
-import { ZosmfRestClient } from "../../packages/core";
-
-/**
- * Execute a CLI script
- * @export
- * @param {string} scriptPath - the path to the script
- * @param {string} testEnvironment - the test environment with env
- * @param {any[]} [args=[]] - set of script args (optional)
- * @returns {SpawnSyncReturns<Buffer>}  node.js details about the results of
- *                                               executing the script, including exit code and output
- */
-export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironment, args: any[] = []): SpawnSyncReturns<Buffer> {
-    if (fs.existsSync(scriptPath)) {
-
-        // We force the color off to prevent any oddities in the snapshots or expected values
-        // Color can vary OS/terminal
-        const childEnv = JSON.parse(JSON.stringify(process.env));
-        childEnv.FORCE_COLOR = "0";
-        for (const key of Object.keys(testEnvironment.env)) {
-            // copy the values from the env
-            childEnv[key] = testEnvironment.env[key];
-        }
-
-        // Execute the command synchronously
-        return spawnSync("sh", [`${scriptPath}`].concat(args), {cwd: testEnvironment.workingDir, env: childEnv});
-    } else {
-        throw new Error(`The script file  ${scriptPath} doesn't exist`);
-    }
-}
-
+import { ZosmfRestClient } from "../../packages/core/src";
 
 /**
  * This function strips any new lines out of the string passed.

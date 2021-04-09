@@ -13,16 +13,16 @@ import { ZosFilesConstants, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowKey } from "../../../src/WorkflowConstants";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ArchivedDeleteWorkflow, ArchiveWorkflow, CreateWorkflow } from "../../../src";
-import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
 
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;

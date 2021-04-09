@@ -9,16 +9,15 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import * as fs from "fs";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import * as fs from "fs";
+import { StartTso, StopTso } from "@zowe/zos-tso-for-zowe-sdk";
+import { Session } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let acc: string;
@@ -62,7 +61,7 @@ describe("zos-tso ping address-space", () => {
     describe("without profiles", () => {
 
         // Create a separate test environment for no profiles
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
         let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
         beforeAll(async () => {
@@ -96,7 +95,7 @@ describe("zos-tso ping address-space", () => {
                     DEFAULT_SYSTEM_PROPS.zosmf.host,
                     DEFAULT_SYSTEM_PROPS.zosmf.port,
                     DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
+                    DEFAULT_SYSTEM_PROPS.zosmf.password
                 ]);
             StopTso.stop(REAL_SESSION, key);
             expect(response.stderr.toString()).toBe("");

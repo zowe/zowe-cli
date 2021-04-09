@@ -10,15 +10,15 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { getUniqueDatasetName, runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let dsname: string;
 let volume: string;
@@ -80,7 +80,7 @@ describe("Delete VSAM Data Set", () => {
                     systemProps.zosmf.host,
                     systemProps.zosmf.port,
                     systemProps.zosmf.user,
-                    systemProps.zosmf.pass]);
+                    systemProps.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

@@ -12,12 +12,12 @@
 import { CheckStatus, ZosmfMessages } from "../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 
 describe("Check Status Api", () => {
@@ -73,7 +73,7 @@ describe("Check Status Api", () => {
             const badHostName = "badHost";
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
+                password: defaultSystem.zosmf.password,
                 hostname: badHostName,
                 port: defaultSystem.zosmf.port,
                 type: "basic",
@@ -99,7 +99,7 @@ describe("Check Status Api", () => {
             const badPort = 51342;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
+                password: defaultSystem.zosmf.password,
                 hostname: defaultSystem.zosmf.host,
                 port: badPort,
                 type: "basic",
