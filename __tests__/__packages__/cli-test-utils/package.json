@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli-test-utils",
-  "version": "7.0.0-next.202103152050",
+  "version": "7.0.0-next.202104091851",
   "description": "TypeScript package containing test utilities for Zowe CLI plug-ins",
   "main": "./src/index.ts",
   "scripts": {
