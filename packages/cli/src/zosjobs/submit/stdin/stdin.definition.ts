@@ -52,7 +52,11 @@ export const StdinDefinition: ICommandDefinition = {
         },
         {
             name: "jcl-symbols", aliases: ["js"],
-            description: "A string of JCL symbols to use for substitution. Strings should be in 'key1:value1 key2:value2' format.",
+            description: "A string of JCL symbols to use for substitution. " +
+                "For symbol values with no spaces: \"symbol1=value1 symbol2=value2 ...\". " +
+                "When a value contains spaces, enclose the value in single quotes: " +
+                "\"symbol1='value 1 with spaces' symbol2='value 2 with spaces' ...\". " +
+                "To embed a single quote in a value, use two single quotes: \"NAME=O''Brian\".",
             type: "string"
         }
     ] as ICommandOptionDefinition[]),
