@@ -358,7 +358,8 @@ export class SubmitJobs {
                 // do we have an escaped quote (two in a row).
                 if (++valStartInx >= symbols.length) {
                     throw new ImperativeError({
-                        msg: "A JCL symbol value is missing a terminating quote (" +
+                        msg: "The value for symbol '" + symName +
+                            "' is missing a terminating quote (" +
                             SubmitJobs.singleQuote + ")."
                     });
                 }
@@ -397,7 +398,8 @@ export class SubmitJobs {
             if (valEndInx >= symbols.length) {
                 if (valEndChar === SubmitJobs.singleQuote) {
                     throw new ImperativeError({
-                        msg: "A JCL symbol value is missing a terminating quote (" +
+                        msg: "The value for symbol '" + symName +
+                            "' is missing a terminating quote (" +
                             SubmitJobs.singleQuote + ")."
                     });
                 } else {
