@@ -3,10 +3,12 @@
 exports[`zos-uss group definition should not have changed 1`] = `
 Object {
   "aliases": Array [
+    "ssh",
+    "zos-uss",
     "uss",
   ],
   "description": "Issue z/OS USS commands remotely using an SSH session. Output from the commands is displayed on the local terminal.",
-  "name": "zos-uss",
+  "name": "zos-ssh",
   "passOn": Array [
     Object {
       "ignoreNodes": Array [

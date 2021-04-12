@@ -12,8 +12,8 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 export const SshDefinition: ICommandDefinition = {
-    name: "ssh",
-    aliases: ["ssh"],
+    name: "command",
+    aliases: ["cmd", "ssh"],
     description: "Issue a z/OS USS command",
     handler: __dirname + "/Ssh.handler",
     type: "command",

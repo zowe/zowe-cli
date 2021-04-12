@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.30.0`
+
+- Enhancement: made changes to definition files for zowe ssh commands  [#603](https://github.com/zowe/zowe-cli/issues/603)
+
 ## `6.29.0`
 
 - Enhancement: Added a standard data set template with no parameters set.
