@@ -2,13 +2,33 @@
   "name": "@zowe/cli-test-utils",
   "version": "7.0.0-next.202104121327",
   "description": "TypeScript package containing test utilities for Zowe CLI plug-ins",
-  "main": "./src/index.ts",
+  "author": "Broadcom",
+  "license": "EPL-2.0",
+  "homepage": "https://github.com/zowe/zowe-cli/tree/next/__tests__/__packages__/cli-test-utils#readme",
+  "bugs": {
+    "url": "https://github.com/zowe/zowe-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zowe/zowe-cli.git"
+  },
+  "keywords": [
+    "zowe",
+    "CLI",
+    "test",
+    "utils",
+    "typescript"
+  ],
+  "files": [
+    "src"
+  ],
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^14.14.37",
