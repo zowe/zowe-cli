@@ -3,7 +3,7 @@
     "packages/*",
     "__tests__/__packages__/*"
   ],
-  "version": "7.0.0-next.202104091851",
+  "version": "7.0.0-next.202104121327",
   "command": {
     "publish": {
       "ignoreChanges": [
