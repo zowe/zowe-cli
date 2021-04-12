@@ -42,23 +42,6 @@ describe("Submit Jobs API", () => {
         });
 
 
-        it("should allow users to call submitJCLCommon with jcl substitution", async () => {
-            let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
-                receivedHeaders = headers;
-                return returnIJob();
-            });
-            const job = await SubmitJobs.submitJclCommon(fakeSession, {
-                jcl: "//EXEC PGM=IEFBR14",
-                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
-            });
-            // mocking worked if this fake job name is filled in
-            expect(job.jobname).toEqual(fakeJobName);
-            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
-            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
-        });
-
-
         it("should allow users to call submitJCL with correct parameters (no internal reader settings)",
             async () => {
                 (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
@@ -142,29 +125,6 @@ describe("Submit Jobs API", () => {
             });
 
 
-        it("should allow users to call submitJCLNotifyCommon with jcl substitution",
-            async () => {
-                (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
-                let receivedHeaders: IHeaderContent[] = [];
-                (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
-                    receivedHeaders = headers;
-                    return returnIJob();
-                });
-                const job = await SubmitJobs.submitJclNotifyCommon(fakeSession,
-                    {
-                        jcl: "//EXEC PGM=IEFBR14",
-                        internalReaderLrecl: "VB",
-                        internalReaderRecfm: "256",
-                        jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
-                    }
-                );
-                // mocking worked if this fake job name is filled in
-                expect(job.jobname).toEqual(fakeJobName);
-                expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
-                expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
-            });
-
-
         it("should allow users to call submitDataSetJobCommon with correct parameters", async () => {
             (ZosmfRestClient as any).putExpectJSON = returnIJob; // mock return job
             const job = await SubmitJobs.submitJobCommon(fakeSession, {
@@ -172,22 +132,6 @@ describe("Submit Jobs API", () => {
             });
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
-        });
-
-        it("should allow users to call submitDataSetJobCommon with jcl substitution", async () => {
-            let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
-                receivedHeaders = headers;
-                return returnIJob();
-            });
-            const job = await SubmitJobs.submitJobCommon(fakeSession, {
-                jobDataSet: "DUMMY.DATA.SET",
-                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
-            });
-            // mocking worked if this fake job name is filled in
-            expect(job.jobname).toEqual(fakeJobName);
-            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
-            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
         });
 
         it("should allow users to call submitJobNotifyCommon with correct parameters (using data set)", async () => {
@@ -198,23 +142,6 @@ describe("Submit Jobs API", () => {
             });
             // mocking worked if this fake job name is filled in
             expect(job.jobname).toEqual(fakeJobName);
-        });
-
-        it("should allow users to call submitJobNotifyCommon with jcl substitution", async () => {
-            let receivedHeaders: IHeaderContent[] = [];
-            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
-                receivedHeaders = headers;
-                return returnIJob();
-            });
-            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
-            const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
-                jobDataSet: "DUMMY.DATA.SET",
-                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
-            });
-            // mocking worked if this fake job name is filled in
-            expect(job.jobname).toEqual(fakeJobName);
-            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
-            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
         });
 
         it("should allow users to call submitJCLNotify with correct parameters", async () => {
@@ -651,6 +578,127 @@ describe("Submit Jobs API", () => {
             expect(err).toBeDefined();
             expect(err.message).toContain("No JCL provided");
         });
+    });
+
+    describe("Symbol substitution tests", () => {
+
+        it("should allow users to call submitJCLCommon with jcl substitution", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJclCommon(fakeSession, {
+                jcl: "//EXEC PGM=IEFBR14",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should allow users to call submitJCLNotifyCommon with jcl substitution", async () => {
+            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJclNotifyCommon(fakeSession,
+                {
+                    jcl: "//EXEC PGM=IEFBR14",
+                    internalReaderLrecl: "VB",
+                    internalReaderRecfm: "256",
+                    jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+                }
+            );
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should allow users to call submitDataSetJobCommon with jcl substitution", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJobCommon(fakeSession, {
+                jobDataSet: "DUMMY.DATA.SET",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should allow users to call submitJobNotifyCommon with jcl substitution", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            (MonitorJobs as any).waitForStatusCommon = returnIJob; // mock  monitor job API used by SubmitJobs.ts
+            const job = await SubmitJobs.submitJobNotifyCommon(fakeSession, {
+                jobDataSet: "DUMMY.DATA.SET",
+                jclSymbols: "TEST=TESTSYMBOL1 TSET=TESTSYMBOL2"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should permit multiple spaces as symbol definition delimiters", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJclCommon(fakeSession, {
+                jcl: "//EXEC PGM=IEFBR14",
+                jclSymbols: "   TEST=TESTSYMBOL1    TSET=TESTSYMBOL2   "
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TEST": "TESTSYMBOL1"}]));
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-TSET": "TESTSYMBOL2"}]));
+        });
+
+        it("should permit two single quotes inside a single quoted value", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJclCommon(fakeSession, {
+                jcl: "//EXEC PGM=IEFBR14",
+                jclSymbols: "BAR='O''Brian''s Pub'"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{"X-IBM-JCL-Symbol-BAR": "O'Brian's Pub"}]));
+        });
+
+        it("should permit two single quotes when value is not quoted", async () => {
+            let receivedHeaders: IHeaderContent[] = [];
+            (ZosmfRestClient as any).putExpectJSON = jest.fn<object>((session, url, headers, payload): Promise<object> => {
+                receivedHeaders = headers;
+                return returnIJob();
+            });
+            const job = await SubmitJobs.submitJclCommon(fakeSession, {
+                jcl: "//EXEC PGM=IEFBR14",
+                jclSymbols: "QUOTESYM=''after_first_quote''after_second_quote"
+            });
+            // mocking worked if this fake job name is filled in
+            expect(job.jobname).toEqual(fakeJobName);
+            expect(receivedHeaders).toEqual(expect.arrayContaining([{
+                "X-IBM-JCL-Symbol-QUOTESYM": "'after_first_quote'after_second_quote"
+            }]));
+        });
 
         it("should throw an error if equals is not supplied in a JCL symbol definition", async () => {
             let err: any;
@@ -672,6 +720,62 @@ describe("Submit Jobs API", () => {
             }
             expect(err).toBeDefined();
             expect(err.message).toContain("The symbol name 'TooLongKey' is too long. It must 1 to 8 characters.");
+        });
+
+        it("should throw an error if an equals is specified before a symbol name", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJclString(fakeSession, "Fake string", {
+                    jclSource: "stdin",
+                    jclSymbols: "GOODSYM=GOODVAL =WILLFAIL=VALUE"
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("No symbol name specified before the equals '=' character.");
+        });
+
+        it("should throw an error if a value is not specified before the end of the parms", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJclString(fakeSession, "Fake string", {
+                    jclSource: "stdin",
+                    jclSymbols: "GOODSYM=GOODVAL NOVAL="
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("No value specified for symbol name 'NOVAL'.");
+        });
+
+        it("should throw an error if no ending single quote before the end of the parms", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJclString(fakeSession, "Fake string", {
+                    jclSource: "stdin",
+                    jclSymbols: "GOODSYM='GOODVAL' NOQUOTE='Does not have a terminating quote"
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("The value for symbol 'NOQUOTE' is missing a terminating quote (').");
+        });
+
+        it("should throw an error when a starting quote is at the last character of the parms", async () => {
+            let err: any;
+            try {
+                await SubmitJobs.submitJclString(fakeSession, "Fake string", {
+                    jclSource: "stdin",
+                    jclSymbols: "NOQUOTE='"
+                });
+            } catch (e) {
+                err = e;
+            }
+            expect(err).toBeDefined();
+            expect(err.message).toContain("The value for symbol 'NOQUOTE' is missing a terminating quote (').");
         });
     });
 });
