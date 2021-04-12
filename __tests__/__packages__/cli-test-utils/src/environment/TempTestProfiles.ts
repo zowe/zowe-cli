@@ -44,7 +44,7 @@ export class TempTestProfiles {
     public static LOG_FILE_NAME: string = "TempTestProfiles.log";
 
     /**
-     * Note reminding the user that failed profile creation may be the result of not installing brightside
+     * Note reminding the user that failed profile creation may be the result of not installing Zowe CLI
      * globally
      * @type {string}
      * @memberof TempTestProfiles
@@ -194,7 +194,7 @@ export class TempTestProfiles {
     /**
      * Helper to delete a temporary team config profile
      * @param {ITestEnvironment} testEnvironment - the test environment with env and working directory to use for output
-     * @param {string} profileType - the type of profile e.g. zosmf to
+     * @param {string} profileType - the type of profile e.g. zosmf to delete
      * @param {string} profileName - the name of the profile to delete
      * @returns {Promise<string>} promise that resolves to the name of the created profile on success
      * @throws errors if the profile delete fails

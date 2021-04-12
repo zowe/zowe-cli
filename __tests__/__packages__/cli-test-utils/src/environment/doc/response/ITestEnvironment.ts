@@ -43,9 +43,9 @@ export interface ITestEnvironment<TestPropertiesSchema> {
     env: { [key: string]: string };
 
     /**
-     * a map of profileType to profile names created when you specify
-     * tempProfileTypes on your ISetupEnvironmentParms object
-     * empty if you did not specify any profile types
+     * A map of profileType to profile names created when you specify
+     * tempProfileTypes on your ISetupEnvironmentParms object.
+     * Empty if you did not specify any profile types.
      * @type { [key: string]: string[] }
      * @memberof ITestEnvironment
      */
