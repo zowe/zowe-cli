@@ -462,8 +462,7 @@ export class SubmitJobs {
 
         // construct the required header
         const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
-        const header: IHeaderContent = {[key]: symVal};
-        return header;
+        return {[key]: symVal};
     }
 
     /**
