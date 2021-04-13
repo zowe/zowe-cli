@@ -1,0 +1,26 @@
+The following commits were made pursuant to the Developer Certificate of Origin, even though a Signed-off-by: was not included in the commit message.
+
+d90b245 Update CHANGELOGS.
+5bafb7c Merge remote-tracking branch 'origin/master' into add-jcl-symbolic-substitution
+cc38f5e Merge branch 'add-jcl-symbolic-substitution' of https://github.com/zowe/zowe-cli into add-jcl-symbolic-substitution
+45201b4 Add test to fully cover getSubstitutionHeaders.
+5b03114 Include symbol name in error messages.
+adc7ded Fix integration snapshots for new --jcl-symbols.
+3c31047 Fix snapshots for new --jcl-symbols description.
+f386f24 Update description for --jcl-symbols.
+defac20 Changes tests for newly modified error messages.
+c5bfc9c Start search for end of sym at beginning of sym.
+a5a9fff Show quote value in error message.
+3b83204 Change two quotes in final value to one quote.
+0a4e7c7 Add test to fully cover getSubstitutionHeaders.
+9f40bc8 Include symbol name in error messages.
+c070464 Fix integration snapshots for new --jcl-symbols.
+81fd623 Fix snapshots for new --jcl-symbols description.
+1902754 Update description for --jcl-symbols.
+9c1a57a Changes tests for newly modified error messages.
+ad1775b Start search for end of sym at beginning of sym.
+ba0728c Show quote value in error message.
+e31f717 Change two quotes in final value to one quote.
+b01e19a Fix lint complaints.
+3a1b72b Merge branch 'add-jcl-symbolic-substitution' of https://github.com/zowe/zowe-cli into add-jcl-symbolic-substitution
+2ac49a7 Allow optional single quote delimiters for symbol value.
