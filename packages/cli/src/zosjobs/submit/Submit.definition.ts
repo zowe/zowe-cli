@@ -14,12 +14,17 @@ import { DataSetDefinition } from "./data-set/DataSet.definition";
 import { LocalFileDefinition } from "./local-file/localFile.definition";
 import { StdinDefinition } from "./stdin/stdin.definition";
 
+import i18nTypings from "../-strings-/en";
+
+// Does not use the import in anticipation of some internationalization work to be done later.
+const strings = (require("../-strings-/en").default as typeof i18nTypings).SUBMIT;
+
 export const SubmitDefinition: ICommandDefinition = {
     name: "submit",
     aliases: ["sub"],
     type: "group",
-    summary: "Submit z/OS jobs",
-    description: "Submit jobs (JCL) contained in data sets.",
+    summary: strings.SUMMARY,
+    description: strings.DESCRIPTION,
     children: [
         DataSetDefinition,
         LocalFileDefinition,
