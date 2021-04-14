@@ -9,10 +9,8 @@
 *
 */
 
-import { TextUtils } from "@zowe/imperative";
-import { Constants } from "../../Constants";
-
 // Todo: migrate strings into here for other JOBS commands
+
 export default {
     CANCEL: {
     },
