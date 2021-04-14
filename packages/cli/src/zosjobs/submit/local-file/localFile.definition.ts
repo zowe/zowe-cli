@@ -9,21 +9,24 @@
 *
 */
 
+import i18nTypings from "../../-strings-/en";
+
+// Does not use the import in anticipation of some internationalization work to be done later.
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).SUBMIT.ACTIONS;
+
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 
 export const LocalFileDefinition: ICommandDefinition = {
     name: "local-file",
     aliases: ["lf"],
     type: "command",
-    summary: "Submit a job contained in a local file",
-    description: "Submit a job (JCL) contained in a local file. " +
-        "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
-        "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+    summary: strings.LOCAL_FILE.SUMMARY,
+    description: strings.LOCAL_FILE.DESCRIPTION,
     handler: __dirname + "/../Submit.shared.handler",
     positionals: [
         {
             name: "localFile",
-            description: "The local file containing the JCL to submit. ",
+            description: strings.LOCAL_FILE.POSITIONALS.NAME,
             type: "string",
             required: true
         }
@@ -31,40 +34,34 @@ export const LocalFileDefinition: ICommandDefinition = {
     options: ([
         {
             name: "view-all-spool-content", aliases: ["vasc"],
-            description: "Print all spool output." +
-                " If you use this option you will wait the job to complete.",
+            description: strings.LOCAL_FILE.OPTIONS.VIEW_ALL_SPOOL_CONTENT,
             type: "boolean"
         },
         {
             name: "wait-for-output", aliases: ["wfo"],
-            description: "Wait for the job to enter OUTPUT status before completing the command.",
+            description: strings.LOCAL_FILE.OPTIONS.WAIT_FOR_OUTPUT,
+
             type: "boolean"
         },
         {
             name: "wait-for-active", aliases: ["wfa"],
-            description: "Wait for the job to enter ACTIVE status before completing the command.",
+            description: strings.LOCAL_FILE.OPTIONS.WAIT_FOR_ACTIVE,
             type: "boolean",
             conflictsWith: ["wait-for-output", "view-all-spool-content", "directory"]
         },
         {
             name: "directory", aliases: ["d"],
-            description: "The local directory you would like to download the output of the job." +
-                " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +
-                " If you use this option you will wait the job to complete.",
+            description: strings.LOCAL_FILE.OPTIONS.DIRECTORY,
             type: "string"
         },
         {
             name: "extension", aliases: ["e"],
-            description: "A file extension to save the job output with. Default is '.txt'.",
+            description: strings.LOCAL_FILE.OPTIONS.EXTENSION,
             type: "string"
         },
         {
             name: "jcl-symbols", aliases: ["js"],
-            description: "A string of JCL symbols to use for substitution. " +
-                "For symbol values with no spaces: \"symbol1=value1 symbol2=value2 ...\". " +
-                "When a value contains spaces, enclose the value in single quotes: " +
-                "\"symbol1='value 1 with spaces' symbol2='value 2 with spaces' ...\". " +
-                "To embed a single quote in a value, use two single quotes: \"NAME=O''Brian\".",
+            description: strings.COMMON.JCL_SYMBOLS_OPT,
             type: "string"
         }
     ]as ICommandOptionDefinition[]),
@@ -75,8 +72,8 @@ export const LocalFileDefinition: ICommandDefinition = {
     examples:
         [
             {
-                options: "\"iefbr14.txt\"",
-                description: "Submit the JCL in the file \"iefbr14.txt\""
+                options: strings.LOCAL_FILE.EXAMPLES.EX1.OPTIONS,
+                description: strings.LOCAL_FILE.EXAMPLES.EX1.DESCRIPTION
             }
         ]
 };

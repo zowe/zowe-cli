@@ -67,6 +67,33 @@ export default {
                         "complete and print all output from the job"
                     }
                 }
+            },
+            LOCAL_FILE: {
+                SUMMARY: "Submit a job contained in a local file",
+                DESCRIPTION: "Submit a job (JCL) contained in a local file. " +
+                    "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
+                    "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+                POSITIONALS: {
+                    NAME: "The local file containing the JCL to submit."
+                },
+                OPTIONS: {
+                    VIEW_ALL_SPOOL_CONTENT: "Print all spool output." +
+                        " If you use this option you will wait the job to complete.",
+                    WAIT_FOR_OUTPUT: "Wait for the job to enter OUTPUT status before completing the command.",
+                    WAIT_FOR_ACTIVE: "Wait for the job to enter ACTIVE status before completing the command.",
+                    DIRECTORY: "The local directory you would like to download the output of the job." +
+                    " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +
+                    " If you use this option you will wait the job to complete.",
+                    EXTENSION: "A file extension to save the job output with. Default is '.txt'."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        OPTIONS: "\"iefbr14.txt\"",
+                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\""
+                    }
+                }
+            },
+            STDIN: {
             }
         }
     },
