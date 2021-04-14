@@ -73,7 +73,7 @@
     "@types/node": "^12.12.24",
     "@zowe/cli-test-utils": "7.0.0-next.202104132114",
     "js-yaml": "^3.13.1",
-    "madge": "^3.6.0",
+    "madge": "^4.0.1",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
     "typedoc": "^0.16.0",

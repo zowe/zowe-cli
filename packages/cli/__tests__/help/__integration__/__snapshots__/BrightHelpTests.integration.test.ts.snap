@@ -25,18 +25,19 @@ exports[`Root level help tests top level help should contain support link 1`] = 
  GROUPS
  ------
 
-   auth                  Connect to Zowe API ML authentication service        
-   config                Manage JSON project and global configuration         
-   plugins               Install and manage plug-ins                          
-   profiles              Create and manage configuration profiles (deprecated)
-   provisioning | pv     Perform z/OSMF provisioning tasks                    
-   zos-console | console Issue z/OS console commands and collect responses    
-   zos-files | files     Manage z/OS data sets                                
-   zos-jobs | jobs       Manage z/OS jobs                                     
-   zos-tso | tso         Interact with TSO                                    
-   zos-uss | uss         Issue z/OS USS commands and receive responses        
-   zos-workflows | wf    Create and manage z/OSMF workflows                   
-   zosmf                 Interact with z/OSMF                                 
+   auth                          Connect to Zowe API ML authentication service
+   config                        Manage configuration and overrides           
+   plugins                       Install and manage plug-ins                  
+   profiles                      Create and manage configuration profiles (deprecated)
+   provisioning | pv             Perform z/OSMF provisioning tasks            
+   zos-console | console         Issue z/OS console commands and collect      
+                                 responses                                    
+   zos-files | files             Manage z/OS data sets                        
+   zos-jobs | jobs               Manage z/OS jobs                             
+   zos-ssh | ssh | zos-uss | uss Issue z/OS USS commands and receive responses
+   zos-tso | tso                 Interact with TSO                            
+   zos-workflows | wf            Create and manage z/OSMF workflows           
+   zosmf                         Interact with z/OSMF                         
 
  OPTIONS
  -------

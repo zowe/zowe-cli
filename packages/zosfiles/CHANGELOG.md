@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `6.29.0`
+
+- Enhancement: Added a standard data set template with no parameters set.
+
 ## `6.28.0`
 
 - Enhancement: Added "Accept-Encoding: gzip" header to all z/OSMF requests

@@ -10,6 +10,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.30.0`
+
+- Enhancement: made changes to definition files for zowe ssh commands  [#603](https://github.com/zowe/zowe-cli/issues/603)
+
+## `6.29.0`
+
+- Enhancement: Added a standard data set template with no parameters set.
+
 ## `6.28.0`
 
 - Enhancement: Updated Imperative version to handle GZIP compression on REST requests.

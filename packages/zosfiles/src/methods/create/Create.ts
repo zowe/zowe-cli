@@ -70,6 +70,9 @@ export class Create {
             case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
                 tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
                 break;
+            case CreateDataSetTypeEnum.DATA_SET_BLANK:
+                tempOptions = { ...CreateDefaults.DATA_SET.BLANK, ...tempOptions };
+                break;
             default:
                 validCmdType = false;
                 break;
