@@ -33,35 +33,34 @@ export const LocalFileDefinition: ICommandDefinition = {
     ],
     options: ([
         {
-            name: "view-all-spool-content", aliases: ["vasc"],
-            description: strings.LOCAL_FILE.OPTIONS.VIEW_ALL_SPOOL_CONTENT,
-            type: "boolean"
-        },
-        {
-            name: "wait-for-output", aliases: ["wfo"],
-            description: strings.LOCAL_FILE.OPTIONS.WAIT_FOR_OUTPUT,
-
-            type: "boolean"
-        },
-        {
             name: "wait-for-active", aliases: ["wfa"],
-            description: strings.LOCAL_FILE.OPTIONS.WAIT_FOR_ACTIVE,
+            description: strings.COMMON_OPT.WAIT_FOR_ACTIVE,
             type: "boolean",
             conflictsWith: ["wait-for-output", "view-all-spool-content", "directory"]
         },
         {
+            name: "wait-for-output", aliases: ["wfo"],
+            description: strings.COMMON_OPT.WAIT_FOR_OUTPUT,
+            type: "boolean"
+        },
+        {
+            name: "view-all-spool-content", aliases: ["vasc"],
+            description: strings.COMMON_OPT.VIEW_ALL_SPOOL_CONTENT,
+            type: "boolean"
+        },
+        {
             name: "directory", aliases: ["d"],
-            description: strings.LOCAL_FILE.OPTIONS.DIRECTORY,
+            description: strings.COMMON_OPT.DIRECTORY,
             type: "string"
         },
         {
             name: "extension", aliases: ["e"],
-            description: strings.LOCAL_FILE.OPTIONS.EXTENSION,
+            description: strings.COMMON_OPT.EXTENSION,
             type: "string"
         },
         {
             name: "jcl-symbols", aliases: ["js"],
-            description: strings.COMMON.JCL_SYMBOLS_OPT,
+            description: strings.COMMON_OPT.JCL_SYMBOLS,
             type: "string"
         }
     ]as ICommandOptionDefinition[]),

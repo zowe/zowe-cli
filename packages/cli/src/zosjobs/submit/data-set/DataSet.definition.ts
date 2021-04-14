@@ -38,35 +38,35 @@ export const DataSetDefinition: ICommandDefinition = {
             type: "string"
         },
         {
-            name: "wait-for-output", aliases: ["wfo"],
-            description: strings.DATA_SET.OPTIONS.WAIT_FOR_OUTPUT,
-            type: "boolean"
-        },
-        {
             name: "wait-for-active", aliases: ["wfa"],
-            description: strings.DATA_SET.OPTIONS.WAIT_FOR_ACTIVE,
+            description: strings.COMMON_OPT.WAIT_FOR_ACTIVE,
             type: "boolean",
             conflictsWith: ["wait-for-output", "view-all-spool-content", "directory"]
         },
         {
+            name: "wait-for-output", aliases: ["wfo"],
+            description: strings.COMMON_OPT.WAIT_FOR_OUTPUT,
+            type: "boolean"
+        },
+        {
             name: "view-all-spool-content", aliases: ["vasc"],
-            description: strings.DATA_SET.OPTIONS.VIEW_ALL_SPOOL_CONTENT,
+            description: strings.COMMON_OPT.VIEW_ALL_SPOOL_CONTENT,
             type: "boolean"
         },
         {
             name: "directory", aliases: ["d"],
-            description: strings.DATA_SET.OPTIONS.DIRECTORY,
+            description: strings.COMMON_OPT.DIRECTORY,
             type: "string"
         },
         {
             name: "extension", aliases: ["e"],
-            description: strings.DATA_SET.OPTIONS.EXTENSION,
+            description: strings.COMMON_OPT.EXTENSION,
             implies: ["directory"],
             type: "string"
         },
         {
             name: "jcl-symbols", aliases: ["js"],
-            description: strings.COMMON.JCL_SYMBOLS_OPT,
+            description: strings.COMMON_OPT.JCL_SYMBOLS,
             type: "string"
         }
     ] as ICommandOptionDefinition[]),

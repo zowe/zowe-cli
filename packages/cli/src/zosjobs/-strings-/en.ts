@@ -26,8 +26,16 @@ export default {
         SUMMARY: "Submit a z/OS job",
         DESCRIPTION: "Submit a job (JCL).",
         ACTIONS: {
-            COMMON: {
-                JCL_SYMBOLS_OPT:  "A string of JCL symbols to use for substitution. " +
+            COMMON_OPT: {
+                WAIT_FOR_ACTIVE: "Wait for the job to enter ACTIVE status before completing the command.",
+                WAIT_FOR_OUTPUT: "Wait for the job to enter OUTPUT status before completing the command.",
+                VIEW_ALL_SPOOL_CONTENT: "Print all spool output." +
+                    " If you use this option you will wait for the job to complete.",
+                DIRECTORY: "The local directory you would like to download the output of the job." +
+                        " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +
+                        " If you use this option you will wait for the job to complete.",
+                EXTENSION: "A file extension to save the job output with. Default is '.txt'.",
+                JCL_SYMBOLS:  "A string of JCL symbols to use for substitution. " +
                     "For symbol values with no spaces: \"symbol1=value1 symbol2=value2 ...\". " +
                     "When a value contains spaces, enclose the value in single quotes: " +
                     "\"symbol1='value 1 with spaces' symbol2='value 2 with spaces' ...\". " +
@@ -46,15 +54,7 @@ export default {
                 },
                 OPTIONS: {
                     VOLUME: "The volume serial (VOLSER) where the data set resides. The option is required only when the data set is not" +
-                        " catalogued on the system.",
-                    WAIT_FOR_OUTPUT: "Wait for the job to enter OUTPUT status before completing the command.",
-                    WAIT_FOR_ACTIVE: "Wait for the job to enter ACTIVE status before completing the command.",
-                    VIEW_ALL_SPOOL_CONTENT: "Print all spool output." +
-                        " If you use this option you will wait the job to complete.",
-                    DIRECTORY: "The local directory you would like to download the output of the job." +
-                        " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +
-                        " If you use this option you will wait the job to complete.",
-                    EXTENSION: "A file extension to save the job output with. Default is '.txt'."
+                        " catalogued on the system."
                 },
                 EXAMPLES: {
                     EX1: {
@@ -76,16 +76,6 @@ export default {
                 POSITIONALS: {
                     NAME: "The local file containing the JCL to submit."
                 },
-                OPTIONS: {
-                    VIEW_ALL_SPOOL_CONTENT: "Print all spool output." +
-                        " If you use this option you will wait the job to complete.",
-                    WAIT_FOR_OUTPUT: "Wait for the job to enter OUTPUT status before completing the command.",
-                    WAIT_FOR_ACTIVE: "Wait for the job to enter ACTIVE status before completing the command.",
-                    DIRECTORY: "The local directory you would like to download the output of the job." +
-                    " Creates a subdirectory using the jobID as the name and files are titled based on DD names." +
-                    " If you use this option you will wait the job to complete.",
-                    EXTENSION: "A file extension to save the job output with. Default is '.txt'."
-                },
                 EXAMPLES: {
                     EX1: {
                         OPTIONS: "\"iefbr14.txt\"",
@@ -94,6 +84,10 @@ export default {
                 }
             },
             STDIN: {
+                SUMMARY: "Submit a job read from standard in",
+                DESCRIPTION: "Submit a job (JCL) passed to the command via the stdin stream. " +
+                    "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
+                    "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation."
             }
         }
     },
