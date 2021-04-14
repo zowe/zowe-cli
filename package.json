@@ -27,7 +27,8 @@
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
     "typedoc": "gulp typedoc",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "audit:public": "npm audit --registry https://registry.npmjs.org/"
+    "audit:public": "npm audit --registry https://registry.npmjs.org/",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@zowe/imperative": "4.13.0",
@@ -50,6 +51,7 @@
     "gulp-debug": "^4.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-replace": "^0.6.1",
+    "husky": "^6.0.0",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
     "jest-environment-node": "^24.1.0",
