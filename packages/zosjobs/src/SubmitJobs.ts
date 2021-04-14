@@ -126,9 +126,7 @@ export class SubmitJobs {
         }
         if (parms.jclSymbols) {
             const extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);
-            for (const header of extraHeaders) {
-                headers.push(header);
-            }
+            headers.push(...extraHeaders);
         }
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE, headers, parms.jcl);
     }
