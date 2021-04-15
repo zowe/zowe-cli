@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-workflows-for-zowe-sdk",
-  "version": "7.0.0-next.202104132114",
+  "version": "7.0.0-next.202104151237",
   "description": "Zowe SDK to interact with the z/OS workflows APIs",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -44,12 +44,12 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202104132114"
+    "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202104151237"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/cli-test-utils": "7.0.0-next.202104132114",
-    "@zowe/core-for-zowe-sdk": "7.0.0-next.202104132114",
+    "@zowe/cli-test-utils": "7.0.0-next.202104151237",
+    "@zowe/core-for-zowe-sdk": "7.0.0-next.202104151237",
     "@zowe/imperative": "5.0.0-next.202104142114",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
