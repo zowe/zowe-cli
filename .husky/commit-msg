@@ -3,6 +3,6 @@
 
 if ! (cat "$1" | grep -q "Signed-off-by:"); then
   >&2 echo "Commit message must be signed off with your user name and email."
-  >&2 echo "To sign off your commit, add the -S flag to the git commit command."
+  >&2 echo "To sign off your commit, add the -s flag to the git commit command."
   exit 1
 fi
