@@ -46,7 +46,8 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             volume: this.mArguments.volume,
             waitForActive: this.mArguments.waitForActive,
             waitForOutput: this.mArguments.waitForOutput,
-            task: status
+            task: status,
+            jclSymbols: this.mArguments.jclSymbols
         };
         const options: IDownloadOptions = {};
         params.response.progress.startBar({task: status});
@@ -88,7 +89,8 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
 
                     break;
                 } else {
-                    response = await SubmitJobs.submitJob(this.mSession, this.mArguments.dataset);
+                    response = await SubmitJobs.submitJobCommon(this.mSession, {jobDataSet: this.mArguments.dataset,
+                                                                                jclSymbols: this.mArguments.jclSymbols});
                     apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
                     source = this.mArguments.dataset;
 
