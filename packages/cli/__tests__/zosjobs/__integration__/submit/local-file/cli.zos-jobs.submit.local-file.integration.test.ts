@@ -29,6 +29,13 @@ describe("zos-jobs submit local-file command", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
+    it("should display the help", () => {
+        const response = runCliScript(__dirname + "/__scripts__/submit_local_file_help.sh", TEST_ENVIRONMENT);
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toMatchSnapshot();
+    });
+
     it("should fail if the local file does not exist ", async () => {
         const response = runCliScript(__dirname + "/__scripts__/submit_invalid_local_file.sh",
             TEST_ENVIRONMENT);

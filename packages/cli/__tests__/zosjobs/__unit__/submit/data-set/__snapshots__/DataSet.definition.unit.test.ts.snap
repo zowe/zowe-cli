@@ -28,14 +28,6 @@ Object {
     },
     Object {
       "aliases": Array [
-        "wfo",
-      ],
-      "description": "Wait for the job to enter OUTPUT status before completing the command.",
-      "name": "wait-for-output",
-      "type": "boolean",
-    },
-    Object {
-      "aliases": Array [
         "wfa",
       ],
       "conflictsWith": Array [
@@ -49,9 +41,17 @@ Object {
     },
     Object {
       "aliases": Array [
+        "wfo",
+      ],
+      "description": "Wait for the job to enter OUTPUT status before completing the command.",
+      "name": "wait-for-output",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
         "vasc",
       ],
-      "description": "Print all spool output. If you use this option you will wait the job to complete.",
+      "description": "Print all spool output. If you use this option you will wait for the job to complete.",
       "name": "view-all-spool-content",
       "type": "boolean",
     },
@@ -59,7 +59,7 @@ Object {
       "aliases": Array [
         "d",
       ],
-      "description": "The local directory you would like to download the output of the job. Creates a subdirectory using the jobID as the name and files are titled based on DD names. If you use this option you will wait the job to complete.",
+      "description": "The local directory you would like to download the output of the job. Creates a subdirectory using the jobID as the name and files are titled based on DD names. If you use this option you will wait for the job to complete.",
       "name": "directory",
       "type": "string",
     },
@@ -74,11 +74,19 @@ Object {
       "name": "extension",
       "type": "string",
     },
+    Object {
+      "aliases": Array [
+        "js",
+      ],
+      "description": "A string of JCL symbols to use for substitution. For symbol values with no spaces: \\"symbol1=value1 symbol2=value2 ...\\". When a value contains spaces, enclose the value in single quotes: \\"symbol1='value 1 with spaces' symbol2='value 2 with spaces' ...\\". To embed a single quote in a value, use two single quotes: \\"NAME=O''Brian\\".",
+      "name": "jcl-symbols",
+      "type": "string",
+    },
   ],
   "outputFormatOptions": true,
   "positionals": Array [
     Object {
-      "description": "The z/OS data set containing the JCL to submit. You can specify a physical sequential data set (for example, \\"DATA.SET\\") or a partitioned data set qualified by a member (for example, \\"DATA.SET(MEMBER)\\"). ",
+      "description": "The z/OS data set containing the JCL to submit. You can specify a physical sequential data set (for example, \\"DATA.SET\\") or a partitioned data set qualified by a member (for example, \\"DATA.SET(MEMBER)\\").",
       "name": "dataset",
       "required": true,
       "type": "string",
