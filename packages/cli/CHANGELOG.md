@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.31.0`
+
+- Enhancement: Add the option --jcl-symbols to the jobs submit command to enable users to specify JCL symbol names and values.
+
 ## `6.30.0`
 
 - Enhancement: made changes to definition files for zowe ssh commands  [#603](https://github.com/zowe/zowe-cli/issues/603)

@@ -34,6 +34,13 @@ export class ZosmfHeaders {
     public static readonly X_IBM_INTRDR_RECFM = "X-IBM-Intrdr-Recfm";
 
     /**
+     * jcl symbol header to be completed by API
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_JCL_SYMBOL_PARTIAL = "X-IBM-JCL-Symbol-";
+
+    /**
      * job class header
      * @static
      * @memberof ZosmfHeaders
