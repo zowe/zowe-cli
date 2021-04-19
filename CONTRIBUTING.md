@@ -1,7 +1,7 @@
 # Contribution Guidelines
 This document is a living summary of conventions and best practices for development within Zowe CLI or development of Zowe CLI plug-ins.
 
-  - [SIGN ALL OF YOUR GIT COMMITS]
+  - [SIGN ALL OF YOUR GIT COMMITS](#sign-all-of-your-git-commits)
   - [Understanding Packages and Plug-ins](#understanding-packages-and-plug-ins)
   - [Pull Requests](#pull-requests)
   - [Contributing to Core Functionality](#contributing-to-core-functionality)
@@ -26,7 +26,7 @@ Example calls:
 `git commit -s -m "Adding a test file to new_branch"`
 `git commit --signoff -m "Adding a test file to new_branch"`
 
-Why? "Sign-off is a line at the end of the commit message which certifies who is the author of the commit. Its main purpose is to improve tracking of who did what, especially with patches.
+Why? Sign-off is a line at the end of the commit message which certifies who is the author of the commit. Its main purpose is to improve tracking of who did what, especially with patches.
 
 Example commit in git history:
 
@@ -40,8 +40,7 @@ where commit hash is one before your first commit in history
 
 If you forget to signoff on a commit, you'll likely receive the following message:
 "Commit message must be signed off with your user name and email.
-To sign off your commit, add the -s flag to the git commit command.
-husky - commit-msg hook exited with code 1 (error)"
+To sign off your commit, add the -s flag to the git commit command."
 
 ## Understanding Packages and Plug-ins
 
