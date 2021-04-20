@@ -18,7 +18,7 @@ This document is a living summary of conventions and best practices for developm
   - [Documentation Guidelines](#documentation-guidelines)
   - [More Information](#more-information)
 
-## SIGN ALL OF YOUR COMMITS
+## SIGN ALL OF YOUR GIT COMMITS
 
 Whenever you make a commit, it is required to be signed. If you do not, you will have to re-write the git history to get all commits signed before they can be merged, which can be quite a pain.
 
