@@ -117,8 +117,8 @@ describe("submit shared handler", () => {
             // Mock the submit JCL function
             const errMsg = "YOUR JCL IS BAD!";
             let dataSetSpecified: string;
-            SubmitJobs.submitJob = jest.fn((session, dataset) => {
-                dataSetSpecified = dataset;
+            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+                dataSetSpecified = dataset.jobDataSet;
                 throw new ImperativeError({msg: errMsg});
             });
 
@@ -137,7 +137,7 @@ describe("submit shared handler", () => {
 
             expect(error).toBeDefined();
             expect(error.message).toBe(errMsg);
-            expect(SubmitJobs.submitJob).toHaveBeenCalledTimes(1);
+            expect(SubmitJobs.submitJobCommon).toHaveBeenCalledTimes(1);
             expect(dataSetSpecified).toBe(theDataSet);
         });
     });
@@ -153,8 +153,8 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJob = jest.fn((session, dataset) => {
-                dataSetSpecified = dataset;
+            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+                dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
                     jobid: "JOB123",
@@ -177,7 +177,7 @@ describe("submit shared handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(SubmitJobs.submitJob).toHaveBeenCalledTimes(1);
+            expect(SubmitJobs.submitJobCommon).toHaveBeenCalledTimes(1);
             expect(dataSetSpecified).toBe(theDataSet);
         });
 
@@ -191,8 +191,8 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJob = jest.fn((session, dataset) => {
-                dataSetSpecified = dataset;
+            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+                dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
                     jobid: "JOB123",
@@ -231,7 +231,7 @@ describe("submit shared handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(SubmitJobs.submitJob).toHaveBeenCalledTimes(1);
+            expect(SubmitJobs.submitJobCommon).toHaveBeenCalledTimes(1);
             expect(SubmitJobs.checkSubmitOptions).toHaveBeenCalledTimes(1);
             expect(MonitorJobs.waitForJobOutputStatus).toHaveBeenCalledTimes(1);
             expect(dataSetSpecified).toBe(theDataSet);
@@ -247,8 +247,8 @@ describe("submit shared handler", () => {
             let dataSetSpecified;
 
             // Mock the submit JCL function
-            SubmitJobs.submitJob = jest.fn((session, dataset) => {
-                dataSetSpecified = dataset;
+            SubmitJobs.submitJobCommon = jest.fn((session, dataset) => {
+                dataSetSpecified = dataset.jobDataSet;
                 return {
                     jobname: "MYJOB",
                     jobid: "JOB123",
@@ -287,7 +287,7 @@ describe("submit shared handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(SubmitJobs.submitJob).toHaveBeenCalledTimes(1);
+            expect(SubmitJobs.submitJobCommon).toHaveBeenCalledTimes(1);
             expect(SubmitJobs.checkSubmitOptions).toHaveBeenCalledTimes(1);
             expect(MonitorJobs.waitForStatusCommon).toHaveBeenCalledTimes(1);
             expect(dataSetSpecified).toBe(theDataSet);

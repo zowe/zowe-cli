@@ -16,7 +16,7 @@ import { Headers, Session } from "@zowe/imperative";
 import { posix } from "path";
 import { Invoke, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient, getErrorContext } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, getErrorContext, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
 
 const fs = require("fs");
@@ -54,9 +54,8 @@ describe("Invoke", () => {
     const reqPayload = {input: statements.split(/\r?\n/).map((x) => x.toUpperCase())};
     const reqHeaders = [
         Headers.APPLICATION_JSON,
-        {
-            [Headers.CONTENT_LENGTH]: JSON.stringify(reqPayload).length.toString()
-        }
+        { [Headers.CONTENT_LENGTH]: JSON.stringify(reqPayload).length.toString() },
+        ZosmfHeaders.ACCEPT_ENCODING
     ];
 
     describe("ams", () => {

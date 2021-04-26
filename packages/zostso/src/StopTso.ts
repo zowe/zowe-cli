@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IStopTsoParms } from "./doc/input/IStopTsoParms";
 import { noServletKeyInput, TsoConstants } from "./TsoConstants";
 import { TsoValidator } from "./TsoValidator";
@@ -41,7 +41,7 @@ export class StopTso {
         const resources = this.getResources(commandParms.servletKey);
 
         return ZosmfRestClient.deleteExpectJSON<IZosmfTsoResponse>(session, resources,
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON]);
+            [Headers.APPLICATION_JSON]);
     }
 
     /**
