@@ -9,13 +9,21 @@
 *
 */
 
+/* This script creates an empty "bin" script for the @zowe/cli package.
+ * It works around an npm@7 bug: https://github.com/npm/cli/issues/2632
+ */
+
 const fs = require("fs");
 const path = require("path");
-const cliLibDir = path.join(__dirname, "..", "lib");
-if (!fs.existsSync(cliLibDir)) {
-    fs.mkdirSync(cliLibDir);
-}
-const indexJsFile = path.join(cliLibDir, "index.js");
-if (!fs.existsSync(indexJsFile)) {
-    fs.writeFileSync(indexJsFile, "");
+const devNodeModulesDir = path.join(__dirname, "..", "..", "..", "node_modules");
+// The bug only happens in *nix environment when installing from source
+if (process.platform !== "win32" && fs.existsSync(devNodeModulesDir)) {
+    const cliLibDir = path.join(devNodeModulesDir, "@zowe", "cli", "lib");
+    if (!fs.existsSync(cliLibDir)) {
+        fs.mkdirSync(cliLibDir, { recursive: true });
+    }
+    const mainJsFile = path.join(cliLibDir, "main.js");
+    if (!fs.existsSync(mainJsFile)) {
+        fs.writeFileSync(mainJsFile, "");
+    }
 }
