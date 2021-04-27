@@ -53,4 +53,11 @@ export interface ISubmitJobNotifyParm {
      * @memberof ISubmitJclNotifyParm
      */
     attempts?: number;
+
+    /**
+     * A string for JCL symbolic substitution
+     * @type {string}
+     * @memberof ISubmitJobParms
+     */
+    jclSymbols?: string;
 }

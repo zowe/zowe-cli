@@ -75,12 +75,10 @@ export class Get {
         const encodedFileName = encodeURIComponent(USSFileName);
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodedFileName);
 
-        let reqHeaders: IHeaderContent[] = [];
+        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
 
-        if (options.binary) {
-            if (options.binary === true) {
-                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
-            }
+        if (options.binary === true) {
+            reqHeaders.unshift(ZosmfHeaders.X_IBM_BINARY);
         }
         const content = await ZosmfRestClient.getExpectBuffer(session, endpoint, reqHeaders);
 

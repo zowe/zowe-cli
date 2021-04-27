@@ -15,7 +15,7 @@ import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { inspect } from "util";
 
 
-const ISSUE_HEADERS: any[] = [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON];
+const ISSUE_HEADERS: any[] = [Headers.APPLICATION_JSON];
 const START_RESOURCES = "/zosmf/tsoApp/tso/ping/UZUST01-154-aacaaaaz";
 const servletKey = "UZUST01-154-aacaaaaz";
 

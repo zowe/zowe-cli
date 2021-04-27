@@ -57,8 +57,7 @@ export class Mount {
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName;
 
         const jsonContent = JSON.stringify(tempOptions);
-        const headers = [];
-        headers.push({"Content-Length": jsonContent.length});
+        const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];
         if (options.responseTimeout != null) {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }

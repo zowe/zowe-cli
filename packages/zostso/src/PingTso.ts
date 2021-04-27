@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { TsoValidator } from "./TsoValidator";
 import { noPingInput, TsoConstants } from "./TsoConstants";
 import { IZosmfPingResponse } from "./doc/zosmf/IZosmfPingResponse";
@@ -31,7 +31,7 @@ export class PingTso {
     public static async ping(session: AbstractSession, servletKey: string) {
         TsoValidator.validatePingParms(session, servletKey, noPingInput.message);
         const res = await ZosmfRestClient.putExpectJSON<IZosmfPingResponse>(session, PingTso.getResource(servletKey),
-            [ZosmfHeaders.X_CSRF_ZOSMF_HEADER, Headers.APPLICATION_JSON], null);
+            [Headers.APPLICATION_JSON], null);
         TsoValidator.validateErrorMessageFromZosmf(res);
         const result: IPingResponse = TsoResponseService.populatePing(res);
         return result;

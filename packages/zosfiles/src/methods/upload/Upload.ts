@@ -172,7 +172,7 @@ export class Upload {
                 fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
             }
 
-        // Options to use the buffer to write a file
+            // Options to use the buffer to write a file
             const requestOptions: IOptionsFullResponse = {
                 resource: endpoint,
                 reqHeaders,
@@ -530,7 +530,7 @@ export class Upload {
         if (options.returnEtag) {
             restOptions.dataToReturn = [CLIENT_PROPERTY.response];
         }
-        const uploadRequest: IRestClientResponse =  await ZosmfRestClient.putExpectFullResponse(session, restOptions);
+        const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, restOptions);
 
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {};
@@ -765,7 +765,8 @@ export class Upload {
         ussname = encodeURIComponent(ussname);
         const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
         try {
-            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters);
+            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
+                [ZosmfHeaders.ACCEPT_ENCODING]);
             if (response.items) {
                 return true;
             }
@@ -1030,21 +1031,18 @@ export class Upload {
                 } else {
                     reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
                 }
+                reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
                 if (options.responseTimeout != null) {
                     reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
                 }
                 break;
             default:
                 const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-                if (headers.length === 0) {
+                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
+                if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                } else if (headers.length === 1 &&
-                           ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT in headers[0]) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                    reqHeaders.push(...headers);
-                } else {
-                    reqHeaders.push(...headers);
                 }
+                reqHeaders.push(...headers);
                 break;
         }
 

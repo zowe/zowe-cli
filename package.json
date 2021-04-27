@@ -27,12 +27,13 @@
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "typedoc": "gulp typedoc",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
-    "audit:public": "npm audit --registry https://registry.npmjs.org/"
+    "typedoc": "typedoc",
+    "typedoc:packages": "lerna run --parallel typedoc",
+    "audit:public": "npm audit --registry https://registry.npmjs.org/",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "4.10.2",
+    "@zowe/imperative": "4.13.0",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
@@ -52,6 +53,7 @@
     "gulp-debug": "^4.0.0",
     "gulp-plumber": "^1.2.1",
     "gulp-replace": "^0.6.1",
+    "husky": "^6.0.0",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
     "jest-environment-node": "^24.1.0",
@@ -62,7 +64,7 @@
     "js-yaml": "^3.13.1",
     "jsonfile": "^4.0.0",
     "lerna": "^3.22.1",
-    "madge": "^3.6.0",
+    "madge": "^4.0.1",
     "rimraf": "^2.6.3",
     "shebang-regex": "^2.0.0",
     "syncpack": "^5.6.10",

@@ -41,4 +41,11 @@ export interface ISubmitJclParms {
      * @memberof ISubmitJclNotifyParm
      */
     internalReaderLrecl?: string;
+
+    /**
+     * A string for JCL symbolic substitution
+     * @type {string}
+     * @memberof ISubmitJobParms
+     */
+    jclSymbols?: string;
 }

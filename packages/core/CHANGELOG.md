@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `6.28.0`
+
+- Enhancement: Added Accept-Encoding header to `ZosmfHeaders` class
+
 ## `6.25.0`
 
 - Bugfix: Remove "[object Object]" that appeared in some error messages

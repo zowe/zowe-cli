@@ -10,7 +10,7 @@
 */
 
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import {
     IJob,
     ISubmitJclNotifyParm,
@@ -35,6 +35,9 @@ import { ISpoolFile } from "./doc/response/ISpoolFile";
  * @class SubmitJobs
  */
 export class SubmitJobs {
+
+    // used to delimit a value in a JCL symbol definition
+    private static readonly singleQuote = "'";
 
     /**
      * Submit a job that resides in a z/OS data set.
@@ -63,8 +66,10 @@ export class SubmitJobs {
         this.log.debug("Submitting a job located in the data set '%s'", parms.jobDataSet);
         const fullyQualifiedDataset: string = "//'" + parms.jobDataSet + "'";
         const jobObj: object = {file: fullyQualifiedDataset};
+        let extraHeaders: IHeaderContent[] = [];
+        if (parms.jclSymbols) {extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);}
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE,
-            [Headers.APPLICATION_JSON], jobObj);
+            [Headers.APPLICATION_JSON, ...extraHeaders], jobObj);
     }
 
     /**
@@ -86,7 +91,7 @@ export class SubmitJobs {
     public static async submitJclString(session: AbstractSession, jcl: string, parms: ISubmitParms): Promise<IJob | ISpoolFile[]> {
         ImperativeExpect.toNotBeNullOrUndefined(jcl, ZosJobsMessages.missingJcl.message);
         ImperativeExpect.toNotBeEqual(jcl, "", ZosJobsMessages.missingJcl.message);
-        const responseJobInfo: IJob = await SubmitJobs.submitJclCommon(session, {jcl});
+        const responseJobInfo: IJob = await SubmitJobs.submitJclCommon(session, {jcl, jclSymbols: parms.jclSymbols});
         const response: Promise<IJob | ISpoolFile[]> = this.checkSubmitOptions(session, parms, responseJobInfo);
         return response;
     }
@@ -118,6 +123,10 @@ export class SubmitJobs {
         } else {
             // default to fixed format records
             headers.push(ZosmfHeaders.X_IBM_INTRDR_RECFM_F);
+        }
+        if (parms.jclSymbols) {
+            const extraHeaders = this.getSubstitutionHeaders(parms.jclSymbols);
+            headers.push(...extraHeaders);
         }
         return ZosmfRestClient.putExpectJSON<IJob>(session, JobsConstants.RESOURCE, headers, parms.jcl);
     }
@@ -287,6 +296,171 @@ export class SubmitJobs {
                 status,
                 watchDelay
             });
+    }
+
+    /**
+     * Parse input string for JCL substitution
+     * @param {string} symbols - JCL substitution symbols
+     * @returns {IHeaderContent[]} headers - Headers to add to the request
+     * @memberof SubmitJobs
+     */
+    private static getSubstitutionHeaders(symbols: string): IHeaderContent[] {
+        const headers: IHeaderContent[] = [];
+        const blank = " ";
+        const equals = "=";
+        const maxSymLen = 8;
+        let symStartInx = 0;
+
+        moreSymLoop:
+        while(symStartInx < symbols.length) {
+            // skip all blanks at the start of a sym def
+            while (symbols[symStartInx] === blank) {
+                if (++symStartInx >= symbols.length) {
+                    break moreSymLoop;
+                }
+            }
+
+            // navigate to the end of the symbol
+            let symName: string = null;
+            let symEndInx: number;
+            for (symEndInx = symStartInx; symEndInx < symbols.length; symEndInx++) {
+                if (symbols[symEndInx] === equals) {
+                    symName = symbols.substring(symStartInx, symEndInx);
+                    break;
+                }
+            }
+            if (symName == null) {
+                throw new ImperativeError({
+                    msg: `No equals '${equals}' character was specified to define a symbol name.`
+                });
+            }
+            if (symName.length === 0) {
+                throw new ImperativeError({
+                    msg: `No symbol name specified before the equals '${equals}' character.`
+                });
+            }
+            if (symName.length > maxSymLen) {
+                throw new ImperativeError({
+                    msg: `The symbol name '${symName}' is too long. It must 1 to ${maxSymLen} characters.`
+                });
+            }
+
+            let valStartInx = ++symEndInx;
+            if (valStartInx >= symbols.length) {
+                throw new ImperativeError({msg: `No value specified for symbol name '${symName}'.`});
+            }
+
+            // is our value in quotes?
+            let valEndChar: string = blank;
+            if (symbols[valStartInx] === SubmitJobs.singleQuote ) {
+                // do we have an escaped quote (two in a row).
+                if (++valStartInx >= symbols.length) {
+                    throw new ImperativeError({
+                        msg: "The value for symbol '" + symName +
+                            "' is missing a terminating quote (" +
+                            SubmitJobs.singleQuote + ")."
+                    });
+                }
+                if (symbols[valStartInx] === SubmitJobs.singleQuote ) {
+                    // point to the first of the two quotes
+                    --valStartInx;
+                } else {
+                    valEndChar = SubmitJobs.singleQuote;
+                }
+            }
+
+            // find the end of the value
+            let valEndInx: number;
+            for (valEndInx = valStartInx; valEndInx < symbols.length; valEndInx++) {
+                if (symbols[valEndInx] === valEndChar) {
+                    if (valEndChar === SubmitJobs.singleQuote) {
+                        // do we have an escaped quote (two in a row).
+                        if (valEndInx + 1 < symbols.length &&
+                            symbols[valEndInx + 1] === SubmitJobs.singleQuote)
+                        {
+                            // keep looking for a terminating quote
+                            valEndInx++;
+                            continue;
+                        }
+                    }
+
+                    // place the next sym def into our array of headers.
+                    const header = SubmitJobs.formSubstitutionHeader(
+                        symName, symbols, valStartInx, valEndInx
+                    );
+                    headers.push(header);
+                    break;
+                }
+            }
+
+            if (valEndInx >= symbols.length) {
+                if (valEndChar === SubmitJobs.singleQuote) {
+                    throw new ImperativeError({
+                        msg: "The value for symbol '" + symName +
+                            "' is missing a terminating quote (" +
+                            SubmitJobs.singleQuote + ")."
+                    });
+                } else {
+                    /* Since it is unlikely to have a trailing blank at the end of the
+                     * last symbol value, just accept all remaining characters in the
+                     * argument as the value for the last symbol.
+                     */
+                    const header = SubmitJobs.formSubstitutionHeader(
+                        symName, symbols, valStartInx, symbols.length
+                    );
+                    headers.push(header);
+                }
+            }
+
+            // start the search for our next symbol definition
+            symStartInx = ++valEndInx;
+        }
+
+        let logMsg = "Formed the following JCL symbol headers:\n";
+        headers.forEach((nextHeader) => {
+            for (const key in nextHeader) {
+                if (nextHeader.hasOwnProperty(key)) {
+                    logMsg += "    " + key + " = " + nextHeader[key] + "\n";
+                }
+            }
+        });
+        this.log.debug(logMsg);
+        return headers;
+    }
+
+    /**
+     * Form a header used for JCL symbol substitution
+     *
+     * @param {string} symName
+     *     The name of the JCL substitution symbol
+     *
+     * @param {string} symDefs
+     *       The CLI argument that contains all of the JCL substitution symbol definitions
+     *
+     * @param {string} valStartInx
+     *       Index into symDefs to the start of the value for symName.
+     *
+     * @param {string} valEndInx
+     *       Index into symDefs that is one past the end of the value for symName.
+     *
+     * @returns {IHeaderContent}
+     *      Header to add to our set of headers
+     * @memberof SubmitJobs
+     */
+    private static formSubstitutionHeader(
+        symName: string,
+        symDefs: string,
+        valStartInx: number,
+        valEndInx: number
+    ): IHeaderContent {
+        // now that we identified the value, reduce occurrences of two quotes to one.
+        const twoQuoteRegex = new RegExp(SubmitJobs.singleQuote + SubmitJobs.singleQuote, "g");
+        let symVal = symDefs.substring(valStartInx, valEndInx);
+        symVal = symVal.replace(twoQuoteRegex, SubmitJobs.singleQuote);
+
+        // construct the required header
+        const key = ZosmfHeaders.X_IBM_JCL_SYMBOL_PARTIAL + symName.toUpperCase();
+        return {[key]: symVal};
     }
 
     /**

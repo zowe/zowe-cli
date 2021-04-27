@@ -105,7 +105,7 @@ describe("z/OS Files - List", () => {
                 apiResponse: {items: []}
             });
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set", async () => {
@@ -127,7 +127,7 @@ describe("z/OS Files - List", () => {
                 apiResponse: listApiResponse
             });
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with responseTimeout", async () => {
@@ -150,7 +150,8 @@ describe("z/OS Files - List", () => {
                 apiResponse: listApiResponse
             });
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
         it("should list members from given data set with a matching pattern", async () => {
@@ -177,7 +178,7 @@ describe("z/OS Files - List", () => {
                 apiResponse: listApiResponse
             });
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with additional attributes", async () => {
@@ -201,7 +202,8 @@ describe("z/OS Files - List", () => {
                 apiResponse: listApiResponse
             });
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should handle a Zosmf REST client error", async () => {
@@ -304,7 +306,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with data when input data set name is valid", async () => {
@@ -330,7 +332,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with data when input data set name is valid with responseTimeout", async () => {
@@ -358,7 +360,8 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
         it("should return with data when specify attribute option", async () => {
@@ -384,7 +387,8 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with data when specify start and attributes options", async () => {
@@ -410,7 +414,8 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with data when specify recall and attributes options", async () => {
@@ -437,8 +442,9 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
-                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT]);
             expectJsonSpy.mockClear();
 
             // Unit test for nowait option
@@ -454,8 +460,9 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
-                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT]);
             expectJsonSpy.mockClear();
 
             // Unit test for error option
@@ -471,8 +478,9 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
-                                                                                ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
+                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR]);
             expectJsonSpy.mockClear();
         });
     });
@@ -556,7 +564,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with files when input path name is valid", async () => {
@@ -607,7 +615,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with files when input path name is valid and max items set", async () => {
@@ -642,7 +650,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}]);
         });
 
         it("should return with files when input path name is valid with responseTimeout and max items set", async () => {
@@ -678,7 +686,7 @@ describe("z/OS Files - List", () => {
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
+                [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
     });
@@ -719,7 +727,7 @@ describe("z/OS Files - List", () => {
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [{"X-IBM-Max-Items": "2"}]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}]);
         });
 
         it("should return 2 records of all mounted filesystems with responseTimeout", async () => {
@@ -738,7 +746,7 @@ describe("z/OS Files - List", () => {
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                [{"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
+                [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}]);
         });
 
         it("should throw error when zosmfRestClient.getExpectJSON error", async () => {
@@ -800,7 +808,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should return with list when input fsname is valid", async () => {
@@ -842,7 +850,7 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
     });

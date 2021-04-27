@@ -5,9 +5,9 @@ Object {
   "aliases": Array [
     "sub",
   ],
-  "description": "Submit jobs (JCL) contained in data sets.",
+  "description": "Submit a job (JCL).",
   "name": "submit",
-  "summary": "Submit z/OS jobs",
+  "summary": "Submit a z/OS job",
   "type": "group",
 }
 `;
