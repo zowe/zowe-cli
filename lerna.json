@@ -6,9 +6,9 @@
   "command": {
     "publish": {
       "ignoreChanges": [
-        "**/__tests__/**",
-        "packages/**/package-lock.json"
+        "**/__tests__/**"
       ]
     }
-  }
+  },
+  "useWorkspaces": true
 }
