@@ -25,8 +25,8 @@
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "typedoc": "gulp typedoc",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
+    "typedoc": "typedoc",
+    "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
     "prepare": "husky install"
   },
