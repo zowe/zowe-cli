@@ -1,15 +1,11 @@
 {
-  "packages": [
-    "packages/*",
-    "__tests__/__packages__/*"
-  ],
   "version": "7.0.0-next.202104162205",
   "command": {
     "publish": {
       "ignoreChanges": [
-        "packages/**/__tests__/**",
-        "packages/**/package-lock.json"
+        "**/__tests__/**"
       ]
     }
-  }
+  },
+  "useWorkspaces": true
 }
