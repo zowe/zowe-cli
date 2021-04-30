@@ -5,7 +5,8 @@
   "author": "Broadcom",
   "license": "EPL-2.0",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "__tests__/__packages__/*"
   ],
   "scripts": {
     "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
