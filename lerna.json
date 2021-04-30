@@ -1,14 +1,11 @@
 {
-  "packages": [
-    "packages/*"
-  ],
   "version": "6.31.0",
   "command": {
     "publish": {
       "ignoreChanges": [
-        "**/__tests__/**",
-        "packages/**/package-lock.json"
+        "**/__tests__/**"
       ]
     }
-  }
+  },
+  "useWorkspaces": true
 }

@@ -56,6 +56,8 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning Guidelines](./docs
 **Tip:** Visit our [Sample Plug-in repository](https://github.com/zowe/zowe-cli-sample-plugin) for example plug-in code. You can follow developer tutorials [here](https://docs.zowe.org/stable/extend/extend-cli/cli-devTutorials.html).
 
 ## Build Zowe CLI from source
+Zowe CLI requires NPM version 7 to install from source. Before proceeding, check your NPM version with `npm --version` and if it's older than 7.x, update with `npm install -g npm`.
+
 The first time that you download Zowe CLI from the GitHub repository, issue the following command to install the required Zowe CLI dependencies and several development tools:
 
 ```
