@@ -168,15 +168,6 @@ node('zowe-jenkins-agent-dind') {
         header: "## Recent Changes"
     )
 
-    // Perform the versioning email mechanism
-    pipeline.version(
-        timeout: [time: 30, unit: 'MINUTES'],
-        updateChangelogArgs: [
-            file: "CHANGELOG.md",
-            header: "## Recent Changes"
-        ]
-    )
-
     pipeline.createStage(
         name: "Bundle Keytar Binaries",
         shouldExecute: {
@@ -190,6 +181,15 @@ node('zowe-jenkins-agent-dind') {
             }
             archiveArtifacts artifacts: "keytar-prebuilds.tgz"
         }
+    )
+
+    // Perform the versioning email mechanism
+    pipeline.version(
+        timeout: [time: 30, unit: 'MINUTES'],
+        updateChangelogArgs: [
+            file: "CHANGELOG.md",
+            header: "## Recent Changes"
+        ]
     )
 
     // Deploys the application if on a protected branch. Give the version input
