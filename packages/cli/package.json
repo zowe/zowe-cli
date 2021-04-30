@@ -42,7 +42,7 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
-    "preinstall": "node ./scripts/preinstall && node ./scripts/copyPrebuilds",
+    "preinstall": "node ./scripts/preinstall",
     "postinstall": "node ./scripts/validatePlugins",
     "build": "tsc --pretty",
     "watch": "tsc --pretty --watch",

@@ -178,17 +178,17 @@ node('zowe-jenkins-agent-dind') {
     )
 
     pipeline.createStage(
-        name: "Bundle Native Code",
+        name: "Bundle Keytar Binaries",
         shouldExecute: {
             return pipeline.protectedBranches.isProtected(BRANCH_NAME)
         },
         stage: {
-            // Download JQ binary to node_modules/.bin folder
-            sh "cd packages/cli/node_modules/.bin && curl -fsL -o jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64 && chmod +x ./jq"
+            def packageJson = readJSON file: "packages/cli/package.json"
+            def keytarVer = packageJson.optionalDependencies['keytar']
             withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
-                // Bundle Keytar binaries with CLI package
-                sh "bash jenkins/bundleKeytar.sh \"${USERNAME}:${TOKEN}\""
+                sh "bash jenkins/bundleKeytar.sh ${keytarVer} \"${USERNAME}:${TOKEN}\""
             }
+            archiveArtifacts artifacts: "keytar-prebuilds.tgz"
         }
     )
 
