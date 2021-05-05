@@ -4,11 +4,14 @@
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
+  "workspaces": [
+    "packages/*",
+    "__tests__/__packages__/*"
+  ],
   "scripts": {
     "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "clean": "lerna run --parallel clean",
     "installWithBuild": "npm install && npm run build",
-    "postinstall": "lerna bootstrap --hoist @zowe/*",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
     "lint": "npm run lint:packages && npm run lint:tests",
@@ -26,8 +29,8 @@
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",
     "generateCleanTypedoc": "npm run typedoc && gulp cleanTypedoc",
-    "typedoc": "gulp typedoc",
-    "typedocSpecifySrc": "typedoc --options ./typedoc.json",
+    "typedoc": "typedoc",
+    "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
     "prepare": "husky install"
   },

@@ -222,25 +222,6 @@ const doc: ITaskFunction = async () => {
 };
 doc.description = "Create documentation from the CLI help";
 
-const typedoc: ITaskFunction = (done) => {
-    const { version } = require("../lerna.json");
-    const { name } = require("../typedoc.json");
-    let docProcess: SpawnSyncReturns<string>;
-
-    try {
-        docProcess = childProcess.spawnSync(npx, ["typedoc",
-            "--options", "./typedoc.json", "--name", `"${name} - v${version}"`, "./packages/"], {stdio: "inherit"});
-
-    } catch (e) {
-        fancylog(ansiColors.red("Error encountered trying to run typedoc"));
-        done(e);
-        return;
-    }
-    done();
-};
-typedoc.description = "Runs typedoc to generate API docs for the Zowe Node.js SDK";
-
 exports.doc = doc;
 exports.lint = lint;
 exports.license = license;
-exports.typedoc = typedoc;

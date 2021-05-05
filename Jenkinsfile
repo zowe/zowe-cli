@@ -63,7 +63,7 @@ node('zowe-jenkins-agent-dind') {
     ]
 
     // Initialize the pipeline library, should create 5 steps.
-    pipeline.setup(nodeJsVersion: 'v10.23.2')
+    pipeline.setup(nodeJsVersion: 'v12.22.1', npmVersion: '^7')
 
     // When we need to build the CLI with imperative from Github repo source,
     // we need lots of time to install imperative, since imperative
@@ -168,6 +168,21 @@ node('zowe-jenkins-agent-dind') {
         header: "## Recent Changes"
     )
 
+    pipeline.createStage(
+        name: "Bundle Keytar Binaries",
+        shouldExecute: {
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+        },
+        stage: {
+            def packageJson = readJSON file: "packages/cli/package.json"
+            def keytarVer = packageJson.optionalDependencies['keytar']
+            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                sh "bash jenkins/bundleKeytar.sh ${keytarVer} \"${USERNAME}:${TOKEN}\""
+            }
+            archiveArtifacts artifacts: "keytar-prebuilds.tgz"
+        }
+    )
+
     // Perform the versioning email mechanism
     pipeline.version(
         timeout: [time: 30, unit: 'MINUTES'],
@@ -175,21 +190,6 @@ node('zowe-jenkins-agent-dind') {
             file: "CHANGELOG.md",
             header: "## Recent Changes"
         ]
-    )
-
-    pipeline.createStage(
-        name: "Bundle Native Code",
-        shouldExecute: {
-            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
-        },
-        stage: {
-            // Download JQ binary to node_modules/.bin folder
-            sh "cd packages/cli/node_modules/.bin && curl -fsL -o jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64 && chmod +x ./jq"
-            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
-                // Bundle Keytar binaries with CLI package
-                sh "bash jenkins/bundleKeytar.sh \"${USERNAME}:${TOKEN}\""
-            }
-        }
     )
 
     // Deploys the application if on a protected branch. Give the version input
