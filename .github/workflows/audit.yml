@@ -20,5 +20,9 @@ jobs:
       with:
         node-version: 12.x
 
+    - name: Use NPM v7
+      id: npm7
+      run: npm install -g npm@^7
+
     - name: Check Vulnerabilities
       run: npm audit --production --audit-level=moderate
