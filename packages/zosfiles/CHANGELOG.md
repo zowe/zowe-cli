@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Bugfix: Ensured that the `like` field will always be added to all allocate like requests regardless of whether the `options` parameter is defined or not. [#1017](https://github.com/zowe/zowe-cli/pull/1017)
+
 ## `6.29.0`
 
 - Enhancement: Added a standard data set template with no parameters set.
