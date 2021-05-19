@@ -165,9 +165,20 @@ describe("Create data set", () => {
         });
 
         it("should be able to allocate like from a sequential data set", async () => {
-            const response = await Create.dataSetLike(dummySession, "testing2", dataSetName);
+            const response = await Create.dataSetLike(dummySession, dataSetName, "testing2");
 
+            expect(response.success).toBe(true);
             expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...{
+                        like: "testing2"
+                    }
+                })
+            )
         });
 
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
