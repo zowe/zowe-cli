@@ -45,7 +45,7 @@ const CUSTOM_CONSOLE: string = "custcons";
 const EXPECTED_CUSTOM_PUT_RESOURCE: string = IssueCommand.getResource(CUSTOM_CONSOLE);
 
 const IMPERATIVE_ERROR_RESPONSE: ImperativeError = new ImperativeError({msg: "Test error message"},
-    {suppressReport: false, tag: "some tag"});
+    {tag: "some tag"});
 
 const CMD_ZOSMF_PARMS: IZosmfIssueParms = {
     cmd: COMMAND_NAME
@@ -242,7 +242,7 @@ describe("IssueCommand issueCommon", () => {
 
     it("should handle Imperative error.", async () => {
         (ZosmfRestClient.putExpectJSON as any) = jest.fn<object>((): Promise<object> => {
-            throw new ImperativeError({msg: "Issue error message"}, {suppressReport: false, tag: "some tag"});
+            throw new ImperativeError({msg: "Issue error message"}, {tag: "some tag"});
         });
 
         let error: ImperativeError;
@@ -399,7 +399,7 @@ describe("IssueCommand issue", () => {
 
     it("should handle Imperative error.", async () => {
         (IssueCommand.issueCommon as any) = jest.fn<object>((): Promise<object> => {
-            throw new ImperativeError({msg: "Test error message"}, {suppressReport: false, tag: "some tag"});
+            throw new ImperativeError({msg: "Test error message"}, {tag: "some tag"});
         });
 
         let error: ImperativeError;

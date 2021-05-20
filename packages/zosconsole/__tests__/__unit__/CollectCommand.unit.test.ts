@@ -178,7 +178,7 @@ describe("CollectCommand collectCommon", () => {
 
     it("should handle Imperative error.", async () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
-            throw new ImperativeError({msg: "Collect error message"}, {suppressReport: false, tag: "some tag"});
+            throw new ImperativeError({msg: "Collect error message"}, {tag: "some tag"});
         });
 
         let error: ImperativeError;
@@ -307,7 +307,7 @@ describe("CollectCommand collect", () => {
 
     it("should handle Imperative error.", async () => {
         (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
-            throw new ImperativeError({msg: "Issue error message"}, {suppressReport: false, tag: "some tag"});
+            throw new ImperativeError({msg: "Issue error message"}, {tag: "some tag"});
         })
             .mockReturnValueOnce(FOLLOW_UP_RESPONSE1);
 
