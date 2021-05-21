@@ -152,11 +152,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Change the jobclass after a period of time
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
@@ -231,11 +235,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Release the job
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
@@ -549,11 +557,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Change the jobclass after a period of time
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
@@ -598,11 +610,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Change the jobclass after a period of time
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
