@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Added job statement to the workflow creation command (`zowe wf create`) as `workflow-job-statement`
+
 ## `6.31.0`
 
 - Enhancement: Add the option --jcl-symbols to the jobs submit command to enable users to specify JCL symbol names and values.
