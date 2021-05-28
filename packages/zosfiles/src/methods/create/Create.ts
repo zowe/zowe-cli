@@ -150,7 +150,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
         // Removes undefined properties
-        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) })) : {};
+        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
         Create.dataSetValidateOptions(tempOptions);
 
         try {
