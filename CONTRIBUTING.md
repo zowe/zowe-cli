@@ -32,9 +32,11 @@ Why? Sign-off is a line at the end of the commit message which certifies who is 
 
 Example commit in git history:
 
-```Add tests for the payment processor.
+```
+Add tests for the payment processor.
 
-Signed-off-by: Humpty Dumpty <humpty.dumpty@example.com>```
+Signed-off-by: Humpty Dumpty <humpty.dumpty@example.com>
+```
 
 What to do if you forget to sign off on a commit?
 
