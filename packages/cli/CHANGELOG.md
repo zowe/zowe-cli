@@ -4,12 +4,21 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- **Breaking**: Removed the following previously deprecated items:
+- **Breaking**: Removed the following previously deprecated API functions:
+    - ZosmfSession.createBasicZosmfSession
+    - ZosmfSession.createBasicZosmfSessionFromArguments
+      - In CLI plugins replace both of the above with:
+        - ZosmfSession.createSessCfgFromArgs,
+        - ConnectionPropsForSessCfg.addPropsOrPrompt, and
+        - new Session
+      - In VS Code extensions, replace both of the above with:
+        - ProfileInfo.createSession
     - SshSession.createBasicSshSession
     - SshSession.createBasicSshSessionFromArguments
       - For both of the above replace with:
-        - SshSession.createSshSessCfgFromArgs and
-        - ConnectionPropsForSessCfg.addPropsOrPrompt
+        - SshSession.createSshSessCfgFromArgs,
+        - ConnectionPropsForSessCfg.addPropsOrPrompt, and
+        - new SshSession
 
 ## `7.0.0-next.202102011525`
 

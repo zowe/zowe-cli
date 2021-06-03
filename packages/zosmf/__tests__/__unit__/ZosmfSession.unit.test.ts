@@ -10,76 +10,120 @@
 */
 
 import { ZosmfSession } from "../../src/ZosmfSession";
-import { Session, ICommandArguments } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
-    it("should create a basic session object", () => {
-        const session: Session = ZosmfSession.createBasicZosmfSession({
-            host: "fake",
-            port: "fake",
-            user: "fake",
-            password: "fake",
-            auth: "fake",
-            rejectUnauthorized: "fake"
-        });
-        expect(session.ISession).toMatchSnapshot();
-    });
-    it("Should create a session object when tokenValue and tokenType are present", () => {
+    it("should create a session config from cmd args",  () => {
         const args: ICommandArguments = {
             $0: "zowe",
             _: [""],
             host: "fake",
             port: "fake",
             rejectUnauthorized: false,
-            basePath: "fake",
+            basePath: "fakeBasePath",
             tokenValue: "fake",
             tokenType: "fake"
         };
-        const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
-        expect(session.ISession).toMatchSnapshot();
+        const sessIntface: ISession = ZosmfSession.createSessCfgFromArgs(args);
+        expect(sessIntface.basePath).toBe("fakeBasePath");
+        expect(sessIntface.rejectUnauthorized).toBe(false);
+        expect(sessIntface.protocol).toBe("https");
     });
-    it("should fail to create a basic session object when username and password are not present", () => {
+
+    it("Should create a session object when tokenValue and tokenType are present", async () => {
+        const args: ICommandArguments = {
+            $0: "zowe",
+            _: [""],
+            host: "fakeHost",
+            port: "fakePort",
+            rejectUnauthorized: false,
+            basePath: "fakeBasePath",
+            tokenValue: "fakeTokenValue",
+            tokenType: "fakeTokenType"
+        };
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(args),
+            args
+        );
+        const session: Session = new Session(sessCfg);
+
+        expect(session.ISession.hostname).toBe("fakeHost");
+        expect(session.ISession.port).toBe("fakePort");
+        expect(session.ISession.rejectUnauthorized).toBe(false);
+        expect(session.ISession.basePath).toBe("fakeBasePath");
+        expect(session.ISession.tokenValue).toBe("fakeTokenValue");
+        expect(session.ISession.tokenType).toBe("fakeTokenType");
+        expect(session.ISession.protocol).toBe("https");
+        expect(session.ISession.user).toBe(undefined);
+        expect(session.ISession.password).toBe(undefined);
+    });
+
+    it("should fail to create a session when username, password, and token are not present", async () => {
+        const args: ICommandArguments = {
+            $0: "zowe",
+            _: [""],
+            host: "fakeHost",
+            port: "fakePort",
+            rejectUnauthorized: false,
+            basePath: "fakeBasePath",
+        };
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(args),
+            args, {doPrompting: false}
+        );
+
         let error;
         try {
-            const session: Session = ZosmfSession.createBasicZosmfSession({
-                host: "fake",
-                port: "fake",
-                rejectUnauthorized: "fake"
-            });
+            const session: Session = new Session(sessCfg);
         } catch (err) {
             error = err;
         }
         expect(error.toString()).toContain("Must have user & password OR base64 encoded credentials");
     });
-    it("should fail to create a basic session object when host is not present", () => {
+
+    it("should fail to create a session when host is not present", async () => {
+        const args: ICommandArguments = {
+            $0: "zowe",
+            _: [""],
+            port: "fakePort",
+            user: "fakeUser",
+            password: "fakePassword",
+            rejectUnauthorized: false,
+            basePath: "fakeBasePath",
+        };
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(args),
+            args, {doPrompting: false}
+        );
+
         let error;
         try {
-            const session: Session = ZosmfSession.createBasicZosmfSession({
-            port: "fake",
-            user: "fake",
-            password: "fake",
-            auth: "fake",
-            rejectUnauthorized: "fake"
-            });
+            const session: Session = new Session(sessCfg);
         } catch (err) {
             error = err;
         }
         expect(error.toString()).toContain("Required parameter 'hostname' must be defined");
     });
-    it("should fail to create a session object when tokenValue and tokenType are undefined", () => {
+
+    it("should fail to create a session when tokenValue and tokenType are undefined", async () => {
         const args: ICommandArguments = {
             $0: "zowe",
             _: [""],
-            host: "fake",
-            port: "fake",
+            host: "fakeHost",
+            port: "fakePort",
             rejectUnauthorized: false,
             basePath: undefined,
             tokenValue: undefined,
             tokenType: undefined
         };
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(args),
+            args, {doPrompting: false}
+        );
+
         let error;
         try {
-            const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
+            const session: Session = new Session(sessCfg);
         } catch (err) {
             error = err;
         }

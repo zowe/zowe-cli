@@ -154,60 +154,6 @@ export class ZosmfSession {
         };
     }
 
-    /**
-     * Given a z/OSMF profile, create a REST Client Session.
-     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
-     * @static
-     * @param {IProfile} profile - The z/OSMF profile contents
-     * @returns {Session} - A session for usage in the z/OSMF REST Client
-     */
-    public static createBasicZosmfSession(profile: IProfile): Session {
-        this.log.debug("Creating a z/OSMF session from the profile named %s", profile.name);
-        return new Session({
-            type: SessConstants.AUTH_TYPE_BASIC,
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.password,
-            rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath,
-            protocol: profile.protocol ? profile.protocol.toLowerCase() : 'https'
-        });
-    }
-
-    /**
-     * Given command line arguments, create a REST Client Session.
-     * @static
-     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
-     * @param {IProfile} args - The arguments specified by the user
-     * @returns {Session} - A session for usage in the z/OSMF REST Client
-     */
-    public static createBasicZosmfSessionFromArguments(args: ICommandArguments): Session {
-        this.log.debug("Creating a z/OSMF session from arguments");
-
-        const sessionConfig: ISession = {
-            hostname: args.host,
-            port: args.port,
-            rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath
-        };
-
-        sessionConfig.type = SessConstants.AUTH_TYPE_BASIC;
-        sessionConfig.user = args.user;
-        sessionConfig.password = args.password;
-        if (sessionConfig.user && sessionConfig.password) {
-            this.log.debug("Using basic authentication");
-        } else if (args.tokenType && args.tokenValue) {
-            this.log.debug("Using token authentication");
-            sessionConfig.type = SessConstants.AUTH_TYPE_TOKEN;
-            sessionConfig.tokenType = args.tokenType;
-            sessionConfig.tokenValue = args.tokenValue;
-        }
-
-        return new Session(sessionConfig);
-    }
-
-
     private static get log(): Logger {
         return Logger.getAppLogger();
     }

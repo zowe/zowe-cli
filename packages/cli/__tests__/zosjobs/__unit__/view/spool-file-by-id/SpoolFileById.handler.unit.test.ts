@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, IHandlerParameters, ImperativeError, Session, ISession } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
@@ -85,7 +85,12 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(UNIT_TEST_PROFILES_ZOSMF.get("zosmf"));
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMTERS.arguments),
+            DEFAULT_PARAMTERS.arguments
+        );
+        const fakeSession: Session = new Session(sessCfg);
+
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
     });
@@ -129,7 +134,13 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         }
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(UNIT_TEST_PROFILES_ZOSMF.get("zosmf"));
+
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMTERS.arguments),
+            DEFAULT_PARAMTERS.arguments
+        );
+        const fakeSession: Session = new Session(sessCfg);
+
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
         expect(error).toBeDefined();
