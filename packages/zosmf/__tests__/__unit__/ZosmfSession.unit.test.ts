@@ -65,7 +65,7 @@ describe("zosmf utils", () => {
             host: "fakeHost",
             port: "fakePort",
             rejectUnauthorized: false,
-            basePath: "fakeBasePath",
+            basePath: "fakeBasePath"
         };
         const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
             ZosmfSession.createSessCfgFromArgs(args),
@@ -89,7 +89,7 @@ describe("zosmf utils", () => {
             user: "fakeUser",
             password: "fakePassword",
             rejectUnauthorized: false,
-            basePath: "fakeBasePath",
+            basePath: "fakeBasePath"
         };
         const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
             ZosmfSession.createSessCfgFromArgs(args),
