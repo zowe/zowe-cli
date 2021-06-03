@@ -159,46 +159,6 @@ export class SshSession {
     }
 
     /**
-     * Given a z/OS SSH profile, create a SSH Client Session.
-     * @static
-     * @deprecated Use SshSession.createSshSessCfgFromArgs & others
-     * @param {IProfile} profile - The SSH profile contents
-     * @returns {Session} - A session for usage in the SSH Client
-     */
-    public static createBasicSshSession(profile: IProfile): SshSession {
-        this.log.debug("Creating a z/OS SSH session from the profile named %s", profile.name);
-        return new SshSession({
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.password,
-            privateKey: profile.privateKey,
-            keyPassphrase: profile.keyPassphrase,
-            handshakeTimeout: profile.handshakeTimeout
-        });
-    }
-
-    /**
-     * Given command line arguments, create a SSH Client Session.
-     * @static
-     * @deprecated Use SshSession.createSshSessCfgFromArgs & others
-     * @param {IProfile} args - The arguments specified by the user
-     * @returns {SshSession} - A session for usage in the SSH Client
-     */
-    public static createBasicSshSessionFromArguments(args: ICommandArguments): SshSession {
-        this.log.debug("Creating a z/OS SSH session from arguments");
-        return new SshSession({
-            hostname: args.host,
-            port: args.port,
-            user: args.user,
-            password: args.password,
-            privateKey: args.privateKey,
-            keyPassphrase: args.keyPassphrase,
-            handshakeTimeout: args.handshakeTimeout
-        });
-    }
-
-    /**
      * Creates an instance of AbstractSession.
      * @param {ISshSession} session: SshSession parameter object
      */

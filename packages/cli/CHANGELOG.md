@@ -2,6 +2,15 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking**: Removed the following previously deprecated items:
+    - SshSession.createBasicSshSession
+    - SshSession.createBasicSshSessionFromArguments
+      - For both of the above replace with:
+        - SshSession.createSshSessCfgFromArgs and
+        - ConnectionPropsForSessCfg.addPropsOrPrompt
+
 ## `7.0.0-next.202102011525`
 
 - Enhancement: Added new "config" command group to manage config JSON files. This is intended to replace the profiles API, and makes it easier for users to create, share, and switch between profile configurations.
