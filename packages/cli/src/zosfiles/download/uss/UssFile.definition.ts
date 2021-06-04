@@ -22,7 +22,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DO
  */
 export const UssFileDefinition: ICommandDefinition = {
     name: "uss-file",
-    aliases: ["uf"],
+    aliases: ["uf", "uss"],
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",

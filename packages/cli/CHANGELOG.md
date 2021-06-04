@@ -2,6 +2,8 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+- Enhancement: Added new aliases for zos-files commands in delete, download, and list relating to USS files. You can now interact with `uf` or `uss`.  [#983](https://github.com/zowe/zowe-cli/issues/983)
+
 ## `6.31.0`
 
 - Enhancement: Add the option --jcl-symbols to the jobs submit command to enable users to specify JCL symbol names and values.
