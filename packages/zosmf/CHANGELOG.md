@@ -2,6 +2,18 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking**: Removed the following [deprecated API functions](https://github.com/zowe/zowe-cli/pull/1022):
+    - ZosmfSession.createBasicZosmfSession
+    - ZosmfSession.createBasicZosmfSessionFromArguments
+      - In CLI plugins replace both of the above with:
+        - ZosmfSession.createSessCfgFromArgs,
+        - ConnectionPropsForSessCfg.addPropsOrPrompt, and
+        - new Session
+      - In VS Code extensions, replace both of the above with:
+        - ProfileInfo.createSession
+
 ## `6.27.1`
 
 - BugFix: Removed the conflicting alias `-o` for `--protocol` option.
