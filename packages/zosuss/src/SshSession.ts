@@ -12,7 +12,6 @@
 import {
     ICommandArguments,
     ICommandOptionDefinition,
-    IProfile,
     Logger
 } from "@zowe/imperative";
 import { ISshSession } from "./doc/ISshSession";
@@ -147,7 +146,7 @@ export class SshSession {
 
     /**
      * Given command line arguments, create an SSH session configuration object.
-     * @param {IProfile} args - The arguments specified by the user
+     * @param {ICommandArguments} args - The arguments specified by the user
      * @returns {ISshSession} - A session configuration to be used for an SSH session.
      */
     public static createSshSessCfgFromArgs(args: ICommandArguments): ISshSession {

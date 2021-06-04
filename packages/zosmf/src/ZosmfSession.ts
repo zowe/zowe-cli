@@ -12,10 +12,7 @@
 import {
     ICommandArguments,
     ICommandOptionDefinition,
-    IProfile,
     Logger,
-    SessConstants,
-    Session,
     ISession
 } from "@zowe/imperative";
 
@@ -143,7 +140,7 @@ export class ZosmfSession {
 
     /**
      * Given command line arguments, create an session configuration object.
-     * @param {IProfile} args - The arguments specified by the user
+     * @param {ICommandArguments} args - The arguments specified by the user
      * @returns {ISession} - A session configuration to be used for a session.
      */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
