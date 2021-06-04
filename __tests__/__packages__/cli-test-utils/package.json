@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@types/node": "^14.14.37",
-    "@zowe/imperative": "5.0.0-next.202105281536",
+    "@zowe/imperative": "5.0.0-next.202106041929",
     "rimraf": "^3.0.2",
     "tslint": "^6.1.3",
     "typescript": "^4.2.3"
