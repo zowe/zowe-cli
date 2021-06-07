@@ -50,7 +50,7 @@
     "@types/node": "^12.12.24",
     "@zowe/cli-test-utils": "7.0.0-next.202106012053",
     "@zowe/core-for-zowe-sdk": "7.0.0-next.202106012053",
-    "@zowe/imperative": "5.0.0-next.202105281536",
+    "@zowe/imperative": "5.0.0-next.202106041929",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",
@@ -58,7 +58,7 @@
     "typescript": "^3.8.0"
   },
   "peerDependencies": {
-    "@zowe/core-for-zowe-sdk": "^7.0.0-next",
-    "@zowe/imperative": "^5.0.0-next"
+    "@zowe/core-for-zowe-sdk": ">=7.0.0-next <7.0.0",
+    "@zowe/imperative": ">=5.0.0-next.202106041929 <5.0.0"
   }
 }
