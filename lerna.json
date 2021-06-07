@@ -1,5 +1,5 @@
 {
-  "version": "7.0.0-next.202106012053",
+  "version": "7.0.0-next.202106071827",
   "command": {
     "publish": {
       "ignoreChanges": [
