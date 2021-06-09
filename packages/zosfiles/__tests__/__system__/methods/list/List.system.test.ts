@@ -190,7 +190,7 @@ describe("List command group", () => {
             const testString = "test";
             beforeEach(async () => {
                 try {
-                    const result = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
                         { volser: defaultSystem.datasets.vol });
                     await delay(delayTime);
                 } catch (err) {
