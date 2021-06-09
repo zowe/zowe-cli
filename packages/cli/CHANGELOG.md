@@ -1,6 +1,6 @@
 # Change Log
 
-## Recent Changes
+## `6.31.2`
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
