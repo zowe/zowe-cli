@@ -1,8 +1,12 @@
 # Change Log
 
-## `6.31.2`
-
 All notable changes to the Zowe CLI package will be documented in this file.
+
+## Recent Changes
+
+- Enhancement: Added a `--volume-serial` option to the `zowe zos-files list data-set` command. Use this option to filter data sets by volume serial. [#61](https://github.com/zowe/zowe-cli/issues/61)
+
+## `6.31.2`
 
 - Enhancement: Added new aliases for zos-files commands in delete, download, and list relating to USS files. You can now interact with `uf` or `uss`.  [#983](https://github.com/zowe/zowe-cli/issues/983)
 
