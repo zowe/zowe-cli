@@ -100,6 +100,9 @@ export class List {
         try {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dataSetName}`);
+            if (options.volume) {
+                endpoint = `${endpoint}&volser=${options.volume}`;
+            }
             if (options.start) {
                 endpoint = `${endpoint}&start=${options.start}`;
             }
