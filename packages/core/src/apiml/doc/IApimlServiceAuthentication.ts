@@ -9,7 +9,8 @@
 *
 */
 
-export * from "./apiml";
-export * from "./auth";
-export * from "./rest";
-export * from "./utils";
+export interface IApimlServiceAuthentication {
+    scheme: string;
+    applid: string;
+    supportsSso: boolean;
+}

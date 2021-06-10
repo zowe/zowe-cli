@@ -9,7 +9,9 @@
 *
 */
 
-export * from "./apiml";
-export * from "./auth";
-export * from "./rest";
-export * from "./utils";
+export * from "./doc/IApimlProfileInfo";
+export * from "./doc/IApimlService";
+export * from "./doc/IApimlServiceApiInfo";
+export * from "./doc/IApimlServiceAuthentication";
+export * from "./doc/IPluginApimlConfig";
+export * from "./Services";

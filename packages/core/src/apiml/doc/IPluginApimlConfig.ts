@@ -9,7 +9,8 @@
 *
 */
 
-export * from "./apiml";
-export * from "./auth";
-export * from "./rest";
-export * from "./utils";
+export interface IPluginApimlConfig {
+    apiId: string;
+    gatewayUrl: string;
+    profileType: string;
+}

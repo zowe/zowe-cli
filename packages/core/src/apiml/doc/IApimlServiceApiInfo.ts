@@ -9,7 +9,12 @@
 *
 */
 
-export * from "./apiml";
-export * from "./auth";
-export * from "./rest";
-export * from "./utils";
+export interface IApimlServiceApiInfo {
+    apiId: string;
+    gatewayUrl: string;
+    swaggerUrl: string;
+    documentationUrl: string;
+    baseUrl: string;
+    basePath: string;
+    defaultApi: boolean;
+}
