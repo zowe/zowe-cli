@@ -1,10 +1,12 @@
 # Change Log
 
+## Recent Changes
+
+- Removed 'z/OS' from zos-files help upload and download commands. [#60](https://github.com/zowe/zowe-cli/issues/60)
+
 ## `6.31.2`
 
 All notable changes to the Zowe CLI package will be documented in this file.
-
-- Removed 'z/OS' from zos-files help upload and download commands. [#60](https://github.com/zowe/zowe-cli/issues/60)
 
 - Enhancement: Added new aliases for zos-files commands in delete, download, and list relating to USS files. You can now interact with `uf` or `uss`.  [#983](https://github.com/zowe/zowe-cli/issues/983)
 
