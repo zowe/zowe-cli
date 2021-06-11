@@ -53,7 +53,8 @@ describe("List command group", () => {
             const testString = "test";
             beforeEach(async () => {
                 try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
+                        { volser: defaultSystem.datasets.vol });
                     await delay(delayTime);
                     await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
                     await delay(delayTime);
@@ -189,7 +190,8 @@ describe("List command group", () => {
             const testString = "test";
             beforeEach(async () => {
                 try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
+                        { volser: defaultSystem.datasets.vol });
                     await delay(delayTime);
                 } catch (err) {
                     throw err;
@@ -234,6 +236,30 @@ describe("List command group", () => {
 
                 try {
                     response = await List.dataSet(REAL_SESSION, dsname, option);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(1);
+                expect(response.apiResponse.items[0].dsname).toEqual(dsname);
+                expect(response.apiResponse.items[0].dsorg).toBeDefined();
+            });
+
+            it("should list a data set with attributes and volser options", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const option: IListOptions = {
+                    attributes: true
+                };
+
+                try {
+                    response = await List.dataSet(REAL_SESSION, dsname, option);  // Get the volser
+                    response = await List.dataSet(REAL_SESSION, dsname, { ...option, volume: response.apiResponse.items[0].volser });
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -373,14 +399,14 @@ describe("List command group", () => {
                 let response: IZosFilesResponse;
                 let error;
                 try {
-                    response = await List.fileList(REAL_SESSION, name);
+                    response = await List.fileList(REAL_SESSION, path);
                 } catch (err) {
                     error = err;
                 }
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(error).toBeDefined();
-                expect(error.message).toContain("name is not defined");
+                expect(error.message).toContain("Path name not found");
             });
         });
     });
