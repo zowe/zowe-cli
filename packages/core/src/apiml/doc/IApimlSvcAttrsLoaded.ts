@@ -9,8 +9,13 @@
 *
 */
 
-export interface IPluginApimlConfig {
+// TODO Replace this stub with interface defined in Imperative
+export interface IApimlSvcAttrs {
     apiId: string;
-    gatewayUrl: string;
-    profileType: string;
+    gatewayUrl?: string;
+    connProfType?: string;
+}
+
+export interface IApimlSvcAttrsLoaded extends IApimlSvcAttrs {
+    connProfType: string;
 }

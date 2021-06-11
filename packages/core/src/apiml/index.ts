@@ -13,5 +13,5 @@ export * from "./doc/IApimlProfileInfo";
 export * from "./doc/IApimlService";
 export * from "./doc/IApimlServiceApiInfo";
 export * from "./doc/IApimlServiceAuthentication";
-export * from "./doc/IPluginApimlConfig";
+export * from "./doc/IApimlSvcAttrsLoaded";
 export * from "./Services";

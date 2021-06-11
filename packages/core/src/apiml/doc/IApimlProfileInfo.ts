@@ -10,7 +10,7 @@
 */
 
 export interface IApimlProfileInfo {
-    name: string;
-    type: string;
+    profName: string;
+    profType: string;
     basePaths: string[];
 }

@@ -14,7 +14,7 @@ import { ZosmfRestClient } from "../rest/ZosmfRestClient";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
 import { IApimlService } from "./doc/IApimlService";
-import { IPluginApimlConfig } from "./doc/IPluginApimlConfig";
+import { IApimlSvcAttrsLoaded } from "./doc/IApimlSvcAttrsLoaded";
 
 /**
  * Class to handle listing services on APIML gateway.
@@ -22,7 +22,7 @@ import { IPluginApimlConfig } from "./doc/IPluginApimlConfig";
  * @class Services
  */
 export class Services {
-    public static getPluginApimlConfigs(): IPluginApimlConfig[] {
+    public static getPluginApimlConfigs(): IApimlSvcAttrsLoaded[] {
         return;
     }
 
@@ -33,7 +33,7 @@ export class Services {
      * @returns
      * @memberof Login
      */
-    public static async getServicesByConfig(session: AbstractSession, configs: IPluginApimlConfig[]): Promise<IApimlProfileInfo[]> {
+    public static async getServicesByConfig(session: AbstractSession, configs: IApimlSvcAttrsLoaded[]): Promise<IApimlProfileInfo[]> {
         Logger.getAppLogger().trace("Services.getByConfig()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         if (session.ISession.type === "basic") {
@@ -58,28 +58,34 @@ export class Services {
             }));
         }
 
-        const response: IApimlService[] = JSON.parse(client.dataString);
-        const output: IApimlProfileInfo[] = [];
-        for (const service of response) {
+        const profInfos: IApimlProfileInfo[] = [];
+        for (const service of JSON.parse(client.dataString) as IApimlService[]) {
             if (service.apiml.authentication[0]?.supportsSso) {
-                outer:
+                let profInfo: IApimlProfileInfo;
                 for (const config of configs) {
                     for (const apiInfo of service.apiml.apiInfo) {
                         if (apiInfo.apiId === config.apiId && apiInfo.gatewayUrl === config.gatewayUrl) {
-                            output.push({
-                                name: service.serviceId,
-                                type: config.profileType,
-                                // TODO Handle multiple base paths
-                                basePaths: [apiInfo.basePath]
-                            });
-                            break outer;
+                            // TODO Ensure base paths are ordered correctly
+                            if (profInfo == null) {
+                                profInfo = {
+                                    profName: service.serviceId,
+                                    profType: config.connProfType,
+                                    basePaths: [apiInfo.basePath]
+                                }
+                            } else {
+                                profInfo.basePaths.push(apiInfo.basePath);
+                            }
                         }
+                    }
+                    if (profInfo != null) {
+                        profInfos.push(profInfo);
+                        break;
                     }
                 }
             }
         }
 
-        return output;
+        return profInfos;
     }
 
     public static convertApimlProfileInfoToProfileConfig(profileInfo: IApimlProfileInfo[]): IConfigProfile[] {
