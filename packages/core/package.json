@@ -44,6 +44,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
+    "comment-json": "4.1.0",
     "string-width": "2.1.1"
   },
   "devDependencies": {

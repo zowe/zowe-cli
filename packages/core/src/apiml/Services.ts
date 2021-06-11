@@ -88,7 +88,60 @@ export class Services {
         return profInfos;
     }
 
-    public static convertApimlProfileInfoToProfileConfig(profileInfo: IApimlProfileInfo[]): IConfigProfile[] {
-        return;
+    /**
+     * Converts apiml profile information to team config profile objects to be stored in a zowe.config.json file
+     * @param profileInfoList List of apiml profiles
+     * @returns List of config profile objects
+     * @example
+     *  IConfigProfile = {
+     *      properties: {},
+     *      profiles: {
+     *          "ibmzosmf": {
+     *              type: "zosmf",
+     *              properties: {
+     *                  "basePath": "/ibmzosmf/api/v1"
+     *              }
+     *          },
+     *          "service2": {
+     *              type: "profile-type-for-service-defined-by-plugin",
+     *              properties: {
+     *                  // Multiple base paths were detected for this service.
+     *                  // Uncomment one of the lines below to use a different one.
+     *                  //"basePath": "/service2/ws/v1"
+     *                  "basePath": "/service2/ws/v2"
+     *              }
+     *          }
+     *      }
+     *  }
+     * @memberof Services
+     */
+    public static convertApimlProfileInfoToProfileConfig(profileInfoList: IApimlProfileInfo[]): IConfigProfile {
+        const configProfile: IConfigProfile = {
+            properties: {},
+            profiles: {}
+        };
+
+        profileInfoList.forEach((profileInfo: IApimlProfileInfo) => {
+            configProfile.profiles[profileInfo.name] = {
+                type: profileInfo.type,
+                properties: {}
+            };
+
+            const basePaths: string[] = profileInfo.basePaths;
+            if (basePaths.length === 1) {
+                configProfile.profiles[profileInfo.name].properties.basePath = basePaths[0];
+            } else {
+                const JSONC = require("comment-json");
+                configProfile.profiles[profileInfo.name].properties = JSONC.parse(`
+{
+    // Multiple base paths were detected for this service.
+    // Uncomment one of the lines below to use a different one.
+    "basePath": ${basePaths.shift()}
+    //"basePath": ${basePaths.length === 1 ? basePaths[0] : basePaths.join('\n//"basePath: ')}
+}`
+                );
+            }
+        });
+        return configProfile;
     }
 }
