@@ -9,13 +9,9 @@
 *
 */
 
-// TODO Replace this stub with interface defined in Imperative
-export interface IApimlSvcAttrs {
-    apiId: string;
-    gatewayUrl?: string;
-    connProfType?: string;
-}
+import { IApimlSvcAttrs } from "@zowe/imperative";
 
 export interface IApimlSvcAttrsLoaded extends IApimlSvcAttrs {
     connProfType: string;
+    pluginName: string;
 }

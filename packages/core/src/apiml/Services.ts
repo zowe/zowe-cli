@@ -9,7 +9,8 @@
 *
 */
 
-import { AbstractSession, IConfigProfile, ImperativeError, ImperativeExpect, Logger, RestConstants, SessConstants } from "@zowe/imperative";
+import { AbstractSession, IConfigProfile, ImperativeConfig, ImperativeError, ImperativeExpect, Logger,
+    PluginManagementFacility, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfRestClient } from "../rest/ZosmfRestClient";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
@@ -58,6 +59,7 @@ export class Services {
             }));
         }
 
+        // Get profile info for APIML services that match the CLI's APIML service attributes
         const profInfos: IApimlProfileInfo[] = [];
         for (const service of JSON.parse(client.dataString) as IApimlService[]) {
             if (service.apiml.authentication[0]?.supportsSso) {
@@ -70,10 +72,16 @@ export class Services {
                                 profInfo = {
                                     profName: service.serviceId,
                                     profType: config.connProfType,
-                                    basePaths: [apiInfo.basePath]
-                                }
+                                    basePaths: [apiInfo.basePath],
+                                    pluginConfigs: [config]
+                                };
                             } else {
-                                profInfo.basePaths.push(apiInfo.basePath);
+                                if (!apiInfo.defaultApi) {
+                                    profInfo.basePaths.push(apiInfo.basePath);
+                                } else {
+                                    profInfo.basePaths.unshift(apiInfo.basePath);
+                                }
+                                profInfo.pluginConfigs.push(config);
                             }
                         }
                     }
@@ -84,6 +92,20 @@ export class Services {
                 }
             }
         }
+
+        // Find conflicts in profile info array
+        // TODO Multiple API IDs for one profile type (across different plugins)
+        // TODO Multiple gateway URLs for one profile type (across different plugins)
+        // TODO Multiple service IDs for one profile type (across separate profile info objects)
+        // TODO Need a way to handle conflicts
+        /* TODO Handle multiple base paths
+        We will perform the following checks and pick the first base path that matches:
+        - Check CLI plug-ins to see if any of them define a preferred API version for this service.
+          If so, pick the base path that matches “api/vX” where X is the preferred version.
+        - Check if $[*].apiml.apiInfo[*].defaultApi property is true on any of the API info objects returned.
+          If so, use the corresponding base path.
+        - Use the base path of the first API info object in the array ($[*].apiml.apiInfo[0].basePath).
+        */
 
         return profInfos;
     }
@@ -122,17 +144,17 @@ export class Services {
         };
 
         profileInfoList.forEach((profileInfo: IApimlProfileInfo) => {
-            configProfile.profiles[profileInfo.name] = {
-                type: profileInfo.type,
+            configProfile.profiles[profileInfo.profName] = {
+                type: profileInfo.profType,
                 properties: {}
             };
 
             const basePaths: string[] = profileInfo.basePaths;
             if (basePaths.length === 1) {
-                configProfile.profiles[profileInfo.name].properties.basePath = basePaths[0];
+                configProfile.profiles[profileInfo.profName].properties.basePath = basePaths[0];
             } else {
                 const JSONC = require("comment-json");
-                configProfile.profiles[profileInfo.name].properties = JSONC.parse(`
+                configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
 {
     // Multiple base paths were detected for this service.
     // Uncomment one of the lines below to use a different one.
