@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-files-for-zowe-sdk",
-  "version": "6.31.1",
+  "version": "6.32.0",
   "description": "Zowe SDK to interact with files and data sets on z/OS",
   "author": "Broadcom",
   "license": "EPL-2.0",
