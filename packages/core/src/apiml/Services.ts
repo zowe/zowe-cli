@@ -149,18 +149,18 @@ export class Services {
                 properties: {}
             };
 
-            const basePaths: string[] = profileInfo.basePaths;
+            const basePaths: string[] = JSON.parse(JSON.stringify(profileInfo.basePaths));
             if (basePaths.length === 1) {
                 configProfile.profiles[profileInfo.profName].properties.basePath = basePaths[0];
-            } else {
+            } else if (basePaths.length > 1) {
                 const JSONC = require("comment-json");
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
-{
-    // Multiple base paths were detected for this service.
-    // Uncomment one of the lines below to use a different one.
-    "basePath": ${basePaths.shift()}
-    //"basePath": ${basePaths.length === 1 ? basePaths[0] : basePaths.join('\n//"basePath: ')}
-}`
+                    {
+                        // Multiple base paths were detected for this service.
+                        // Uncomment one of the lines below to use a different one.
+                        "basePath": "${basePaths.shift()}"
+                        //"basePath": "${basePaths.length === 1 ? basePaths[0] : basePaths.join('"\n//"basePath": "')}"
+                    }`
                 );
             }
         });
