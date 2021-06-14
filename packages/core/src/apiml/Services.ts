@@ -9,7 +9,10 @@
 *
 */
 
-import { AbstractSession, IConfigProfile, ImperativeError, ImperativeExpect, Logger, RestConstants, SessConstants } from "@zowe/imperative";
+import {
+    AbstractSession, IConfigProfile, ImperativeConfig, ImperativeError,
+    ImperativeExpect, Logger, PluginManagementFacility, RestConstants, SessConstants
+} from "@zowe/imperative";
 import { ZosmfRestClient } from "../rest/ZosmfRestClient";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
@@ -22,8 +25,40 @@ import { IApimlSvcAttrsLoaded } from "./doc/IApimlSvcAttrsLoaded";
  * @class Services
  */
 export class Services {
+    /**
+     * Forms a list of APIML service attributes needed to query APIML for every
+     * REST service for every loaded command group. This information can later
+     * be used to create every connection profile required for every loaded
+     * command group.
+     *
+     * @returns The APIML service attributes needed to query APIML.
+     */
     public static getPluginApimlConfigs(): IApimlSvcAttrsLoaded[] {
-        return;
+        const apimlConfigs: IApimlSvcAttrsLoaded[] = [];
+        ImperativeExpect.toNotBeNullOrUndefined(ImperativeConfig.instance.loadedConfig,
+            "Imperative.init() must be called before getPluginApimlConfigs()"
+        );
+
+        // Get the APIML configs from the loaded imperative config
+        for (const apimlConfig of (ImperativeConfig.instance.loadedConfig.apimlConnLookup || [])) {
+            apimlConfigs.push({
+                ...apimlConfig,
+                connProfType: apimlConfig.connProfType || ImperativeConfig.instance.loadedConfig.profiles[0].type,
+                pluginName: ImperativeConfig.instance.hostPackageName
+            });
+        }
+
+        // Load APIML configs from all plugins
+        for (const pluginCfgProps of PluginManagementFacility.instance.allPluginCfgProps) {
+            for (const apimlConfig of (pluginCfgProps.impConfig.apimlConnLookup || [])) {
+                apimlConfigs.push({
+                    ...apimlConfig,
+                    connProfType: apimlConfig.connProfType || pluginCfgProps.impConfig.profiles[0].type,
+                    pluginName: pluginCfgProps.pluginName
+                });
+            }
+        }
+        return apimlConfigs;
     }
 
     /**

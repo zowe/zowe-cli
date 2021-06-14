@@ -1,0 +1,477 @@
+[
+  {
+    "pluginName": "@broadcom/endevor-for-zowe-cli",
+    "npmPackageName": "@broadcom/endevor-for-zowe-cli",
+    "impConfig": {
+      "commandModuleGlobs": [
+        "**/*.definition!(.d).*s"
+      ],
+      "pluginHealthCheck": "./lib/HealthCheck.handler",
+      "rootCommandDescription": "CA Endevor SCM plug-in for listing Endevor environment information, working with elements and packages located in specified Endevor instance.",
+      "envVariablePrefix": "ENDEVOR",
+      "defaultHome": "C:\\Users\\ej608771/.endevor",
+      "productDisplayName": "Endevor CLI",
+      "name": "endevor",
+      "logging": {
+        "additionalLogging": [
+          {
+            "apiName": "endevor"
+          }
+        ],
+        "appLogging": {
+          "logFile": "zowe/logs/zowe-endevor.log"
+        }
+      },
+      "secondaryTextColor": "yellow",
+      "apimlConnLookup": [
+        {
+          "apiId": "endv_apiId",
+          "gatewayUrl": "endv_api/v2",
+          "connProfType": "endevor"
+        },
+        {
+            "apiId": "endv_apiId",
+            "gatewayUrl": "endv_api/v1",
+            "connProfType": "endevor"
+          }
+        ],
+      "profiles": [
+        {
+          "type": "endevor",
+          "schema": {
+            "type": "object",
+            "title": "The CA Endevor SCM endevor profile",
+            "description": "The CA Endevor SCM endevor profile schema, where you specify your endevor session information and credentials",
+            "properties": {
+              "host": {
+                "optionDefinition": {
+                  "description": "The hostname of the endevor session",
+                  "type": "string",
+                  "name": "host",
+                  "aliases": [
+                    "hostname"
+                  ]
+                },
+                "type": "string"
+              },
+              "port": {
+                "optionDefinition": {
+                  "description": "The port number of the endevor session",
+                  "type": "number",
+                  "name": "port",
+                  "aliases": [
+                    "p"
+                  ]
+                },
+                "type": "number"
+              },
+              "user": {
+                "optionDefinition": {
+                  "description": "The username of the endevor session",
+                  "type": "string",
+                  "name": "user",
+                  "aliases": [
+                    "username"
+                  ]
+                },
+                "secure": true,
+                "type": "string"
+              },
+              "password": {
+                "optionDefinition": {
+                  "description": "The password of the user",
+                  "type": "string",
+                  "name": "password",
+                  "aliases": [
+                    "pass"
+                  ]
+                },
+                "secure": true,
+                "type": "string"
+              },
+              "protocol": {
+                "optionDefinition": {
+                  "description": "The protocol used for connecting to CA Endevor SCM Rest API",
+                  "type": "string",
+                  "name": "protocol",
+                  "aliases": [
+                    "prot"
+                  ],
+                  "defaultValue": "http",
+                  "allowableValues": {
+                    "values": [
+                      "http",
+                      "https"
+                    ],
+                    "caseSensitive": false
+                  }
+                },
+                "type": "string"
+              },
+              "basePath": {
+                "optionDefinition": {
+                  "description": "The base path used for connecting to CA Endevor SCM Rest API",
+                  "type": "string",
+                  "name": "base-path",
+                  "aliases": [
+                    "bp"
+                  ],
+                  "defaultValue": "EndevorService/api/v2"
+                },
+                "type": "string"
+              },
+              "rejectUnauthorized": {
+                "optionDefinition": {
+                  "description": "If set, the server certificate is verified against the list of supplied CAs",
+                  "type": "boolean",
+                  "name": "reject-unauthorized",
+                  "aliases": [
+                    "ru"
+                  ]
+                },
+                "type": "boolean"
+              }
+            }
+          },
+          "validationPlanModule": "C:\\Users\\ej608771\\.zowe\\plugins\\installed\\node_modules\\@broadcom\\endevor-for-zowe-cli\\lib\\cli\\profiles/EndevorProfileValidationPlan",
+          "createProfileExamples": [
+            {
+              "options": "ndvrSample --host ndvr123 --port 8080 --user ibmuser --password myp4ss --prot http --base-path  EndevorService/api/v2 --reject-unauthorized false",
+              "description": "Create an endevor profile called 'ndvrSample' to connect to CA Endevor SCM web services at host ndvr123 and port 8080,using http protocol, with / EndevorService/api/v2 base path, allowing self-signed certificates"
+            }
+          ]
+        },
+        {
+          "type": "endevor-location",
+          "schema": {
+            "type": "object",
+            "title": "The CA Endevor SCM element inventory location specification profile",
+            "description": "The CA Endevor SCM element location, where you specify your working environment, system and subsystem",
+            "properties": {
+              "instance": {
+                "optionDefinition": {
+                  "description": "The STC/datasource of the session",
+                  "type": "string",
+                  "name": "instance",
+                  "aliases": [
+                    "i"
+                  ]
+                },
+                "type": "string"
+              },
+              "environment": {
+                "optionDefinition": {
+                  "description": "The CA Endevor SCM environment where your project resides",
+                  "type": "string",
+                  "name": "environment",
+                  "aliases": [
+                    "env"
+                  ],
+                  "defaultValue": "DEV",
+                  "stringLengthRange": [
+                    1,
+                    8
+                  ]
+                },
+                "type": "string"
+              },
+              "system": {
+                "optionDefinition": {
+                  "description": "The CA Endevor SCM system where the element resides",
+                  "type": "string",
+                  "name": "system",
+                  "aliases": [
+                    "sys"
+                  ],
+                  "stringLengthRange": [
+                    1,
+                    8
+                  ]
+                },
+                "type": "string"
+              },
+              "subsystem": {
+                "optionDefinition": {
+                  "description": "The CA Endevor SCM subsystem where your element resides",
+                  "type": "string",
+                  "name": "subsystem",
+                  "aliases": [
+                    "sub"
+                  ],
+                  "stringLengthRange": [
+                    1,
+                    8
+                  ]
+                },
+                "type": "string"
+              },
+              "type": {
+                "optionDefinition": {
+                  "description": "Name of the CA Endevor SCM element's type",
+                  "type": "string",
+                  "name": "type",
+                  "aliases": [
+                    "typ"
+                  ],
+                  "stringLengthRange": [
+                    1,
+                    8
+                  ]
+                },
+                "type": "string"
+              },
+              "stageNumber": {
+                "optionDefinition": {
+                  "description": "The CA Endevor SCM stage where your project resides",
+                  "type": "string",
+                  "name": "stage-number",
+                  "aliases": [
+                    "sn"
+                  ],
+                  "allowableValues": {
+                    "values": [
+                      "1",
+                      "2"
+                    ]
+                  }
+                },
+                "type": "string"
+              },
+              "comment": {
+                "optionDefinition": {
+                  "description": "The CA Endevor SCM comment you want to use when performing an action",
+                  "type": "string",
+                  "name": "comment",
+                  "aliases": [
+                    "com"
+                  ],
+                  "stringLengthRange": [
+                    1,
+                    40
+                  ]
+                },
+                "type": "string"
+              },
+              "ccid": {
+                "optionDefinition": {
+                  "description": "The CA Endevor SCM CCID you want to use when performing an action",
+                  "type": "string",
+                  "name": "ccid",
+                  "aliases": [
+                    "cci"
+                  ],
+                  "stringLengthRange": [
+                    1,
+                    12
+                  ]
+                },
+                "type": "string"
+              },
+              "maxrc": {
+                "optionDefinition": {
+                  "description": "The return code of CA Endevor SCM that defines a failed action",
+                  "type": "number",
+                  "name": "maxrc",
+                  "defaultValue": 12
+                },
+                "type": "number"
+              }
+            }
+          },
+          "createProfileExamples": [
+            {
+              "options": "ndvrLoc --env ENV --sys SYS --sub SUBSYS --typ COBOL --sn 1 -i ENDEVOR",
+              "description": "Create a location profile called 'ndvrLoc' to work at CA Endevor SCM location ENV/1/SYS/SUBSYS, with elements of type COBOL, using CA Endevor SCM web services configuration ENDEVOR"
+            },
+            {
+              "options": "ndvrLoc2 --env ENV --sys SYS --sub SUBSYS --sn 1 --com 'sample comment' --cci 'CCID'",
+              "description": "Create a location profile called 'ndvrLoc2' to work at CA Endevor SCM location ENV/1/SYS/SUBSYS, using CCID 'CCID' and comment 'sample comment'"
+            }
+          ]
+        }
+      ],
+      "overrides": {},
+      "definitions": []
+    },
+    "cliDependency": {
+      "peerDepName": "@zowe/cli",
+      "peerDepVer": "^6.16.0"
+    },
+    "impDependency": {
+      "peerDepName": "@zowe/imperative",
+      "peerDepVer": "^4.7.0"
+    }
+  },
+  {
+    "pluginName": "@broadcom/jclcheck-for-zowe-cli",
+    "npmPackageName": "@broadcom/jclcheck-for-zowe-cli",
+    "impConfig": {
+      "commandModuleGlobs": [
+        "**/cli/*/*.definition!(.d).*s"
+      ],
+      "pluginHealthCheck": "C:\\Users\\ej608771\\.zowe\\plugins\\installed\\node_modules\\@broadcom\\jclcheck-for-zowe-cli\\lib/healthCheck.handler",
+      "pluginSummary": "JCLCheck plugin",
+      "pluginAliases": [
+        "jck"
+      ],
+      "rootCommandDescription": "Validates the accuracy of job control language (JCL) and also helps identify execution-time errors, such as security violations and missing data sets that could cause jobs to fail.",
+      "productDisplayName": "CA JCLCheck",
+      "name": "jclcheck",
+      "apimlConnLookup": [
+        {
+          "apiId": "jck_apiId",
+          "gatewayUrl": "jck_api/v1"
+        }
+      ],
+      "profiles": [
+        {
+          "type": "jclcheck",
+          "schema": {
+            "type": "object",
+            "title": "JCLCheck Profile",
+            "description": "A JCLCheck profile is required to issue commands in the jcl command group that interact with JCLCheck. The JCLCheck profile contains your host and port for the JCLCheck instance of your choice.",
+            "properties": {
+              "host": {
+                "type": "string",
+                "optionDefinition": {
+                  "name": "host",
+                  "aliases": [
+                    "H"
+                  ],
+                  "type": "string",
+                  "description": "Host name of the JCLCheck API service that is running on the mainframe system.",
+                  "required": false,
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "port": {
+                "type": "number",
+                "optionDefinition": {
+                  "name": "port",
+                  "aliases": [
+                    "P"
+                  ],
+                  "type": "number",
+                  "description": "Port for the JCLCheck API service that is running on the mainframe system.",
+                  "required": false,
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "user": {
+                "type": "string",
+                "secure": true,
+                "optionDefinition": {
+                  "name": "user",
+                  "aliases": [
+                    "u"
+                  ],
+                  "type": "string",
+                  "description": "User name for authenticating connections to the JCLCheck API service that is running on the mainframe system.",
+                  "required": false,
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "password": {
+                "type": "string",
+                "secure": true,
+                "optionDefinition": {
+                  "name": "password",
+                  "aliases": [
+                    "pass",
+                    "pw"
+                  ],
+                  "type": "string",
+                  "description": "Password for authenticating connections to the JCLCheck API service that is running on the mainframe system.",
+                  "required": false,
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "basePath": {
+                "type": "string",
+                "optionDefinition": {
+                  "name": "base-path",
+                  "aliases": [
+                    "bp"
+                  ],
+                  "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
+                  "type": "string",
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "rejectUnauthorized": {
+                "type": "boolean",
+                "optionDefinition": {
+                  "name": "reject-unauthorized",
+                  "aliases": [
+                    "ru"
+                  ],
+                  "description": "Reject self-signed certificates.",
+                  "type": "boolean",
+                  "defaultValue": true,
+                  "required": false,
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "protocol": {
+                "type": "string",
+                "optionDefinition": {
+                  "name": "protocol",
+                  "aliases": [
+                    "o"
+                  ],
+                  "description": "Specifies protocol to use for JCLCheck connection (http or https).",
+                  "type": "string",
+                  "defaultValue": "https",
+                  "required": false,
+                  "allowableValues": {
+                    "values": [
+                      "http",
+                      "https"
+                    ],
+                    "caseSensitive": false
+                  },
+                  "group": "JCLCheck Connection Options"
+                }
+              },
+              "jclcheckOptions": {
+                "type": "string",
+                "optionDefinition": {
+                  "name": "jclcheck-options",
+                  "aliases": [
+                    "jo"
+                  ],
+                  "description": "The desired set of JCLCheck runtime options. Specify the options exactly as you would on the PARM= or OPTIONS DD on a batch run of JCLCheck. See the JCLCheck runtime options documentation for details on available runtime options. If you specify options that change the format of the JCLCheck reports, you should request '--raw-output'. Changing the format of the report will affect the ability to produce a structured API response.",
+                  "type": "stringOrEmpty",
+                  "required": false,
+                  "group": "JCLCheck Connection Options"
+                }
+              }
+            },
+            "required": []
+          },
+          "createProfileExamples": [
+            {
+              "options": "jcl123 --host zos123 --port 1234 --user ibmuser --pass myp4ss",
+              "description": "Create a JCLCheck profile named 'jcl123' to run JCLCheck at host zos123 and port 1234"
+            },
+            {
+              "options": "jcl123 --host zos123 --port 1234 --user ibmuser --pass myp4ss --jo \"NOAS NOAU NOHCD NOJCL NORES NOSIGN\"",
+              "description": "Create a JCLCheck profile with default set of JCLCheck runtime options specified"
+            }
+          ]
+        }
+      ],
+      "defaultHome": "C:\\Users\\ej608771/.jclcheck",
+      "definitions": [],
+      "overrides": {}
+    },
+    "cliDependency": {
+      "peerDepName": "@zowe/cli",
+      "peerDepVer": "^6.17.3"
+    },
+    "impDependency": {
+      "peerDepName": "@zowe/imperative",
+      "peerDepVer": "^4.7.3"
+    }
+  }
+]

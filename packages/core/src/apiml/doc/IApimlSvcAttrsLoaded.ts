@@ -8,14 +8,12 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+import {IApimlSvcAttrs } from "@zowe/imperative";
 
-// TODO Replace this stub with interface defined in Imperative
-export interface IApimlSvcAttrs {
-    apiId: string;
-    gatewayUrl?: string;
-    connProfType?: string;
-}
-
+/* Once getPluginApimlConfigs() has processed the loaded ImperativeConfig,
+ * the connProfType will be a required property in the resulting object.
+ */
 export interface IApimlSvcAttrsLoaded extends IApimlSvcAttrs {
     connProfType: string;
+    pluginName: string;
 }
