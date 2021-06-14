@@ -123,7 +123,18 @@ describe("APIML Services unit tests", () => {
     });
 
     describe("convertApimlProfileInfoToProfileConfig", () => {
-        const temp: any[] = [ //TODO: fix compile errors: IApimlProfileInfo [] = [
+        const testCases: IApimlProfileInfo[] = [
+            {
+                profName: "test0",
+                profType: "type0",
+                basePaths: [],
+                pluginConfigs: [{
+                  apiId: "test0-apiId",
+                  connProfType: "type0",
+                  pluginName: "type0-plugin-name"
+                }],
+                conflictTypes: []
+            },
             {
                 profName: "test1",
                 profType: "type1",
@@ -131,34 +142,79 @@ describe("APIML Services unit tests", () => {
                     "test1/v1",
                     "test1/v2",
                     "test1/v3"
+                ],
+                pluginConfigs: [],
+                conflictTypes: []
+            },
+            {
+                profName: "test2.1",
+                profType: "type2",
+                basePaths: [
+                    "test2.1/v1"
+                ],
+                pluginConfigs: [],
+                conflictTypes: [
+                    "serviceId"
                 ]
             },
             {
-                profName: "test2",
+                profName: "test2.2",
                 profType: "type2",
-                basePaths: []
+                basePaths: [
+                    "test2.2/v1"
+                ],
+                pluginConfigs: [],
+                conflictTypes: [
+                    "serviceId"
+                ]
             },
             {
                 profName: "test3",
                 profType: "type3",
                 basePaths: [
+                    "test3/v1",
                     "test3/v1"
+                ],
+                pluginConfigs: [],
+                conflictTypes: [
+                    "gatewayUrl"
                 ]
             },
             {
-                profName: "test4",
-                profType: "type4",
+                profName: "test5.1",
+                profType: "type5",
                 basePaths: [
-                    "test4/v1",
-                    "test4/v1"
+                    "test5/v1",
+                    "test5/v2"
+                ],
+                pluginConfigs: [],
+                conflictTypes: [
+                    "gatewayUrl",
+                    "serviceId"
                 ]
-            }
+            },
+            {
+                profName: "test5.2",
+                profType: "type5",
+                basePaths: [
+                    "test5/v1",
+                    "test5/v2"
+                ],
+                pluginConfigs: [],
+                conflictTypes: [
+                    "gatewayUrl",
+                    "serviceId"
+                ]
+            },
         ];
 
         it("should produce json object with commented conflicts", () => {
-            const expectedJson = `{
-    "properties": {},
+          const expectedJson = `{
     "profiles": {
+        "test0": {
+            "type": "type0",
+            "properties": {}
+        },
         "test1": {
             "type": "type1",
             "properties": {
@@ -169,29 +225,59 @@ describe("APIML Services unit tests", () => {
                 //"basePath": "test1/v3"
             }
         },
-        "test2": {
+        "test2.1": {
             "type": "type2",
-            "properties": {}
+            "properties": {
+                "basePath": "test2.1/v1"
+            }
+        },
+        "test2.2": {
+            "type": "type2",
+            "properties": {
+                "basePath": "test2.2/v1"
+            }
         },
         "test3": {
             "type": "type3",
             "properties": {
+                // Multiple base paths were detected for this service.
+                // Uncomment one of the lines below to use a different one.
                 "basePath": "test3/v1"
+                //"basePath": "test3/v1"
             }
         },
-        "test4": {
-            "type": "type4",
+        "test5.1": {
+            "type": "type5",
             "properties": {
                 // Multiple base paths were detected for this service.
                 // Uncomment one of the lines below to use a different one.
-                "basePath": "test4/v1"
-                //"basePath": "test4/v1"
+                "basePath": "test5/v1"
+                //"basePath": "test5/v2"
+            }
+        },
+        "test5.2": {
+            "type": "type5",
+            "properties": {
+                // Multiple base paths were detected for this service.
+                // Uncomment one of the lines below to use a different one.
+                "basePath": "test5/v1"
+                //"basePath": "test5/v2"
             }
         }
-    }
+    },
+    "defaults": {
+        "type0": "test0",
+        "type1": "test1",
+        "type2": "test2.1",
+        "type3": "test3",
+        "type5": "test5.1"
+    },
+    "plugins": [
+        "type0-plugin-name"
+    ]
 }`;
-            expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(temp), null, ConfigConstants.INDENT)).toMatchSnapshot();
-            expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(temp), null, ConfigConstants.INDENT)).toEqual(expectedJson);
+            expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCases), null, ConfigConstants.INDENT)).toMatchSnapshot();
+            expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCases), null, ConfigConstants.INDENT)).toEqual(expectedJson);
         });
     });
 

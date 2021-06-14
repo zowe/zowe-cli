@@ -10,6 +10,7 @@
 */
 
 import {
+import { AbstractSession, IConfig, IConfigLayer, IConfigProfile, ImperativeConfig, ImperativeError, ImperativeExpect, Logger,
     AbstractSession, IConfigProfile, ImperativeConfig, ImperativeError,
     ImperativeExpect, Logger, PluginManagementFacility, RestConstants, SessConstants
 } from "@zowe/imperative";
@@ -183,13 +184,24 @@ export class Services {
      *  }
      * @memberof Services
      */
-    public static convertApimlProfileInfoToProfileConfig(profileInfoList: IApimlProfileInfo[]): IConfigProfile {
+    public static convertApimlProfileInfoToProfileConfig(profileInfoList: IApimlProfileInfo[]): IConfig {
         const configProfile: IConfigProfile = {
             properties: {},
             profiles: {}
         };
 
+        const configDefaults: {[key: string]: string} = {};
+        const configPlugins: Set<string> = new Set<string>();
         profileInfoList.forEach((profileInfo: IApimlProfileInfo) => {
+
+            profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
+                configPlugins.add(pluginInfo.pluginName);
+            });
+
+            if (!configDefaults[profileInfo.profType]) {
+                configDefaults[profileInfo.profType] = profileInfo.profName;
+            }
+
             configProfile.profiles[profileInfo.profName] = {
                 type: profileInfo.profType,
                 properties: {}
@@ -210,6 +222,12 @@ export class Services {
                 );
             }
         });
-        return configProfile;
+
+        const configResult: IConfig = {
+          profiles: configProfile.profiles,
+          defaults: configDefaults,
+          plugins: [...configPlugins],
+        };
+        return configResult;
     }
 }
