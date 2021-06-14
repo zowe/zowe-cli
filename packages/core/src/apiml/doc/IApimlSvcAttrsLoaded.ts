@@ -8,7 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-import {IApimlSvcAttrs } from "@zowe/imperative";
+import { IApimlSvcAttrs } from "@zowe/imperative";
 
 /* Once getPluginApimlConfigs() has processed the loaded ImperativeConfig,
  * the connProfType will be a required property in the resulting object.
