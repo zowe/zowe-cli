@@ -205,7 +205,7 @@ describe("APIML Services unit tests", () => {
                     "gatewayUrl",
                     "serviceId"
                 ]
-            },
+            }
         ];
 
         it("should produce json object with commented conflicts", () => {
