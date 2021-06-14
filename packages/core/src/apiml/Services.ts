@@ -224,7 +224,7 @@ export class Services {
         const configResult: IConfig = {
           profiles: configProfile.profiles,
           defaults: configDefaults,
-          plugins: [...configPlugins],
+          plugins: [...configPlugins]
         };
         return configResult;
     }
