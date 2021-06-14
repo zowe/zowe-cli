@@ -9,8 +9,12 @@
 *
 */
 
+import { IApimlSvcAttrsLoaded } from "./IApimlSvcAttrsLoaded";
+
 export interface IApimlProfileInfo {
     profName: string;
     profType: string;
     basePaths: string[];
+    pluginConfigs: IApimlSvcAttrsLoaded[];
+    conflictTypes: ("gatewayUrl" | "serviceId")[];
 }
