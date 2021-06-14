@@ -9,10 +9,8 @@
 *
 */
 
-import {
-import { AbstractSession, IConfig, IConfigLayer, IConfigProfile, ImperativeConfig, ImperativeError, ImperativeExpect, Logger,
-    AbstractSession, IConfigProfile, ImperativeConfig, ImperativeError,
-    ImperativeExpect, Logger, PluginManagementFacility, RestConstants, SessConstants
+import { AbstractSession, IConfig, IConfigLayer, IConfigProfile, ImperativeConfig, ImperativeError,
+         ImperativeExpect, Logger, PluginManagementFacility, RestConstants, SessConstants
 } from "@zowe/imperative";
 import { ZosmfRestClient } from "../rest/ZosmfRestClient";
 import { ApimlConstants } from "./ApimlConstants";
