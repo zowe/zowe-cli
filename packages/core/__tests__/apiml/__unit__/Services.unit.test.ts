@@ -11,7 +11,7 @@
 
 import { Services } from "../../../src/apiml/Services";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ConfigConstants, ImperativeError, RestConstants } from "@zowe/imperative";
+import { ConfigConstants, ImperativeError, RestConstants, Session } from "@zowe/imperative";
 import { IApimlProfileInfo } from "../../../src/apiml/doc/IApimlProfileInfo";
 import * as JSONC from "comment-json";
 
@@ -30,8 +30,37 @@ describe("APIML Services unit tests", () => {
     });
 
     describe("getServicesByConfig", () => {
-        it("should be tested", () => {
-            expect(true).toBe(false);
+        const basicSession: Partial<Session> = {
+            ISession: {
+                type: "basic",
+                user: "fakeUser",
+                password: "fakePassword"
+            }
+        };
+        const tokenSession: Partial<Session> = {
+            ISession: {
+                type: "token",
+                tokenType: "apimlAuthenticationToken",
+                tokenValue: "fakeToken"
+            }
+        };
+
+        it("should require username for basic sessions", async () => {
+            let caughtError;
+
+            try {
+                await Services.getServicesByConfig({
+                    ISession: {
+                        type: "basic",
+                        password: "fakePassword"
+                    }
+                } as any, []);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toBe("Token value for API ML token login must be defined.");
         });
     });
 
@@ -103,8 +132,8 @@ describe("APIML Services unit tests", () => {
         }
     }
 }`;
-        expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(temp), null, ConfigConstants.INDENT)).toMatchSnapshot();
-        expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(temp), null, ConfigConstants.INDENT)).toEqual(expectedJson);
+            expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(temp), null, ConfigConstants.INDENT)).toMatchSnapshot();
+            expect(JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(temp), null, ConfigConstants.INDENT)).toEqual(expectedJson);
         });
     });
 

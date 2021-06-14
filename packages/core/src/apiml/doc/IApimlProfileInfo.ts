@@ -16,4 +16,5 @@ export interface IApimlProfileInfo {
     profType: string;
     basePaths: string[];
     pluginConfigs: IApimlSvcAttrsLoaded[];
+    conflictTypes: ("gatewayUrl" | "serviceId")[];
 }

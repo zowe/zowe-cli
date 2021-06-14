@@ -46,11 +46,13 @@ export class Services {
         }
 
         const client = new ZosmfRestClient(session);
+        // TODO What about getExpectJSON?
         await client.request({
             request: "GET",
             resource: ApimlConstants.SERVICES_ENDPOINT
         });
 
+        // TODO Is it safe to assume good response code always 200?
         if (client.response.statusCode !== RestConstants.HTTP_STATUS_200) {
             throw new ImperativeError((client as any).populateError({
                 msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
@@ -64,22 +66,27 @@ export class Services {
         for (const service of JSON.parse(client.dataString) as IApimlService[]) {
             if (service.apiml.authentication[0]?.supportsSso) {
                 let profInfo: IApimlProfileInfo;
+                let matchedGatewayUrl = false;
                 for (const config of configs) {
                     for (const apiInfo of service.apiml.apiInfo) {
-                        if (apiInfo.apiId === config.apiId && apiInfo.gatewayUrl === config.gatewayUrl) {
-                            // TODO Ensure base paths are ordered correctly
+                        if (apiInfo.apiId === config.apiId) {
                             if (profInfo == null) {
                                 profInfo = {
                                     profName: service.serviceId,
                                     profType: config.connProfType,
                                     basePaths: [apiInfo.basePath],
-                                    pluginConfigs: [config]
+                                    pluginConfigs: [config],
+                                    conflictTypes: []
                                 };
                             } else {
-                                if (!apiInfo.defaultApi) {
-                                    profInfo.basePaths.push(apiInfo.basePath);
-                                } else {
+                                if (apiInfo.gatewayUrl === config.gatewayUrl) {
+                                    // Don't always add to front of list
                                     profInfo.basePaths.unshift(apiInfo.basePath);
+                                    matchedGatewayUrl = true;
+                                } else if (apiInfo.defaultApi && !matchedGatewayUrl) {
+                                    profInfo.basePaths.unshift(apiInfo.basePath);
+                                } else {
+                                    profInfo.basePaths.push(apiInfo.basePath);
                                 }
                                 profInfo.pluginConfigs.push(config);
                             }
@@ -94,18 +101,23 @@ export class Services {
         }
 
         // Find conflicts in profile info array
-        // TODO Multiple API IDs for one profile type (across different plugins)
-        // TODO Multiple gateway URLs for one profile type (across different plugins)
-        // TODO Multiple service IDs for one profile type (across separate profile info objects)
-        // TODO Need a way to handle conflicts
-        /* TODO Handle multiple base paths
-        We will perform the following checks and pick the first base path that matches:
-        - Check CLI plug-ins to see if any of them define a preferred API version for this service.
-          If so, pick the base path that matches “api/vX” where X is the preferred version.
-        - Check if $[*].apiml.apiInfo[*].defaultApi property is true on any of the API info objects returned.
-          If so, use the corresponding base path.
-        - Use the base path of the first API info object in the array ($[*].apiml.apiInfo[0].basePath).
-        */
+        for (const profInfo of profInfos) {
+            const gatewayUrlsByPlugin: { [key: string]: Set<string> } = {};
+            for (const pluginCfg of profInfo.pluginConfigs.filter(cfg => cfg.gatewayUrl)) {
+                gatewayUrlsByPlugin[pluginCfg.pluginName] = new Set([
+                    ...(gatewayUrlsByPlugin[pluginCfg.pluginName] || []),
+                    pluginCfg.gatewayUrl
+                ]);
+            }
+            const gatewayUrls = new Set(Object.values(gatewayUrlsByPlugin));
+            if (gatewayUrls.size > 1) {
+                profInfo.conflictTypes.push("gatewayUrl");
+            }
+
+            if (profInfos.filter(info => info.profType === profInfo.profType).length > 1) {
+                profInfo.conflictTypes.push("serviceId");
+            }
+        }
 
         return profInfos;
     }
