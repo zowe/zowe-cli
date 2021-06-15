@@ -209,7 +209,7 @@ describe("APIML Services unit tests", () => {
         ];
 
         it("should produce json object with commented conflicts", () => {
-          const expectedJson = `{
+            const expectedJson = `{
     "profiles": {
         "test0": {
             "type": "type0",
