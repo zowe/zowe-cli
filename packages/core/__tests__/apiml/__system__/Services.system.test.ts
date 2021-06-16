@@ -53,7 +53,7 @@ describe("APIML Services system test", () => {
 
         expect(caughtError).toBeUndefined();
         const zosmfProfileInfo = response.find(({ profType }) => profType === "zosmf");
-        expect(zosmfProfileInfo).toBeTruthy();
+        expect(zosmfProfileInfo).toBeDefined();
         expect(new Array(...zosmfProfileInfo.pluginConfigs)).toEqual(pluginConfigs);
     });
 });
