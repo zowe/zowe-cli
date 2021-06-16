@@ -40,12 +40,6 @@ function genApimlService(apiId: string, serviceId: string, apiVersions: number[]
 
 describe("APIML Services unit tests", () => {
 
-    describe("Constants", () => {
-        it("should be tested", () => {
-            expect(true).toBe(false);
-        });
-    });
-
     describe("getPluginApimlConfigs", () => {
         it("should throw an error if Imperative.init has NOT been called", () => {
             let caughtError: Error;
