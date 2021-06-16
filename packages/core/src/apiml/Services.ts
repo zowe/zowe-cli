@@ -9,10 +9,8 @@
 *
 */
 
-import { AbstractSession, IConfig, IConfigLayer, IConfigProfile, ImperativeConfig, ImperativeError,
-         ImperativeExpect, Logger, PluginManagementFacility, RestConstants, SessConstants
-} from "@zowe/imperative";
-import { ZosmfRestClient } from "../rest/ZosmfRestClient";
+import { AbstractSession, IConfig, IConfigProfile, ImperativeConfig, ImperativeExpect, Logger,
+         PluginManagementFacility, RestClient } from "@zowe/imperative";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
 import { IApimlService } from "./doc/IApimlService";
@@ -78,56 +76,46 @@ export class Services {
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.tokenValue, "Token value for API ML token login must be defined.");
         }
 
-        const client = new ZosmfRestClient(session);
-        // TODO What about getExpectJSON?
-        await client.request({
-            request: "GET",
-            resource: ApimlConstants.SERVICES_ENDPOINT
-        });
+        // Perform GET request on APIML services endpoint
+        const services = await RestClient.getExpectJSON<IApimlService[]>(session, ApimlConstants.SERVICES_ENDPOINT);
+        const ssoServices = services.filter((service) => service.apiml.authentication?.[0]?.supportsSso);
 
-        // TODO Is it safe to assume good response code always 200?
-        if (client.response.statusCode !== RestConstants.HTTP_STATUS_200) {
-            throw new ImperativeError((client as any).populateError({
-                msg: `REST API Failure with HTTP(S) status ${client.response.statusCode}`,
-                causeErrors: client.dataString,
-                source: SessConstants.HTTP_PROTOCOL
-            }));
-        }
-
-        // Get profile info for APIML services that match the CLI's APIML service attributes
         const profInfos: IApimlProfileInfo[] = [];
-        for (const service of JSON.parse(client.dataString) as IApimlService[]) {
-            if (service.apiml.authentication[0]?.supportsSso) {
-                let profInfo: IApimlProfileInfo;
-                let matchedGatewayUrl = false;
-                for (const config of configs) {
-                    for (const apiInfo of service.apiml.apiInfo) {
-                        if (apiInfo.apiId === config.apiId) {
-                            if (profInfo == null) {
-                                profInfo = {
-                                    profName: service.serviceId,
-                                    profType: config.connProfType,
-                                    basePaths: [apiInfo.basePath],
-                                    pluginConfigs: [config],
-                                    conflictTypes: []
-                                };
+        // Loop through every APIML service that supports SSO
+        for (const service of ssoServices) {
+            // Loop through every API advertised by this service
+            for (const apiInfo of service.apiml.apiInfo) {
+                // Loop through any IApimlSvcAttrs object with a matching API ID
+                for (const config of configs.filter(cfg => apiInfo.apiId === cfg.apiId)) {
+                    if (config.gatewayUrl == null || apiInfo.gatewayUrl === config.gatewayUrl) {
+                        // Update or create IApimlProfileInfo object for this service ID and profile type
+                        let profInfo = profInfos.find(({ profName, profType }) => profName === service.serviceId && profType === config.connProfType);
+                        if (profInfo == null) {
+                            profInfo = {
+                                profName: service.serviceId,
+                                profType: config.connProfType,
+                                basePaths: [],
+                                pluginConfigs: new Set(),
+                                conflictTypes: []
+                            };
+                            profInfos.push(profInfo);
+                        }
+
+                        if (!profInfo.basePaths.includes(apiInfo.basePath)) {
+                            if (apiInfo.gatewayUrl === config.gatewayUrl || apiInfo.defaultApi) {
+                                const numGatewayUrls = new Array(...profInfo.pluginConfigs).reduce((urls, cfg) => {
+                                    if (cfg.gatewayUrl != null && !urls.includes(cfg.gatewayUrl)) {
+                                        urls.push(cfg.gatewayUrl);
+                                    }
+                                    return urls;
+                                }, []).length;
+                                profInfo.basePaths.splice(numGatewayUrls, 0, apiInfo.basePath);
                             } else {
-                                if (apiInfo.gatewayUrl === config.gatewayUrl) {
-                                    // Don't always add to front of list
-                                    profInfo.basePaths.unshift(apiInfo.basePath);
-                                    matchedGatewayUrl = true;
-                                } else if (apiInfo.defaultApi && !matchedGatewayUrl) {
-                                    profInfo.basePaths.unshift(apiInfo.basePath);
-                                } else {
-                                    profInfo.basePaths.push(apiInfo.basePath);
-                                }
-                                profInfo.pluginConfigs.push(config);
+                                profInfo.basePaths.push(apiInfo.basePath);
                             }
                         }
-                    }
-                    if (profInfo != null) {
-                        profInfos.push(profInfo);
-                        break;
+
+                        profInfo.pluginConfigs.add(config);
                     }
                 }
             }
@@ -136,19 +124,18 @@ export class Services {
         // Find conflicts in profile info array
         for (const profInfo of profInfos) {
             const gatewayUrlsByPlugin: { [key: string]: Set<string> } = {};
-            for (const pluginCfg of profInfo.pluginConfigs.filter(cfg => cfg.gatewayUrl)) {
+            for (const pluginCfg of new Array(...profInfo.pluginConfigs).filter(cfg => cfg.gatewayUrl)) {
                 gatewayUrlsByPlugin[pluginCfg.pluginName] = new Set([
                     ...(gatewayUrlsByPlugin[pluginCfg.pluginName] || []),
                     pluginCfg.gatewayUrl
                 ]);
             }
-            const gatewayUrls = new Set(Object.values(gatewayUrlsByPlugin));
-            if (gatewayUrls.size > 1) {
-                profInfo.conflictTypes.push("gatewayUrl");
+            if (new Set(Object.values(gatewayUrlsByPlugin)).size > 1) {
+                profInfo.conflictTypes.push("basePaths");
             }
 
             if (profInfos.filter(info => info.profType === profInfo.profType).length > 1) {
-                profInfo.conflictTypes.push("serviceId");
+                profInfo.conflictTypes.push("profType");
             }
         }
 
@@ -222,9 +209,9 @@ export class Services {
         });
 
         const configResult: IConfig = {
-          profiles: configProfile.profiles,
-          defaults: configDefaults,
-          plugins: [...configPlugins]
+            profiles: configProfile.profiles,
+            defaults: configDefaults,
+            plugins: [...configPlugins]
         };
         return configResult;
     }

@@ -10,12 +10,33 @@
 */
 
 import { Services } from "../../../src/apiml/Services";
-import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { ConfigConstants, ImperativeConfig, ImperativeError, PluginManagementFacility,
-         RestConstants, Session
-} from "@zowe/imperative";
+import { ConfigConstants, ImperativeConfig, ImperativeError, PluginManagementFacility, RestClient,
+         Session } from "@zowe/imperative";
 import { IApimlProfileInfo } from "../../../src/apiml/doc/IApimlProfileInfo";
 import * as JSONC from "comment-json";
+import { IApimlService } from "../../../src/apiml/doc/IApimlService";
+import { IApimlSvcAttrsLoaded } from "../../../src/apiml/doc/IApimlSvcAttrsLoaded";
+
+function genApimlService(apiId: string, serviceId: string, apiVersions: number[] = [1]): IApimlService {
+    return {
+        serviceId,
+        status: "UP",
+        apiml: {
+            apiInfo: apiVersions.map(apiVersion => (
+                {
+                    apiId,
+                    gatewayUrl: `api/v${apiVersion}`,
+                    basePath: `/${serviceId}/api/v${apiVersion}`
+                }
+            )) as any,
+            service: null,
+            authentication: [{
+                supportsSso: true
+            } as any]
+        },
+        instances: []
+    };
+}
 
 describe("APIML Services unit tests", () => {
 
@@ -88,13 +109,6 @@ describe("APIML Services unit tests", () => {
     });
 
     describe("getServicesByConfig", () => {
-        const basicSession: Partial<Session> = {
-            ISession: {
-                type: "basic",
-                user: "fakeUser",
-                password: "fakePassword"
-            }
-        };
         const tokenSession: Partial<Session> = {
             ISession: {
                 type: "token",
@@ -103,7 +117,7 @@ describe("APIML Services unit tests", () => {
             }
         };
 
-        it("should require username for basic sessions", async () => {
+        it("should require user name for basic sessions", async () => {
             let caughtError;
 
             try {
@@ -118,7 +132,240 @@ describe("APIML Services unit tests", () => {
             }
 
             expect(caughtError).toBeDefined();
-            expect(caughtError.message).toBe("Token value for API ML token login must be defined.");
+            expect(caughtError.message).toContain("User name for API ML basic login must be defined.");
+        });
+
+        it("should require password for basic sessions", async () => {
+            let caughtError;
+
+            try {
+                await Services.getServicesByConfig({
+                    ISession: {
+                        type: "basic",
+                        user: "fakeUser"
+                    }
+                } as any, []);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain("Password for API ML basic login must be defined.");
+        });
+
+        it("should require APIML authentication token type for token sessions", async () => {
+            let caughtError;
+
+            try {
+                await Services.getServicesByConfig({
+                    ISession: {
+                        type: "token",
+                        tokenType: "fakeToken",
+                        tokenValue: "fakeToken"
+                    }
+                } as any, []);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain("Token type for API ML token login must be apimlAuthenticationToken.");
+        });
+
+        it("should require token value for token sessions", async () => {
+            let caughtError;
+
+            try {
+                await Services.getServicesByConfig({
+                    ISession: {
+                        type: "token",
+                        tokenType: "apimlAuthenticationToken"
+                    }
+                } as any, []);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain("Token value for API ML token login must be defined.");
+        });
+
+        it("should fail if RestClient throws an error", async () => {
+            jest.spyOn(RestClient, "getExpectJSON").mockImplementationOnce(() => {
+                throw new Error("Request failed successfully");
+            });
+            let caughtError;
+
+            try {
+                await Services.getServicesByConfig(tokenSession as any, []);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain("Request failed successfully");
+        });
+
+        it("should parse simple service list", async () => {
+            const services: IApimlService[] = [
+                genApimlService("fakeApi", "badService"),
+                genApimlService("fakeApi", "goodService")
+            ];
+            delete services[0].apiml.authentication;
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+
+            expect(response).toEqual([
+                {
+                    profName: "goodService",
+                    profType: "fakeProfile",
+                    basePaths: ["/goodService/api/v1"],
+                    pluginConfigs: new Set(configs),
+                    conflictTypes: []
+                }
+            ]);
+        });
+
+        it("should parse complex service list with correct base path priority", async () => {
+            const services: IApimlService[] = [
+                genApimlService("fakeApi1", "redService", [1, 2]),
+                genApimlService("fakeApi2", "greenService", [1, 2, 3]),  // tslint:disable-line no-magic-numbers
+                genApimlService("fakeApi3", "blueService", [2, 1])
+            ];
+            services[0].apiml.apiInfo[0].defaultApi = true;
+            services[1].apiml.apiInfo[1].defaultApi = true;
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi1",
+                    connProfType: "fakeProfile1",
+                    gatewayUrl: "api/v2",
+                    pluginName: "@zowe/fake-plugin"
+                },
+                {
+                    apiId: "fakeApi2",
+                    connProfType: "fakeProfile2",
+                    pluginName: "@zowe/fake-plugin"
+                },
+                {
+                    apiId: "fakeApi3",
+                    connProfType: "fakeProfile3",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+
+            expect(response).toEqual([
+                {
+                    profName: "redService",
+                    profType: "fakeProfile1",
+                    basePaths: [
+                        "/redService/api/v2"
+                    ],
+                    pluginConfigs: new Set([configs[0]]),
+                    conflictTypes: []
+                },
+                {
+                    profName: "greenService",
+                    profType: "fakeProfile2",
+                    basePaths: [
+                        "/greenService/api/v2",
+                        "/greenService/api/v1",
+                        "/greenService/api/v3"
+                    ],
+                    pluginConfigs: new Set([configs[1]]),
+                    conflictTypes: []
+                },
+                {
+                    profName: "blueService",
+                    profType: "fakeProfile3",
+                    basePaths: [
+                        "/blueService/api/v2",
+                        "/blueService/api/v1"
+                    ],
+                    pluginConfigs: new Set([configs[2]]),
+                    conflictTypes: []
+                }
+            ]);
+        });
+
+        it("should detect base path conflict", async () => {
+            const services: IApimlService[] = [
+                genApimlService("fakeApi", "myService", [1, 2])
+            ];
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    gatewayUrl: "api/v1",
+                    pluginName: "@zowe/fake-plugin"
+                },
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    gatewayUrl: "api/v2",
+                    pluginName: "@zowe/another-fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+
+            expect(response).toEqual([
+                {
+                    profName: "myService",
+                    profType: "fakeProfile",
+                    basePaths: [
+                        "/myService/api/v1",
+                        "/myService/api/v2"
+                    ],
+                    pluginConfigs: new Set(configs),
+                    conflictTypes: ["basePaths"]
+                }
+            ]);
+        });
+
+        it("should detect profile type conflict", async () => {
+            const services: IApimlService[] = [
+                genApimlService("fakeApi", "oldService", [1]),
+                genApimlService("fakeApi", "newService", [2])
+            ];
+            const configs: IApimlSvcAttrsLoaded[] = [
+                {
+                    apiId: "fakeApi",
+                    connProfType: "fakeProfile",
+                    pluginName: "@zowe/fake-plugin"
+                }
+            ];
+
+            jest.spyOn(RestClient, "getExpectJSON").mockResolvedValueOnce(services);
+            const response = await Services.getServicesByConfig(tokenSession as any, configs);
+
+            expect(response).toEqual([
+                {
+                    profName: "oldService",
+                    profType: "fakeProfile",
+                    basePaths: ["/oldService/api/v1"],
+                    pluginConfigs: new Set([configs[0]]),
+                    conflictTypes: ["profType"]
+                },
+                {
+                    profName: "newService",
+                    profType: "fakeProfile",
+                    basePaths: ["/newService/api/v2"],
+                    pluginConfigs: new Set([configs[0]]),
+                    conflictTypes: ["profType"]
+                }
+            ]);
         });
     });
 
@@ -128,11 +375,11 @@ describe("APIML Services unit tests", () => {
                 profName: "test0",
                 profType: "type0",
                 basePaths: [],
-                pluginConfigs: [{
-                  apiId: "test0-apiId",
-                  connProfType: "type0",
-                  pluginName: "type0-plugin-name"
-                }],
+                pluginConfigs: new Set([{
+                    apiId: "test0-apiId",
+                    connProfType: "type0",
+                    pluginName: "type0-plugin-name"
+                }]),
                 conflictTypes: []
             },
             {
@@ -143,7 +390,7 @@ describe("APIML Services unit tests", () => {
                     "test1/v2",
                     "test1/v3"
                 ],
-                pluginConfigs: [],
+                pluginConfigs: new Set(),
                 conflictTypes: []
             },
             {
@@ -152,9 +399,9 @@ describe("APIML Services unit tests", () => {
                 basePaths: [
                     "test2.1/v1"
                 ],
-                pluginConfigs: [],
+                pluginConfigs: new Set(),
                 conflictTypes: [
-                    "serviceId"
+                    "profType"
                 ]
             },
             {
@@ -163,9 +410,9 @@ describe("APIML Services unit tests", () => {
                 basePaths: [
                     "test2.2/v1"
                 ],
-                pluginConfigs: [],
+                pluginConfigs: new Set(),
                 conflictTypes: [
-                    "serviceId"
+                    "profType"
                 ]
             },
             {
@@ -175,9 +422,9 @@ describe("APIML Services unit tests", () => {
                     "test3/v1",
                     "test3/v1"
                 ],
-                pluginConfigs: [],
+                pluginConfigs: new Set(),
                 conflictTypes: [
-                    "gatewayUrl"
+                    "basePaths"
                 ]
             },
             {
@@ -187,10 +434,10 @@ describe("APIML Services unit tests", () => {
                     "test5/v1",
                     "test5/v2"
                 ],
-                pluginConfigs: [],
+                pluginConfigs: new Set(),
                 conflictTypes: [
-                    "gatewayUrl",
-                    "serviceId"
+                    "basePaths",
+                    "profType"
                 ]
             },
             {
@@ -200,10 +447,10 @@ describe("APIML Services unit tests", () => {
                     "test5/v1",
                     "test5/v2"
                 ],
-                pluginConfigs: [],
+                pluginConfigs: new Set(),
                 conflictTypes: [
-                    "gatewayUrl",
-                    "serviceId"
+                    "basePaths",
+                    "profType"
                 ]
             }
         ];
