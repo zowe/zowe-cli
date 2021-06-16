@@ -61,11 +61,16 @@ export class Services {
     }
 
     /**
-     * Perform APIML login to obtain LTPA2 or other token types.
+     * Calls the services endpoint of the APIML gateway to obtain a list of
+     * services that support Single Sign-On. This list is compared against a
+     * list of APIML service attributes defined in CLI plug-in configs. When a
+     * service's API ID is present in both lists, a profile info object is
+     * generated to store CLI profile info for connecting to that service.
      * @static
-     * @param {AbstractSession} session
-     * @returns
-     * @memberof Login
+     * @param session Session with APIML connection info
+     * @param configs APIML service attributes defined by CLI plug-ins
+     * @returns List of objects containing profile info for APIML services
+     * @memberof Services
      */
     public static async getServicesByConfig(session: AbstractSession, configs: IApimlSvcAttrsLoaded[]): Promise<IApimlProfileInfo[]> {
         Logger.getAppLogger().trace("Services.getByConfig()");
@@ -80,7 +85,7 @@ export class Services {
 
         // Perform GET request on APIML services endpoint
         const services = await RestClient.getExpectJSON<IApimlService[]>(session, ApimlConstants.SERVICES_ENDPOINT);
-        const ssoServices = services.filter((service) => service.apiml.authentication?.[0]?.supportsSso);
+        const ssoServices = services.filter(({ apiml }) => apiml.authentication?.[0]?.supportsSso);
 
         const profInfos: IApimlProfileInfo[] = [];
         // Loop through every APIML service that supports SSO
@@ -88,7 +93,7 @@ export class Services {
             // Loop through every API advertised by this service
             for (const apiInfo of service.apiml.apiInfo) {
                 // Loop through any IApimlSvcAttrs object with a matching API ID
-                for (const config of configs.filter(cfg => apiInfo.apiId === cfg.apiId)) {
+                for (const config of configs.filter(({ apiId }) => apiId === apiInfo.apiId)) {
                     if (config.gatewayUrl == null || apiInfo.gatewayUrl === config.gatewayUrl) {
                         // Update or create IApimlProfileInfo object for this service ID and profile type
                         let profInfo = profInfos.find(({ profName, profType }) => profName === service.serviceId && profType === config.connProfType);
@@ -136,7 +141,7 @@ export class Services {
                 profInfo.conflictTypes.push("basePaths");
             }
 
-            if (profInfos.filter(info => info.profType === profInfo.profType).length > 1) {
+            if (profInfos.filter(({ profType }) => profType === profInfo.profType).length > 1) {
                 profInfo.conflictTypes.push("profType");
             }
         }
