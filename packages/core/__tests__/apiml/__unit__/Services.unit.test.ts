@@ -428,11 +428,11 @@ describe("APIML Services unit tests", () => {
                 ]
             },
             {
-                profName: "test5.1",
-                profType: "type5",
+                profName: "test4.1",
+                profType: "type4",
                 basePaths: [
-                    "test5/v1",
-                    "test5/v2"
+                    "test4/v1",
+                    "test4/v2"
                 ],
                 pluginConfigs: new Set(),
                 conflictTypes: [
@@ -441,11 +441,11 @@ describe("APIML Services unit tests", () => {
                 ]
             },
             {
-                profName: "test5.2",
-                profType: "type5",
+                profName: "test4.2",
+                profType: "type4",
                 basePaths: [
-                    "test5/v1",
-                    "test5/v2"
+                    "test4/v1",
+                    "test4/v2"
                 ],
                 pluginConfigs: new Set(),
                 conflictTypes: [
@@ -467,9 +467,9 @@ describe("APIML Services unit tests", () => {
             "properties": {
                 // Multiple base paths were detected for this service.
                 // Uncomment one of the lines below to use a different one.
-                "basePath": "test1/v1"
                 //"basePath": "test1/v2"
                 //"basePath": "test1/v3"
+                "basePath": "test1/v1"
             }
         },
         "test2.1": {
@@ -489,35 +489,41 @@ describe("APIML Services unit tests", () => {
             "properties": {
                 // Multiple base paths were detected for this service.
                 // Uncomment one of the lines below to use a different one.
-                "basePath": "test3/v1"
                 //"basePath": "test3/v1"
+                "basePath": "test3/v1"
             }
         },
-        "test5.1": {
-            "type": "type5",
+        "test4.1": {
+            "type": "type4",
             "properties": {
                 // Multiple base paths were detected for this service.
                 // Uncomment one of the lines below to use a different one.
-                "basePath": "test5/v1"
-                //"basePath": "test5/v2"
+                //"basePath": "test4/v2"
+                "basePath": "test4/v1"
             }
         },
-        "test5.2": {
-            "type": "type5",
+        "test4.2": {
+            "type": "type4",
             "properties": {
                 // Multiple base paths were detected for this service.
                 // Uncomment one of the lines below to use a different one.
-                "basePath": "test5/v1"
-                //"basePath": "test5/v2"
+                //"basePath": "test4/v2"
+                "basePath": "test4/v1"
             }
         }
     },
     "defaults": {
         "type0": "test0",
         "type1": "test1",
-        "type2": "test2.1",
         "type3": "test3",
-        "type5": "test5.1"
+        // Multiple services were detected.
+        // Uncomment one of the lines below to set a different default
+        //"type2": "test2.2"
+        "type2": "test2.1",
+        // Multiple services were detected.
+        // Uncomment one of the lines below to set a different default
+        //"type4": "test4.2"
+        "type4": "test4.1"
     },
     "plugins": [
         "type0-plugin-name"

@@ -15,6 +15,8 @@ import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
 import { IApimlService } from "./doc/IApimlService";
 import { IApimlSvcAttrsLoaded } from "./doc/IApimlSvcAttrsLoaded";
+import * as JSONC from "comment-json";
+import { ConfigConstants } from "../../../../../imperative/lib";
 
 /**
  * Class to handle listing services on APIML gateway.
@@ -175,8 +177,15 @@ export class Services {
             profiles: {}
         };
 
-        const configDefaults: {[key: string]: string} = {};
+        let configDefaults: {[key: string]: string} = {};
+        const conflictingDefaults: {[key: string]: string[]} = {};
         const configPlugins: Set<string> = new Set<string>();
+
+        const _genCommentsHelper = (key: string, elements: string[]): string => {
+            if (elements == null) return "";
+            return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')}"`;
+        }
+
         profileInfoList.forEach((profileInfo: IApimlProfileInfo) => {
 
             profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
@@ -185,6 +194,11 @@ export class Services {
 
             if (!configDefaults[profileInfo.profType]) {
                 configDefaults[profileInfo.profType] = profileInfo.profName;
+            } else {
+                if (!conflictingDefaults[profileInfo.profType]) {
+                    conflictingDefaults[profileInfo.profType] = [];
+                }
+                conflictingDefaults[profileInfo.profType].push(profileInfo.profName);
             }
 
             configProfile.profiles[profileInfo.profName] = {
@@ -196,17 +210,31 @@ export class Services {
             if (basePaths.length === 1) {
                 configProfile.profiles[profileInfo.profName].properties.basePath = basePaths[0];
             } else if (basePaths.length > 1) {
-                const JSONC = require("comment-json");
+                const defaultBasePath = basePaths.shift();
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
                     {
                         // Multiple base paths were detected for this service.
                         // Uncomment one of the lines below to use a different one.
-                        "basePath": "${basePaths.shift()}"
-                        //"basePath": "${basePaths.length === 1 ? basePaths[0] : basePaths.join('"\n//"basePath": "')}"
+                        ${_genCommentsHelper("basePath", basePaths)}
+                        "basePath": "${defaultBasePath}"
                     }`
                 );
             }
         });
+
+        for (const defaultKey in conflictingDefaults) {
+            if (configDefaults[defaultKey] != null) {
+                const trueDefault = configDefaults[defaultKey];
+                delete configDefaults[defaultKey];
+
+                configDefaults = JSONC.parse(`${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)},
+                    // Multiple services were detected.
+                    // Uncomment one of the lines below to set a different default
+                    ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
+                    "${defaultKey}": "${trueDefault}"
+                }`);
+            }
+        }
 
         const configResult: IConfig = {
             profiles: configProfile.profiles,
