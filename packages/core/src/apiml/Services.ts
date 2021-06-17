@@ -130,17 +130,42 @@ export class Services {
 
         // Find conflicts in profile info array
         for (const profInfo of profInfos) {
+            // If multiple CLI plug-ins require different gateway URLs for the
+            // same API ID and CLI profile type, we have a conflict because the
+            // plugins expect different base paths and may be incompatible.
+
+            // First we group gateway URLs by their associated CLI plug-in
             const gatewayUrlsByPlugin: { [key: string]: Set<string> } = {};
-            for (const pluginCfg of new Array(...profInfo.pluginConfigs).filter(cfg => cfg.gatewayUrl)) {
-                gatewayUrlsByPlugin[pluginCfg.pluginName] = new Set([
-                    ...(gatewayUrlsByPlugin[pluginCfg.pluginName] || []),
-                    pluginCfg.gatewayUrl
+            for (const { gatewayUrl, pluginName } of new Array(...profInfo.pluginConfigs).filter(cfg => cfg.gatewayUrl)) {
+                gatewayUrlsByPlugin[pluginName] = new Set([
+                    ...(gatewayUrlsByPlugin[pluginName] || []),
+                    gatewayUrl
                 ]);
             }
-            if (new Set(Object.values(gatewayUrlsByPlugin)).size > 1) {
-                profInfo.conflictTypes.push("basePaths");
+
+            if (Object.keys(gatewayUrlsByPlugin).length > 0) {
+                // Now we look for a gateway URL in common across all the plug-ins
+                const preferredGatewayUrl = new Array(...gatewayUrlsByPlugin[Object.keys(gatewayUrlsByPlugin)[0]])
+                    .find(gatewayUrl => {
+                        return new Array(...Object.values(gatewayUrlsByPlugin).slice(1))
+                            .every(gatewayUrls => new Array(...gatewayUrls).includes(gatewayUrl));
+                    });
+
+                if (preferredGatewayUrl == null) {
+                    // If no common gateway URL could be found, we have a conflict
+                    profInfo.conflictTypes.push("basePaths");
+                } else {
+                    // If common gateway URL was found, move its associated base path to the front of the list
+                    const preferredBasePath = profInfo.basePaths.find(basePath => basePath.endsWith(preferredGatewayUrl));
+                    if (preferredBasePath != null) {
+                        profInfo.basePaths = profInfo.basePaths.filter(basePath => basePath !== preferredBasePath);
+                        profInfo.basePaths.unshift(preferredBasePath);
+                    }
+                }
             }
 
+            // If multiple profile infos have the same type, we have a conflict
+            // because we don't know which profile should be the default.
             if (profInfos.filter(({ profType }) => profType === profInfo.profType).length > 1) {
                 profInfo.conflictTypes.push("profType");
             }

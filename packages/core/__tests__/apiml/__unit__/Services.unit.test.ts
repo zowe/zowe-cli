@@ -240,8 +240,20 @@ describe("APIML Services unit tests", () => {
                 {
                     apiId: "fakeApi1",
                     connProfType: "fakeProfile1",
+                    gatewayUrl: "api/v1",
+                    pluginName: "@zowe/fake-plugin"
+                },
+                {
+                    apiId: "fakeApi1",
+                    connProfType: "fakeProfile1",
                     gatewayUrl: "api/v2",
                     pluginName: "@zowe/fake-plugin"
+                },
+                {
+                    apiId: "fakeApi1",
+                    connProfType: "fakeProfile1",
+                    gatewayUrl: "api/v2",
+                    pluginName: "@zowe/another-fake-plugin"
                 },
                 {
                     apiId: "fakeApi2",
@@ -263,9 +275,10 @@ describe("APIML Services unit tests", () => {
                     profName: "redService",
                     profType: "fakeProfile1",
                     basePaths: [
-                        "/redService/api/v2"
+                        "/redService/api/v2",
+                        "/redService/api/v1"
                     ],
-                    pluginConfigs: new Set([configs[0]]),
+                    pluginConfigs: new Set(configs.slice(0, 3)),  // tslint:disable-line no-magic-numbers
                     conflictTypes: []
                 },
                 {
@@ -276,7 +289,7 @@ describe("APIML Services unit tests", () => {
                         "/greenService/api/v1",
                         "/greenService/api/v3"
                     ],
-                    pluginConfigs: new Set([configs[1]]),
+                    pluginConfigs: new Set([configs[3]]),  // tslint:disable-line no-magic-numbers
                     conflictTypes: []
                 },
                 {
@@ -286,7 +299,7 @@ describe("APIML Services unit tests", () => {
                         "/blueService/api/v2",
                         "/blueService/api/v1"
                     ],
-                    pluginConfigs: new Set([configs[2]]),
+                    pluginConfigs: new Set([configs[4]]),  // tslint:disable-line no-magic-numbers
                     conflictTypes: []
                 }
             ]);
