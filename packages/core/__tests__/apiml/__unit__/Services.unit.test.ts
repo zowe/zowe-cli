@@ -234,7 +234,6 @@ describe("APIML Services unit tests", () => {
                 genApimlService("fakeApi2", "greenService", [1, 2, 3]),  // tslint:disable-line no-magic-numbers
                 genApimlService("fakeApi3", "blueService", [2, 1])
             ];
-            services[0].apiml.apiInfo[0].defaultApi = true;
             services[1].apiml.apiInfo[1].defaultApi = true;
             const configs: IApimlSvcAttrsLoaded[] = [
                 {
@@ -275,8 +274,7 @@ describe("APIML Services unit tests", () => {
                     profName: "redService",
                     profType: "fakeProfile1",
                     basePaths: [
-                        "/redService/api/v2",
-                        "/redService/api/v1"
+                        "/redService/api/v2"
                     ],
                     pluginConfigs: new Set(configs.slice(0, 3)),  // tslint:disable-line no-magic-numbers
                     conflictTypes: []
@@ -307,19 +305,19 @@ describe("APIML Services unit tests", () => {
 
         it("should detect base path conflict", async () => {
             const services: IApimlService[] = [
-                genApimlService("fakeApi", "myService", [1, 2])
+                genApimlService("fakeApi1", "myService", [1, 2])
             ];
+            services[0].apiml.apiInfo[1].apiId = "fakeApi2";
             const configs: IApimlSvcAttrsLoaded[] = [
                 {
-                    apiId: "fakeApi",
+                    apiId: "fakeApi1",
                     connProfType: "fakeProfile",
                     gatewayUrl: "api/v1",
                     pluginName: "@zowe/fake-plugin"
                 },
                 {
-                    apiId: "fakeApi",
+                    apiId: "fakeApi2",
                     connProfType: "fakeProfile",
-                    gatewayUrl: "api/v2",
                     pluginName: "@zowe/another-fake-plugin"
                 }
             ];

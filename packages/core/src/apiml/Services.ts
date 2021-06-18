@@ -87,7 +87,7 @@ export class Services {
         const services = await RestClient.getExpectJSON<IApimlService[]>(session, ApimlConstants.SERVICES_ENDPOINT);
         const ssoServices = services.filter(({ apiml }) => apiml.authentication?.[0]?.supportsSso);
 
-        const profInfos: IApimlProfileInfo[] = [];
+        const profInfos: (IApimlProfileInfo & { basePathsByPlugin: { [key: string]: Set<string> }; })[] = [];
         // Loop through every APIML service that supports SSO
         for (const service of ssoServices) {
             // Loop through every API advertised by this service
@@ -103,19 +103,17 @@ export class Services {
                                 profType: config.connProfType,
                                 basePaths: [],
                                 pluginConfigs: new Set(),
-                                conflictTypes: []
+                                conflictTypes: [],
+                                basePathsByPlugin: {}
                             };
                             profInfos.push(profInfo);
                         }
 
                         if (!profInfo.basePaths.includes(apiInfo.basePath)) {
                             if (apiInfo.gatewayUrl === config.gatewayUrl || apiInfo.defaultApi) {
-                                const numGatewayUrls = new Array(...profInfo.pluginConfigs).reduce((urls, cfg) => {
-                                    if (cfg.gatewayUrl != null && !urls.includes(cfg.gatewayUrl)) {
-                                        urls.push(cfg.gatewayUrl);
-                                    }
-                                    return urls;
-                                }, []).length;
+                                const numGatewayUrls = new Set(new Array(...profInfo.pluginConfigs)
+                                    .filter(({ gatewayUrl }) => gatewayUrl)
+                                    .map(({ gatewayUrl }) => gatewayUrl)).size;
                                 profInfo.basePaths.splice(numGatewayUrls, 0, apiInfo.basePath);
                             } else {
                                 profInfo.basePaths.push(apiInfo.basePath);
@@ -123,6 +121,10 @@ export class Services {
                         }
 
                         profInfo.pluginConfigs.add(config);
+                        profInfo.basePathsByPlugin[config.pluginName] = new Set([
+                            ...(profInfo.basePathsByPlugin[config.pluginName] || []),
+                            apiInfo.basePath
+                        ]);
                     }
                 }
             }
@@ -130,39 +132,19 @@ export class Services {
 
         // Find conflicts in profile info array
         for (const profInfo of profInfos) {
-            // If multiple CLI plug-ins require different gateway URLs for the
-            // same API ID and CLI profile type, we have a conflict because the
-            // plugins expect different base paths and may be incompatible.
+            // If multiple CLI plug-ins require different base paths for the
+            // same service ID and CLI profile type, we have a conflict because
+            // the plugins expect different base paths and may be incompatible.
 
-            // First we group gateway URLs by their associated CLI plug-in
-            const gatewayUrlsByPlugin: { [key: string]: Set<string> } = {};
-            for (const { gatewayUrl, pluginName } of new Array(...profInfo.pluginConfigs).filter(cfg => cfg.gatewayUrl)) {
-                gatewayUrlsByPlugin[pluginName] = new Set([
-                    ...(gatewayUrlsByPlugin[pluginName] || []),
-                    gatewayUrl
-                ]);
+            // Find the intersection of base path sets for all CLI plug-ins
+            const basePathSets = Object.values(profInfo.basePathsByPlugin).map(set => new Array(...set));
+            const commonBasePaths = basePathSets.reduce((a, b) => a.filter(x => b.includes(x)));
+            if (commonBasePaths.length === 0) {
+                profInfo.conflictTypes.push("basePaths");
+            } else {
+                profInfo.basePaths = profInfo.basePaths.filter(basePath => commonBasePaths.includes(basePath));
             }
-
-            if (Object.keys(gatewayUrlsByPlugin).length > 0) {
-                // Now we look for a gateway URL in common across all the plug-ins
-                const preferredGatewayUrl = new Array(...gatewayUrlsByPlugin[Object.keys(gatewayUrlsByPlugin)[0]])
-                    .find(gatewayUrl => {
-                        return new Array(...Object.values(gatewayUrlsByPlugin).slice(1))
-                            .every(gatewayUrls => new Array(...gatewayUrls).includes(gatewayUrl));
-                    });
-
-                if (preferredGatewayUrl == null) {
-                    // If no common gateway URL could be found, we have a conflict
-                    profInfo.conflictTypes.push("basePaths");
-                } else {
-                    // If common gateway URL was found, move its associated base path to the front of the list
-                    const preferredBasePath = profInfo.basePaths.find(basePath => basePath.endsWith(preferredGatewayUrl));
-                    if (preferredBasePath != null) {
-                        profInfo.basePaths = profInfo.basePaths.filter(basePath => basePath !== preferredBasePath);
-                        profInfo.basePaths.unshift(preferredBasePath);
-                    }
-                }
-            }
+            delete profInfo.basePathsByPlugin;
 
             // If multiple profile infos have the same type, we have a conflict
             // because we don't know which profile should be the default.
