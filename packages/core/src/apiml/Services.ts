@@ -178,27 +178,6 @@ export class Services {
      * Converts apiml profile information to team config profile objects to be stored in a zowe.config.json file
      * @param profileInfoList List of apiml profiles
      * @returns List of config profile objects
-     * @example
-     *  IConfigProfile = {
-     *      properties: {},
-     *      profiles: {
-     *          "ibmzosmf": {
-     *              type: "zosmf",
-     *              properties: {
-     *                  "basePath": "/ibmzosmf/api/v1"
-     *              }
-     *          },
-     *          "service2": {
-     *              type: "profile-type-for-service-defined-by-plugin",
-     *              properties: {
-     *                  // Multiple base paths were detected for this service.
-     *                  // Uncomment one of the lines below to use a different one.
-     *                  //"basePath": "/service2/ws/v1"
-     *                  "basePath": "/service2/ws/v2"
-     *              }
-     *          }
-     *      }
-     *  }
      * @memberof Services
      */
     public static convertApimlProfileInfoToProfileConfig(profileInfoList: IApimlProfileInfo[]): IConfig {
@@ -224,7 +203,8 @@ export class Services {
 
             if (!configDefaults[profileInfo.profType]) {
                 configDefaults[profileInfo.profType] = profileInfo.profName;
-            } else {
+            }
+            if (profileInfo.conflictTypes.includes("profType") && profileInfo.profName !== configDefaults[profileInfo.profType]) {
                 if (!conflictingDefaults[profileInfo.profType]) {
                     conflictingDefaults[profileInfo.profType] = [];
                 }
@@ -241,10 +221,15 @@ export class Services {
                 configProfile.profiles[profileInfo.profName].properties.basePath = basePaths[0];
             } else if (basePaths.length > 1) {
                 const defaultBasePath = basePaths.shift();
+                const basepathConflictMessage = `
+                    // Warning: basePath conflict detected!
+                    // Different plugins require different versions of the same API`;
+                const noConflictMessage = `
+                    // Multiple base paths were detected for this service.
+                    // Uncomment one of the lines below to use a different one.`;
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
                     {
-                        // Multiple base paths were detected for this service.
-                        // Uncomment one of the lines below to use a different one.
+                        ${profileInfo.conflictTypes.includes("basePaths") ? basepathConflictMessage : noConflictMessage}
                         ${_genCommentsHelper("basePath", basePaths)}
                         "basePath": "${defaultBasePath}"
                     }`
@@ -257,7 +242,8 @@ export class Services {
                 const trueDefault = configDefaults[defaultKey];
                 delete configDefaults[defaultKey];
 
-                configDefaults = JSONC.parse(`${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)},
+                configDefaults = JSONC.parse(`
+                    ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
                     // Multiple services were detected.
                     // Uncomment one of the lines below to set a different default
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
