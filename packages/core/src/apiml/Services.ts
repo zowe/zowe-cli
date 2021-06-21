@@ -205,7 +205,7 @@ export class Services {
                 const defaultBasePath = basePaths.shift();
                 const basepathConflictMessage = `
                     // Warning: basePath conflict detected!
-                    // Different plugins require different versions of the same API`;
+                    // Different plugins require different versions of the same API.`;
                 const noConflictMessage = `
                     // Multiple base paths were detected for this service.
                     // Uncomment one of the lines below to use a different one.`;
@@ -227,7 +227,7 @@ export class Services {
                 configDefaults = JSONC.parse(`
                     ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
                     // Multiple services were detected.
-                    // Uncomment one of the lines below to set a different default
+                    // Uncomment one of the lines below to set a different default.
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
                     "${defaultKey}": "${trueDefault}"
                 }`);

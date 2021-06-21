@@ -458,7 +458,7 @@ describe("APIML Services unit tests", () => {
             "type": "type1",
             "properties": {
                 // Warning: basePath conflict detected!
-                // Different plugins require different versions of the same API
+                // Different plugins require different versions of the same API.
                 //"basePath": "test1/v2"
                 //"basePath": "test1/v3"
                 "basePath": "test1/v1"
@@ -516,7 +516,7 @@ describe("APIML Services unit tests", () => {
     },
     "defaults": {
         // Multiple services were detected.
-        // Uncomment one of the lines below to set a different default
+        // Uncomment one of the lines below to set a different default.
         //"type2": "test2.2"
         "type2": "test2.1"
     },
@@ -587,7 +587,7 @@ describe("APIML Services unit tests", () => {
             "type": "type4",
             "properties": {
                 // Warning: basePath conflict detected!
-                // Different plugins require different versions of the same API
+                // Different plugins require different versions of the same API.
                 //"basePath": "test4/v2"
                 "basePath": "test4/v1"
             }
@@ -596,7 +596,7 @@ describe("APIML Services unit tests", () => {
             "type": "type4",
             "properties": {
                 // Warning: basePath conflict detected!
-                // Different plugins require different versions of the same API
+                // Different plugins require different versions of the same API.
                 //"basePath": "test4/v2"
                 "basePath": "test4/v1"
             }
@@ -605,7 +605,7 @@ describe("APIML Services unit tests", () => {
     "defaults": {
         "type3": "test3",
         // Multiple services were detected.
-        // Uncomment one of the lines below to set a different default
+        // Uncomment one of the lines below to set a different default.
         //"type4": "test4.2"
         "type4": "test4.1"
     },
