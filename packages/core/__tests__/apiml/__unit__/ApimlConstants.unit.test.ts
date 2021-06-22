@@ -9,12 +9,11 @@
 *
 */
 
-import { IApimlSvcAttrsLoaded } from "./IApimlSvcAttrsLoaded";
+import { ApimlConstants } from "../../../src/apiml/ApimlConstants";
+import { inspect } from "../../../../../__tests__/__src__/TestUtils";
 
-export interface IApimlProfileInfo {
-    profName: string;
-    profType: string;
-    basePaths: string[];
-    pluginConfigs: Set<IApimlSvcAttrsLoaded>;
-    conflictTypes: (keyof IApimlProfileInfo)[];
-}
+describe("APIML Constants unit tests", () => {
+    it("should not have changed", () => {
+        expect(inspect(ApimlConstants)).toMatchSnapshot();
+    });
+});
