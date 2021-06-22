@@ -70,6 +70,8 @@ export class Services {
      * @static
      * @param session Session with APIML connection info
      * @param configs APIML service attributes defined by CLI plug-ins
+     * @throws {ImperativeError} When session object is undefined or missing
+     *                           authentication info, or the REST request fails
      * @returns List of objects containing profile info for APIML services
      * @memberof Services
      */
