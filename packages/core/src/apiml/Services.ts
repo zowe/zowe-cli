@@ -30,6 +30,8 @@ export class Services {
      * be used to create every connection profile required for every loaded
      * command group.
      *
+     * @throws {ImperativeError} When Imperative.init() has not been called
+     *                           before getPluginApimlConfigs().
      * @returns The APIML service attributes needed to query APIML.
      */
     public static getPluginApimlConfigs(): IApimlSvcAttrsLoaded[] {
