@@ -51,7 +51,7 @@
     "@types/node": "^12.12.24",
     "@zowe/cli-test-utils": "7.0.0-next.202106071827",
     "@zowe/core-for-zowe-sdk": "7.0.0-next.202106071827",
-    "@zowe/imperative": "5.0.0-next.202106041929",
+    "@zowe/imperative": "5.0.0-next.202106212048",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
     "tslint": "^6.1.3",

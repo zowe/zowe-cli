@@ -9,14 +9,13 @@
 *
 */
 
-import { AbstractSession, IConfig, IConfigProfile, ImperativeConfig, ImperativeExpect, Logger,
+import { AbstractSession, ConfigConstants, IConfig, IConfigProfile, ImperativeConfig, ImperativeExpect, Logger,
          PluginManagementFacility, RestClient } from "@zowe/imperative";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
 import { IApimlService } from "./doc/IApimlService";
 import { IApimlSvcAttrsLoaded } from "./doc/IApimlSvcAttrsLoaded";
 import * as JSONC from "comment-json";
-import { ConfigConstants } from "../../../../../imperative/lib";
 
 /**
  * Class to handle listing services on APIML gateway.
@@ -30,6 +29,8 @@ export class Services {
      * be used to create every connection profile required for every loaded
      * command group.
      *
+     * @throws {ImperativeError} When Imperative.init() has not been called
+     *                           before getPluginApimlConfigs().
      * @returns The APIML service attributes needed to query APIML.
      */
     public static getPluginApimlConfigs(): IApimlSvcAttrsLoaded[] {
@@ -87,7 +88,7 @@ export class Services {
         const services = await RestClient.getExpectJSON<IApimlService[]>(session, ApimlConstants.SERVICES_ENDPOINT);
         const ssoServices = services.filter(({ apiml }) => apiml.authentication?.[0]?.supportsSso);
 
-        const profInfos: IApimlProfileInfo[] = [];
+        const profInfos: (IApimlProfileInfo & { basePathsByPlugin: { [key: string]: Set<string> }; })[] = [];
         // Loop through every APIML service that supports SSO
         for (const service of ssoServices) {
             // Loop through every API advertised by this service
@@ -103,19 +104,17 @@ export class Services {
                                 profType: config.connProfType,
                                 basePaths: [],
                                 pluginConfigs: new Set(),
-                                conflictTypes: []
+                                conflictTypes: [],
+                                basePathsByPlugin: {}
                             };
                             profInfos.push(profInfo);
                         }
 
                         if (!profInfo.basePaths.includes(apiInfo.basePath)) {
                             if (apiInfo.gatewayUrl === config.gatewayUrl || apiInfo.defaultApi) {
-                                const numGatewayUrls = new Array(...profInfo.pluginConfigs).reduce((urls, cfg) => {
-                                    if (cfg.gatewayUrl != null && !urls.includes(cfg.gatewayUrl)) {
-                                        urls.push(cfg.gatewayUrl);
-                                    }
-                                    return urls;
-                                }, []).length;
+                                const numGatewayUrls = new Set(new Array(...profInfo.pluginConfigs)
+                                    .filter(({ gatewayUrl }) => gatewayUrl)
+                                    .map(({ gatewayUrl }) => gatewayUrl)).size;
                                 profInfo.basePaths.splice(numGatewayUrls, 0, apiInfo.basePath);
                             } else {
                                 profInfo.basePaths.push(apiInfo.basePath);
@@ -123,6 +122,10 @@ export class Services {
                         }
 
                         profInfo.pluginConfigs.add(config);
+                        profInfo.basePathsByPlugin[config.pluginName] = new Set([
+                            ...(profInfo.basePathsByPlugin[config.pluginName] || []),
+                            apiInfo.basePath
+                        ]);
                     }
                 }
             }
@@ -130,39 +133,19 @@ export class Services {
 
         // Find conflicts in profile info array
         for (const profInfo of profInfos) {
-            // If multiple CLI plug-ins require different gateway URLs for the
-            // same API ID and CLI profile type, we have a conflict because the
-            // plugins expect different base paths and may be incompatible.
+            // If multiple CLI plug-ins require different base paths for the
+            // same service ID and CLI profile type, we have a conflict because
+            // the plugins expect different base paths and may be incompatible.
 
-            // First we group gateway URLs by their associated CLI plug-in
-            const gatewayUrlsByPlugin: { [key: string]: Set<string> } = {};
-            for (const { gatewayUrl, pluginName } of new Array(...profInfo.pluginConfigs).filter(cfg => cfg.gatewayUrl)) {
-                gatewayUrlsByPlugin[pluginName] = new Set([
-                    ...(gatewayUrlsByPlugin[pluginName] || []),
-                    gatewayUrl
-                ]);
+            // Find the intersection of base path sets for all CLI plug-ins
+            const basePathSets = Object.values(profInfo.basePathsByPlugin).map(set => new Array(...set));
+            const commonBasePaths = basePathSets.reduce((a, b) => a.filter(x => b.includes(x)));
+            if (commonBasePaths.length === 0) {
+                profInfo.conflictTypes.push("basePaths");
+            } else {
+                profInfo.basePaths = profInfo.basePaths.filter(basePath => commonBasePaths.includes(basePath));
             }
-
-            if (Object.keys(gatewayUrlsByPlugin).length > 0) {
-                // Now we look for a gateway URL in common across all the plug-ins
-                const preferredGatewayUrl = new Array(...gatewayUrlsByPlugin[Object.keys(gatewayUrlsByPlugin)[0]])
-                    .find(gatewayUrl => {
-                        return new Array(...Object.values(gatewayUrlsByPlugin).slice(1))
-                            .every(gatewayUrls => new Array(...gatewayUrls).includes(gatewayUrl));
-                    });
-
-                if (preferredGatewayUrl == null) {
-                    // If no common gateway URL could be found, we have a conflict
-                    profInfo.conflictTypes.push("basePaths");
-                } else {
-                    // If common gateway URL was found, move its associated base path to the front of the list
-                    const preferredBasePath = profInfo.basePaths.find(basePath => basePath.endsWith(preferredGatewayUrl));
-                    if (preferredBasePath != null) {
-                        profInfo.basePaths = profInfo.basePaths.filter(basePath => basePath !== preferredBasePath);
-                        profInfo.basePaths.unshift(preferredBasePath);
-                    }
-                }
-            }
+            delete profInfo.basePathsByPlugin;
 
             // If multiple profile infos have the same type, we have a conflict
             // because we don't know which profile should be the default.
@@ -179,25 +162,46 @@ export class Services {
      * @param profileInfoList List of apiml profiles
      * @returns List of config profile objects
      * @example
-     *  IConfigProfile = {
-     *      properties: {},
-     *      profiles: {
-     *          "ibmzosmf": {
-     *              type: "zosmf",
-     *              properties: {
-     *                  "basePath": "/ibmzosmf/api/v1"
+     *  Input: IApimlProfileInfo[] = [
+     *      {
+     *          profName: 'zosmf',
+     *          profType: 'zosmf',
+     *          basePaths: [ '/zosmf/api/v1' ],
+     *          pluginConfigs: Set(1) { [IApimlSvcAttrsLoaded] },
+     *          conflictTypes: [ 'profType' ]
+     *      },
+     *      {
+     *          profName: 'ibmzosmf',
+     *          profType: 'zosmf',
+     *          basePaths: [ '/ibmzosmf/api/v1' ],
+     *          pluginConfigs: Set(1) { [IApimlSvcAttrsLoaded] },
+     *          conflictTypes: [ 'profType' ]
+     *      }
+     *  ]
+     *  Output: IConfig = {
+     *      "profiles": {
+     *          "zosmf": {
+     *              "type": "zosmf",
+     *              "properties": {
+     *                  "basePath": "/zosmf/api/v1"
      *              }
      *          },
-     *          "service2": {
-     *              type: "profile-type-for-service-defined-by-plugin",
-     *              properties: {
-     *                  // Multiple base paths were detected for this service.
-     *                  // Uncomment one of the lines below to use a different one.
-     *                  //"basePath": "/service2/ws/v1"
-     *                  "basePath": "/service2/ws/v2"
+     *          "ibmzosmf": {
+     *              "type": "zosmf",
+     *              "properties": {
+     *                  "basePath": "/ibmzosmf/api/v1"
      *              }
      *          }
-     *      }
+     *      },
+     *      "defaults": {
+     *          // Multiple services were detected.
+     *          // Uncomment one of the lines below to set a different default
+     *          //"zosmf": "ibmzosmf"
+     *          "zosmf": "zosmf"
+     *      },
+     *      "plugins": [
+     *          "@zowe/plugin-for-zowe-cli"
+     *      ]
      *  }
      * @memberof Services
      */
@@ -212,11 +216,11 @@ export class Services {
         const configPlugins: Set<string> = new Set<string>();
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
-            if (elements == null) return "";
+            if (elements == null || elements.length === 0) return "";
             return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')}"`;
         }
 
-        profileInfoList.forEach((profileInfo: IApimlProfileInfo) => {
+        profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
 
             profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
                 configPlugins.add(pluginInfo.pluginName);
@@ -241,10 +245,15 @@ export class Services {
                 configProfile.profiles[profileInfo.profName].properties.basePath = basePaths[0];
             } else if (basePaths.length > 1) {
                 const defaultBasePath = basePaths.shift();
+                const basepathConflictMessage = `
+                    // Warning: basePath conflict detected!
+                    // Different plugins require different versions of the same API.`;
+                const noConflictMessage = `
+                    // Multiple base paths were detected for this service.
+                    // Uncomment one of the lines below to use a different one.`;
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
                     {
-                        // Multiple base paths were detected for this service.
-                        // Uncomment one of the lines below to use a different one.
+                        ${profileInfo.conflictTypes.includes("basePaths") ? basepathConflictMessage : noConflictMessage}
                         ${_genCommentsHelper("basePath", basePaths)}
                         "basePath": "${defaultBasePath}"
                     }`
@@ -257,9 +266,10 @@ export class Services {
                 const trueDefault = configDefaults[defaultKey];
                 delete configDefaults[defaultKey];
 
-                configDefaults = JSONC.parse(`${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)},
+                configDefaults = JSONC.parse(`
+                    ${JSONC.stringify(configDefaults, null, ConfigConstants.INDENT).slice(0, -1)}${Object.keys(configDefaults).length > 0 ? "," : ""}
                     // Multiple services were detected.
-                    // Uncomment one of the lines below to set a different default
+                    // Uncomment one of the lines below to set a different default.
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
                     "${defaultKey}": "${trueDefault}"
                 }`);
