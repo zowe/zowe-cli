@@ -55,6 +55,6 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         ImperativeConfig.instance.config.mActive.user = user;
         ImperativeConfig.instance.config.mActive.global = global;
         ImperativeConfig.instance.config.api.layers.merge(profileConfig);
-        await ImperativeConfig.instance.config.api.layers.write({user, global}); 
+        await ImperativeConfig.instance.config.api.layers.write({user, global});
     }
 }
