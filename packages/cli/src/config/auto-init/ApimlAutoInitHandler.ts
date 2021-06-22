@@ -38,11 +38,6 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      * @returns {Promise<string>} The response from the auth service containing a token
      */
     protected async doAutoInit(session: AbstractSession, params: IHandlerParameters) {
-        const sessCfg: ISession = this.createSessCfgFromArgs(params.arguments);
-        const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(sessCfg, params.arguments, {parms: params});
-
-        this.mSession = new Session(sessCfgWithCreds);
-
         const configs = Services.getPluginApimlConfigs();
         const profileInfos = await Services.getServicesByConfig(session, configs);
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
@@ -60,6 +55,6 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         ImperativeConfig.instance.config.mActive.user = user;
         ImperativeConfig.instance.config.mActive.global = global;
         ImperativeConfig.instance.config.api.layers.merge(profileConfig);
-        await ImperativeConfig.instance.config.api.layers.write({user, global});
+        await ImperativeConfig.instance.config.api.layers.write({user, global}); 
     }
 }
