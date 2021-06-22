@@ -401,7 +401,7 @@ describe("APIML Services unit tests", () => {
                     connProfType: "type0",
                     pluginName: "type0-plugin-name"
                 }]),
-                conflictTypes: []
+                basePathConflicts: {}
             }];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
             const expectedJson = `{
@@ -433,7 +433,7 @@ describe("APIML Services unit tests", () => {
                     "test1/v3"
                 ],
                 pluginConfigs: new Set(),
-                conflictTypes: []
+                basePathConflicts: {}
             }];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
             const expectedJson = `{
@@ -466,8 +466,22 @@ describe("APIML Services unit tests", () => {
                     "test1/v2",
                     "test1/v3"
                 ],
-                pluginConfigs: new Set(),
-                conflictTypes: ["basePaths"]
+                pluginConfigs: new Set([
+                    {
+                        apiId: "test1-apiId",
+                        connProfType: "type1",
+                        pluginName: "type1-plugin-name"
+                    },
+                    {
+                        apiId: "test1-apiId",
+                        connProfType: "type1",
+                        pluginName: "type1-plugin-name-copy"
+                    }
+                ]),
+                basePathConflicts: {
+                    "test1-plugin-name": ["test1/v1"],
+                    "test1-plugin-name-copy": ["test1/v2"]
+                }
             }];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
             const expectedJson = `{
@@ -475,8 +489,13 @@ describe("APIML Services unit tests", () => {
         "test1": {
             "type": "type1",
             "properties": {
+                // ---
                 // Warning: basePath conflict detected!
                 // Different plugins require different versions of the same API.
+                // List:
+                //     "test1-plugin-name": "test1/v1",
+                //     "test1-plugin-name-copy": "test1/v2"
+                // ---
                 //"basePath": "test1/v2"
                 //"basePath": "test1/v3"
                 "basePath": "test1/v1"
@@ -500,7 +519,7 @@ describe("APIML Services unit tests", () => {
                         "test2.1/v1"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: []
+                    basePathConflicts: {}
                 },
                 {
                     profName: "test2.2",
@@ -509,7 +528,7 @@ describe("APIML Services unit tests", () => {
                         "test2.2/v1"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: []
+                    basePathConflicts: {}
                 }
             ];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
@@ -554,7 +573,7 @@ describe("APIML Services unit tests", () => {
                         connProfType: "type3",
                         pluginName: "type3-plugin-name"
                     }]),
-                    conflictTypes: []
+                    basePathConflicts: {}
                 },
                 {
                     profName: "test4.1",
@@ -563,18 +582,31 @@ describe("APIML Services unit tests", () => {
                         "test4/v1",
                         "test4/v2"
                     ],
-                    pluginConfigs: new Set(),
-                    conflictTypes: ["basePaths"]
+                    pluginConfigs: new Set([
+                        {
+                            apiId: "test4.1-apiId",
+                            connProfType: "type4",
+                            pluginName: "type4.1-plugin-name"
+                        },
+                        {
+                            apiId: "test4.1-apiId",
+                            connProfType: "type4",
+                            pluginName: "type4.1-plugin-name-copy"
+                        }
+                    ]),
+                    basePathConflicts: {
+                        "type4.1-plugin-name": ["test4/v1"],
+                        "type4.1-plugin-name-copy": ["test4/v2", "test4/v3"]
+                    }
                 },
                 {
                     profName: "test4.2",
                     profType: "type4",
                     basePaths: [
                         "test4/v1",
-                        "test4/v2"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: ["basePaths"]
+                    basePathConflicts: {}
                 }
             ];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
@@ -593,8 +625,13 @@ describe("APIML Services unit tests", () => {
         "test4.1": {
             "type": "type4",
             "properties": {
+                // ---
                 // Warning: basePath conflict detected!
                 // Different plugins require different versions of the same API.
+                // List:
+                //     "type4.1-plugin-name": "test4/v1",
+                //     "type4.1-plugin-name-copy": "test4/v2", "test4/v3"
+                // ---
                 //"basePath": "test4/v2"
                 "basePath": "test4/v1"
             }
@@ -602,9 +639,6 @@ describe("APIML Services unit tests", () => {
         "test4.2": {
             "type": "type4",
             "properties": {
-                // Warning: basePath conflict detected!
-                // Different plugins require different versions of the same API.
-                //"basePath": "test4/v2"
                 "basePath": "test4/v1"
             }
         }
@@ -618,6 +652,8 @@ describe("APIML Services unit tests", () => {
     },
     "plugins": [
         "type3-plugin-name"
+        "type4.1-plugin-name"
+        "type4.1-plugin-name-copy"
     ]
 }`;
             expect(actualJson).toEqual(expectedJson);

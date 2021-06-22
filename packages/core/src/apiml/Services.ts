@@ -245,15 +245,22 @@ export class Services {
                 configProfile.profiles[profileInfo.profName].properties.basePath = basePaths[0];
             } else if (basePaths.length > 1) {
                 const defaultBasePath = basePaths.shift();
+                const basePathConflicts = Object.keys(profileInfo.basePathConflicts);
                 const basepathConflictMessage = `
+                    // ---
                     // Warning: basePath conflict detected!
-                    // Different plugins require different versions of the same API.`;
+                    // Different plugins require different versions of the same API.
+                    // List:
+                    ${basePathConflicts.forEach(element => {
+                      return '//     "' + element + '": "' + profileInfo.basePathConflicts[element].join('", "') + '"';
+                    })}
+                    // ---`;
                 const noConflictMessage = `
                     // Multiple base paths were detected for this service.
                     // Uncomment one of the lines below to use a different one.`;
                 configProfile.profiles[profileInfo.profName].properties = JSONC.parse(`
                     {
-                        ${profileInfo.conflictTypes.includes("basePaths") ? basepathConflictMessage : noConflictMessage}
+                        ${basePathConflicts.length > 0 ? basepathConflictMessage : noConflictMessage}
                         ${_genCommentsHelper("basePath", basePaths)}
                         "basePath": "${defaultBasePath}"
                     }`
