@@ -9,14 +9,13 @@
 *
 */
 
-import { AbstractSession, IConfig, IConfigProfile, ImperativeConfig, ImperativeExpect, Logger,
+import { AbstractSession, ConfigConstants, IConfig, IConfigProfile, ImperativeConfig, ImperativeExpect, Logger,
          PluginManagementFacility, RestClient } from "@zowe/imperative";
 import { ApimlConstants } from "./ApimlConstants";
 import { IApimlProfileInfo } from "./doc/IApimlProfileInfo";
 import { IApimlService } from "./doc/IApimlService";
 import { IApimlSvcAttrsLoaded } from "./doc/IApimlSvcAttrsLoaded";
 import * as JSONC from "comment-json";
-import { ConfigConstants } from "../../../../../imperative/lib";
 
 /**
  * Class to handle listing services on APIML gateway.
