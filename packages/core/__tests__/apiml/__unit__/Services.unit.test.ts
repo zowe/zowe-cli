@@ -375,11 +375,27 @@ describe("APIML Services unit tests", () => {
     });
 
     describe("convertApimlProfileInfoToProfileConfig", () => {
+        // TODO: Change these tests based on basePathConflicts object
+        it("should handle null or undefined profileInfoList", () => {
+            const expectedJson = `{
+    "profiles": {},
+    "defaults": {},
+    "plugins": []
+}`;
+            let actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(null), null, ConfigConstants.INDENT);
+            expect(actualJson).toEqual(expectedJson);
+
+            actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(undefined), null, ConfigConstants.INDENT);
+            expect(actualJson).toEqual(expectedJson);
+        });
+
         it("should create a config object without comments about conflicts", () => {
             const testCase: IApimlProfileInfo[] = [{
                 profName: "test0",
                 profType: "type0",
-                basePaths: [],
+                basePaths: [
+                    "test0/v1"
+                ],
                 pluginConfigs: new Set([{
                     apiId: "test0-apiId",
                     connProfType: "type0",
@@ -392,7 +408,9 @@ describe("APIML Services unit tests", () => {
     "profiles": {
         "test0": {
             "type": "type0",
-            "properties": {}
+            "properties": {
+                "basePath": "test0/v1"
+            }
         }
     },
     "defaults": {
@@ -482,9 +500,7 @@ describe("APIML Services unit tests", () => {
                         "test2.1/v1"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: [
-                        "profType"
-                    ]
+                    conflictTypes: []
                 },
                 {
                     profName: "test2.2",
@@ -493,9 +509,7 @@ describe("APIML Services unit tests", () => {
                         "test2.2/v1"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: [
-                        "profType"
-                    ]
+                    conflictTypes: []
                 }
             ];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
@@ -523,7 +537,6 @@ describe("APIML Services unit tests", () => {
     "plugins": []
 }`;
             expect(actualJson).toEqual(expectedJson);
-
         });
 
         it("should produce json object with multiple conflicts", () => {
@@ -551,10 +564,7 @@ describe("APIML Services unit tests", () => {
                         "test4/v2"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: [
-                        "basePaths",
-                        "profType"
-                    ]
+                    conflictTypes: ["basePaths"]
                 },
                 {
                     profName: "test4.2",
@@ -564,10 +574,7 @@ describe("APIML Services unit tests", () => {
                         "test4/v2"
                     ],
                     pluginConfigs: new Set(),
-                    conflictTypes: [
-                        "basePaths",
-                        "profType"
-                    ]
+                    conflictTypes: ["basePaths"]
                 }
             ];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);

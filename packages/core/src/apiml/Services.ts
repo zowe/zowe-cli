@@ -159,6 +159,48 @@ export class Services {
      * Converts apiml profile information to team config profile objects to be stored in a zowe.config.json file
      * @param profileInfoList List of apiml profiles
      * @returns List of config profile objects
+     * @example
+     *  Input: IApimlProfileInfo[] = [
+     *      {
+     *          profName: 'zosmf',
+     *          profType: 'zosmf',
+     *          basePaths: [ '/zosmf/api/v1' ],
+     *          pluginConfigs: Set(1) { [IApimlSvcAttrsLoaded] },
+     *          conflictTypes: [ 'profType' ]
+     *      },
+     *      {
+     *          profName: 'ibmzosmf',
+     *          profType: 'zosmf',
+     *          basePaths: [ '/ibmzosmf/api/v1' ],
+     *          pluginConfigs: Set(1) { [IApimlSvcAttrsLoaded] },
+     *          conflictTypes: [ 'profType' ]
+     *      }
+     *  ]
+     *  Output: IConfig = {
+     *      "profiles": {
+     *          "zosmf": {
+     *              "type": "zosmf",
+     *              "properties": {
+     *                  "basePath": "/zosmf/api/v1"
+     *              }
+     *          },
+     *          "ibmzosmf": {
+     *              "type": "zosmf",
+     *              "properties": {
+     *                  "basePath": "/ibmzosmf/api/v1"
+     *              }
+     *          }
+     *      },
+     *      "defaults": {
+     *          // Multiple services were detected.
+     *          // Uncomment one of the lines below to set a different default
+     *          //"zosmf": "ibmzosmf"
+     *          "zosmf": "zosmf"
+     *      },
+     *      "plugins": [
+     *          "@zowe/plugin-for-zowe-cli"
+     *      ]
+     *  }
      * @memberof Services
      */
     public static convertApimlProfileInfoToProfileConfig(profileInfoList: IApimlProfileInfo[]): IConfig {
@@ -172,11 +214,11 @@ export class Services {
         const configPlugins: Set<string> = new Set<string>();
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
-            if (elements == null) return "";
+            if (elements == null || elements.length === 0) return "";
             return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')}"`;
         }
 
-        profileInfoList.forEach((profileInfo: IApimlProfileInfo) => {
+        profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
 
             profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
                 configPlugins.add(pluginInfo.pluginName);
@@ -184,8 +226,7 @@ export class Services {
 
             if (!configDefaults[profileInfo.profType]) {
                 configDefaults[profileInfo.profType] = profileInfo.profName;
-            }
-            if (profileInfo.conflictTypes.includes("profType") && profileInfo.profName !== configDefaults[profileInfo.profType]) {
+            } else {
                 if (!conflictingDefaults[profileInfo.profType]) {
                     conflictingDefaults[profileInfo.profType] = [];
                 }
