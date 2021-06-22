@@ -252,7 +252,7 @@ export class Services {
                     // Different plugins require different versions of the same API.
                     // List:
                     ${basePathConflicts.forEach(element => {
-                      return '//     "' + element + '": "' + profileInfo.basePathConflicts[element].join('", "') + '"';
+                        return '//     "' + element + '": "' + profileInfo.basePathConflicts[element].join('", "') + '"';
                     })}
                     // ---`;
                 const noConflictMessage = `

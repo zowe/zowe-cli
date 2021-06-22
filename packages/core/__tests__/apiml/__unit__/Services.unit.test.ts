@@ -603,7 +603,7 @@ describe("APIML Services unit tests", () => {
                     profName: "test4.2",
                     profType: "type4",
                     basePaths: [
-                        "test4/v1",
+                        "test4/v1"
                     ],
                     pluginConfigs: new Set(),
                     basePathConflicts: {}
