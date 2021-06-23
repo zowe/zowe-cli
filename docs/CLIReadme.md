@@ -2157,7 +2157,7 @@ Create partitioned data sets (PDS)
 
       * `$  zowe zos-files create data-set-partitioned NEW.PDS.DATASET`
 
-*  Create an empty PDSE with data set type LIBRARY:
+*  Create an empty PDSE using data set type LIBRARY:
 
       * `$  zowe zos-files create data-set-partitioned NEW.PDSE.DATASET --data-set-type LIBRARY`
 
@@ -2188,7 +2188,7 @@ Create executable data sets
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type
+	* The data set type (for example, type LIBRARY for "PDSE")
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2288,6 +2288,10 @@ default parameters:
 
       * `$  zowe zos-files create data-set-binary NEW.BINARY.DATASET`
 
+*  Create an empty binary PDSE using data set type LIBRARY:
+
+      * `$  zowe zos-files create data-set-binary NEW.BINARY.DATASET --data-set-type LIBRARY`
+
 ### data-set-c<a name="zos-files-create-data-set-c"></a>
 Create data sets for C code programming
 
@@ -2315,7 +2319,7 @@ Create data sets for C code programming
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type
+	* The data set type (for example, type LIBRARY for "PDSE")
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2414,6 +2418,10 @@ Create data sets for C code programming
 
       * `$  zowe zos-files create data-set-c NEW.CCODE.DATASET`
 
+*  Create an empty C code PDSE using data set type LIBRARY:
+
+      * `$  zowe zos-files create data-set-c NEW.CCODE.DATASET --data-set-type LIBRARY`
+
 ### data-set-classic<a name="zos-files-create-data-set-classic"></a>
 Create classic data sets (JCL, HLASM, CBL, etc\.\.\.)
 
@@ -2441,7 +2449,7 @@ Create classic data sets (JCL, HLASM, CBL, etc\.\.\.)
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type
+	* The data set type (for example, type LIBRARY for "PDSE")
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2539,6 +2547,10 @@ Create classic data sets (JCL, HLASM, CBL, etc\.\.\.)
 *  Create an empty z/OS 'classic' PDS with default parameters:
 
       * `$  zowe zos-files create data-set-classic NEW.CLASSIC.DATASET`
+
+*  Create an empty z/OS 'classic' PDSE using data set type LIBRARY:
+
+      * `$  zowe zos-files create data-set-classic NEW.CLASSIC.DATASET --data-set-type LIBRARY`
 
 ### data-set-vsam<a name="zos-files-create-data-set-vsam"></a>
 Create a VSAM cluster
