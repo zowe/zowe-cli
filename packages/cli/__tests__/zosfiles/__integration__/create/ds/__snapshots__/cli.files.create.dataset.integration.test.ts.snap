@@ -38,7 +38,7 @@ exports[`Create  Data Set should display the help 1`] = `
 
    --data-set-type  | --dst | --dsntype (string)
 
-      The data set type
+      The data set type (for example, type LIBRARY for \\"PDSE\\")
 
    --device-type  | --dt | --unit (string)
 

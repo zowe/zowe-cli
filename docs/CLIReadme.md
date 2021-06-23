@@ -2058,7 +2058,7 @@ Create partitioned data sets (PDS)
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type
+	* The data set type (for example, type LIBRARY for "PDSE")
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2156,6 +2156,10 @@ Create partitioned data sets (PDS)
 *  Create an empty PDS with default parameters:
 
       * `$  zowe zos-files create data-set-partitioned NEW.PDS.DATASET`
+
+*  Create an empty PDSE with data set type LIBRARY:
+
+      * `$  zowe zos-files create data-set-partitioned NEW.PDSE.DATASET --data-set-type LIBRARY`
 
 ### data-set-binary<a name="zos-files-create-data-set-binary"></a>
 Create executable data sets

@@ -161,7 +161,7 @@ export default {
             STORCLASS: "The SMS storage class to use for the allocation",
             MGNTCLASS: "The SMS management class to use for the allocation",
             DATACLASS: "The SMS data class to use for the allocation",
-            DSNTYPE: "The data set type",
+            DSNTYPE: `The data set type (for example, type LIBRARY for "PDSE")`,
             FLATFILE: "Indicates that you want to create the data set as a physical sequential file (flat file). A physical sequential file " +
             "differs from a partitioned data set (PDS) because it cannot contain members, only file contents.",
             SHOWATTRIBUTES: "Show the full allocation attributes",

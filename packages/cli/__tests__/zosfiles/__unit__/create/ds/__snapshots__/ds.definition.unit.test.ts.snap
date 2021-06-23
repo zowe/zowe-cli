@@ -24,7 +24,7 @@ Array [
       "dst",
       "dsntype",
     ],
-    "description": "The data set type",
+    "description": "The data set type (for example, type LIBRARY for \\"PDSE\\")",
     "name": "data-set-type",
     "type": "string",
   },
