@@ -496,7 +496,7 @@ describe("APIML Services unit tests", () => {
                 // Warning: basePath conflict detected!
                 // Different plugins require different versions of the same API.
                 // List:
-                //     "test1-plugin-name": "test1/v1",
+                //     "test1-plugin-name": "test1/v1"
                 //     "test1-plugin-name-copy": "test1/v2"
                 // ---
                 //"basePath": "test1/v2"
@@ -508,7 +508,10 @@ describe("APIML Services unit tests", () => {
     "defaults": {
         "type1": "test1"
     },
-    "plugins": []
+    "plugins": [
+        "type1-plugin-name",
+        "type1-plugin-name-copy"
+    ]
 }`;
             expect(actualJson).toEqual(expectedJson);
         });
@@ -632,7 +635,7 @@ describe("APIML Services unit tests", () => {
                 // Warning: basePath conflict detected!
                 // Different plugins require different versions of the same API.
                 // List:
-                //     "type4.1-plugin-name": "test4/v1",
+                //     "type4.1-plugin-name": "test4/v1"
                 //     "type4.1-plugin-name-copy": "test4/v2", "test4/v3"
                 // ---
                 //"basePath": "test4/v2"
@@ -654,8 +657,8 @@ describe("APIML Services unit tests", () => {
         "type4": "test4.1"
     },
     "plugins": [
-        "type3-plugin-name"
-        "type4.1-plugin-name"
+        "type3-plugin-name",
+        "type4.1-plugin-name",
         "type4.1-plugin-name-copy"
     ]
 }`;

@@ -238,14 +238,17 @@ export class Services {
             } else if (basePaths.length > 1) {
                 const defaultBasePath = basePaths.shift();
                 const basePathConflicts = Object.keys(profileInfo.gatewayUrlConflicts);
+                let conflictingPluginsList = "";
+                basePathConflicts.forEach((element) => {
+                    // The new-line before the // "element"  is required in order to properly format the comment-json object
+                    conflictingPluginsList += `
+                    //     "${element}": "${profileInfo.gatewayUrlConflicts[element].join('", "')}"`;
+                })
                 const basepathConflictMessage = `
                     // ---
                     // Warning: basePath conflict detected!
                     // Different plugins require different versions of the same API.
-                    // List:
-                    ${basePathConflicts.forEach(element => {
-                        return '//     "' + element + '": "' + profileInfo.gatewayUrlConflicts[element].join('", "') + '"';
-                    })}
+                    // List:${conflictingPluginsList}
                     // ---`;
                 const noConflictMessage = `
                     // Multiple base paths were detected for this service.
