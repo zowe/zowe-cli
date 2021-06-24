@@ -48,6 +48,13 @@ const config: IImperativeConfig = {
             logFile: Constants.LOG_LOCATION
         }
     },
+    apimlConnLookup: [
+        {
+            apiId: "ibm.zosmf",
+            gatewayUrl: "api/v1",
+            connProfType: "zosmf"
+        }
+    ],
     baseProfile: {
         type: "base",
         schema: {

@@ -23,7 +23,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).LI
  */
 export const USSFileDefinition: ICommandDefinition = {
     name: "uss-files",
-    aliases: ["uss"],
+    aliases: ["uf", "uss"],
     summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",

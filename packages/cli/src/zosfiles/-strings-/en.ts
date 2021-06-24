@@ -271,7 +271,7 @@ export default {
         }
     },
     DOWNLOAD: {
-        SUMMARY: "Download content from z/OS data sets and USS files",
+        SUMMARY: "Download content from data sets and USS files",
         DESCRIPTION: "Download content from z/OS data sets and USS files to your PC",
         ACTIONS: {
             ALL_MEMBERS: {
@@ -509,7 +509,7 @@ export default {
         }
     },
     UPLOAD: {
-        DESCRIPTION: "Upload the contents of a file to z/OS data sets",
+        DESCRIPTION: "Upload the contents of a file to data sets",
         ACTIONS: {
             DIR_TO_PDS: {
                 DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",
