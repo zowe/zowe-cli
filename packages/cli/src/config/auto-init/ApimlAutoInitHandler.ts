@@ -10,9 +10,13 @@
 */
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession, SessConstants,
-         Session, ImperativeConfig, IHandlerParameters, ConnectionPropsForSessCfg } from "@zowe/imperative";
+import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession, Config,
+         ImperativeConfig, IHandlerParameters, ConfigConstants } from "@zowe/imperative";
 import { Services } from "@zowe/core-for-zowe-sdk";
+import { diff } from "jest-diff";
+import * as open from "open";
+import * as JSONC from "comment-json";
+import * as lodash from "lodash";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -41,20 +45,83 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         const configs = Services.getPluginApimlConfigs();
         const profileInfos = await Services.getServicesByConfig(session, configs);
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
-
         let global = false;
         let user = false;
 
+        // Populate the config with base profile information
+        profileConfig.profiles.base = {
+            type: "base",
+            properties: {
+                host: params.arguments.host,
+                port: params.arguments.port
+            },
+            secure: []
+        }
+        profileConfig.defaults.base = "base"
+
         // Use params to set which config layer to apply to
-        if (params.arguments.global) {
+        if (params.arguments.globalConfig && params.arguments.globalConfig === true) {
             global = true;
         }
-        if (params.arguments.user) {
+        if (params.arguments.userConfig && params.arguments.userConfig === true) {
             user = true
         }
-        ImperativeConfig.instance.config.mActive.user = user;
-        ImperativeConfig.instance.config.mActive.global = global;
-        ImperativeConfig.instance.config.api.layers.merge(profileConfig);
-        await ImperativeConfig.instance.config.api.layers.write({user, global});
+        ImperativeConfig.instance.config.api.layers.activate(user, global);
+
+        if (params.arguments.dryRun && params.arguments.dryRun === true) {
+            // Merge and display, do not save
+            // TODO preserve comments
+
+            // Handle if the file doesn't actually exist
+            let original: any = ImperativeConfig.instance.config.api.layers.get();
+            let originalProperties: any;
+            if (original.exists === false) {
+                originalProperties = {};
+            } else {
+                originalProperties = JSONC.parse(JSONC.stringify(original.properties));
+
+                // Hide secure stuff
+                for (const secureProp of ImperativeConfig.instance.config.api.secure.secureFields(original)) {
+                    if (lodash.has(originalProperties, secureProp)) {
+                        lodash.unset(originalProperties, secureProp);
+                    }
+                }
+            }
+
+            let dryRun: any = ImperativeConfig.instance.config.api.layers.dryRunMerge(profileConfig);
+            const dryRunProperties = JSONC.parse(JSONC.stringify(dryRun.properties));
+
+            // Hide secure stuff
+            for (const secureProp of ImperativeConfig.instance.config.api.secure.secureFields(dryRun)) {
+                if (lodash.has(dryRunProperties, secureProp)) {
+                    lodash.unset(dryRunProperties, secureProp);
+                }
+            }
+
+            original = JSONC.stringify(originalProperties,
+                                      null,
+                                      ConfigConstants.INDENT);
+            dryRun = JSONC.stringify(dryRunProperties,
+                                     null,
+                                     ConfigConstants.INDENT);
+
+            const jsonDiff = diff(original, dryRun, {aAnnotation: "Removed", bAnnotation: "Added"});
+            params.response.console.log(jsonDiff);
+            params.response.data.setObj(jsonDiff);
+        } else if (params.arguments.edit && params.arguments.edit === true) {
+            // Open in the default editor
+            // TODO make this work in an environment without a GUI
+            await open(ImperativeConfig.instance.config.api.layers.get().path, {wait: true});
+        } else if (params.arguments.overwrite && params.arguments.overwrite === true) {
+            if (params.arguments.forSure && params.arguments.forSure === true) {
+                // Clear layer, merge, and save
+                ImperativeConfig.instance.config.api.layers.set(profileConfig);
+                await ImperativeConfig.instance.config.api.layers.write({user, global});
+            }
+        } else {
+            // Merge and save
+            ImperativeConfig.instance.config.api.layers.merge(profileConfig);
+            await ImperativeConfig.instance.config.api.layers.write({user, global});
+        }
     }
 }

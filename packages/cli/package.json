@@ -66,8 +66,12 @@
     "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202106071827",
     "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202106071827",
     "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202106071827",
+    "comment-json": "^4.1.0",
     "get-stdin": "7.0.0",
-    "minimatch": "3.0.4"
+    "jest-diff": "^27.0.6",
+    "lodash": "^4.17.21",
+    "minimatch": "3.0.4",
+    "open": "^8.2.1"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
