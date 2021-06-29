@@ -17,6 +17,7 @@ import { diff } from "jest-diff";
 import * as open from "open";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
+import stripAnsi = require("strip-ansi");
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -105,7 +106,12 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                                      null,
                                      ConfigConstants.INDENT);
 
-            const jsonDiff = diff(original, dryRun, {aAnnotation: "Removed", bAnnotation: "Added"});
+            let jsonDiff = diff(original, dryRun, {aAnnotation: "Removed", bAnnotation: "Added"});
+
+            if (stripAnsi(jsonDiff) === "Compared values have no visual difference.") {
+                jsonDiff = dryRun;
+            }
+
             params.response.console.log(jsonDiff);
             params.response.data.setObj(jsonDiff);
         } else if (params.arguments.edit && params.arguments.edit === true) {
