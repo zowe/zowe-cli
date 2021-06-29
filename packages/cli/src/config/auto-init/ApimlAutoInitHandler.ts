@@ -11,7 +11,7 @@
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession, Config,
-         ImperativeConfig, IHandlerParameters, ConfigConstants } from "@zowe/imperative";
+         ImperativeConfig, IHandlerParameters, ConfigConstants, TextUtils } from "@zowe/imperative";
 import { Services } from "@zowe/core-for-zowe-sdk";
 import { diff } from "jest-diff";
 import * as open from "open";
@@ -106,7 +106,10 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                                      null,
                                      ConfigConstants.INDENT);
 
-            let jsonDiff = diff(original, dryRun, {aAnnotation: "Removed", bAnnotation: "Added"});
+            let jsonDiff = diff(original, dryRun, {aAnnotation: "Removed",
+                                                   bAnnotation: "Added",
+                                                   aColor: TextUtils.chalk.red,
+                                                   bColor: TextUtils.chalk.green});
 
             if (stripAnsi(jsonDiff) === "Compared values have no visual difference.") {
                 jsonDiff = dryRun;
