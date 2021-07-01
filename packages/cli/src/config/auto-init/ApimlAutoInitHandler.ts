@@ -11,8 +11,8 @@
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession, Config,
-         ImperativeConfig, IHandlerParameters, ConfigConstants, TextUtils } from "@zowe/imperative";
-import { Services } from "@zowe/core-for-zowe-sdk";
+         ImperativeConfig, IHandlerParameters, ConfigConstants, TextUtils, SessConstants } from "@zowe/imperative";
+import { Login, Services } from "@zowe/core-for-zowe-sdk";
 import { diff } from "jest-diff";
 import * as open from "open";
 import * as JSONC from "comment-json";
@@ -50,15 +50,29 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         let user = false;
 
         // Populate the config with base profile information
-        profileConfig.profiles.base = {
-            type: "base",
-            properties: {
-                host: params.arguments.host,
-                port: params.arguments.port
-            },
-            secure: []
+        if (profileConfig.defaults.base == null && profileConfig.profiles.my_base == null) {
+            profileConfig.profiles.my_base = {
+                type: "base",
+                properties: {
+                    host: session.ISession.hostname,
+                    port: session.ISession.port
+                },
+                secure: []
+            }
+            profileConfig.defaults.base = "my_base"
+
+            if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
+                profileConfig.profiles.my_base.properties.authToken = `${session.ISession.tokenType}=${session.ISession.tokenValue}`
+                profileConfig.profiles.my_base.secure.push("authToken");
+            } else if (session.ISession.user && session.ISession.password) {
+                const tokenType = SessConstants.TOKEN_TYPE_APIML;
+                session.ISession.tokenType = tokenType;
+                session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
+                const tokenValue = await Login.apimlLogin(session);
+                profileConfig.profiles.my_base.properties.authToken = `${tokenType}=${tokenValue}`;
+                profileConfig.profiles.my_base.secure.push("authToken");
+            }
         }
-        profileConfig.defaults.base = "base"
 
         // Use params to set which config layer to apply to
         if (params.arguments.globalConfig && params.arguments.globalConfig === true) {
@@ -93,7 +107,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             const dryRunProperties = JSONC.parse(JSONC.stringify(dryRun.properties));
 
             // Hide secure stuff
-            for (const secureProp of ImperativeConfig.instance.config.api.secure.secureFields(dryRun)) {
+            for (const secureProp of ImperativeConfig.instance.config.api.secure.findSecure(dryRun.properties.profiles, "profiles")) {
                 if (lodash.has(dryRunProperties, secureProp)) {
                     lodash.unset(dryRunProperties, secureProp);
                 }
@@ -130,7 +144,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         } else {
             // Merge and save
             ImperativeConfig.instance.config.api.layers.merge(profileConfig);
-            await ImperativeConfig.instance.config.api.layers.write({user, global});
+            await ImperativeConfig.instance.config.save(false);
         }
     }
 }
