@@ -175,12 +175,6 @@ const config: IImperativeConfig = {
             provider: "APIML",
             autoInit: {
                 options: [
-                    Constants.AUTO_INIT_OPTION_USER_CONFIG,
-                    Constants.AUTO_INIT_OPTION_GLOBAL_CONFIG,
-                    Constants.AUTO_INIT_OPTION_DRY_RUN,
-                    Constants.AUTO_INIT_OPTION_EDIT,
-                    Constants.AUTO_INIT_OPTION_OVERWRITE,
-                    Constants.AUTO_INIT_OPTION_FOR_SURE,
                     Constants.AUTO_INIT_OPTION_HOST,
                     Constants.AUTO_INIT_OPTION_PORT,
                     Constants.AUTO_INIT_OPTION_USER,
