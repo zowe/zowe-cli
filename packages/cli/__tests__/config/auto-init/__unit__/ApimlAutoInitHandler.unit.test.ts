@@ -12,14 +12,14 @@
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
 import { SessConstants, ImperativeConfig, IHandlerParameters } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { Services } from "@zowe/core-for-zowe-sdk";
+import { Login, Services } from "@zowe/core-for-zowe-sdk";
 
 describe("ApimlAutoInitHandler", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it("should not have changed - no special arguments", async () => {
+    it("should not have changed - user & password", async () => {
         const mockCreateZosmfSession = jest.fn();
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
@@ -28,26 +28,13 @@ describe("ApimlAutoInitHandler", () => {
             profiles: {},
             plugins: []
         });
-        const mockActivate = jest.fn();
-        const mockMerge = jest.fn();
-        const mockWrite = jest.fn();
-        const mockImperativeConfigApi = {
-            layers: {
-                activate: mockActivate,
-                merge: mockMerge,
-                write: mockWrite
-            }
-        }
+        const mockLogin = jest.fn().mockResolvedValue("fakeToken");
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
         Services.getServicesByConfig = mockGetServicesByConfig;
         Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
-        jest.spyOn(ImperativeConfig, 'instance', "get").mockReturnValue({
-            config: {
-                api: mockImperativeConfigApi
-            }
-        });
+        Login.apimlLogin = mockLogin;
 
         const handler: any = new ApimlAutoInitHandler();
         expect(handler.mProfileType).toBe("base");
@@ -55,7 +42,17 @@ describe("ApimlAutoInitHandler", () => {
         handler.createSessCfgFromArgs();
         expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
 
-        await handler.doAutoInit(undefined, {
+        const response = await handler.doAutoInit(
+        {
+            ISession: {
+                hostname: "fake",
+                port: 1234,
+                user: "fake",
+                password: "fake",
+                type: SessConstants.AUTH_TYPE_BASIC,
+                tokenType: undefined
+            }
+        }, {
             arguments: {
                 $0: "fake",
                 _: ["fake"]
@@ -64,12 +61,12 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
-        expect(mockActivate).toHaveBeenCalledTimes(1);
-        expect(mockMerge).toHaveBeenCalledTimes(1);
-        expect(mockWrite).toHaveBeenCalledTimes(1);
+        expect(mockLogin).toHaveBeenCalledTimes(1);
+        expect(response.profiles.my_base.secure).toContain("authToken");
+        expect(response.profiles.my_base.properties.authToken).toEqual(`${SessConstants.TOKEN_TYPE_APIML}=fakeToken`);
     });
 
-    it("should not have changed - edit", async () => {
+    it("should not have changed - authToken", async () => {
         const mockCreateZosmfSession = jest.fn();
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
@@ -78,35 +75,13 @@ describe("ApimlAutoInitHandler", () => {
             profiles: {},
             plugins: []
         });
-        const mockActivate = jest.fn();
-        const mockMerge = jest.fn();
-        const mockWrite = jest.fn();
-        const mockGet = jest.fn().mockReturnValue({path: "fake"});
-        const mockOpen = jest.fn().mockResolvedValue(undefined);
-        const mockImperativeConfigApi = {
-            layers: {
-                activate: mockActivate,
-                merge: mockMerge,
-                write: mockWrite,
-                get: mockGet
-            }
-        }
-
-        jest.mock('open', () => {
-            return {
-                default: mockOpen
-            }
-        });
+        const mockLogin = jest.fn().mockResolvedValue("fakeToken");
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
         Services.getServicesByConfig = mockGetServicesByConfig;
         Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
-        jest.spyOn(ImperativeConfig, 'instance', "get").mockReturnValue({
-            config: {
-                api: mockImperativeConfigApi
-            }
-        });
+        Login.apimlLogin = mockLogin;
 
         const handler: any = new ApimlAutoInitHandler();
         expect(handler.mProfileType).toBe("base");
@@ -114,20 +89,26 @@ describe("ApimlAutoInitHandler", () => {
         handler.createSessCfgFromArgs();
         expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
 
-        await handler.doAutoInit(undefined, {
+        const response = await handler.doAutoInit(
+        {
+            ISession: {
+                hostname: "fake",
+                port: 1234,
+                type: SessConstants.AUTH_TYPE_BASIC,
+                tokenType: SessConstants.TOKEN_TYPE_APIML,
+                tokenValue: "fakeToken"
+            }
+        }, {
             arguments: {
                 $0: "fake",
-                _: ["fake"],
-                edit: true
+                _: ["fake"]
             }
         });
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
-        expect(mockActivate).toHaveBeenCalledTimes(1);
-        expect(mockMerge).toHaveBeenCalledTimes(0);
-        expect(mockWrite).toHaveBeenCalledTimes(0);
-        expect(mockGet).toHaveBeenCalledTimes(1);
-        expect(mockOpen).toHaveBeenCalledTimes(1);
+        expect(mockLogin).toHaveBeenCalledTimes(0);
+        expect(response.profiles.my_base.secure).toContain("authToken");
+        expect(response.profiles.my_base.properties.authToken).toEqual(`${SessConstants.TOKEN_TYPE_APIML}=fakeToken`);
     });
 });
