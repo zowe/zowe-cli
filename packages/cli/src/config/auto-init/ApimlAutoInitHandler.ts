@@ -24,6 +24,11 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
     protected mProfileType: string = "base";
 
     /**
+     * The description of your service to be used in CLI prompt messages
+     */
+    protected mServiceDescription: string = "the APIML service";
+
+    /**
      * This is called by the {@link BaseAuthHandler#process} when it needs a
      * session. Should be used to create a session to connect to the auto-init
      * service.
