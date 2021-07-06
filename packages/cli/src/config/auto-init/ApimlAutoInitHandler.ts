@@ -26,7 +26,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
     /**
      * The description of your service to be used in CLI prompt messages
      */
-    protected mServiceDescription: string = "the APIML service";
+    protected mServiceDescription: string = "your API Mediation Layer";
 
     /**
      * This is called by the {@link BaseAuthHandler#process} when it needs a
