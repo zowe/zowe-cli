@@ -10,8 +10,8 @@
 */
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession, Config,
-         ImperativeConfig, IHandlerParameters, ConfigConstants, TextUtils, SessConstants, IConfig } from "@zowe/imperative";
+import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession,
+         IHandlerParameters, SessConstants, IConfig, ImperativeError, RestClientError } from "@zowe/imperative";
 import { Login, Services } from "@zowe/core-for-zowe-sdk";
 
 /**
@@ -36,10 +36,25 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      * This is called by the "auto-init" command after it creates a session, to generate a configuration
      * @param {AbstractSession} session The session object to use to connect to the configuration service
      * @returns {Promise<string>} The response from the auth service containing a token
+     * @throws {ImperativeError}
      */
     protected async doAutoInit(session: AbstractSession, params: IHandlerParameters): Promise<IConfig> {
+        const restErrUnauthorized = 403;
         const configs = Services.getPluginApimlConfigs();
-        const profileInfos = await Services.getServicesByConfig(session, configs);
+        let profileInfos;
+        try {
+            profileInfos = await Services.getServicesByConfig(session, configs);
+        } catch (err) {
+            if (err instanceof RestClientError && err.mDetails && err.mDetails.httpStatus && err.mDetails.httpStatus === restErrUnauthorized) {
+                throw new ImperativeError({
+                    msg: "HTTP(S) error status 403 received. Verify the user has access to the APIML API Services SAF resource.",
+                    additionalDetails: err.mDetails.additionalDetails,
+                    causeErrors: err
+                });
+            } else {
+                throw err;
+            }
+        }
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
 
         // Populate the config with base profile information

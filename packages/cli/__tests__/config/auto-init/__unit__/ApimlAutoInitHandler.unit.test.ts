@@ -10,9 +10,10 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, ImperativeConfig, IHandlerParameters } from "@zowe/imperative";
+import { SessConstants, ImperativeConfig, IHandlerParameters, RestClientError } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { Login, Services } from "@zowe/core-for-zowe-sdk";
+import { IRestClientError } from "@zowe/imperative/lib/rest/src/client/doc/IRestClientError";
 
 describe("ApimlAutoInitHandler", () => {
     beforeEach(() => {
@@ -210,5 +211,67 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockLogin).toHaveBeenCalledTimes(0);
         expect(response.profiles.my_base.secure).not.toContain("authToken");
         expect(response.profiles.my_base.properties.authToken).not.toBeDefined();
+    });
+
+    it("should throw an error if an error 403 is experienced", async () => {
+        const statusCode = 403;
+        const mockCreateZosmfSession = jest.fn();
+        const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([])
+        const mockGetServicesByConfig = jest.fn().mockImplementation(() => {
+            const errData: IRestClientError = {
+                httpStatus: statusCode,
+                additionalDetails: "Fake Additional Details",
+                msg: "Fake message",
+                source: "http"
+            }
+            throw new RestClientError(errData);
+        });;
+        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
+            defaults: {},
+            profiles: {},
+            plugins: []
+        });
+        const mockLogin = jest.fn().mockResolvedValue("fakeToken");
+
+        ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
+        Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
+        Services.getServicesByConfig = mockGetServicesByConfig;
+        Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
+        Login.apimlLogin = mockLogin;
+
+        const handler: any = new ApimlAutoInitHandler();
+        expect(handler.mProfileType).toBe("base");
+
+        handler.createSessCfgFromArgs();
+        expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
+
+        let error;
+
+        try {
+            await handler.doAutoInit(
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    user: "fake",
+                    password: "fake",
+                    type: SessConstants.AUTH_TYPE_BASIC,
+                    tokenType: undefined
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
+        } catch (err) {
+            error = err;
+        }
+        expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
+        expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
+        expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(0);
+        expect(mockLogin).toHaveBeenCalledTimes(0);
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP(S) error status 403 received. Verify the user has access to the APIML API Services SAF resource.");
     });
 });
