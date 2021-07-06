@@ -118,7 +118,7 @@ describe("ApimlAutoInitHandler", () => {
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
         const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
             defaults: { base: "my_base"},
-            profiles: { 
+            profiles: {
                 "my_base": {
                     properties: {
                         host: "fake",
