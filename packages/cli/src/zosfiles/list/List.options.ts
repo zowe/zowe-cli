@@ -28,7 +28,8 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
         name: "volume-serial",
         aliases: ["vs"],
         description: strings.VOLUME,
-        type: "string"
+        type: "string",
+        stringLengthRange: [1, 6]  // tslint:disable-line:no-magic-numbers
     },
 
     /**

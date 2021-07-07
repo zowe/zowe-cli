@@ -24,7 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
  */
 export const UssDefinition: ICommandDefinition = {
     name: "uss-file",
-    aliases: ["uss"],
+    aliases: ["uf", "uss"],
     description: strings.DESCRIPTION,
     type: "command",
     handler: join(__dirname, "Uss.handler"),

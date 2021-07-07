@@ -18,6 +18,18 @@ Array [
     "name": "max-length",
     "type": "number",
   },
+  Object {
+    "aliases": Array [
+      "vs",
+    ],
+    "description": "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
+    "name": "volume-serial",
+    "stringLengthRange": Array [
+      1,
+      6,
+    ],
+    "type": "string",
+  },
 ]
 `;
 

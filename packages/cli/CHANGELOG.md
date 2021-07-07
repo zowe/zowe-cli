@@ -10,6 +10,19 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `7.0.0-next.202106242030`
+
+- BugFix: Updated Imperative version to fix web help issues.
+
+## `6.32.0`
+
+- Enhancement: Added a `--volume-serial` option to the `zowe zos-files list data-set` command. Use this option to filter data sets by volume serial. [#61](https://github.com/zowe/zowe-cli/issues/61)
+- Enhancement: Removed 'z/OS' from zos-files help upload and download commands. [#60](https://github.com/zowe/zowe-cli/issues/60)
+
+## `6.31.2`
+
+- Enhancement: Added new aliases for zos-files commands in delete, download, and list relating to USS files. You can now interact with `uf` or `uss`.  [#983](https://github.com/zowe/zowe-cli/issues/983)
+
 ## `6.31.0`
 
 - Enhancement: Add the option --jcl-symbols to the jobs submit command to enable users to specify JCL symbol names and values.
