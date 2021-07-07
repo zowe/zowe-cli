@@ -135,5 +135,9 @@ Array [
     "description": "Create an empty C code PDS with default parameters",
     "options": "NEW.CCODE.DATASET",
   },
+  Object {
+    "description": "Create an empty C code PDSE using data set type LIBRARY",
+    "options": "NEW.CCODE.DATASET --data-set-type LIBRARY",
+  },
 ]
 `;

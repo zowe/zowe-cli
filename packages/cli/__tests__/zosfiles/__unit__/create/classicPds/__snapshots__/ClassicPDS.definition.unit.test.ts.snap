@@ -135,5 +135,9 @@ Array [
     "description": "Create an empty z/OS 'classic' PDS with default parameters",
     "options": "NEW.CLASSIC.DATASET",
   },
+  Object {
+    "description": "Create an empty z/OS 'classic' PDSE using data set type LIBRARY",
+    "options": "NEW.CLASSIC.DATASET --data-set-type LIBRARY",
+  },
 ]
 `;

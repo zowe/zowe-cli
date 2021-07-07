@@ -135,5 +135,9 @@ Array [
     "description": "Create an empty binary partitioned data set (PDS) with default parameters",
     "options": "NEW.BINARY.DATASET",
   },
+  Object {
+    "description": "Create an empty binary PDSE using data set type LIBRARY",
+    "options": "NEW.BINARY.DATASET --data-set-type LIBRARY",
+  },
 ]
 `;

@@ -25,31 +25,37 @@ export default {
             DATA_SET_BINARY: {
                 DESCRIPTION: "Create executable data sets",
                 EXAMPLES: {
-                    EX1: "Create an empty binary partitioned data set (PDS) with default parameters"
+                    EX1: "Create an empty binary partitioned data set (PDS) with default parameters",
+                    EX2: "Create an empty binary PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_CLASSIC: {
                 DESCRIPTION: "Create classic data sets (JCL, HLASM, CBL, etc...)",
                 EXAMPLES: {
-                    EX1: "Create an empty z/OS 'classic' PDS with default parameters"
+                    EX1: "Create an empty z/OS 'classic' PDS with default parameters",
+                    EX2: `Create an empty z/OS 'classic' PDSE using data set type LIBRARY`
                 }
             },
             DATA_SET_C: {
                 DESCRIPTION: "Create data sets for C code programming",
                 EXAMPLES: {
-                    EX1: "Create an empty C code PDS with default parameters"
+                    EX1: "Create an empty C code PDS with default parameters",
+                    EX2: "Create an empty C code PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_LIKE: {
                 DESCRIPTION: "Create data sets based on the properties of an existing data set",
                 EXAMPLES: {
-                    EX1: "Create an dataset with default parameters and like flag",
-                    EX2: "Create an dataset with default parameters and like flag and lrecl flag"                }
+                    EX1: "Create a data set with default parameters and like flag",
+                    EX2: "Create a data set with default parameters and like flag and lrecl flag",
+                    EX3: "Create a data set with type LIBRARY"
+                }
             },
             DATA_SET_PARTITIONED: {
                 DESCRIPTION: "Create partitioned data sets (PDS)",
                 EXAMPLES: {
-                    EX1: "Create an empty PDS with default parameters"
+                    EX1: "Create an empty PDS with default parameters",
+                    EX2: "Create an empty PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_SEQUENTIAL: {
