@@ -10,10 +10,9 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, ImperativeConfig, IHandlerParameters, RestClientError } from "@zowe/imperative";
+import { SessConstants, ImperativeConfig, IHandlerParameters, RestClientError, IRestClientError } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { Login, Services } from "@zowe/core-for-zowe-sdk";
-import { IRestClientError } from "@zowe/imperative/lib/rest/src/client/doc/IRestClientError";
 
 describe("ApimlAutoInitHandler", () => {
     beforeEach(() => {

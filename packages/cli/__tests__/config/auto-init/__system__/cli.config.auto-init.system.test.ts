@@ -32,7 +32,7 @@ describe("config auto-init without profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
-    it("should successfully issue the auto-init command", () => {
+    it("should successfully issue the auto-init command, passing in credentials", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init.sh",
             TEST_ENVIRONMENT,
             [
@@ -50,7 +50,7 @@ describe("config auto-init without profile", () => {
         let baseExists = false;
         let baseProperties;
         let baseSecure;
-        
+
         for (const profile of Object.values(profiles)) {
             if ((profile as any).type === "zosmf") {
                 zosmfExists = true;
@@ -64,13 +64,66 @@ describe("config auto-init without profile", () => {
                 break;
             }
         }
- 
+
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(zosmfExists).toBe(true);
         expect(baseExists).toBe(true);
         expect(baseProperties.host).toEqual(base.host);
         expect(baseProperties.port).toEqual(base.port);
+        expect(baseProperties.authToken).not.toBeDefined();
+        expect(baseSecure).toContain("authToken");
+    });
+});
+
+describe("config auto-init with profile", () => {
+    let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+    let base: ITestBaseSchema;
+
+    beforeEach(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            testName: "config_auto_init_apiml_with_profile",
+            tempProfileTypes: ["base"]
+        });
+
+        base = TEST_ENVIRONMENT.systemTestProperties.base;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
+
+    it("should successfully issue the auto-init command, using an old school profile", () => {
+        const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
+
+        const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
+        const profiles = JSON.parse(config).profiles;
+        let zosmfExists = false;
+        let baseExists = false;
+        let baseProperties;
+        let baseSecure;
+
+        for (const profile of Object.values(profiles)) {
+            if ((profile as any).type === "zosmf") {
+                zosmfExists = true;
+            }
+            if ((profile as any).type === "base") {
+                baseExists = true;
+                baseProperties = (profile as any).properties;
+                baseSecure = (profile as any).secure;
+            }
+            if (baseExists && zosmfExists) {
+                break;
+            }
+        }
+
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+        expect(zosmfExists).toBe(true);
+        expect(baseExists).toBe(true);
+        expect(baseProperties.host).toEqual(base.host);
+        expect(baseProperties.port).toEqual(base.port);
+        expect(baseProperties.authToken).not.toBeDefined();
         expect(baseSecure).toContain("authToken");
     });
 });
