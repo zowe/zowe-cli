@@ -170,22 +170,20 @@ const config: IImperativeConfig = {
         }
     },
     configAutoInitCommandConfig: {
-        autoInitConfig: {
-            handler: __dirname + "/config/auto-init/ApimlAutoInitHandler",
-            provider: "APIML",
-            autoInit: {
-                options: [
-                    Constants.AUTO_INIT_OPTION_HOST,
-                    Constants.AUTO_INIT_OPTION_PORT,
-                    Constants.AUTO_INIT_OPTION_USER,
-                    Constants.AUTO_INIT_OPTION_PASSWORD,
-                    Constants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
-                    Constants.AUTO_INIT_OPTION_TOKEN_TYPE,
-                    Constants.AUTO_INIT_OPTION_TOKEN_VALUE
-                ]
-            },
-            profileType: "base"
-        }
+        handler: __dirname + "/config/auto-init/ApimlAutoInitHandler",
+        provider: "APIML",
+        autoInit: {
+            options: [
+                Constants.AUTO_INIT_OPTION_HOST,
+                Constants.AUTO_INIT_OPTION_PORT,
+                Constants.AUTO_INIT_OPTION_USER,
+                Constants.AUTO_INIT_OPTION_PASSWORD,
+                Constants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
+                Constants.AUTO_INIT_OPTION_TOKEN_TYPE,
+                Constants.AUTO_INIT_OPTION_TOKEN_VALUE
+            ]
+        },
+        profileType: "base"
     },
     templateProfileName: "lpar1",
     profiles: [
