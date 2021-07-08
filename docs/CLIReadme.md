@@ -2058,7 +2058,7 @@ Create partitioned data sets (PDS)
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type (for example, type LIBRARY for "PDSE")
+	* The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2188,7 +2188,7 @@ Create executable data sets
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type (for example, type LIBRARY for "PDSE")
+	* The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2319,7 +2319,7 @@ Create data sets for C code programming
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type (for example, type LIBRARY for "PDSE")
+	* The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)
 
 *   `--device-type`  | `--dt` *(string)*
 
@@ -2449,7 +2449,7 @@ Create classic data sets (JCL, HLASM, CBL, etc\.\.\.)
 
 *   `--data-set-type`  | `--dst` *(string)*
 
-	* The data set type (for example, type LIBRARY for "PDSE")
+	* The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)
 
 *   `--device-type`  | `--dt` *(string)*
 

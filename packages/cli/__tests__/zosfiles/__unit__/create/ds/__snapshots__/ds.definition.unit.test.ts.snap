@@ -24,7 +24,7 @@ Array [
       "dst",
       "dsntype",
     ],
-    "description": "The data set type (for example, type LIBRARY for \\"PDSE\\")",
+    "description": "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
     "name": "data-set-type",
     "type": "string",
   },
