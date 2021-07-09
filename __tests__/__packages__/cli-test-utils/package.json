@@ -48,6 +48,6 @@
     "typescript": "^4.2.3"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.0.0-next"
+    "@zowe/imperative": ">=5.0.0-next.202106041929 <5.0.0"
   }
 }
