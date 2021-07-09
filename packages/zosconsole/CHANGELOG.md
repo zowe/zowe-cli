@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS console SDK package will be documented in t
 
 ## Recent Changes
 
-- Updated Imperative version.  
+- Updated Imperative version
 
 ## `6.25.0`
 

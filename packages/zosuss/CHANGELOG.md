@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 
 ## Recent Changes
 
-- Updated Imperative version.  
+- Updated Imperative version
 
 ## `6.24.2`
 

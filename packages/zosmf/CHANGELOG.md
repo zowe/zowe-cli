@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 ## Recent Changes
 
-- Updated Imperative version.  
+- Updated Imperative version
 
 ## `6.27.1`
 

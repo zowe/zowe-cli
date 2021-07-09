@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Updated Imperative version.  
+- Updated Imperative version
 
 ## `6.32.0`
 

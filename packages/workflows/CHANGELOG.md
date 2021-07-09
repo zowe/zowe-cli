@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS workflows SDK package will be documented in
 
 ## Recent Changes
 
-- Updated Imperative version.  
+- Updated Imperative version
 
 ## `6.25.0`
 
