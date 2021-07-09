@@ -1907,9 +1907,9 @@ and configuration of DDF:
       * `$  zowe zos-console issue command "\-DB1G DISPLAY DDF"`
 
 # zos-files | files<a name="zos-files"></a>
-Manage z/OS data sets, create data sets, and more
+Manage z/OS data sets, create data sets, and more.
 ## create | cre<a name="zos-files-create"></a>
-Create data sets
+Create data sets.
 ### data-set-sequential<a name="zos-files-create-data-set-sequential"></a>
 Create physical sequential data sets (PS)
 
