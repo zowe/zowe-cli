@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Fixed inconsistencies in punctuation for command descriptions by adding missing periods. [66](https://github.com/zowe/zowe-cli/issues/66)
+
 ## `6.31.0`
 
 - Enhancement: Handle JCL symbol names and values in requests to submit a job.

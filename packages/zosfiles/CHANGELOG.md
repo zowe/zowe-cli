@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Fixed inconsistencies in punctuation for command descriptions by adding missing periods. [66](https://github.com/zowe/zowe-cli/issues/66)
+
 ## `6.32.0`
 
 - BugFix: Fixed the volser/volume option of `IListOptions` being ignored by the `List.dataset` method.

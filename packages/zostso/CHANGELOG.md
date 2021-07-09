@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- Fixed inconsistencies in punctuation for command descriptions by adding missing periods. [66](https://github.com/zowe/zowe-cli/issues/66)
+
 ## `6.28.0`
 
 - Bugfix: Fixed duplicate occurrence of "X-CSRF-ZOSMF-HEADER" on z/OSMF requests
