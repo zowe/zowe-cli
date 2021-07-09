@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- Updated Imperative version.  
+
 ## `6.27.1`
 
 - BugFix: Removed the conflicting alias `-o` for `--protocol` option.

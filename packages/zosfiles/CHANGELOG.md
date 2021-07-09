@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Updated Imperative version.  
+
 ## `6.32.0`
 
 - BugFix: Fixed the volser/volume option of `IListOptions` being ignored by the `List.dataset` method.
