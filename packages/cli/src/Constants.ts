@@ -93,87 +93,6 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      */
     public static readonly HOME_DIR = "~/.zowe";
 
-    public static readonly AUTO_INIT_OPTION_GROUP = "APIML Connection Options";
-
-    /**
-     * Option used in profile creation and commands for hostname
-     */
-    public static AUTO_INIT_OPTION_HOST: ICommandOptionDefinition = {
-        name: "host",
-        aliases: ["H"],
-        description: "Host name of service on the mainframe.",
-        type: "string",
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands for port
-     */
-    public static AUTO_INIT_OPTION_PORT: ICommandOptionDefinition = {
-        name: "port",
-        aliases: ["P"],
-        description: "Port number of service on the mainframe.",
-        type: "number",
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands for username / ID
-     */
-    public static AUTO_INIT_OPTION_USER: ICommandOptionDefinition = {
-        name: "user",
-        aliases: ["u"],
-        description: "User name to authenticate to service on the mainframe.",
-        type: "string",
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands for password/passphrase
-     */
-    public static AUTO_INIT_OPTION_PASSWORD: ICommandOptionDefinition = {
-        name: "password",
-        aliases: ["pass", "pw"],
-        description: "Password to authenticate to service on the mainframe.",
-        type: "string",
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF
-     */
-    public static AUTO_INIT_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
-        name: "reject-unauthorized",
-        aliases: ["ru"],
-        description: "Reject self-signed certificates.",
-        type: "boolean",
-        defaultValue: true,
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands for tokenType
-     */
-    public static AUTO_INIT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
-        name: "token-type",
-        aliases: ["tt"],
-        description: "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by " +
-            "'zowe auth login'.",
-        type: "string",
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
-    /**
-     * Option used in profile creation and commands for tokenValue to be used to interact with APIs
-     */
-    public static AUTO_INIT_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
-        name: "token-value",
-        aliases: ["tv"],
-        description: "The value of the token to pass to the API.",
-        type: "string",
-        group: Constants.AUTO_INIT_OPTION_GROUP
-    };
-
     public static BASE_CONNECTION_OPTION_GROUP = "Base Connection Options";
 
     /**
@@ -253,6 +172,72 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         description: "The value of the token to pass to the API.",
         type: "string",
         group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+
+    public static readonly AUTO_INIT_OPTION_GROUP = "APIML Connection Options";
+
+    /**
+     * Option used in profile creation and commands for hostname
+     */
+    public static AUTO_INIT_OPTION_HOST: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_HOST,
+        description: "Host name of the mainframe running the API Mediation Layer.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for port
+     */
+    public static AUTO_INIT_OPTION_PORT: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_PORT,
+        description: "Port number of API Mediation Layer on the mainframe.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for username / ID
+     */
+    public static AUTO_INIT_OPTION_USER: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_USER,
+        description: "User name to authenticate to the API Mediation Layer on the mainframe.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for password/passphrase
+     */
+    public static AUTO_INIT_OPTION_PASSWORD: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_PASSWORD,
+        description: "Password to authenticate to the API Mediation Layer on the mainframe.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF
+     */
+    public static AUTO_INIT_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenType
+     */
+    public static AUTO_INIT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_TOKEN_TYPE,
+        description: "The type of token to get and use for the API Mediation Layer. Omit this option to use the default token type, which is provided by " +
+            "'zowe auth login'.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenValue to be used to interact with APIs
+     */
+    public static AUTO_INIT_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_TOKEN_VALUE,
+        description: "The value of the token to pass to the API Mediation Layer.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
     };
 
     /**
