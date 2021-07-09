@@ -36,7 +36,7 @@ const definition: ICommandDefinition = {
     aliases: ["files"],
     type: "group",
     summary: "Manage z/OS data sets",
-    description: "Manage z/OS data sets, create data sets, and more",
+    description: "Manage z/OS data sets, create data sets, and more.",
     children: [
         CreateDefinition,
         DeleteDefinition,

@@ -29,7 +29,7 @@ const definition: ICommandDefinition = {
     aliases: ["wf"],
     type: "group",
     summary: "Create and manage z/OSMF workflows",
-    description: "Create and manage z/OSMF workflows on a z/OS system",
+    description: "Create and manage z/OSMF workflows on a z/OS system.",
     children: [
         CreateDefinition,
         StartDefinition,
