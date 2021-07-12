@@ -112,8 +112,8 @@ export class TestEnvironment {
         return path;
     }
 
-    private static readonly DEFAULT_PROPERTIES = "custom_properties.yaml";
-    private static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(TEST_RESOURCE_DIR + "/properties") + "/";
+    protected static readonly DEFAULT_PROPERTIES = "custom_properties.yaml";
+    protected static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(TEST_RESOURCE_DIR + "/properties") + "/";
 
     /**
      *  Load the properties file specified with system test configuration information.
@@ -124,7 +124,7 @@ export class TestEnvironment {
      *  @returns {ITestPropertiesSchema} - The parsed test properties.
      *  @memberof TestEnvironment
      */
-    private static loadSystemTestProperties<T>(filePath: string | null = null, testDirectory: string): T {
+    protected static loadSystemTestProperties<T>(filePath: string | null = null, testDirectory: string): T {
         const logger: Logger = this.getMockFileLogger(testDirectory);
         // For now, I'm leaving the option for env specified properties in code. This will not be documented.
         const propfilename: string = process.env.propfile || TestEnvironment.DEFAULT_PROPERTIES;
@@ -160,7 +160,7 @@ export class TestEnvironment {
      * @param {ITestEnvironment} testEnvironment the test environment so far
      * @returns {Promise<void>} - promise that resolves on completion of the install
      */
-    private static async installPlugin(testEnvironment: ITestEnvironment<any>) {
+    protected static async installPlugin(testEnvironment: ITestEnvironment<any>) {
         const pluginRelPath = nodePath.relative(testEnvironment.workingDir, PROJECT_ROOT_DIR).replace(/\\/g, "/");
         const packageJson = require(nodePath.join(PROJECT_ROOT_DIR, "package.json"));
         const pluginConfig = require(nodePath.join(PROJECT_ROOT_DIR, packageJson.imperative.configurationModule));
@@ -189,7 +189,7 @@ export class TestEnvironment {
      * @param {string} workingDir - the working directory to log to
      * @returns {Logger} - a logger that can be used for test environment clean up and set up
      */
-    private static getMockFileLogger(workingDir: string): Logger {
+    protected static getMockFileLogger(workingDir: string): Logger {
         const logFile = workingDir += "/TestEnvironment.log";
         const logFn = (tag: string, message: string, ...args: any[]) => {
             message = TextUtils.formatMessage(message, ...args);

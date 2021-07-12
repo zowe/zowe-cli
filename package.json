@@ -17,7 +17,7 @@
     "lint": "npm run lint:packages && npm run lint:tests",
     "lint:packages": "lerna run --parallel lint",
     "lint:tests": "tslint --format stylish -c ./tslint-tests.json \"/__tests__/**/*.ts\"",
-    "syncpack:imperative": "syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
+    "update:imperative": "npm i --save --save-exact @zowe/imperative@next && syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
@@ -35,7 +35,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.0-next.202106221817",
+    "@zowe/imperative": "5.0.0-next.202107092101",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
