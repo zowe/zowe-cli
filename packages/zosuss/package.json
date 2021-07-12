@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-uss-for-zowe-sdk",
-  "version": "7.0.0-next.202107091510",
+  "version": "7.0.0-next.202107121725",
   "description": "Zowe SDK to interact with USS on z/OS",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -49,7 +49,7 @@
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@types/ssh2": "^0.5.44",
-    "@zowe/cli-test-utils": "7.0.0-next.202107091510",
+    "@zowe/cli-test-utils": "7.0.0-next.202107121725",
     "@zowe/imperative": "5.0.0-next.202107092101",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
