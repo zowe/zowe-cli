@@ -2,14 +2,6 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
-
-- Update to the latest `@next` version of imperative.
-
-## `7.0.0-next.202106242030`
-
-- BugFix: Updated Imperative version to fix web help issues.
-
 ## `7.0.0-next.202102011525`
 
 - Enhancement: Added new "config" command group to manage config JSON files. This is intended to replace the profiles API, and makes it easier for users to create, share, and switch between profile configurations.
