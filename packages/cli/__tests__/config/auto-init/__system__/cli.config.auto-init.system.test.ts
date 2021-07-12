@@ -15,6 +15,7 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { ITestBaseSchema } from "../../../../../../__tests__/__src__/properties/ITestBaseSchema";
 import * as fs from "fs";
 import * as path from "path";
+import * as JSONC from "comment-json";
 
 describe("config auto-init without profile", () => {
     let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -45,7 +46,7 @@ describe("config auto-init without profile", () => {
         );
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const profiles = JSON.parse(config).profiles;
+        const profiles = JSONC.parse(config).profiles;
         let zosmfExists = false;
         let baseExists = false;
         let baseProperties;
@@ -73,6 +74,7 @@ describe("config auto-init without profile", () => {
         expect(baseProperties.port).toEqual(base.port);
         expect(baseProperties.authToken).not.toBeDefined();
         expect(baseSecure).toContain("authToken");
+        expect(response.stdout.toString()).toMatch(/authToken:\s+\(secure value\)/);
     });
 });
 
@@ -97,7 +99,7 @@ describe("config auto-init with profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
-        const profiles = JSON.parse(config).profiles;
+        const profiles = JSONC.parse(config).profiles;
         let zosmfExists = false;
         let baseExists = false;
         let baseProperties;
