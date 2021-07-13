@@ -4,7 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated Imperative version to fix web help issues.
+- BugFix: Updated Imperative version to fix web help issues.   
+- Expanded help text of --data-set-type on create data set command by adding an example of creating PDSE. [#52](https://github.com/zowe/zowe-cli/issues/52)
 
 ## `6.32.0`
 

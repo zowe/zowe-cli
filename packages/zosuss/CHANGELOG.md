@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- Updated Imperative version
+
 ## `6.24.2`
 
 - Revert: Revert changes made in 6.24.1, problem was determined to be bundling pipeline
