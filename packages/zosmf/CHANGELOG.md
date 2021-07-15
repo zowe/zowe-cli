@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 ## Recent Changes
 
-- Fixed inconsistencies in punctuation for command descriptions by adding missing periods. [66](https://github.com/zowe/zowe-cli/issues/66)
+- Updated Imperative version
 
 ## `6.27.1`
 
