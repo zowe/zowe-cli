@@ -16,7 +16,7 @@
     "lint": "npm run lint:packages && npm run lint:tests",
     "lint:packages": "lerna run --parallel lint",
     "lint:tests": "tslint --format stylish -c ./tslint-tests.json \"/__tests__/**/*.ts\"",
-    "syncpack:imperative": "syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
+    "update:imperative": "npm i --save --save-exact @zowe/imperative@next && syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
