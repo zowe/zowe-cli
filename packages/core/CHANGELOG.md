@@ -5,6 +5,10 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 - Fixed inconsistencies in punctuation for command descriptions by adding missing periods. [66](https://github.com/zowe/zowe-cli/issues/66)
 
+## Recent Changes
+
+- Updated Imperative version
+
 ## `6.28.0`
 
 - Enhancement: Added Accept-Encoding header to `ZosmfHeaders` class

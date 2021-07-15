@@ -63,6 +63,10 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.DATA_SET_LIKE.EXAMPLES.EX2,
             options: "NEW.DATASET --like EXISTING.DATASET --lrecl 1024"
+        },
+        {
+            description: strings.ACTIONS.DATA_SET_LIKE.EXAMPLES.EX3,
+            options: "NEW.DATASET --data-set-type LIBRARY"
         }
     ]
 };
