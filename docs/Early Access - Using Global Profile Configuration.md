@@ -141,17 +141,17 @@ Open the `~/.zowe/zowe.config.json` file in a text editor or IDE on your compute
                         "port": 443
                     }
                 }
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         }
     },
     "defaults": {
         "zosmf": "lpar1.zosmf"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.lpar1.properties.user",
-        "profiles.lpar1.properties.password"
-    ]
+    "plugins": []
 }
 ```
 
@@ -174,7 +174,11 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
                         "port": 443
                     }
                 }
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         },
         "lpar2": {
             "properties": {
@@ -187,21 +191,19 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
                         "port": 1443
                     }
                 }
-            }
+            },
+            "secure": [
+                // See below about tips for using base array to avoid duplicating these
+                "user",
+                "password"
+            ]
         }
     },
     "defaults": {
         // Change to lpar2.zosmf if you wish to change default profile
         "zosmf": "lpar1.zosmf"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.lpar1.properties.user",
-        "profiles.lpar1.properties.password",
-        // See below about tips for using base array to avoid duplicating these
-        "profiles.lpar2.properties.user",
-        "profiles.lpar2.properties.password"
-    ]
+    "plugins": []
 }
 ```
 
@@ -267,18 +269,18 @@ In the following example, the username and password fields for ZOSMF1 and ZOSMF2
             "type": "base",
             "properties": {
                 "rejectUnauthorized": true
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         }
     },
     "defaults": {
         "zosmf": "lpar1.zosmf",
         "base": "my_base"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.my_base.properties.password",
-        "profiles.my_base.properties.user"
-    ]
+    "plugins": []
 }
 ```
 
@@ -348,7 +350,11 @@ In this example configuration, the settings are accessing multiple services dire
             "type": "base",
             "properties": {
                 "rejectUnauthorized": true
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         }
     },
     "defaults": {
@@ -357,11 +363,7 @@ In this example configuration, the settings are accessing multiple services dire
         "ssh": "lpar1.ssh",
         "base": "my_base"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.my_base.properties.user",
-        "profiles.my_base.properties.password"
-    ]
+    "plugins": []
 }
 ```
 In this example configuration, the settings are accessing multiple services via the API ML (where MFA/SSO is achievable via token-based authorization).
@@ -397,7 +399,10 @@ In this example configuration, the settings are accessing multiple services via 
                 "host": "example1.com",
                 "port": 443,
                 "rejectUnauthorized": true
-            }
+            },
+            "secure": [
+                "authToken"
+            ]
         }
     },
     "defaults": {
@@ -406,13 +411,10 @@ In this example configuration, the settings are accessing multiple services via 
         "db2": "lpar1.db2",
         "base": "my_base"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.my_base.properties.authToken"
-    ]
+    "plugins": []
 }
 ```
-In this example configuration, the settings are accessing multiple services directly on LPAR1 and LPAR2 where username and password varies between the LPAR1 and LPAR2 services. This example is identical to first example except for the secure array at the end.
+In this example configuration, the settings are accessing multiple services directly on LPAR1 and LPAR2 where username and password varies between the LPAR1 and LPAR2 services. This example is identical to first example except that LPAR1 and LPAR2 each contain a secure array, instead of just one secure array in the "my_base" profile.
 ```json
 {
     "$schema": "./zowe.schema.json",
@@ -442,7 +444,11 @@ In this example configuration, the settings are accessing multiple services dire
                         "port": 22
                     }
                 }
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         },
         "lpar2": {
             "properties": {
@@ -455,7 +461,11 @@ In this example configuration, the settings are accessing multiple services dire
                         "port": 1443
                     }
                 }
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         },
         "my_base": {
             "type": "base",
@@ -470,13 +480,7 @@ In this example configuration, the settings are accessing multiple services dire
         "ssh": "lpar1.ssh",
         "base": "my_base"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.lpar1.properties.user",
-        "profiles.lpar1.properties.password",
-        "profiles.lpar2.properties.user",
-        "profiles.lpar2.properties.password"
-    ]
+    "plugins": []
 }
 ```
 
@@ -532,7 +536,11 @@ In this example configuration, API ML is leveraged to access production services
                         "port": 22
                     }
                 }
-            }
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
         },
         "my_base": {
             "type": "base",
@@ -540,7 +548,10 @@ In this example configuration, API ML is leveraged to access production services
                 "host": "example1.com",
                 "port": 443,
                 "rejectUnauthorized": true
-            }
+            },
+            "secure": [
+                "authToken"
+            ]
         }
     },
     "defaults": {
@@ -551,11 +562,6 @@ In this example configuration, API ML is leveraged to access production services
         "ssh": "dev.ssh",
         "base": "my_base"
     },
-    "plugins": [],
-    "secure": [
-        "profiles.dev.properties.user",
-        "profiles.dev.properties.password",
-        "profiles.my_base.properties.authToken"
-    ]
+    "plugins": []
 }
 ```
