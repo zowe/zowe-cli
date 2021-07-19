@@ -2,6 +2,8 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
 ## `6.32.1`
 
 - BugFix: Updated Imperative version to fix web help issues.
