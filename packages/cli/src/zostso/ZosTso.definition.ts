@@ -22,7 +22,7 @@ export const definition: ICommandDefinition = {
     aliases: ["tso"],
     type: "group",
     summary: "Interact with TSO",
-    description: "Issue TSO commands and interact with TSO address spaces",
+    description: "Issue TSO commands and interact with TSO address spaces.",
     children: [
         SendCommand, StartCommand, PingCommand, StopCommand, IssueCommand
     ],

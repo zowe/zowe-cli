@@ -19,7 +19,7 @@ export const IssueCommand: ICommandDefinition = {
     aliases: [],
     type: "group",
     summary: "Issue TSO commands",
-    description: "Issue TSO commands",
+    description: "Issue TSO commands.",
     children: [
         CommandDefinition
     ]

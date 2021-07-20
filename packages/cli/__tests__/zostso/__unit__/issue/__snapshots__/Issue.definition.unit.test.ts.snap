@@ -3,7 +3,7 @@
 exports[`zos-tso issue group definition should not have changed 1`] = `
 Object {
   "aliases": Array [],
-  "description": "Issue TSO commands",
+  "description": "Issue TSO commands.",
   "name": "issue",
   "summary": "Issue TSO commands",
   "type": "group",

@@ -18,7 +18,7 @@ export const DeleteDefinition: ICommandDefinition = {
     type: "group",
     summary: "Delete a job",
     description: "Delete a single job by job ID in OUTPUT status." +
-                " This cancels the job if it is running and purges its output from the system",
+                " This cancels the job if it is running and purges its output from the system.",
     children: [
         JobDefinition
     ]
