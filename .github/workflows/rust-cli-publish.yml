@@ -50,65 +50,17 @@ jobs:
           zowex/**
           !.git
 
-  build-macos:
+
+  build-linux:
     name: Build
 
     needs: release
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest]
-
-    steps:
-
-    - uses: actions/download-artifact@v2
-      with:
-        name: repo
-
-    - name: Build
-      run: cargo build --verbose --release
-
-    - name: Get Upload URL
-      id: get_upload_url
-      run: echo "::set-output name=upload_url::$(cat release_url.txt)"
-
-    - run: echo ${{ steps.get_upload_url.outputs.upload_url }}
-
-    - name: Create Archive
-      run: |
-        cd target/release
-        tar -cvzf zowex.tgz zowex
-
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-        asset_path: target/release/zowex.tgz
-        asset_name: "${{matrix.os}}/zowex.tgz"
-        asset_content_type: application/octet-stream
-
-
-  build-ubuntu:
-    name: Build
-
-    needs: release
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     # Need to build in container with old version of GLIBC to support RHEL 7
     # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
     container: quay.io/pypa/manylinux2014_x86_64
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
 
     steps:
 
@@ -145,7 +97,46 @@ jobs:
       with:
         upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
         asset_path: target/release/zowex.tgz
-        asset_name: "${{matrix.os}}/zowex.tgz"
+        asset_name: zowex-linux.tgz
+        asset_content_type: application/octet-stream
+
+
+  build-macos:
+    name: Build
+
+    needs: release
+
+    runs-on: macos-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: repo
+
+    - name: Build
+      run: cargo build --verbose --release
+
+    - name: Get Upload URL
+      id: get_upload_url
+      run: echo "::set-output name=upload_url::$(cat release_url.txt)"
+
+    - run: echo ${{ steps.get_upload_url.outputs.upload_url }}
+
+    - name: Create Archive
+      run: |
+        cd target/release
+        tar -cvzf zowex.tgz zowex
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target/release/zowex.tgz
+        asset_name: zowex-macos.tgz
         asset_content_type: application/octet-stream
 
 
@@ -154,12 +145,7 @@ jobs:
 
     needs: release
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest]
+    runs-on: windows-latest
 
     steps:
 
@@ -189,5 +175,5 @@ jobs:
       with:
         upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
         asset_path: target\release\zowex.tgz
-        asset_name: "${{matrix.os}}/zowex.tgz"
+        asset_name: zowex-windows.tgz
         asset_content_type: application/octet-stream
