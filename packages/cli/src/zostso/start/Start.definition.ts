@@ -17,7 +17,7 @@ export const StartCommand: ICommandDefinition = {
     aliases: ["st"],
     type: "group",
     summary: "Start TSO/E address space",
-    description: "Start TSO/E address space",
+    description: "Start TSO/E address space.",
     children: [
         AddressSpaceDefinition
     ]

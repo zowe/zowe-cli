@@ -3,7 +3,7 @@
 exports[`zos-tso send group definition should not have changed 1`] = `
 Object {
   "aliases": Array [],
-  "description": "Send data to TSO and collect responses until the prompt is reached",
+  "description": "Send data to TSO and collect responses until the prompt is reached.",
   "name": "send",
   "summary": "Send data to TSO",
   "type": "group",
