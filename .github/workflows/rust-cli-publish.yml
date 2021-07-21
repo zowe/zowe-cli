@@ -5,7 +5,6 @@ on:
     branches:
         - "master"
         - "next"
-        - "next-zowex-rhel7"  # TODO Delete me
     paths:
     - 'zowex/**'
     - '.github/workflows/rust-cli*.yml'
@@ -26,22 +25,21 @@ jobs:
         cd zowex
         echo "::set-output name=ZOWEX_VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
 
-    # - name: Create Release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
-    #     release_name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
-    #     body: |
-    #       Native Zowe CLI client which communicates with a "daemon" version of Zowe CLI.
-    #     draft: false
-    #     prerelease: false
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        release_name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        body: |
+          Native Zowe CLI client which communicates with a "daemon" version of Zowe CLI.
+        draft: false
+        prerelease: false
 
     - name: Output Release URL File
-      # run: echo "${{ steps.create_release.outputs.upload_url }}" > zowex/release_url.txt
-      run: echo "fake_release_url" > zowex/release_url.txt
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > zowex/release_url.txt
 
     - run: "ls -la"
 
@@ -84,20 +82,16 @@ jobs:
         cd target/release
         tar -cvzf zowex.tgz zowex
 
-    # - name: Upload Release Asset
-    #   id: upload-release-asset
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-    #     asset_path: target/release/zowex.tgz
-    #     asset_name: "${{matrix.os}}/zowex.tgz"
-    #     asset_content_type: application/octet-stream
-    - uses: actions/upload-artifact@v2
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: "zowex-${{matrix.os}}"
-        path: target/release/zowex.tgz
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target/release/zowex.tgz
+        asset_name: "${{matrix.os}}/zowex.tgz"
+        asset_content_type: application/octet-stream
 
 
   build-ubuntu:
@@ -143,20 +137,16 @@ jobs:
         cd target/release
         tar -cvzf zowex.tgz zowex
 
-    # - name: Upload Release Asset
-    #   id: upload-release-asset
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-    #     asset_path: target/release/zowex.tgz
-    #     asset_name: "${{matrix.os}}/zowex.tgz"
-    #     asset_content_type: application/octet-stream
-    - uses: actions/upload-artifact@v2
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: "zowex-${{matrix.os}}"
-        path: target/release/zowex.tgz
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target/release/zowex.tgz
+        asset_name: "${{matrix.os}}/zowex.tgz"
+        asset_content_type: application/octet-stream
 
 
   build-windows:
@@ -191,17 +181,13 @@ jobs:
         cd target/release
         tar -cvzf zowex.tgz zowex.exe
 
-    # - name: Upload Release Asset
-    #   id: upload-release-asset
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
-    #     asset_path: target\release\zowex.tgz
-    #     asset_name: "${{matrix.os}}/zowex.tgz"
-    #     asset_content_type: application/octet-stream
-    - uses: actions/upload-artifact@v2
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: "zowex-${{matrix.os}}"
-        path: target/release/zowex.tgz
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target\release\zowex.tgz
+        asset_name: "${{matrix.os}}/zowex.tgz"
+        asset_content_type: application/octet-stream
