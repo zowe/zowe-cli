@@ -76,7 +76,10 @@ export class List {
             };
         } catch (error) {
             this.log.error(error);
-            throw error;
+
+            // Isolate the error details to display
+            const errorDetails: string[] = error.message.split("details:");
+            throw Error(errorDetails[errorDetails.length - 1]);
         }
     }
 
