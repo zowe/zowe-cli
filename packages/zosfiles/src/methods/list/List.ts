@@ -77,9 +77,15 @@ export class List {
         } catch (error) {
             this.log.error(error);
 
-            // Isolate the error details to display
-            const errorDetails: string[] = error.message.split("details:");
-            throw Error(errorDetails[errorDetails.length - 1]);
+            // Throw detailed error message with REST debugging info if that option is included
+            if (options.debugResponse) {
+                throw error;
+            } else {
+                // Isolate the main error message to display
+                const splitMessage: string[] = error.message.split("details:");
+                throw Error(splitMessage[splitMessage.length - 1].replace(/\s+$/, "").concat(
+                    " ", "Use option `--debug-response` or `--dr` with the command to see REST API level debugging info.", "\n\n"));
+            }
         }
     }
 

@@ -85,5 +85,16 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.FSNAME,
         type: "string",
         conflictsWith: ["path"]
+    },
+
+    /**
+     * The indicator that we want to show more attributes
+     * @type {ICommandOptionDefinition}
+     */
+    debugResponse: {
+        name: "debug-response",
+        aliases: ["dr"],
+        description: strings.DEBUGRESPONSE,
+        type: "boolean"
     }
 };

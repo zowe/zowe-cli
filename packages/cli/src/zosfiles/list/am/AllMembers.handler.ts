@@ -24,7 +24,8 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
             attributes: commandParameters.arguments.attributes,
             maxLength: commandParameters.arguments.maxLength,
             pattern: commandParameters.arguments.pattern,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            debugResponse: commandParameters.arguments.debugResponse
         });
 
         if (commandParameters.arguments.attributes && response.apiResponse.items.length > 0) {

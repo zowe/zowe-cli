@@ -46,4 +46,9 @@ export interface IListOptions extends IZosFilesOptions {
      * An optional pattern for restricting the response list
      */
     pattern?: string;
+
+    /**
+     * An optional parameter to enable detailed error messages for commands
+     */
+    debugResponse?: boolean;
 }

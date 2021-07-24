@@ -3657,7 +3657,7 @@ this help text\.
 
 *   `dataSetName`		 *(string)*
 
-	* The name of the data set for which you want to list the members
+	* The name of the data set for which you want to list the members\.
 
 #### Options
 
@@ -3673,6 +3673,10 @@ this help text\.
 	* The option \-\-max\-length specifies the maximum number of items to return\.
       Skip this parameter to return all items\. If you specify an incorrect value, the
       parameter returns up to 1000 items\.
+
+* `--debugResponse` | `--dr` *(boolean)*
+
+      * Display detailed error messages that include low level REST debugging information for commands\.
 
 #### Zosmf Connection Options
 

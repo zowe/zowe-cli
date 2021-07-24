@@ -23,6 +23,14 @@ Array [
     "name": "pattern",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "dr",
+    ],
+    "description": "Display detailed error messages that include low level REST debugging information for commands.",
+    "name": "debug-response",
+    "type": "boolean",
+  },
 ]
 `;
 
