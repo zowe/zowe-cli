@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Improve user friendliness of error for list members in a data set. [#935](https://github.com/zowe/zowe-cli/issues/935)
+
 ## `6.32.1`
 
 - BugFix: Updated Imperative version to fix web help issues.   
