@@ -20,6 +20,7 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
+import { stdout } from "process";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -83,8 +84,10 @@ export class List {
             } else {
                 // Isolate the main error message to display
                 const splitMessage: string[] = error.message.split("details:");
-                throw Error(splitMessage[splitMessage.length - 1].replace(/\s+$/, "").concat(
-                    " ", "Use option `--debug-response` or `--dr` with the command to see REST API level debugging info.", "\n\n"));
+
+                // Throw short error message
+                process.stdout.write("\n--> Use option `--debug-response` or `--dr` with the command to see REST API level debugging info.\n\n");
+                throw Error(splitMessage[splitMessage.length - 1].replace(/\s+$/, ""));
             }
         }
     }
