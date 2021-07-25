@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "sp",
   ],
-  "description": "Stop TSO/E address space",
+  "description": "Stop TSO/E address space.",
   "name": "stop",
   "summary": "Stop TSO/E address space",
   "type": "group",

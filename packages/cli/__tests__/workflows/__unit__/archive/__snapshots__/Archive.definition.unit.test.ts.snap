@@ -2,7 +2,7 @@
 
 exports[`zos-workflows list definition should not have changed 1`] = `
 Object {
-  "description": "Archive workflow instance in z/OSMF",
+  "description": "Archive workflow instance in z/OSMF.",
   "name": "archive",
   "type": "group",
 }

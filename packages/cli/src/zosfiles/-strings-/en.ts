@@ -20,7 +20,7 @@ export default {
         WITH_VALUE: "with value"
     },
     CREATE: {
-        DESCRIPTION: "Create data sets",
+        DESCRIPTION: "Create data sets.",
         ACTIONS: {
             DATA_SET_BINARY: {
                 DESCRIPTION: "Create executable data sets",
@@ -176,7 +176,7 @@ export default {
         }
     },
     COPY: {
-        DESCRIPTION: "Copy a data set ",
+        DESCRIPTION: "Copy a data set.",
         ACTIONS: {
             DATA_SET: {
                 DESCRIPTION: "Copy a data set to another data set",
@@ -198,7 +198,7 @@ export default {
         }
     },
     DELETE: {
-        DESCRIPTION: "Delete a data set or Unix System Services file",
+        DESCRIPTION: "Delete a data set or Unix System Services file.",
         ACTIONS: {
             DATA_SET: {
                 DESCRIPTION: "Delete a data set or data set member permanently",
@@ -278,7 +278,7 @@ export default {
     },
     DOWNLOAD: {
         SUMMARY: "Download content from data sets and USS files",
-        DESCRIPTION: "Download content from z/OS data sets and USS files to your PC",
+        DESCRIPTION: "Download content from z/OS data sets and USS files to your PC.",
         ACTIONS: {
             ALL_MEMBERS: {
                 SUMMARY: "Download all members from a pds",
@@ -375,7 +375,7 @@ export default {
     },
     INVOKE: {
         SUMMARY: "Invoke various z/OS utilities",
-        DESCRIPTION: "Invoke z/OS utilities such as Access Method Services (AMS)",
+        DESCRIPTION: "Invoke z/OS utilities such as Access Method Services (AMS).",
         ACTIONS: {
             AMS: {
                 DESCRIPTION: "Submit control statements for execution by Access Method Services (IDCAMS). You can use IDCAMS to create VSAM data " +
@@ -516,7 +516,7 @@ export default {
         }
     },
     UPLOAD: {
-        DESCRIPTION: "Upload the contents of a file to data sets",
+        DESCRIPTION: "Upload the contents of a file to data sets.",
         ACTIONS: {
             DIR_TO_PDS: {
                 DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",

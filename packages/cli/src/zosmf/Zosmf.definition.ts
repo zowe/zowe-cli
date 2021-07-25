@@ -17,7 +17,7 @@ const definition: ICommandDefinition = {
     name: "zosmf",
     type: "group",
     summary: "Interact with z/OSMF",
-    description: "Retrieve and show the properties of a z/OSMF web server",
+    description: "Retrieve and show the properties of a z/OSMF web server.",
     children: [
         CheckCommand,
         ListCommand
