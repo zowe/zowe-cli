@@ -216,7 +216,7 @@ describe("z/OS Files - List", () => {
             });
 
             try {
-                response = await List.allMembers(dummySession, dsname);
+                response = await List.allMembers(dummySession, dsname, {messageResponse: true});
             } catch (e) {
                 caughtError = e;
             }
