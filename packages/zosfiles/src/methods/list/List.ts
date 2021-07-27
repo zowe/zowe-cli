@@ -76,14 +76,12 @@ export class List {
             };
         } catch (error) {
             this.log.error(error);
-
             // Throw detailed error message with REST debugging info if that option is included
             if (options.messageResponse) {
                 throw error;
             } else {
                 // Isolate the main error message to display
                 const shortMessage: string[] = error.message.split("details:");
-
                 // Throw short error message
                 throw new ImperativeError({msg: "Error listing resources", additionalDetails: shortMessage[shortMessage.length - 1].trim()});
             }
