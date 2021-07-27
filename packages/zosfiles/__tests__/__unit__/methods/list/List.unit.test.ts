@@ -210,6 +210,26 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
+            const dummyError = new Error("Error listing resources");
+            expectJsonSpy.mockImplementationOnce(() => {
+                throw dummyError;
+            });
+
+            try {
+                response = await List.allMembers(dummySession, dsname);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError).toEqual(dummyError);
+        });
+
+        it("should handle an Imperative Error", async () => {
+            let response;
+            let caughtError;
+
             const dummyError = new ImperativeError({msg: "Error listing resources"});
             expectJsonSpy.mockImplementationOnce(() => {
                 throw dummyError;
