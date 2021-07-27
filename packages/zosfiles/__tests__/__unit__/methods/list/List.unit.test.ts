@@ -210,7 +210,7 @@ describe("z/OS Files - List", () => {
             let response;
             let caughtError;
 
-            const dummyError = new Error("test");
+            const dummyError = new ImperativeError({msg: "Error listing resources"});
             expectJsonSpy.mockImplementationOnce(() => {
                 throw dummyError;
             });

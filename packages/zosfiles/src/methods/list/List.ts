@@ -20,7 +20,6 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IListOptions } from "./doc/IListOptions";
 import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
-import { stdout } from "process";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -83,10 +82,10 @@ export class List {
                 throw error;
             } else {
                 // Isolate the main error message to display
-                const splitMessage: string[] = error.message.split("details:");
+                const shortMessage: string[] = error.message.split("details:");
 
                 // Throw short error message
-                throw Error(splitMessage[splitMessage.length - 1].replace(/\s+$/, ""));
+                throw new ImperativeError({msg: "Error listing resources", additionalDetails: shortMessage[shortMessage.length - 1].trim()});
             }
         }
     }
