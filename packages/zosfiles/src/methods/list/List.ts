@@ -79,14 +79,14 @@ export class List {
             this.log.error(error);
 
             // Throw detailed error message with REST debugging info if that option is included
-            if (options.debugResponse) {
+            if (options.messageResponse) {
                 throw error;
             } else {
                 // Isolate the main error message to display
                 const splitMessage: string[] = error.message.split("details:");
 
                 // Throw short error message
-                process.stdout.write("\n--> Use option `--debug-response` or `--dr` with the command to see REST API level debugging info.\n\n");
+                // process.stdout.write("\n--> Use option `--message-response` or `--mr` with the command to see REST API level debugging info.\n\n");
                 throw Error(splitMessage[splitMessage.length - 1].replace(/\s+$/, ""));
             }
         }

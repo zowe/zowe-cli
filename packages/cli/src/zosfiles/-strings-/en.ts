@@ -469,7 +469,7 @@ export default {
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
                 " This option and --path are mutually exclusive.",
-            DEBUGRESPONSE: "Display detailed error messages that include low level REST debugging information for commands."
+            MESSAGERESPONSE: "Display detailed error messages that include low level REST debugging information for commands."
         }
     },
     MOUNT: {

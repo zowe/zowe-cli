@@ -91,10 +91,10 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
      * The indicator that we want to show more attributes
      * @type {ICommandOptionDefinition}
      */
-    debugResponse: {
-        name: "debug-response",
-        aliases: ["dr"],
-        description: strings.DEBUGRESPONSE,
+    messageResponse: {
+        name: "message-response",
+        aliases: ["mr"],
+        description: strings.MESSAGERESPONSE,
         type: "boolean"
     }
 };

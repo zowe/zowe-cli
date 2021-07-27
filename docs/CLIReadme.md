@@ -3674,7 +3674,7 @@ this help text\.
       Skip this parameter to return all items\. If you specify an incorrect value, the
       parameter returns up to 1000 items\.
 
-* `--debugResponse` | `--dr` *(boolean)*
+* `--messageResponse` | `--mr` *(boolean)*
 
       * Display detailed error messages that include low level REST debugging information for commands\.
 

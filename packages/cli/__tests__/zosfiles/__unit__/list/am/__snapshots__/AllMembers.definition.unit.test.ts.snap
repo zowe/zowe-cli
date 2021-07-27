@@ -25,10 +25,10 @@ Array [
   },
   Object {
     "aliases": Array [
-      "dr",
+      "mr",
     ],
     "description": "Display detailed error messages that include low level REST debugging information for commands.",
-    "name": "debug-response",
+    "name": "message-response",
     "type": "boolean",
   },
 ]

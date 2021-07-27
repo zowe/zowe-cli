@@ -50,5 +50,5 @@ export interface IListOptions extends IZosFilesOptions {
     /**
      * An optional parameter to enable detailed error messages for commands
      */
-    debugResponse?: boolean;
+    messageResponse?: boolean;
 }
