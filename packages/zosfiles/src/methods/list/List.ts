@@ -86,7 +86,6 @@ export class List {
                 const splitMessage: string[] = error.message.split("details:");
 
                 // Throw short error message
-                // process.stdout.write("\n--> Use option `--message-response` or `--mr` with the command to see REST API level debugging info.\n\n");
                 throw Error(splitMessage[splitMessage.length - 1].replace(/\s+$/, ""));
             }
         }
