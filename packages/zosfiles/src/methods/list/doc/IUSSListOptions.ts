@@ -21,4 +21,9 @@ export interface IUSSListOptions extends IZosFilesOptions {
      * The indicator that we want to show less files
      */
     maxLength?: number;
+
+    /**
+     * An optional parameter to enable detailed error messages for commands
+     */
+    messageResponse?: boolean;
 }

@@ -21,7 +21,8 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
 
         const response = await List.fileList(session, commandParameters.arguments.path, {
             maxLength: commandParameters.arguments.maxLength,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            messageResponse: commandParameters.arguments.messageResponse
         });
 
         // Populate the response object

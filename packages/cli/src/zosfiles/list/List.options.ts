@@ -88,7 +88,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
-     * The indicator that we want to show more attributes
+     * The indicator that we want to show REST API level debug info.
      * @type {ICommandOptionDefinition}
      */
     messageResponse: {

@@ -10,6 +10,14 @@ Array [
     "name": "max-length",
     "type": "number",
   },
+  Object {
+    "aliases": Array [
+      "mr",
+    ],
+    "description": "Display detailed error messages that include low level REST debugging information for commands.",
+    "name": "message-response",
+    "type": "boolean",
+  },
 ]
 `;
 

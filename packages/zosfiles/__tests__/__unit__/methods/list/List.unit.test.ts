@@ -572,7 +572,7 @@ describe("z/OS Files - List", () => {
             let response;
             let error;
             const testError = new ImperativeError({
-                msg: "test error"
+                msg: "Error listing resources"
             });
 
             expectJsonSpy.mockRejectedValueOnce(testError);
@@ -585,7 +585,7 @@ describe("z/OS Files - List", () => {
 
             expect(response).toBeFalsy();
             expect(error).toBeTruthy();
-            expect(error).toBe(testError);
+            expect(error).toEqual(testError);
         });
 
         it("should indicate that the path was not found", async () => {

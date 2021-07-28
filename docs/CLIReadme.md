@@ -3676,7 +3676,7 @@ this help text\.
 
 * `--messageResponse` | `--mr` *(boolean)*
 
-      * Display detailed error messages that include low level REST debugging information for commands\.
+      * Display a detailed error message that includes low-level REST API debug information\.
 
 #### Zosmf Connection Options
 
@@ -3838,6 +3838,10 @@ List USS files and directories in a UNIX file path
 	* The option \-\-max\-length specifies the maximum number of items to return\.
       Skip this parameter to return all items\. If you specify an incorrect value, the
       parameter returns up to 1000 items\.
+
+* `--messageResponse` | `--mr` *(boolean)*
+
+      * Display a detailed error message that includes low-level REST API debug information\.
 
 #### Zosmf Connection Options
 

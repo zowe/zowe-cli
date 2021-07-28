@@ -40,7 +40,8 @@ export const USSFileDefinition: ICommandDefinition = {
         }
     ],
     options: [
-        ListOptions.maxLength
+        ListOptions.maxLength,
+        ListOptions.messageResponse
     ],
     outputFormatOptions: true,
     examples: [
