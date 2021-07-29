@@ -88,7 +88,7 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 1. Issue the following command:
 
    ```
-   zowe config init --global
+   zowe config init --global-config
    ```
 
    The CLI provides a series of prompts.
@@ -117,7 +117,7 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
 Additionally, you can generate a *user-specific* configuration file. In your user config, you can override values that are defined in the global `zowe.config.json`.
 
-Issue the command `zowe config init --global --user` to generate both global (`zowe.config.json`) and user (`zowe.config.user.json`) config files.
+Issue the command `zowe config init --global-config --user-config` to generate both global (`zowe.config.json`) and user (`zowe.config.user.json`) config files.
 
 In your user-specific file, notice that the top level defaults, plugins, and secure fields are empty. The profiles do not have any properties. You can add your connection details as properties here to override properties in `zowe.config.json`, or add add new connections.
 ## Editing configuration
@@ -210,7 +210,7 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
 You can continue to add more LPARs, and more services within each LPAR. After you make changes, save the file and issue a Zowe CLI command to the service to verify connection.
 ## Managing credential security
 
-When you first run the `zowe config init --global` command, the `profiles.base.properties.user` and `profiles.base.properties.password` fields are defined to the "secure" array in your configuration file. This ensures that username and password are stored securely on your computer.
+When you first run the `zowe config init --global-config` command, the `profiles.base.properties.user` and `profiles.base.properties.password` fields are defined to the "secure" array in your configuration file. This ensures that username and password are stored securely on your computer.
 
 Issue the `zowe config secure` command to re-prompt for all secure fields when you want to update them (for example, when you want to change your username and password).
 
