@@ -60,19 +60,11 @@ describe("Download Data Set", () => {
         });
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should download data set", async () => {
@@ -102,19 +94,11 @@ describe("Download Data Set", () => {
     describe("Success scenarios", () => {
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should download data set", async () => {

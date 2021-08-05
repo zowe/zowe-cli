@@ -29,14 +29,15 @@ const wfPath = "/a/wf1.xml";
 const wfVersion = "1.0";
 const propertiesSteps = false;
 const propertiesVariables = false;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY: string =    `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_ALL_PARMS: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps},${WorkflowConstants.variables}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_STEPS: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_VARIABLES: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
+const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?` +
+    `${WorkflowConstants.filePath}=${wfPath}`;
+const START_RESOURCE_QUERY_ALL_PARMS: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps},` +
+    `${WorkflowConstants.variables}`;
+const START_RESOURCE_QUERY_STEPS: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
+const START_RESOURCE_QUERY_VARIABLES: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
 
 const failedPatterns: string[] = ["patern1", "patern2"];
 const scriptParameters: string[] = ["patern1", "patern2", "patern3"];

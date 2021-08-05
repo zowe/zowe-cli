@@ -137,17 +137,17 @@ describe("Archive workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain(`${wfName}2`);
             });
         });
-        describe("Fail Scenarions", () => {
+        describe("Fail Scenarios", () => {
             it("Should return a message if search does not match any existing workflow key", async () => {
                 const fakeKey = `${wfName}${wfName}${wfName}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_key.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_key.sh",
                     testEnvironment, [fakeKey]);
                 expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain(`The workflow key \"${fakeKey}\" was not found.`);
+                expect(response.stderr.toString()).toContain(`The workflow key "${fakeKey}" was not found.`);
             });
             it("Should return a message if search does not match any existing workfow name", async () => {
                 const fakeName = `${wfName}${wfName}${wfName}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
                     testEnvironment, [fakeName]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("No workflows match the provided workflow name.");

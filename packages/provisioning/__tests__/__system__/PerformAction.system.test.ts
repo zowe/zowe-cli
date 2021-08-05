@@ -39,8 +39,8 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        let instance: IProvisionedInstance;
-        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        const instance: IProvisionedInstance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+            templateName);
         instanceID = instance["object-id"];
         Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
     });
