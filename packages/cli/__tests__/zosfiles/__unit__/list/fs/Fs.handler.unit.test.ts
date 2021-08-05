@@ -92,7 +92,7 @@ describe("fs handler", () => {
                 error = e;
             }
 
-//            expect(error).toBeUndefined();
+            //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fs).toHaveBeenCalledTimes(1);
             expect(List.fs).toHaveBeenCalledWith(fakeSession, {fsname: undefined, maxLength: undefined, path: null});
@@ -178,7 +178,7 @@ describe("fs handler", () => {
                 error = e;
             }
 
-//            expect(error).toBeUndefined();
+            //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fsWithPath).toHaveBeenCalledTimes(1);
             expect(List.fsWithPath).toHaveBeenCalledWith(fakeSession, {fsname: null, maxLength: undefined, path: "testing"});

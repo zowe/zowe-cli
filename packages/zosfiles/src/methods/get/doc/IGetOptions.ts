@@ -19,6 +19,4 @@ import { IOptions } from "../../../doc/IOptions";
  */
 // NOTE(Kelosky): allow empty interface for backwards compatibility
 // tslint:disable-next-line
-export interface IGetOptions extends IOptions {
-
-}
+export type IGetOptions = IOptions

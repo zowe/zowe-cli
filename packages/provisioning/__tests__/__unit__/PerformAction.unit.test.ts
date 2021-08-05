@@ -12,7 +12,7 @@
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { IPerformActionResponse, noActionName, noInstanceId, noSessionProvisioning,
-         PerformAction, ProvisioningConstants } from "../../src";
+    PerformAction, ProvisioningConstants } from "../../src";
 
 
 const instanceId: string = "1234567_abcde";
@@ -51,7 +51,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 
 
 describe("PerformAction getResourcesQuery", () => {
-    it("it should successfully build resources query from passed parameters", () => {
+    it("should successfully build resources query from passed parameters", () => {
         const resourcesQuery: string = PerformAction.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, instanceId, actionName);
         Imperative.console.info(`Generated query ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();

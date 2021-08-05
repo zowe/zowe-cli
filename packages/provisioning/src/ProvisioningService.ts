@@ -76,13 +76,13 @@ export class ProvisioningService {
      * @memberof ProvisioningService
      */
     public static checkForPassedOptionalParms(properties?: string,
-                                              propertiesFile?: string,
-                                              domainName?: string,
-                                              tenantName?: string,
-                                              userDataId?: string,
-                                              userData?: string,
-                                              accountInfo?: string,
-                                              systemNickNames?: string[]): IProvisionOptionals {
+        propertiesFile?: string,
+        domainName?: string,
+        tenantName?: string,
+        userDataId?: string,
+        userData?: string,
+        accountInfo?: string,
+        systemNickNames?: string[]): IProvisionOptionals {
 
         const optionalItems: IProvisionOptionals = {
             "input-variables": null,

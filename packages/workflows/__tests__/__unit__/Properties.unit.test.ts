@@ -62,9 +62,9 @@ const PRETEND_ZOSMF_RESPONSE_ASTATUS: IAutomationStatus = {
     messageText: "Reason is X001"
 };
 
-const failedPatterns: string[] = new Array("patern1", "patern2");
-const scriptParameters: string[] = new Array("patern1", "patern2", "patern3");
-const prereqSteps: string[] = new Array("Step1", "Step6");
+const failedPatterns: string[] = ["patern1", "patern2"];
+const scriptParameters: string[] = ["patern1", "patern2", "patern3"];
+const prereqSteps: string[] = ["Step1", "Step6"];
 const variable1: IVariable = {
     name: "VAR1",
     value: "XXX.YYY"
@@ -73,7 +73,7 @@ const variable2: IVariable = {
     name: "VAR2",
     value: "XXX.ZZZ"
 };
-const variableArray: IVariable[] = new Array(variable1,variable2);
+const variableArray: IVariable[] = [variable1,variable2];
 
 const PRETEND_ZOSMF_RESPONSE_JOBSTATUS: IJobStatus = {
     retcode: "0000",
@@ -233,7 +233,7 @@ const PRETEND_ZOSMF_RESPONSE_STEPINFO02: IStepInfo = {
     "weight": 10
 };
 
-const stepsContains: IStepInfo[] = new Array(PRETEND_ZOSMF_RESPONSE_STEPINFO01, PRETEND_ZOSMF_RESPONSE_STEPINFO02);
+const stepsContains: IStepInfo[] = [PRETEND_ZOSMF_RESPONSE_STEPINFO01, PRETEND_ZOSMF_RESPONSE_STEPINFO02];
 
 const PRETEND_ZOSMF_RESPONSE_STEPINFO: IStepInfo = {
     "name": "Step 1",
@@ -318,7 +318,7 @@ const PRETEND_ZOSMF_RESPONSE_VARIABLEINFO2: IVariableInfo = {
     visibility: "private"
 };
 
-const vIArray: IVariableInfo[] = new Array(PRETEND_ZOSMF_RESPONSE_VARIABLEINFO1,PRETEND_ZOSMF_RESPONSE_VARIABLEINFO2);
+const vIArray: IVariableInfo[] = [PRETEND_ZOSMF_RESPONSE_VARIABLEINFO1,PRETEND_ZOSMF_RESPONSE_VARIABLEINFO2];
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowInfo = {
     workflowName: "wf1",
@@ -902,7 +902,7 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.
-                getWorkflowProperties(PRETEND_SESSION, undefined, wfVersion, propertiesSteps, propertiesVariables);
+                    getWorkflowProperties(PRETEND_SESSION, undefined, wfVersion, propertiesSteps, propertiesVariables);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

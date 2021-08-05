@@ -74,7 +74,7 @@ export class ProvisioningTestUtils {
      * @param templateName - name of the published template.
      */
     public static async getProvisionedInstance(session: AbstractSession, zOSMFVersion: string,
-                                               templateName: string): Promise<IProvisionedInstance> {
+        templateName: string): Promise<IProvisionedInstance> {
         let instance;
         try {
             instance = await ProvisionPublishedTemplate.provisionTemplate(session, zOSMFVersion, templateName);
@@ -100,7 +100,7 @@ export class ProvisioningTestUtils {
      * @param instanceID - ID of the provisioned instance.
      */
     public static async removeRegistryInstance(session: AbstractSession, zOSMFVersion: string,
-                                               instanceID: string) {
+        instanceID: string) {
         let instance;
         try {
             const instanceState = (await ListInstanceInfo.listInstanceCommon(session, zOSMFVersion, instanceID)).state;
@@ -149,7 +149,7 @@ export class ProvisioningTestUtils {
      * @param state - desired state value.
      */
     public static async waitInstanceState(session: AbstractSession, zOSMFVersion: string,
-                                          instanceID: string, state: string) {
+        instanceID: string, state: string) {
         let instance;
         try {
             Imperative.console.info(`Waiting instance state to be "${state}"`);

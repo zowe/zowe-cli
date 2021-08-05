@@ -17,13 +17,13 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to migrate a Data Set
  */
 export default class DSHandler extends ZosFilesBaseHandler {
-  public async processWithSession(
-    commandParameters: IHandlerParameters,
-    session: AbstractSession
-  ): Promise<IZosFilesResponse> {
+    public async processWithSession(
+        commandParameters: IHandlerParameters,
+        session: AbstractSession
+    ): Promise<IZosFilesResponse> {
 
-    const { options } = commandParameters.arguments;
+        const { options } = commandParameters.arguments;
 
-    return HMigrate.dataSet(session, commandParameters.arguments.dataSetName, options);
-  }
+        return HMigrate.dataSet(session, commandParameters.arguments.dataSetName, options);
+    }
 }

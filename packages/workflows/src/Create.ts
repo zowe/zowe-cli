@@ -70,11 +70,11 @@ export class CreateWorkflow{
      * @returns {Promise<ICreatedWorkflow>}
      */
     public static createWorkflow(session: AbstractSession, WorkflowName: string, WorkflowDefinitionFile: string,
-                                 systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
-                                 AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
-                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION
-                                    // add job statement, account info, comments and resolveGlobalConflictByUsing,
-                                    ): Promise<ICreatedWorkflow> {
+        systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
+        AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
+        zOSMFVersion = WorkflowConstants.ZOSMF_VERSION
+        // add job statement, account info, comments and resolveGlobalConflictByUsing,
+    ): Promise<ICreatedWorkflow> {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         WorkflowValidator.validateNotEmptyString(WorkflowName, noWorkflowName.message);
@@ -98,8 +98,8 @@ export class CreateWorkflow{
         };
         if (!isNullOrUndefined(VariableInputFile)){
             if (VariableInputFile.charAt(0) === "/" && VariableInputFile.charAt(1) === "/") {
-            VariableInputFile = VariableInputFile.substring(1);
-        }
+                VariableInputFile = VariableInputFile.substring(1);
+            }
             data.variableInputFile = VariableInputFile;
         }
         if (!isNullOrUndefined(Variables)){
@@ -137,10 +137,10 @@ export class CreateWorkflow{
      * @returns {Promise<ICreatedWorkflowLocal>}
      */
     public static async createWorkflowLocal(session: AbstractSession, WorkflowName: string, WorkflowDefinitionFile: string,
-                                            systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
-                                            AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
-                                            keepFiles?: boolean, customDir?: string,
-                                            zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<ICreatedWorkflowLocal> {
+        systemName: string, Owner: string, VariableInputFile?: string, Variables?: string,
+        AssignToOwner?: boolean, AccessType?: accessT, DeleteCompletedJobs?: boolean,
+        keepFiles?: boolean, customDir?: string,
+        zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<ICreatedWorkflowLocal> {
 
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
@@ -161,8 +161,8 @@ export class CreateWorkflow{
         }
 
         const resp: ICreatedWorkflowLocal = await this.createWorkflow(session, WorkflowName, tempDefinitionFile,
-                                               systemName, Owner, tempVariableInputFile, Variables,
-                                               AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
+            systemName, Owner, tempVariableInputFile, Variables,
+            AssignToOwner, AccessType, DeleteCompletedJobs, zOSMFVersion);
 
         if (!keepFiles){
             resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];

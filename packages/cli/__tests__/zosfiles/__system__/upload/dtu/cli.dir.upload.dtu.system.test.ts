@@ -481,10 +481,10 @@ describe("Upload directory to USS", () => {
 
         });
 
-// tslint:disable-next-line: max-line-length
+        // tslint:disable-next-line: max-line-length
         it("should accept zosattributes path as an argument to a nested attributes file (the attribute file should not be uploaded)", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile");
-// tslint:disable-next-line: max-line-length
+            // tslint:disable-next-line: max-line-length
             const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
             testSuccessfulUpload(localDirName, ["--r --attributes", attributesPath]);
 

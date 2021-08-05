@@ -40,9 +40,9 @@ export class Create {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dataSet(session: AbstractSession,
-                                cmdType: CreateDataSetTypeEnum,
-                                dataSetName: string,
-                                options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+        cmdType: CreateDataSetTypeEnum,
+        dataSetName: string,
+        options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         let validCmdType = true;
 
         // Removes undefined properties
@@ -55,27 +55,27 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         switch (cmdType) {
-            case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
-                tempOptions = { ...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions };
-                break;
-            case CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL:
-                tempOptions = { ...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions };
-                break;
-            case CreateDataSetTypeEnum.DATA_SET_BINARY:
-                tempOptions = { ...CreateDefaults.DATA_SET.BINARY, ...tempOptions };
-                break;
-            case CreateDataSetTypeEnum.DATA_SET_C:
-                tempOptions = { ...CreateDefaults.DATA_SET.C, ...tempOptions };
-                break;
-            case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
-                tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
-                break;
-            case CreateDataSetTypeEnum.DATA_SET_BLANK:
-                tempOptions = { ...CreateDefaults.DATA_SET.BLANK, ...tempOptions };
-                break;
-            default:
-                validCmdType = false;
-                break;
+        case CreateDataSetTypeEnum.DATA_SET_PARTITIONED:
+            tempOptions = { ...CreateDefaults.DATA_SET.PARTITIONED, ...tempOptions };
+            break;
+        case CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL:
+            tempOptions = { ...CreateDefaults.DATA_SET.SEQUENTIAL, ...tempOptions };
+            break;
+        case CreateDataSetTypeEnum.DATA_SET_BINARY:
+            tempOptions = { ...CreateDefaults.DATA_SET.BINARY, ...tempOptions };
+            break;
+        case CreateDataSetTypeEnum.DATA_SET_C:
+            tempOptions = { ...CreateDefaults.DATA_SET.C, ...tempOptions };
+            break;
+        case CreateDataSetTypeEnum.DATA_SET_CLASSIC:
+            tempOptions = { ...CreateDefaults.DATA_SET.CLASSIC, ...tempOptions };
+            break;
+        case CreateDataSetTypeEnum.DATA_SET_BLANK:
+            tempOptions = { ...CreateDefaults.DATA_SET.BLANK, ...tempOptions };
+            break;
+        default:
+            validCmdType = false;
+            break;
         }
 
         if (!validCmdType) {
@@ -142,9 +142,9 @@ export class Create {
     }
 
     public static async dataSetLike(session: AbstractSession,
-                                    dataSetName: string,
-                                    likeDataSetName: string,
-                                    options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+        dataSetName: string,
+        likeDataSetName: string,
+        options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
@@ -182,134 +182,134 @@ export class Create {
             if (tempOptions.hasOwnProperty(option)) {
                 switch (option) {
 
-                    case "alcunit":
-                        // zOSMF defaults to TRK if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.alcunit)) {
-                            tempOptions.alcunit = "TRK";
-                        }
+                case "alcunit":
+                    // zOSMF defaults to TRK if missing so mimic it's behavior
+                    if (isNullOrUndefined(tempOptions.alcunit)) {
+                        tempOptions.alcunit = "TRK";
+                    }
 
-                        // Only CYL and TRK valid
-                        switch (tempOptions.alcunit.toUpperCase()) {
-                            case "CYL":
-                            case "TRK":
-                                break;
-                            default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidAlcunitOption.message + tempOptions.alcunit });
-                        }
-
+                    // Only CYL and TRK valid
+                    switch (tempOptions.alcunit.toUpperCase()) {
+                    case "CYL":
+                    case "TRK":
                         break;
+                    default:
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidAlcunitOption.message + tempOptions.alcunit });
+                    }
 
-                    case "avgblk":
-                        // no validation at this time
-                        break;
+                    break;
 
-                    case "blksize":
-                        // zOSMF defaults to TRK if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.blksize)) {
-                            tempOptions.blksize = tempOptions.lrecl;
-                        }
-                        break;
+                case "avgblk":
+                    // no validation at this time
+                    break;
 
-                    case "lrecl":
-                        // Required
-                        ImperativeExpect.toNotBeNullOrUndefined(tempOptions.lrecl, ZosFilesMessages.missingRecordLength.message);
+                case "blksize":
+                    // zOSMF defaults to TRK if missing so mimic it's behavior
+                    if (isNullOrUndefined(tempOptions.blksize)) {
+                        tempOptions.blksize = tempOptions.lrecl;
+                    }
+                    break;
 
-                        break;
+                case "lrecl":
+                    // Required
+                    ImperativeExpect.toNotBeNullOrUndefined(tempOptions.lrecl, ZosFilesMessages.missingRecordLength.message);
 
-                    case "dirblk":
-                        // Validate non-zero if dsorg is PS
-                        if (tempOptions.dirblk !== 0 && tempOptions.dsorg === "PS") {
-                            throw new ImperativeError({ msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message });
-                        }
-                        // Validate non-zero if 'dsorg' is PO
-                        if (tempOptions.dirblk === 0 && tempOptions.dsorg === "PO") {
-                            throw new ImperativeError({ msg: ZosFilesMessages.invalidPODsorgDirblkCombination.message });
-                        }
+                    break;
 
-                        break;
+                case "dirblk":
+                    // Validate non-zero if dsorg is PS
+                    if (tempOptions.dirblk !== 0 && tempOptions.dsorg === "PS") {
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message });
+                    }
+                    // Validate non-zero if 'dsorg' is PO
+                    if (tempOptions.dirblk === 0 && tempOptions.dsorg === "PO") {
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidPODsorgDirblkCombination.message });
+                    }
 
-                    case "dsntype":
-                        // Key to create a PDSE.
-                        const type: string = tempOptions.dsntype.toUpperCase();
-                        const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
-                        if (availableTypes.indexOf(type) === -1) {
-                            throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
-                        }
-                        break;
+                    break;
 
-                    case "dsorg":
-                        // Only PO and PS valid
-                        switch (tempOptions.dsorg.toUpperCase()) {
-                            case "PO":
-                            case "PS":
-                                break;
+                case "dsntype":
+                    // Key to create a PDSE.
+                    const type: string = tempOptions.dsntype.toUpperCase();
+                    const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
+                    if (availableTypes.indexOf(type) === -1) {
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
+                    }
+                    break;
 
-                            default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidDsorgOption.message + tempOptions.dsorg });
-                        }
-
-                        break;
-
-                    case "primary":
-                        // Required
-                        ImperativeExpect.toNotBeNullOrUndefined(tempOptions.primary, ZosFilesMessages.missingPrimary.message);
-
-                        // Validate maximum allocation quantity
-                        if (tempOptions.primary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'primary'." });
-                        }
-                        break;
-
-                    case "secondary":
-                        // zOSMF defaults to 0 if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.secondary)) {
-                            tempOptions.secondary = 0;
-                        }
-
-                        // Validate maximum allocation quantity
-                        if (tempOptions.secondary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'secondary'." });
-                        }
-                        break;
-
-                    case "recfm":
-                        // zOSMF defaults to F if missing so mimic it's behavior
-                        if (isNullOrUndefined(tempOptions.recfm)) {
-                            tempOptions.recfm = "F";
-                        }
-
-                        // F, V, or U are required; B, A, M, S, T or additional
-                        // VBA works on mainframe but not via zOSMF
-                        switch (tempOptions.recfm.toUpperCase()) {
-                            case "F":
-                            case "FB":
-                            case "V":
-                            case "VB":
-                            case "U":
-                                break;
-                            default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidRecfmOption.message + tempOptions.recfm });
-                        }
-                        break;
-
-                    // SMS class values
-                    case "mgntclass":
-                    case "storclass":
-                    case "dataclass":
-                        // no validation
-
-                        break;
-
-                    case "unit":
-                    case "volser":
-                    case "responseTimeout":
-                    case "like":
-                        // no validation
-
+                case "dsorg":
+                    // Only PO and PS valid
+                    switch (tempOptions.dsorg.toUpperCase()) {
+                    case "PO":
+                    case "PS":
                         break;
 
                     default:
-                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidDsorgOption.message + tempOptions.dsorg });
+                    }
+
+                    break;
+
+                case "primary":
+                    // Required
+                    ImperativeExpect.toNotBeNullOrUndefined(tempOptions.primary, ZosFilesMessages.missingPrimary.message);
+
+                    // Validate maximum allocation quantity
+                    if (tempOptions.primary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                        throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'primary'." });
+                    }
+                    break;
+
+                case "secondary":
+                    // zOSMF defaults to 0 if missing so mimic it's behavior
+                    if (isNullOrUndefined(tempOptions.secondary)) {
+                        tempOptions.secondary = 0;
+                    }
+
+                    // Validate maximum allocation quantity
+                    if (tempOptions.secondary > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                        throw new ImperativeError({ msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " for 'secondary'." });
+                    }
+                    break;
+
+                case "recfm":
+                    // zOSMF defaults to F if missing so mimic it's behavior
+                    if (isNullOrUndefined(tempOptions.recfm)) {
+                        tempOptions.recfm = "F";
+                    }
+
+                    // F, V, or U are required; B, A, M, S, T or additional
+                    // VBA works on mainframe but not via zOSMF
+                    switch (tempOptions.recfm.toUpperCase()) {
+                    case "F":
+                    case "FB":
+                    case "V":
+                    case "VB":
+                    case "U":
+                        break;
+                    default:
+                        throw new ImperativeError({ msg: ZosFilesMessages.invalidRecfmOption.message + tempOptions.recfm });
+                    }
+                    break;
+
+                    // SMS class values
+                case "mgntclass":
+                case "storclass":
+                case "dataclass":
+                    // no validation
+
+                    break;
+
+                case "unit":
+                case "volser":
+                case "responseTimeout":
+                case "like":
+                    // no validation
+
+                    break;
+
+                default:
+                    throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
 
                 }
             }
@@ -413,10 +413,10 @@ export class Create {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async uss(session: AbstractSession,
-                            ussPath: string,
-                            type: string,
-                            mode?: string,
-                            options?: IZosFilesOptions)
+        ussPath: string,
+        type: string,
+        mode?: string,
+        options?: IZosFilesOptions)
         : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
@@ -573,59 +573,59 @@ export class Create {
             if (options.hasOwnProperty(option)) {
                 switch (option) {
 
-                    case "dsorg":
-                        if (!ZosFilesConstants.VSAM_DSORG_CHOICES.includes(options.dsorg.toUpperCase())) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.invalidDsorgOption.message + options.dsorg
-                            });
-                        }
-                        break;
+                case "dsorg":
+                    if (!ZosFilesConstants.VSAM_DSORG_CHOICES.includes(options.dsorg.toUpperCase())) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.invalidDsorgOption.message + options.dsorg
+                        });
+                    }
+                    break;
 
-                    case "alcunit":
-                        if (!ZosFilesConstants.VSAM_ALCUNIT_CHOICES.includes(options.alcunit.toUpperCase())) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.invalidAlcunitOption.message + options.alcunit
-                            });
-                        }
-                        break;
+                case "alcunit":
+                    if (!ZosFilesConstants.VSAM_ALCUNIT_CHOICES.includes(options.alcunit.toUpperCase())) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.invalidAlcunitOption.message + options.alcunit
+                        });
+                    }
+                    break;
 
-                    case "primary":
-                    case "secondary":
-                        // Validate maximum allocation quantity
-                        if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
+                case "primary":
+                case "secondary":
+                    // Validate maximum allocation quantity
+                    if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
                                     ZosFilesMessages.commonFor.message + " '" + option + "' " + ZosFilesMessages.commonWithValue.message +
                                     " = " + options[option] + "."
-                            });
-                        }
-                        break;
+                        });
+                    }
+                    break;
 
-                    case "retainFor":
-                        if (options[option] < ZosFilesConstants.MIN_RETAIN_DAYS ||
+                case "retainFor":
+                    if (options[option] < ZosFilesConstants.MIN_RETAIN_DAYS ||
                             options[option] > ZosFilesConstants.MAX_RETAIN_DAYS) {
-                            throw new ImperativeError({
-                                msg: TextUtils.formatMessage(ZosFilesMessages.valueOutOfBounds.message, {
-                                    optionName: option,
-                                    value: options[option],
-                                    minValue: ZosFilesConstants.MIN_RETAIN_DAYS,
-                                    maxValue: ZosFilesConstants.MAX_RETAIN_DAYS
-                                })
-                            });
-                        }
-                        break;
+                        throw new ImperativeError({
+                            msg: TextUtils.formatMessage(ZosFilesMessages.valueOutOfBounds.message, {
+                                optionName: option,
+                                value: options[option],
+                                minValue: ZosFilesConstants.MIN_RETAIN_DAYS,
+                                maxValue: ZosFilesConstants.MAX_RETAIN_DAYS
+                            })
+                        });
+                    }
+                    break;
 
-                    case "retainTo":
-                    case "volumes":
-                    case "storclass":
-                    case "mgntclass":
-                    case "dataclass":
-                    case "responseTimeout":
-                        // no validation at this time
-                        break;
+                case "retainTo":
+                case "volumes":
+                case "storclass":
+                case "mgntclass":
+                case "dataclass":
+                case "responseTimeout":
+                    // no validation at this time
+                    break;
 
-                    default:
-                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
+                default:
+                    throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
 
                 } // end switch
             }
@@ -663,40 +663,40 @@ export class Create {
             if (options.hasOwnProperty(option)) {
                 switch (option) {
 
-                    case "perms":
-                        const maxPerm = 777;
-                        if ((options.perms < 0) || (options.perms > maxPerm)) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.invalidPermsOption.message + options.perms
-                            });
-                        }
-                        break;
+                case "perms":
+                    const maxPerm = 777;
+                    if ((options.perms < 0) || (options.perms > maxPerm)) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.invalidPermsOption.message + options.perms
+                        });
+                    }
+                    break;
 
-                    case "cylsPri":
-                    case "cylsSec":
-                        // Validate maximum allocation quantity
-                        if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
+                case "cylsPri":
+                case "cylsSec":
+                    // Validate maximum allocation quantity
+                    if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
                                     ZosFilesMessages.commonFor.message + " '" + option + "' " + ZosFilesMessages.commonWithValue.message +
                                     " = " + options[option] + "."
-                            });
-                        }
-                        break;
+                        });
+                    }
+                    break;
 
-                    case "owner":
-                    case "group":
-                    case "storclass":
-                    case "mgntclass":
-                    case "dataclass":
-                    case "volumes":
-                    case "timeout":
-                    case "responseTimeout":
-                        // no validation at this time
-                        break;
+                case "owner":
+                case "group":
+                case "storclass":
+                case "mgntclass":
+                case "dataclass":
+                case "volumes":
+                case "timeout":
+                case "responseTimeout":
+                    // no validation at this time
+                    break;
 
-                    default:
-                        throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
+                default:
+                    throw new ImperativeError({ msg: ZosFilesMessages.invalidFilesCreateOption.message + option });
 
                 } // end switch
             }

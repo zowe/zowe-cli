@@ -104,7 +104,7 @@ describe("Upload file-to-uss handler", () => {
                     stageName: 0,
                     statusMessage: "Uploading USS file"
                 }
-                });
+            });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();

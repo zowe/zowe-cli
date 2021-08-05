@@ -48,9 +48,9 @@ export class Upload {
      *
      */
     public static async fileToDataset(session: AbstractSession,
-                                      inputFile: string,
-                                      dataSetName: string,
-                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        inputFile: string,
+        dataSetName: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         this.log.info(`Uploading file ${inputFile} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
@@ -97,9 +97,9 @@ export class Upload {
      *
      */
     public static async dirToPds(session: AbstractSession,
-                                 inputDir: string,
-                                 dataSetName: string,
-                                 options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        inputDir: string,
+        dataSetName: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         this.log.info(`Uploading directory ${inputDir} to ${dataSetName}`);
 
         ImperativeExpect.toNotBeNullOrUndefined(inputDir, ZosFilesMessages.missingInputDir.message);
@@ -151,9 +151,9 @@ export class Upload {
      * @throws {ImperativeError} When encounter error scenarios.
      */
     public static async bufferToDataSet(session: AbstractSession,
-                                        fileBuffer: Buffer,
-                                        dataSetName: string,
-                                        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        fileBuffer: Buffer,
+        dataSetName: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
@@ -215,9 +215,9 @@ export class Upload {
      * @throws {ImperativeError} When encounter error scenarios.
      */
     public static async streamToDataSet(session: AbstractSession,
-                                        fileStream: Readable,
-                                        dataSetName: string,
-                                        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        fileStream: Readable,
+        dataSetName: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
@@ -288,9 +288,9 @@ export class Upload {
      * upload content to data set.  All you have to specify is a directory and a dsname.
      */
     public static async pathToDataSet(session: AbstractSession,
-                                      inputPath: string,
-                                      dataSetName: string,
-                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        inputPath: string,
+        dataSetName: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
 
         this.log.info(`Uploading path ${inputPath} to ${dataSetName}`);
 
@@ -345,18 +345,18 @@ export class Upload {
                 // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                 const dsInfo = listResponse.apiResponse.items[dsnameIndex];
                 switch (dsInfo.dsorg) {
-                    case "PO":
-                    case "PO-E":
-                        isUploadToPds = true;
-                        break;
-                    default:
-                        // if loading to a physical sequential data set and multiple files found then error
-                        if (uploadFileList.length > 1) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
-                            });
-                        }
-                        break;
+                case "PO":
+                case "PO-E":
+                    isUploadToPds = true;
+                    break;
+                default:
+                    // if loading to a physical sequential data set and multiple files found then error
+                    if (uploadFileList.length > 1) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
+                        });
+                    }
+                    break;
                 }
             }
         }
@@ -461,9 +461,9 @@ export class Upload {
      * @returns {Promise<object>}
      */
     public static async bufferToUssFile(session: AbstractSession,
-                                        ussname: string,
-                                        buffer: Buffer,
-                                        options: IUploadOptions = {}) {
+        ussname: string,
+        buffer: Buffer,
+        options: IUploadOptions = {}) {
         options.binary = options.binary? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
@@ -482,13 +482,13 @@ export class Upload {
      * @returns {Promise<object>}
      */
     public static async bufferToUSSFile(session: AbstractSession,
-                                        ussname: string,
-                                        buffer: Buffer,
-                                        binary: boolean = false,
-                                        localEncoding?: string,
-                                        etag?: string,
-                                        returnEtag?: boolean,
-                                        responseTimeout?: number) {
+        ussname: string,
+        buffer: Buffer,
+        binary: boolean = false,
+        localEncoding?: string,
+        etag?: string,
+        returnEtag?: boolean,
+        responseTimeout?: number) {
         return this.bufferToUssFile(session, ussname, buffer, {
             binary,
             localEncoding,
@@ -508,9 +508,9 @@ export class Upload {
      */
 
     public static async streamToUssFile(session: AbstractSession,
-                                        ussname: string,
-                                        uploadStream: Readable,
-                                        options: IUploadOptions = {}) {
+        ussname: string,
+        uploadStream: Readable,
+        options: IUploadOptions = {}) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = path.posix.normalize(ussname);
         ussname = ZosFilesUtils.formatUnixFilepath(ussname);
@@ -556,12 +556,12 @@ export class Upload {
      * @returns {Promise<object>}
      */
     public static async streamToUSSFile(session: AbstractSession,
-                                        ussname: string,
-                                        uploadStream: Readable,
-                                        binary: boolean = false,
-                                        localEncoding?: string,
-                                        task?: ITaskWithStatus,
-                                        etag?: string) {
+        ussname: string,
+        uploadStream: Readable,
+        binary: boolean = false,
+        localEncoding?: string,
+        task?: ITaskWithStatus,
+        etag?: string) {
         return this.streamToUssFile(session, ussname, uploadStream, {
             binary,
             localEncoding,
@@ -579,9 +579,9 @@ export class Upload {
      * @returns {Promise<IZosFilesResponse>} - A response indicating the outcome
      */
     public static async fileToUssFile(session: AbstractSession,
-                                      inputFile: string,
-                                      ussname: string,
-                                      options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        inputFile: string,
+        ussname: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
@@ -643,13 +643,13 @@ export class Upload {
      * @param etag
      */
     public static async fileToUSSFile(session: AbstractSession,
-                                      inputFile: string,
-                                      ussname: string,
-                                      binary: boolean = false,
-                                      localEncoding?: string,
-                                      task?: ITaskWithStatus,
-                                      etag?: string,
-                                      returnEtag?: boolean): Promise<IZosFilesResponse> {
+        inputFile: string,
+        ussname: string,
+        binary: boolean = false,
+        localEncoding?: string,
+        task?: ITaskWithStatus,
+        etag?: string,
+        returnEtag?: boolean): Promise<IZosFilesResponse> {
         return this.fileToUssFile(session, inputFile, ussname, {
             binary,
             localEncoding,
@@ -668,9 +668,9 @@ export class Upload {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dirToUSSDir(session: AbstractSession,
-                                    inputDirectory: string,
-                                    ussname: string,
-                                    options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        inputDirectory: string,
+        ussname: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeEqual(inputDirectory, "", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
@@ -711,9 +711,9 @@ export class Upload {
                 }
                 // update the array
                 filesArray.push({
-                        binary: tempBinary,
-                        fileName: file
-                    }
+                    binary: tempBinary,
+                    fileName: file
+                }
                 );
             });
 
@@ -787,9 +787,9 @@ export class Upload {
      * @return {null}
      */
     public static async dirToUSSDirRecursive(session: AbstractSession,
-                                             inputDirectory: string,
-                                             ussname: string,
-                                             options: IUploadOptions = {}): Promise<IZosFilesResponse> {
+        inputDirectory: string,
+        ussname: string,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(inputDirectory, ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeEqual(inputDirectory, "", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
@@ -838,9 +838,9 @@ export class Upload {
             }
             // update the array
             filesArray.push({
-                    binary: tempBinary,
-                    fileName: file
-                }
+                binary: tempBinary,
+                fileName: file
+            }
             );
         });
 
@@ -904,7 +904,7 @@ export class Upload {
     }
 
     private static async uploadFile(localPath: string, ussPath: string,
-                                    session: AbstractSession, options: IUploadOptions) {
+        session: AbstractSession, options: IUploadOptions) {
         let tempBinary;
 
         if (options.attributes) {
@@ -927,9 +927,9 @@ export class Upload {
     }
 
     private static async uploadFileAndTagBasedOnAttributes(localPath: string,
-                                                           ussPath: string,
-                                                           session: AbstractSession,
-                                                           attributes: ZosFilesAttributes) {
+        ussPath: string,
+        session: AbstractSession,
+        attributes: ZosFilesAttributes) {
         if (attributes.fileShouldBeUploaded(localPath)) {
             const binary = attributes.getFileTransferMode(localPath) === TransferMode.BINARY;
             if (binary) {
@@ -1014,53 +1014,53 @@ export class Upload {
         const reqHeaders: IHeaderContent[] = [];
 
         switch (context) {
-            case "stream":
-            case "buffer":
-                if (options.binary) {
-                    reqHeaders.push(ZosmfHeaders.OCTET_STREAM);
-                    reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
-                } else if (options.localEncoding) {
-                    reqHeaders.push({"Content-Type": options.localEncoding});
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                } else if (options.encoding) {
-                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                    const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                    header[keys[0]] = value;
-                    reqHeaders.push(header);
-                } else {
-                    reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
-                }
-                reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
-                if (options.responseTimeout != null) {
-                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-                }
-                break;
-            default:
-                const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
-                if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                }
-                reqHeaders.push(...headers);
-                break;
+        case "stream":
+        case "buffer":
+            if (options.binary) {
+                reqHeaders.push(ZosmfHeaders.OCTET_STREAM);
+                reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
+            } else if (options.localEncoding) {
+                reqHeaders.push({"Content-Type": options.localEncoding});
+                reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+            } else if (options.encoding) {
+                const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+                header[keys[0]] = value;
+                reqHeaders.push(header);
+            } else {
+                reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+            }
+            reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
+            if (options.responseTimeout != null) {
+                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+            break;
+        default:
+            const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+            const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
+            if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
+                reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+            }
+            reqHeaders.push(...headers);
+            break;
         }
 
         // Migrated recall options
         if (options.recall) {
             switch (options.recall.toLowerCase()) {
-                case "wait":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
-                    break;
-                case "nowait":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                    break;
-                case "error":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
-                    break;
-                default:
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                    break;
+            case "wait":
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                break;
+            case "nowait":
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                break;
+            case "error":
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                break;
+            default:
+                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                break;
             }
         }
 

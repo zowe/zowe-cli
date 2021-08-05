@@ -28,13 +28,13 @@ const badResponse500: any = {
 };
 const badDataExpired = {
     messages: [
-    {
-        messageType: "ERROR",
-        messageNumber: "ZWEAM701E",
-        messageContent: "The request to the URL '/api/v1/gateway/auth/logout' has failed: TokenExpireException: Token is expired. caused by: TokenExpireException: Token is expired.",
-        messageKey: "org.zowe.apiml.common.internalRequestError"
-    }
-]};
+        {
+            messageType: "ERROR",
+            messageNumber: "ZWEAM701E",
+            messageContent: "The request to the URL '/api/v1/gateway/auth/logout' has failed: TokenExpireException: Token is expired. caused by: TokenExpireException: Token is expired.",
+            messageKey: "org.zowe.apiml.common.internalRequestError"
+        }
+    ]};
 
 
 const mockErrorText = "Fake error for Auth Logout APIML unit tests";

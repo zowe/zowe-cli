@@ -16,5 +16,4 @@ import { IMigrateOptions } from "../../hMigrate";
  */
 
 // tslint:disable-next-line: no-empty-interface
-export interface IRecallOptions extends IMigrateOptions{
-}
+export type IRecallOptions = IMigrateOptions

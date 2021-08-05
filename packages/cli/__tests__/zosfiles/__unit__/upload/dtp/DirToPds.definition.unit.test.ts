@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files upload dtp command definition", () => {
-    fit ("should not have changed", () => {
+    it.only ("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../../src/zosfiles/upload/dtp/DirToPds.definition").DirToPdsDefinition;
 
         expect(definition).toBeDefined();

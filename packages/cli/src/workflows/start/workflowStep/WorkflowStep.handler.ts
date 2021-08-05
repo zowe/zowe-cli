@@ -45,41 +45,41 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
         }
 
         switch (sourceType) {
-            case "workflowKey":
-                try{
-                    await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict,
-                        this.arguments.stepName, this.arguments.performFollowingSteps);
-                } catch (err){
-                    error = "Start workflow: " + err;
-                    throw error;
+        case "workflowKey":
+            try{
+                await StartWorkflow.startWorkflow(this.mSession, this.arguments.workflowKey, this.arguments.resolveConflict,
+                    this.arguments.stepName, this.arguments.performFollowingSteps);
+            } catch (err){
+                error = "Start workflow: " + err;
+                throw error;
+            }
+            params.response.data.setObj("Started.");
+            params.response.console.log("Workflow step started.");
+            break;
+        case "workflowName":
+            try{
+                getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
+                if (getWfKey === null) {
+                    throw new ImperativeError({
+                        msg: `No workflows match the provided workflow name.`,
+                        additionalDetails: JSON.stringify(params)
+                    });
                 }
-                params.response.data.setObj("Started.");
-                params.response.console.log("Workflow step started.");
-                break;
-            case "workflowName":
-                try{
-                    getWfKey = await ListWorkflows.getWfKey(this.mSession, this.arguments.workflowName, undefined);
-                    if (getWfKey === null) {
-                        throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`,
-                            additionalDetails: JSON.stringify(params)
-                        });
-                    }
-                    await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict,
-                        this.arguments.stepName, this.arguments.performFollowingSteps);
-                } catch (err){
-                    error = "Start workflow: " + err;
-                    throw error;
-                }
-                params.response.data.setObj("Started.");
-                params.response.console.log("Workflow step started.");
-                break;
-            default:
+                await StartWorkflow.startWorkflow(this.mSession, getWfKey, this.arguments.resolveConflict,
+                    this.arguments.stepName, this.arguments.performFollowingSteps);
+            } catch (err){
+                error = "Start workflow: " + err;
+                throw error;
+            }
+            params.response.data.setObj("Started.");
+            params.response.console.log("Workflow step started.");
+            break;
+        default:
             throw new ImperativeError({
                 msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
                     `Please contact support.`,
                 additionalDetails: JSON.stringify(params)
-                });
+            });
         }
     }
 }

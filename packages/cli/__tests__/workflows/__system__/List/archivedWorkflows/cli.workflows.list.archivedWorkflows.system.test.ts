@@ -36,7 +36,7 @@ describe("List archived workflow cli system tests", () => {
             tempProfileTypes: ["zosmf"],
             testName: "list_workflow_cli"
         });
-     //   systemProps = new TestProperties(testEnvironment.systemTestProperties);
+        //   systemProps = new TestProperties(testEnvironment.systemTestProperties);
         defaultSystem = testEnvironment.systemTestProperties;
         system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
@@ -92,7 +92,7 @@ describe("List archived workflow cli system tests", () => {
         beforeEach(async () =>{
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
-             // Archive workflow
+            // Archive workflow
             await ArchiveWorkflow.archiveWorkflowByKey(REAL_SESSION, wfKey);
         });
         afterEach(async () => {
@@ -101,7 +101,7 @@ describe("List archived workflow cli system tests", () => {
         });
         it("Should list workflows in zOSMF.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
-            testEnvironment);
+                testEnvironment);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString());

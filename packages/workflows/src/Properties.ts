@@ -32,7 +32,7 @@ export class PropertiesWorkflow {
      */
     // main method
     public static async getWorkflowProperties(session: AbstractSession, workflowKey: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-                                              steps?: boolean, variables?: boolean): Promise<IWorkflowInfo>{
+        steps?: boolean, variables?: boolean): Promise<IWorkflowInfo>{
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         let wfKey: string;

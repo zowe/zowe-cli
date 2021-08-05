@@ -153,11 +153,11 @@ describe("Delete Jobs unit tests", () => {
                 .then(() => {
                     expect(".catch() should have been called").toEqual("test failed");
                 }).catch((err) => {
-                expect(err).toBeDefined();
-                expect(err instanceof ImperativeError).toEqual(true);
-                expect(err.message).toEqual(mockErrorText);
-                done();
-            });
+                    expect(err).toBeDefined();
+                    expect(err instanceof ImperativeError).toEqual(true);
+                    expect(err.message).toEqual(mockErrorText);
+                    done();
+                });
         });
 
         it("should be able to catch errors from deleteJobCommon with Promise.catch() syntax", (done: any) => {

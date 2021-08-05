@@ -16,7 +16,7 @@
  * @interface IZosfmMessages
  */
 // tslint:disable-next-line:no-empty-interface
-export interface IZosfmMessages extends IZosmfMessages {}
+export type IZosfmMessages = IZosmfMessages
 
 /**
  * The z/OSMF Ping API error message parameters. See the z/OSMF REST API documentation for full details.
