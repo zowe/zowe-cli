@@ -72,18 +72,20 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 },
                 secure: []
             }
-            profileConfig.defaults.base = "my_base"
+            profileConfig.defaults.base = "my_base";
 
             if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
-                profileConfig.profiles.my_base.properties.authToken = `${session.ISession.tokenType}=${session.ISession.tokenValue}`
-                profileConfig.profiles.my_base.secure.push("authToken");
+                profileConfig.profiles.my_base.properties.tokenType = session.ISession.tokenType;
+                profileConfig.profiles.my_base.properties.tokenValue = session.ISession.tokenValue;
+                profileConfig.profiles.my_base.secure.push("tokenValue");
             } else if (session.ISession.user && session.ISession.password) {
                 const tokenType = SessConstants.TOKEN_TYPE_APIML;
                 session.ISession.tokenType = tokenType;
                 session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
                 const tokenValue = await Login.apimlLogin(session);
-                profileConfig.profiles.my_base.properties.authToken = `${tokenType}=${tokenValue}`;
-                profileConfig.profiles.my_base.secure.push("authToken");
+                profileConfig.profiles.my_base.properties.tokenType = tokenType;
+                profileConfig.profiles.my_base.properties.tokenValue = tokenValue;
+                profileConfig.profiles.my_base.secure.push("tokenValue");
             }
         }
 
