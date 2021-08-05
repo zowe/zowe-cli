@@ -72,7 +72,7 @@ describe("config auto-init without profile", () => {
         expect(baseExists).toBe(true);
         expect(baseProperties.host).toEqual(base.host);
         expect(baseProperties.port).toEqual(base.port);
-        export(baseProperties.tokenType).toEqual("apimlAuthenticationToken");
+        expect(baseProperties.tokenType).toEqual("apimlAuthenticationToken");
         expect(baseProperties.tokenValue).not.toBeDefined();
         expect(baseSecure).toContain("tokenValue");
         expect(response.stdout.toString()).toMatch(/tokenValue:\s+\(secure value\)/);
@@ -126,7 +126,7 @@ describe("config auto-init with profile", () => {
         expect(baseExists).toBe(true);
         expect(baseProperties.host).toEqual(base.host);
         expect(baseProperties.port).toEqual(base.port);
-        export(baseProperties.tokenType).toEqual("apimlAuthenticationToken");
+        expect(baseProperties.tokenType).toEqual("apimlAuthenticationToken");
         expect(baseProperties.tokenValue).not.toBeDefined();
         expect(baseSecure).toContain("tokenValue");
     });
