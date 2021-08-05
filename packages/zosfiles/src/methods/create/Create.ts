@@ -81,63 +81,59 @@ export class Create {
         if (!validCmdType) {
             throw new ImperativeError({ msg: ZosFilesMessages.unsupportedDatasetType.message });
         } else {
-            try {
-                // Handle the size option
-                if (!isNullOrUndefined(tempOptions.size)) {
-                    const tAlcunit = tempOptions.size.toString().match(/[a-zA-Z]+/g);
-                    if (!isNullOrUndefined(tAlcunit)) {
-                        tempOptions.alcunit = tAlcunit.join("").toUpperCase();
-                    }
+            // Handle the size option
+            if (!isNullOrUndefined(tempOptions.size)) {
+                const tAlcunit = tempOptions.size.toString().match(/[a-zA-Z]+/g);
+                if (!isNullOrUndefined(tAlcunit)) {
+                    tempOptions.alcunit = tAlcunit.join("").toUpperCase();
+                }
 
-                    const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
-                    if (!isNullOrUndefined(tPrimary)) {
-                        tempOptions.primary = +(tPrimary.join(""));
+                const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
+                if (!isNullOrUndefined(tPrimary)) {
+                    tempOptions.primary = +(tPrimary.join(""));
 
-                        if (isNullOrUndefined(tempOptions.secondary)) {
-                            const TEN_PERCENT = 0.10;
-                            tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
-                        }
-                    }
-                } else {
                     if (isNullOrUndefined(tempOptions.secondary)) {
-                        if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
-                            tempOptions.secondary = 1;
-                        } else {
-                            // tslint:disable-next-line:no-magic-numbers
-                            tempOptions.secondary = 10;
-                        }
+                        const TEN_PERCENT = 0.10;
+                        tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
                     }
                 }
-                delete tempOptions.size;
-
-                let response = "";
-                // Handle the print attributes option
-                if (!isNullOrUndefined(tempOptions.showAttributes)) {
-                    if (tempOptions.showAttributes) {
-                        delete tempOptions.showAttributes;
-                        response = TextUtils.prettyJson(tempOptions);
+            } else {
+                if (isNullOrUndefined(tempOptions.secondary)) {
+                    if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
+                        tempOptions.secondary = 1;
                     } else {
-                        delete tempOptions.showAttributes;
+                        // tslint:disable-next-line:no-magic-numbers
+                        tempOptions.secondary = 10;
                     }
                 }
-
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
-                const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-                if (options && options.responseTimeout != null) {
-                    headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-                }
-
-                Create.dataSetValidateOptions(tempOptions);
-
-                await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
-
-                return {
-                    success: true,
-                    commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
-                };
-            } catch (error) {
-                throw error;
             }
+            delete tempOptions.size;
+
+            let response = "";
+            // Handle the print attributes option
+            if (!isNullOrUndefined(tempOptions.showAttributes)) {
+                if (tempOptions.showAttributes) {
+                    delete tempOptions.showAttributes;
+                    response = TextUtils.prettyJson(tempOptions);
+                } else {
+                    delete tempOptions.showAttributes;
+                }
+            }
+
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+            const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            if (options && options.responseTimeout != null) {
+                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+
+            Create.dataSetValidateOptions(tempOptions);
+
+            await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
+
+            return {
+                success: true,
+                commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
+            };
         }
     }
 
@@ -153,18 +149,14 @@ export class Create {
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
         Create.dataSetValidateOptions(tempOptions);
 
-        try {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
+        await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
 
-            return {
-                success: true,
-                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
-            };
-        } catch (error) {
-            throw error;
-        }
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+        };
     }
 
     /**
@@ -179,7 +171,7 @@ export class Create {
         const tempOptions: any = options;
 
         for (const option in tempOptions) {
-            if (tempOptions.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(tempOptions, option)) {
                 switch (option) {
 
                 case "alcunit":
@@ -570,7 +562,7 @@ export class Create {
 
         // validate specific options
         for (const option in options) {
-            if (options.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
                 case "dsorg":
@@ -660,7 +652,7 @@ export class Create {
 
         // validate specific options
         for (const option in options) {
-            if (options.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
                 case "perms":

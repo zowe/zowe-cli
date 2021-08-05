@@ -34,7 +34,6 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
-        let resp;
         let getWfKey: IActiveWorkflows;
         this.arguments = params.arguments;
 
@@ -69,7 +68,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
             const failedWfs: IWorkflowsInfo[] = [];
             for(const element of getWfKey.workflows){
                 try {
-                    resp = await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
+                    await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
                     successWfs.push(element);
                 } catch (err) {
                     failedWfs.push(element);

@@ -40,7 +40,6 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error: string;
-        let resp: string;
         let listWorkflows: IArchivedWorkflows;
         this.arguments = params.arguments;
 
@@ -100,7 +99,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
 
                 if (check) {
                     try {
-                        resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(
+                        await ArchivedDeleteWorkflow.archivedDeleteWorkflow(
                             this.mSession,
                             listWorkflows.archivedWorkflows[i].workflowKey
                         );

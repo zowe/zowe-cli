@@ -92,7 +92,7 @@ export class Mount {
 
         // validate specific options
         for (const option in options) {
-            if (options.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
                 case "mode":

@@ -55,7 +55,7 @@ export class ProvisioningService {
             return [];
         }
         for (const key in props) {
-            if (props.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(props, key)) {
                 propsArrayObj.push({name: key, value: (props as any)[key]});
             }
         }

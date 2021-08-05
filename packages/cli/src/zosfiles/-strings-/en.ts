@@ -222,7 +222,8 @@ export default {
                 },
                 OPTIONS: {
                     WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
-                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
+                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on " +
+                        "ARCHDEL request."
                 },
                 EXAMPLES: {
                     EX1: `Delete a migrated data set using default options`
@@ -464,7 +465,8 @@ export default {
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
-            PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. \"*\".",
+            PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against " +
+                "all members, e.g. \"*\".",
             PATH: "Specifies the path where the file system is mounted." +
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
@@ -583,10 +585,10 @@ export default {
                     "{{bullet}} A local-encoding to identify a file’s encoding on the local workstation. If '-' is specified for local-encoding," +
                     "files that match the pattern are not transferred.\n" +
                     "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
-                    "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are transferred " +
-                    " in binary mode. Remote files are tagged either with the remote encoding or as binary. \n \n" +
-                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the " +
-                    "z/OS system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n " +
+                    "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are " +
+                    "transferred in binary mode. Remote files are tagged either with the remote encoding or as binary.\n\n" +
+                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the z/OS" +
+                    "system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n" +
                     "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
                     "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",
 

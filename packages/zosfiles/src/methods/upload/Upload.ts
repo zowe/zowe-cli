@@ -157,50 +157,46 @@ export class Upload {
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
-        try {
-            // Construct zOSMF REST endpoint.
-            let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-            if (options.volume) {
-                endpoint = path.posix.join(endpoint, `-(${options.volume})`);
-            }
-            endpoint = path.posix.join(endpoint, dataSetName);
-
-            // Construct request header parameters
-            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
-
-            if (!options.binary) {
-                fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
-            }
-
-            // Options to use the buffer to write a file
-            const requestOptions: IOptionsFullResponse = {
-                resource: endpoint,
-                reqHeaders,
-                writeData: fileBuffer
-            };
-
-            // If requestor needs etag, add header + get "response" back
-            if (options.returnEtag) {
-                requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
-            }
-            const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when uploading
-            const apiResponse: any = {};
-
-            // Return Etag in apiResponse, if requested
-            if (options.returnEtag) {
-                apiResponse.etag = uploadRequest.response.headers.etag;
-            }
-
-            return {
-                success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
-                apiResponse
-            };
-        } catch (error) {
-            throw error;
+        // Construct zOSMF REST endpoint.
+        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        if (options.volume) {
+            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
         }
+        endpoint = path.posix.join(endpoint, dataSetName);
+
+        // Construct request header parameters
+        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+
+        if (!options.binary) {
+            fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
+        }
+
+        // Options to use the buffer to write a file
+        const requestOptions: IOptionsFullResponse = {
+            resource: endpoint,
+            reqHeaders,
+            writeData: fileBuffer
+        };
+
+        // If requestor needs etag, add header + get "response" back
+        if (options.returnEtag) {
+            requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+        }
+        const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
+
+        // By default, apiResponse is empty when uploading
+        const apiResponse: any = {};
+
+        // Return Etag in apiResponse, if requested
+        if (options.returnEtag) {
+            apiResponse.etag = uploadRequest.response.headers.etag;
+        }
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+            apiResponse
+        };
     }
 
     /**
@@ -221,48 +217,44 @@ export class Upload {
 
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
-        try {
-            // Construct zOSMF REST endpoint.
-            let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-            if (options.volume) {
-                endpoint = path.posix.join(endpoint, `-(${options.volume})`);
-            }
-            endpoint = path.posix.join(endpoint, dataSetName);
-
-            // Construct request header parameters
-            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
-
-            const requestOptions: IOptionsFullResponse = {
-                resource: endpoint,
-                reqHeaders,
-                requestStream: fileStream,
-                normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not uploading in binary*/,
-                task: options.task
-            };
-
-            // If requestor needs etag, add header + get "response" back
-            if (options.returnEtag) {
-                requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
-            }
-
-            const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when uploading
-            const apiResponse: any = {};
-
-            // Return Etag in apiResponse, if requested
-            if (options.returnEtag) {
-                apiResponse.etag = uploadRequest.response.headers.etag;
-            }
-
-            return {
-                success: true,
-                commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
-                apiResponse
-            };
-        } catch (error) {
-            throw error;
+        // Construct zOSMF REST endpoint.
+        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        if (options.volume) {
+            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
         }
+        endpoint = path.posix.join(endpoint, dataSetName);
+
+        // Construct request header parameters
+        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+
+        const requestOptions: IOptionsFullResponse = {
+            resource: endpoint,
+            reqHeaders,
+            requestStream: fileStream,
+            normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not uploading in binary*/,
+            task: options.task
+        };
+
+        // If requestor needs etag, add header + get "response" back
+        if (options.returnEtag) {
+            requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+        }
+
+        const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
+
+        // By default, apiResponse is empty when uploading
+        const apiResponse: any = {};
+
+        // Return Etag in apiResponse, if requested
+        if (options.returnEtag) {
+            apiResponse.etag = uploadRequest.response.headers.etag;
+        }
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+            apiResponse
+        };
     }
 
     /**
@@ -301,7 +293,6 @@ export class Upload {
         let uploadingFile: string = "";
         let uploadingDsn: string = "";
 
-        let uploadFileList: string[];
         let isUploadToPds: boolean = false;
         const results: IUploadResult[] = [];
 
@@ -316,7 +307,7 @@ export class Upload {
         // From the input path, retrieve the list of all files that we are trying to upload.
         // If input is a file, the return is an array of 1 element,
         // If input is a directory, the return will be an array of all of it files.
-        uploadFileList = ZosFilesUtils.getFileListFromPath(inputPath);
+        const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(inputPath);
 
         // Check if data set name is actually a PDS member.
         //   if it is, then we have to make sure that we do not try to upload a directory
@@ -610,12 +601,11 @@ export class Upload {
 
         await promise;
 
-        let result: IUploadResult;
         // read payload from file
         const uploadStream = IO.createReadStream(inputFile);
 
         const request = await this.streamToUssFile(session, ussname, uploadStream, options);
-        result = {
+        const result: IUploadResult = {
             success: true,
             from: inputFile,
             to: ussname

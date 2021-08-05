@@ -10,10 +10,10 @@
 */
 
 // get workflow properties object
-import { IExplanationMap } from "@zowe/imperative";
 import { IAutomationStatus } from "./IAutomationStatus";
 import { IStepInfo } from "./IStepInfo";
 import { IVariableInfo } from "./IVariableInfo";
+
 /**
  * Interface for z/OSMF API response.
  * @export

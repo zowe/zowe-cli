@@ -40,8 +40,14 @@ export class IssueTso {
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         TsoValidator.validateNotEmptyString(command, noCommandInput.message);
 
-        let response: IIssueResponse;
-        response = {success: false, startResponse: null, startReady: false, zosmfResponse: null, commandResponse: null, stopResponse: null};
+        const response: IIssueResponse = {
+            success: false,
+            startResponse: null,
+            startReady: false,
+            zosmfResponse: null,
+            commandResponse: null,
+            stopResponse: null
+        };
         response.startResponse = await StartTso.start(session, accountNumber, startParams || {});
 
         if (!response.startResponse.success) {

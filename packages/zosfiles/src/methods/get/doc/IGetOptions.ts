@@ -9,13 +9,12 @@
 *
 */
 
-import { ITaskWithStatus } from "@zowe/imperative";
 import { IOptions } from "../../../doc/IOptions";
 
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
  * @export
- * @interface IGetOptions
+ * @interface IGetOptions
  */
 // NOTE(Kelosky): allow empty interface for backwards compatibility
 // tslint:disable-next-line
