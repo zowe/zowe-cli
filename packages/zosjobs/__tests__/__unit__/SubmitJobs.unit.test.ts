@@ -321,6 +321,7 @@ describe("Submit Jobs API", () => {
     });
 
     describe("Error catching tests - promise catch()", () => {
+        /* eslint-disable jest/no-done-callback */
         it("should be able to catch an error for submitJclCommon with .catch() syntax", (done: any) => {
             (ZosmfRestClient as any).putExpectJSON = throwImperativeError; // throw error from rest client
             SubmitJobs.submitJclCommon(fakeSession, {
@@ -453,6 +454,7 @@ describe("Submit Jobs API", () => {
                 done();
             });
         });
+        /* eslint-enable jest/no-done-callback */
     });
 
     describe("Parameter validation tests", () => {

@@ -135,6 +135,7 @@ describe("Delete Jobs unit tests", () => {
     });
 
     describe("Error handling tests - Promise catch() syntax", () => {
+        /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors from deleteJob with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
             DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB0000").then(() => {
@@ -174,6 +175,7 @@ describe("Delete Jobs unit tests", () => {
                 done();
             });
         });
+        /* eslint-enable jest/no-done-callback */
     });
 
     describe("Parameter validation", () => {
@@ -191,7 +193,7 @@ describe("Delete Jobs unit tests", () => {
             expect(err.message).toContain("jobname");
         });
 
-        it("should reject calls to deleteJob that omit jobname", async () => {
+        it("should reject calls to deleteJob that omit jobid", async () => {
             ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {

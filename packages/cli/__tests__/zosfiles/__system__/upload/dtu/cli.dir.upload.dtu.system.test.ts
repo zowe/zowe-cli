@@ -280,7 +280,7 @@ describe("Upload directory to USS", () => {
 
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/foo.ignoreme");
-                fail("USS file foo.stuff should not have been transferred");
+                throw new Error("USS file foo.stuff should not have been transferred");
             } catch (err) {
                 expect(err).toBeDefined();
             }
@@ -292,7 +292,7 @@ describe("Upload directory to USS", () => {
 
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/ignore me.txt");
-                fail("USS file ignore me.txt should not have been transferred");
+                throw new Error("USS file ignore me.txt should not have been transferred");
             } catch (err) {
                 expect(err).toBeDefined();
             }
@@ -357,7 +357,7 @@ describe("Upload directory to USS", () => {
             let error: Error;
             try {
                 await Get.USSFile(REAL_SESSION, path.join(ussname, "subdir_ascii_file1.txt"));
-                fail("USS file subddir_ascii_file1.txt should not have been transferred");
+                throw new Error("USS file subddir_ascii_file1.txt should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -372,7 +372,7 @@ describe("Upload directory to USS", () => {
             let error: Error;
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/uploaded_dir/ignored_dir/ignored_file");
-                fail("USS file ignored_file should not have been transferred");
+                throw new Error("USS file ignored_file should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -448,7 +448,7 @@ describe("Upload directory to USS", () => {
             let error: Error;
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/copymeNot.txt");
-                fail("USS file copymeNot.txt should not have been transferred");
+                throw new Error("USS file copymeNot.txt should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -456,7 +456,7 @@ describe("Upload directory to USS", () => {
 
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/ignore.txt");
-                fail("USS file ignore.txt should not have been transferred");
+                throw new Error("USS file ignore.txt should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -464,7 +464,7 @@ describe("Upload directory to USS", () => {
 
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/picignoreMe.png");
-                fail("USS file picignoreMe.png should not have been transferred");
+                throw new Error("USS file picignoreMe.png should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -472,7 +472,7 @@ describe("Upload directory to USS", () => {
 
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/PiccpyCapt.png");
-                fail("USS file PiccpyCapt.png should not have been transferred");
+                throw new Error("USS file PiccpyCapt.png should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -505,7 +505,7 @@ describe("Upload directory to USS", () => {
             let error: Error;
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
-                fail("USS file .attributes should not have been transferred");
+                throw new Error("USS file .attributes should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -520,7 +520,7 @@ describe("Upload directory to USS", () => {
             let error: Error;
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/uploaded_dir/ignored_dir/ignored_file");
-                fail("USS file ignored_file should not have been transferred");
+                throw new Error("USS file ignored_file should not have been transferred");
             } catch (err) {
                 error = err;
             }
@@ -539,7 +539,7 @@ describe("Upload directory to USS", () => {
             let error: Error;
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/subdir_ascii_file1.txt");
-                fail("USS file subddir_ascii_file1.txt should not have been transferred");
+                throw new Error("USS file subddir_ascii_file1.txt should not have been transferred");
             } catch (err) {
                 error = err;
             }

@@ -19,8 +19,9 @@ module.exports = {
                 "**/__tests__/**/*.ts"
             ],
             "rules": {
-                "jest/expect-expect": ["warn", { "assertFunctionNames": ["expect*"] }],
+                "jest/expect-expect": ["warn", { "assertFunctionNames": ["expect*", "**.*expect*"] }],
                 "jest/no-conditional-expect": "off",
+                "jest/no-standalone-expect": "off",
                 "jest/no-try-expect": "off",
                 "unused-imports/no-unused-vars": "off"
             }

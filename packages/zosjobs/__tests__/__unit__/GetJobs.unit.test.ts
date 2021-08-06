@@ -76,6 +76,7 @@ describe("GetJobs tests", () => {
             expect(error.causeErrors).toMatchSnapshot();
         });
 
+        // eslint-disable-next-line jest/no-done-callback
         it("should get an error for missing jobname on getStatus when using callbacks", (done) => {
             let error;
             try {
@@ -143,6 +144,7 @@ describe("GetJobs tests", () => {
     });
 
     describe("getJobs APIs", () => {
+        // eslint-disable-next-line jest/no-done-callback
         it("should reject promise if a session isn't provided", (done) => {
             let error;
             try {
@@ -341,6 +343,7 @@ describe("GetJobs tests", () => {
             GetJobs.getJcl(pretendSession, "fakeJob", "fakeId");
         });
 
+        // eslint-disable-next-line jest/no-done-callback
         it("should error for missing jobname in callback scheme for jcl", (done) => {
             let error;
             try {
@@ -376,6 +379,7 @@ describe("GetJobs tests", () => {
             GetJobs.getSpoolFiles(pretendSession, "fakeJob", "fakeId");
         });
 
+        // eslint-disable-next-line jest/no-done-callback
         it("should error for missing jobname in callback scheme for spool files", (done) => {
             let error;
             try {
@@ -411,6 +415,7 @@ describe("GetJobs tests", () => {
             GetJobs.getSpoolContent(pretendSession, GetJobsData.SAMPLE_JOB_FILE);
         });
 
+        // eslint-disable-next-line jest/no-done-callback
         it("should error for missing jobname in callback scheme for spool content", (done) => {
             let error;
             try {

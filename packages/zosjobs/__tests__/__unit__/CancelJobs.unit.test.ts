@@ -136,6 +136,7 @@ describe("Cancel Jobs unit tests", () => {
     });
 
     describe("Error handling tests - Promise catch() syntax", () => {
+        /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors from cancelJob with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.putExpectString = jest.fn(throwImperativeError);
             CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB0000").then(() => {
@@ -175,6 +176,7 @@ describe("Cancel Jobs unit tests", () => {
                 done();
             });
         });
+        /* eslint-enable jest/no-done-callback */
     });
 
     describe("Parameter validation", () => {
@@ -192,7 +194,7 @@ describe("Cancel Jobs unit tests", () => {
             expect(err.message).toContain("jobname");
         });
 
-        it("should reject calls to cancelJob that omit jobname", async () => {
+        it("should reject calls to cancelJob that omit jobid", async () => {
             ZosmfRestClient.putExpectString = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
