@@ -303,7 +303,6 @@
       "description": "Connect to Zowe API Mediation Layer authentication service and obtain a token, or disconnect from the authentication service and revoke the token.\n\nThe token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, you should omit username and password in service profiles so that the token in the base profile is used."
     }
   },
-  "templateProfileName": "lpar1",
   "profiles": [
     {
       "type": "zosmf",

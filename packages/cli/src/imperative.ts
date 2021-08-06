@@ -185,7 +185,6 @@ const config: IImperativeConfig = {
         },
         profileType: "base"
     },
-    templateProfileName: "lpar1",
     profiles: [
         {
             type: "zosmf",
