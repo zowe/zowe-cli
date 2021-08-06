@@ -34,7 +34,7 @@ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
         // tslint:disable-next-line: no-magic-numbers
         numericValueRange: [5, 600]
     }
-}
+};
 
 export const ZosFilesOptionDefinitions: ICommandOptionDefinition[] = [
     ZosFilesOptions.responseTimeout

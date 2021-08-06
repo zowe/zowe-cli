@@ -59,7 +59,7 @@ export class ListWorkflows {
             // Added another "system" test for this
             zOSMFVersion: options.zOSMFVersion !== undefined ? options.zOSMFVersion : WorkflowConstants.ZOSMF_VERSION,
             workflowName: options.workflowName ? encodeURIComponent(options.workflowName) : null
-        }
+        };
         WorkflowValidator.validateNotEmptyString(options.zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListWorkflows.getResourceQuery(options);
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery);

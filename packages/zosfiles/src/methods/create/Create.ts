@@ -369,7 +369,7 @@ export class Create {
 
         let respTimeout: number;
         if (options) {
-            respTimeout = options.responseTimeout
+            respTimeout = options.responseTimeout;
         }
 
         try {

@@ -58,7 +58,7 @@ const START_RESPONSE: IStartStopResponse = {
     success: true,
     zosmfTsoResponse: ZOSMF_RESPONSE,
     servletKey: ZOSMF_RESPONSE.servletKey
-}
+};
 
 
 describe("TsoIssue issueTsoCommand - failing scenarios", () => {

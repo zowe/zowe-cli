@@ -189,7 +189,7 @@ describe("auth login/logout apiml do not create profile", () => {
 
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 
@@ -207,7 +207,7 @@ describe("auth login/logout apiml do not create profile", () => {
 
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 
@@ -223,7 +223,7 @@ describe("auth login/logout apiml do not create profile", () => {
             ]);
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 });

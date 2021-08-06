@@ -42,6 +42,7 @@ module.exports = {
         "max-len": ["error", 150],
         "no-console": "error",
         "no-trailing-spaces": "error",
+        "semi": "error",
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-explicit-any": "off",
