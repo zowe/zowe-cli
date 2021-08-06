@@ -9,7 +9,7 @@
 *
 */
 
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
 import { CancelJobs, IJob } from "../../src";
 

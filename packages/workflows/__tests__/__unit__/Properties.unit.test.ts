@@ -14,10 +14,7 @@ import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative"
 import { PropertiesWorkflow } from "../../src";
 import {
     WorkflowConstants,
-    noWorkflowKey,
-    noOwner,
-    noSteps,
-    noVariables
+    noWorkflowKey
 } from "../../src/WorkflowConstants";
 import { IVariable } from "../../src/doc/IVariable";
 import { IWorkflowInfo } from "../../src/doc/IWorkflowInfo";

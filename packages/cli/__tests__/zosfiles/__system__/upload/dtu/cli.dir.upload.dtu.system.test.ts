@@ -9,7 +9,7 @@
 *
 */
 
-import { Headers, Imperative, Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 
 import * as path from "path";
 import * as fs from "fs";

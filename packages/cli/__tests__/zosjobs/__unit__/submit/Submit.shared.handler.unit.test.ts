@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IJob, MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
+import { MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@zowe/imperative";
 import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
 

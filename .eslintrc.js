@@ -19,9 +19,10 @@ module.exports = {
                 "**/__tests__/**/*.ts"
             ],
             "rules": {
-                "@typescript-eslint/no-unused-vars": "off",
                 "jest/expect-expect": ["warn", { "assertFunctionNames": ["expect*"] }],
-                "jest/no-conditional-expect": "off"
+                "jest/no-conditional-expect": "off",
+                "jest/no-try-expect": "off",
+                "unused-imports/no-unused-vars": "off"
             }
         }
     ],
@@ -32,17 +33,21 @@ module.exports = {
     },
     "plugins": [
         "@typescript-eslint",
-        "jest"
+        "jest",
+        "unused-imports"
     ],
     "rules": {
         "indent": ["error", 4],
         "max-len": ["error", 150],
+        "no-console": "error",
         "no-trailing-spaces": "error",
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-inferrable-types": "off",
-        "@typescript-eslint/no-unused-vars": ["warn", { "args": "none" }],
-        "@typescript-eslint/no-var-requires": "off"
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "unused-imports/no-unused-imports": "warn",
+        "unused-imports/no-unused-vars": ["warn", { "args": "none" }]
     }
 };

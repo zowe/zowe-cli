@@ -14,7 +14,7 @@ import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { CreateWorkflow, DeleteWorkflow, ArchivedDeleteWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { CreateWorkflow, DeleteWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
