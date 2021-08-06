@@ -63,8 +63,8 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         const profileConfig = Services.convertApimlProfileInfoToProfileConfig(profileInfos);
 
         // Populate the config with base profile information
-        if (profileConfig.defaults.base == null && profileConfig.profiles.my_base == null) {
-            profileConfig.profiles.my_base = {
+        if (profileConfig.defaults.base == null && profileConfig.profiles.base == null) {
+            profileConfig.profiles.base = {
                 type: "base",
                 properties: {
                     host: session.ISession.hostname,
@@ -72,18 +72,18 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 },
                 secure: []
             }
-            profileConfig.defaults.base = "my_base"
+            profileConfig.defaults.base = "base"
 
             if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {
-                profileConfig.profiles.my_base.properties.authToken = `${session.ISession.tokenType}=${session.ISession.tokenValue}`
-                profileConfig.profiles.my_base.secure.push("authToken");
+                profileConfig.profiles.base.properties.authToken = `${session.ISession.tokenType}=${session.ISession.tokenValue}`
+                profileConfig.profiles.base.secure.push("authToken");
             } else if (session.ISession.user && session.ISession.password) {
                 const tokenType = SessConstants.TOKEN_TYPE_APIML;
                 session.ISession.tokenType = tokenType;
                 session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
                 const tokenValue = await Login.apimlLogin(session);
-                profileConfig.profiles.my_base.properties.authToken = `${tokenType}=${tokenValue}`;
-                profileConfig.profiles.my_base.secure.push("authToken");
+                profileConfig.profiles.base.properties.authToken = `${tokenType}=${tokenValue}`;
+                profileConfig.profiles.base.secure.push("authToken");
             }
         }
 
