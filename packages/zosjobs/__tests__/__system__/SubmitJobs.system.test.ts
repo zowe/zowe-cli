@@ -16,7 +16,6 @@ import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../src/JobsMessages";
-// tslint:disable-next-line:no-implicit-dependencies
 const rimraf = require("rimraf").sync;
 
 

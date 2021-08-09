@@ -15,7 +15,6 @@
  * @deprecated Use `IZosmfMessages` instead because it is spelled correctly
  * @interface IZosfmMessages
  */
-// tslint:disable-next-line:no-empty-interface
 export type IZosfmMessages = IZosmfMessages
 
 /**

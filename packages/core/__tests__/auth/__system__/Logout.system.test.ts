@@ -63,7 +63,6 @@ describe("Logout system test", () => {
             Imperative.console.info(`Error ${error}`);
         }
 
-        // tslint:disable-next-line: no-magic-numbers
         expect(client.response.statusCode).toEqual(200);
         expect(error).not.toBeDefined();
 
@@ -80,7 +79,6 @@ describe("Logout system test", () => {
             Imperative.console.info(`Error ${error}`);
         }
 
-        // tslint:disable-next-line: no-magic-numbers
         expect(client.response.statusCode).toEqual(401);
         expect(error).toBeDefined();
     });

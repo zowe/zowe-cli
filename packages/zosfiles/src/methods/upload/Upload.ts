@@ -971,7 +971,6 @@ export class Upload {
         if (Upload.hasDirs(dirPath)) {
             const directories = fs.readdirSync(dirPath).filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
             // directories = directories.filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
-            // tslint:disable-next-line:prefer-for-of
             for (let index = 0; index < directories.length; index++) {
                 const dirFullPath = path.normalize(path.join(dirPath, directories[index]));
                 response.push({

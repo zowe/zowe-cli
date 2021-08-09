@@ -8,6 +8,7 @@ module.exports = {
         "plugin:@typescript-eslint/recommended"
     ],
     "ignorePatterns": [
+        "**/*.js",
         "**/*.d.ts"
     ],
     "overrides": [
@@ -19,6 +20,7 @@ module.exports = {
                 "**/__tests__/**/*.ts"
             ],
             "rules": {
+                "no-magic-numbers": "off",
                 "jest/expect-expect": ["warn", { "assertFunctionNames": ["expect*", "**.*expect*"] }],
                 "jest/no-conditional-expect": "off",
                 "jest/no-standalone-expect": "off",
@@ -38,9 +40,11 @@ module.exports = {
         "unused-imports"
     ],
     "rules": {
+        "comma-dangle": ["error", "only-multiline"],
         "indent": ["error", 4],
         "max-len": ["error", 150],
         "no-console": "error",
+        "no-magic-numbers": ["error", { "ignore": [-1, 0, 1, 2] }],
         "no-multiple-empty-lines": "error",
         "no-trailing-spaces": "error",
         "semi": "error",

@@ -153,7 +153,7 @@ describe("zos-console issue command", () => {
         expect(respObj.data.success).toBe(true);
         expect(respObj.data.zosmfResponse).toBeDefined();
         expect(respObj.data.zosmfResponse).toBeInstanceOf(Array);
-        expect(respObj.data.zosmfResponse.length).toEqual(FOLLOW_UP_ATTEMPTS); // tslint:disable-line:no-magic-numbers
+        expect(respObj.data.zosmfResponse.length).toEqual(FOLLOW_UP_ATTEMPTS);
     });
 
     describe("without profiles", () => {

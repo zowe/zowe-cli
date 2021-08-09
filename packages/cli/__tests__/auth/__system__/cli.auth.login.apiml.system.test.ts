@@ -96,7 +96,6 @@ describe("auth login/logout apiml show token", () => {
         expect(response.status).toBe(0);
         expect(JSON.parse(response.stdout.toString()).data).toMatchObject({
             tokenType: "apimlAuthenticationToken",
-            // tslint:disable-next-line: no-magic-numbers
             tokenValue: token[token.length-3]});
     });
 
@@ -107,7 +106,6 @@ describe("auth login/logout apiml show token", () => {
                 base.host,
                 base.port,
                 "apimlAuthenticationToken",
-                // tslint:disable-next-line: no-magic-numbers
                 token[token.length-3],
                 base.rejectUnauthorized
             ]);

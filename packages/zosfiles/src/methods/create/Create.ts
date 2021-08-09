@@ -102,7 +102,6 @@ export class Create {
                     if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
                         tempOptions.secondary = 1;
                     } else {
-                        // tslint:disable-next-line:no-magic-numbers
                         tempOptions.secondary = 10;
                     }
                 }
