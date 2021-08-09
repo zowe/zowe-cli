@@ -41,6 +41,7 @@ module.exports = {
         "indent": ["error", 4],
         "max-len": ["error", 150],
         "no-console": "error",
+        "no-multiple-empty-lines": "error",
         "no-trailing-spaces": "error",
         "semi": "error",
         "@typescript-eslint/ban-types": "off",
