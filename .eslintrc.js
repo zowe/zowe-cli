@@ -21,7 +21,9 @@ module.exports = {
             ],
             "rules": {
                 "@typescript-eslint/no-magic-numbers": "off",
-                "jest/expect-expect": ["warn", { "assertFunctionNames": ["expect*", "**.*expect*"] }],
+                "jest/expect-expect": ["warn", {
+                    "assertFunctionNames": ["expect*", "**.*expect*"]
+                }],
                 "jest/no-conditional-expect": "off",
                 "jest/no-standalone-expect": "off",
                 "jest/no-try-expect": "off",
@@ -50,11 +52,17 @@ module.exports = {
         "@typescript-eslint/indent": ["warn", 4],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-inferrable-types": "off",
-        "@typescript-eslint/no-magic-numbers": ["warn", { "ignore": [-1, 0, 1, 2] }],
+        "@typescript-eslint/no-magic-numbers": ["warn", {
+            "ignore": [-1, 0, 1, 2],
+            "ignoreDefaultValues": true,
+            "ignoreReadonlyClassProperties": true
+        }],
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/semi": "warn",
         "unused-imports/no-unused-imports": "warn",
-        "unused-imports/no-unused-vars": ["warn", { "args": "none" }]
+        "unused-imports/no-unused-vars": ["warn", {
+            "args": "none"
+        }]
     }
 };

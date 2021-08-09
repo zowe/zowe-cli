@@ -189,7 +189,7 @@ export class ZosFilesUtils {
      * @return {Buffer} converted data
      */
     public static normalizeNewline(buffer: Buffer): Buffer {
-        return Buffer.from(buffer.toString().replace(new RegExp("\r\n", "g"), "\n"));
+        return Buffer.from(buffer.toString().replace(/\r\n/g, "\n"));
     }
 
     /**

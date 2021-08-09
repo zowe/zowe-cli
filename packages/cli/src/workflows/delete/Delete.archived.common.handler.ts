@@ -65,7 +65,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 params.response.console.log("Workflow deleted.");
                 break;
 
-            case "workflowName":
+            case "workflowName": {
                 let wildCard: boolean = true;
                 let check: boolean;
                 let normalized: string;
@@ -146,7 +146,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 }
                 params.response.data.setObj("Deleted.");
                 break;
-
+            }
             default:
                 throw new ImperativeError({
                     msg:

@@ -1025,7 +1025,7 @@ export class Upload {
                     reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
                 }
                 break;
-            default:
+            default: {
                 const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
                 const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
                 if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
@@ -1033,6 +1033,7 @@ export class Upload {
                 }
                 reqHeaders.push(...headers);
                 break;
+            }
         }
 
         // Migrated recall options

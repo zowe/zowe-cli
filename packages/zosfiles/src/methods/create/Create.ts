@@ -219,7 +219,7 @@ export class Create {
 
                         break;
 
-                    case "dsntype":
+                    case "dsntype": {
                     // Key to create a PDSE.
                         const type: string = tempOptions.dsntype.toUpperCase();
                         const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
@@ -227,7 +227,7 @@ export class Create {
                             throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
                         }
                         break;
-
+                    }
                     case "dsorg":
                     // Only PO and PS valid
                         switch (tempOptions.dsorg.toUpperCase()) {
@@ -654,7 +654,7 @@ export class Create {
             if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
-                    case "perms":
+                    case "perms": {
                         const maxPerm = 777;
                         if ((options.perms < 0) || (options.perms > maxPerm)) {
                             throw new ImperativeError({
@@ -662,7 +662,7 @@ export class Create {
                             });
                         }
                         break;
-
+                    }
                     case "cylsPri":
                     case "cylsSec":
                     // Validate maximum allocation quantity
