@@ -382,37 +382,6 @@ describe("Upload directory to USS", () => {
             expect(ussResponse).toBeInstanceOf(Buffer);
         });
 
-        it("should upload files in binary or text as indicated", async () => {
-            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_mixed_files");
-
-            testSuccessfulUpload(localDirName);
-
-            const remoteTextFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/foo.text");
-            const localTextFileBuffer = fs.readFileSync(path.join(localDirName, "foo.text"));
-            expect(ZosFilesUtils.normalizeNewline(remoteTextFileBuffer)).toEqual(ZosFilesUtils.normalizeNewline(localTextFileBuffer));
-
-
-            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/bar.binary", {binary: true});
-            const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName, "bar.binary"));
-            expect(remoteBinaryFileBuffer).toEqual(localBinaryFileBuffer);
-        });
-
-        it("should tag uploaded files according to remote encoding", async () => {
-            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_mixed_files");
-
-            testSuccessfulUpload(localDirName);
-
-            let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
-            expect(tag).toMatch("t ISO8859-1");
-
-            tag = await getTag(REAL_SESSION,ussname + "/foo.text");
-            expect(tag).toMatch("t IBM-1047");
-
-            tag = await getTag(REAL_SESSION,ussname + "/bar.binary");
-            expect(tag).toMatch("b binary");
-        });
-
-
         it("wild cards should work with * and mixed casing on tagging and ignore", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_zosattributes_dir/dir_with_wildcards");
 
@@ -505,40 +474,6 @@ describe("Upload directory to USS", () => {
             try {
                 await Get.USSFile(REAL_SESSION, ussname + "/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
                 throw new Error("USS file .attributes should not have been transferred");
-            } catch (err) {
-                error = err;
-            }
-            expect(error).toBeDefined();
-        });
-
-        it("should ignore nested directories as specified", async () => {
-            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_ignored_dir");
-
-            testSuccessfulUpload(localDirName, ["--recursive"]);
-
-            let error: Error;
-            try {
-                await Get.USSFile(REAL_SESSION, ussname + "/uploaded_dir/ignored_dir/ignored_file");
-                throw new Error("USS file ignored_file should not have been transferred");
-            } catch (err) {
-                error = err;
-            }
-            expect(error).toBeDefined();
-
-            const ussResponse = await Get.USSFile(REAL_SESSION, ussname + "/uploaded_dir/uploaded_file");
-            expect(ussResponse).toBeInstanceOf(Buffer);
-        });
-
-        it("should accept zosattributes path as an argument", async () => {
-            const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
-
-            const attributesPath = path.join(__dirname, "__data__", "command_upload_dtu_dir/external.attributes");
-            testSuccessfulUpload(localDirName, ["--attributes", attributesPath]);
-
-            let error: Error;
-            try {
-                await Get.USSFile(REAL_SESSION, ussname + "/subdir_ascii_file1.txt");
-                throw new Error("USS file subddir_ascii_file1.txt should not have been transferred");
             } catch (err) {
                 error = err;
             }

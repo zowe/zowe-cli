@@ -83,7 +83,7 @@ describe("Download Jobs - System tests", () => {
 
     describe("Positive tests", () => {
 
-        it("should be able to download a single DD from job output", async () => {
+        it("should be able to download a single DD from job output to specified directory", async () => {
             const downloadDir = outputDirectory + "/downloadsingle/";
             await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,
