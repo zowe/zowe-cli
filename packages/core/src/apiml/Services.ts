@@ -213,9 +213,7 @@ export class Services {
 
             // TODO Add back in the future if we want plugins in team config
             // profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
-            //     if (pluginInfo.pluginName !== ImperativeConfig.instance.hostPackageName) {
-            //         configPlugins.add(pluginInfo.pluginName);
-            //     }
+            //     configPlugins.add(pluginInfo.pluginName);
             // });
 
             if (!configDefaults[profileInfo.profType]) {
