@@ -15,7 +15,7 @@
  * @deprecated Use `IZosmfMessages` instead because it is spelled correctly
  * @interface IZosfmMessages
  */
-export type IZosfmMessages = IZosmfMessages
+export type IZosfmMessages = IZosmfMessages;
 
 /**
  * The z/OSMF Ping API error message parameters. See the z/OSMF REST API documentation for full details.

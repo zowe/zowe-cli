@@ -71,60 +71,60 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         // Process depending on the source type
         switch (sourceType) {
 
-        // Submit the JCL from a data set
-        case "dataset":
+            // Submit the JCL from a data set
+            case "dataset":
 
-            // If the data set is not in catalog and volume option is provided
-            if (parms.volume) {
-                options.volume = parms.volume;
+                // If the data set is not in catalog and volume option is provided
+                if (parms.volume) {
+                    options.volume = parms.volume;
 
-                // Get JCL from data set or member
-                const getJcl = await Get.dataSet(this.mSession, this.mArguments.dataset, options);
-                source = this.mArguments.dataset;
+                    // Get JCL from data set or member
+                    const getJcl = await Get.dataSet(this.mSession, this.mArguments.dataset, options);
+                    source = this.mArguments.dataset;
 
-                apiObj = await SubmitJobs.submitJclString(this.mSession, getJcl.toString(), parms);
-                if (parms.viewAllSpoolContent) {
-                    spoolFilesResponse = apiObj;
+                    apiObj = await SubmitJobs.submitJclString(this.mSession, getJcl.toString(), parms);
+                    if (parms.viewAllSpoolContent) {
+                        spoolFilesResponse = apiObj;
+                    }
+
+                    break;
+                } else {
+                    response = await SubmitJobs.submitJobCommon(this.mSession, {jobDataSet: this.mArguments.dataset,
+                        jclSymbols: this.mArguments.jclSymbols});
+                    apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
+                    source = this.mArguments.dataset;
+
+                    if (parms.viewAllSpoolContent) {
+                        spoolFilesResponse = apiObj;
+                    }
                 }
 
                 break;
-            } else {
-                response = await SubmitJobs.submitJobCommon(this.mSession, {jobDataSet: this.mArguments.dataset,
-                    jclSymbols: this.mArguments.jclSymbols});
-                apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
-                source = this.mArguments.dataset;
-
+            // Submit the JCL from a local file
+            case "local-file":
+                parms.jclSource = this.mArguments.localFile;
+                const JclString = fs.readFileSync(this.mArguments.localFile).toString();
+                apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
+                source = this.mArguments.localFile;
                 if (parms.viewAllSpoolContent) {
                     spoolFilesResponse = apiObj;
                 }
-            }
-
-            break;
-            // Submit the JCL from a local file
-        case "local-file":
-            parms.jclSource = this.mArguments.localFile;
-            const JclString = fs.readFileSync(this.mArguments.localFile).toString();
-            apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
-            source = this.mArguments.localFile;
-            if (parms.viewAllSpoolContent) {
-                spoolFilesResponse = apiObj;
-            }
-            break;
+                break;
             // Submit the JCL piped in on stdin
-        case "stdin":
-            const Jcl = await getstdin();
-            apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);
-            source = "stdin";
-            if (parms.viewAllSpoolContent) {
-                spoolFilesResponse = apiObj;
-            }
-            break;
-        default:
-            throw new ImperativeError({
-                msg: `Internal submit error: Unable to determine the JCL source. ` +
+            case "stdin":
+                const Jcl = await getstdin();
+                apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);
+                source = "stdin";
+                if (parms.viewAllSpoolContent) {
+                    spoolFilesResponse = apiObj;
+                }
+                break;
+            default:
+                throw new ImperativeError({
+                    msg: `Internal submit error: Unable to determine the JCL source. ` +
                         `Please contact support.`,
-                additionalDetails: JSON.stringify(params)
-            });
+                    additionalDetails: JSON.stringify(params)
+                });
         }
 
         // Print the response to the command

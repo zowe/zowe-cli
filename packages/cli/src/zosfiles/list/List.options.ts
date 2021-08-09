@@ -29,7 +29,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["vs"],
         description: strings.VOLUME,
         type: "string",
-        stringLengthRange: [1, 6]  // eslint-disable-line no-magic-numbers
+        stringLengthRange: [1, 6]  // eslint-disable-line @typescript-eslint/no-magic-numbers
     },
 
     /**

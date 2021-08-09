@@ -62,31 +62,31 @@ export default class InstanceInfoHandler extends ZosmfBaseHandler {
         // Prettify the output
         switch (option) {
         // extended general information with actions summarised
-        case "EXTENDED" :
-            prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceExtended, false);
-            break;
+            case "EXTENDED" :
+                prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceExtended, false);
+                break;
 
             // summary info with actions
-        case "SUMMARY" :
-            prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummary, false);
-            break;
+            case "SUMMARY" :
+                prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummary, false);
+                break;
 
             // summary info with variables
-        case "VARS" :
-            prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummaryWithVars, false);
-            break;
+            case "VARS" :
+                prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummaryWithVars, false);
+                break;
 
             // summary info with extended actions and variables
-        case "FULL" :
-            prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceFull, false);
-            break;
+            case "FULL" :
+                prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceFull, false);
+                break;
             // default - summary with actions, variables ignored
-        case "ACTIONS" :
-            prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummaryWithActions, false);
-            break;
-        default:
-            prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummaryWithActions, false);
-            break;
+            case "ACTIONS" :
+                prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummaryWithActions, false);
+                break;
+            default:
+                prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceSummaryWithActions, false);
+                break;
         }
 
         return prettifiedInstance;

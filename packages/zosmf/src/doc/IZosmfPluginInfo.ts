@@ -15,7 +15,7 @@
  * @interface IZosmfPluginInfo
  */
 export interface IZosmfPluginInfo {
-  pluginVersion?: string;
-  pluginDefaultName?: string;
-  pluginStatus?: string;
+    pluginVersion?: string;
+    pluginDefaultName?: string;
+    pluginStatus?: string;
 }

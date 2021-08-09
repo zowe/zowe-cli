@@ -17,4 +17,4 @@ import { IOptions } from "../../../doc/IOptions";
  * @interface IGetOptions
  */
 // NOTE(Kelosky): allow empty interface for backwards compatibility
-export type IGetOptions = IOptions
+export type IGetOptions = IOptions;

@@ -20,7 +20,7 @@ module.exports = {
                 "**/__tests__/**/*.ts"
             ],
             "rules": {
-                "no-magic-numbers": "off",
+                "@typescript-eslint/no-magic-numbers": "off",
                 "jest/expect-expect": ["warn", { "assertFunctionNames": ["expect*", "**.*expect*"] }],
                 "jest/no-conditional-expect": "off",
                 "jest/no-standalone-expect": "off",
@@ -40,20 +40,20 @@ module.exports = {
         "unused-imports"
     ],
     "rules": {
-        "comma-dangle": ["error", "only-multiline"],
-        "indent": ["error", 4],
-        "max-len": ["error", 150],
+        "max-len": ["warn", 150],
         "no-console": "error",
-        "no-magic-numbers": ["error", { "ignore": [-1, 0, 1, 2] }],
-        "no-multiple-empty-lines": "error",
-        "no-trailing-spaces": "error",
-        "semi": "error",
+        "no-multiple-empty-lines": "warn",
+        "no-trailing-spaces": "warn",
         "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/comma-dangle": ["warn", "only-multiline"],
         "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/indent": ["warn", 4],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-magic-numbers": ["warn", { "ignore": [-1, 0, 1, 2] }],
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/semi": "warn",
         "unused-imports/no-unused-imports": "warn",
         "unused-imports/no-unused-vars": ["warn", { "args": "none" }]
     }

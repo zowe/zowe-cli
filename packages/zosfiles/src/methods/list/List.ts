@@ -123,15 +123,15 @@ export class List {
             // Migrated recall options
             if (options.recall) {
                 switch (options.recall.toLowerCase()) {
-                case "wait":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
-                    break;
-                case "nowait":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                    break;
-                case "error":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
-                    break;
+                    case "wait":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                        break;
+                    case "nowait":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                        break;
+                    case "error":
+                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                        break;
                 }
             }
 

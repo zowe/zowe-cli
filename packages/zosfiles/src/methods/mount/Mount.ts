@@ -95,21 +95,21 @@ export class Mount {
             if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
-                case "mode":
-                    if ((options.mode !== "rdonly") && (options.mode !== "rdwr")) {
-                        throw new ImperativeError({
-                            msg: ZosFilesMessages.invalidMountModeOption.message + options.mode
-                        });
-                    }
-                    break;
+                    case "mode":
+                        if ((options.mode !== "rdonly") && (options.mode !== "rdwr")) {
+                            throw new ImperativeError({
+                                msg: ZosFilesMessages.invalidMountModeOption.message + options.mode
+                            });
+                        }
+                        break;
 
-                case "fs-type":
-                case "responseTimeout":
+                    case "fs-type":
+                    case "responseTimeout":
                     // no validation at this time
-                    break;
+                        break;
 
-                default:
-                    throw new ImperativeError({msg: ZosFilesMessages.invalidFilesMountOption.message + option});
+                    default:
+                        throw new ImperativeError({msg: ZosFilesMessages.invalidFilesMountOption.message + option});
 
                 } // end switch
             }

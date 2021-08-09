@@ -336,18 +336,18 @@ export class Upload {
                 // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                 const dsInfo = listResponse.apiResponse.items[dsnameIndex];
                 switch (dsInfo.dsorg) {
-                case "PO":
-                case "PO-E":
-                    isUploadToPds = true;
-                    break;
-                default:
+                    case "PO":
+                    case "PO-E":
+                        isUploadToPds = true;
+                        break;
+                    default:
                     // if loading to a physical sequential data set and multiple files found then error
-                    if (uploadFileList.length > 1) {
-                        throw new ImperativeError({
-                            msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
-                        });
-                    }
-                    break;
+                        if (uploadFileList.length > 1) {
+                            throw new ImperativeError({
+                                msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
+                            });
+                        }
+                        break;
                 }
             }
         }
@@ -1003,53 +1003,53 @@ export class Upload {
         const reqHeaders: IHeaderContent[] = [];
 
         switch (context) {
-        case "stream":
-        case "buffer":
-            if (options.binary) {
-                reqHeaders.push(ZosmfHeaders.OCTET_STREAM);
-                reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
-            } else if (options.localEncoding) {
-                reqHeaders.push({"Content-Type": options.localEncoding});
-                reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-            } else if (options.encoding) {
-                const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                header[keys[0]] = value;
-                reqHeaders.push(header);
-            } else {
-                reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
-            }
-            reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
-            if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
-            break;
-        default:
-            const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-            const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
-            if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
-                reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-            }
-            reqHeaders.push(...headers);
-            break;
+            case "stream":
+            case "buffer":
+                if (options.binary) {
+                    reqHeaders.push(ZosmfHeaders.OCTET_STREAM);
+                    reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
+                } else if (options.localEncoding) {
+                    reqHeaders.push({"Content-Type": options.localEncoding});
+                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                } else if (options.encoding) {
+                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+                    const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+                    header[keys[0]] = value;
+                    reqHeaders.push(header);
+                } else {
+                    reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
+                }
+                reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
+                if (options.responseTimeout != null) {
+                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+                }
+                break;
+            default:
+                const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
+                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
+                if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
+                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
+                }
+                reqHeaders.push(...headers);
+                break;
         }
 
         // Migrated recall options
         if (options.recall) {
             switch (options.recall.toLowerCase()) {
-            case "wait":
-                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
-                break;
-            case "nowait":
-                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                break;
-            case "error":
-                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
-                break;
-            default:
-                reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                break;
+                case "wait":
+                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+                    break;
+                case "nowait":
+                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                    break;
+                case "error":
+                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
+                    break;
+                default:
+                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+                    break;
             }
         }
 
