@@ -469,7 +469,7 @@ export default {
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
                 " This option and --path are mutually exclusive.",
-            START: " An optional search parameter that specifies the first data set name to return in the response document."
+            START: "An optional search parameter that specifies the first data set name to return in the response document."
         }
     },
     MOUNT: {
