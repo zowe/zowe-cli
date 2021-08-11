@@ -98,7 +98,7 @@ export class Processor {
      */
     public process() {
         if (this.mServer) {
-            this.mServer.listen(this.mPort, () => {
+            this.mServer.listen(this.mPort, "127.0.0.1", () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mPort}`);
                 Imperative.console.info(`server bound ${this.mPort}`)
             });
