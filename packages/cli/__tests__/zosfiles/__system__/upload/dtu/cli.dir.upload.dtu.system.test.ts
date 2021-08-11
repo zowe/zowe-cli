@@ -335,6 +335,7 @@ describe("Upload directory to USS", () => {
             expect(tag).toMatch("b binary");
         });
 
+        // eslint-disable-next-line jest/no-disabled-tests
         it.skip("should tag uploaded hidden files according to remote encoding", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_hidden_files");
 

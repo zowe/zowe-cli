@@ -1309,7 +1309,13 @@ describe("Create ZFS", () => {
             cylsSec: 10,
             timeout: 20
         };
-        await Create.zfs(dummySession, fileSystemName, options);
+        let caughtError;
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
     });
 
     it("should fail if perms parameter omitted", async () => {

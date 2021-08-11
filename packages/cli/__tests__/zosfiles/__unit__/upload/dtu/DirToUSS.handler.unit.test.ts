@@ -124,6 +124,7 @@ describe("Upload dir-to-uss handler", () => {
             expect((Upload.dirToUSSDir as jest.Mock).mock.calls[0][UPLOAD_OPTIONS_ARG_INDEX].attributes).toBeInstanceOf(ZosFilesAttributes);
         });
 
+        // eslint-disable-next-line jest/expect-expect
         it("should give an error if --attributes specifies a non-existent file", async () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
             const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
@@ -132,6 +133,7 @@ describe("Upload dir-to-uss handler", () => {
             await testHandlerGivesExpectedErrorWithParams("Attributes file non-existent-file does not exist", params);
         });
 
+        // eslint-disable-next-line jest/expect-expect
         it("should give an error if file specified by --attributes cannot be read", async () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             jest.spyOn(fs, "readFileSync").mockImplementationOnce(() => {
@@ -142,6 +144,7 @@ describe("Upload dir-to-uss handler", () => {
 
             await testHandlerGivesExpectedErrorWithParams("Could not read attributes file dodgy file: File not found", params);
         });
+
         it("should override .zosattributes content with --attributes content", async () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             jest.spyOn(fs, "readFileSync").mockImplementationOnce((path: string) => {

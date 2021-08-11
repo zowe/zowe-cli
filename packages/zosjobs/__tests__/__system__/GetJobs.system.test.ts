@@ -124,7 +124,7 @@ describe("Get Jobs - System Tests", () => {
         describe("get jobs API", () => {
             describe("invalid request error handling", () => {
                 // pending until z/OSMF returns 401 status code
-                it.skip("should detect and surface an error for an invalid user", async () => {
+                it("should detect and surface an error for an invalid user", async () => {
                     let err;
                     try {
                         await GetJobs.getJobs(INVALID_SESSION);
@@ -242,7 +242,7 @@ describe("Get Jobs - System Tests", () => {
     describe("get jobs by prefix API", () => {
         describe("invalid request handling", () => {
             // pending until z/OSMF returns 401 status for invalid credentials
-            it.skip("should detect and surface an error for an invalid userblah", async () => {
+            it("should detect and surface an error for an invalid userblah", async () => {
                 let err;
                 try {
                     const resp = await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
@@ -380,7 +380,7 @@ describe("Get Jobs - System Tests", () => {
     describe("get jobs by owner API", () => {
         describe("invalid request handling", () => {
             // pending until z/OSMF returns 401 status for invalid credentials
-            it.skip("should detect and surface an error for an invalid user", async () => {
+            it("should detect and surface an error for an invalid user", async () => {
                 let err;
                 try {
                     await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
@@ -470,7 +470,7 @@ describe("Get Status APIs", () => {
     describe("get status API", () => {
         describe("invalid request error handling", () => {
             // pending until z/OSMF returns 401 status for invalid credentials
-            it.skip("should detect and surface and error for an invalid user",
+            it("should detect and surface and error for an invalid user",
                 async () => {
                     let err;
                     try {
@@ -712,7 +712,7 @@ describe("Get Status APIs", () => {
     describe("get status for job API", () => {
         describe("invalid request error handling", () => {
             // pending until z/OSMF returns 401 status for invalid credentials
-            it.skip("should detect and surface and error for an invalid user", async () => {
+            it("should detect and surface and error for an invalid user", async () => {
                 let err;
                 try {
                     const job: any = {jobname: "FAKE", jobid: "fake"};

@@ -127,6 +127,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
 
     });
 
+    // eslint-disable-next-line jest/expect-expect
     it("should write a long directory", async () => {
         const j = 200;
         const randomDir = generateRandomString(j);

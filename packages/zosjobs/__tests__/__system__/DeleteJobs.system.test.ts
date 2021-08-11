@@ -61,8 +61,14 @@ describe("DeleteJobs System tests", () => {
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon (job modify version 2.0 - synchronous)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-            await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: "2.0"});
+            let caughtError;
+            try {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
+                await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: "2.0"});
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         }, LONG_TIMEOUT);
     });
 

@@ -45,12 +45,24 @@ describe("Delete Jobs unit tests", () => {
     describe("Positive tests", () => {
         it("should allow users to call deleteJob with correct parameters", async () => {
             ZosmfRestClient.deleteExpectString = jest.fn(returnEmpty);
-            await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB00001");
+            let caughtError;
+            try {
+                await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB00001");
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should allow users to call deleteJobForJob with correct parameters", async () => {
             ZosmfRestClient.deleteExpectString = jest.fn(returnEmpty);
-            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
+            let caughtError;
+            try {
+                await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 1_0)", async () => {
@@ -71,7 +83,13 @@ describe("Delete Jobs unit tests", () => {
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
             ZosmfRestClient.deleteExpectString = jest.fn(returnEmpty);
-            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001"});
+            let caughtError;
+            try {
+                await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001"});
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 1_0)", async () => {

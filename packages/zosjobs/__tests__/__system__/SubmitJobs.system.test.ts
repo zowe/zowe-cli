@@ -182,7 +182,7 @@ describe("Submit Jobs - System Tests", () => {
             expect(job[0].data.toString()).toContain("J E S 2  J O B  L O G");
         });
 
-        it("should download spool content to a local directory", async (done: any) => {
+        it("should download spool content to a local directory", async (done: any) => {  // eslint-disable-line jest/no-done-callback
             const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",
                 {
                     jclSource: "stdin",

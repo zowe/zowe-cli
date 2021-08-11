@@ -54,7 +54,13 @@ describe("Auth Logout APIML unit tests", () => {
         it("should allow users to call apimlLogout with correct parameters", async () => {
             ZosmfRestClient.prototype.request = jest.fn(returnEmpty);
             (ZosmfRestClient.prototype as any).mResponse = goodResponse;
-            await Logout.apimlLogout(fakeSession);
+            let caughtError;
+            try {
+                await Logout.apimlLogout(fakeSession);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
     });
 
@@ -90,6 +96,7 @@ describe("Auth Logout APIML unit tests", () => {
     });
 
     describe("Error handling tests - Promise catch() syntax", () => {
+        // eslint-disable-next-line jest/no-done-callback
         it("should be able to catch errors from apimlLogout with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.prototype.request = jest.fn(throwImperativeError);
             Logout.apimlLogout(fakeSession).then(() => {

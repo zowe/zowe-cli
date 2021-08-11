@@ -45,12 +45,24 @@ describe("Cancel Jobs unit tests", () => {
     describe("Positive tests", () => {
         it("should allow users to call cancelJob with correct parameters", async () => {
             ZosmfRestClient.putExpectString = jest.fn(returnEmpty);
-            await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB00001");
+            let caughtError;
+            try {
+                await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB00001");
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should allow users to call cancelJobForJob with correct parameters", async () => {
             ZosmfRestClient.putExpectString = jest.fn(returnEmpty);
-            await CancelJobs.cancelJobForJob(fakeSession, fakeJob);
+            let caughtError;
+            try {
+                await CancelJobs.cancelJobForJob(fakeSession, fakeJob);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 1_0)", async () => {
@@ -71,7 +83,13 @@ describe("Cancel Jobs unit tests", () => {
 
         it("should allow users to call cancelJobCommon with correct parameters", async () => {
             ZosmfRestClient.putExpectString = jest.fn(returnEmpty);
-            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001" });
+            let caughtError;
+            try {
+                await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001" });
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 1_0)", async () => {
