@@ -587,7 +587,7 @@ export default {
                     "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
                     "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are " +
                     "transferred in binary mode. Remote files are tagged either with the remote encoding or as binary.\n\n" +
-                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the z/OS" +
+                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the z/OS " +
                     "system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n" +
                     "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
                     "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",

@@ -238,7 +238,7 @@ Use \\"zowe zos-jobs submit data-set --help\\" to view command description, usag
 "
 `;
 
-exports[`zos-jobs submit data-set command syntax errors should occur if both --wait-for-active and --directory is specified 2`] = `
+exports[`zos-jobs submit data-set command syntax errors should occur if both --wait-for-active and --vasc is specified 1`] = `
 "
 Syntax Error:
 The following options conflict (mutually exclusive):
