@@ -6,54 +6,6 @@ exports[`Get JCL APIs invalid request error handling should detect and surface a
 
 exports[`Get JCL APIs invalid request error handling should detect and surface an error for getting JCL that doesnt exist 3`] = `6`;
 
-exports[`Get Jobs - System Tests Get Jobs APIs get jobs API invalid request error handling should detect and surface an error for an invalid user 1`] = `
-"This operation requires authentication.
-
-z/OSMF REST API Error:
-Rest API failure with HTTP(S) status 401
-
-Host:      mvsde20.lvn.broadcom.net
-Port:      449
-Base Path: 
-Resource:  /zosmf/restjobs/jobs
-Request:   GET
-Headers:   [{\\"X-CSRF-ZOSMF-HEADER\\":true}]
-Payload:   GET
-"
-`;
-
-exports[`Get Jobs - System Tests get jobs by owner API invalid request handling should detect and surface an error for an invalid user 1`] = `
-"This operation requires authentication.
-
-z/OSMF REST API Error:
-Rest API failure with HTTP(S) status 401
-
-Host:      mvsde20.lvn.broadcom.net
-Port:      449
-Base Path: 
-Resource:  /zosmf/restjobs/jobs?prefix=TEST
-Request:   GET
-Headers:   [{\\"X-CSRF-ZOSMF-HEADER\\":true}]
-Payload:   GET
-"
-`;
-
-exports[`Get Jobs - System Tests get jobs by prefix API invalid request handling should detect and surface an error for an invalid userblah 1`] = `
-"This operation requires authentication.
-
-z/OSMF REST API Error:
-Rest API failure with HTTP(S) status 401
-
-Host:      mvsde20.lvn.broadcom.net
-Port:      449
-Base Path: 
-Resource:  /zosmf/restjobs/jobs?prefix=TEST
-Request:   GET
-Headers:   [{\\"X-CSRF-ZOSMF-HEADER\\":true}]
-Payload:   GET
-"
-`;
-
 exports[`Get Status APIs get status for job API invalid request error handling should be able to get a job that was submitted and get proper error when the job is deleted 1`] = `4`;
 
 exports[`Get Status APIs get status for job API invalid request error handling should be able to get a job that was submitted and get proper error when the job is deleted 2`] = `10`;
