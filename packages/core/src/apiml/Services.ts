@@ -190,10 +190,7 @@ export class Services {
      *          // Uncomment one of the lines below to set a different default
      *          //"zosmf": "ibmzosmf"
      *          "zosmf": "zosmf"
-     *      },
-     *      "plugins": [
-     *          "@zowe/plugin-for-zowe-cli"
-     *      ]
+     *      }
      *  }
      * @memberof Services
      */
@@ -205,7 +202,7 @@ export class Services {
 
         let configDefaults: {[key: string]: string} = {};
         const conflictingDefaults: {[key: string]: string[]} = {};
-        const configPlugins: Set<string> = new Set<string>();
+        // const configPlugins: Set<string> = new Set<string>();
 
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
@@ -214,9 +211,10 @@ export class Services {
 
         profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
 
-            profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
-                configPlugins.add(pluginInfo.pluginName);
-            });
+            // TODO Add back in the future if we want plugins in team config
+            // profileInfo.pluginConfigs.forEach((pluginInfo: IApimlSvcAttrsLoaded) => {
+            //     configPlugins.add(pluginInfo.pluginName);
+            // });
 
             if (!configDefaults[profileInfo.profType]) {
                 configDefaults[profileInfo.profType] = profileInfo.profName;
@@ -280,8 +278,7 @@ export class Services {
 
         const configResult: IConfig = {
             profiles: configProfile.profiles,
-            defaults: configDefaults,
-            plugins: [...configPlugins]
+            defaults: configDefaults
         };
         return configResult;
     }
