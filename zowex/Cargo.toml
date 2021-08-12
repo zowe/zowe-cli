@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 rpassword = "5.0"
+sysinfo = "0.20.0"
