@@ -62,9 +62,9 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(1);
-        expect(response.profiles.my_base.secure).toContain("tokenValue");
-        expect(response.profiles.my_base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
-        expect(response.profiles.my_base.properties.tokenValue).toEqual("fakeToken");
+        expect(response.profiles.base.secure).toContain("tokenValue");
+        expect(response.profiles.base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
+        expect(response.profiles.base.properties.tokenValue).toEqual("fakeToken");
     });
 
     it("should not have changed - tokenType and tokenValue", async () => {
@@ -109,9 +109,9 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(0);
-        expect(response.profiles.my_base.secure).toContain("tokenValue");
-        expect(response.profiles.my_base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
-        expect(response.profiles.my_base.properties.tokenValue).toEqual("fakeToken");
+        expect(response.profiles.base.secure).toContain("tokenValue");
+        expect(response.profiles.base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
+        expect(response.profiles.base.properties.tokenValue).toEqual("fakeToken");
     });
 
     it("should not have changed - user & password with existing base profile", async () => {
@@ -119,9 +119,9 @@ describe("ApimlAutoInitHandler", () => {
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
         const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
-            defaults: { base: "my_base"},
+            defaults: { base: "base"},
             profiles: {
-                "my_base": {
+                "base": {
                     properties: {
                         host: "fake",
                         port: 12345
@@ -166,9 +166,9 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(0);
-        expect(response.profiles.my_base.secure).not.toContain("tokenValue");
-        expect(response.profiles.my_base.properties.tokenType).not.toBeDefined();
-        expect(response.profiles.my_base.properties.tokenValue).not.toBeDefined();
+        expect(response.profiles.base.secure).not.toContain("tokenValue");
+        expect(response.profiles.base.properties.tokenType).not.toBeDefined();
+        expect(response.profiles.base.properties.tokenValue).not.toBeDefined();
     });
 
     it("should not have changed - a condition that shouldn't ever happen", async () => {
@@ -211,9 +211,9 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(0);
-        expect(response.profiles.my_base.secure).not.toContain("tokenValue");
-        expect(response.profiles.my_base.properties.tokenType).not.toBeDefined();
-        expect(response.profiles.my_base.properties.tokenValue).not.toBeDefined();
+        expect(response.profiles.base.secure).not.toContain("tokenValue");
+        expect(response.profiles.base.properties.tokenType).not.toBeDefined();
+        expect(response.profiles.base.properties.tokenValue).not.toBeDefined();
     });
 
     it("should throw an error if an error 403 is experienced", async () => {
