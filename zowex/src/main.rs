@@ -8,11 +8,16 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
+extern crate pathsearch;
+use pathsearch::PathSearcher;
+
 extern crate rpassword;
 use rpassword::read_password;
 
 use std::collections::HashMap;
 use std::env;
+use std::ffi::OsString;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::io::{self, Write};
@@ -37,6 +42,8 @@ const DEFAULT_PORT: i32 = 4000;
 const X_ZOWE_DAEMON_REPLY: &str = "x-zowe-daemon-reply:";
 
 const CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE: i32 = 100;
+const CANNOT_GET_MY_PATH_EXIT_CODE: i32 = 101;
+const NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE: i32 = 102;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
@@ -85,7 +92,9 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
             println!("Unable to connect to a running Zowe daemon.");
             std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
         } else {
-            println!("The daemon is NOT running, so we will start it.");
+            println!("The Zowe daemon is NOT running, so we will start it.");
+            let njs_zowe_path = get_nodejs_zowe_path();
+            println!("run_zowe_command: zzz: returning njs_zowe_path = {}", njs_zowe_path);
             std::process::exit(666); // zzz
         }
     }
@@ -277,6 +286,51 @@ fn get_beg(buf: &str) -> Vec<String> {
     }
 
     return parts;
+}
+
+// Get the file path to the command that runs the NodeJS version of Zowe
+fn get_nodejs_zowe_path() -> String {
+    // get the path name to my own zowe rust executable
+    let my_exe_result = env::current_exe();
+    if my_exe_result.is_err() {
+        println!("Unable to get path to my own executable. Terminating.");
+        std::process::exit(CANNOT_GET_MY_PATH_EXIT_CODE);
+    }
+    let my_exe_path_buf = my_exe_result.unwrap();
+    let my_exe_path = my_exe_path_buf.to_string_lossy();
+
+    // we want a program file name that would execute a 'zowe' command
+    let mut zowe_file = "zowe";
+    if env::consts::OS == "windows" {
+        zowe_file = "zowe.cmd";
+    }
+
+    // find every program in our path that would execute a 'zowe' command
+    const NOT_FOUND: &str = "notFound";
+    let mut njs_zowe_path: String = NOT_FOUND.to_string();
+    let path = env::var_os("PATH");
+    let path_ext = env::var_os("PATHEXT");
+    for njs_zowe_path_buf in PathSearcher::new(
+        zowe_file,
+        path.as_ref().map(OsString::as_os_str),
+        path_ext.as_ref().map(OsString::as_os_str),
+    ) {
+        njs_zowe_path = njs_zowe_path_buf.to_string_lossy().to_string();
+        if njs_zowe_path.to_lowercase().eq(&my_exe_path.to_lowercase()) {
+            // We do not want our own rust executable. Keep searching.
+            njs_zowe_path = NOT_FOUND.to_string();
+            continue;
+        }
+
+        // use the first zowe command on our path that is not our own executable
+        break;
+    }
+    if njs_zowe_path == NOT_FOUND {
+        println!("Could not find a NodeJS zowe command on your path.");
+        println!("Cannot launch Zowe in daemon mode. Terminating.");
+        std::process::exit(NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE);
+    }
+    return njs_zowe_path;
 }
 
 // Is the zowe daemon currently running?
