@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202108121907`
 
 - Enhancement: Flattened the default profiles structure created by the `config init` command.
 - Breaking: Split up authToken property in team config into tokenType and tokenValue properties to be consistent with Zowe v1 profiles.
