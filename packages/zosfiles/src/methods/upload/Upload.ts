@@ -954,7 +954,6 @@ export class Upload {
      */
     private static hasDirs(dirPath: string): boolean {
         const directories = fs.readdirSync(dirPath).filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
-        // directories = directories.filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
         if (directories.length === 0) {
             return false;
         } else {

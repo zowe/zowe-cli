@@ -77,7 +77,7 @@ export class Shell {
                                 isUserCommand = true;
                             }
 
-                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ exit"))) {
+                            if(isUserCommand && dataToPrint.match(/\\$ exit/)) {
                                 // if exit found, print out stuff before exit, then stop printing out.
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
                                 stdoutHandler(dataToPrint);
