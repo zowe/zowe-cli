@@ -20,6 +20,10 @@ use std::net::Shutdown;
 use std::net::TcpStream;
 use std::str;
 
+extern crate sysinfo;
+use sysinfo::{ProcessExt, System, SystemExt};
+
+
 // NOTE(Kelosky): these sync with imperative header values
 const X_ZOWE_DAEMON_HEADERS: &str = "x-zowe-daemon-headers";
 const X_ZOWE_DAEMON_EXIT: &str = "x-zowe-daemon-exit";
@@ -31,6 +35,8 @@ const X_HEADERS_VERSION_ONE_LENGTH: usize = 8;
 const DEFAULT_PORT: i32 = 4000;
 
 const X_ZOWE_DAEMON_REPLY: &str = "x-zowe-daemon-reply:";
+
+const CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE: i32 = 100;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
@@ -72,7 +78,19 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
     let mut daemon_host = "127.0.0.1:".to_owned();
     daemon_host.push_str(&port_string);
 
-    let mut stream = TcpStream::connect(daemon_host).unwrap();
+    let conn_result = TcpStream::connect(daemon_host);
+    if conn_result.is_err() {
+        // when we cannot connect, check if daemon is running
+        if is_daemon_running() {
+            println!("Unable to connect to a running Zowe daemon.");
+            std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
+        } else {
+            println!("The daemon is NOT running, so we will start it.");
+            std::process::exit(666); // zzz
+        }
+    }
+
+    let mut stream = conn_result.unwrap();
     stream.write(_resp).unwrap(); // write it
     let mut stream_clone = stream.try_clone().expect("clone failed");
 
@@ -259,6 +277,28 @@ fn get_beg(buf: &str) -> Vec<String> {
     }
 
     return parts;
+}
+
+// Is the zowe daemon currently running?
+fn is_daemon_running() -> bool {
+    let mut sys = System::new_all();
+    sys.refresh_all();
+    for (pid, process) in sys.processes() {
+        if process.name().to_lowercase().contains("node") &&
+           process.cmd()[1].to_lowercase().contains("@zowe") &&
+           process.cmd()[1].to_lowercase().contains("cli") &&
+           process.cmd()[2].to_lowercase() == "--daemon"
+        {
+            /* We print the daemon info, because we only check if the daemon
+             * is running when we cannot connect to it, and we are about to
+             * terminate with an error. This info may help diagnose the problem.
+             */
+            println!("The Zowe daemon is running:");
+            println!("pid={} name={} cmd={:?}", pid, process.name(), process.cmd());
+            return true;
+        }
+    }
+    return false;
 }
 
 //
