@@ -398,10 +398,11 @@ In this example configuration, the settings are accessing multiple services via 
             "properties": {
                 "host": "example1.com",
                 "port": 443,
-                "rejectUnauthorized": true
+                "rejectUnauthorized": true,
+                "tokenType": "apimlAuthenticationToken"
             },
             "secure": [
-                "authToken"
+                "tokenValue"
             ]
         }
     },
@@ -547,10 +548,11 @@ In this example configuration, API ML is leveraged to access production services
             "properties": {
                 "host": "example1.com",
                 "port": 443,
-                "rejectUnauthorized": true
+                "rejectUnauthorized": true,
+                "tokenType": "apimlAuthenticationToken"
             },
             "secure": [
-                "authToken"
+                "tokenValue"
             ]
         }
     },
