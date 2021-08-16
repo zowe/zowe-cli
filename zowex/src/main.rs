@@ -9,12 +9,6 @@
 *
 */
 
-extern crate pathsearch;
-use pathsearch::PathSearcher;
-
-extern crate rpassword;
-use rpassword::read_password;
-
 use std::collections::HashMap;
 use std::env;
 use std::ffi::OsString;
@@ -23,7 +17,16 @@ use std::io::BufReader;
 use std::io::{self, Write};
 use std::net::Shutdown;
 use std::net::TcpStream;
+use std::process::{Command};
 use std::str;
+use std::thread;
+use std::time::Duration;
+
+extern crate pathsearch;
+use pathsearch::PathSearcher;
+
+extern crate rpassword;
+use rpassword::read_password;
 
 extern crate sysinfo;
 use sysinfo::{ProcessExt, System, SystemExt};
@@ -44,6 +47,8 @@ const X_ZOWE_DAEMON_REPLY: &str = "x-zowe-daemon-reply:";
 const CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE: i32 = 100;
 const CANNOT_GET_MY_PATH_EXIT_CODE: i32 = 101;
 const NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE: i32 = 102;
+const CANNOT_START_DAEMON_EXIT_CODE: i32 = 103;
+const DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE: i32 = 104;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
@@ -82,24 +87,49 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
         _resp = b" ";
     }
 
-    let mut daemon_host = "127.0.0.1:".to_owned();
-    daemon_host.push_str(&port_string);
-
-    let conn_result = TcpStream::connect(daemon_host);
-    if conn_result.is_err() {
-        // when we cannot connect, check if daemon is running
-        if is_daemon_running() {
-            println!("Unable to connect to a running Zowe daemon.");
-            std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
-        } else {
-            println!("The Zowe daemon is NOT running, so we will start it.");
-            let njs_zowe_path = get_nodejs_zowe_path();
-            println!("run_zowe_command: zzz: returning njs_zowe_path = {}", njs_zowe_path);
-            std::process::exit(666); // zzz
+    /* Attempt to make a TCP connection to the daemon.
+     * Iterate to enable a slow system to start the daemon.
+     */
+    let daemon_host = format!("{}:{}", "127.0.0.1", port_string);
+    let mut conn_attempt = 1;
+    let mut we_started_daemon = false;
+    let mut daemon_cmd_to_show: String = "No value was set".to_string();
+    let mut stream = loop {
+        let conn_result = TcpStream::connect(&daemon_host);
+        if let Ok(good_stream) = conn_result {
+            // We made our connection. Break with the actual stram value
+            break good_stream;
         }
-    }
+        if is_daemon_running() == false {
+            if conn_attempt == 1 {
+                // start the daemon and continue trying to connect
+                let njs_zowe_path = get_nodejs_zowe_path();
+                we_started_daemon = true;
+                daemon_cmd_to_show = start_daemon(&njs_zowe_path);
+            } else {
+                if we_started_daemon {
+                    println!("This background Zowe process that we started is not running:\n    {}\nTerminating.",
+                        daemon_cmd_to_show
+                    );
+                    std::process::exit(DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE);
+                }
+            }
+        }
+        if conn_attempt == 5 {
+            println!("Unable to connect to Zowe background process. Terminating after {} attempts",
+                conn_attempt
+            );
+            std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
+        }
 
-    let mut stream = conn_result.unwrap();
+        // pause between attempts to connect
+        thread::sleep(Duration::from_secs(3));
+        if conn_attempt > 1 {
+            println!("Attempting to connect again ...");
+        }
+        conn_attempt = conn_attempt + 1;
+    };
+
     stream.write(_resp).unwrap(); // write it
     let mut stream_clone = stream.try_clone().expect("clone failed");
 
@@ -327,7 +357,7 @@ fn get_nodejs_zowe_path() -> String {
     }
     if njs_zowe_path == NOT_FOUND {
         println!("Could not find a NodeJS zowe command on your path.");
-        println!("Cannot launch Zowe in daemon mode. Terminating.");
+        println!("Cannot launch Zowe background process. Terminating.");
         std::process::exit(NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE);
     }
     return njs_zowe_path;
@@ -347,12 +377,56 @@ fn is_daemon_running() -> bool {
              * is running when we cannot connect to it, and we are about to
              * terminate with an error. This info may help diagnose the problem.
              */
-            println!("The Zowe daemon is running:");
+            println!("The backgound Zowe process is running:");
             println!("pid={} name={} cmd={:?}", pid, process.name(), process.cmd());
             return true;
         }
     }
     return false;
+}
+
+/**
+ * Start the zowe daemon.
+ * @param njs_zowe_path
+ *      Full path to the NodeJS zowe command.
+ * @returns
+ *      The command that was used to start the daemon (for display purposes).
+ */
+fn start_daemon(njs_zowe_path: &str) -> String {
+    println!("Starting a background process to increase performance ...");
+
+    // set OS-specific options
+    let shell_cmd;
+    let cmd_args;
+    if env::consts::OS == "windows" {
+        // Anything other than an empty title in the start command fails.
+        shell_cmd = "cmd";
+        cmd_args = vec!["/C", "start", "", "/MIN", njs_zowe_path, "--daemon"];
+        /* todo: The technique below has NO window, but it causes double output.
+           Maybe .stdout(Stdio::null()) could help, but in other cases, it also had problems.
+        shell_cmd = "cmd";
+        cmd_args = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
+        */
+    } else {
+        shell_cmd = "sh";
+        cmd_args = vec!["-c", njs_zowe_path, "--daemon"];
+    }
+
+    // record the command that we run (for display purposes)
+    let mut daemon_cmd_to_show: String = (&shell_cmd).to_string();
+    for next_arg in cmd_args.iter() {
+        daemon_cmd_to_show.push_str(" ");
+        daemon_cmd_to_show.push_str(next_arg);
+    }
+
+    // spawn the zowe daemon process and do not wait for termination
+    let new_proc = Command::new(shell_cmd).args(&cmd_args[..]).spawn();
+    if new_proc.is_err() {
+        println!("Error = {:?}", new_proc);
+        println!("Failed to start the following process.\n    {}\nTerminating.", daemon_cmd_to_show);
+        std::process::exit(CANNOT_START_DAEMON_EXIT_CODE);
+    }
+    return daemon_cmd_to_show;
 }
 
 //
