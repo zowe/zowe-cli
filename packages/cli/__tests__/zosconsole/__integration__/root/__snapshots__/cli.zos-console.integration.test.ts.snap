@@ -61,7 +61,9 @@ exports[`zos-console should fail with invalid option 1`] = `
 "Command Error:
 Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
-Command entered: \\"zowe zos-console --foo-bar\\"
+Did you mean:  zos-console collect?
+
+Command entered: \\"zos-console --foo-bar\\"
 Use \\"zowe zos-console --help\\" to view groups, commands, and options.
 Error Details:
 Unknown arguments: foo-bar, fooBar
@@ -77,7 +79,9 @@ exports[`zos-console should fail with invalid parameter 1`] = `
 "Command Error:
 Unknown argument: foobar
 Command failed due to improper syntax
-Command entered: \\"zowe zos-console foobar\\"
+Did you mean:  zos-console collect?
+
+Command entered: \\"zos-console foobar\\"
 Use \\"zowe zos-console --help\\" to view groups, commands, and options.
 Error Details:
 Unknown argument: foobar

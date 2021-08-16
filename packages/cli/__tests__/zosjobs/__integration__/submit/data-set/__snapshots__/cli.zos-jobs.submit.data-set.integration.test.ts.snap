@@ -213,7 +213,9 @@ exports[`zos-jobs submit data-set command syntax errors should occur if an extra
 "Command Error:
 Unknown argument: blah
 Command failed due to improper syntax
-Command entered: \\"zowe zos-jobs submit data-set DATA.SET blah\\"
+Did you mean:  zos-jobs submit data-set?
+
+Command entered: \\"zos-jobs submit data-set DATA.SET blah\\"
 Available commands are \\"data-set, local-file, stdin\\".
 Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
 Error Details:
