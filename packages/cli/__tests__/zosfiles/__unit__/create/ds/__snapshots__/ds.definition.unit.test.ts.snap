@@ -24,7 +24,7 @@ Array [
       "dst",
       "dsntype",
     ],
-    "description": "The data set type",
+    "description": "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
     "name": "data-set-type",
     "type": "string",
   },
@@ -135,12 +135,16 @@ Array [
 exports[`zos-files create  command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Create an dataset with default parameters and like flag",
+    "description": "Create a data set with default parameters and like flag",
     "options": "NEW.DATASET --like EXISTING.DATASET",
   },
   Object {
-    "description": "Create an dataset with default parameters and like flag and lrecl flag",
+    "description": "Create a data set with default parameters and like flag and lrecl flag",
     "options": "NEW.DATASET --like EXISTING.DATASET --lrecl 1024",
+  },
+  Object {
+    "description": "Create a data set with type LIBRARY",
+    "options": "NEW.DATASET --data-set-type LIBRARY",
   },
 ]
 `;

@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "st",
   ],
-  "description": "Start TSO/E address space",
+  "description": "Start TSO/E address space.",
   "name": "start",
   "summary": "Start TSO/E address space",
   "type": "group",

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `6.32.1`
+
+- Updated Imperative version
+
 ## `6.31.0`
 
 - Enhancement: Handle JCL symbol names and values in requests to submit a job.

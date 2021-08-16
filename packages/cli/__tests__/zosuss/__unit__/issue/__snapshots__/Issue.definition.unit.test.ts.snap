@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "iss",
   ],
-  "description": "Issue a z/OS USS command",
+  "description": "Issue a z/OS USS command.",
   "name": "issue",
   "summary": "Issue a command",
   "type": "group",

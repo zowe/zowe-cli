@@ -17,6 +17,6 @@ export const StopCommand: ICommandDefinition = {
     aliases: ["sp"],
     type: "group",
     summary: "Stop TSO/E address space",
-    description: "Stop TSO/E address space",
+    description: "Stop TSO/E address space.",
     children: [AddressSpaceDefinition]
 };
