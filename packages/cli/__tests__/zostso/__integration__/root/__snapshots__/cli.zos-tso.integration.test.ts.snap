@@ -56,7 +56,9 @@ exports[`zos-tso should fail with invalid option 1`] = `
 "Command Error:
 Unknown arguments: not-valid-option, notValidOption
 Command failed due to improper syntax
-Command entered: \\"zowe zos-tso --not-valid-option\\"
+Did you mean:  zos-tso start?
+
+Command entered: \\"zos-tso --not-valid-option\\"
 Use \\"zowe zos-tso --help\\" to view groups, commands, and options.
 Error Details:
 Unknown arguments: not-valid-option, notValidOption
@@ -67,7 +69,9 @@ exports[`zos-tso should fail with invalid parameter 1`] = `
 "Command Error:
 Unknown argument: examine
 Command failed due to improper syntax
-Command entered: \\"zowe zos-tso examine\\"
+Did you mean:  zos-tso ping?
+
+Command entered: \\"zos-tso examine\\"
 Use \\"zowe zos-tso --help\\" to view groups, commands, and options.
 Error Details:
 Unknown argument: examine
