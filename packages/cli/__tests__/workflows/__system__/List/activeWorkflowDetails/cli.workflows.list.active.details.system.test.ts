@@ -54,7 +54,6 @@ describe("List active workflow details cli system tests", () => {
     describe("Create workflow using uss file", () => {
         beforeAll(async () => {
             let error;
-            let response;
 
             // Upload files only for successful scenarios
             try {
@@ -65,7 +64,7 @@ describe("List active workflow details cli system tests", () => {
             }
 
             // Create a workflow instance in zOS/MF to list
-            response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
+            const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             await delay(delayTime);
             wfKey = response.workflowKey;
         });

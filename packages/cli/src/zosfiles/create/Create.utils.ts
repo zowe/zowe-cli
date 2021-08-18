@@ -11,7 +11,6 @@
 
 // We are using arguments as an expected input to the function. Thus there is no generated code
 // so we can ignore this linting error.
-// tslint:disable-next-line:no-implicit-dependencies
 import { Arguments } from "yargs";
 import { ICreateDataSetOptions } from "@zowe/zos-files-for-zowe-sdk";
 

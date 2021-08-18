@@ -19,7 +19,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class FileToUSSHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
-                                    session: AbstractSession): Promise<IZosFilesResponse> {
+        session: AbstractSession): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Uploading USS file",
@@ -29,11 +29,11 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
 
         const response = await Upload.fileToUssFile(session, commandParameters.arguments.inputfile,
             commandParameters.arguments.USSFileName, {
-            binary: commandParameters.arguments.binary,
-            encoding: commandParameters.arguments.encoding,
-            task,
-            responseTimeout: commandParameters.arguments.responseTimeout
-        });
+                binary: commandParameters.arguments.binary,
+                encoding: commandParameters.arguments.encoding,
+                task,
+                responseTimeout: commandParameters.arguments.responseTimeout
+            });
 
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);

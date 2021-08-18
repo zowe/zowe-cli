@@ -12,7 +12,7 @@
 /**
  * This interface defines the global options that apply to all zosfiles APIs
  * @export
- * @interface IZosFilesOptions
+ * @interface IZosFilesOptions
  */
 export interface IZosFilesOptions {
     /**

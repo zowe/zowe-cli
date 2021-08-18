@@ -56,19 +56,11 @@ describe("Upload directory to PDS", () => {
         });
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should upload data set from local directory", async () => {
@@ -106,19 +98,11 @@ describe("Upload directory to PDS", () => {
     describe("Success scenarios", () => {
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should upload data set from local directory", async () => {
@@ -163,11 +147,7 @@ describe("Upload directory to PDS", () => {
 
         it("should fail when the mf data set is not a PDS", async () => {
             const zosSeqFile = dsname + ".SEQ";
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, zosSeqFile);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, zosSeqFile);
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");
@@ -175,11 +155,7 @@ describe("Upload directory to PDS", () => {
             expect(response.stderr.toString()).toContain(
                 ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message);
 
-            try {
-                await Delete.dataSet(REAL_SESSION, zosSeqFile);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, zosSeqFile);
         });
     });
 });

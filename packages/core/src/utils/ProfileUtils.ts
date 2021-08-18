@@ -52,7 +52,7 @@ export async function getDefaultProfile(profileType: string, mergeWithBase?: boo
         // Load the profile using the profile manager
         profileLoaded = await profileManager.load({
             loadDefault: true
-        })
+        });
     } catch (err) {
         logger.warn(err.message);
     }

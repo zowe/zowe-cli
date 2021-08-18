@@ -65,15 +65,15 @@ describe("auth login/logout apiml show token", () => {
 
     it("should successfully issue the login command and show token", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token.sh",
-        TEST_ENVIRONMENT_NO_PROF,
-        [
-            base.host,
-            base.port,
-            base.user,
-            base.pass,
-            base.rejectUnauthorized,
-            "true"
-        ]);
+            TEST_ENVIRONMENT_NO_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.pass,
+                base.rejectUnauthorized,
+                "true"
+            ]);
         token = response.stdout.toString().trim().split("\n");
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -83,34 +83,32 @@ describe("auth login/logout apiml show token", () => {
 
     it("should successfully issue the login command with rfj and show token", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token_rfj.sh",
-        TEST_ENVIRONMENT_NO_PROF,
-        [
-            base.host,
-            base.port,
-            base.user,
-            base.pass,
-            base.rejectUnauthorized,
-            "true"
-        ]);
+            TEST_ENVIRONMENT_NO_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.pass,
+                base.rejectUnauthorized,
+                "true"
+            ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(JSON.parse(response.stdout.toString()).data).toMatchObject({
             tokenType: "apimlAuthenticationToken",
-            // tslint:disable-next-line: no-magic-numbers
             tokenValue: token[token.length-3]});
     });
 
     it("should successfully issue the logout command without profiles", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_show_token.sh",
-        TEST_ENVIRONMENT_NO_PROF,
-        [
-            base.host,
-            base.port,
-            "apimlAuthenticationToken",
-            // tslint:disable-next-line: no-magic-numbers
-            token[token.length-3],
-            base.rejectUnauthorized
-        ]);
+            TEST_ENVIRONMENT_NO_PROF,
+            [
+                base.host,
+                base.port,
+                "apimlAuthenticationToken",
+                token[token.length-3],
+                base.rejectUnauthorized
+            ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
@@ -135,15 +133,15 @@ describe("auth login/logout apiml create profile", () => {
 
     it("should successfully issue the login command and create a profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
-        TEST_ENVIRONMENT_CREATE_PROF,
-        [
-            base.host,
-            base.port,
-            base.user,
-            base.pass,
-            base.rejectUnauthorized,
-            "y"
-        ]);
+            TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.pass,
+                base.rejectUnauthorized,
+                "y"
+            ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
@@ -152,7 +150,7 @@ describe("auth login/logout apiml create profile", () => {
 
     it("should successfully issue the logout command with a created profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh",
-        TEST_ENVIRONMENT_CREATE_PROF);
+            TEST_ENVIRONMENT_CREATE_PROF);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked and removed");
@@ -177,53 +175,53 @@ describe("auth login/logout apiml do not create profile", () => {
 
     it("should successfully issue the login command and not create a profile 1", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
-        TEST_ENVIRONMENT_CREATE_PROF,
-        [
-            base.host,
-            base.port,
-            base.user,
-            base.pass,
-            base.rejectUnauthorized,
-            "n"
-        ]);
+            TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.pass,
+                base.rejectUnauthorized,
+                "n"
+            ]);
 
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 
     it("should successfully issue the login command and not create a profile 2", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
-        TEST_ENVIRONMENT_CREATE_PROF,
-        [
-            base.host,
-            base.port,
-            base.user,
-            base.pass,
-            base.rejectUnauthorized,
-            "q"
-        ]);
+            TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.pass,
+                base.rejectUnauthorized,
+                "q"
+            ]);
 
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 
     it("should successfully issue the login command and timeout while creating a profile", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create_timeout.sh",
-        TEST_ENVIRONMENT_CREATE_PROF,
-        [
-            base.host,
-            base.port,
-            base.user,
-            base.pass,
-            base.rejectUnauthorized
-        ]);
+            TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.pass,
+                base.rejectUnauthorized
+            ]);
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile")
+        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 });

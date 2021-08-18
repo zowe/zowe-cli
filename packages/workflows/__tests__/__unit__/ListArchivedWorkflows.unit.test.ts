@@ -87,8 +87,8 @@ describe("List archived workflows", () => {
                 response = await ListArchivedWorkflows.listArchivedWorkflows(undefined);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
-              error = thrownError;
-              Imperative.console.info(`Error ${error}`);
+                error = thrownError;
+                Imperative.console.info(`Error ${error}`);
             }
             expectZosmfResponseFailed(response, error, noSession.message);
         });

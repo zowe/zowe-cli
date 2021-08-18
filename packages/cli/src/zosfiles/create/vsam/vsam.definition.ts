@@ -31,7 +31,6 @@ vsamDsOrg.allowableValues = {
 };
 
 // revise the description of size for VSAM.
-const kbIndex = 3;
 const vsamSize = Object.assign({}, ...[ZosFilesCreateExtraOptions.size]);
 vsamSize.description =
     vsamStrings.OPTIONS.SIZE;

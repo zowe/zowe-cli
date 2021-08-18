@@ -110,7 +110,7 @@ export class TsoValidator {
 
     /**
      * Validate z/OSMF response
-     * @param {IZosmfPingResponse} parms - object response from z/OSMF, @see {IZosmfPingResponse}
+     * @param {IZosmfPingResponse} parms - object response from z/OSMF, @see {IZosmfPingResponse}
      * @memberOf TsoValidator
      */
     public static validatePingZosmfResponse(parms: IZosmfPingResponse) {
@@ -119,7 +119,7 @@ export class TsoValidator {
 
     /**
      * Validate z/OSMF response for errors
-     * @param {IZosmfTsoResponse} zosmfResponse - object response from z/OSMF, @see {IZosmfTsoResponse}
+     * @param {IZosmfTsoResponse} zosmfResponse - object response from z/OSMF, @see {IZosmfTsoResponse}
      * @memberOf TsoValidator
      */
     public static validateErrorMessageFromZosmf(zosmfResponse: IZosmfTsoResponse) {

@@ -60,7 +60,7 @@ export default class RegistryInstancesHandler extends ZosmfBaseHandler {
      * @param showAllInfo : display summary (default) or all information fields
      */
     private formatProvisionedInstancesSummaryOutput(instances: IProvisionedInstance[],
-                                                    showAllInfo: boolean): any[] {
+        showAllInfo: boolean): any[] {
         // Use defined pretty print template - IProvisionedInstancePrettyFull for displaying info
         let prettifiedInstances: any[] = [];
         if (showAllInfo) {

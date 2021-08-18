@@ -397,7 +397,13 @@ describe("Delete", () => {
             (ZosmfRestClient as any).deleteExpectString = jest.fn(() => {
                 // Do nothing
             });
-            await Delete.zfs(dummySession, fileSystemName);
+            let caughtError;
+            try {
+                await Delete.zfs(dummySession, fileSystemName);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should fail if fileSystemName is missing or blank", async () => {

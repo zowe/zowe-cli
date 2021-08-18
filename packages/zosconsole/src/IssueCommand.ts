@@ -113,7 +113,7 @@ export class IssueCommand {
      * @memberof IssueCommand
      */
     public static async issueAndCollect(session: AbstractSession, issueParms: IIssueParms,
-                                        collectParms: ICollectParms) {
+        collectParms: ICollectParms) {
         ConsoleValidator.validateCollectParm(collectParms);
         let response: IConsoleResponse = await IssueCommand.issue(session, issueParms);
 

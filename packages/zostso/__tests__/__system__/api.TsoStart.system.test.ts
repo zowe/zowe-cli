@@ -61,7 +61,7 @@ describe("StartCommand (system)", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-                        testName: "zos_tso_start"
+            testName: "zos_tso_start"
         });
         systemProps = testEnvironment.systemTestProperties;
 
