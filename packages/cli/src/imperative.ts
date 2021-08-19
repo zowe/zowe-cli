@@ -85,6 +85,20 @@ const config: IImperativeConfig = {
                     type: "string",
                     secure: true,
                     optionDefinition: Constants.BASE_OPTION_TOKEN_VALUE
+                },
+                certFile: {
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_CERT_FILE
+                },
+                certKeyFile: {
+                    type: "string",
+                    secure: true,
+                    optionDefinition: Constants.BASE_OPTION_CERT_KEY_FILE
+                // },
+                // certFilePassword: {
+                //     type: "string",
+                //     secure: true,
+                //     optionDefinition: Constants.BASE_OPTION_CERT_FILE_PASSWORD
                 }
             },
             required: []
@@ -189,6 +203,20 @@ const config: IImperativeConfig = {
                         type: "boolean",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED
                     },
+                    certFile: {
+                        type: "string",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_FILE
+                    },
+                    certKeyFile: {
+                        type: "string",
+                        secure: true,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
+                    },
+                    // certFilePassword: {
+                    //     type: "string",
+                    //     secure: true,
+                    //     optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSWORD
+                    // },
                     basePath: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH

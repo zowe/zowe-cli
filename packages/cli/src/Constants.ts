@@ -175,6 +175,36 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     };
 
     /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    public static BASE_OPTION_CERT_FILE: ICommandOptionDefinition = {
+        name: "cert-file",
+        description: "The file path to a certificate file to use for authentication",
+        type: "existingLocalFile",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    public static BASE_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
+        name: "cert-key-file",
+        description: "The file path to a certificate key file to use for authentication",
+        type: "existingLocalFile",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    // public static BASE_OPTION_CERT_FILE_PASSWORD: ICommandOptionDefinition = {
+    //     name: "cert-file-password",
+    //     description: "The password to decrypt a certificate file to use for authentication",
+    //     type: "string",
+    //     group: Constants.BASE_CONNECTION_OPTION_GROUP
+    // };
+
+    /**
      * Summary of auth command group
      * @static
      * @memberof AuthConstants
