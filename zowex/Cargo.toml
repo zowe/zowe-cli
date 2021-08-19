@@ -1,6 +1,6 @@
 [package]
-name = "zowex"
-version = "0.2.1"
+name = "zowe"
+version = "0.3.0"
 authors = ["Zowe Project"]
 edition = "2018"
 
