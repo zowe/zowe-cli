@@ -50,6 +50,13 @@ const NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE: i32 = 102;
 const CANNOT_START_DAEMON_EXIT_CODE: i32 = 103;
 const DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE: i32 = 104;
 
+struct DaemonProcInfo {
+    is_running: bool,
+    name: String,
+    pid: String,
+    cmd: String
+}
+
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
 
@@ -65,18 +72,14 @@ fn main() -> std::io::Result<()> {
     let mut _args: Vec<String> = env::args().collect();
     _args.drain(..1); // remove first (exe name)
 
-    let port_string = get_port_string();
-    let mut daemon_host = "127.0.0.1:".to_owned();
-    daemon_host.push_str(&port_string);
-
     let args = _args.join(" ");
 
-    run_zowe_command(args, &port_string).unwrap();
+    run_zowe_command(args).unwrap();
 
     Ok(())
 }
 
-fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> {
+fn run_zowe_command(mut args: String) -> std::io::Result<()> {
     args.push_str(" --dcd ");
     let path = env::current_dir()?;
     args.push_str(path.to_str().unwrap());
@@ -87,20 +90,29 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
         _resp = b" ";
     }
 
+    // form our host, port, and connection strings
+    let daemon_host = "127.0.0.1".to_owned();
+    let port_string = get_port_string();
+    let host_port_conn_str = format!("{}:{}", daemon_host, port_string);
+
     /* Attempt to make a TCP connection to the daemon.
      * Iterate to enable a slow system to start the daemon.
      */
-    let daemon_host = format!("{}:{}", "127.0.0.1", port_string);
     let mut conn_attempt = 1;
     let mut we_started_daemon = false;
     let mut daemon_cmd_to_show: String = "No value was set".to_string();
     let mut stream = loop {
-        let conn_result = TcpStream::connect(&daemon_host);
+        let conn_result = TcpStream::connect(&host_port_conn_str);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stram value
             break good_stream;
         }
-        if is_daemon_running() == false {
+
+        // determine if daemon is running
+        let daemon_proc_info = is_daemon_running();
+
+        // when not running, start it.
+        if daemon_proc_info.is_running == false {
             if conn_attempt == 1 {
                 // start the daemon and continue trying to connect
                 let njs_zowe_path = get_nodejs_zowe_path();
@@ -108,24 +120,29 @@ fn run_zowe_command(mut args: String, port_string: &str) -> std::io::Result<()> 
                 daemon_cmd_to_show = start_daemon(&njs_zowe_path);
             } else {
                 if we_started_daemon {
-                    println!("This background Zowe process that we started is not running:\n    {}\nTerminating.",
+                    println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
+                        daemon_host, port_string
+                    );
+                    println!("Command used to start the Zowe daemon was:\n    {}\nTerminating.",
                         daemon_cmd_to_show
                     );
                     std::process::exit(DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE);
                 }
             }
         }
+
         if conn_attempt == 5 {
-            println!("Unable to connect to Zowe background process. Terminating after {} attempts",
-                conn_attempt
+            println!("\nUnable to connect to Zowe daemon with name = {} and pid = {} on host = {} and port = {}.",
+                daemon_proc_info.name, daemon_proc_info.pid, daemon_host, port_string
             );
-            std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
+            println!("Command = {}\nTerminating after maximum retries.", daemon_proc_info.cmd);
+             std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
         }
 
         // pause between attempts to connect
         thread::sleep(Duration::from_secs(3));
-        if conn_attempt > 1 {
-            println!("Attempting to connect again ...");
+        if conn_attempt == 1 && we_started_daemon == false || conn_attempt > 1 {
+            println!("Attempting to connect to Zowe daemon again ...");
         }
         conn_attempt = conn_attempt + 1;
     };
@@ -357,14 +374,18 @@ fn get_nodejs_zowe_path() -> String {
     }
     if njs_zowe_path == NOT_FOUND {
         println!("Could not find a NodeJS zowe command on your path.");
-        println!("Cannot launch Zowe background process. Terminating.");
+        println!("Cannot launch Zowe daemon. Terminating.");
         std::process::exit(NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE);
     }
     return njs_zowe_path;
 }
 
-// Is the zowe daemon currently running?
-fn is_daemon_running() -> bool {
+/**
+ * Is the zowe daemon currently running?
+ * @returns A structure that indicates if the daemon is running, and if so
+ *          properties about that running process.
+ */
+fn is_daemon_running() -> DaemonProcInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
     for (pid, process) in sys.processes() {
@@ -373,16 +394,26 @@ fn is_daemon_running() -> bool {
            process.cmd()[1].to_lowercase().contains("cli") &&
            process.cmd()[2].to_lowercase() == "--daemon"
         {
-            /* We print the daemon info, because we only check if the daemon
-             * is running when we cannot connect to it, and we are about to
-             * terminate with an error. This info may help diagnose the problem.
-             */
-            println!("The backgound Zowe process is running:");
-            println!("pid={} name={} cmd={:?}", pid, process.name(), process.cmd());
-            return true;
+            // convert the process command from a vector to a string
+            let mut proc_cmd: String = "".to_string();
+            for cmd_part in process.cmd() {
+                proc_cmd.push_str(cmd_part);
+                proc_cmd.push(' ');
+            }
+            return DaemonProcInfo {
+                is_running: true,
+                name: process.name().to_string(),
+                pid: pid.to_string(),
+                cmd: proc_cmd
+            };
         }
     }
-    return false;
+    return DaemonProcInfo {
+        is_running: false,
+        name: "no name".to_string(),
+        pid: "no pid".to_string(),
+        cmd: "no cmd".to_string()
+    };
 }
 
 /**
