@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202108202027`
 
 - Update Imperative dependency for the following new features:
   - Breaking: Make `fail-on-error` option true by default on `zowe plugins validate` command.
