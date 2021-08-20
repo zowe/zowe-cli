@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Update Imperative dependency for the following new features:
+  - Breaking: Make `fail-on-error` option true by default on `zowe plugins validate` command.
+  - Enhancement: Improved command suggestions
+  - Performance: Improved the way that HTTP response chunks are saved, reducing time complexity from O(n<sup>2</sup>) to O(n). This dramatically improves performance for larger requests. [#618](https://github.com/zowe/imperative/pull/618)
+
 ## `7.0.0-next.202108121907`
 
 - Enhancement: Flattened the default profiles structure created by the `config init` command.
