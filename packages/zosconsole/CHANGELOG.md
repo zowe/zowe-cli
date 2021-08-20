@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS console SDK package will be documented in this file.
 
+## `6.32.1`
+
+- Updated Imperative version
+
 ## `6.25.0`
 
 - Bugfix: Remove "[object Object]" that appeared in some error messages

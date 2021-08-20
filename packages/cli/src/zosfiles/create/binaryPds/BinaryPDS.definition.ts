@@ -58,6 +58,10 @@ export const BinaryPDSDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.DATA_SET_BINARY.EXAMPLES.EX1,
             options: "NEW.BINARY.DATASET"
+        },
+        {
+            description: strings.ACTIONS.DATA_SET_BINARY.EXAMPLES.EX2,
+            options: "NEW.BINARY.DATASET --data-set-type LIBRARY"
         }
     ]
 };

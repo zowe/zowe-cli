@@ -26,7 +26,7 @@ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
      * @type {ICommandOptionDefinition}
      */
     responseTimeout: {
-        name: "responseTimeout",
+        name: "response-timeout",
         aliases: ["rto"],
         description: strings.RESPONSETIMEOUT,
         type: "number",

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## `6.32.1`
+
+- Updated Imperative version
+
 ## `6.25.0`
 
 - Enhancement: Deprecate misspelled version of `ArchiveWorkflow.archiveWorkflowByKey`

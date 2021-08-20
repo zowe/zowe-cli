@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "tso",
   ],
-  "description": "Issue TSO commands and interact with TSO address spaces",
+  "description": "Issue TSO commands and interact with TSO address spaces.",
   "name": "zos-tso",
   "passOn": Array [
     Object {

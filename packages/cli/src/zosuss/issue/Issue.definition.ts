@@ -18,7 +18,7 @@ import { SshDefinition } from "./ssh/Ssh.definition";
 export const IssueCommand: ICommandDefinition = {
     name: "issue", aliases: ["iss"],
     summary: "Issue a command",
-    description: "Issue a z/OS USS command",
+    description: "Issue a z/OS USS command.",
     type: "group",
     children: [SshDefinition]
 };
