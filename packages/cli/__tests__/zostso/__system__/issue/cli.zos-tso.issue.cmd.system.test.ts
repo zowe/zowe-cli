@@ -103,8 +103,8 @@ describe("zos-tso issue command", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass,
-                    SYSTEM_PROPS.tso.account
+                    SYSTEM_PROPS.zosmf.password,
+                    SYSTEM_PROPS.tso.account,
                 ]
             );
             expect(response.stderr.toString()).toBe("");
@@ -129,7 +129,7 @@ describe("zos-tso issue command", () => {
                     SYSTEM_PROPS.zosmf.host,
                     SYSTEM_PROPS.zosmf.port,
                     SYSTEM_PROPS.zosmf.user,
-                    SYSTEM_PROPS.zosmf.pass,
+                    SYSTEM_PROPS.zosmf.password,
                     "ACCT#"
                 ]
             );

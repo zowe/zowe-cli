@@ -96,8 +96,7 @@ describe("zos-tso ping address-space", () => {
                     DEFAULT_SYSTEM_PROPS.zosmf.host,
                     DEFAULT_SYSTEM_PROPS.zosmf.port,
                     DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.pass
-                ]);
+                    DEFAULT_SYSTEM_PROPS.zosmf.password                ]);
             StopTso.stop(REAL_SESSION, key);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

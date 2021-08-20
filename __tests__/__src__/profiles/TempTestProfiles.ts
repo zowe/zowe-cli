@@ -112,7 +112,7 @@ export class TempTestProfiles {
         const zosmfProperties = testEnvironment.systemTestProperties.zosmf;
         let createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create zosmf ${profileName} --user ${zosmfProperties.user} --pw ` +
-            `${zosmfProperties.pass} --ru ${zosmfProperties.rejectUnauthorized}` +
+            `${zosmfProperties.password} --ru ${zosmfProperties.rejectUnauthorized}` +
             ` --host ${zosmfProperties.host} --port ${zosmfProperties.port}`;
         // if basePath has been entered in custom_properties, add it to the
         // create zosmf profile arguments
@@ -208,7 +208,7 @@ export class TempTestProfiles {
         const baseProperties = testEnvironment.systemTestProperties.base;
         let createProfileScript = this.SHEBANG +
             `${Constants.BINARY_NAME} profiles create base ${profileName} --user ${baseProperties.user} --pw ` +
-            `${baseProperties.pass} --ru ${baseProperties.rejectUnauthorized}` +
+            `${baseProperties.password} --ru ${baseProperties.rejectUnauthorized}` +
             ` --host ${baseProperties.host} --port ${baseProperties.port}`;
         // if basePath has been entered in custom_properties, add it to the
         // create base profile arguments

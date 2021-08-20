@@ -82,8 +82,7 @@ describe("Upload directory to PDS", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass
-                ]);
+                    defaultSys.zosmf.password                ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const stdoutText = response.stdout.toString();

@@ -70,7 +70,7 @@ describe("auth login/logout apiml show token", () => {
                 base.host,
                 base.port,
                 base.user,
-                base.pass,
+                base.password,
                 base.rejectUnauthorized,
                 "true"
             ]);
@@ -88,7 +88,7 @@ describe("auth login/logout apiml show token", () => {
                 base.host,
                 base.port,
                 base.user,
-                base.pass,
+                base.password,
                 base.rejectUnauthorized,
                 "true"
             ]);
@@ -138,7 +138,7 @@ describe("auth login/logout apiml create profile", () => {
                 base.host,
                 base.port,
                 base.user,
-                base.pass,
+                base.password,
                 base.rejectUnauthorized,
                 "y"
             ]);
@@ -180,7 +180,7 @@ describe("auth login/logout apiml do not create profile", () => {
                 base.host,
                 base.port,
                 base.user,
-                base.pass,
+                base.password,
                 base.rejectUnauthorized,
                 "n"
             ]);
@@ -198,7 +198,7 @@ describe("auth login/logout apiml do not create profile", () => {
                 base.host,
                 base.port,
                 base.user,
-                base.pass,
+                base.password,
                 base.rejectUnauthorized,
                 "q"
             ]);
@@ -216,7 +216,7 @@ describe("auth login/logout apiml do not create profile", () => {
                 base.host,
                 base.port,
                 base.user,
-                base.pass,
+                base.password,
                 base.rejectUnauthorized
             ]);
         expect(response.status).toBe(0);
