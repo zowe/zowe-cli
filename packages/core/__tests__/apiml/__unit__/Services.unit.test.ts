@@ -231,7 +231,7 @@ describe("APIML Services unit tests", () => {
         it("should parse complex service list with correct base path priority", async () => {
             const services: IApimlService[] = [
                 genApimlService("fakeApi1", "redService", [1, 2]),
-                genApimlService("fakeApi2", "greenService", [1, 2, 3]),  // tslint:disable-line no-magic-numbers
+                genApimlService("fakeApi2", "greenService", [1, 2, 3]),
                 genApimlService("fakeApi3", "blueService", [2, 1])
             ];
             services[1].apiml.apiInfo[1].defaultApi = true;
@@ -276,7 +276,7 @@ describe("APIML Services unit tests", () => {
                     basePaths: [
                         "/redService/api/v2"
                     ],
-                    pluginConfigs: new Set(configs.slice(0, 3)),  // tslint:disable-line no-magic-numbers
+                    pluginConfigs: new Set(configs.slice(0, 3)),
                     gatewayUrlConflicts: {}
                 },
                 {
@@ -287,7 +287,7 @@ describe("APIML Services unit tests", () => {
                         "/greenService/api/v1",
                         "/greenService/api/v3"
                     ],
-                    pluginConfigs: new Set([configs[3]]),  // tslint:disable-line no-magic-numbers
+                    pluginConfigs: new Set([configs[3]]),
                     gatewayUrlConflicts: {}
                 },
                 {
@@ -297,7 +297,7 @@ describe("APIML Services unit tests", () => {
                         "/blueService/api/v2",
                         "/blueService/api/v1"
                     ],
-                    pluginConfigs: new Set([configs[4]]),  // tslint:disable-line no-magic-numbers
+                    pluginConfigs: new Set([configs[4]]),
                     gatewayUrlConflicts: {}
                 }
             ]);
