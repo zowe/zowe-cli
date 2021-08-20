@@ -17,44 +17,44 @@ import i18nTypings from "../../-strings-/en";
 const strings = (require("../../-strings-/en").default as typeof i18nTypings).DELETE.ACTIONS.MIGRATED_DATA_SET;
 
 export const MdsDefinition: ICommandDefinition = {
-  name: "migrated-data-set",
-  aliases: ["mds"],
-  description: strings.DESCRIPTION,
-  type: "command",
-  handler: __dirname + "/Mds.handler",
-  profile: {
-    optional: ["zosmf"]
-  },
-  positionals: [
-    {
-      name: "dataSetName",
-      type: "string",
-      description: strings.POSITIONALS.DATASETNAME,
-      required: true
-    }
-  ],
-  options: [
-    {
-      name: "wait",
-      aliases: ["w"],
-      description: strings.OPTIONS.WAIT,
-      type: "boolean",
-      defaultValue: false,
-      required: false
+    name: "migrated-data-set",
+    aliases: ["mds"],
+    description: strings.DESCRIPTION,
+    type: "command",
+    handler: __dirname + "/Mds.handler",
+    profile: {
+        optional: ["zosmf"]
     },
-    {
-      name: "purge",
-      aliases: ["p"],
-      description: strings.OPTIONS.PURGE,
-      type: "boolean",
-      defaultValue: false,
-      required: false
-    }
-  ],
-  examples: [
-    {
-      description: strings.EXAMPLES.EX1,
-      options: `"USER.DATA.SET"`
-    }
-  ]
+    positionals: [
+        {
+            name: "dataSetName",
+            type: "string",
+            description: strings.POSITIONALS.DATASETNAME,
+            required: true
+        }
+    ],
+    options: [
+        {
+            name: "wait",
+            aliases: ["w"],
+            description: strings.OPTIONS.WAIT,
+            type: "boolean",
+            defaultValue: false,
+            required: false
+        },
+        {
+            name: "purge",
+            aliases: ["p"],
+            description: strings.OPTIONS.PURGE,
+            type: "boolean",
+            defaultValue: false,
+            required: false
+        }
+    ],
+    examples: [
+        {
+            description: strings.EXAMPLES.EX1,
+            options: `"USER.DATA.SET"`
+        }
+    ]
 };

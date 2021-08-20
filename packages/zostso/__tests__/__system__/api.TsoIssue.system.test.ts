@@ -28,7 +28,7 @@ describe("IssueTso.issueTsoCommand", () => {
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
-                        testName: "zos_tso_issue"
+            testName: "zos_tso_issue"
         });
         systemProperties = testEnvironment.systemTestProperties;
 

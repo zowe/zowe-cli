@@ -616,7 +616,7 @@ describe("Get workflow definition", () => {
             let response: any;
             try {
                 response = await DefinitionWorkflow.
-                getWorkflowDefinition(PRETEND_SESSION, wfVersion, undefined, propertiesSteps, propertiesVariables);
+                    getWorkflowDefinition(PRETEND_SESSION, wfVersion, undefined, propertiesSteps, propertiesVariables);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

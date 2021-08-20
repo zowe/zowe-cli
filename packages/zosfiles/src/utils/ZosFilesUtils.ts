@@ -80,8 +80,8 @@ export class ZosFilesUtils {
      * @return {string[]} Array of all files finds in path
      */
     public static getFileListFromPath(inputPath: string,
-                                      inFullPathFormat: boolean = true,
-                                      isIgnoreHidden: boolean = true): string[] {
+        inFullPathFormat: boolean = true,
+        isIgnoreHidden: boolean = true): string[] {
         const returnFileList: string[] = [];
 
         const fullpath = this.getFullPath(inputPath);

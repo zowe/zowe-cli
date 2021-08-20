@@ -90,7 +90,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                     break;
                 } else {
                     response = await SubmitJobs.submitJobCommon(this.mSession, {jobDataSet: this.mArguments.dataset,
-                                                                                jclSymbols: this.mArguments.jclSymbols});
+                        jclSymbols: this.mArguments.jclSymbols});
                     apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
                     source = this.mArguments.dataset;
 

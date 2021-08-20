@@ -284,7 +284,7 @@ export class SubmitJobs {
      * @memberof SubmitJobs
      */
     private static async submitNotifyCommon(session: AbstractSession, job: IJob, status: JOB_STATUS,
-                                            watchDelay: number) {
+        watchDelay: number) {
         this.log.trace("submitNotiyCommon called with job %s, status %s, watchDelay %s",
             JSON.stringify(job), status, watchDelay);
         ImperativeExpect.keysToBeDefined(job, ["jobname", "jobid"], "The job object you provide must contain both 'jobname' and 'jobid'.");

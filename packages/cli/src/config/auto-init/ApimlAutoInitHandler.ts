@@ -11,7 +11,7 @@
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession,
-         IHandlerParameters, SessConstants, IConfig, ImperativeError, RestClientError } from "@zowe/imperative";
+    IHandlerParameters, SessConstants, IConfig, ImperativeError, RestClientError } from "@zowe/imperative";
 import { Login, Services } from "@zowe/core-for-zowe-sdk";
 
 /**

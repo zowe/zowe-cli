@@ -45,11 +45,11 @@ const trimMessage = (message: string) => {
 };
 const waitThreeSeconds = () => {
     return new Promise<void>((resolveWaitTime) => {
-            const threeSeconds = 3000;
-            setTimeout(() => {
-                resolveWaitTime();
-            }, threeSeconds);
-        }
+        const threeSeconds = 3000;
+        setTimeout(() => {
+            resolveWaitTime();
+        }, threeSeconds);
+    }
     );
 };
 

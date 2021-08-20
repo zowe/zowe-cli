@@ -107,7 +107,7 @@ export class ZosFilesAttributes {
             } else {
                 this.attributes.set(pattern, {ignore: false, localEncoding, remoteEncoding});
             }
-         });
+        });
     }
 
     private findLastMatchingAttributes(path: string): IUploadAttributes {

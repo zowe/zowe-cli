@@ -70,7 +70,7 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
                         throw new ImperativeError({
                             msg: `Workflow failed or was cancelled or there is manual step.`,
                             additionalDetails: JSON.stringify(response)
-                       });
+                        });
                     }
                 }
             }

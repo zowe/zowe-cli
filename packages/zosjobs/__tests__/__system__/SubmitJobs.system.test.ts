@@ -33,11 +33,11 @@ const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to 
 
 const waitThreeSeconds = () => {
     return new Promise<void>((resolveWaitTime) => {
-            const threeSeconds = 3000;
-            setTimeout(() => {
-                resolveWaitTime();
-            }, threeSeconds);
-        }
+        const threeSeconds = 3000;
+        setTimeout(() => {
+            resolveWaitTime();
+        }, threeSeconds);
+    }
     );
 };
 
@@ -62,7 +62,7 @@ describe("Submit Jobs - System Tests", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-// helper to delete a job
+    // helper to delete a job
     const deleteJob = async (job: IJob) => {
         await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
     };

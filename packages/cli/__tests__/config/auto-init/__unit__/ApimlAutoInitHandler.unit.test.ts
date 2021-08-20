@@ -43,21 +43,21 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
 
         const response = await handler.doAutoInit(
-        {
-            ISession: {
-                hostname: "fake",
-                port: 1234,
-                user: "fake",
-                password: "fake",
-                type: SessConstants.AUTH_TYPE_BASIC,
-                tokenType: undefined
-            }
-        }, {
-            arguments: {
-                $0: "fake",
-                _: ["fake"]
-            }
-        });
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    user: "fake",
+                    password: "fake",
+                    type: SessConstants.AUTH_TYPE_BASIC,
+                    tokenType: undefined
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
@@ -91,20 +91,20 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
 
         const response = await handler.doAutoInit(
-        {
-            ISession: {
-                hostname: "fake",
-                port: 1234,
-                type: SessConstants.AUTH_TYPE_BASIC,
-                tokenType: SessConstants.TOKEN_TYPE_APIML,
-                tokenValue: "fakeToken"
-            }
-        }, {
-            arguments: {
-                $0: "fake",
-                _: ["fake"]
-            }
-        });
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    type: SessConstants.AUTH_TYPE_BASIC,
+                    tokenType: SessConstants.TOKEN_TYPE_APIML,
+                    tokenValue: "fakeToken"
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
@@ -147,21 +147,21 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
 
         const response = await handler.doAutoInit(
-        {
-            ISession: {
-                hostname: "fake",
-                port: 1234,
-                user: "fake",
-                password: "fake",
-                type: SessConstants.AUTH_TYPE_BASIC,
-                tokenType: undefined
-            }
-        }, {
-            arguments: {
-                $0: "fake",
-                _: ["fake"]
-            }
-        });
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    user: "fake",
+                    password: "fake",
+                    type: SessConstants.AUTH_TYPE_BASIC,
+                    tokenType: undefined
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
@@ -195,18 +195,18 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
 
         const response = await handler.doAutoInit(
-        {
-            ISession: {
-                hostname: "fake",
-                port: 1234,
-                type: SessConstants.AUTH_TYPE_BASIC
-            }
-        }, {
-            arguments: {
-                $0: "fake",
-                _: ["fake"]
-            }
-        });
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    type: SessConstants.AUTH_TYPE_BASIC
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
@@ -252,21 +252,21 @@ describe("ApimlAutoInitHandler", () => {
 
         try {
             await handler.doAutoInit(
-            {
-                ISession: {
-                    hostname: "fake",
-                    port: 1234,
-                    user: "fake",
-                    password: "fake",
-                    type: SessConstants.AUTH_TYPE_BASIC,
-                    tokenType: undefined
-                }
-            }, {
-                arguments: {
-                    $0: "fake",
-                    _: ["fake"]
-                }
-            });
+                {
+                    ISession: {
+                        hostname: "fake",
+                        port: 1234,
+                        user: "fake",
+                        password: "fake",
+                        type: SessConstants.AUTH_TYPE_BASIC,
+                        tokenType: undefined
+                    }
+                }, {
+                    arguments: {
+                        $0: "fake",
+                        _: ["fake"]
+                    }
+                });
         } catch (err) {
             error = err;
         }

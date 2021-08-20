@@ -55,7 +55,7 @@ describe("USS utiliites", () => {
         });
 
         it("should make a REST request to set the tag to binary", async () => {
-           await testChtagExpectPayload({type: Tag.BINARY}, { request: "chtag", action: "set", type: "binary"});
+            await testChtagExpectPayload({type: Tag.BINARY}, { request: "chtag", action: "set", type: "binary"});
         });
 
         it("should make a REST request to set the tag to text", async () => {
@@ -64,7 +64,7 @@ describe("USS utiliites", () => {
 
         it("should make a REST request to set the tag with a codeset", async () => {
             await testChtagExpectPayload({type: Tag.TEXT, codeset: "ISO8859-1"},
-                                         {request: "chtag", action: "set", type: "text", codeset: "ISO8859-1"});
+                {request: "chtag", action: "set", type: "text", codeset: "ISO8859-1"});
         });
 
         it("should URI-encoded the path", async () => {
@@ -87,7 +87,7 @@ describe("USS utiliites", () => {
             const expectedUrl = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/testfile";
             expect(restClientSpy).toHaveBeenCalledWith(dummySession, expectedUrl,
                 [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH]: JSON.stringify(expectedPayload).length.toString() },
-                 ZosmfHeaders.ACCEPT_ENCODING],
+                    ZosmfHeaders.ACCEPT_ENCODING],
                 expectedPayload);
         }
     });

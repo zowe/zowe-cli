@@ -40,9 +40,9 @@ export class Create {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dataSet(session: AbstractSession,
-                                cmdType: CreateDataSetTypeEnum,
-                                dataSetName: string,
-                                options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+        cmdType: CreateDataSetTypeEnum,
+        dataSetName: string,
+        options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         let validCmdType = true;
 
         // Removes undefined properties
@@ -142,9 +142,9 @@ export class Create {
     }
 
     public static async dataSetLike(session: AbstractSession,
-                                    dataSetName: string,
-                                    likeDataSetName: string,
-                                    options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+        dataSetName: string,
+        likeDataSetName: string,
+        options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
@@ -413,10 +413,10 @@ export class Create {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async uss(session: AbstractSession,
-                            ussPath: string,
-                            type: string,
-                            mode?: string,
-                            options?: IZosFilesOptions)
+        ussPath: string,
+        type: string,
+        mode?: string,
+        options?: IZosFilesOptions)
         : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);

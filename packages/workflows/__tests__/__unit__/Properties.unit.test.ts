@@ -902,7 +902,7 @@ describe("Get workflow properties", () => {
             let response: any;
             try {
                 response = await PropertiesWorkflow.
-                getWorkflowProperties(PRETEND_SESSION, undefined, wfVersion, propertiesSteps, propertiesVariables);
+                    getWorkflowProperties(PRETEND_SESSION, undefined, wfVersion, propertiesSteps, propertiesVariables);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

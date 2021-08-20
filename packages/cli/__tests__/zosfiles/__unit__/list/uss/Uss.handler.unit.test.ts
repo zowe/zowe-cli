@@ -93,7 +93,7 @@ describe("USS file handler", () => {
                 error = e;
             }
 
-//            expect(error).toBeUndefined();
+            //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fileList).toHaveBeenCalledTimes(1);
             expect(List.fileList).toHaveBeenCalledWith(fakeSession, path, {});

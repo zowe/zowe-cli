@@ -36,7 +36,7 @@ describe("Delete archived workflow integration test", () => {
         const wfKey = "fake-key";
         const wfName = "fake-name";
         const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_conflict.sh",
-                                    TEST_ENVIRONMENT, [wfKey, wfName]);
+            TEST_ENVIRONMENT, [wfKey, wfName]);
         expect(response.status).toBe(1);
         expect(response.stderr.toString()).toContain("The following options conflict");
     });

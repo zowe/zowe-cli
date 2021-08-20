@@ -168,7 +168,7 @@ export function readStdin(): Promise<Buffer> {
  * @param iteratorFn - the function that turns an entry in the array into a promise
  */
 export function asyncPool(poolLimit: number, array: any[],
-                          iteratorFn: (item: any, array: any[]) => Promise<any>): Promise<any> {
+    iteratorFn: (item: any, array: any[]) => Promise<any>): Promise<any> {
     let i = 0;
     const ret: any[] = [];
     const executing: any[] = [];

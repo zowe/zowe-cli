@@ -25,8 +25,8 @@ export const startCmdFlag = "@@START OF COMMAND@@";
 export class Shell {
 
     public static executeSsh(session: SshSession,
-                             command: string,
-                             stdoutHandler: (data: string) => void): Promise<any> {
+        command: string,
+        stdoutHandler: (data: string) => void): Promise<any> {
         const promise = new Promise<any>((resolve,reject) => {
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
@@ -137,9 +137,9 @@ export class Shell {
     }
 
     public static async executeSshCwd(session: SshSession,
-                                      command: string,
-                                      cwd: string,
-                                      stdoutHandler: (data: string) => void): Promise<any> {
+        command: string,
+        cwd: string,
+        stdoutHandler: (data: string) => void): Promise<any> {
         const cwdCommand = `cd ${cwd} && ${command}`;
         return this.executeSsh(session, cwdCommand, stdoutHandler);
     }
