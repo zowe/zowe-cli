@@ -100,9 +100,10 @@ export class TempTestProfiles {
     /**
      * We don't need a full UUID, so we'll substring the UUID for shorter file
      * names if something goes wrong
+     * @readonly
      * @type {number}
      */
-    private static MAX_UUID_LENGTH = 20;
+    private static readonly MAX_UUID_LENGTH = 20;
 
     /**
      * Whether new team config profiles should be used instead of old school

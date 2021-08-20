@@ -71,7 +71,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                     port: session.ISession.port
                 },
                 secure: []
-            }
+            };
             profileConfig.defaults.base = "base";
 
             if (session.ISession.tokenType != null && session.ISession.tokenValue != null) {

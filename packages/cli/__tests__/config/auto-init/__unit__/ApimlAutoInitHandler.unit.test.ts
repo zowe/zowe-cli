@@ -10,7 +10,7 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, ImperativeConfig, IHandlerParameters, RestClientError, IRestClientError } from "@zowe/imperative";
+import { SessConstants, RestClientError, IRestClientError } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { Login, Services } from "@zowe/core-for-zowe-sdk";
 
@@ -219,16 +219,16 @@ describe("ApimlAutoInitHandler", () => {
     it("should throw an error if an error 403 is experienced", async () => {
         const statusCode = 403;
         const mockCreateZosmfSession = jest.fn();
-        const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([])
+        const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
         const mockGetServicesByConfig = jest.fn().mockImplementation(() => {
             const errData: IRestClientError = {
                 httpStatus: statusCode,
                 additionalDetails: "Fake Additional Details",
                 msg: "Fake message",
                 source: "http"
-            }
+            };
             throw new RestClientError(errData);
-        });;
+        });
         const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
             defaults: {},
             profiles: {},

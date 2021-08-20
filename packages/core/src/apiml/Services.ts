@@ -82,7 +82,8 @@ export class Services {
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.user, "User name for API ML basic login must be defined.");
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.password, "Password for API ML basic login must be defined.");
         } else {
-            ImperativeExpect.toBeEqual(session.ISession?.tokenType, "apimlAuthenticationToken", "Token type for API ML token login must be apimlAuthenticationToken.");
+            ImperativeExpect.toBeEqual(session.ISession?.tokenType, "apimlAuthenticationToken",
+                "Token type for API ML token login must be apimlAuthenticationToken.");
             ImperativeExpect.toNotBeNullOrUndefined(session.ISession?.tokenValue, "Token value for API ML token login must be defined.");
         }
 
@@ -207,7 +208,7 @@ export class Services {
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
             return `//"${key}": "${elements.length === 1 ? elements[0] : elements.join('"\n//"' + key + '": "')}"`;
-        }
+        };
 
         profileInfoList?.forEach((profileInfo: IApimlProfileInfo) => {
 
@@ -241,7 +242,7 @@ export class Services {
                     // The new-line before the // "element"  is required in order to properly format the comment-json object
                     conflictingPluginsList += `
                     //     "${element}": "${profileInfo.gatewayUrlConflicts[element].join('", "')}"`;
-                })
+                });
                 const basepathConflictMessage = `
                     // ---
                     // Warning: basePath conflict detected!

@@ -10,8 +10,8 @@
 */
 
 import Mock = jest.Mock;
-jest.mock("net")
-jest.mock("@zowe/imperative")
+jest.mock("net");
+jest.mock("@zowe/imperative");
 import * as net from "net";
 import { Imperative } from "@zowe/imperative";
 import { DaemonClient } from "../src/DaemonClient";
@@ -38,7 +38,7 @@ describe("DaemonClient tests", () => {
             },
             commandLine: "n/a",
             parse
-        }
+        };
 
         const server: net.Server = undefined;
         const client = {
@@ -73,11 +73,11 @@ describe("DaemonClient tests", () => {
             },
             commandLine: "n/a",
             parse
-        }
+        };
 
         const server = {
             close: jest.fn()
-        }
+        };
         const write = jest.fn((someWriteMessage) => {
             expect(someWriteMessage).toMatchSnapshot();
         });
@@ -103,7 +103,7 @@ describe("DaemonClient tests", () => {
             appLogger: {
                 trace: log
             }
-        }
+        };
 
         const server: net.Server = undefined;
         const client = {
@@ -126,7 +126,7 @@ describe("DaemonClient tests", () => {
             appLogger: {
                 trace: log
             }
-        }
+        };
 
         const server: net.Server = undefined;
         const client = {
