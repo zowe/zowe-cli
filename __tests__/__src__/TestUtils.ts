@@ -33,7 +33,6 @@ export function stripNewLines(str: string): string {
  * @returns {string} A generated data set name
  */
 export function getUniqueDatasetName(hlq: string): string {
-    let newDatasetName: string;
     let generatedName: string = "";
     let timestampInMs: string = Date.now().toString();
     let tempStr: string;
@@ -49,7 +48,7 @@ export function getUniqueDatasetName(hlq: string): string {
         }
     }
 
-    newDatasetName = `${hlq.trim()}.${generatedName}`;
+    const newDatasetName: string = `${hlq.trim()}.${generatedName}`;
     return newDatasetName.toUpperCase();
 }
 

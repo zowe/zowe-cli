@@ -590,7 +590,7 @@ describe("Upload USS file", () => {
             expect(getResponse).toEqual(Buffer.from(data.toString()));
 
         });
-        it("should upload a USS file from local file ", async () => {
+        it("should upload a USS file from local file", async () => {
             let error;
             let uploadResponse;
             let getResponse;

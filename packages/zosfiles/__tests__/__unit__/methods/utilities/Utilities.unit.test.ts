@@ -55,16 +55,34 @@ describe("USS utiliites", () => {
         });
 
         it("should make a REST request to set the tag to binary", async () => {
-            await testChtagExpectPayload({type: Tag.BINARY}, { request: "chtag", action: "set", type: "binary"});
+            let caughtError;
+            try {
+                await testChtagExpectPayload({type: Tag.BINARY}, { request: "chtag", action: "set", type: "binary"});
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should make a REST request to set the tag to text", async () => {
-            await testChtagExpectPayload({type: Tag.TEXT}, { request: "chtag", action: "set", type: "text"});
+            let caughtError;
+            try {
+                await testChtagExpectPayload({type: Tag.TEXT}, { request: "chtag", action: "set", type: "text"});
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should make a REST request to set the tag with a codeset", async () => {
-            await testChtagExpectPayload({type: Tag.TEXT, codeset: "ISO8859-1"},
-                {request: "chtag", action: "set", type: "text", codeset: "ISO8859-1"});
+            let caughtError;
+            try {
+                await testChtagExpectPayload({type: Tag.TEXT, codeset: "ISO8859-1"},
+                    {request: "chtag", action: "set", type: "text", codeset: "ISO8859-1"});
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
         });
 
         it("should URI-encoded the path", async () => {

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## Recent Changes
+
+- Migrated from TSLint (now deprecated) to ESLint for static code analysis.
+
 ## `6.32.1`
 
 - Updated Imperative version

@@ -52,24 +52,16 @@ describe("List command group", () => {
         describe("Success Scenarios", () => {
             const testString = "test";
             beforeEach(async () => {
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
-                        { volser: defaultSystem.datasets.vol });
-                    await delay(delayTime);
-                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
-                    await delay(delayTime);
-                } catch (err) {
-                    throw err;
-                }
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
+                    { volser: defaultSystem.datasets.vol });
+                await delay(delayTime);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+                await delay(delayTime);
             });
 
             afterEach(async () => {
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
-                } catch (err) {
-                    throw err;
-                }
+                await Delete.dataSet(REAL_SESSION, dsname);
+                await delay(delayTime);
             });
 
             it("should list all members of a data set", async () => {
@@ -189,22 +181,14 @@ describe("List command group", () => {
         describe("Success Scenarios", () => {
             const testString = "test";
             beforeEach(async () => {
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
-                        { volser: defaultSystem.datasets.vol });
-                    await delay(delayTime);
-                } catch (err) {
-                    throw err;
-                }
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
+                    { volser: defaultSystem.datasets.vol });
+                await delay(delayTime);
             });
 
             afterEach(async () => {
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
-                } catch (err) {
-                    throw err;
-                }
+                await Delete.dataSet(REAL_SESSION, dsname);
+                await delay(delayTime);
             });
 
             it("should list a data set", async () => {

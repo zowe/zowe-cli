@@ -133,7 +133,7 @@ describe("z/OS Files - List", () => {
         it("should list members from given data set with responseTimeout", async () => {
             let response;
             let caughtError;
-            const options: IListOptions = {responseTimeout: 5}
+            const options: IListOptions = {responseTimeout: 5};
 
             try {
                 response = await List.allMembers(dummySession, dsname, options);
@@ -344,7 +344,7 @@ describe("z/OS Files - List", () => {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
 
-            const options: IListOptions = {responseTimeout: 5}
+            const options: IListOptions = {responseTimeout: 5};
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 

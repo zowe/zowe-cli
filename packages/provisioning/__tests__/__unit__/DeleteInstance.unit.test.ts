@@ -45,7 +45,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 
 describe("DeleteInstance deleteDeprovisionedInstance", () => {
 
-    it("it should succeed with all correct parameters", async () => {
+    it("should succeed with all correct parameters", async () => {
 
         (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
             return "";

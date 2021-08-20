@@ -60,20 +60,12 @@ describe("Download All Member", () => {
         });
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should download all data set member of pds", () => {
@@ -103,20 +95,12 @@ describe("Download All Member", () => {
     describe("Success scenarios", () => {
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should download all data set member of pds", () => {

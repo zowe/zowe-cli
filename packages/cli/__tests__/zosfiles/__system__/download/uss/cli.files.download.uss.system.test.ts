@@ -63,16 +63,12 @@ describe("Download USS File", () => {
                 ZosFilesConstants.RESOURCE +
                 ZosFilesConstants.RES_USS_FILES +
                 ussname;
-            try {
-                await ZosmfRestClient.putExpectString(
-                    REAL_SESSION,
-                    endpoint,
-                    [],
-                    data
-                );
-            } catch (err) {
-                throw err;
-            }
+            await ZosmfRestClient.putExpectString(
+                REAL_SESSION,
+                endpoint,
+                [],
+                data
+            );
         });
 
         afterAll(async () => {
@@ -136,16 +132,12 @@ describe("Download USS File", () => {
                 ZosFilesConstants.RESOURCE +
                 ZosFilesConstants.RES_USS_FILES +
                 ussname;
-            try {
-                await ZosmfRestClient.putExpectString(
-                    REAL_SESSION,
-                    endpoint,
-                    [],
-                    data
-                );
-            } catch (err) {
-                throw err;
-            }
+            await ZosmfRestClient.putExpectString(
+                REAL_SESSION,
+                endpoint,
+                [],
+                data
+            );
         });
 
         afterAll(async () => {

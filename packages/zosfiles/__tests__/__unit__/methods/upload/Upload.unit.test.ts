@@ -1787,8 +1787,8 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValue(true);
             isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
             createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
-            // tslint:disable-next-line:max-line-length
-            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce([]);
+            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"])
+                .mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             fileToUssFileSpy.mockReturnValue({});
@@ -1808,8 +1808,8 @@ describe("z/OS Files - Upload", () => {
             isDirSpy.mockReturnValue(true);
             isDirectoryExistsSpy.mockReturnValueOnce(false).mockReturnValueOnce(true);
             createUssDirSpy.mockReturnValueOnce({}).mockReturnValueOnce({});
-            // tslint:disable-next-line:max-line-length
-            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce([]);
+            getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"]).mockReturnValueOnce(["test", "file1.txt", "file2.txt"])
+                .mockReturnValueOnce([]);
             filterDirectoriesSpy.mockReturnValueOnce(["test"]).mockReturnValueOnce(["test"]);
             getFileListFromPathSpy.mockReturnValueOnce(["file1.txt", "file2.txt"]).mockReturnValueOnce([]);
             fileToUssFileSpy.mockReturnValue({});

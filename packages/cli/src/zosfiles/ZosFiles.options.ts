@@ -31,10 +31,10 @@ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.RESPONSETIMEOUT,
         type: "number",
         defaultValue: undefined,
-        // tslint:disable-next-line: no-magic-numbers
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         numericValueRange: [5, 600]
     }
-}
+};
 
 export const ZosFilesOptionDefinitions: ICommandOptionDefinition[] = [
     ZosFilesOptions.responseTimeout

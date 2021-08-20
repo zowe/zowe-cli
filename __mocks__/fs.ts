@@ -20,7 +20,6 @@ const oldReadFileSync = require.requireActual("fs").readFileSync;
 let mockFiles = Object.create(null);
 function __setMockFiles(newMockFiles: { [key: string]: string }) {
     mockFiles = Object.create(null);
-    // tslint:disable-next-line forin
     for (const file in newMockFiles) {
         const dir = path.dirname(file);
         if (!mockFiles[dir]) {

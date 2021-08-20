@@ -76,7 +76,7 @@ export class WorkflowValidator {
      * @memberof WorkflowValidator
      */
     public static validateOwner(userID: string, errorMsg: string) {
-        const result = new RegExp(/^[a-zA-Z0-9#\$@]{1,8}$/).test(userID);
+        const result = new RegExp(/^[a-zA-Z0-9#$@]{1,8}$/).test(userID);
         ImperativeExpect.toBeEqual(true, result, errorMsg);
     }
 }

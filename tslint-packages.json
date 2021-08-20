@@ -1,7 +1,0 @@
-{
-  "extends": "./tslint.json",
-  "linterOptions": {
-    "exclude": ["**/node_modules/**/*", "packages/__tests__/**/*"]
-  },
-  "type-check": true
-}

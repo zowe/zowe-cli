@@ -34,7 +34,6 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error;
-        let resp;
         let getWfKey: IActiveWorkflows;
         this.arguments = params.arguments;
 
@@ -57,7 +56,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 params.response.console.log("Workflow deleted.");
                 break;
 
-            case "workflowName":
+            case "workflowName": {
                 getWfKey = await ListWorkflows.getWorkflows(this.mSession, {workflowName: this.arguments.workflowName});
                 if (getWfKey === null || getWfKey.workflows.length === 0) {
                     throw new ImperativeError({
@@ -69,7 +68,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 const failedWfs: IWorkflowsInfo[] = [];
                 for(const element of getWfKey.workflows){
                     try {
-                        resp = await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
+                        await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
                         successWfs.push(element);
                     } catch (err) {
                         failedWfs.push(element);
@@ -102,7 +101,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 }
 
                 break;
-
+            }
             default:
                 throw new ImperativeError({
                     msg: `Internal create error: Unable to determine the the criteria by which to run delete workflow action. ` +

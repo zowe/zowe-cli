@@ -13,7 +13,6 @@ import { Logger, ImperativeError } from "@zowe/imperative";
 import { ClientChannel } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
-import { Stream } from "stream";
 const Client = require("ssh2");
 
 // These are needed for authenticationHandler
@@ -78,7 +77,7 @@ export class Shell {
                                 isUserCommand = true;
                             }
 
-                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ exit"))) {
+                            if(isUserCommand && dataToPrint.match(/\\$ exit/)) {
                                 // if exit found, print out stuff before exit, then stop printing out.
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
                                 stdoutHandler(dataToPrint);

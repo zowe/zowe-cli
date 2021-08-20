@@ -36,7 +36,7 @@ describe("zos-jobs submit local-file command", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
-    it("should fail if the local file does not exist ", async () => {
+    it("should fail if the local file does not exist", async () => {
         const response = runCliScript(__dirname + "/__scripts__/submit_invalid_local_file.sh",
             TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
@@ -69,7 +69,7 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if --wfa and --vasc are both specified ", async () => {
+        it("should occur if --wfa and --vasc are both specified", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_vasc.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.status).toBe(1);

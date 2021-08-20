@@ -14,10 +14,7 @@ import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative"
 import { PropertiesWorkflow } from "../../src";
 import {
     WorkflowConstants,
-    noWorkflowKey,
-    noOwner,
-    noSteps,
-    noVariables
+    noWorkflowKey
 } from "../../src/WorkflowConstants";
 import { IVariable } from "../../src/doc/IVariable";
 import { IWorkflowInfo } from "../../src/doc/IWorkflowInfo";
@@ -42,14 +39,14 @@ const wfKey = "73c81ef4-eccc-47ce-8f08-8a5c97e753f1";
 const wfVersion = "1.0";
 const propertiesSteps = false;
 const propertiesVariables = false;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY: string =    `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_ALL_PARMS: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}?${WorkflowConstants.returnData}=${WorkflowConstants.steps},${WorkflowConstants.variables}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_STEPS: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}?${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_VARIABLES: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}?${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
+const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_RESOURCE}/` +
+    `${wfKey}`;
+const START_RESOURCE_QUERY_ALL_PARMS: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}?${WorkflowConstants.returnData}=${WorkflowConstants.steps},${WorkflowConstants.variables}`;
+const START_RESOURCE_QUERY_STEPS: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}?${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
+const START_RESOURCE_QUERY_VARIABLES: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_RESOURCE}/${wfKey}?${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
 
 const PRETEND_ZOSMF_RESPONSE_ASTATUS: IAutomationStatus = {
     startUser: "zlapa01",
@@ -62,9 +59,9 @@ const PRETEND_ZOSMF_RESPONSE_ASTATUS: IAutomationStatus = {
     messageText: "Reason is X001"
 };
 
-const failedPatterns: string[] = new Array("patern1", "patern2");
-const scriptParameters: string[] = new Array("patern1", "patern2", "patern3");
-const prereqSteps: string[] = new Array("Step1", "Step6");
+const failedPatterns: string[] = ["patern1", "patern2"];
+const scriptParameters: string[] = ["patern1", "patern2", "patern3"];
+const prereqSteps: string[] = ["Step1", "Step6"];
 const variable1: IVariable = {
     name: "VAR1",
     value: "XXX.YYY"
@@ -73,7 +70,7 @@ const variable2: IVariable = {
     name: "VAR2",
     value: "XXX.ZZZ"
 };
-const variableArray: IVariable[] = new Array(variable1,variable2);
+const variableArray: IVariable[] = [variable1,variable2];
 
 const PRETEND_ZOSMF_RESPONSE_JOBSTATUS: IJobStatus = {
     retcode: "0000",
@@ -233,7 +230,7 @@ const PRETEND_ZOSMF_RESPONSE_STEPINFO02: IStepInfo = {
     "weight": 10
 };
 
-const stepsContains: IStepInfo[] = new Array(PRETEND_ZOSMF_RESPONSE_STEPINFO01, PRETEND_ZOSMF_RESPONSE_STEPINFO02);
+const stepsContains: IStepInfo[] = [PRETEND_ZOSMF_RESPONSE_STEPINFO01, PRETEND_ZOSMF_RESPONSE_STEPINFO02];
 
 const PRETEND_ZOSMF_RESPONSE_STEPINFO: IStepInfo = {
     "name": "Step 1",
@@ -318,7 +315,7 @@ const PRETEND_ZOSMF_RESPONSE_VARIABLEINFO2: IVariableInfo = {
     visibility: "private"
 };
 
-const vIArray: IVariableInfo[] = new Array(PRETEND_ZOSMF_RESPONSE_VARIABLEINFO1,PRETEND_ZOSMF_RESPONSE_VARIABLEINFO2);
+const vIArray: IVariableInfo[] = [PRETEND_ZOSMF_RESPONSE_VARIABLEINFO1,PRETEND_ZOSMF_RESPONSE_VARIABLEINFO2];
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowInfo = {
     workflowName: "wf1",

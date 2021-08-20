@@ -118,9 +118,7 @@ describe("List all mounted filesystems", () => {
             expect(response.stdout.toString()).toEqual("");
             expect(response.stderr.toString()).toContain("HTTP(S) status 404");
         });
-    });
 
-    describe("Expected failures", () => {
         it("should fail due to fsname not existing", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_fs.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["-f xxxx"]);

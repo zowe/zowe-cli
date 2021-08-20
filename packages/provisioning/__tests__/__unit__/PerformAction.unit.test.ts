@@ -51,7 +51,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 
 
 describe("PerformAction getResourcesQuery", () => {
-    it("it should successfully build resources query from passed parameters", () => {
+    it("should successfully build resources query from passed parameters", () => {
         const resourcesQuery: string = PerformAction.getResourcesQuery(ProvisioningConstants.ZOSMF_VERSION, instanceId, actionName);
         Imperative.console.info(`Generated query ${resourcesQuery}`);
         expect(resourcesQuery).toBeDefined();
@@ -163,7 +163,7 @@ describe("PerformAction doProvisioningActionCommon", () => {
         expectZosmfResponseFailed(response, error, noActionName.message);
     });
 
-    it("should throw an error if the action name parameter is undefined", async () => {
+    it("should throw an error if the action name parameter is an empty string", async () => {
         let error: ImperativeError;
         let response: IPerformActionResponse;
         try {

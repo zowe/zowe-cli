@@ -43,7 +43,7 @@ describe("zos-jobs submit data-set command", () => {
     });
 
     describe("Live system tests", () => {
-        it("should submit a job in an existing valid data set from a PDS member ", async () => {
+        it("should submit a job in an existing valid data set from a PDS member", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set.sh",
                 TEST_ENVIRONMENT, [jclMember]);
             expect(response.stderr.toString()).toBe("");
@@ -52,7 +52,7 @@ describe("zos-jobs submit data-set command", () => {
             expect(response.stdout.toString()).toContain("jobid");
         });
 
-        it("should submit a job and wait for it to reach output status ", async () => {
+        it("should submit a job and wait for it to reach output status", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set_wait.sh",
                 TEST_ENVIRONMENT, [jclMember]);
             expect(response.stderr.toString()).toBe("");
@@ -115,7 +115,7 @@ describe("zos-jobs submit data-set command", () => {
             expect(response.stdout.toString()).toContain("jobid");
         });
 
-        it("should fail if the data set does not exist ", async () => {
+        it("should fail if the data set does not exist", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_invalid_data_set.sh",
                 TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
