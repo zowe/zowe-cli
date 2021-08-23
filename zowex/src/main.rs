@@ -100,7 +100,7 @@ fn run_zowe_command(mut args: String) -> std::io::Result<()> {
      */
     let mut conn_attempt = 1;
     let mut we_started_daemon = false;
-    let mut daemon_cmd_to_show: String = "No value was set".to_string();
+    let mut cmd_to_show: String = "No value was set".to_string();
     let mut stream = loop {
         let conn_result = TcpStream::connect(&host_port_conn_str);
         if let Ok(good_stream) = conn_result {
@@ -117,14 +117,14 @@ fn run_zowe_command(mut args: String) -> std::io::Result<()> {
                 // start the daemon and continue trying to connect
                 let njs_zowe_path = get_nodejs_zowe_path();
                 we_started_daemon = true;
-                daemon_cmd_to_show = start_daemon(&njs_zowe_path);
+                cmd_to_show = start_daemon(&njs_zowe_path);
             } else {
                 if we_started_daemon {
                     println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
                         daemon_host, port_string
                     );
                     println!("Command used to start the Zowe daemon was:\n    {}\nTerminating.",
-                        daemon_cmd_to_show
+                        cmd_to_show
                     );
                     std::process::exit(DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE);
                 }
@@ -427,51 +427,77 @@ fn start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
     // set OS-specific options
-    let shell_cmd;
-    let cmd_args;
+    let shell_pgm;
+    let cmd_to_run;
     let stdout_val;
     let stderr_val;
-    let mut njs_daemon_cmd_linux: String = njs_zowe_path.to_string();
-    if env::consts::OS == "windows" {
-        // Anything other than an empty title in the start command fails.
-        shell_cmd = "cmd";
-        cmd_args = vec!["/C", "start", "", "/MIN", njs_zowe_path, "--daemon"];
-        stdout_val = Stdio::inherit();
-        stderr_val = Stdio::inherit();
 
-        /* todo: The technique below has NO window, but it causes double output.
-           Maybe .stdout(Stdio::null()) could help, but in other cases, it also had problems.
-        shell_cmd = "cmd";
-        cmd_args = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
+    // must be declared outside of the "if" scope. Thanks a lot Rust!
+    let mut zowe_cmd_linux: String = "".to_string();
+
+    if env::consts::OS == "windows" {
+        shell_pgm = "cmd";
+        cmd_to_run = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
+        /*
+        The following has no window, no color and no escape characters.
+        The 'exit' command hangs. You must type exit AND control-C, or
+        click the X button on your original command window.
+        When you do terminate your command window, the daemon automatically terminates.
+            cmd_to_run = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
+
+        The following has no window, no color, no escape characters
+        The 'exit' command hangs. You must click the X button on your original command window.
+        When you do terminate your command window, the daemon automatically terminates.
+        Anything other than an empty title in the start command fails.
+            cmd_to_run = vec!["/C", "start", "", "/b", njs_zowe_path, "--daemon"];
+
+        The following launches a minimized window on the task bar.
+        CMD.exe and PowerShell show escape characters for color.
+        All shells look fine in ConEmu.
+        You must separately exit the daemon window.
+        Anything other than an empty title in the start command fails.
+            cmd_to_run = vec!["/C", "start", "", "/MIN", njs_zowe_path, "--daemon"];
         */
+
+        /*
+        If you inherit stdout, CMD and PowerShell show escape characters for color.
+        If use use null, you get no color.
+            stdout_val = Stdio::inherit();
+            stderr_val = Stdio::inherit();
+        */
+        stdout_val = Stdio::null();
+        stderr_val = Stdio::null();
     } else {
-        // the whole command must be supplied as one parm to "sh -c"
-        njs_daemon_cmd_linux.push_str(" --daemon &");
-        shell_cmd = "sh";
-        cmd_args = vec!["-c", &njs_daemon_cmd_linux];
+        // the whole command must be supplied as one parm to "sh -c" command.
+        zowe_cmd_linux.push_str(njs_zowe_path);
+        zowe_cmd_linux.push_str(" --daemon &");
+        shell_pgm = "sh";
+        cmd_to_run = vec!["-c", &zowe_cmd_linux];
+
+        // If you inherit stdout, you get double output. If use use null, you get no color.
         stdout_val = Stdio::null();
         stderr_val = Stdio::null();
     }
 
     // record the command that we run (for display purposes)
-    let mut daemon_cmd_to_show: String = (&shell_cmd).to_string();
-    for next_arg in cmd_args.iter() {
-        daemon_cmd_to_show.push_str(" ");
-        daemon_cmd_to_show.push_str(next_arg);
+    let mut cmd_to_show: String = (&shell_pgm).to_string();
+    for next_arg in cmd_to_run.iter() {
+        cmd_to_show.push_str(" ");
+        cmd_to_show.push_str(next_arg);
     }
 
     // spawn the zowe daemon process and do not wait for termination
-    let new_proc = Command::new(shell_cmd)
-        .args(&cmd_args[..])
+    let new_proc = Command::new(shell_pgm)
+        .args(cmd_to_run)
         .stdout(stdout_val)
         .stderr(stderr_val)
         .spawn();
     if new_proc.is_err() {
         println!("Error = {:?}", new_proc);
-        println!("Failed to start the following process.\n    {}\nTerminating.", daemon_cmd_to_show);
+        println!("Failed to start the following process.\n    {}\nTerminating.", cmd_to_show);
         std::process::exit(CANNOT_START_DAEMON_EXIT_CODE);
     }
-    return daemon_cmd_to_show;
+    return cmd_to_show;
 }
 
 //
