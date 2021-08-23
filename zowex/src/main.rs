@@ -17,7 +17,7 @@ use std::io::BufReader;
 use std::io::{self, Write};
 use std::net::Shutdown;
 use std::net::TcpStream;
-use std::process::{Command};
+use std::process::{Command, Stdio};
 use std::str;
 use std::thread;
 use std::time::Duration;
@@ -429,18 +429,28 @@ fn start_daemon(njs_zowe_path: &str) -> String {
     // set OS-specific options
     let shell_cmd;
     let cmd_args;
+    let stdout_val;
+    let stderr_val;
+    let mut njs_daemon_cmd_linux: String = njs_zowe_path.to_string();
     if env::consts::OS == "windows" {
         // Anything other than an empty title in the start command fails.
         shell_cmd = "cmd";
         cmd_args = vec!["/C", "start", "", "/MIN", njs_zowe_path, "--daemon"];
+        stdout_val = Stdio::inherit();
+        stderr_val = Stdio::inherit();
+
         /* todo: The technique below has NO window, but it causes double output.
            Maybe .stdout(Stdio::null()) could help, but in other cases, it also had problems.
         shell_cmd = "cmd";
         cmd_args = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
         */
     } else {
+        // the whole command must be supplied as one parm to "sh -c"
+        njs_daemon_cmd_linux.push_str(" --daemon &");
         shell_cmd = "sh";
-        cmd_args = vec!["-c", njs_zowe_path, "--daemon"];
+        cmd_args = vec!["-c", &njs_daemon_cmd_linux];
+        stdout_val = Stdio::null();
+        stderr_val = Stdio::null();
     }
 
     // record the command that we run (for display purposes)
@@ -451,7 +461,11 @@ fn start_daemon(njs_zowe_path: &str) -> String {
     }
 
     // spawn the zowe daemon process and do not wait for termination
-    let new_proc = Command::new(shell_cmd).args(&cmd_args[..]).spawn();
+    let new_proc = Command::new(shell_cmd)
+        .args(&cmd_args[..])
+        .stdout(stdout_val)
+        .stderr(stderr_val)
+        .spawn();
     if new_proc.is_err() {
         println!("Error = {:?}", new_proc);
         println!("Failed to start the following process.\n    {}\nTerminating.", daemon_cmd_to_show);
