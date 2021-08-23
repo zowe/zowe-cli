@@ -64,7 +64,7 @@ describe("zos-jobs list jobs command", () => {
                 expect(response.stdout.toString()).toContain("found");
             });
 
-        it("should be able to submit one job and then not see the job if we list jobs for a different user ",
+        it("should be able to submit one job and then not see the job if we list jobs for a different user",
             () => {
                 // note: this test could fail if your user Id starts with "FAKE"
                 const response = runCliScript(scriptDir + "/submit_and_list_jobs_no_match.sh", TEST_ENVIRONMENT,

@@ -398,49 +398,5 @@ describe("Copy", () => {
                 expect(contents1.toString()).toEqual(contents2.toString());
             });
         });
-        describe("responseTimeout option", () => {
-            beforeEach(async () => {
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
-                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
-                } catch (err) {
-                    Imperative.console.info(`Error: ${inspect(err)}`);
-                }
-            });
-            it("Should succeed with responseTimeout option", async () => {
-                let error;
-                let response;
-                let contents1;
-                let contents2;
-
-                try {
-                    response = await Copy.dataSet(
-                        REAL_SESSION,
-                        { dsn: toDataSetName, member: file2 },
-                        {
-                            "from-dataset": { dsn: fromDataSetName, member: file1 },
-                            responseTimeout: 5
-                        }
-                    );
-                    contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}(${file1})`);
-                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
-                    Imperative.console.info(`Response: ${inspect(response)}`);
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info(`Error: ${inspect(err)}`);
-                }
-
-                expect(error).toBeFalsy();
-
-                expect(response).toBeTruthy();
-                expect(response.success).toBe(true);
-                expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
-
-                expect(contents1).toBeTruthy();
-                expect(contents2).toBeTruthy();
-                expect(contents1.toString()).toEqual(contents2.toString());
-            });
-        });
     });
 });

@@ -67,7 +67,7 @@ describe("zos-jobs submit data-set command", () => {
             expect(response.stderr.toString()).toMatchSnapshot();
         });
 
-        it("should occur if both --wait-for-active and --directory is specified", async () => {
+        it("should occur if both --wait-for-active and --vasc is specified", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_syntax_wait_active_and_vasc.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");

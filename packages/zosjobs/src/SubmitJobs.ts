@@ -284,7 +284,7 @@ export class SubmitJobs {
      * @memberof SubmitJobs
      */
     private static async submitNotifyCommon(session: AbstractSession, job: IJob, status: JOB_STATUS,
-                                            watchDelay: number) {
+        watchDelay: number) {
         this.log.trace("submitNotiyCommon called with job %s, status %s, watchDelay %s",
             JSON.stringify(job), status, watchDelay);
         ImperativeExpect.keysToBeDefined(job, ["jobname", "jobid"], "The job object you provide must contain both 'jobname' and 'jobid'.");
@@ -419,7 +419,7 @@ export class SubmitJobs {
         let logMsg = "Formed the following JCL symbol headers:\n";
         headers.forEach((nextHeader) => {
             for (const key in nextHeader) {
-                if (nextHeader.hasOwnProperty(key)) {
+                if (Object.prototype.hasOwnProperty.call(nextHeader, key)) {
                     logMsg += "    " + key + " = " + nextHeader[key] + "\n";
                 }
             }

@@ -71,7 +71,7 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("Spool file");
             expect(response.stdout.toString()).toContain("JES2");
         });
-        it("should submit a job and wait for it to reach output status ", async () => {
+        it("should submit a job and wait for it to reach output status", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_wait.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.stderr.toString()).toBe("");

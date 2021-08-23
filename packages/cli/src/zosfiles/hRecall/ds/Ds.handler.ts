@@ -16,13 +16,13 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * Handler to rename a Data Set
  */
 export default class DSHandler extends ZosFilesBaseHandler {
-  public async processWithSession(
-    commandParameters: IHandlerParameters,
-    session: AbstractSession
-  ): Promise<IZosFilesResponse> {
+    public async processWithSession(
+        commandParameters: IHandlerParameters,
+        session: AbstractSession
+    ): Promise<IZosFilesResponse> {
 
-    const { options } = commandParameters.arguments;
+        const { options } = commandParameters.arguments;
 
-    return HRecall.dataSet(session, commandParameters.arguments.dataSetName, options);
-  }
+        return HRecall.dataSet(session, commandParameters.arguments.dataSetName, options);
+    }
 }

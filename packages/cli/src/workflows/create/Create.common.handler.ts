@@ -170,8 +170,8 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                         resp.filesKept
                             ? "filesKept"
                             : resp.failedToDelete
-                            ? "failedToDelete"
-                            : ""
+                                ? "failedToDelete"
+                                : ""
                     ],
                     output: resp,
                     format: "object"

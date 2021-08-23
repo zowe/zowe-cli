@@ -41,9 +41,9 @@ export default class FsHandler extends ZosFilesBaseHandler {
 
         commandParameters.response.data.setObj(response);
         commandParameters.response.format.output({
-                fields: ["name", "mountpoint"],
-                output: response.apiResponse.items,
-                format: "table"
+            fields: ["name", "mountpoint"],
+            output: response.apiResponse.items,
+            format: "table"
         });
 
         return response;

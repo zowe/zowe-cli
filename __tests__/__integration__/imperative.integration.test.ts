@@ -35,8 +35,7 @@ describe("imperative create profile", () => {
             const opts = ["CreateProfileSystemTest"];
             try {
                 runCliScript(__dirname + "/__scripts__/imperative_zosmf_delete_profile.sh", testEnvironment, opts);
-            // tslint:disable-next-line: no-empty
-            } catch (err) { }
+            } catch (err) { /* Do nothing */ }
         });
 
         it("should successfully create a profile", async () => {
@@ -84,8 +83,7 @@ describe("imperative create profile", () => {
             const opts = ["CreateProfileSystemTest"];
             try {
                 runCliScript(__dirname + "/__scripts__/imperative_ssh_delete_profile.sh", testEnvironment, opts);
-            // tslint:disable-next-line: no-empty
-            } catch (err) { }
+            } catch (err) { /* Do nothing */ }
         });
 
         it("should successfully create a profile", async () => {
@@ -131,8 +129,7 @@ describe("imperative create profile", () => {
             const opts = ["CreateProfileSystemTest"];
             try {
                 runCliScript(__dirname + "/__scripts__/imperative_tso_delete_profile.sh", testEnvironment, opts);
-            // tslint:disable-next-line: no-empty
-            } catch (err) { }
+            } catch (err) { /* Do nothing */ }
         });
 
         it("should successfully create a profile", async () => {

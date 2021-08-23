@@ -10,7 +10,7 @@
 */
 
 import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse,
-         Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../src";
+    Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
@@ -184,24 +184,24 @@ describe("Upload Data Set", () => {
 
             // Since this test is platform specific, only run it on Windows
             (process.platform === "win32" ? it : it.skip)("should upload a file to a physical sequential data set using Windows relative path",
-            async () => {
-                let error;
-                let response: IZosFilesResponse;
+                async () => {
+                    let error;
+                    let response: IZosFilesResponse;
 
-                try {
+                    try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
-                    response = await Upload.fileToDataset(REAL_SESSION,
-                        ".\\packages\\zosfiles\\__tests__\\__system__\\methods\\upload\\testfiles\\upload.txt", dsname);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
-            });
+                        response = await Upload.fileToDataset(REAL_SESSION,
+                            ".\\packages\\zosfiles\\__tests__\\__system__\\methods\\upload\\testfiles\\upload.txt", dsname);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+                });
 
             it("should upload a file to a physical sequential data set in binary mode", async () => {
                 let error;
@@ -325,24 +325,24 @@ describe("Upload Data Set", () => {
 
             // Since this test is platform specific, only run it on Windows
             (process.platform === "win32" ? it : it.skip)("should upload a file to a partitioned data set member using Windows relative path",
-            async () => {
-                let error;
-                let response: IZosFilesResponse;
+                async () => {
+                    let error;
+                    let response: IZosFilesResponse;
 
-                try {
+                    try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
-                    response = await Upload.fileToDataset(REAL_SESSION,
-                        ".\\packages\\zosfiles\\__tests__\\__system__\\methods\\upload\\testfiles\\upload.txt", dsname + "(member)");
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
-            });
+                        response = await Upload.fileToDataset(REAL_SESSION,
+                            ".\\packages\\zosfiles\\__tests__\\__system__\\methods\\upload\\testfiles\\upload.txt", dsname + "(member)");
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(ZosFilesMessages.dataSetUploadedSuccessfully.message);
+                });
 
             it("should upload a file to a partitioned data set member in binary mode", async () => {
                 let error;
@@ -590,7 +590,7 @@ describe("Upload USS file", () => {
             expect(getResponse).toEqual(Buffer.from(data.toString()));
 
         });
-        it("should upload a USS file from local file ", async () => {
+        it("should upload a USS file from local file", async () => {
             let error;
             let uploadResponse;
             let getResponse;

@@ -178,7 +178,7 @@ describe("Create data set", () => {
                         like: "testing2"
                     }
                 })
-            )
+            );
         });
 
         it("should be able to create a sequential data set using the primary allocation and secondary allocation options", async () => {
@@ -1309,7 +1309,13 @@ describe("Create ZFS", () => {
             cylsSec: 10,
             timeout: 20
         };
-        await Create.zfs(dummySession, fileSystemName, options);
+        let caughtError;
+        try {
+            await Create.zfs(dummySession, fileSystemName, options);
+        } catch (error) {
+            caughtError = error;
+        }
+        expect(caughtError).toBeUndefined();
     });
 
     it("should fail if perms parameter omitted", async () => {

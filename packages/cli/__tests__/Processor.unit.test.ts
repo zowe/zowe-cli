@@ -41,10 +41,10 @@ describe("Processor tests", () => {
                 }
             },
             parse
-        }
+        };
         const fn = net.createServer as Mock<typeof net.createServer>;
         fn.mockImplementation((unusedclient, ...args: any[]) => {
-            return {on}
+            return {on};
         });
 
         const processor = new Processor(["--help"]);
@@ -86,11 +86,11 @@ describe("Processor tests", () => {
                 info: log
             },
             parse
-        }
+        };
         const fn = net.createServer as Mock<typeof net.createServer>;
         fn.mockImplementation((method, ...args: any[]) => {
             method("fakeClient", "fakeServer");
-            return {on, listen}
+            return {on, listen};
         });
 
         const processor = new Processor(["some/file/path", "zowe", "--daemon"]);
@@ -121,7 +121,7 @@ describe("Processor tests", () => {
                     debug: log
                 }
             }
-        }
+        };
 
         const processor = new Processor(["anything"]);
 

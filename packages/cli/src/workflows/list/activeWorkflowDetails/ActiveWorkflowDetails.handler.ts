@@ -58,7 +58,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
 
         try {
             response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey, undefined,
-                                                                      requireSteps, this.arguments.listVariables);
+                requireSteps, this.arguments.listVariables);
             if(this.arguments.stepsSummaryOnly && response.steps) {
                 stepSummaries = await PropertiesWorkflow.processStepSummaries(response.steps);
             } else {
@@ -74,7 +74,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             params.response.console.log("\nWorkflow Details: ");
             params.response.format.output({
                 fields: ["workflowName", "workflowKey",
-                        response.automationStatus? "automationStatus.messageText" : "automationStatus"],
+                    response.automationStatus? "automationStatus.messageText" : "automationStatus"],
                 output: response,
                 format: "object"
             });
@@ -84,7 +84,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
             params.response.console.log("\nWorkflow Steps: ");
             params.response.format.output({
                 fields: ["name", "state", "stepNumber",
-                        this.arguments.stepsSummaryOnly ? "misc" : ""],
+                    this.arguments.stepsSummaryOnly ? "misc" : ""],
                 output: stepSummaries,
                 format: "table",
                 header: true

@@ -37,9 +37,9 @@
     "build": "tsc --pretty",
     "watch": "tsc --pretty --watch",
     "clean": "rimraf lib",
-    "lint": "npm run lint:packages && npm run lint:tests",
-    "lint:packages": "tslint --format stylish -c ../../tslint-packages.json \"src/**/*.ts\"",
-    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
+    "lint:packages": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
+    "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
@@ -55,7 +55,6 @@
     "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202108202027",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
-    "tslint": "^6.1.3",
     "typedoc": "^0.16.0",
     "typescript": "^3.8.0"
   },

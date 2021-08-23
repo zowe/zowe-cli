@@ -212,7 +212,7 @@ Use \\"zowe zos-jobs submit local-file --help\\" to view command description, us
 "
 `;
 
-exports[`zos-jobs submit local-file command syntax errors should occur if --wfa and --vasc are both specified  1`] = `
+exports[`zos-jobs submit local-file command syntax errors should occur if --wfa and --vasc are both specified 1`] = `
 "
 Syntax Error:
 The following options conflict (mutually exclusive):

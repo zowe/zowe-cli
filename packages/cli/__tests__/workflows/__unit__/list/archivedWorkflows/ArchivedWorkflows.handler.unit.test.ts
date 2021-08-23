@@ -52,7 +52,7 @@ describe("List archived workflows common handler", () => {
                     arguments: {
                         $0: "fake",
                         _: ["fake"]
-                               },
+                    },
                     response: {
                         format: {
                             output: jest.fn((parms) => {
