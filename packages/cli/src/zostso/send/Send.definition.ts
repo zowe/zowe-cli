@@ -19,7 +19,7 @@ export const SendCommand: ICommandDefinition = {
     aliases: [],
     type: "group",
     summary: "Send data to TSO",
-    description: "Send data to TSO and collect responses until the prompt is reached",
+    description: "Send data to TSO and collect responses until the prompt is reached.",
     children: [
         SendToAddressSpaceCommandDefinition
     ]

@@ -42,7 +42,8 @@ export const DataSetDefinition: ICommandDefinition = {
     options: [
         ListOptions.attributes,
         ListOptions.maxLength,
-        ListOptions.volume
+        ListOptions.volume,
+        ListOptions.start
     ],
     examples: [
         {

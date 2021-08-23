@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.0.0-next.202108202027`
+
+- Update Imperative dependency for the following new features:
+  - Breaking: Make `fail-on-error` option true by default on `zowe plugins validate` command.
+  - Enhancement: Improved command suggestions
+  - Performance: Improved the way that HTTP response chunks are saved, reducing time complexity from O(n<sup>2</sup>) to O(n). This dramatically improves performance for larger requests. [#618](https://github.com/zowe/imperative/pull/618)
+
 ## `7.0.0-next.202108121907`
 
 - Enhancement: Flattened the default profiles structure created by the `config init` command.
@@ -18,6 +25,24 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
+## `6.33.0`
+
+- Enhancement: Expose new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
+- Enhancement: Update Imperative to add the following features:
+  - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions
+  - Enhancement: The `plugins validate` command will return an error code when plugins have errors if the new `--fail-on-error` option is specified. Also adds `--fail-on-warning` option to return with an error code when plugins have warnings. [#463](https://github.com/zowe/imperative/issues/463)
+  - BugFix: Fixed regression where characters are not correctly escaped in web help causing extra slashes ("\") to appear. [#644](https://github.com/zowe/imperative/issues/644)
+- Renamed the zos-files `--responseTimeout` option to `--response-timeout` in help docs for consistency. [#803](https://github.com/zowe/zowe-cli/issues/803)
+
+## `6.32.2`
+
+- Fixed inconsistencies in punctuation for command descriptions by adding missing periods. [#66](https://github.com/zowe/zowe-cli/issues/66)
+
+## `6.32.1`
+
+- BugFix: Updated Imperative version to fix web help issues.
+- Expanded help text of --data-set-type on create data set command by adding an example of creating PDSE. [#52](https://github.com/zowe/zowe-cli/issues/52)
 
 ## `6.32.0`
 

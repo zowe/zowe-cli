@@ -58,7 +58,10 @@ export const ClassicPDSDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.DATA_SET_CLASSIC.EXAMPLES.EX1,
             options: "NEW.CLASSIC.DATASET"
+        },
+        {
+            description: strings.ACTIONS.DATA_SET_CLASSIC.EXAMPLES.EX2,
+            options: "NEW.CLASSIC.DATASET --data-set-type LIBRARY"
         }
-
     ]
 };

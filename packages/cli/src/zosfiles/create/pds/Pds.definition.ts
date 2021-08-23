@@ -58,6 +58,10 @@ export const PdsDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.DATA_SET_PARTITIONED.EXAMPLES.EX1,
             options: "NEW.PDS.DATASET"
+        },
+        {
+            description: strings.ACTIONS.DATA_SET_PARTITIONED.EXAMPLES.EX2,
+            options: "NEW.PDSE.DATASET --data-set-type LIBRARY"
         }
 
     ]

@@ -58,6 +58,10 @@ export const CPDSDefinition: ICommandDefinition = {
         {
             description: strings.ACTIONS.DATA_SET_C.EXAMPLES.EX1,
             options: "NEW.CCODE.DATASET"
+        },
+        {
+            description: strings.ACTIONS.DATA_SET_C.EXAMPLES.EX2,
+            options: "NEW.CCODE.DATASET --data-set-type LIBRARY"
         }
     ]
 };
