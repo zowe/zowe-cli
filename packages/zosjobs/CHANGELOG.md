@@ -2,10 +2,6 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
-
-- Enhancement: Exposed new option `modifyVersion` for `zowe zos-jobs delete` command. [#1092](https://github.com/zowe/zowe-cli/issues/1092)
-
 ## `6.32.1`
 
 - Updated Imperative version
