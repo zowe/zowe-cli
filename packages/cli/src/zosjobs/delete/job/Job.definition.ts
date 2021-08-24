@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { IDeleteJobParms } from "../../..";
 
 export const JobDefinition: ICommandDefinition = {
     name: "job",
@@ -28,6 +29,15 @@ export const JobDefinition: ICommandDefinition = {
                 "the job ID if desired. You can use, for example \"J123\".",
             type: "string",
             required: true
+        }
+    ],
+    options: [
+        {
+            name: "modifyVersion",
+            description: "If you use this option to set modifyVersion to \"2.0\", delete job API will be synchronous. " +
+                "Otherwise, modifyVersion defaults to \"1.0\".",
+            type: "string",
+            defaultValue: "1.0"
         }
     ],
     examples: [

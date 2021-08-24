@@ -39,11 +39,12 @@ export default class JobHandler extends ZosmfBaseHandler {
 
         // Force yargs `jobid` parameter to be a string
         const jobid: string = this.arguments.jobid + "";
+        const modifyVersion: "1.0" | "2.0" = this.arguments.modifyVersion;
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         // Delete the job
-        await DeleteJobs.deleteJobForJob(this.mSession, job);
+        await DeleteJobs.deleteJobForJob(this.mSession, job, modifyVersion);
 
         const message: string = `Successfully deleted job ${job.jobname} (${jobid})`;
         // Print message to console
