@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { IDeleteJobParms } from "../../..";
 
 export const JobDefinition: ICommandDefinition = {
     name: "job",

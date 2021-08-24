@@ -39,11 +39,11 @@ const DEFAULT_PARAMETERS: IHandlerParameters = {
 describe("delete job handler tests", () => {
     it("should be able to delete a job by job id", async () => {
         let passedSession: Session;
-        GetJobs.getJob = jest.fn((session, jobid, modifyVersion) => {
+        GetJobs.getJob = jest.fn((session, jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job, modifyVersion) => {
+        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
             return;
         });
         const handler = new JobHandler.default();
@@ -54,7 +54,8 @@ describe("delete job handler tests", () => {
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledWith(
             passedSession,
-            GetJobsData.SAMPLE_COMPLETE_JOB
+            GetJobsData.SAMPLE_COMPLETE_JOB,
+            undefined
         );
     });
 

@@ -46,7 +46,7 @@ export class DeleteJobs {
      * @returns {Promise<void>} -  promise that resolves when the API call is completel
      * @memberof DeleteJobs
      */
-    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0") {
+    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion: "1.0" | "2.0" = "1.0") {
         this.log.trace("deleteJobForJob called with job %s", JSON.stringify(job));
         return DeleteJobs.deleteJobCommon(session, {jobname: job.jobname, jobid: job.jobid, modifyVersion});
     }
