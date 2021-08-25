@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.33.1`
 
 - Bugfix: Fix capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
 
