@@ -22,7 +22,7 @@ export const DsmDefinition: ICommandDefinition = {
     aliases: ["dsm"],
     description: dsmStrings.DESCRIPTION,
     type: "command",
-    handler: __dirname + "/dsm.handler",
+    handler: __dirname + "/Dsm.handler",
     profile: {
         optional: ["zosmf"]
     },
