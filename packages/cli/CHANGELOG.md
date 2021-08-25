@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.33.1`
+
+- Bugfix: Fix capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
+
 ## `6.33.0`
 
 - Enhancement: Expose new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
