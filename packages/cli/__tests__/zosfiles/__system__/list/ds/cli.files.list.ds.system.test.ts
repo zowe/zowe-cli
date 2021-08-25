@@ -158,8 +158,8 @@ describe("List data set", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toEqual("");
+            expect(response.stderr.toString().trim()).toEqual("");
+            expect(response.stdout.toString().trim()).toEqual("");
         });
     });
 
