@@ -141,8 +141,8 @@ describe("List all members of data set", () => {
                 const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_all_members.sh");
                 const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
                 expect(response.status).toBe(0);
-                expect(response.stderr.toString()).toEqual("");
-                expect(response.stdout.toString()).toEqual("");
+                expect(response.stderr.toString().trim()).toEqual("");
+                expect(response.stdout.toString().trim()).toEqual("");
             } catch (err) {
                 expect(err).toBeUndefined();
             }
