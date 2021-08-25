@@ -302,6 +302,7 @@ describe("List command group", () => {
                     response = await Create.uss(REAL_SESSION, path, "directory");
                     await delay(delayTime);
                     response = await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
+                    await delay(delayTime);
                 } catch (err) {
                     error = err;
                     Imperative.console.info("Error: " + inspect(error));
