@@ -224,7 +224,7 @@ describe("Upload directory to USS", () => {
                     ussname
                 ]);
             const downloadResponse = await Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
-            const downloadedFileContents = fs.readFileSync(localFileLocation);
+            const downloadedFileContents = fs.readFileSync(localFileLocation).toString();
             expect(downloadResponse.success).toBe(true);
             expect(downloadedFileContents).toContain("00000000125");
             expect(downloadedFileContents).toContain("13424013123");
