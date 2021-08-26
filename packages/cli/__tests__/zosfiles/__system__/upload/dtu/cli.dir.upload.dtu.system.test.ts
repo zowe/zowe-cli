@@ -223,8 +223,9 @@ describe("Upload directory to USS", () => {
                     localDirName,
                     ussname
                 ]);
-            Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
+            const downloadResponse = await Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
             const downloadedFileContents = fs.readFileSync(localFileLocation);
+            expect(downloadResponse.success).toBe(true);
             expect(downloadedFileContents).toContain("00000000125");
             expect(downloadedFileContents).toContain("13424013123");
             expect(response.stderr.toString()).not.toContain("Rest API failure with HTTP(S) status 500");
