@@ -17,7 +17,7 @@ import { getUniqueDatasetName, runCliScript, getTag } from "../../../../../../..
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Get, ZosFilesConstants, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, Get, ZosFilesConstants, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
@@ -113,18 +113,18 @@ describe("Upload directory to USS", () => {
 
     describe("Success scenarios", () => {
 
-        afterEach(async () => {
-            let error;
-            let response;
+        // afterEach(async () => {
+        //     let error;
+        //     let response;
 
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+        //     const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
-            try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
-            } catch (err) {
-                error = err;
-            }
-        });
+        //     try {
+        //         response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
+        //     } catch (err) {
+        //         error = err;
+        //     }
+        // });
 
         it("should upload local directory to USS directory", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
@@ -214,7 +214,8 @@ describe("Upload directory to USS", () => {
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
         });
 
-        it("should give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
+        fit("should not give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
+            const localFileLocation = path.join(TEST_ENVIRONMENT.workingDir, "bin_file.pax");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
@@ -222,8 +223,12 @@ describe("Upload directory to USS", () => {
                     localDirName,
                     ussname
                 ]);
-            expect(response.stderr.toString()).toContain("Rest API failure with HTTP(S) status 500");
-            expect(response.status).toBe(1);
+            Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
+            const downloadedFileContents = fs.readFileSync(localFileLocation);
+            expect(downloadedFileContents).toContain("00000000125");
+            expect(downloadedFileContents).toContain("13424013123");
+            expect(response.stderr.toString()).not.toContain("Rest API failure with HTTP(S) status 500");
+            expect(response.status).not.toBe(1);
         });
 
         it("should upload local directory to USS directory with response-format-json flag", async () => {

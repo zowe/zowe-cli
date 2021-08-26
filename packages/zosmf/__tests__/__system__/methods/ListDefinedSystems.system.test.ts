@@ -119,7 +119,6 @@ describe("List Defined Systems Api", () => {
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
             expect(error.message).toMatch(/Error: (connect|read) (ECONNREFUSED|ECONNRESET)/);
-            expect(error.message).toContain(badPort);
         });
     });
 });
