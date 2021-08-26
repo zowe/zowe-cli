@@ -113,18 +113,18 @@ describe("Upload directory to USS", () => {
 
     describe("Success scenarios", () => {
 
-        // afterEach(async () => {
-        //     let error;
-        //     let response;
+        afterEach(async () => {
+            let error;
+            let response;
 
-        //     const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
-        //     try {
-        //         response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
-        //     } catch (err) {
-        //         error = err;
-        //     }
-        // });
+            try {
+                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
+            } catch (err) {
+                error = err;
+            }
+        });
 
         it("should upload local directory to USS directory", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
@@ -214,7 +214,7 @@ describe("Upload directory to USS", () => {
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
         });
 
-        fit("should not give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
+        it("should not give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
             const localFileLocation = path.join(TEST_ENVIRONMENT.workingDir, "bin_file.pax");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
