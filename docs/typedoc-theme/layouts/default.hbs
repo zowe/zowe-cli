@@ -1,0 +1,60 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/zowe/zowe.github.io/master/assets/favicon.ico">
+    <title>{{#ifCond model.name '==' project.name}}{{project.name}}{{else}}{{model.name}} | {{project.name}}{{/ifCond}}</title>
+    <meta name="description" content="Documentation for {{project.name}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="keywords" content="mainframe, zos, open source, framework">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="stylesheet" href="{{relativeURL "assets/css/main.css"}}">
+    <script async src="{{relativeURL "assets/js/search.js"}}" id="search-script"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{relativeURL "assets/css/style.css"}}">
+    <link rel="stylesheet" type="text/css" href="{{relativeURL "assets/css/menu.css"}}">
+    <link rel="stylesheet" id="olympus-google-fonts-css" href="https://fonts.googleapis.com/css?family=Roboto%3A100%2C300%2C400%2C500%2C700%2C900%2C0%7CRoboto+Condensed%3A300%2C400%2C700%2C0&amp;subset=greek-ext%2Cvietnamese%2Clatin%2Ccyrillic%2Cgreek%2Clatin-ext%2Ccyrillic-ext&amp;ver=4.9.8" type="text/css" media="all">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+  </head>
+<body>
+
+{{> header}}
+
+<div class="container container-main">
+    <div class="row">
+        <div class="col-8 col-content">
+            {{{contents}}}
+        </div>
+        <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+            <nav class="tsd-navigation primary">
+                <ul>
+                    {{#each navigation.children}}
+                        {{> navigation}}
+                    {{/each}}
+                </ul>
+            </nav>
+
+            <nav class="tsd-navigation secondary menu-sticky">
+                <ul class="before-current">
+                    {{#each toc.children}}
+                        {{> toc.root}}
+                    {{/each}}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+{{> footer}}
+
+<div class="overlay"></div>
+<script src="{{relativeURL "assets/js/main.js"}}"></script>
+
+{{> analytics}}
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+/* SPDX-License-Identifier: CC-BY-4.0 */
+/* Copyright Contributors to the Zowe project. */
+
+* {
+  box-sizing: border-box;
+}
+
+body html {
+  margin: 0px;
+  overflow-x: hidden!important;
+  overflow-y: hidden!important;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.nav {
+  padding-bottom: 0px;
+  width: 100%;
+  background-color: #333;
+  position: relative;
+}
+
+.nav-item > .nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.nav-item > .nav-link {
+  color: white !important;
+  font-size: large;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.navbar-nav {
+  margin-left: 30px;
+}
+
+@media (max-width:900px) {
+  .navbar-nav {
+    margin-left: 10px;
+  }
+}
+
+.socialheader {
+  width:20%;
+}
+
+.socialheader img{
+  width:15%;
+  padding-right:3%;
+}
+
+.socialfooter {
+  width:60%;
+}
+
+.socialfooter a img{
+  width: 40px;
+  padding-right:2%;
+  display:inline;
+}
+
+@media (max-width:900px) {
+  .medium-widget-article__grid {
+    flex-direction: column !important;
+  }
+}
+
+.image-zowe-use{
+  width: 370px;
+  margin-bottom: 1rem;
+}
+
+@media (max-width:768px) and (min-width:420px) {
+  .image-zowe-use{
+    width: 250px;
+  }
+}

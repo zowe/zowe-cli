@@ -1,0 +1,73 @@
+<header>
+  <div class="lfheader">
+    <img src="https://raw.githubusercontent.com/zowe/zowe.github.io/master/assets/img/lf-projects.svg">
+  </div>
+
+  <nav class="nav navbar navbar-expand-lg navbar-dark">
+    <img src="https://raw.githubusercontent.com/zowe/zowe.github.io/master/assets/img/zowe-logo.svg" width="15%"
+      alt="Zowe Logo">
+
+
+    <div class="tsd-page-toolbar" style="position: unset; color: unset; background: unset;border-bottom: unset;">
+      <div class="container">
+        <div class="table-wrap">
+          <div class="table-cell ready" id="tsd-search" data-index="assets/js/search.json" data-base="." style="background:var(--color-toolbar);">
+            <div class="field">
+              <label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+              <input id="tsd-search-field" type="text">
+            </div>
+            <ul class="results">
+              <li class="state loading">Preparing search index...</li>
+              <li class="state failure">The search index is not available</li>
+            </ul>
+            <a href="{{relativeURL "index.html"}}" class="title">{{project.name}}</a>
+          </div>
+          <div class="table-cell" id="tsd-widgets" style="color: white;">
+            <div id="tsd-filter" data-has-instance="true">
+              <a href="#" class="tsd-widget options no-caption" data-toggle="options"
+                data-has-instance="true">Options</a>
+              <div class="tsd-filter-group">
+                {{!-- <div class="tsd-select" id="tsd-filter-visibility">
+                  <span class="tsd-select-label">All</span>
+                  <ul class="tsd-select-list">
+                    <li data-value="public">Public</li>
+                    <li data-value="protected">Public/Protected</li>
+                    <li data-value="private" class="selected">All</li>
+                  </ul>
+                </div> --}}
+                <input type="checkbox" id="tsd-filter-inherited" checked="">
+                <label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+                <input type="checkbox" id="tsd-filter-externals" checked="">
+                <label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+              </div>
+            </div>
+            <a href="#" class="tsd-widget menu no-caption" data-toggle="menu" data-has-instance="true">Menu</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  </div>
+  <div class="tsd-page-title">
+    <div class="container">
+      {{#if model.parent}} {{! Don't show breadcrumbs on main project page, it is the root page. !}}
+      <ul class="tsd-breadcrumb">
+        {{#with model}}{{> breadcrumb}}{{/with}}
+      </ul>
+      {{/if}}
+      <h1>{{#compact}}
+        {{#ifCond model.kindString "!==" "Project" }}
+        {{model.kindString}}&nbsp;
+        {{/ifCond}}
+        {{model.name}}
+        {{#if model.typeParameters}}
+        &lt;
+        {{#each model.typeParameters}}
+        {{#if @index}},&nbsp;{{/if}}
+        {{name}}
+        {{/each}}
+        &gt;
+        {{/if}}
+        {{/compact}}</h1>
+    </div>
+</header>
