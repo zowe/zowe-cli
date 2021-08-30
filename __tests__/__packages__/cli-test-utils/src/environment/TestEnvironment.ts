@@ -145,10 +145,9 @@ export class TestEnvironment {
             // injectCliProps(properties);
             // console.log(properties);
         } catch (error) {
-            const errMsg: string = "Error reading test properties yaml configuration file. Tests cannot continue. " +
-                "Additional details:" + error;
-            logger.error(errMsg);
-            throw new Error(errMsg);
+            logger.error("Error reading test properties yaml configuration file. Tests cannot continue. " +
+                "Additional details:" + error);
+            throw error;
         }
         logger.info("Loaded configuration properties file.");
 
