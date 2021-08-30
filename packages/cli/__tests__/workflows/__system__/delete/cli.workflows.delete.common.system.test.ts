@@ -72,7 +72,7 @@ describe("Delete workflow cli system tests", () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
             wfKey = response.workflowKey;
         });
-        it("Should delete workflow in zOSMF.", async () => {
+        it("Should delete workflow by key in zOSMF.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh",
                 testEnvironment, [wfKey]);
             expect(response.stderr.toString()).toBe("");
@@ -80,7 +80,7 @@ describe("Delete workflow cli system tests", () => {
             expect(response.stdout.toString()).toContain("Workflow deleted");
         });
 
-        it("Should delete workflow in zOSMF.", async () => {
+        it("Should delete workflow by name in zOSMF.", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",
                 testEnvironment, [wfName]);
             expect(response.stderr.toString()).toBe("");

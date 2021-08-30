@@ -54,23 +54,15 @@ describe("Upload file to data set", () => {
         });
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(
-                    REAL_SESSION,
-                    CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
-                    dsname
-                );
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(
+                REAL_SESSION,
+                CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
+                dsname
+            );
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should upload to data set from local file", async () => {
@@ -124,23 +116,15 @@ describe("Upload file to data set", () => {
 
     describe("Success scenarios", () => {
         beforeEach(async () => {
-            try {
-                await Create.dataSet(
-                    REAL_SESSION,
-                    CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
-                    dsname
-                );
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(
+                REAL_SESSION,
+                CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
+                dsname
+            );
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should upload to data set from local file", async () => {
@@ -183,16 +167,12 @@ describe("Upload file to data set", () => {
                 primary: 1,
                 lrecl: 80
             };
-            try {
-                await Create.dataSet(
-                    REAL_SESSION,
-                    CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
-                    dsnLibrary,
-                    dsnOptions
-                );
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(
+                REAL_SESSION,
+                CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
+                dsnLibrary,
+                dsnOptions
+            );
             const shellScript = path.join(
                 __dirname,
                 "__scripts__",

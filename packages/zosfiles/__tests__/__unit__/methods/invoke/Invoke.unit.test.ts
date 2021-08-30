@@ -225,7 +225,7 @@ describe("Invoke", () => {
         it("should process statements contained in an array of strings using responseTimeout", async () => {
             let response;
             let caughtError;
-            const options: IZosFilesOptions = {responseTimeout: 5}
+            const options: IZosFilesOptions = {responseTimeout: 5};
             const localHeaders = [...reqHeaders];
             localHeaders.push({"X-IBM-Response-Timeout": "5"});
 
@@ -280,7 +280,7 @@ describe("Invoke", () => {
         it("should process statements from the specified file path using responseTimeout", async () => {
             let response;
             let caughtError;
-            const options: IZosFilesOptions = {responseTimeout: 5}
+            const options: IZosFilesOptions = {responseTimeout: 5};
             const localHeaders = [...reqHeaders];
             localHeaders.push({"X-IBM-Response-Timeout": "5"});
 

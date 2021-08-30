@@ -82,15 +82,15 @@ export class DaemonClient {
         const stopOffset = data.toString().indexOf(DaemonClient.STOP_KEY);
         if (stopOffset > -1) {
             if (this.mServer) {
-                Imperative.api.appLogger.debug("shutting down")
+                Imperative.api.appLogger.debug("shutting down");
                 this.mClient.write(`Terminating server`);
                 this.mClient.end();
-                this.mServer.close()
+                this.mServer.close();
             }
             // accept input parameters as we do without running in a server mode and pass our clients stream
             // handle as context
         } else {
-            Imperative.api.appLogger.trace(`daemon input command: ${data.toString()}`)
+            Imperative.api.appLogger.trace(`daemon input command: ${data.toString()}`);
             Imperative.commandLine = data.toString();
             Imperative.parse(data.toString(), { stream: this.mClient });
         }

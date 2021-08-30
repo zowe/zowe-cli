@@ -20,7 +20,7 @@ import { Readable } from "stream";
  */
 export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
-                                    session: AbstractSession): Promise<IZosFilesResponse> {
+        session: AbstractSession): Promise<IZosFilesResponse> {
 
         const task: ITaskWithStatus = {
             percentComplete: 0,

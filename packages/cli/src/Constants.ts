@@ -61,7 +61,7 @@ export class Constants {
      * @memberof Constants
      */
     public static readonly DESCRIPTION =
-        `Welcome to ${Constants.DISPLAY_NAME}!
+    `Welcome to ${Constants.DISPLAY_NAME}!
 
 ${Constants.DISPLAY_NAME} is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.
 
@@ -226,8 +226,8 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      */
     public static AUTO_INIT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
         ...Constants.BASE_OPTION_TOKEN_TYPE,
-        description: "The type of token to get and use for the API Mediation Layer. Omit this option to use the default token type, which is provided by " +
-            "'zowe auth login'.",
+        description: "The type of token to get and use for the API Mediation Layer. " +
+            "Omit this option to use the default token type, which is provided by 'zowe auth login'.",
         group: Constants.AUTO_INIT_OPTION_GROUP
     };
 

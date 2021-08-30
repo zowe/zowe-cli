@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession } from "@zowe/imperative";
-import { startT, ListWorkflows, PropertiesWorkflow, StartWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { startT, ListWorkflows, StartWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 
 
 describe("Start workflow common handler", () => {

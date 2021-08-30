@@ -16,7 +16,6 @@ import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestE
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../src/JobsMessages";
-// tslint:disable-next-line:no-implicit-dependencies
 const rimraf = require("rimraf").sync;
 
 
@@ -33,11 +32,11 @@ const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to 
 
 const waitThreeSeconds = () => {
     return new Promise<void>((resolveWaitTime) => {
-            const threeSeconds = 3000;
-            setTimeout(() => {
-                resolveWaitTime();
-            }, threeSeconds);
-        }
+        const threeSeconds = 3000;
+        setTimeout(() => {
+            resolveWaitTime();
+        }, threeSeconds);
+    }
     );
 };
 
@@ -62,7 +61,7 @@ describe("Submit Jobs - System Tests", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-// helper to delete a job
+    // helper to delete a job
     const deleteJob = async (job: IJob) => {
         await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
     };
@@ -183,7 +182,7 @@ describe("Submit Jobs - System Tests", () => {
             expect(job[0].data.toString()).toContain("J E S 2  J O B  L O G");
         });
 
-        it("should download spool content to a local directory", async (done: any) => {
+        it("should download spool content to a local directory", async (done: any) => {  // eslint-disable-line jest/no-done-callback
             const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",
                 {
                     jclSource: "stdin",

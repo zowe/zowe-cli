@@ -259,8 +259,9 @@ const config: IImperativeConfig = {
                 },
                 {
                     options: "zos126 --reject-unauthorized false",
-                    description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates, " +
-                        "not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+                    description: "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed " +
+                        "certificates, not specifying a username, password, or host so they are not stored on disk; these will need to be " +
+                        "specified on every command"
                 },
                 {
                     options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
@@ -327,7 +328,8 @@ const config: IImperativeConfig = {
                     options: "largeregion -a 1234 --rs 8192"
                 },
                 {
-                    description: "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user account on disk",
+                    description: "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user " +
+                        "account on disk",
                     options: "myprof2 --rs 8192"
                 }
             ],

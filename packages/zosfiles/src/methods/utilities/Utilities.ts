@@ -106,10 +106,10 @@ export class Utilities {
         const payload = {request:"chtag", action:"list"};
         const response = await Utilities.putUSSPayload(session, USSFileName, payload);
         const jsonObj = JSON.parse(response.toString());
-        if (jsonObj.hasOwnProperty("stdout")) {
-        const stdout = JSON.parse(response.toString()).stdout[0];
-        // Tests if binary tag set
-        return (stdout.indexOf("b ") >-1) ||
+        if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
+            const stdout = JSON.parse(response.toString()).stdout[0];
+            // Tests if binary tag set
+            return (stdout.indexOf("b ") >-1) ||
             (stdout.indexOf("UTF-") >-1 ) || (stdout.indexOf("ISO8859-")>-1 ) || (stdout.indexOf("IBM-850") >-1 );
         }
         return false;

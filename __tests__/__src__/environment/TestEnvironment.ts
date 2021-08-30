@@ -11,7 +11,7 @@
 
 import * as nodePath from "path";
 
-import { AbstractSession, Logger, LoggingConfigurer, Session } from "@zowe/imperative";
+import { AbstractSession, Session } from "@zowe/imperative";
 
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";

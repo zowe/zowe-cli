@@ -29,18 +29,19 @@ const wfPath = "/a/wf1.xml";
 const wfVersion = "1.0";
 const propertiesSteps = false;
 const propertiesVariables = false;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY: string =    `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_ALL_PARMS: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps},${WorkflowConstants.variables}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_STEPS: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
-// tslint:disable-next-line:max-line-length
-const START_RESOURCE_QUERY_VARIABLES: string =  `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
+const START_RESOURCE_QUERY: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/${WorkflowConstants.WORKFLOW_DEFINITION}?` +
+    `${WorkflowConstants.filePath}=${wfPath}`;
+const START_RESOURCE_QUERY_ALL_PARMS: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps},` +
+    `${WorkflowConstants.variables}`;
+const START_RESOURCE_QUERY_STEPS: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.steps}`;
+const START_RESOURCE_QUERY_VARIABLES: string = `${WorkflowConstants.RESOURCE}/${WorkflowConstants.ZOSMF_VERSION}/` +
+    `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}&${WorkflowConstants.returnData}=${WorkflowConstants.variables}`;
 
-const failedPatterns: string[] = new Array("patern1", "patern2");
-const scriptParameters: string[] = new Array("patern1", "patern2", "patern3");
-const prereqSteps: string[] = new Array("Step1", "Step6");
+const failedPatterns: string[] = ["patern1", "patern2"];
+const scriptParameters: string[] = ["patern1", "patern2", "patern3"];
+const prereqSteps: string[] = ["Step1", "Step6"];
 
 const prop1: IPropertyMapping = {
     mapFrom: "AABB",
@@ -52,7 +53,7 @@ const prop2: IPropertyMapping = {
     mapTo: "var2"
 };
 
-const propertyMappingsArray: IPropertyMapping[] = new Array(prop1,prop2);
+const propertyMappingsArray: IPropertyMapping[] = [prop1,prop2];
 
 const approver1: IStepApprovers = {
     approver: "ZLAP00",
@@ -64,7 +65,7 @@ const approver2: IStepApprovers = {
     approverSub: false
 };
 
-const approversArray: IStepApprovers[] = new Array(approver1,approver2);
+const approversArray: IStepApprovers[] = [approver1,approver2];
 
 const varSpec1: IVariableSpecification = {
     name: "var1",
@@ -78,7 +79,7 @@ const varSpec2: IVariableSpecification = {
     required: false
 };
 
-const variableSpecArray: IVariableSpecification[] = new Array(varSpec1,varSpec2);
+const variableSpecArray: IVariableSpecification[] = [varSpec1,varSpec2];
 
 const PRETEND_ZOSMF_RESPONSE_STEPDEF01: IStepDefinition = {
     "name": "Step 01",
@@ -174,7 +175,7 @@ const PRETEND_ZOSMF_RESPONSE_STEPDEF02: IStepDefinition = {
     "weight": 10
 };
 
-const stepsContains: IStepDefinition[] = new Array(PRETEND_ZOSMF_RESPONSE_STEPDEF01, PRETEND_ZOSMF_RESPONSE_STEPDEF02);
+const stepsContains: IStepDefinition[] = [PRETEND_ZOSMF_RESPONSE_STEPDEF01, PRETEND_ZOSMF_RESPONSE_STEPDEF02];
 
 const PRETEND_ZOSMF_RESPONSE_STEPDEF: IStepDefinition = {
     "name": "Step 1",
@@ -225,7 +226,7 @@ const PRETEND_ZOSMF_RESPONSE_STEPDEF: IStepDefinition = {
 
 const sDArray: IStepDefinition[] = new Array(PRETEND_ZOSMF_RESPONSE_STEPDEF);
 
-const CHOICES: string[] = new Array("choice1","choice2");
+const CHOICES: string[] = ["choice1","choice2"];
 
 const PRETEND_ZOSMF_RESPONSE_VARIABLEDEF1: IVariableDefinition = {
     name: "VARIABLE1",
@@ -270,7 +271,7 @@ const PRETEND_ZOSMF_RESPONSE_VARIABLEDEF2: IVariableDefinition = {
     visibility: "private"
 };
 
-const vDArray: IVariableDefinition[] = new Array(PRETEND_ZOSMF_RESPONSE_VARIABLEDEF1,PRETEND_ZOSMF_RESPONSE_VARIABLEDEF2);
+const vDArray: IVariableDefinition[] = [PRETEND_ZOSMF_RESPONSE_VARIABLEDEF1,PRETEND_ZOSMF_RESPONSE_VARIABLEDEF2];
 
 const PRETEND_ZOSMF_RESPONSE: IWorkflowDefinition = {
     workflowDefaultName: "wf1",
@@ -616,7 +617,7 @@ describe("Get workflow definition", () => {
             let response: any;
             try {
                 response = await DefinitionWorkflow.
-                getWorkflowDefinition(PRETEND_SESSION, wfVersion, undefined, propertiesSteps, propertiesVariables);
+                    getWorkflowDefinition(PRETEND_SESSION, wfVersion, undefined, propertiesSteps, propertiesVariables);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

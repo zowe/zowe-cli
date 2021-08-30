@@ -17,8 +17,8 @@ import { IArchivedWorkflows } from "./doc/IArchivedWorkflows";
 
 
 export class ListArchivedWorkflows {
-   public static async listArchivedWorkflows(session: AbstractSession,
-                                             zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflows> {
+    public static async listArchivedWorkflows(session: AbstractSession,
+        zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflows> {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.ARCH_WORKFLOW_RESOURCE}`;

@@ -105,7 +105,7 @@ describe("Create workflow common handler", () => {
                         assignToOwner,
                         accessType,
                         deleteCompleted
-//                        overwrite
+                        //                        overwrite
                     },
                     response: {
                         data: {
@@ -138,15 +138,15 @@ describe("Create workflow common handler", () => {
             expect(error).toBeUndefined();
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
-                                                                        workflowName,
-                                                                        dataSet,
-                                                                        systemName,
-                                                                        owner,
-                                                                        variablesInputFile,
-                                                                        variables,
-                                                                        assignToOwner,
-                                                                        accessType,
-                                                                        deleteCompleted);
+                workflowName,
+                dataSet,
+                systemName,
+                owner,
+                variablesInputFile,
+                variables,
+                assignToOwner,
+                accessType,
+                deleteCompleted);
         });
         it("should create a workflow using a uss file", async () => {
             // Require the handler and create a new instance
@@ -229,15 +229,15 @@ describe("Create workflow common handler", () => {
             expect(error).toBeUndefined();
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledTimes(1);
             expect(CreateWorkflow.createWorkflow).toHaveBeenCalledWith(fakeSession,
-                                                                        workflowName,
-                                                                        ussFile,
-                                                                        systemName,
-                                                                        owner,
-                                                                        variablesInputFile,
-                                                                        variables,
-                                                                        assignToOwner,
-                                                                        accessType,
-                                                                        deleteCompleted);
+                workflowName,
+                ussFile,
+                systemName,
+                owner,
+                variablesInputFile,
+                variables,
+                assignToOwner,
+                accessType,
+                deleteCompleted);
         });
         it("should create a workflow using a local file", async () => {
             // Require the handler and create a new instance
@@ -322,17 +322,17 @@ describe("Create workflow common handler", () => {
             expect(error).toBeUndefined();
             expect(CreateWorkflow.createWorkflowLocal).toHaveBeenCalledTimes(1);
             expect(CreateWorkflow.createWorkflowLocal).toHaveBeenCalledWith(fakeSession,
-                                                                        workflowName,
-                                                                        localFile,
-                                                                        systemName,
-                                                                        owner,
-                                                                        variablesInputFile,
-                                                                        variables,
-                                                                        assignToOwner,
-                                                                        accessType,
-                                                                        deleteCompleted,
-                                                                        keepFiles,
-                                                                        remoteDirectory);
+                workflowName,
+                localFile,
+                systemName,
+                owner,
+                variablesInputFile,
+                variables,
+                assignToOwner,
+                accessType,
+                deleteCompleted,
+                keepFiles,
+                remoteDirectory);
         });
         it("should fail if definition file is not a uss file or dataset", async () => {
             // Require the handler and create a new instance

@@ -10,7 +10,7 @@
 */
 
 import { posix } from "path";
-import { AbstractSession, Logger, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "@zowe/core-for-zowe-sdk";

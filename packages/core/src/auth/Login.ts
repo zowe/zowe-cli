@@ -30,7 +30,8 @@ export class Login {
     public static async apimlLogin(session: AbstractSession) {
         Logger.getAppLogger().trace("Login.login()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
-        ImperativeExpect.toBeEqual(session.ISession?.tokenType, "apimlAuthenticationToken", "Token type for API ML login must be apimlAuthenticationToken.");
+        ImperativeExpect.toBeEqual(session.ISession?.tokenType, "apimlAuthenticationToken",
+            "Token type for API ML login must be apimlAuthenticationToken.");
 
         const client = new ZosmfRestClient(session);
         await client.request({

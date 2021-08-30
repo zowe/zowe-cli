@@ -30,13 +30,12 @@ export class DefinitionWorkflow {
      */
     // main method
     public static async getWorkflowDefinition(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-                                              filePath: string, steps: boolean, variables: boolean): Promise<IWorkflowDefinition>{
+        filePath: string, steps: boolean, variables: boolean): Promise<IWorkflowDefinition>{
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-        let wfPath: string;
 
         WorkflowValidator.validateNotEmptyString(filePath, noWorkflowDefinitionFile.message);
-        wfPath = filePath;
+        const wfPath: string = filePath;
 
         let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
         resourcesQuery += `${WorkflowConstants.WORKFLOW_DEFINITION}?${WorkflowConstants.filePath}=${wfPath}`;

@@ -329,7 +329,7 @@ describe("CoreUtils", () => {
     });
 
     describe("asyncPool", () => {
-        it("should allow the execution of many promises in a pool ", async () => {
+        it("should allow the execution of many promises in a pool", async () => {
             const numbers = [1, 1, 1, 1, 1];
             const poolSize = 2;
             let sum = 0;
@@ -343,7 +343,7 @@ describe("CoreUtils", () => {
             expect(sum).toEqual(numbers.length);
         });
 
-        it("should reject if any of the promises in the pool reject ", async () => {
+        it("should reject if any of the promises in the pool reject", async () => {
             const numbers = [1, 1, -1, 1, 1];
             const poolSize = 2;
             let sum = 0;
