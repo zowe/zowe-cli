@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI test utils package will be documented in thi
 
 ## Recent Changes
 
-- Corrected a attempt to re-throw an error with 'throw new Error(error)' which fails to compile with the latest version of typescript.
+- Corrected an attempt to rethrow an error with the NEW keyword which fails to compile with the latest version of typescript
 
 ## `7.0.0-next.202107091339`
 
