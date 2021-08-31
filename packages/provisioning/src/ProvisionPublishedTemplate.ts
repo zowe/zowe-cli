@@ -35,7 +35,7 @@ export class ProvisionPublishedTemplate {
      * @memberof ProvisionPublishedTemplate
      */
     public static async provisionTemplateCommon(session: AbstractSession, zOSMFVersion: string,
-                                                templateName: string, account: string) {
+        templateName: string, account: string) {
         ProvisioningValidator.validateSession(session);
         ProvisioningValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         ProvisioningValidator.validateNotEmptyString(templateName, noTemplateName.message);
@@ -61,7 +61,7 @@ export class ProvisionPublishedTemplate {
      * @memberof ProvisionPublishedTemplate
      */
     public static async provisionTemplate(session: AbstractSession, zOSMFVersion: string,
-                                          templateName: string, optionalParms?: IProvisionOptionals) {
+        templateName: string, optionalParms?: IProvisionOptionals) {
         ProvisioningValidator.validateSession(session);
         ProvisioningValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
         ProvisioningValidator.validateNotEmptyString(templateName, noTemplateName.message);

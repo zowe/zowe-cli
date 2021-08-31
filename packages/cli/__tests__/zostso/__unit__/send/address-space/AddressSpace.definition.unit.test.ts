@@ -13,8 +13,8 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-tso send address-space definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require
-        ("../../../../../src/zostso/send/address_space/SendToAddressSpace.definition").SendToAddressSpaceCommandDefinition;
+        const definition: ICommandDefinition = require(
+            "../../../../../src/zostso/send/address_space/SendToAddressSpace.definition").SendToAddressSpaceCommandDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

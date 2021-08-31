@@ -65,7 +65,7 @@ describe("Check Status api", () => {
             expect(response).toBeFalsy();
             expect(error.message).toContain(restErrMsgText);
             expect(error.mDetails.causeErrors.code).toContain(ZosmfConstants.ERROR_CODES.BAD_HOST_NAME);
-         });
+        });
 
         it("should throw appropriate error when unable to connect to port", async () => {
             let response;

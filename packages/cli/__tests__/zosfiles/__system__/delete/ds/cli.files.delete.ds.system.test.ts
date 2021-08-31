@@ -134,7 +134,7 @@ describe("Delete Data Set", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
             runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
-            TEST_ENVIRONMENT, [dsname, "--for-sure", "--rfj"]);
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--rfj"]);
         });
     });
 

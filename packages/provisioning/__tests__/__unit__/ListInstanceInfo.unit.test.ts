@@ -13,7 +13,7 @@ import { inspect } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { IProvisionedInstance, noInstanceId, ProvisioningConstants,
-        noSessionProvisioning, ListInstanceInfo } from "../../src";
+    noSessionProvisioning, ListInstanceInfo } from "../../src";
 
 const instanceId: string = "123456";
 const RESOURCES_QUERY: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/scr/${instanceId}`;

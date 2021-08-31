@@ -37,7 +37,7 @@ export class StartWorkflow{
      * @returns {Promise}
      */
     public static async startWorkflow(session: AbstractSession, workflowKey: string, resolveConflict?: startT, step?: string,
-                                      subsequent?: boolean, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
+        subsequent?: boolean, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION) {
 
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);

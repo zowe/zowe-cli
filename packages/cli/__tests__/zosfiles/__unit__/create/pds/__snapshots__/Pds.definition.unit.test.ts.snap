@@ -25,7 +25,7 @@ Array [
       "dst",
       "dsntype",
     ],
-    "description": "The data set type",
+    "description": "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
     "name": "data-set-type",
     "type": "string",
   },
@@ -134,6 +134,10 @@ Array [
   Object {
     "description": "Create an empty PDS with default parameters",
     "options": "NEW.PDS.DATASET",
+  },
+  Object {
+    "description": "Create an empty PDSE using data set type LIBRARY",
+    "options": "NEW.PDSE.DATASET --data-set-type LIBRARY",
   },
 ]
 `;

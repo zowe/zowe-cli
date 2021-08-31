@@ -13,9 +13,7 @@
 jest.mock("@zowe/provisioning-for-zowe-sdk");
 import { ListInstanceInfo, ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
 import {
-    CommandProfiles,
-    IHandlerParameters,
-    IProfile
+    IHandlerParameters
 } from "@zowe/imperative";
 import * as Handler from "../../../../../src/provisioning/list/instanceInfo/InstanceInfo.handler";
 import { instanceInfo } from "../../../../../src/provisioning/list/instanceInfo/InstanceInfo.definition";

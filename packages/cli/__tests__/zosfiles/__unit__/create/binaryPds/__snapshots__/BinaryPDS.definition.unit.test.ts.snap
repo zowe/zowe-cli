@@ -25,7 +25,7 @@ Array [
       "dst",
       "dsntype",
     ],
-    "description": "The data set type",
+    "description": "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
     "name": "data-set-type",
     "type": "string",
   },
@@ -134,6 +134,10 @@ Array [
   Object {
     "description": "Create an empty binary partitioned data set (PDS) with default parameters",
     "options": "NEW.BINARY.DATASET",
+  },
+  Object {
+    "description": "Create an empty binary PDSE using data set type LIBRARY",
+    "options": "NEW.BINARY.DATASET --data-set-type LIBRARY",
   },
 ]
 `;

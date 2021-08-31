@@ -572,10 +572,8 @@ describe("MonitorJobs", () => {
 
                 getStatusCommonMock.mockReturnValue(job);
 
-                let response: [boolean, IJob];
-
                 // The first call is for if the job status is equal to parms
-                response = await privateMonitorJobs.checkStatus({}, parms);
+                const response: [boolean, IJob] = await privateMonitorJobs.checkStatus({}, parms);
 
                 expect(response).toEqual([false, job]);
                 expect(GetJobs.getStatusCommon).toHaveBeenCalledTimes(1);

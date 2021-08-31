@@ -29,7 +29,7 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["vs"],
         description: strings.VOLUME,
         type: "string",
-        stringLengthRange: [1, 6]  // tslint:disable-line:no-magic-numbers
+        stringLengthRange: [1, 6]  // eslint-disable-line @typescript-eslint/no-magic-numbers
     },
 
     /**
@@ -85,5 +85,15 @@ export const ListOptions: { [key: string]: ICommandOptionDefinition } = {
         description: strings.FSNAME,
         type: "string",
         conflictsWith: ["path"]
+    },
+
+    /**
+     * An optional search parameter that specifies the first data set name to return in the response document.
+     */
+    start: {
+        name: "start",
+        aliases: ["s"],
+        description: strings.START,
+        type: "string"
     }
 };

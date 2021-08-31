@@ -172,7 +172,9 @@ exports[`zos-jobs view job-status-by-jobid command syntax errors should occur if
 "Command Error:
 Unknown argument: blah
 Command failed due to improper syntax
-Command entered: \\"zowe zos-jobs view job-status-by-jobid JOB123 blah --host fakehost --user fakeuser --password fakepass\\"
+Did you mean:  zos-jobs view job-status-by-jobid?
+
+Command entered: \\"zos-jobs view job-status-by-jobid JOB123 blah --host fakehost --user fakeuser --password fakepass\\"
 Available commands are \\"job-status-by-jobid, spool-file-by-id\\".
 Use \\"zowe zos-jobs view --help\\" to view groups, commands, and options.
 Error Details:

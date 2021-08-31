@@ -19,7 +19,6 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class AmsStatementsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        let response: IZosFilesResponse;
         const zosFilesOptions: IZosFilesOptions = {responseTimeout: commandParameters.arguments.responseTimeout};
 
         const statements = TextUtils
@@ -29,7 +28,7 @@ export default class AmsStatementsHandler extends ZosFilesBaseHandler {
             statements[stIdx] += " -";
         }
 
-        response = await Invoke.ams(session, statements, zosFilesOptions);
+        const response: IZosFilesResponse = await Invoke.ams(session, statements, zosFilesOptions);
         commandParameters.response.console.log(TextUtils.prettyJson(response.apiResponse));
 
         return response;

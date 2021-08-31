@@ -133,7 +133,7 @@ describe("z/OS Files - List", () => {
         it("should list members from given data set with responseTimeout", async () => {
             let response;
             let caughtError;
-            const options: IListOptions = {responseTimeout: 5}
+            const options: IListOptions = {responseTimeout: 5};
 
             try {
                 response = await List.allMembers(dummySession, dsname, options);
@@ -344,7 +344,7 @@ describe("z/OS Files - List", () => {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
 
-            const options: IListOptions = {responseTimeout: 5}
+            const options: IListOptions = {responseTimeout: 5};
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
@@ -444,7 +444,7 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
-                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT]);
+                    ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT]);
             expectJsonSpy.mockClear();
 
             // Unit test for nowait option
@@ -462,7 +462,7 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
-                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT]);
+                    ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT]);
             expectJsonSpy.mockClear();
 
             // Unit test for error option
@@ -480,7 +480,7 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
             expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint,
                 [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS,
-                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR]);
+                    ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR]);
             expectJsonSpy.mockClear();
         });
 
@@ -598,31 +598,31 @@ describe("z/OS Files - List", () => {
             let response;
             let error;
             const testApiResponse = {
-                    items: [
-                        {
-                            name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
-                        },
-                        {
-                            name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
-                        },
-                        {
-                            name: ".profile", mode: "-rwxrwxrwx", size: 849, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2013-02-13T12:08:29"
-                        },
-                        {
-                            name: ".sh_history", mode: "-rw-------", size: 4662, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2013-06-06T18:09:28"
-                        },
-                        {
-                            name: "myFile.txt", mode: "-rw-r--r--", size: 20, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
-                        },
-                        {
-                            name: "profile.add", mode: "-rwxrwxrwx", size: 888, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2013-05-07T11:23:08"
-                        }
+                items: [
+                    {
+                        name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                    },
+                    {
+                        name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                    },
+                    {
+                        name: ".profile", mode: "-rwxrwxrwx", size: 849, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2013-02-13T12:08:29"
+                    },
+                    {
+                        name: ".sh_history", mode: "-rw-------", size: 4662, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2013-06-06T18:09:28"
+                    },
+                    {
+                        name: "myFile.txt", mode: "-rw-r--r--", size: 20, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                    },
+                    {
+                        name: "profile.add", mode: "-rwxrwxrwx", size: 888, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2013-05-07T11:23:08"
+                    }
                 ],  returnedRows: 6, totalRows: 6, JSONversion: 1
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
@@ -631,10 +631,10 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.fileList(dummySession, path);
-                } catch (err) {
-                    error = err;
-                }
+                response = await List.fileList(dummySession, path);
+            } catch (err) {
+                error = err;
+            }
 
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
@@ -649,15 +649,15 @@ describe("z/OS Files - List", () => {
             let response;
             let error;
             const testApiResponse = {
-                    items: [
-                        {
-                            name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
-                        },
-                        {
-                            name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
-                        }
+                items: [
+                    {
+                        name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                    },
+                    {
+                        name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                    }
                 ],  returnedRows: 2, totalRows: 6, JSONversion: 1
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
@@ -666,10 +666,10 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.fileList(dummySession, path, { maxLength: 2 });
-                } catch (err) {
-                    error = err;
-                }
+                response = await List.fileList(dummySession, path, { maxLength: 2 });
+            } catch (err) {
+                error = err;
+            }
 
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
@@ -684,15 +684,15 @@ describe("z/OS Files - List", () => {
             let response;
             let error;
             const testApiResponse = {
-                    items: [
-                        {
-                            name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
-                        },
-                        {
-                            name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
-                            group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
-                        }
+                items: [
+                    {
+                        name: ".", mode: "drwxrwxrwx", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-11-24T02:12:04"
+                    },
+                    {
+                        name: "..", mode: "drwxr-xr-x", size: 8192, uid: 0, user: "WSADMIN", gid: 1,
+                        group: "OMVSGRP", mtime: "2015-09-15T02:38:29"
+                    }
                 ],  returnedRows: 2, totalRows: 6, JSONversion: 1
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
@@ -701,10 +701,10 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.fileList(dummySession, path, { maxLength: 2, responseTimeout: 5 });
-                } catch (err) {
-                    error = err;
-                }
+                response = await List.fileList(dummySession, path, { maxLength: 2, responseTimeout: 5 });
+            } catch (err) {
+                error = err;
+            }
 
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
@@ -800,21 +800,21 @@ describe("z/OS Files - List", () => {
             let response;
             let error;
             const testApiResponse = {
-                    items: [
-                        {
-                            name: "USER.DATA.SET",
-                            mountpoint: "/u/myuser",
-                            fstname: "FS",
-                            mode: ["rdonly", "acl", "synchonly"],
-                            dev: 82,
-                            fstype: 1,
-                            bsize: 1024,
-                            bavail: 45279,
-                            blocks: 126720,
-                            sysname: "S0W1",
-                            writeibc: 0,
-                            diribc: 98
-                        }
+                items: [
+                    {
+                        name: "USER.DATA.SET",
+                        mountpoint: "/u/myuser",
+                        fstname: "FS",
+                        mode: ["rdonly", "acl", "synchonly"],
+                        dev: 82,
+                        fstype: 1,
+                        bsize: 1024,
+                        bavail: 45279,
+                        blocks: 126720,
+                        sysname: "S0W1",
+                        writeibc: 0,
+                        diribc: 98
+                    }
                 ],  returnedRows: 1, totalRows: 1, JSONversion: 1
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
@@ -824,10 +824,10 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.fsWithPath(dummySession, { path });
-                } catch (err) {
-                    error = err;
-                }
+                response = await List.fsWithPath(dummySession, { path });
+            } catch (err) {
+                error = err;
+            }
 
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
@@ -842,21 +842,21 @@ describe("z/OS Files - List", () => {
             let response;
             let error;
             const testApiResponse = {
-                    items: [
-                        {
-                            name: "USER.DATA.SET",
-                            mountpoint: "/u/myuser",
-                            fstname: "FS",
-                            mode: ["rdonly", "acl", "synchonly"],
-                            dev: 82,
-                            fstype: 1,
-                            bsize: 1024,
-                            bavail: 45279,
-                            blocks: 126720,
-                            sysname: "S0W1",
-                            writeibc: 0,
-                            diribc: 98
-                        }
+                items: [
+                    {
+                        name: "USER.DATA.SET",
+                        mountpoint: "/u/myuser",
+                        fstname: "FS",
+                        mode: ["rdonly", "acl", "synchonly"],
+                        dev: 82,
+                        fstype: 1,
+                        bsize: 1024,
+                        bavail: 45279,
+                        blocks: 126720,
+                        sysname: "S0W1",
+                        writeibc: 0,
+                        diribc: 98
+                    }
                 ],  returnedRows: 1, totalRows: 1, JSONversion: 1
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
@@ -866,10 +866,10 @@ describe("z/OS Files - List", () => {
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
             try {
-                    response = await List.fs(dummySession, { fsname });
-                } catch (err) {
-                    error = err;
-                }
+                response = await List.fs(dummySession, { fsname });
+            } catch (err) {
+                error = err;
+            }
 
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();

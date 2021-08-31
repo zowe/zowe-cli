@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 
 import { posix } from "path";
 
@@ -45,8 +45,8 @@ export class Delete {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_DeleteDataSet.htm
      */
     public static async dataSet(session: AbstractSession,
-                                dataSetName: string,
-                                options: IDeleteDatasetOptions = {}): Promise<IZosFilesResponse> {
+        dataSetName: string,
+        options: IDeleteDatasetOptions = {}): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -97,8 +97,8 @@ export class Delete {
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.idai200/delet.htm
      */
     public static async vsam(session: AbstractSession,
-                             dataSetName: string,
-                             options: IDeleteVsamOptions = {}): Promise<IDeleteVsamResponse> {
+        dataSetName: string,
+        options: IDeleteVsamOptions = {}): Promise<IDeleteVsamResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
@@ -139,9 +139,9 @@ export class Delete {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.izua700/IZUHPINFO_API_DeleteUnixFile.htm
      */
     public static async ussFile(session: AbstractSession,
-                                fileName: string,
-                                recursive?: boolean,
-                                options?: IZosFilesOptions): Promise<IZosFilesResponse> {
+        fileName: string,
+        recursive?: boolean,
+        options?: IZosFilesOptions): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(fileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(fileName, "", ZosFilesMessages.missingUSSFileName.message);
@@ -186,8 +186,8 @@ export class Delete {
      * @see https://www.ibm.com/support/knowledgecenter/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_DeleteUnixzFsFilesystem.htm
      */
     public static async zfs(session: AbstractSession,
-                            fileSystemName: string,
-                            options?: IZosFilesOptions): Promise<IZosFilesResponse> {
+        fileSystemName: string,
+        options?: IZosFilesOptions): Promise<IZosFilesResponse> {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);

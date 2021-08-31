@@ -61,7 +61,7 @@ export default class InstanceInfoHandler extends ZosmfBaseHandler {
 
         // Prettify the output
         switch (option) {
-            // extended general information with actions summarised
+        // extended general information with actions summarised
             case "EXTENDED" :
                 prettifiedInstance = TextUtils.explainObject(instance, explainProvisionedInstanceExtended, false);
                 break;

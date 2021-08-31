@@ -22,7 +22,7 @@ import * as fs from "fs";
 
 export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
-                                    session: AbstractSession): Promise<IZosFilesResponse> {
+        session: AbstractSession): Promise<IZosFilesResponse> {
 
         const status: ITaskWithStatus = {
             statusMessage: "Uploading all files",
@@ -43,8 +43,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
         const attributesFile = this.findAttributesFile(commandParameters, inputDir);
 
         if (attributesFile) {
-            response  = await this.uploadWithAttributesFile
-                 (attributesFile, response, session, inputDir, commandParameters, status);
+            response = await this.uploadWithAttributesFile(attributesFile, response, session, inputDir,
+                commandParameters, status);
         } else {
             const filesMap: IUploadMap = this.buildFilesMap(commandParameters);
 
@@ -95,11 +95,11 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
     }
 
     private async uploadWithAttributesFile(attributesFile: any,
-                                           response: any,
-                                           session: AbstractSession,
-                                           inputDir: string,
-                                           commandParameters: IHandlerParameters,
-                                           status: ITaskWithStatus) {
+        response: any,
+        session: AbstractSession,
+        inputDir: string,
+        commandParameters: IHandlerParameters,
+        status: ITaskWithStatus) {
         let attributesFileContents;
         try {
             attributesFileContents = fs.readFileSync(attributesFile).toString();

@@ -55,19 +55,11 @@ describe("Upload Data Set", () => {
         });
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should upload data set from standard input", async () => {
@@ -87,7 +79,7 @@ describe("Upload Data Set", () => {
                     systemProps.zosmf.port,
                     systemProps.zosmf.user,
                     systemProps.zosmf.password
-                    ]);
+                ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             const stdoutText = response.stdout.toString();
@@ -100,19 +92,11 @@ describe("Upload Data Set", () => {
     describe("Success scenarios", () => {
 
         beforeEach(async () => {
-            try {
-                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
         });
 
         afterEach(async () => {
-            try {
-                await Delete.dataSet(REAL_SESSION, dsname);
-            } catch (err) {
-                throw err;
-            }
+            await Delete.dataSet(REAL_SESSION, dsname);
         });
 
         it("should upload data set from standard input", async () => {

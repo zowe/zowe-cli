@@ -29,7 +29,7 @@ export const UssCreateOptions: { [key: string]: ICommandOptionDefinition } = {
         aliases: ["m"],
         description: strings.MODE,
         type: "string",
-        // tslint:disable-next-line: no-magic-numbers
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         stringLengthRange: [9, 9]
     }
 };

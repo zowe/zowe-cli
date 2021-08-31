@@ -100,7 +100,7 @@ export class Processor {
         if (this.mServer) {
             this.mServer.listen(this.mPort, "127.0.0.1", () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mPort}`);
-                Imperative.console.info(`server bound ${this.mPort}`)
+                Imperative.console.info(`server bound ${this.mPort}`);
             });
         } else {
             Imperative.parse();
@@ -113,7 +113,7 @@ export class Processor {
      * @memberof Processor
      */
     private close() {
-        Imperative.api.appLogger.debug(`server closed`)
+        Imperative.api.appLogger.debug(`server closed`);
     }
 
     /**
@@ -123,7 +123,7 @@ export class Processor {
      * @memberof Processor
      */
     private error(err: Error) {
-        Imperative.api.appLogger.error(`daemon server error: ${err.message}`)
+        Imperative.api.appLogger.error(`daemon server error: ${err.message}`);
         throw err;
     }
 

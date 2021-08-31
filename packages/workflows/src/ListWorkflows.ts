@@ -38,8 +38,8 @@ export class ListWorkflows {
      * @deprecated
      */
     public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-                                      workflowName?: string, category?: string, system?: string,
-                                      owner?: string, vendor?: string, statusName?: string ) {
+        workflowName?: string, category?: string, system?: string,
+        owner?: string, vendor?: string, statusName?: string ) {
         return this.getWorkflows(session, {zOSMFVersion, workflowName, category, system, owner, vendor, statusName});
     }
 
@@ -54,12 +54,12 @@ export class ListWorkflows {
     public static async getWorkflows(session: AbstractSession, options: IGetWorkflowsOptions = {}) {
         WorkflowValidator.validateSession(session);
         options = {
-          ...options,
-          // zOSMFVersion by design was only checking for undefined. To prevent a breaking change we have to do the same ??
-          // Added another "system" test for this
-          zOSMFVersion: options.zOSMFVersion !== undefined ? options.zOSMFVersion : WorkflowConstants.ZOSMF_VERSION,
-          workflowName: options.workflowName ? encodeURIComponent(options.workflowName) : null
-        }
+            ...options,
+            // zOSMFVersion by design was only checking for undefined. To prevent a breaking change we have to do the same ??
+            // Added another "system" test for this
+            zOSMFVersion: options.zOSMFVersion !== undefined ? options.zOSMFVersion : WorkflowConstants.ZOSMF_VERSION,
+            workflowName: options.workflowName ? encodeURIComponent(options.workflowName) : null
+        };
         WorkflowValidator.validateNotEmptyString(options.zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListWorkflows.getResourceQuery(options);
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
@@ -118,7 +118,7 @@ export class ListWorkflows {
      * @memberof ListWorkflows
      */
     public static async getWfKey(session: AbstractSession, workflowName: string,
-                                 zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<string> | null{
+        zOSMFVersion = WorkflowConstants.ZOSMF_VERSION): Promise<string> | null{
 
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);

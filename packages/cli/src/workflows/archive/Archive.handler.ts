@@ -59,55 +59,55 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 params.response.console.log("Workflow archived with workflow-key " + resp.workflowKey);
                 break;
 
-            case "workflowName":
-                    getWfKey = await ListWorkflows.getWorkflows(this.mSession, {workflowName: this.arguments.workflowName});
-                    if (getWfKey === null || getWfKey.workflows.length === 0) {
-                        throw new ImperativeError({
-                            msg: `No workflows match the provided workflow name.`
-                        });
+            case "workflowName": {
+                getWfKey = await ListWorkflows.getWorkflows(this.mSession, {workflowName: this.arguments.workflowName});
+                if (getWfKey === null || getWfKey.workflows.length === 0) {
+                    throw new ImperativeError({
+                        msg: `No workflows match the provided workflow name.`
+                    });
+                }
+                const successWfs: IWorkflowsInfo[] = [];
+                const failedWfs: IWorkflowsInfo[] = [];
+                for(const element of getWfKey.workflows){
+                    try {
+                        resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, element.workflowKey);
+                        successWfs.push(element);
+                    } catch (err) {
+                        failedWfs.push(element);
                     }
-                    const successWfs: IWorkflowsInfo[] = [];
-                    const failedWfs: IWorkflowsInfo[] = [];
-                    for(const element of getWfKey.workflows){
-                        try {
-                            resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, element.workflowKey);
-                            successWfs.push(element);
-                        } catch (err) {
-                            failedWfs.push(element);
-                        }
-                    }
+                }
 
-                    params.response.data.setObj("Archived.");
+                params.response.data.setObj("Archived.");
 
-                    if(getWfKey.workflows.length > 0){
-                        params.response.console.log("Successfully archived workflow(s): ");
-                        params.response.format.output({
-                            fields: ["workflowName", "workflowKey"],
-                            output: successWfs,
-                            format: "table",
-                            header: true
-                        });
-                    }
+                if(getWfKey.workflows.length > 0){
+                    params.response.console.log("Successfully archived workflow(s): ");
+                    params.response.format.output({
+                        fields: ["workflowName", "workflowKey"],
+                        output: successWfs,
+                        format: "table",
+                        header: true
+                    });
+                }
 
-                    if(failedWfs.length > 0){
-                        params.response.console.log("\nFailed to archive Workflow(s): ");
-                        params.response.format.output({
-                            fields: ["workflowName", "workflowKey"],
-                            output: failedWfs,
-                            format: "table",
-                            header: true
-                        });
-                        throw new ImperativeError({
-                            msg: `Some workflows were not archived, please check the message above.`
-                        });
-                    }
-                    break;
-
+                if(failedWfs.length > 0){
+                    params.response.console.log("\nFailed to archive Workflow(s): ");
+                    params.response.format.output({
+                        fields: ["workflowName", "workflowKey"],
+                        output: failedWfs,
+                        format: "table",
+                        header: true
+                    });
+                    throw new ImperativeError({
+                        msg: `Some workflows were not archived, please check the message above.`
+                    });
+                }
+                break;
+            }
             default:
-            throw new ImperativeError({
-                msg: `Internal create error: Unable to determine the the criteria by which to run workflow archive action. ` +
+                throw new ImperativeError({
+                    msg: `Internal create error: Unable to determine the the criteria by which to run workflow archive action. ` +
                     `Please contact support.`,
-                additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(params)
                 });
         }
     }

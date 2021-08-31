@@ -20,36 +20,42 @@ export default {
         WITH_VALUE: "with value"
     },
     CREATE: {
-        DESCRIPTION: "Create data sets",
+        DESCRIPTION: "Create data sets.",
         ACTIONS: {
             DATA_SET_BINARY: {
                 DESCRIPTION: "Create executable data sets",
                 EXAMPLES: {
-                    EX1: "Create an empty binary partitioned data set (PDS) with default parameters"
+                    EX1: "Create an empty binary partitioned data set (PDS) with default parameters",
+                    EX2: "Create an empty binary PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_CLASSIC: {
                 DESCRIPTION: "Create classic data sets (JCL, HLASM, CBL, etc...)",
                 EXAMPLES: {
-                    EX1: "Create an empty z/OS 'classic' PDS with default parameters"
+                    EX1: "Create an empty z/OS 'classic' PDS with default parameters",
+                    EX2: `Create an empty z/OS 'classic' PDSE using data set type LIBRARY`
                 }
             },
             DATA_SET_C: {
                 DESCRIPTION: "Create data sets for C code programming",
                 EXAMPLES: {
-                    EX1: "Create an empty C code PDS with default parameters"
+                    EX1: "Create an empty C code PDS with default parameters",
+                    EX2: "Create an empty C code PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_LIKE: {
                 DESCRIPTION: "Create data sets based on the properties of an existing data set",
                 EXAMPLES: {
-                    EX1: "Create an dataset with default parameters and like flag",
-                    EX2: "Create an dataset with default parameters and like flag and lrecl flag"                }
+                    EX1: "Create a data set with default parameters and like flag",
+                    EX2: "Create a data set with default parameters and like flag and lrecl flag",
+                    EX3: "Create a data set with type LIBRARY"
+                }
             },
             DATA_SET_PARTITIONED: {
                 DESCRIPTION: "Create partitioned data sets (PDS)",
                 EXAMPLES: {
-                    EX1: "Create an empty PDS with default parameters"
+                    EX1: "Create an empty PDS with default parameters",
+                    EX2: "Create an empty PDSE using data set type LIBRARY"
                 }
             },
             DATA_SET_SEQUENTIAL: {
@@ -161,7 +167,7 @@ export default {
             STORCLASS: "The SMS storage class to use for the allocation",
             MGNTCLASS: "The SMS management class to use for the allocation",
             DATACLASS: "The SMS data class to use for the allocation",
-            DSNTYPE: "The data set type",
+            DSNTYPE: "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
             FLATFILE: "Indicates that you want to create the data set as a physical sequential file (flat file). A physical sequential file " +
             "differs from a partitioned data set (PDS) because it cannot contain members, only file contents.",
             SHOWATTRIBUTES: "Show the full allocation attributes",
@@ -170,7 +176,7 @@ export default {
         }
     },
     COPY: {
-        DESCRIPTION: "Copy a data set ",
+        DESCRIPTION: "Copy a data set.",
         ACTIONS: {
             DATA_SET: {
                 DESCRIPTION: "Copy a data set to another data set",
@@ -192,7 +198,7 @@ export default {
         }
     },
     DELETE: {
-        DESCRIPTION: "Delete a data set or Unix System Services file",
+        DESCRIPTION: "Delete a data set or Unix System Services file.",
         ACTIONS: {
             DATA_SET: {
                 DESCRIPTION: "Delete a data set or data set member permanently",
@@ -216,7 +222,8 @@ export default {
                 },
                 OPTIONS: {
                     WAIT: "If true then the function waits for completion of the request. If false (default) the request is queued.",
-                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on ARCHDEL request."
+                    PURGE: "If true then the function uses the PURGE=YES on ARCHDEL request. If false (default) the function uses the PURGE=NO on " +
+                        "ARCHDEL request."
                 },
                 EXAMPLES: {
                     EX1: `Delete a migrated data set using default options`
@@ -272,7 +279,7 @@ export default {
     },
     DOWNLOAD: {
         SUMMARY: "Download content from data sets and USS files",
-        DESCRIPTION: "Download content from z/OS data sets and USS files to your PC",
+        DESCRIPTION: "Download content from z/OS data sets and USS files to your PC.",
         ACTIONS: {
             ALL_MEMBERS: {
                 SUMMARY: "Download all members from a pds",
@@ -369,7 +376,7 @@ export default {
     },
     INVOKE: {
         SUMMARY: "Invoke various z/OS utilities",
-        DESCRIPTION: "Invoke z/OS utilities such as Access Method Services (AMS)",
+        DESCRIPTION: "Invoke z/OS utilities such as Access Method Services (AMS).",
         ACTIONS: {
             AMS: {
                 DESCRIPTION: "Submit control statements for execution by Access Method Services (IDCAMS). You can use IDCAMS to create VSAM data " +
@@ -458,11 +465,13 @@ export default {
                 "executable modules. Variable and fixed block data sets display information about when the members were created and modified.",
             MAXLENGTH: "The option --max-length specifies the maximum number of items to return. Skip this parameter to return all items." +
                 " If you specify an incorrect value, the parameter returns up to 1000 items.",
-            PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against all members, e.g. \"*\".",
+            PATTERN: "The option --pattern specifies the match pattern used when listing members in a data set. The default is to match against " +
+                "all members, e.g. \"*\".",
             PATH: "Specifies the path where the file system is mounted." +
                 " This option and --fsname are mutually exclusive.",
             FSNAME: "Specifies the name of the mounted file system." +
-                " This option and --path are mutually exclusive."
+                " This option and --path are mutually exclusive.",
+            START: "An optional search parameter that specifies the first data set name to return in the response document."
         }
     },
     MOUNT: {
@@ -509,7 +518,7 @@ export default {
         }
     },
     UPLOAD: {
-        DESCRIPTION: "Upload the contents of a file to data sets",
+        DESCRIPTION: "Upload the contents of a file to data sets.",
         ACTIONS: {
             DIR_TO_PDS: {
                 DESCRIPTION: "Upload files from a local directory to a partitioned data set (PDS)",
@@ -577,10 +586,10 @@ export default {
                     "{{bullet}} A local-encoding to identify a file’s encoding on the local workstation. If '-' is specified for local-encoding," +
                     "files that match the pattern are not transferred.\n" +
                     "{{bullet}} A remote-encoding to specify the file’s desired character set on USS. This attribute must either match the local " +
-                    "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are transferred " +
-                    " in binary mode. Remote files are tagged either with the remote encoding or as binary. \n \n" +
-                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the " +
-                    "z/OS system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n " +
+                    "encoding or be set to EBCDIC. If set to EBCDIC, files are transferred in text mode and converted, otherwise they are " +
+                    "transferred in binary mode. Remote files are tagged either with the remote encoding or as binary.\n\n" +
+                    "Due to a z/OSMF limitation, files that are transferred in text mode are converted to the default EBCDIC code page on the z/OS " +
+                    "system. Therefore the only EBCDIC code page to specify as the remote encoding is the default code page for your system.\n\n" +
                     "A .zosattributes file can either be placed in the top-level directory you want to upload, or its location can be specified by " +
                     "using the --attributes parameter. .zosattributes files that are placed in nested directories are ignored.\n",
 

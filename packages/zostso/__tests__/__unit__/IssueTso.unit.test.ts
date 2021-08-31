@@ -11,7 +11,7 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
-         StartTso, StopTso } from "../../src";
+    StartTso, StopTso } from "../../src";
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -58,7 +58,7 @@ const START_RESPONSE: IStartStopResponse = {
     success: true,
     zosmfTsoResponse: ZOSMF_RESPONSE,
     servletKey: ZOSMF_RESPONSE.servletKey
-}
+};
 
 
 describe("TsoIssue issueTsoCommand - failing scenarios", () => {
