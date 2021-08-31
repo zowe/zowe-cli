@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Security: Don't expose port that daemon server listens on (default port is 4000).
+
 ## `7.0.0-next.202108202027`
 
 - Update Imperative dependency for the following new features:

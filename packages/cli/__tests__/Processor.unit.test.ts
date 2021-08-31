@@ -64,7 +64,7 @@ describe("Processor tests", () => {
             // do nothing
         });
 
-        const listen = jest.fn((port, method) => {
+        const listen = jest.fn((port, hostname, method) => {
             // do nothing
             method();
         });
