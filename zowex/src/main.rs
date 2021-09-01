@@ -72,11 +72,16 @@ fn main() -> std::io::Result<()> {
     let mut _args: Vec<String> = env::args().collect();
     _args.drain(..1); // remove first (exe name)
 
-    let args = _args.join(" ");
+    if user_wants_daemon() {
+        // interact with the daemon
+        let args = _args.join(" ");
+        run_zowe_command(args).unwrap();
+        return Ok(())
+    }
 
-    run_zowe_command(args).unwrap();
-
-    Ok(())
+    // user wants to run classic NodeJS zowe
+    run_classic_zowe(&mut _args);
+    return Ok(());
 }
 
 fn run_zowe_command(mut args: String) -> std::io::Result<()> {
@@ -414,6 +419,79 @@ fn is_daemon_running() -> DaemonProcInfo {
         pid: "no pid".to_string(),
         cmd: "no cmd".to_string()
     };
+}
+
+/**
+ * Should we use daemon mode? The user controls this with an environment variable.
+ * @returns true or false.
+ */
+fn user_wants_daemon() -> bool {
+    const DAEMON_ENV_VAR_NM: &str = "ZOWE_USE_DAEMON";
+    let env_var_val;
+    match env::var(DAEMON_ENV_VAR_NM) {
+        Ok(val) => env_var_val = val,
+        Err(_e) => env_var_val = "NoDaemon".to_string(),
+    }
+
+    if env_var_val.to_lowercase() == "true" || env_var_val.to_lowercase() == "yes" {
+        return true
+    }
+    return false;
+}
+
+/**
+ * Run the classic NodeJS zowe command.
+ * @param cmd_line_args
+ *      The user-supplied command line arguments to the zowe command.
+ */
+fn run_classic_zowe(cmd_line_args: &mut Vec<String>) {
+   let njs_zowe_path = get_nodejs_zowe_path();
+
+    // set OS-specific options
+    let shell_pgm;
+    let shell_flag;
+    if env::consts::OS == "windows" {
+        shell_pgm = "cmd";
+        shell_flag = "/C";
+    } else {
+        shell_pgm = "sh";
+        shell_flag = "-c";
+    }
+
+    // Form the command that we must launch.
+    let mut pgm_args = vec![];
+    pgm_args.push(shell_flag.to_string());
+    pgm_args.push(njs_zowe_path.to_string());
+
+    // form the command that we show in an error message.
+    let mut cmd_to_show: String = (&shell_pgm).to_string();
+    cmd_to_show.push_str(" ");
+    cmd_to_show.push_str(shell_flag);
+    cmd_to_show.push_str(" ");
+    cmd_to_show.push_str(&njs_zowe_path);
+
+    // add user-supplied arguments to both commands
+    for next_arg in cmd_line_args.iter() {
+        cmd_to_show.push_str(" ");
+        cmd_to_show.push_str(next_arg);
+        pgm_args.push(next_arg.to_string());
+    }
+
+    /* We cannot use pgm_args after any error due to rust's stupid string ownership.
+     * The following statement can show individual arguments more precisely for debugging.
+     * println!("\nrun_classic_zowe: shell_pgm = {}  pgm_args = {:?}", shell_pgm, pgm_args);
+     */
+
+    // launch classic zowe and wait for it to complete.
+    let new_proc = Command::new(shell_pgm)
+        .args(pgm_args)
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .output();
+    if new_proc.is_err() {
+        println!("Error = {:?}", new_proc);
+        println!("Failed to run the following command:\n    {}", cmd_to_show);
+    }
 }
 
 /**
