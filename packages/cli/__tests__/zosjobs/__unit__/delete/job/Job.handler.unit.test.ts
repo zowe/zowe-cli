@@ -54,7 +54,8 @@ describe("delete job handler tests", () => {
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(DeleteJobs.deleteJobForJob).toHaveBeenCalledWith(
             passedSession,
-            GetJobsData.SAMPLE_COMPLETE_JOB
+            GetJobsData.SAMPLE_COMPLETE_JOB,
+            params.modifyVersion
         );
     });
 

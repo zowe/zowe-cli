@@ -62,7 +62,7 @@ describe("DeleteJobs System tests", () => {
 
         it("should be able to delete a job using deleteJobCommon (job modify version 2.0 - synchronous)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-            await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: "2.0"});
+            await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
         }, LONG_TIMEOUT);
     });
 

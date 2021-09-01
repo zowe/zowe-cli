@@ -46,7 +46,7 @@ export class DeleteJobs {
      * @returns {Promise<void>} -  promise that resolves when the API call is completel
      * @memberof DeleteJobs
      */
-    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0") {
+    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: boolean) {
         this.log.trace("deleteJobForJob called with job %s", JSON.stringify(job));
         return DeleteJobs.deleteJobCommon(session, {jobname: job.jobname, jobid: job.jobid, modifyVersion});
     }
@@ -68,10 +68,10 @@ export class DeleteJobs {
         const headers: any = [];
 
         // check the desired version of the job modify header - influences whether the API is synchronous or asynchronous
-        if (parms.modifyVersion === "1.0") {
-            headers.push(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
-        } else if (parms.modifyVersion === "2.0") {
+        if (parms.modifyVersion) {
             headers.push(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
+        } else {
+            headers.push(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
         }
 
         const parameters: string = IO.FILE_DELIM + parms.jobname + IO.FILE_DELIM + parms.jobid;
