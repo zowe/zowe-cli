@@ -447,30 +447,21 @@ fn user_wants_daemon() -> bool {
 fn run_classic_zowe(cmd_line_args: &mut Vec<String>) {
    let njs_zowe_path = get_nodejs_zowe_path();
 
-    // set OS-specific options
+    // The command to launch varies by OS
     let shell_pgm;
-    let shell_flag;
+    let mut pgm_args = vec![];
     if env::consts::OS == "windows" {
         shell_pgm = "cmd";
-        shell_flag = "/C";
+        pgm_args.push("/C".to_string());
+        pgm_args.push(njs_zowe_path.to_string());
     } else {
-        shell_pgm = "sh";
-        shell_flag = "-c";
+        shell_pgm = &njs_zowe_path;
     }
-
-    // Form the command that we must launch.
-    let mut pgm_args = vec![];
-    pgm_args.push(shell_flag.to_string());
-    pgm_args.push(njs_zowe_path.to_string());
 
     // form the command that we show in an error message.
     let mut cmd_to_show: String = (&shell_pgm).to_string();
-    cmd_to_show.push_str(" ");
-    cmd_to_show.push_str(shell_flag);
-    cmd_to_show.push_str(" ");
-    cmd_to_show.push_str(&njs_zowe_path);
 
-    // add user-supplied arguments to both commands
+    // add user-supplied arguments to both the command to show and to launch
     for next_arg in cmd_line_args.iter() {
         cmd_to_show.push_str(" ");
         cmd_to_show.push_str(next_arg);
