@@ -536,6 +536,12 @@ fn start_daemon(njs_zowe_path: &str) -> String {
         */
         stdout_val = Stdio::null();
         stderr_val = Stdio::null();
+
+        /* Windows CMD and Powershell terminal windows show escape characters
+        * instead of colors in daemon-mode. A more elegant solution may exist,
+        * but for now we just turn off color in daemon mode on Windows.
+        */
+        env::set_var("FORCE_COLOR", "0");
     } else {
         // the whole command must be supplied as one parm to "sh -c" command.
         zowe_cmd_linux.push_str(njs_zowe_path);
