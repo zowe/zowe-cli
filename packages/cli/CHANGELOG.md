@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202109032014`
 
 - Enhancement: Log in to API ML to obtain token value instead of prompting for it in `config secure` command.
 
