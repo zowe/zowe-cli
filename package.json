@@ -35,7 +35,8 @@
   },
   "dependencies": {
     "@zowe/imperative": "4.13.4",
-    "@zowe/perf-timing": "1.0.7"
+    "@zowe/perf-timing": "1.0.7",
+    "builtin-modules": "^3.2.0"
   },
   "devDependencies": {
     "@types/fs-extra": "^8.0.1",
