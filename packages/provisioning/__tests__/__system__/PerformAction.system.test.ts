@@ -39,8 +39,8 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         templateName = testEnvironment.systemTestProperties.provisioning.templateName;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        let instance: IProvisionedInstance;
-        instance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION, templateName);
+        const instance: IProvisionedInstance = await ProvisioningTestUtils.getProvisionedInstance(REAL_SESSION, ProvisioningConstants.ZOSMF_VERSION,
+            templateName);
         instanceID = instance["object-id"];
         Imperative.console.info(`Provisioned instance: ${instance["external-name"]}`);
     });
@@ -153,7 +153,7 @@ describe("PerformAction.doProvisioningActionCommon (system)", () => {
         ProvisioningTestUtils.expectZosmfResponseFailed(response, error, noActionName.message);
     });
 
-    it("should throw an error if the action name parameter is undefined", async () => {
+    it("should throw an error if the action name parameter is an empty string", async () => {
         let error: ImperativeError;
         let response: IPerformActionResponse;
         try {

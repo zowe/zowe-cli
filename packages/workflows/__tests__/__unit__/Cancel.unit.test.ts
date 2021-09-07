@@ -60,7 +60,7 @@ describe("Cancel workflow", () => {
             }
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
-                                                                                 [Headers.APPLICATION_JSON], {});
+                [Headers.APPLICATION_JSON], {});
             expectZosmfResponseSucceeded(response, error);
             expect(response).toEqual("");
         });
@@ -81,7 +81,7 @@ describe("Cancel workflow", () => {
             }
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledTimes(1);
             expect((ZosmfRestClient.putExpectString as any)).toHaveBeenCalledWith(PRETEND_SESSION, START_RESOURCE_QUERY,
-                                                                                 [Headers.APPLICATION_JSON], {});
+                [Headers.APPLICATION_JSON], {});
             expectZosmfResponseSucceeded(response, error);
             expect(response).toEqual("");
         });

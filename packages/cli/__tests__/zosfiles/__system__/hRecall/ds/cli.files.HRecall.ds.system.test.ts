@@ -34,136 +34,136 @@ const recallScriptWait = join(scriptsLocation, "command_recall_data_set_wait.sh"
 const recallScriptResponseTimeout = join(scriptsLocation, "command_recall_data_set_response_timeout.sh");
 
 describe("Recall Dataset", () => {
-  beforeAll(async () => {
-    TEST_ENVIRONMENT = await TestEnvironment.setUp({
-      tempProfileTypes: ["zosmf"],
-      testName: "zos_recall_data_set"
+    beforeAll(async () => {
+        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+            tempProfileTypes: ["zosmf"],
+            testName: "zos_recall_data_set"
+        });
+        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+
+        user = defaultSystem.zosmf.user.trim().toUpperCase();
+        dataSetName1 = `${user}.SDATAC.REC`;
+        dataSetName2 = `${user}.PDATAC.REC`;
+        dataSetName3 = `${user}.FAIL.REC`;
     });
-    defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-    REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-    user = defaultSystem.zosmf.user.trim().toUpperCase();
-    dataSetName1 = `${user}.SDATAC.REC`;
-    dataSetName2 = `${user}.PDATAC.REC`;
-    dataSetName3 = `${user}.FAIL.REC`;
-  });
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+    });
 
-  afterAll(async () => {
-    await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-  });
-
-  afterEach(async () => {
-    try {
-      await Promise.all([
-        Delete.dataSet(REAL_SESSION, dataSetName1),
-        Delete.dataSet(REAL_SESSION, dataSetName2),
-        Delete.dataSet(REAL_SESSION, dataSetName3)]);
-    } catch (err) {
-      Imperative.console.info(`Error: ${inspect(err)}`);
-    }
-  });
-
-  describe("Success scenarios", () => {
-    describe("Sequential Data Set", () => {
-      beforeEach(async () => {
+    afterEach(async () => {
         try {
-          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
-          await HMigrate.dataSet(REAL_SESSION, dataSetName1);
+            await Promise.all([
+                Delete.dataSet(REAL_SESSION, dataSetName1),
+                Delete.dataSet(REAL_SESSION, dataSetName2),
+                Delete.dataSet(REAL_SESSION, dataSetName3)]);
         } catch (err) {
-          Imperative.console.info(`Error: ${inspect(err)}`);
+            Imperative.console.info(`Error: ${inspect(err)}`);
         }
-      });
-      it("Should recall a data set", async () => {
-        const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName1]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("NO");
-
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set recall requested.");
-      });
-      it("Should recall a data set with response timeout", async () => {
-        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("NO");
-
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set recall requested.");
-      });
-      it("Should recall a data set with wait = true", async () => {
-        const recallOptions: IRecallOptions = { wait: true };
-        const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
-        const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
-
-        expect(list1.apiResponse.items[0].migr).toBe("NO");
-
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set recall requested.");
-      });
     });
-    describe("Partitioned Data Set", () => {
-      beforeEach(async () => {
-        try {
-          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
-          await HMigrate.dataSet(REAL_SESSION, dataSetName3);
-        } catch (err) {
-          Imperative.console.info(`Error: ${inspect(err)}`);
-        }
-      });
-      it("Should recall a data set", async () => {
-        const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName2]);
-        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
 
-        expect(list2.apiResponse.items[0].migr).toBe("NO");
+    describe("Success scenarios", () => {
+        describe("Sequential Data Set", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName1);
+                    await HMigrate.dataSet(REAL_SESSION, dataSetName1);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("Should recall a data set", async () => {
+                const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName1]);
+                const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set recall requested.");
-      });
-      it("Should recall a data set with response timeout", async () => {
-        const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2]);
-        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+                expect(list1.apiResponse.items[0].migr).toBe("NO");
 
-        expect(list2.apiResponse.items[0].migr).toBe("NO");
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Data set recall requested.");
+            });
+            it("Should recall a data set with response timeout", async () => {
+                const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName1]);
+                const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set recall requested.");
-      });
-      it("Should recall a data set with wait = true", async () => {
-        const recallOptions: IRecallOptions = { wait: true };
-        const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName2, recallOptions]);
-        const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+                expect(list1.apiResponse.items[0].migr).toBe("NO");
 
-        expect(list2.apiResponse.items[0].migr).toBe("NO");
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Data set recall requested.");
+            });
+            it("Should recall a data set with wait = true", async () => {
+                const recallOptions: IRecallOptions = { wait: true };
+                const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName1, recallOptions]);
+                const list1 = await List.dataSet(REAL_SESSION, dataSetName1, listOptions);
 
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Data set recall requested.");
-      });
+                expect(list1.apiResponse.items[0].migr).toBe("NO");
+
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Data set recall requested.");
+            });
+        });
+        describe("Partitioned Data Set", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dataSetName2);
+                    await HMigrate.dataSet(REAL_SESSION, dataSetName3);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("Should recall a data set", async () => {
+                const response = runCliScript(recallScript, TEST_ENVIRONMENT, [dataSetName2]);
+                const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+                expect(list2.apiResponse.items[0].migr).toBe("NO");
+
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Data set recall requested.");
+            });
+            it("Should recall a data set with response timeout", async () => {
+                const response = runCliScript(recallScriptResponseTimeout, TEST_ENVIRONMENT, [dataSetName2]);
+                const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+                expect(list2.apiResponse.items[0].migr).toBe("NO");
+
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Data set recall requested.");
+            });
+            it("Should recall a data set with wait = true", async () => {
+                const recallOptions: IRecallOptions = { wait: true };
+                const response = runCliScript(recallScriptWait, TEST_ENVIRONMENT, [dataSetName2, recallOptions]);
+                const list2 = await List.dataSet(REAL_SESSION, dataSetName2, listOptions);
+
+                expect(list2.apiResponse.items[0].migr).toBe("NO");
+
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Data set recall requested.");
+            });
+        });
     });
-  });
-  describe("Failure scenarios", () => {
-    describe("Sequential Data Set", () => {
-      beforeEach(async () => {
-        try {
-          await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
-          await HMigrate.dataSet(REAL_SESSION, dataSetName3);
-        } catch (err) {
-          Imperative.console.info(`Error: ${inspect(err)}`);
-        }
-      });
-      it("Should throw an error if a missing data set name is selected", async () => {
-        const response = runCliScript(recallScript, TEST_ENVIRONMENT, ["", dataSetName3]);
+    describe("Failure scenarios", () => {
+        describe("Sequential Data Set", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName3);
+                    await HMigrate.dataSet(REAL_SESSION, dataSetName3);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("Should throw an error if a missing data set name is selected", async () => {
+                const response = runCliScript(recallScript, TEST_ENVIRONMENT, ["", dataSetName3]);
 
-        expect(response.stderr.toString()).toBeTruthy();
-        expect(response.status).toBe(1);
-        expect(response.stdout.toString()).not.toContain("Data set recall requested.");
-      });
+                expect(response.stderr.toString()).toBeTruthy();
+                expect(response.status).toBe(1);
+                expect(response.stdout.toString()).not.toContain("Data set recall requested.");
+            });
+        });
     });
-  });
 });

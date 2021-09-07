@@ -215,7 +215,7 @@ export const noWorkflowKey: IMessageDefinition = {
  */
 export const WrongWorkflowKey: IMessageDefinition = {
     message: "IZUWF5001W"
-    };
+};
 
 /**
  * Error message that no steps parameter was supplied.
@@ -224,7 +224,7 @@ export const WrongWorkflowKey: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noSteps: IMessageDefinition = {
-        message: apiErrorHeader.message + ` No steps parameter was supplied.`
+    message: apiErrorHeader.message + ` No steps parameter was supplied.`
 };
 
 /**
@@ -234,7 +234,7 @@ export const noSteps: IMessageDefinition = {
  * @memberof WorkflowConstants
  */
 export const noVariables: IMessageDefinition = {
-        message: apiErrorHeader.message + ` No variables parameter was supplied.`
+    message: apiErrorHeader.message + ` No variables parameter was supplied.`
 };
 
 /**

@@ -18,36 +18,36 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings);
 const dSStrings = strings.HRECALL.ACTIONS.DATA_SET;
 
 export const DsDefinition: ICommandDefinition = {
-  name: "data-set",
-  aliases: ["ds"],
-  description: dSStrings.DESCRIPTION,
-  type: "command",
-  handler: __dirname + "/Ds.handler",
-  profile: {
-    optional: ["zosmf"]
-  },
-  positionals: [
-    {
-      name: "dataSetName",
-      type: "string",
-      description: dSStrings.POSITIONALS.DATASETNAME,
-      required: true
-    }
-  ],
-  options: [
-    {
-      name: "wait",
-      aliases: ["w"],
-      description: strings.HRECALL.OPTIONS.WAIT,
-      type: "boolean",
-      defaultValue: false,
-      required: false
-    }
-  ],
-  examples: [
-    {
-      description: dSStrings.EXAMPLES.EX1,
-      options: `"USER.DATA.SET"`
-    }
-  ]
+    name: "data-set",
+    aliases: ["ds"],
+    description: dSStrings.DESCRIPTION,
+    type: "command",
+    handler: __dirname + "/Ds.handler",
+    profile: {
+        optional: ["zosmf"]
+    },
+    positionals: [
+        {
+            name: "dataSetName",
+            type: "string",
+            description: dSStrings.POSITIONALS.DATASETNAME,
+            required: true
+        }
+    ],
+    options: [
+        {
+            name: "wait",
+            aliases: ["w"],
+            description: strings.HRECALL.OPTIONS.WAIT,
+            type: "boolean",
+            defaultValue: false,
+            required: false
+        }
+    ],
+    examples: [
+        {
+            description: dSStrings.EXAMPLES.EX1,
+            options: `"USER.DATA.SET"`
+        }
+    ]
 };

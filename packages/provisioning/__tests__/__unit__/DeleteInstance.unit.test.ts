@@ -12,7 +12,7 @@
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { Session, ImperativeError, Imperative, Headers } from "@zowe/imperative";
 import { DeleteInstance, IPerformActionResponse, noInstanceId,
-        noSessionProvisioning, ProvisioningConstants } from "../../src";
+    noSessionProvisioning, ProvisioningConstants } from "../../src";
 
 
 const instanceId: string = "1234567_abcde";
@@ -45,7 +45,7 @@ function expectZosmfResponseFailed(response: IPerformActionResponse, error: Impe
 
 describe("DeleteInstance deleteDeprovisionedInstance", () => {
 
-    it("it should succeed with all correct parameters", async () => {
+    it("should succeed with all correct parameters", async () => {
 
         (ZosmfRestClient.deleteExpectString as any) = jest.fn<string>(() => {
             return "";

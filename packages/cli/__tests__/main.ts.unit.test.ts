@@ -46,11 +46,11 @@ describe("behavior of main.ts", () => {
 
             fatalLogMock.mockImplementation((message: string, ...args: any[]) => {
                 loggedMsg = message;
-            })
+            });
 
             imperativeMock.mockImplementation(async () => {
                 throw new Error(errMsg);
-            })
+            });
 
             await require(mainTs);
             expect(mockExit).toHaveBeenCalledWith(1);

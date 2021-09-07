@@ -119,7 +119,7 @@ export class DownloadJobs {
 
         const writeStream = IO.createWriteStream(file);
         await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, undefined, writeStream,
-                                          true);
+            true);
     }
 
     /**

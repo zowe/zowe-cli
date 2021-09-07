@@ -75,10 +75,10 @@ export default class WorkflowStepHandler extends ZosmfBaseHandler {
                 params.response.console.log("Workflow step started.");
                 break;
             default:
-            throw new ImperativeError({
-                msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
+                throw new ImperativeError({
+                    msg: `Internal create error: Unable to determine the the criteria by which to run start workflow action. ` +
                     `Please contact support.`,
-                additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(params)
                 });
         }
     }

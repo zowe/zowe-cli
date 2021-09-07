@@ -34,8 +34,8 @@ export class ArchiveWorkflow {
      * @memberof ArchiveWorkflow
      */
     public static archiveWorfklowByKey(session: AbstractSession,
-                                       workflowKey: string,
-                                       zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
+        workflowKey: string,
+        zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
         return this.archiveWorkflowByKey(session, workflowKey, zOSMFVersion);
     }
 
@@ -50,8 +50,8 @@ export class ArchiveWorkflow {
      * @memberof ArchiveWorkflow
      */
     public static archiveWorkflowByKey(session: AbstractSession,
-                                       workflowKey: string,
-                                       zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
+        workflowKey: string,
+        zOSMFVersion: string=WorkflowConstants.ZOSMF_VERSION): Promise<IArchivedWorkflow> {
         WorkflowValidator.validateSession(session);
         WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
         WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);

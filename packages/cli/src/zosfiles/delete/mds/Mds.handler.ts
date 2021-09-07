@@ -17,13 +17,13 @@ import { HDelete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
  * Handler to rename a Data Set
  */
 export default class MDSHandler extends ZosFilesBaseHandler {
-  public async processWithSession(
-    commandParameters: IHandlerParameters,
-    session: AbstractSession
-  ): Promise<IZosFilesResponse> {
+    public async processWithSession(
+        commandParameters: IHandlerParameters,
+        session: AbstractSession
+    ): Promise<IZosFilesResponse> {
 
-    const { options } = commandParameters.arguments;
+        const { options } = commandParameters.arguments;
 
-    return HDelete.dataSet(session, commandParameters.arguments.dataSetName, options);
-  }
+        return HDelete.dataSet(session, commandParameters.arguments.dataSetName, options);
+    }
 }

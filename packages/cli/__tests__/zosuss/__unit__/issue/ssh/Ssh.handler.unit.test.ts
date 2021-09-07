@@ -35,7 +35,7 @@ UNIT_TEST_PROFILE_MAP.set(
         ...UNIT_TEST_SSH_PROF_OPTS
     }]
 );
-export const UNIT_TEST_PROFILES_SSH: CommandProfiles = new CommandProfiles(UNIT_TEST_PROFILE_MAP);
+const UNIT_TEST_PROFILES_SSH = new CommandProfiles(UNIT_TEST_PROFILE_MAP);
 
 // Mocked parameters for the unit tests
 const DEFAULT_PARAMETERS: IHandlerParameters = {

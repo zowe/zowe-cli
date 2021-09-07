@@ -9,7 +9,7 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
+import { Create } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 
 describe("Create data set handler", () => {

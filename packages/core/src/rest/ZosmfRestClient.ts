@@ -92,7 +92,7 @@ export class ZosmfRestClient extends RestClient {
                 "\nHeaders:   " + JSON.stringify(this.mReqHeaders) +
                 "\nPayload:   " + this.mRequest +
                 "\n"
-                ;
+            ;
 
             if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                 original.additionalDetails = "Username or password are not valid or expired.\n\n";

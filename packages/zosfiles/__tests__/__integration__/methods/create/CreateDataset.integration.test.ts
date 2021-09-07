@@ -86,20 +86,20 @@ describe("Create Dataset", () => {
     // });
 
     const options: ICreateDataSetOptions = {} as any;
-    xit("should create a partitioned data set", () => pending());
-    xit("should create a sequential data set", () => pending());
 
-    // it("should create a partitioned data set", async () => {
-    //   const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
-    //
-    //   expect(response.success).toBe(true);
-    //   expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
-    // });
-    //
-    // it("should create a sequential data set", async () => {
-    //   const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
-    //
-    //   expect(response.success).toBe(true);
-    //   expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
-    // });
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip("should create a partitioned data set", async () => {
+        // const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname, options);
+
+        // expect(response.success).toBe(true);
+        // expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    });
+
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip("should create a sequential data set", async () => {
+        // const response = await Create.dataSet(PRETEND_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname, options);
+
+        // expect(response.success).toBe(true);
+        // expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    });
 });

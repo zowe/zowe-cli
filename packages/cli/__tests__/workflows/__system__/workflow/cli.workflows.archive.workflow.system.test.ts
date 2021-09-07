@@ -14,7 +14,7 @@ import { Session } from "@zowe/imperative";
 import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { CreateWorkflow, DeleteWorkflow, ArchivedDeleteWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
+import { CreateWorkflow, DeleteWorkflow, IWorkflows } from "@zowe/zos-workflows-for-zowe-sdk";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
@@ -137,17 +137,17 @@ describe("Archive workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain(`${wfName}2`);
             });
         });
-        describe("Fail Scenarions", () => {
+        describe("Fail Scenarios", () => {
             it("Should return a message if search does not match any existing workflow key", async () => {
                 const fakeKey = `${wfName}${wfName}${wfName}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_key.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_key.sh",
                     testEnvironment, [fakeKey]);
                 expect(response.status).toBe(1);
-                expect(response.stderr.toString()).toContain(`The workflow key \"${fakeKey}\" was not found.`);
+                expect(response.stderr.toString()).toContain(`The workflow key "${fakeKey}" was not found.`);
             });
             it("Should return a message if search does not match any existing workfow name", async () => {
                 const fakeName = `${wfName}${wfName}${wfName}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_archive_workflow_name.sh",
                     testEnvironment, [fakeName]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("No workflows match the provided workflow name.");

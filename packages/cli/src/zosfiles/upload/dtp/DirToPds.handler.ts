@@ -19,7 +19,7 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class DirToPdsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters,
-                                    session: AbstractSession): Promise<IZosFilesResponse> {
+        session: AbstractSession): Promise<IZosFilesResponse> {
 
         const status: ITaskWithStatus = {
             statusMessage: "Uploading directory to PDS",

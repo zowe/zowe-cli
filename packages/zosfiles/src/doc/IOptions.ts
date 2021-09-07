@@ -15,7 +15,7 @@ import { IZosFilesOptions } from "./IZosFilesOptions";
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
  * @export
- * @interface IOptions
+ * @interface IOptions
  */
 export interface IOptions extends IZosFilesOptions {
     /**

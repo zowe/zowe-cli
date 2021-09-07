@@ -98,7 +98,7 @@ describe("zos-tso start address-space", () => {
             }
 
             const response = runCliScript(__dirname + "/__scripts__/address-space/as_fully_qualified.sh",
-            TEST_ENVIRONMENT_NO_PROF,
+                TEST_ENVIRONMENT_NO_PROF,
                 [
                     SYSTEM_PROPS.tso.account,
                     SYSTEM_PROPS.zosmf.host,

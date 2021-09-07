@@ -210,7 +210,7 @@ describe("DownloadJobs", () => {
     });
 
     describe("Error catching - Promise catch()", () => {
-
+        /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors thrown by ZosmfRestClient in downloadAllSpoolContentCommon with Promise.catch() syntax", (done: any) => {
             ZosmfRestClient.getExpectString = jest.fn(throwError);
             DownloadJobs.downloadAllSpoolContentCommon(fakeSession, {
@@ -252,6 +252,7 @@ describe("DownloadJobs", () => {
                 done();
             });
         });
+        /* eslint-enable jest/no-done-callback */
     });
 
     describe("Parameter validation tests", () => {
