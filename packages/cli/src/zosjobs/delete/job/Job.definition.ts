@@ -30,6 +30,15 @@ export const JobDefinition: ICommandDefinition = {
             required: true
         }
     ],
+    options: [
+        {
+            name: "modifyVersion",
+            description: "If you use this option, X-IBM-Job-Modify-Version will be set to \"2.0\" and delete job API will be synchronous. " +
+            "Otherwise, it will be asynchronous.",
+            type: "boolean",
+            required: false
+        }
+    ],
     examples: [
         {
             description: "Delete job with job ID JOB03456.",
