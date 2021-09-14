@@ -10,10 +10,9 @@
 */
 
 import { Logger, ImperativeError } from "@zowe/imperative";
-import { ClientChannel } from "ssh2";
+import { ClientChannel, Client } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
-const Client = require("ssh2");
 
 // These are needed for authenticationHandler
 let authPos = 0;
