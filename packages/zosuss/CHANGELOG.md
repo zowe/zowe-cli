@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `6.33.2`
 
 - Bugfix: Update `ssh2` dependency to avoid false positives on a vulnerability
 
