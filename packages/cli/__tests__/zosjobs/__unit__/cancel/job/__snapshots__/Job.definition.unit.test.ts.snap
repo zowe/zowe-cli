@@ -10,6 +10,14 @@ Object {
     },
   ],
   "name": "job",
+  "options": Array [
+    Object {
+      "description": "If you use this option, X-IBM-Job-Modify-Version will be set to \\"2.0\\" and cancel job API will be synchronous. Otherwise, it will be asynchronous.",
+      "name": "modifyVersion",
+      "required": false,
+      "type": "boolean",
+    },
+  ],
   "positionals": Array [
     Object {
       "description": "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate the job ID if desired. You can use, for example \\"J123\\".",

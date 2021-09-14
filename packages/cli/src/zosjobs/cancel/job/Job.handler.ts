@@ -44,7 +44,7 @@ export default class JobHandler extends ZosmfBaseHandler {
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
 
         // Cancel the job
-        await CancelJobs.cancelJobForJob(this.mSession, job);
+        await CancelJobs.cancelJobForJob(this.mSession, job, this.arguments.modifyVersion);
 
         const message: string = `Successfully canceled job ${job.jobname} (${jobid})`;
 

@@ -47,7 +47,7 @@ export class CancelJobs {
      * @returns {Promise<void>} -  promise that resolves when the API call is complete
      * @memberof CancelJobs
      */
-    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: string) {
+    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: boolean) {
         this.log.trace("cancelJobForJob called with job %s", JSON.stringify(job));
         return CancelJobs.cancelJobCommon(session, { jobname: job.jobname, jobid: job.jobid, version });
     }
@@ -67,16 +67,19 @@ export class CancelJobs {
             "You must specify jobname and jobid for the job you want to cancel.");
 
         // set default if unset
-        if (parms.version == null) {
-            parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
+        let jobModifyVersion: string;
+        if (!parms.version) {
+            jobModifyVersion = JobsConstants.DEFAULT_CANCEL_VERSION;
+        } else {
+            jobModifyVersion = JobsConstants.CANCEL_VERSION_2;
         }
-        this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
+        this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, jobModifyVersion);
         const headers: any = [Headers.APPLICATION_JSON];
 
         // build request
         const request: ICancelJob = {
             request: JobsConstants.REQUEST_CANCEL,
-            version: parms.version
+            version: jobModifyVersion
         };
 
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
