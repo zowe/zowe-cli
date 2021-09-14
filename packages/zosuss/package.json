@@ -44,13 +44,13 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "ssh2": "0.8.7"
+    "ssh2": "1.4.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@types/ssh2": "^0.5.44",
     "@zowe/cli-test-utils": "7.0.0-next.202109032014",
-    "@zowe/imperative": "5.0.0-next.202109031503",
+    "@zowe/imperative": "5.0.0-next.202109141600",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
