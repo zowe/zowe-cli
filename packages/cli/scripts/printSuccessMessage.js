@@ -17,7 +17,7 @@ function printSuccessMessage() {
     "Please check above for any plug-in related issues.";
 
     const table = imperative.TextUtils.getTable([[installSuccessMessage]], "yellow", undefined, false, true, true);
-    console.log("\n" + table);
+    console.log("\n" + table + "\n");
 }
 
 printSuccessMessage();
