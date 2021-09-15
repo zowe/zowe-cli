@@ -42,6 +42,6 @@ function validatePlugins() {
         console.log("Since you re-installed Zowe CLI, we are re-validating any plugins.");
         require(zowePgm);
     }
-};
+}
 
 validatePlugins();
