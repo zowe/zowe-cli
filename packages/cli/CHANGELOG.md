@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.33.3`
 
 - Enhancement: Update post-install script to display a message when the CLI successfully installs due to increased error messaging from USS SDK when optional pre-requisites are not installed.
 

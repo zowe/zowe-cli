@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `6.33.3`
 
 - Documentation: Update README with information about the new optional native modules in ssh2 dependency
 
