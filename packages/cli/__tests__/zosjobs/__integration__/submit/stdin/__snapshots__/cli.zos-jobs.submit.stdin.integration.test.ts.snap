@@ -11,7 +11,7 @@ Use \\"zowe zos-jobs submit stdin --help\\" to view command description, usage, 
 "
 `;
 
-exports[`zos-jobs submit command Syntax errors should occur if --wfa and --vasc are both specified  1`] = `
+exports[`zos-jobs submit command Syntax errors should occur if --wfa and --vasc are both specified 1`] = `
 "
 Syntax Error:
 The following options conflict (mutually exclusive):

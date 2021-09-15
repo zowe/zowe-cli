@@ -26,15 +26,15 @@ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
      * @type {ICommandOptionDefinition}
      */
     responseTimeout: {
-        name: "responseTimeout",
+        name: "response-timeout",
         aliases: ["rto"],
         description: strings.RESPONSETIMEOUT,
         type: "number",
         defaultValue: undefined,
-        // tslint:disable-next-line: no-magic-numbers
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         numericValueRange: [5, 600]
     }
-}
+};
 
 export const ZosFilesOptionDefinitions: ICommandOptionDefinition[] = [
     ZosFilesOptions.responseTimeout

@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IJob, MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
+import { MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@zowe/imperative";
 import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
 
@@ -97,7 +97,6 @@ describe("submit shared handler", () => {
             let error;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
-                // tslint:disable-next-line
                 const copy = Object.assign({}, DEFAULT_PARAMETERS);
                 await handler.process(copy);
             } catch (e) {
@@ -124,7 +123,6 @@ describe("submit shared handler", () => {
 
             // The handler should fail
             const theDataSet = "DATA.SET";
-            // tslint:disable-next-line
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
             let error;
@@ -165,7 +163,6 @@ describe("submit shared handler", () => {
 
             // The handler should fail
             const theDataSet = "DATA.SET";
-            // tslint:disable-next-line
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
             copy.profiles = PROFILES;
@@ -218,7 +215,6 @@ describe("submit shared handler", () => {
             });
             // The handler should fail
             const theDataSet = "DATA.SET";
-            // tslint:disable-next-line
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
             copy.arguments.waitForOutput = true;
@@ -274,7 +270,6 @@ describe("submit shared handler", () => {
             });
             // The handler should fail
             const theDataSet = "DATA.SET";
-            // tslint:disable-next-line
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
             copy.arguments.waitForActive = true;
@@ -321,7 +316,6 @@ describe("submit shared handler", () => {
             IO.createFileSync(theLocalFile);
             IO.writeFile(theLocalFile, badJCL);
 
-            // tslint:disable-next-line
             const copy = Object.assign({}, LOCALFILE_PARAMETERS);
             copy.arguments.localFile = theLocalFile;
             copy.profiles = PROFILES;

@@ -91,7 +91,7 @@ exports[`Create  Data Set should display the help 1`] = `
       The volume serial (VOLSER) on which you want the data set to be placed. A VOLSER
       is analogous to a drive name on a PC.
 
-   --responseTimeout  | --rto (number)
+   --response-timeout  | --rto (number)
 
       The maximum amount of time in seconds the z/OSMF Files TSO servlet should run
       before returning a response. Any request exceeding this amount of time will be

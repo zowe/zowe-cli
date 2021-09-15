@@ -206,7 +206,7 @@ describe("TsoValidator", () => {
         expect(error.details.msg).toEqual(noPingInput.message);
     });
 
-    it("validatePingZosmfResponse shouldn't throw an error if parameter is provided", () => {
+    it("validateNotEmptyString shouldn't throw an error if parameter is provided", () => {
         let response;
         let error;
         try {

@@ -49,9 +49,9 @@ describe("CoreUtils", () => {
 
             // We need the meta YAML files for the ProfileManager to initialize, so create dummy profiles to supply them
             runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
-                        ["zosmf", "fakeServiceProfile", "--host fake --dd"]);
+                ["zosmf", "fakeServiceProfile", "--host fake --dd"]);
             runCliScript(__dirname + "/__scripts__/create_profile.sh", TEST_ENVIRONMENT,
-                        ["base", "fakeBaseProfile", "--host fake --dd"]);
+                ["base", "fakeBaseProfile", "--host fake --dd"]);
             process.env.ZOWE_CLI_HOME = TEST_ENVIRONMENT.workingDir;
         });
         beforeEach(() => {

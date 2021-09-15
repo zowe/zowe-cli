@@ -28,14 +28,14 @@ export class CancelWorkflow {
      * @returns {Promise<string>}                           - Promise that specifies the new name of the canceled workflow.
      * @memberof CancelWorkflow
      */
- public static async cancelWorkflow(session: AbstractSession, workflowKey: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
-    WorkflowValidator.validateSession(session);
-    WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
-    WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
+    public static async cancelWorkflow(session: AbstractSession, workflowKey: string, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION){
+        WorkflowValidator.validateSession(session);
+        WorkflowValidator.validateNotEmptyString(zOSMFVersion, nozOSMFVersion.message);
+        WorkflowValidator.validateNotEmptyString(workflowKey, noWorkflowKey.message);
 
-    let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
-    resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${workflowKey}/${WorkflowConstants.CANCEL_WORKFLOW}`;
+        let resourcesQuery: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/`;
+        resourcesQuery += `${WorkflowConstants.WORKFLOW_RESOURCE}/${workflowKey}/${WorkflowConstants.CANCEL_WORKFLOW}`;
 
-    return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], {} );
- }
+        return ZosmfRestClient.putExpectString(session, resourcesQuery, [Headers.APPLICATION_JSON], {} );
+    }
 }

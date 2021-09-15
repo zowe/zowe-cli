@@ -31,11 +31,10 @@ const clearRequire = require("clear-require");
 const lint: ITaskFunction = (done) => {
     let lintProcess: SpawnSyncReturns<string>;
     try {
-        lintProcess = childProcess.spawnSync(npx, ["tslint",
-            "--format", "verbose", "packages/**/*.ts"], {stdio: "inherit"});
+        lintProcess = childProcess.spawnSync("npm", ["run", "lint"], {stdio: "inherit", shell: true});
 
     } catch (e) {
-        fancylog(ansiColors.red("Error encountered trying to run tslint"));
+        fancylog(ansiColors.red("Error encountered trying to run eslint"));
         done(e);
         return;
     }
@@ -56,7 +55,7 @@ const lint: ITaskFunction = (done) => {
         return;
     }
 };
-lint.description = "Runs tslint on the project to check for style, " +
+lint.description = "Runs eslint on the project to check for style, " +
     "and checks command and option definitions for consistency (requires built source)";
 
 const license: ITaskFunction = (done: (err: Error) => void) => {

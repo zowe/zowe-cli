@@ -124,6 +124,7 @@ describe("System Tests - Monitor Jobs", () => {
 
         // Single polling situation - the majority are tested via the common method (which this method invokes)
         describe("polling/transitions", () => {
+            // eslint-disable-next-line jest/no-done-callback
             it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
                 // Construct the JCL
                 const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
@@ -203,6 +204,7 @@ describe("System Tests - Monitor Jobs", () => {
 
         // Single polling situation - the majority are tested via the common method (which this method invokes)
         describe("polling/transitions", () => {
+            // eslint-disable-next-line jest/no-done-callback
             it("should detect when the job submitted transitions from INPUT to OUTPUT", (done) => {
                 // Construct the JCL
                 const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
@@ -427,7 +429,7 @@ describe("System Tests - Monitor Jobs", () => {
 
         // All tests that perform polling, etc to eventually obtain the status
         describe("polling/transitions", () => {
-
+            /* eslint-disable jest/no-done-callback */
             it("should detect and surface an error if the job is purged/deleted while waiting for status", (done) => {
                 // Construct the JCL
                 const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
@@ -652,6 +654,7 @@ describe("System Tests - Monitor Jobs", () => {
                     done(`Job submission error: ${submitErr.message}`);
                 });
             }, LONG_TIMEOUT);
+            /* eslint-enable jest/no-done-callback */
         });
     });
 });

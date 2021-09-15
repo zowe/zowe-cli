@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-files unmount fs command definition", () => {
     it("should not have changed", () => {

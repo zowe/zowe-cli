@@ -71,7 +71,7 @@ describe("Download Jobs - System tests", () => {
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
 
-    afterEach((done: any) => {
+    afterEach((done: any) => {  // eslint-disable-line jest/no-done-callback
         require("rimraf")(outputDirectory, {maxBusyTries: 10}, (err?: Error) => {
             done(err);
         });
@@ -83,7 +83,7 @@ describe("Download Jobs - System tests", () => {
 
     describe("Positive tests", () => {
 
-        it("should be able to download a single DD from job output", async () => {
+        it("should be able to download a single DD from job output to specified directory", async () => {
             const downloadDir = outputDirectory + "/downloadsingle/";
             await DownloadJobs.downloadSpoolContentCommon(REAL_SESSION, {
                 outDir: downloadDir,

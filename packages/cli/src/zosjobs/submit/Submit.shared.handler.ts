@@ -90,7 +90,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                     break;
                 } else {
                     response = await SubmitJobs.submitJobCommon(this.mSession, {jobDataSet: this.mArguments.dataset,
-                                                                                jclSymbols: this.mArguments.jclSymbols});
+                        jclSymbols: this.mArguments.jclSymbols});
                     apiObj = await SubmitJobs.checkSubmitOptions(this.mSession, parms, response);
                     source = this.mArguments.dataset;
 
@@ -101,7 +101,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
 
                 break;
             // Submit the JCL from a local file
-            case "local-file":
+            case "local-file": {
                 parms.jclSource = this.mArguments.localFile;
                 const JclString = fs.readFileSync(this.mArguments.localFile).toString();
                 apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
@@ -110,8 +110,9 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                     spoolFilesResponse = apiObj;
                 }
                 break;
+            }
             // Submit the JCL piped in on stdin
-            case "stdin":
+            case "stdin": {
                 const Jcl = await getstdin();
                 apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);
                 source = "stdin";
@@ -119,6 +120,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
                     spoolFilesResponse = apiObj;
                 }
                 break;
+            }
             default:
                 throw new ImperativeError({
                     msg: `Internal submit error: Unable to determine the JCL source. ` +

@@ -17,7 +17,8 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
-import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow, startT, IWorkflowInfo, WorkflowConstants, IStepInfo } from "@zowe/zos-workflows-for-zowe-sdk";
+import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow, startT, IWorkflowInfo, WorkflowConstants,
+    IStepInfo } from "@zowe/zos-workflows-for-zowe-sdk";
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";

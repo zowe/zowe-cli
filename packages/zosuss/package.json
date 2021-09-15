@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-uss-for-zowe-sdk",
-  "version": "6.32.1",
+  "version": "6.33.2",
   "description": "Zowe SDK to interact with USS on z/OS",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -36,23 +36,23 @@
     "build": "tsc --pretty",
     "watch": "tsc --pretty --watch",
     "clean": "rimraf lib",
-    "lint": "npm run lint:packages && npm run lint:tests",
-    "lint:packages": "tslint --format stylish -c ../../tslint-packages.json \"src/**/*.ts\"",
-    "lint:tests": "tslint --format stylish -c ../../tslint-tests.json \"__tests__/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\"",
+    "lint:packages": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
+    "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "ssh2": "0.8.7"
+    "ssh2": "1.4.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@types/ssh2": "^0.5.44",
-    "@zowe/imperative": "4.13.4",
+    "@zowe/imperative": "4.15.1",
+    "eslint": "^7.32.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
-    "tslint": "^6.1.3",
     "typedoc": "^0.16.0",
     "typescript": "^3.8.0"
   },

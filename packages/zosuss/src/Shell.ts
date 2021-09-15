@@ -10,11 +10,9 @@
 */
 
 import { Logger, ImperativeError } from "@zowe/imperative";
-import { ClientChannel } from "ssh2";
+import { ClientChannel, Client } from "ssh2";
 import { SshSession } from "./SshSession";
 import { ZosUssMessages } from "./constants/ZosUss.messages";
-import { Stream } from "stream";
-const Client = require("ssh2");
 
 // These are needed for authenticationHandler
 let authPos = 0;
@@ -25,8 +23,8 @@ export const startCmdFlag = "@@START OF COMMAND@@";
 export class Shell {
 
     public static executeSsh(session: SshSession,
-                             command: string,
-                             stdoutHandler: (data: string) => void): Promise<any> {
+        command: string,
+        stdoutHandler: (data: string) => void): Promise<any> {
         const promise = new Promise<any>((resolve,reject) => {
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
@@ -49,11 +47,11 @@ export class Shell {
                     stream.on("exit", (exitcode) => {
                         Logger.getAppLogger().debug("Return Code: " + exitcode);
                         if (dataBuffer.trim().length > 1) {
-                          // normally the last line is "\r\n$ " and we don't care about it
-                          // but we need to handle the case of an incomplete line at the end
-                          // which can happen when commands terminate abruptly
-                          stdoutHandler(dataBuffer.slice(0, dataBuffer.lastIndexOf("$")));
-                      }
+                            // normally the last line is "\r\n$ " and we don't care about it
+                            // but we need to handle the case of an incomplete line at the end
+                            // which can happen when commands terminate abruptly
+                            stdoutHandler(dataBuffer.slice(0, dataBuffer.lastIndexOf("$")));
+                        }
                         rc = exitcode;
                     });
                     stream.on("close", () => {
@@ -78,7 +76,7 @@ export class Shell {
                                 isUserCommand = true;
                             }
 
-                            if(isUserCommand && dataToPrint.match(new RegExp("\\$ exit"))) {
+                            if(isUserCommand && dataToPrint.match(/\\$ exit/)) {
                                 // if exit found, print out stuff before exit, then stop printing out.
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
                                 stdoutHandler(dataToPrint);
@@ -137,9 +135,9 @@ export class Shell {
     }
 
     public static async executeSshCwd(session: SshSession,
-                                      command: string,
-                                      cwd: string,
-                                      stdoutHandler: (data: string) => void): Promise<any> {
+        command: string,
+        cwd: string,
+        stdoutHandler: (data: string) => void): Promise<any> {
         const cwdCommand = `cd ${cwd} && ${command}`;
         return this.executeSsh(session, cwdCommand, stdoutHandler);
     }

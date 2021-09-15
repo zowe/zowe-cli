@@ -36,7 +36,6 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         this.arguments = commandParameters.arguments;
         let response: IWorkflowDefinition;
         let error;
-        const width = 42;
         try {
             response = await DefinitionWorkflow.getWorkflowDefinition(
                 this.mSession, undefined, this.arguments.definitionFilePath,

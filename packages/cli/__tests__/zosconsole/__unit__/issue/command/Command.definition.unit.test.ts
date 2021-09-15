@@ -13,8 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("zos-console issue command definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require
-        ("../../../../../src/zosconsole/issue/command/Command.definition").IssueCommandDefinition;
+        const definition: ICommandDefinition = require("../../../../../src/zosconsole/issue/command/Command.definition").IssueCommandDefinition;
         delete definition.handler;
         expect(definition).toBeDefined();
         delete definition.handler;

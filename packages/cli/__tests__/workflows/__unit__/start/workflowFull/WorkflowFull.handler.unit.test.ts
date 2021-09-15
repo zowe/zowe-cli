@@ -242,10 +242,10 @@ describe("Start workflow common handler", () => {
             PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
                 fakeSession = session;
                 return {
-                     automationStatus: {
-                         currenStepname: null
-                     },
-                     statusName: "complete"
+                    automationStatus: {
+                        currenStepname: null
+                    },
+                    statusName: "complete"
                 };
             });
 
@@ -317,10 +317,10 @@ describe("Start workflow common handler", () => {
             PropertiesWorkflow.getWorkflowProperties = jest.fn((session) => {
                 fakeSession = session;
                 return {
-                     automationStatus: {
-                         currenStepname: null
-                     },
-                     statusName: "in-progress"
+                    automationStatus: {
+                        currenStepname: null
+                    },
+                    statusName: "in-progress"
                 };
             });
 

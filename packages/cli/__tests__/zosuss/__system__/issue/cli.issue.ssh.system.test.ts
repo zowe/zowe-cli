@@ -105,7 +105,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "issue_ssh",
             tempProfileTypes: ["ssh"]
-       });
+        });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         const directory = `${defaultSystem.unix.testdir}/`;
@@ -127,6 +127,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
 
     });
 
+    // eslint-disable-next-line jest/expect-expect
     it("should write a long directory", async () => {
         const j = 200;
         const randomDir = generateRandomString(j);
