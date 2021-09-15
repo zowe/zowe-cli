@@ -28,6 +28,11 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
     protected mDefaultTokenType: SessConstants.TOKEN_TYPE_CHOICES = SessConstants.TOKEN_TYPE_APIML;
 
     /**
+     * The description of your service to be used in CLI prompt messages
+     */
+    protected mServiceDescription: string = "your API Mediation Layer";
+
+    /**
      * This is called by the {@link BaseAuthHandler#process} when it needs a
      * session. Should be used to create a session to connect to the auth
      * service.
