@@ -21,7 +21,6 @@ To consume the optimal cipher list and build the native modules, the following s
     - Visual Studio Community
       - "Desktop development with C++" workload
 
-
 ### Unix
 - Python 3.7 or greater
 - `make`
