@@ -25,8 +25,8 @@ Alternatively, install the following:
 
 ### Unix
 - Python 3.7 or greater
+- [CMake](https://cmake.org/download/)
 - `make`
-- `cmake`
 - A C/C++ Compiler (i.e. `gcc-c++`, `g++`)
 
 ### MacOS
