@@ -31,7 +31,6 @@ To consume the optimal cipher list and build the native modules, the following s
 - XCode
   - Including `XCode Command Line Tools`
 
-
 ## API Examples
 
 **Check disk space on file system containing home directory**
