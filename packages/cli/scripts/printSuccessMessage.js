@@ -20,4 +20,4 @@ function printSuccessMessage() {
     console.log("\n" + table);
 };
 
-module.exports = printSuccessMessage;
+printSuccessMessage();

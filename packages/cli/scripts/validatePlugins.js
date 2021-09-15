@@ -44,4 +44,4 @@ function validatePlugins() {
     }
 };
 
-module.exports = validatePlugins;
+validatePlugins();

@@ -2,6 +2,37 @@
 
 Contains APIs to interact with USS on z/OS (using the z/OS SSH service).
 
+## Installation Instructions
+
+The z/OS USS SDK has a dependency on the ssh2 package. This package allows for more secure cryptographic ciphers to be used first on supporting hardware. In order to do this, the dependency attempts to build some native modules at install time.
+
+If these modules cannot be built, the dependency will continue to function, without the optimal cipher list order. However, some error messaging may be visible. These errors can be safely ignored, if desired.
+
+To consume the optimal cipher list and build the native modules, the following software is pre-requisite:
+
+### Windows
+- Python 3.7 or greater
+- Choose one of the following:
+  - Option One: 
+    - Visual Studio Build Tools
+      - "Visual C++ build tools" workload
+    - CMake 3.14 and later
+  - Option Two:
+    - Visual Studio Community
+      - "Desktop development with C++" workload
+
+
+### Unix
+- Python 3.7 or greater
+- `make`
+- A C/C++ Compiler (i.e. `gcc-c++`, `g++`)
+
+### MacOS
+- Python 3.7 or greater
+- XCode
+  - Including `XCode Command Line Tools`
+
+
 ## API Examples
 
 **Check disk space on file system containing home directory**
