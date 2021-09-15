@@ -11,23 +11,27 @@ If these modules cannot be built, the dependency will continue to function, with
 To consume the optimal cipher list and build the native modules, the following software is pre-requisite:
 
 ### Windows
+We recommend NodeJS be installed with Chocolatey, which includes most of the required tooling. An additional tool, [CMake](https://cmake.org/download/), will need to be installed in addition to Chocolatey.
+
+Alternatively, install the following:
+
 - Python 3.7 or greater
+- [CMake](https://cmake.org/download/)
 - Choose one of the following:
-  - Option One: 
-    - Visual Studio Build Tools
-      - "Visual C++ build tools" workload
-    - CMake 3.14 and later
-  - Option Two:
-    - Visual Studio Community
-      - "Desktop development with C++" workload
+  - Visual Studio Build Tools
+    - "Visual C++ build tools" workload
+  - Visual Studio Community
+    - "Desktop development with C++" workload
 
 ### Unix
 - Python 3.7 or greater
 - `make`
+- `cmake`
 - A C/C++ Compiler (i.e. `gcc-c++`, `g++`)
 
 ### MacOS
 - Python 3.7 or greater
+- [CMake](https://cmake.org/download/)
 - XCode
   - Including `XCode Command Line Tools`
 
