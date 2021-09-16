@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-logs list group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "ls",
+  ],
+  "description": "Interact with z/OSMF restful api services. List z/OS logs
+
+",
+  "name": "list",
+  "summary": "List z/OS logs",
+  "type": "group",
+}
+`;

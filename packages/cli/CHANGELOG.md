@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.33.2`
+
+- Added new feature to manage zos-logs. [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
+
 ## `6.33.1`
 
 - Bugfix: Fixed capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.

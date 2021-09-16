@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-logs should display the help 1`] = `
+"================Z/OS LOG HELP===============
+
+ DESCRIPTION
+ -----------
+
+   Interact with z/OS logs
+
+
+
+ USAGE
+ -----
+
+   zowe zos-logs <group>
+
+   Where <group> is one of the following:
+
+ GROUPS
+ ------
+
+   list | ls List z/OS logs
+
+ GLOBAL OPTIONS
+ --------------
+
+   --response-format-json  | --rfj (boolean)
+
+      Produce JSON formatted data from a command
+
+   --help  | -h (boolean)
+
+      Display help text
+
+   --help-examples  (boolean)
+
+      Display examples for all the commands in a group
+
+   --help-web  | --hw (boolean)
+
+      Display HTML help in browser
+
+================Z/OS LOG HELP WITH RFJ===========
+{
+  \\"success\\": true,
+  \\"exitCode\\": 0,
+  \\"message\\": \\"The help was constructed for command: zos-logs.\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Interact with z/OS logs\\\\n\\\\n\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-logs <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   list | ls List z/OS logs\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stderr\\": \\"\\",
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Interact with z/OS logs\\\\n\\\\n\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-logs <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   list | ls List z/OS logs\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+}"
+`;
