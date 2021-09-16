@@ -26,7 +26,7 @@ export class GetLogsData {
                 subType: "NULL",
                 time: "Tue Aug 10 06:16:35 GMT 2021",
                 message:
-                    " EZD1287I TTLS Error RC: 5004 Initial Handshake\r   LOCAL: ::FFFF:9.12.41.62..3973\r   REMOTE: ::FFFF:9.12.41.63..8803\r   JOBNAME: P00SVR00 RULE: DDSClientRule\r   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
+                    " EZD1287I TTLS Error RC: 5004 Initial Handshake\r   LOCAL: ::FFFF:000.000.000.002..3973\r   REMOTE: ::FFFF:000.000.000.003..8803\r   JOBNAME: P00SVR00 RULE: DDSClientRule\r   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
                 type: "HARDCOPY",
                 cart: "0",
                 timestamp: 1628576195960
@@ -40,7 +40,7 @@ export class GetLogsData {
                 subType: "NULL",
                 time: "Tue Aug 10 06:16:35 GMT 2021",
                 message:
-                    " EZD1287I TTLS Error RC:  406 Initial Handshake\r   LOCAL: ::FFFF:9.12.41.62..3973\r   REMOTE: ::FFFF:9.12.41.63..8803\r   JOBNAME: P00SVR00 RULE: DDSClientRule\r   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
+                    " EZD1287I TTLS Error RC:  406 Initial Handshake\r   LOCAL: ::FFFF:000.000.000.002..3973\r   REMOTE: ::FFFF:000.000.000.003..8803\r   JOBNAME: P00SVR00 RULE: DDSClientRule\r   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
                 type: "HARDCOPY",
                 cart: "0",
                 timestamp: 1628576195960
