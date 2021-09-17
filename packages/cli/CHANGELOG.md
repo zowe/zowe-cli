@@ -2,9 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `6.33.2`
+## Recent Changes
 
-- Added new feature to manage zos-logs. [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
+- Enhancement: Added new feature to manage zos-logs. [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
 
 ## `6.33.1`
 
