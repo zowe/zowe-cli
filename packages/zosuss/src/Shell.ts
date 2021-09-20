@@ -107,7 +107,7 @@ export class Shell {
                 authHandler: Shell.authenticationHandler,
                 readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
                     session.ISshSession.handshakeTimeout : 0
-            });
+            } as any);
             conn.on("error", (err: Error) => {
                 if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
                     hasAuthFailed = true;
