@@ -129,10 +129,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -165,10 +165,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -199,10 +199,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: false /* don't normalize newlines, binary mode*/,
-                                                                        task: undefined /* no progress task */});
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: false /* don't normalize newlines, binary mode*/,
+                task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -233,10 +233,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
-                                                                        task: undefined /*no progress task*/});
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
+                task: undefined /*no progress task*/});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
@@ -268,10 +268,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined /* no progress task */});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -339,10 +339,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined /* no progress task */});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -377,11 +377,11 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined,
-                                                                        dataToReturn: [CLIENT_PROPERTY.response]}); // import and use proper property
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined,
+                dataToReturn: [CLIENT_PROPERTY.response]}); // import and use proper property
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -414,10 +414,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeWriteStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined /*no progress task*/});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined /*no progress task*/});
 
         });
     });
@@ -911,10 +911,10 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             // expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeStream, true, undefined);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeStream,
-                                                                        normalizeResponseNewLines: true
-                                                                        });
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: true
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -947,10 +947,10 @@ describe("z/OS Files - Download", () => {
             //     false, /* don't normalize new lines in binary*/
             //     undefined /* no progress task */);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeStream,
-                                                                        normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
-                                                                        task: undefined /* no progress task */});
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
+                task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -1016,10 +1016,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }],
-                                                                        responseStream: fakeStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        task: undefined /* no progress task */});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: true,
+                task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -1049,10 +1049,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
-                                                                        responseStream: fakeStream,
-                                                                        normalizeResponseNewLines: false, /* don't normalize new lines in binary */
-                                                                        task: undefined /* no progress task */});
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: false, /* don't normalize new lines in binary */
+                task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
@@ -1083,10 +1083,10 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                                                                        reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG],
-                                                                        responseStream: fakeStream,
-                                                                        normalizeResponseNewLines: true,
-                                                                        dataToReturn: [CLIENT_PROPERTY.response]});
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: true,
+                dataToReturn: [CLIENT_PROPERTY.response]});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);

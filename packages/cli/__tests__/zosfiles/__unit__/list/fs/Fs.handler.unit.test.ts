@@ -9,10 +9,8 @@
 *
 */
 
-import { List, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { List } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
-import UssFileHandler from "../../../../../src/zosfiles/list/uss/UssFile.handler";
-import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("fs handler", () => {
     describe("process method", () => {
@@ -92,7 +90,7 @@ describe("fs handler", () => {
                 error = e;
             }
 
-//            expect(error).toBeUndefined();
+            //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fs).toHaveBeenCalledTimes(1);
             expect(List.fs).toHaveBeenCalledWith(fakeSession, {fsname: undefined, maxLength: undefined, path: null});
@@ -178,7 +176,7 @@ describe("fs handler", () => {
                 error = e;
             }
 
-//            expect(error).toBeUndefined();
+            //            expect(error).toBeUndefined();
             expect(profFunc).toHaveBeenCalledWith("zosmf", false);
             expect(List.fsWithPath).toHaveBeenCalledTimes(1);
             expect(List.fsWithPath).toHaveBeenCalledWith(fakeSession, {fsname: null, maxLength: undefined, path: "testing"});

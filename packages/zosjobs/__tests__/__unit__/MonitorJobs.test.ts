@@ -64,6 +64,7 @@ describe("Monitor Jobs", () => {
                 expect(error.message).toMatchSnapshot();
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should detect a missing session - then/catch", (done) => {
                 MonitorJobs.waitForOutputStatus(undefined, "FAKE", "FAKE").then((response) => {
                     done(`Monitor jobs should have thrown an error because the session is missing.`);
@@ -159,6 +160,7 @@ describe("Monitor Jobs", () => {
                 expect(mockedGetJobsCommon).toHaveBeenCalledTimes(1);
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should produce a 'wrapped' error message if getJobs throws an error - then/catch", (done) => {
                 // Mock GetJobs.getStatusCommon
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
@@ -407,6 +409,7 @@ describe("Monitor Jobs", () => {
                 expect(error.message).toMatchSnapshot();
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should detect a missing session - then/catch", (done) => {
                 const obj = {jobname: "fake", jobid: "fake"};
                 MonitorJobs.waitForJobOutputStatus(undefined, obj as IJob).then((response) => {
@@ -436,6 +439,7 @@ describe("Monitor Jobs", () => {
                 expect(mockedGetJobs).toHaveBeenCalledTimes(1);
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should produce a 'wrapped' error message if getJobs throws an error - then/catch", (done) => {
                 // Mock GetJobs.getStatusCommon
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
@@ -721,6 +725,7 @@ describe("Monitor Jobs", () => {
                 expect(error.message).toMatchSnapshot();
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should detect a missing session - then/catch", (done) => {
                 const obj = {jobname: "fake", jobid: "fake"};
                 MonitorJobs.waitForStatusCommon(undefined, obj).then((response) => {
@@ -925,6 +930,7 @@ describe("Monitor Jobs", () => {
                 expect(mockedGetJobsCommon).toHaveBeenCalledTimes(1);
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should produce a 'wrapped' error message if getJobs throws an error - then/catch", (done) => {
                 // Mock GetJobs.getStatusCommon
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;
@@ -945,6 +951,7 @@ describe("Monitor Jobs", () => {
                 });
             });
 
+            // eslint-disable-next-line jest/no-done-callback
             it("should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch", (done) => {
                 // Mock GetJobs.getStatusCommon
                 const ERROR_MSG: string = `ERROR GETTING JOBS!`;

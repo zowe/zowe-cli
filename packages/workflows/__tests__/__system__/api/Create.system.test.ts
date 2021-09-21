@@ -572,7 +572,7 @@ describe("Create workflow", () => {
 
             try {
                 response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars, null, false, null,
-                                                                    false, true);
+                    false, true);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;

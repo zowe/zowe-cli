@@ -55,11 +55,11 @@ describe("zosmf utils", () => {
         let error;
         try {
             const session: Session = ZosmfSession.createBasicZosmfSession({
-            port: "fake",
-            user: "fake",
-            password: "fake",
-            auth: "fake",
-            rejectUnauthorized: "fake"
+                port: "fake",
+                user: "fake",
+                password: "fake",
+                auth: "fake",
+                rejectUnauthorized: "fake"
             });
         } catch (err) {
             error = err;

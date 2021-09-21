@@ -40,9 +40,9 @@ export class Create {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async dataSet(session: AbstractSession,
-                                cmdType: CreateDataSetTypeEnum,
-                                dataSetName: string,
-                                options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+        cmdType: CreateDataSetTypeEnum,
+        dataSetName: string,
+        options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         let validCmdType = true;
 
         // Removes undefined properties
@@ -81,70 +81,65 @@ export class Create {
         if (!validCmdType) {
             throw new ImperativeError({ msg: ZosFilesMessages.unsupportedDatasetType.message });
         } else {
-            try {
-                // Handle the size option
-                if (!isNullOrUndefined(tempOptions.size)) {
-                    const tAlcunit = tempOptions.size.toString().match(/[a-zA-Z]+/g);
-                    if (!isNullOrUndefined(tAlcunit)) {
-                        tempOptions.alcunit = tAlcunit.join("").toUpperCase();
-                    }
+            // Handle the size option
+            if (!isNullOrUndefined(tempOptions.size)) {
+                const tAlcunit = tempOptions.size.toString().match(/[a-zA-Z]+/g);
+                if (!isNullOrUndefined(tAlcunit)) {
+                    tempOptions.alcunit = tAlcunit.join("").toUpperCase();
+                }
 
-                    const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
-                    if (!isNullOrUndefined(tPrimary)) {
-                        tempOptions.primary = +(tPrimary.join(""));
+                const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
+                if (!isNullOrUndefined(tPrimary)) {
+                    tempOptions.primary = +(tPrimary.join(""));
 
-                        if (isNullOrUndefined(tempOptions.secondary)) {
-                            const TEN_PERCENT = 0.10;
-                            tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
-                        }
-                    }
-                } else {
                     if (isNullOrUndefined(tempOptions.secondary)) {
-                        if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
-                            tempOptions.secondary = 1;
-                        } else {
-                            // tslint:disable-next-line:no-magic-numbers
-                            tempOptions.secondary = 10;
-                        }
+                        const TEN_PERCENT = 0.10;
+                        tempOptions.secondary = Math.round(tempOptions.primary * TEN_PERCENT);
                     }
                 }
-                delete tempOptions.size;
-
-                let response = "";
-                // Handle the print attributes option
-                if (!isNullOrUndefined(tempOptions.showAttributes)) {
-                    if (tempOptions.showAttributes) {
-                        delete tempOptions.showAttributes;
-                        response = TextUtils.prettyJson(tempOptions);
+            } else {
+                if (isNullOrUndefined(tempOptions.secondary)) {
+                    if (cmdType !== CreateDataSetTypeEnum.DATA_SET_BINARY) {
+                        tempOptions.secondary = 1;
                     } else {
-                        delete tempOptions.showAttributes;
+                        tempOptions.secondary = 10;
                     }
                 }
-
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
-                const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-                if (options && options.responseTimeout != null) {
-                    headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-                }
-
-                Create.dataSetValidateOptions(tempOptions);
-
-                await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
-
-                return {
-                    success: true,
-                    commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
-                };
-            } catch (error) {
-                throw error;
             }
+            delete tempOptions.size;
+
+            let response = "";
+            // Handle the print attributes option
+            if (!isNullOrUndefined(tempOptions.showAttributes)) {
+                if (tempOptions.showAttributes) {
+                    delete tempOptions.showAttributes;
+                    response = TextUtils.prettyJson(tempOptions);
+                } else {
+                    delete tempOptions.showAttributes;
+                }
+            }
+
+            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+            const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+            if (options && options.responseTimeout != null) {
+                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
+
+            Create.dataSetValidateOptions(tempOptions);
+
+            await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
+
+            return {
+                success: true,
+                commandResponse: response + ZosFilesMessages.dataSetCreatedSuccessfully.message
+            };
         }
     }
 
     public static async dataSetLike(session: AbstractSession,
-                                    dataSetName: string,
-                                    likeDataSetName: string,
-                                    options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
+        dataSetName: string,
+        likeDataSetName: string,
+        options?: Partial<ICreateDataSetOptions>): Promise<IZosFilesResponse> {
         // Required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
@@ -153,18 +148,14 @@ export class Create {
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
         Create.dataSetValidateOptions(tempOptions);
 
-        try {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
+        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName;
 
-            await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
+        await ZosmfRestClient.postExpectString(session, endpoint, [ZosmfHeaders.ACCEPT_ENCODING], JSON.stringify(tempOptions));
 
-            return {
-                success: true,
-                commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
-            };
-        } catch (error) {
-            throw error;
-        }
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+        };
     }
 
     /**
@@ -179,11 +170,11 @@ export class Create {
         const tempOptions: any = options;
 
         for (const option in tempOptions) {
-            if (tempOptions.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(tempOptions, option)) {
                 switch (option) {
 
                     case "alcunit":
-                        // zOSMF defaults to TRK if missing so mimic it's behavior
+                    // zOSMF defaults to TRK if missing so mimic it's behavior
                         if (isNullOrUndefined(tempOptions.alcunit)) {
                             tempOptions.alcunit = "TRK";
                         }
@@ -200,24 +191,24 @@ export class Create {
                         break;
 
                     case "avgblk":
-                        // no validation at this time
+                    // no validation at this time
                         break;
 
                     case "blksize":
-                        // zOSMF defaults to TRK if missing so mimic it's behavior
+                    // zOSMF defaults to TRK if missing so mimic it's behavior
                         if (isNullOrUndefined(tempOptions.blksize)) {
                             tempOptions.blksize = tempOptions.lrecl;
                         }
                         break;
 
                     case "lrecl":
-                        // Required
+                    // Required
                         ImperativeExpect.toNotBeNullOrUndefined(tempOptions.lrecl, ZosFilesMessages.missingRecordLength.message);
 
                         break;
 
                     case "dirblk":
-                        // Validate non-zero if dsorg is PS
+                    // Validate non-zero if dsorg is PS
                         if (tempOptions.dirblk !== 0 && tempOptions.dsorg === "PS") {
                             throw new ImperativeError({ msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message });
                         }
@@ -228,17 +219,17 @@ export class Create {
 
                         break;
 
-                    case "dsntype":
-                        // Key to create a PDSE.
+                    case "dsntype": {
+                    // Key to create a PDSE.
                         const type: string = tempOptions.dsntype.toUpperCase();
                         const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
                         if (availableTypes.indexOf(type) === -1) {
                             throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
                         }
                         break;
-
+                    }
                     case "dsorg":
-                        // Only PO and PS valid
+                    // Only PO and PS valid
                         switch (tempOptions.dsorg.toUpperCase()) {
                             case "PO":
                             case "PS":
@@ -251,7 +242,7 @@ export class Create {
                         break;
 
                     case "primary":
-                        // Required
+                    // Required
                         ImperativeExpect.toNotBeNullOrUndefined(tempOptions.primary, ZosFilesMessages.missingPrimary.message);
 
                         // Validate maximum allocation quantity
@@ -261,7 +252,7 @@ export class Create {
                         break;
 
                     case "secondary":
-                        // zOSMF defaults to 0 if missing so mimic it's behavior
+                    // zOSMF defaults to 0 if missing so mimic it's behavior
                         if (isNullOrUndefined(tempOptions.secondary)) {
                             tempOptions.secondary = 0;
                         }
@@ -273,7 +264,7 @@ export class Create {
                         break;
 
                     case "recfm":
-                        // zOSMF defaults to F if missing so mimic it's behavior
+                    // zOSMF defaults to F if missing so mimic it's behavior
                         if (isNullOrUndefined(tempOptions.recfm)) {
                             tempOptions.recfm = "F";
                         }
@@ -296,7 +287,7 @@ export class Create {
                     case "mgntclass":
                     case "storclass":
                     case "dataclass":
-                        // no validation
+                    // no validation
 
                         break;
 
@@ -304,7 +295,7 @@ export class Create {
                     case "volser":
                     case "responseTimeout":
                     case "like":
-                        // no validation
+                    // no validation
 
                         break;
 
@@ -377,7 +368,7 @@ export class Create {
 
         let respTimeout: number;
         if (options) {
-            respTimeout = options.responseTimeout
+            respTimeout = options.responseTimeout;
         }
 
         try {
@@ -413,10 +404,10 @@ export class Create {
      * @returns {Promise<IZosFilesResponse>}
      */
     public static async uss(session: AbstractSession,
-                            ussPath: string,
-                            type: string,
-                            mode?: string,
-                            options?: IZosFilesOptions)
+        ussPath: string,
+        type: string,
+        mode?: string,
+        options?: IZosFilesOptions)
         : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
@@ -570,7 +561,7 @@ export class Create {
 
         // validate specific options
         for (const option in options) {
-            if (options.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
                     case "dsorg":
@@ -591,7 +582,7 @@ export class Create {
 
                     case "primary":
                     case "secondary":
-                        // Validate maximum allocation quantity
+                    // Validate maximum allocation quantity
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
@@ -621,7 +612,7 @@ export class Create {
                     case "mgntclass":
                     case "dataclass":
                     case "responseTimeout":
-                        // no validation at this time
+                    // no validation at this time
                         break;
 
                     default:
@@ -660,10 +651,10 @@ export class Create {
 
         // validate specific options
         for (const option in options) {
-            if (options.hasOwnProperty(option)) {
+            if (Object.prototype.hasOwnProperty.call(options, option)) {
                 switch (option) {
 
-                    case "perms":
+                    case "perms": {
                         const maxPerm = 777;
                         if ((options.perms < 0) || (options.perms > maxPerm)) {
                             throw new ImperativeError({
@@ -671,10 +662,10 @@ export class Create {
                             });
                         }
                         break;
-
+                    }
                     case "cylsPri":
                     case "cylsSec":
-                        // Validate maximum allocation quantity
+                    // Validate maximum allocation quantity
                         if (options[option] > ZosFilesConstants.MAX_ALLOC_QUANTITY) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.maximumAllocationQuantityExceeded.message + " " +
@@ -692,7 +683,7 @@ export class Create {
                     case "volumes":
                     case "timeout":
                     case "responseTimeout":
-                        // no validation at this time
+                    // no validation at this time
                         break;
 
                     default:

@@ -57,7 +57,7 @@ describe("zos-jobs submit local-file command", () => {
     });
 
     describe("Live system tests", () => {
-        it("should submit a job in an existing valid local file ", async () => {
+        it("should submit a job in an existing valid local file", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.stderr.toString()).toBe("");
@@ -75,7 +75,7 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stdout.toString()).toContain("JES2");
         });
 
-        it("should submit a job and wait for it to reach output status ", async () => {
+        it("should submit a job and wait for it to reach output status", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_wait.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
             expect(response.stderr.toString()).toBe("");

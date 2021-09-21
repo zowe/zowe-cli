@@ -28,7 +28,7 @@ interface IUploadAttributes {
  */
 export class ZosFilesAttributes {
 
-    private static MAX_EXPECTED_FIELDS = 3;
+    private static MAX_EXPECTED_FIELDS = 3;  // eslint-disable-line @typescript-eslint/no-magic-numbers
     private static MIN_EXPECTED_FIELDS = 2;
 
     private attributes = new Map<string,IUploadAttributes>();
@@ -107,7 +107,7 @@ export class ZosFilesAttributes {
             } else {
                 this.attributes.set(pattern, {ignore: false, localEncoding, remoteEncoding});
             }
-         });
+        });
     }
 
     private findLastMatchingAttributes(path: string): IUploadAttributes {

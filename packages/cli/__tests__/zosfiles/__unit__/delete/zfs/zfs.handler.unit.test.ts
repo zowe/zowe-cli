@@ -41,7 +41,7 @@ describe("ZfsHandler", () => {
         const dummySession = {
             lazyness: "(n.) An important quality for a developer to have."
         }; // I'm lazy and we don't actually need the object
-        const rtoObject = {responseTimeout: 5}
+        const rtoObject = {responseTimeout: 5};
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 

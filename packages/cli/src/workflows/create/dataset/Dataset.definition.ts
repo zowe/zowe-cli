@@ -9,10 +9,9 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "@zowe/imperative";
 import { CreateCommonOptions } from "../Create.common.options";
 import { join } from "path";
-
 
 /**
  * This object defines the command for creating workflow instance from dataset within zosworkflows.

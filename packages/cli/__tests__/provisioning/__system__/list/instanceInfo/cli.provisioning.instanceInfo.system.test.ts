@@ -14,10 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { Imperative, Session } from "@zowe/imperative";
-import {
-    IProvisionedInstance,
-    ProvisioningConstants
-} from "@zowe/provisioning-for-zowe-sdk";
+import { IProvisionedInstance, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 import { ProvisioningTestUtils } from "../../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
@@ -38,8 +35,7 @@ describe("provisioning list instance-info", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         templateName =
             TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
-        let instance: IProvisionedInstance;
-        instance = await ProvisioningTestUtils.getProvisionedInstance(
+        const instance: IProvisionedInstance = await ProvisioningTestUtils.getProvisionedInstance(
             REAL_SESSION,
             ProvisioningConstants.ZOSMF_VERSION,
             templateName

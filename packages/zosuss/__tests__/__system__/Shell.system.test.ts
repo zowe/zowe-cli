@@ -149,7 +149,7 @@ describe("zowe uss issue ssh api call test", () => {
             expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
         } else {
             expect(error.toString().includes(ZosUssMessages.allAuthMethodsFailed.message) ||
-                   error.toString().includes(ZosUssMessages.connectionRefused.message));
+                   error.toString().includes(ZosUssMessages.connectionRefused.message)).toBe(true);
         }
 
     }, TIME_OUT);

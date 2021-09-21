@@ -32,7 +32,7 @@ export default class USSFileHandler extends ZosFilesBaseHandler {
             fields: ["name", "mode", "size", "uid", "user"],
             output: response.apiResponse.items,
             format: "table"
-            });
+        });
         return response;
     }
 }

@@ -80,8 +80,8 @@ export class ZosFilesUtils {
      * @return {string[]} Array of all files finds in path
      */
     public static getFileListFromPath(inputPath: string,
-                                      inFullPathFormat: boolean = true,
-                                      isIgnoreHidden: boolean = true): string[] {
+        inFullPathFormat: boolean = true,
+        isIgnoreHidden: boolean = true): string[] {
         const returnFileList: string[] = [];
 
         const fullpath = this.getFullPath(inputPath);
@@ -189,7 +189,7 @@ export class ZosFilesUtils {
      * @return {Buffer} converted data
      */
     public static normalizeNewline(buffer: Buffer): Buffer {
-        return Buffer.from(buffer.toString().replace(new RegExp("\r\n", "g"), "\n"));
+        return Buffer.from(buffer.toString().replace(/\r\n/g, "\n"));
     }
 
     /**

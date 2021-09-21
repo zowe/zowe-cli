@@ -34,7 +34,7 @@ export class ConsoleResponseService {
      * @memberof ConsoleResponse
      */
     public static populate(zosmfResponse: IZosmfIssueResponse, response: IConsoleResponse,
-                           processResponses?: boolean): IConsoleResponse {
+        processResponses?: boolean): IConsoleResponse {
         Logger.getImperativeLogger().trace(TextUtils.formatMessage(displayResponse.message, {data: inspect(zosmfResponse)}));
         Logger.getImperativeLogger().trace(TextUtils.formatMessage(displayResponse.message, {data: inspect(response)}));
 

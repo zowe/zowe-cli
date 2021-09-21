@@ -40,7 +40,6 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         let error: string;
-        let resp: string;
         let listWorkflows: IArchivedWorkflows;
         this.arguments = params.arguments;
 
@@ -66,7 +65,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 params.response.console.log("Workflow deleted.");
                 break;
 
-            case "workflowName":
+            case "workflowName": {
                 let wildCard: boolean = true;
                 let check: boolean;
                 let normalized: string;
@@ -74,8 +73,8 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 const failedWfs: IWorkflowsInfo[] = [];
                 this.arguments.workflowName.includes(".*")
                     ? (normalized = this.arguments.workflowName
-                          .split(".*")
-                          .join("*"))
+                        .split(".*")
+                        .join("*"))
                     : (wildCard = false);
 
                 listWorkflows = await ListArchivedWorkflows.listArchivedWorkflows(
@@ -87,12 +86,12 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                     i >= 0;
                     i--
                 ) {
-                    // Swap between checks to avoid "glob pattern string required" error.
+                // Swap between checks to avoid "glob pattern string required" error.
                     wildCard
                         ? (check = minimatch(
-                              listWorkflows.archivedWorkflows[i].workflowName,
-                              normalized
-                          ))
+                            listWorkflows.archivedWorkflows[i].workflowName,
+                            normalized
+                        ))
                         : (check =
                               listWorkflows.archivedWorkflows[i]
                                   .workflowName ===
@@ -100,7 +99,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
 
                     if (check) {
                         try {
-                            resp = await ArchivedDeleteWorkflow.archivedDeleteWorkflow(
+                            await ArchivedDeleteWorkflow.archivedDeleteWorkflow(
                                 this.mSession,
                                 listWorkflows.archivedWorkflows[i].workflowKey
                             );
@@ -147,7 +146,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 }
                 params.response.data.setObj("Deleted.");
                 break;
-
+            }
             default:
                 throw new ImperativeError({
                     msg:

@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable jest/expect-expect */
 import { Client } from "ssh2";
 import { startCmdFlag, Shell } from "../../src/Shell";
 import { SshSession } from "../../src/SshSession";

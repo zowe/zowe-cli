@@ -76,7 +76,7 @@ The following NPM scripts should be defined in "package.json" for each SDK packa
     * Remove all build output
     * Example script: `rimraf lib`
 * Lint
-    * Run TSLint or ESLint on the package’s source code
+    * Run ESLint on the package’s source code
     * Example script: `eslint . --ext .ts`
 * Test
     * Run all applicable tests for the package (unit, integration, system)

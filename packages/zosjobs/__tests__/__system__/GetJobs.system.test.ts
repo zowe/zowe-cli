@@ -45,11 +45,11 @@ const trimMessage = (message: string) => {
 };
 const waitThreeSeconds = () => {
     return new Promise<void>((resolveWaitTime) => {
-            const threeSeconds = 3000;
-            setTimeout(() => {
-                resolveWaitTime();
-            }, threeSeconds);
-        }
+        const threeSeconds = 3000;
+        setTimeout(() => {
+            resolveWaitTime();
+        }, threeSeconds);
+    }
     );
 };
 
@@ -123,8 +123,7 @@ describe("Get Jobs - System Tests", () => {
         // API methods "getJobs" system tests
         describe("get jobs API", () => {
             describe("invalid request error handling", () => {
-                // pending until z/OSMF returns 401 status code
-                xit("should detect and surface an error for an invalid user", async () => {
+                it("should detect and surface an error for an invalid user", async () => {
                     let err;
                     try {
                         await GetJobs.getJobs(INVALID_SESSION);
@@ -133,7 +132,7 @@ describe("Get Jobs - System Tests", () => {
                     }
                     expect(err).toBeDefined();
                     expect(err instanceof ImperativeError).toBe(true);
-                    expect(err.message).toMatchSnapshot();
+                    expect(err.message).toContain("status 401"); // unauthorized - bad credentials
                 });
             });
 
@@ -205,62 +204,7 @@ describe("Get Jobs - System Tests", () => {
                     expect(foundJob.jobid).toEqual(job.jobid);
                     expect(foundJob.jobname).toEqual(job.jobname);
                 }, LONG_TIMEOUT);
-
-                it("should be able to get a single job by job ID", async () => {
-                    // Read the JCL template file
-                    const iefbr14JclTemplate = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
-
-                    // submit a job that we can list
-                    // Render the job with increasing job name
-                    const jobRender = iefbr14JclTemplate;
-                    const renderedJcl = TextUtils.renderWithMustache(jobRender,
-                        {JOBNAME: MONITOR_JOB_NAME + "S", ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                    // Submit the job
-                    const job = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
-                    expect(job.status).toEqual("OUTPUT");
-                    expect(job.retcode).toEqual("CC 0000");
-
-
-                    // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
-                    // results in the jobs being omitted from the results
-                    await waitThreeSeconds();
-
-                    // Search all jobs returned for each of the submitted jobs
-                    const foundJob = await GetJobs.getJob(REAL_SESSION, job.jobid);
-                    expect(foundJob).toBeDefined();
-                    expect(foundJob.jobid).toEqual(job.jobid);
-                    expect(foundJob.jobname).toEqual(job.jobname);
-                }, LONG_TIMEOUT);
             });
-
-            it("should be able to get a single job by job ID with jobid parm on the getJobs API", async () => {
-                // Read the JCL template file
-                const iefbr14JclTemplate = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
-
-                // submit a job that we can list
-                // Render the job with increasing job name
-                const jobRender = iefbr14JclTemplate;
-                const renderedJcl = TextUtils.renderWithMustache(jobRender,
-                    {JOBNAME: MONITOR_JOB_NAME + "S", ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // Submit the job
-                const job = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
-                expect(job.status).toEqual("OUTPUT");
-                expect(job.retcode).toEqual("CC 0000");
-
-
-                // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
-                // results in the jobs being omitted from the results
-                await waitThreeSeconds();
-
-                // Search all jobs returned for each of the submitted jobs
-                const foundJobs = await GetJobs.getJobsCommon(REAL_SESSION, {jobid: job.jobid});
-                expect(foundJobs).toBeDefined();
-                expect(foundJobs.length).toEqual(1);
-                expect(foundJobs[0].jobid).toEqual(job.jobid);
-                expect(foundJobs[0].jobname).toEqual(job.jobname);
-            }, LONG_TIMEOUT);
 
             it("should be able to get a single job by job ID with jobid parm on the getJobs API", async () => {
                 // Read the JCL template file
@@ -296,8 +240,7 @@ describe("Get Jobs - System Tests", () => {
     // API methods "getJobsByPrefix" system tests
     describe("get jobs by prefix API", () => {
         describe("invalid request handling", () => {
-            // pending until z/OSMF returns 401 status for invalid credentials
-            xit("should detect and surface an error for an invalid userblah", async () => {
+            it("should detect and surface an error for an invalid user", async () => {
                 let err;
                 try {
                     const resp = await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
@@ -306,7 +249,7 @@ describe("Get Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
-                expect(err.message).toMatchSnapshot();
+                expect(err.message).toContain("status 401"); // unauthorized - bad credentials
             });
 
             it("should detect and surface an error for an invalid prefix (by z/OS standards)", async () => {
@@ -434,8 +377,7 @@ describe("Get Jobs - System Tests", () => {
     // API methods "getJobsByPrefix" system tests
     describe("get jobs by owner API", () => {
         describe("invalid request handling", () => {
-            // pending until z/OSMF returns 401 status for invalid credentials
-            xit("should detect and surface an error for an invalid user", async () => {
+            it("should detect and surface an error for an invalid user", async () => {
                 let err;
                 try {
                     await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
@@ -444,7 +386,7 @@ describe("Get Jobs - System Tests", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
-                expect(err.message).toMatchSnapshot();
+                expect(err.message).toContain("status 401"); // unauthorized - bad credentials
             });
 
             it("should detect and surface an error for an invalid owner (by z/OS standards)", async () => {
@@ -524,8 +466,7 @@ describe("Get Status APIs", () => {
     // API methods "getStatus" system tests
     describe("get status API", () => {
         describe("invalid request error handling", () => {
-            // pending until z/OSMF returns 401 status for invalid credentials
-            xit("should detect and surface and error for an invalid user",
+            it("should detect and surface an error for an invalid user",
                 async () => {
                     let err;
                     try {
@@ -539,7 +480,7 @@ describe("Get Status APIs", () => {
                 }
             );
 
-            it("should detect and surface and error for an invalid jobname", async () => {
+            it("should detect and surface an error for an invalid jobname", async () => {
                 let err;
                 try {
                     await GetJobs.getStatus(REAL_SESSION, "))))))))", "JOB123");
@@ -555,7 +496,7 @@ describe("Get Status APIs", () => {
                 expect(trimmedErrorMessage).toContain("status 400");
             });
 
-            it("should detect and surface and error for an invalid jobid", async () => {
+            it("should detect and surface an error for an invalid jobid", async () => {
                 let err;
                 try {
                     await GetJobs.getStatus(REAL_SESSION, "***REMOVED***1", "))))))))))");
@@ -645,8 +586,7 @@ describe("Get Status APIs", () => {
     // API methods "getStatusCommon" system tests
     describe("get status common API", () => {
         describe("invalid request error handling", () => {
-            // pending until z/OSMF returns 401 status for invalid credentials
-            it("should detect and surface and error for an invalid user", async () => {
+            it("should detect and surface an error for an invalid user", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusCommon(INVALID_SESSION, {jobname: "FAKE", jobid: "FAKE"});
@@ -655,11 +595,10 @@ describe("Get Status APIs", () => {
                 }
                 expect(err).toBeDefined();
                 expect(err instanceof ImperativeError).toBe(true);
-                // TODO: when system tests are running we'll add more expects
-                // expect(err.message).toMatchSnapshot();
+                expect(err.message).toContain("status 401"); // unauthorized - bad credentials
             });
 
-            it("should detect and surface and error for an invalid jobname", async () => {
+            it("should detect and surface an error for an invalid jobname", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusCommon(REAL_SESSION, {jobname: "))))))))", jobid: "JOB123"});
@@ -676,7 +615,7 @@ describe("Get Status APIs", () => {
                 expect(trimmedErrorMessage).toContain("JOB123");
             });
 
-            it("should detect and surface and error for an invalid jobid", async () => {
+            it("should detect and surface an error for an invalid jobid", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusCommon(REAL_SESSION, {jobname: "***REMOVED***1", jobid: "))))))))))"});
@@ -764,10 +703,9 @@ describe("Get Status APIs", () => {
 
     /**********************************************/
     // API methods "getStatusForJob" system tests
-    describe("get status for job API ", () => {
+    describe("get status for job API", () => {
         describe("invalid request error handling", () => {
-            // pending until z/OSMF returns 401 status for invalid credentials
-            xit("should detect and surface and error for an invalid user", async () => {
+            it("should detect and surface an error for an invalid user", async () => {
                 let err;
                 try {
                     const job: any = {jobname: "FAKE", jobid: "fake"};
@@ -799,7 +737,7 @@ describe("Get Status APIs", () => {
                 expect(JSON.parse(error.causeErrors).category).toMatchSnapshot();
             }, LONG_TIMEOUT);
 
-            it("should detect and surface and error for an invalid jobname", async () => {
+            it("should detect and surface an error for an invalid jobname", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusForJob(REAL_SESSION, {jobname: "))))))))", jobid: "JOB123"} as any);
@@ -815,7 +753,7 @@ describe("Get Status APIs", () => {
                 expect(trimmedErrorMessage).toContain("status 400");
             });
 
-            it("should detect and surface and error for an invalid jobid", async () => {
+            it("should detect and surface an error for an invalid jobid", async () => {
                 let err;
                 try {
                     await GetJobs.getStatusForJob(REAL_SESSION, {jobname: "***REMOVED***1", jobid: "))))))))))"} as any);
