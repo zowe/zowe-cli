@@ -146,7 +146,9 @@ const config: IImperativeConfig = {
                         Constants.BASE_OPTION_PORT,
                         Constants.BASE_OPTION_USER,
                         Constants.BASE_OPTION_PASSWORD,
-                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
+                        Constants.BASE_OPTION_CERT_FILE,
+                        Constants.BASE_OPTION_CERT_KEY_FILE
                     ]
                 },
                 logout: {
