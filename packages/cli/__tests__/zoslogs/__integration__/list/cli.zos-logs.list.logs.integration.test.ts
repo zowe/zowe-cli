@@ -16,11 +16,11 @@ import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
-describe("zos-logs list", () => {
+describe("zos-logs list logs", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_log_get",
+            testName: "zos_logs_list_logs",
             skipProperties: true
         });
     });

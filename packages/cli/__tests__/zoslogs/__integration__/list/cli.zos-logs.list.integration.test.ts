@@ -20,7 +20,7 @@ describe("zos-logs list", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
-            testName: "zos_log_get",
+            testName: "zos_logs_list",
             skipProperties: true
         });
     });
