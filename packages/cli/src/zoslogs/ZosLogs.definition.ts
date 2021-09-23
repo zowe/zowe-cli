@@ -17,7 +17,7 @@ export const definition: ICommandDefinition = {
     aliases: ["zoslogs"],
     type: "group",
     summary: "Inteact with z/OS logs",
-    description: "Interact with z/OS logs" + "\n\n",
+    description: "Interact with z/OS logs." + "\n\n",
     children: [ListDefinition]
 };
 

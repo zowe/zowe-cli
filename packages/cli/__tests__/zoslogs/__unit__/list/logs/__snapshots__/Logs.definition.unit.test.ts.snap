@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-logs list logs command definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "logs",
+  ],
+  "description": "List z/OS operlog or syslog within a time range.
+
+Use this operation to get the z/OS logs. It invokes z/OSMF REST API to retrieve logs.
+
+Executing 'zowe zos-logs list logs' will by default return logs from current time and backwards to 10 minutes before.",
+  "examples": Array [
+    Object {
+      "description": "List logs starting from '2021-07-26T03:38:37.098Z' and forwarding to 5 mins later.",
+      "options": "--start-time 2021-07-26T03:38:37.098Z --range 5m --direction forward",
+    },
+    Object {
+      "description": "List logs starting from '2021-07-26T03:38:37.098Z' and forwarding to 5 mins later. Alias version of the above command",
+      "options": "--st 2021-07-26T03:38:37.098Z -r 5m -d forward",
+    },
+    Object {
+      "description": "List logs starting from '2021-07-26T03:38:37.098Z' and backwarding to 5 minutes before.",
+      "options": "--st 2021-07-26T03:38:37.098Z -r 5m",
+    },
+  ],
+  "name": "logs",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "st",
+      ],
+      "description": "Specify the time in ISO-8601 time format from when z/OSMF will start to retrieve the logs. For example, '2021-01-26T03:33:18.065Z', '2021-01-26T11:33:18.065+08:00'. Default is the current time. ",
+      "name": "start-time",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "d",
+      ],
+      "description": "Specify the direction when retrieving the message log. Either 'forward' or 'backward' is valid, case insensitive. Default is 'backward'",
+      "name": "direction",
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "r",
+      ],
+      "description": "Specify a time range in which the logs will be retrieved. The format is like nnnu, nnn is 1-999, u is one of 's', 'm', 'h', for example, '999s', '20m', '3h'. Default is 10m",
+      "name": "range",
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "List z/OS operlog or syslog within a time range",
+  "type": "command",
+}
+`;

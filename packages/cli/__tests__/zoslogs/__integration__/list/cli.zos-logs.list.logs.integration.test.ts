@@ -30,7 +30,7 @@ describe("zos-logs list", () => {
     });
 
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/list/help.sh", TEST_ENVIRONMENT);
+        const response = runCliScript(__dirname + "/__scripts__/logs/help.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();

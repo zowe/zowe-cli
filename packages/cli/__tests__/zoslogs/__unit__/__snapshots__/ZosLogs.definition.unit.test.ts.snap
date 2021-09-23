@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "zoslogs",
   ],
-  "description": "Interact with z/OS logs
+  "description": "Interact with z/OS logs.
 
 ",
   "name": "zos-logs",
