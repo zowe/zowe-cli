@@ -20,10 +20,11 @@ export const RetrieveWorkflowDefinitionCommonOptions: { [key: string]: ICommandO
      * Parameter to list workflow details by workflow name
      * @type {ICommandOptionDefinition}
      */
-    workflowName: {
+    definitionFilePath: {
         name: "workflow-name",
         aliases: ["wn"],
-        description: "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
+        description:
+        "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
         type: "string",
         required: true,
         absenceImplications: ["workflow-key"],
