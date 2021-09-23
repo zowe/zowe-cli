@@ -179,6 +179,7 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      */
     public static BASE_OPTION_CERT_FILE: ICommandOptionDefinition = {
         name: "cert-file",
+        aliases: ["cf"],
         description: "The file path to a certificate file to use for authentication",
         type: "existingLocalFile",
         group: Constants.BASE_CONNECTION_OPTION_GROUP
@@ -189,6 +190,7 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      */
     public static BASE_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
         name: "cert-key-file",
+        aliases: ["ckf"],
         description: "The file path to a certificate key file to use for authentication",
         type: "existingLocalFile",
         group: Constants.BASE_CONNECTION_OPTION_GROUP
@@ -199,6 +201,7 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      */
     // public static BASE_OPTION_CERT_FILE_PASSWORD: ICommandOptionDefinition = {
     //     name: "cert-file-password",
+    //     aliases: ["cfp"],
     //     description: "The password to decrypt a certificate file to use for authentication",
     //     type: "string",
     //     group: Constants.BASE_CONNECTION_OPTION_GROUP
