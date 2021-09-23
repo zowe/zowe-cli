@@ -94,12 +94,18 @@ Object {
       "type": "string",
     },
     Object {
+      "aliases": Array [
+        "cf",
+      ],
       "description": "The file path to a certificate file to use for authentication",
       "group": "Zosmf Connection Options",
       "name": "cert-file",
       "type": "existingLocalFile",
     },
     Object {
+      "aliases": Array [
+        "ckf",
+      ],
       "description": "The file path to a certificate key file to use for authentication",
       "group": "Zosmf Connection Options",
       "name": "cert-key-file",

@@ -137,11 +137,11 @@ exports[`Create  Data Set should display the help 1`] = `
       Default value: https
       Allowed values: http, https
 
-   --cert-file  (local file path)
+   --cert-file  | --cf (local file path)
 
       The file path to a certificate file to use for authentication
 
-   --cert-key-file  (local file path)
+   --cert-key-file  | --ckf (local file path)
 
       The file path to a certificate key file to use for authentication
 
