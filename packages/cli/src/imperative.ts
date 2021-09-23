@@ -95,10 +95,10 @@ const config: IImperativeConfig = {
                     secure: true,
                     optionDefinition: Constants.BASE_OPTION_CERT_KEY_FILE
                 // },
-                // certFilePassword: {
+                // certFilePassphrase: {
                 //     type: "string",
                 //     secure: true,
-                //     optionDefinition: Constants.BASE_OPTION_CERT_FILE_PASSWORD
+                //     optionDefinition: Constants.BASE_OPTION_CERT_FILE_PASSPHRASE
                 }
             },
             required: []
@@ -214,10 +214,10 @@ const config: IImperativeConfig = {
                         secure: true,
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
                     },
-                    // certFilePassword: {
+                    // certFilePassphrase: {
                     //     type: "string",
                     //     secure: true,
-                    //     optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSWORD
+                    //     optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
                     // },
                     basePath: {
                         type: "string",
