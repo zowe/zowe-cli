@@ -38,7 +38,6 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
         }
     ],
     options: ([
-        RetrieveWorkflowDefinitionCommonOptions.workflowName,
         RetrieveWorkflowDefinitionCommonOptions.listSteps,
         RetrieveWorkflowDefinitionCommonOptions.listVariables
     ]),
@@ -47,11 +46,6 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
             description: "To list the contents of a workflow definition stored in the UNIX file \"/user/dir/workflow.xml\"" +
             " including its steps and variables",
             options: "\"/user/dir/workflow.xml\" --list-steps --list-variables"
-        },
-        {
-            description: "To list the contents of a workflow definition stored in the z/OS data set \"USER.DATA.SET.XML\"" +
-            " including its steps and variables",
-            options: "\"/user/dir/workflow.xml\" --workflow-name \"testWorkflow\" --list-steps --list-variables"
         }
     ]
 };

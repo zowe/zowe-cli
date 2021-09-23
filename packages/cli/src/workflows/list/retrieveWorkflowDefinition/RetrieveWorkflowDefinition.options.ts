@@ -17,22 +17,6 @@ import { ICommandOptionDefinition } from "@zowe/imperative";
 export const RetrieveWorkflowDefinitionCommonOptions: { [key: string]: ICommandOptionDefinition } = {
 
     /**
-     * Parameter to list workflow details by workflow name
-     * @type {ICommandOptionDefinition}
-     */
-    workflowName: {
-        name: "workflow-name",
-        aliases: ["wn"],
-        description:
-        "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
-        type: "string",
-        required: true,
-        absenceImplications: ["workflow-key"],
-        conflictsWith: ["workflow-key"]
-    },
-
-
-    /**
      * Optional parameter for listing steps properties.
      * @type {ICommandOptionDefinition}
      */
