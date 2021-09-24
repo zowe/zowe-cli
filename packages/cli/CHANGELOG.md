@@ -2,6 +2,18 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Daemon mode updates:
+    - Enhancements:
+        - Renamed the platform-specific executable from zowex to zowe, so that existing zowe commands used from the command line or in scripts do not have to change when running in daemon mode.
+        - Use an environment variable named ZOWE_USE_DAEMON with a value of "yes" to determine if zowe commands should run in daemon mode.
+        - Automatically launch the background daemon when one is not running.
+        - The daemon no longer has its own visible window, making it much more daemon-like.
+    - Bugfixs:
+        - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
+        - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
+
 ## `7.0.0-next.202109032014`
 
 - Enhancement: Log in to API ML to obtain token value instead of prompting for it in `config secure` command.
