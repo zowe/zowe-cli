@@ -44,11 +44,13 @@ const DEFAULT_PORT: i32 = 4000;
 
 const X_ZOWE_DAEMON_REPLY: &str = "x-zowe-daemon-reply:";
 
-const CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE: i32 = 100;
-const CANNOT_GET_MY_PATH_EXIT_CODE: i32 = 101;
-const NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE: i32 = 102;
-const CANNOT_START_DAEMON_EXIT_CODE: i32 = 103;
-const DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE: i32 = 104;
+const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
+const EXIT_CODE_CANNOT_GET_MY_PATH: i32 = 101;
+const EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH: i32 = 102;
+const EXIT_CODE_CANNOT_START_DAEMON: i32 = 103;
+const EXIT_CODE_DEAMON_NOT_RUNNING_AFTER_START: i32 = 104;
+const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 105;
+const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
 
 struct DaemonProcInfo {
     is_running: bool,
@@ -70,21 +72,83 @@ struct DaemonProcInfo {
 fn main() -> std::io::Result<()> {
     // turn args into vector
     let mut _args: Vec<String> = env::args().collect();
+
     _args.drain(..1); // remove first (exe name)
 
+    let cmd_result: Result<i32, i32>;
     if user_wants_daemon() {
-        // interact with the daemon
-        let args = _args.join(" ");
-        run_zowe_command(args).unwrap();
-        return Ok(())
+        /* Convert our vector of arguments into a single string of arguments
+         * for transmittal to the daemon.
+         */
+        let arg_string = arg_vec_to_string(_args);
+
+        // send command to the daemon
+        match run_daemon_command(arg_string) {
+            Ok(_value) => {
+                /* todo: Change run_daemon_command() to return an exit code.
+                 * We can then process its cmd_result return value just like
+                 * we do for run_nodejs_command(). As it stands now, our
+                 * exit code is always zero, regardless of the exit code of
+                 * the command run by the daemon.
+                 */
+                cmd_result = Ok(0);
+            },
+            Err(error) => {
+                println!("The daemon failed to run your command due to this error:\n{}", error);
+                cmd_result = Ok(EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD);
+            }
+        }
+    } else {
+        // user wants to run classic NodeJS zowe
+        cmd_result = run_nodejs_command(&mut _args);
     }
 
-    // user wants to run classic NodeJS zowe
-    run_classic_zowe(&mut _args);
-    return Ok(());
+    // stupid rust does not enable main() to return an exit code. This is the work-around.
+    match cmd_result {
+        Ok(value) => {
+            std::process::exit(value);
+        },
+        Err(error) => {
+            println!("NodeJS zowe failed to run your command due to this error:\n{}", error);
+            std::process::exit(EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD);
+        }
+    }
 }
 
-fn run_zowe_command(mut args: String) -> std::io::Result<()> {
+/**
+ * Convert a vector of command line arguments into a single string of arguments.
+ * @param cmd_line_args
+ *      The user-supplied command line arguments to the zowe command.
+ *      Each argument is in its own vector element.
+ * @returns
+ *      A String containing all of the command line arguments.
+ */
+fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
+    let mut arg_string = String::new();
+    let mut arg_count = 1;
+    for next_arg in arg_vec.iter() {
+        if arg_count > 1 {
+            arg_string.push(' ');
+        }
+
+        /* An argument that contains a space must be enclosed in double quotes
+         * when it is placed into a single argument string.
+         */
+        if next_arg.contains(' ') {
+            arg_string.push('"');
+            arg_string.push_str(next_arg);
+            arg_string.push('"');
+        } else {
+            arg_string.push_str(next_arg);
+        }
+
+        arg_count = arg_count + 1;
+    }
+
+    return arg_string;
+}
+
+fn run_daemon_command(mut args: String) -> std::io::Result<()> {
     args.push_str(" --dcd ");
     let path = env::current_dir()?;
     args.push_str(path.to_str().unwrap());
@@ -105,11 +169,11 @@ fn run_zowe_command(mut args: String) -> std::io::Result<()> {
      */
     let mut conn_attempt = 1;
     let mut we_started_daemon = false;
-    let mut cmd_to_show: String = "No value was set".to_string();
+    let mut cmd_to_show: String = String::new();
     let mut stream = loop {
         let conn_result = TcpStream::connect(&host_port_conn_str);
         if let Ok(good_stream) = conn_result {
-            // We made our connection. Break with the actual stram value
+            // We made our connection. Break with the actual stream value
             break good_stream;
         }
 
@@ -123,7 +187,7 @@ fn run_zowe_command(mut args: String) -> std::io::Result<()> {
                 let njs_zowe_path = get_nodejs_zowe_path();
                 we_started_daemon = true;
                 cmd_to_show = start_daemon(&njs_zowe_path);
-            } else {
+    } else {
                 if we_started_daemon {
                     println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
                         daemon_host, port_string
@@ -131,7 +195,7 @@ fn run_zowe_command(mut args: String) -> std::io::Result<()> {
                     println!("Command used to start the Zowe daemon was:\n    {}\nTerminating.",
                         cmd_to_show
                     );
-                    std::process::exit(DEAMON_NOT_RUNNING_AFTER_START_EXIT_CODE);
+                    std::process::exit(EXIT_CODE_DEAMON_NOT_RUNNING_AFTER_START);
                 }
             }
         }
@@ -141,7 +205,7 @@ fn run_zowe_command(mut args: String) -> std::io::Result<()> {
                 daemon_proc_info.name, daemon_proc_info.pid, daemon_host, port_string
             );
             println!("Command = {}\nTerminating after maximum retries.", daemon_proc_info.cmd);
-             std::process::exit(CANNOT_CONNECT_TO_RUNNING_DAEMON_EXIT_CODE);
+             std::process::exit(EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON);
         }
 
         // pause between attempts to connect
@@ -342,19 +406,22 @@ fn get_beg(buf: &str) -> Vec<String> {
 
 // Get the file path to the command that runs the NodeJS version of Zowe
 fn get_nodejs_zowe_path() -> String {
-    // get the path name to my own zowe rust executable
+    /* On Linux/Mac both our executable and shell script are named 'zowe'.
+     * First get the path name to my own zowe rust executable.
+     */
     let my_exe_result = env::current_exe();
     if my_exe_result.is_err() {
         println!("Unable to get path to my own executable. Terminating.");
-        std::process::exit(CANNOT_GET_MY_PATH_EXIT_CODE);
+        std::process::exit(EXIT_CODE_CANNOT_GET_MY_PATH);
     }
     let my_exe_path_buf = my_exe_result.unwrap();
     let my_exe_path = my_exe_path_buf.to_string_lossy();
 
-    // we want a program file name that would execute a 'zowe' command
-    let mut zowe_file = "zowe";
+    let zowe_cmd;
     if env::consts::OS == "windows" {
-        zowe_file = "zowe.cmd";
+        zowe_cmd = "zowe.cmd";
+    } else {
+        zowe_cmd = "zowe";
     }
 
     // find every program in our path that would execute a 'zowe' command
@@ -363,7 +430,7 @@ fn get_nodejs_zowe_path() -> String {
     let path = env::var_os("PATH");
     let path_ext = env::var_os("PATHEXT");
     for njs_zowe_path_buf in PathSearcher::new(
-        zowe_file,
+        zowe_cmd,
         path.as_ref().map(OsString::as_os_str),
         path_ext.as_ref().map(OsString::as_os_str),
     ) {
@@ -374,14 +441,15 @@ fn get_nodejs_zowe_path() -> String {
             continue;
         }
 
-        // use the first zowe command on our path that is not our own executable
+        // use the first 'zowe' command on our path that is not our own executable
         break;
     }
     if njs_zowe_path == NOT_FOUND {
         println!("Could not find a NodeJS zowe command on your path.");
-        println!("Cannot launch Zowe daemon. Terminating.");
-        std::process::exit(NO_NODEJS_ZOWE_ON_PATH_EXIT_CODE);
+        println!("Will not be able to run Zowe commands. Terminating.");
+        std::process::exit(EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH);
     }
+
     return njs_zowe_path;
 }
 
@@ -400,7 +468,7 @@ fn is_daemon_running() -> DaemonProcInfo {
            process.cmd()[2].to_lowercase() == "--daemon"
         {
             // convert the process command from a vector to a string
-            let mut proc_cmd: String = "".to_string();
+            let mut proc_cmd: String = String::new();
             for cmd_part in process.cmd() {
                 proc_cmd.push_str(cmd_part);
                 proc_cmd.push(' ');
@@ -443,135 +511,102 @@ fn user_wants_daemon() -> bool {
  * Run the classic NodeJS zowe command.
  * @param cmd_line_args
  *      The user-supplied command line arguments to the zowe command.
+ * @returns
+ *      Our error code when we fail to the NodeJS zowe.
+ *      Otherwise, the exit code of the NodeJs zowe command.
  */
-fn run_classic_zowe(cmd_line_args: &mut Vec<String>) {
-   let njs_zowe_path = get_nodejs_zowe_path();
+fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
+    let njs_zowe_path = get_nodejs_zowe_path();
 
-    // The command to launch varies by OS
-    let shell_pgm;
-    let mut pgm_args = vec![];
-    if env::consts::OS == "windows" {
-        shell_pgm = "cmd";
-        pgm_args.push("/C".to_string());
-        pgm_args.push(njs_zowe_path.to_string());
-    } else {
-        shell_pgm = &njs_zowe_path;
-    }
-
-    // form the command that we show in an error message.
-    let mut cmd_to_show: String = (&shell_pgm).to_string();
-
-    // add user-supplied arguments to both the command to show and to launch
-    for next_arg in cmd_line_args.iter() {
-        cmd_to_show.push_str(" ");
-        cmd_to_show.push_str(next_arg);
-        pgm_args.push(next_arg.to_string());
-    }
-
-    /* We cannot use pgm_args after any error due to rust's stupid string ownership.
-     * The following statement can show individual arguments more precisely for debugging.
-     * println!("\nrun_classic_zowe: shell_pgm = {}  pgm_args = {:?}", shell_pgm, pgm_args);
-     */
-
-    // launch classic zowe and wait for it to complete.
-    let new_proc = Command::new(shell_pgm)
-        .args(pgm_args)
+    // launch classic NodeJS zowe and wait for it to complete.
+    let exit_code: i32;
+    match Command::new(njs_zowe_path.to_owned())
+        .args(cmd_line_args.to_owned())
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
-        .output();
-    if new_proc.is_err() {
-        println!("Error = {:?}", new_proc);
-        println!("Failed to run the following command:\n    {}", cmd_to_show);
-    }
+        .output()
+    {
+        Ok(new_proc) => {
+            exit_code = new_proc.status.code().unwrap();
+        },
+        Err(error) => {
+            println!("Failed to run the following command:");
+            println!("    Program = {}\n    arguments = {:?}", njs_zowe_path, cmd_line_args);
+            println!("Due to this error:\n    {}", error);
+            exit_code = EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD;
+        }
+    };
+
+    return Ok(exit_code);
 }
 
 /**
  * Start the zowe daemon.
+ *
  * @param njs_zowe_path
  *      Full path to the NodeJS zowe command.
  * @returns
  *      The command that was used to start the daemon (for display purposes).
+ *
+ * Here are alternate programming options for implementing this function that have been tried.
+ *
+ * On windows:
+ *      If we run cmd with vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"]
+ *      we get no window, no color, and no escape characters.
+ *      The 'exit' command hangs. You must type exit AND control-C, or
+ *      click the X button on your original command window.
+ *      When you do terminate your command window, the daemon automatically terminates.
+ *
+ *      If we run cmd with vec!["/C", "start", "", "/b", njs_zowe_path, "--daemon"];
+ *      we get no window, no color, and no escape characters.
+ *      The 'exit' command hangs. You must click the X button on your original command window.
+ *      When you do terminate your command window, the daemon automatically terminates.
+ *      Anything other than an empty title in the start command fails.
+ *
+ *      If we run cmd with vec!["/C", "start", "", "/MIN", njs_zowe_path, "--daemon"];
+ *      we launch a minimized window on the task bar.
+ *      CMD.exe and PowerShell show escape characters for color.
+ *      All shells look fine in ConEmu.
+ *      You must separately exit the daemon window.
+ *      Anything other than an empty title in the start command fails.
+ *
+ *      If you use Stdio::inherit(), CMD and PowerShell show escape characters for color.
+ *      If use use Stdio::null(), you get no color. Some commands still show color on windows,
+ *      which produce escape characters. That is why we use the FORCE_COLOR=0 env variable on windows.
+ *
+ * On Linux:
+ *      If you use Stdio::inherit(), you get double output. If use use Stdio::null(), you get no color.
  */
 fn start_daemon(njs_zowe_path: &str) -> String {
     println!("Starting a background process to increase performance ...");
 
-    // set OS-specific options
-    let shell_pgm;
-    let cmd_to_run;
-    let stdout_val;
-    let stderr_val;
-
-    // must be declared outside of the "if" scope. Thanks a lot Rust!
-    let mut zowe_cmd_linux: String = "".to_string();
-
     if env::consts::OS == "windows" {
-        shell_pgm = "cmd";
-        cmd_to_run = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
-        /*
-        The following has no window, no color and no escape characters.
-        The 'exit' command hangs. You must type exit AND control-C, or
-        click the X button on your original command window.
-        When you do terminate your command window, the daemon automatically terminates.
-            cmd_to_run = vec!["/C", njs_zowe_path, "--daemon", "&&", "exit"];
-
-        The following has no window, no color, no escape characters
-        The 'exit' command hangs. You must click the X button on your original command window.
-        When you do terminate your command window, the daemon automatically terminates.
-        Anything other than an empty title in the start command fails.
-            cmd_to_run = vec!["/C", "start", "", "/b", njs_zowe_path, "--daemon"];
-
-        The following launches a minimized window on the task bar.
-        CMD.exe and PowerShell show escape characters for color.
-        All shells look fine in ConEmu.
-        You must separately exit the daemon window.
-        Anything other than an empty title in the start command fails.
-            cmd_to_run = vec!["/C", "start", "", "/MIN", njs_zowe_path, "--daemon"];
-        */
-
-        /*
-        If you inherit stdout, CMD and PowerShell show escape characters for color.
-        If use use null, you get no color.
-            stdout_val = Stdio::inherit();
-            stderr_val = Stdio::inherit();
-        */
-        stdout_val = Stdio::null();
-        stderr_val = Stdio::null();
-
         /* Windows CMD and Powershell terminal windows show escape characters
-        * instead of colors in daemon-mode. A more elegant solution may exist,
-        * but for now we just turn off color in daemon mode on Windows.
-        */
+         * instead of colors in daemon-mode. A more elegant solution may exist,
+         * but for now we just turn off color in daemon mode on Windows.
+         */
         env::set_var("FORCE_COLOR", "0");
-    } else {
-        // the whole command must be supplied as one parm to "sh -c" command.
-        zowe_cmd_linux.push_str(njs_zowe_path);
-        zowe_cmd_linux.push_str(" --daemon &");
-        shell_pgm = "sh";
-        cmd_to_run = vec!["-c", &zowe_cmd_linux];
-
-        // If you inherit stdout, you get double output. If use use null, you get no color.
-        stdout_val = Stdio::null();
-        stderr_val = Stdio::null();
     }
 
-    // record the command that we run (for display purposes)
-    let mut cmd_to_show: String = (&shell_pgm).to_string();
-    for next_arg in cmd_to_run.iter() {
-        cmd_to_show.push_str(" ");
-        cmd_to_show.push_str(next_arg);
-    }
+    let daemon_arg = "--daemon";
+    match Command::new(njs_zowe_path.to_owned())
+        .arg(daemon_arg)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+    {
+        Ok(_unused) => { /* nothing to do */ },
+        Err(error) => {
+            println!("Failed to start the following process:\n    {} {}", njs_zowe_path, daemon_arg);
+            println!("Due to this error:\n    {}", error);
+            std::process::exit(EXIT_CODE_CANNOT_START_DAEMON);
+        }
+    };
 
-    // spawn the zowe daemon process and do not wait for termination
-    let new_proc = Command::new(shell_pgm)
-        .args(cmd_to_run)
-        .stdout(stdout_val)
-        .stderr(stderr_val)
-        .spawn();
-    if new_proc.is_err() {
-        println!("Error = {:?}", new_proc);
-        println!("Failed to start the following process.\n    {}\nTerminating.", cmd_to_show);
-        std::process::exit(CANNOT_START_DAEMON_EXIT_CODE);
-    }
+    // return the command that we run (for display purposes)
+    let mut cmd_to_show: String = njs_zowe_path.to_owned();
+    cmd_to_show.push_str(" ");
+    cmd_to_show.push_str(daemon_arg);
     return cmd_to_show;
 }
 
