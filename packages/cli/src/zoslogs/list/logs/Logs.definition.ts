@@ -31,33 +31,36 @@ export const LogsDefinition: ICommandDefinition = {
         {
             name: "start-time",
             aliases: ["st"],
-            description: `Specify the time in ISO-8601 time format from when z/OSMF will start to retrieve the logs. For example, '2021-01-26T03:33:18.065Z', '2021-01-26T11:33:18.065+08:00'. Default is the current time. `,
+            description: `Specify the time in ISO-8601 time format from when z/OSMF will start to retrieve the logs. For example, '2021-01-26T03:33:18.065Z', '2021-01-26T11:33:18.065+08:00'. Default is the current time.`,
             type: "string"
         },
         {
             name: "direction",
             aliases: ["d"],
-            description: `Specify the direction when retrieving the message log. Either 'forward' or 'backward' is valid, case insensitive. Default is 'backward'`,
-            type: "string"
+            description: `Specify the direction when retrieving the message log. Either 'forward' or 'backward' is valid, case insensitive.`,
+            type: "string",
+            defaultValue: "backward",
+            allowableValues: { values: ["forward", "backward"] }
         },
         {
             name: "range",
             aliases: ["r"],
-            description: `Specify a time range in which the logs will be retrieved. The format is like nnnu, nnn is 1-999, u is one of 's', 'm', 'h', for example, '999s', '20m', '3h'. Default is 10m`,
-            type: "string"
+            description: `Specify a time range in which the logs will be retrieved. The format is like nnnu, nnn is 1-999, u is one of 's', 'm', 'h', for example, '999s', '20m', '3h'.`,
+            type: "string",
+            defaultValue: "10m"
         }
     ],
     examples: [
         {
-            description: "List logs starting from '2021-07-26T03:38:37.098Z' and forwarding to 5 mins later.",
+            description: "List logs starting from '2021-07-26T03:38:37.098Z' and forwards to 5 minutes later",
             options: "--start-time 2021-07-26T03:38:37.098Z --range 5m --direction forward"
         },
         {
-            description: "List logs starting from '2021-07-26T03:38:37.098Z' and forwarding to 5 mins later. Alias version of the above command",
+            description: "List logs starting from '2021-07-26T03:38:37.098Z' and forwards to 5 minutes later. Alias version of the above command",
             options: "--st 2021-07-26T03:38:37.098Z -r 5m -d forward"
         },
         {
-            description: "List logs starting from '2021-07-26T03:38:37.098Z' and backwarding to 5 minutes before.",
+            description: "List logs starting from '2021-07-26T03:38:37.098Z' and backwards to 5 minutes before",
             options: "--st 2021-07-26T03:38:37.098Z -r 5m"
         }
     ]

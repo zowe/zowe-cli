@@ -17,6 +17,6 @@ export const ListDefinition: ICommandDefinition = {
     aliases: ["ls"],
     type: "group",
     summary: "List z/OS logs",
-    description: "List z/OS logs by invoking z/OSMF REST API." + "\n\n",
+    description: "List z/OS logs by invoking z/OSMF REST API.",
     children: [LogsDefinition]
 };

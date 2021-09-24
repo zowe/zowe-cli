@@ -27,7 +27,7 @@ export interface IZosLogParms {
      * @type {string}
      * @memberof ILogParms
      */
-    direction?: string;
+    direction?: "forward" | "backward";
 
     /**
      * The timeRange param.

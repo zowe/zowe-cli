@@ -5,11 +5,9 @@ Object {
   "aliases": Array [
     "zoslogs",
   ],
-  "description": "Interact with z/OS logs.
-
-",
+  "description": "Interact with z/OS logs.",
   "name": "zos-logs",
-  "summary": "Inteact with z/OS logs",
+  "summary": "Interact with z/OS logs",
   "type": "group",
 }
 `;
