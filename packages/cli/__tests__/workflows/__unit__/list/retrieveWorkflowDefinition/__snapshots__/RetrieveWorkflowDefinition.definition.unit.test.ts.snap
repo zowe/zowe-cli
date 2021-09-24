@@ -19,6 +19,21 @@ Object {
   "name": "definition-file-details",
   "options": Array [
     Object {
+      "absenceImplications": Array [
+        "workflow-key",
+      ],
+      "aliases": Array [
+        "wn",
+      ],
+      "conflictsWith": Array [
+        "workflow-key",
+      ],
+      "description": "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
+      "name": "workflow-name",
+      "required": true,
+      "type": "string",
+    },
+    Object {
       "aliases": Array [
         "ls",
       ],
@@ -35,14 +50,6 @@ Object {
       "name": "list-variables",
       "required": false,
       "type": "boolean",
-    },
-  ],
-  "positionals": Array [
-    Object {
-      "description": "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
-      "name": "definitionFilePath",
-      "required": true,
-      "type": "string",
     },
   ],
   "profile": Object {

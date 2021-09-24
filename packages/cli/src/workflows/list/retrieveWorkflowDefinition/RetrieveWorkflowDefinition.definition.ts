@@ -28,16 +28,8 @@ export const RetrieveWorkflowDefinition: ICommandDefinition = {
     profile: {
         optional: ["zosmf"]
     },
-    positionals: [
-        {
-            name: "definitionFilePath",
-            description:
-            "Specifies the location of the workflow definition file, which is either a UNIX path name or a fully qualified z/OS data set name.",
-            type: "string",
-            required: true
-        }
-    ],
     options: ([
+        RetrieveWorkflowDefinitionCommonOptions.workflowName,
         RetrieveWorkflowDefinitionCommonOptions.listSteps,
         RetrieveWorkflowDefinitionCommonOptions.listVariables
     ]),

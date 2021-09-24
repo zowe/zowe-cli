@@ -20,7 +20,7 @@ export const RetrieveWorkflowDefinitionCommonOptions: { [key: string]: ICommandO
      * Parameter to list workflow details by workflow name
      * @type {ICommandOptionDefinition}
      */
-    definitionFilePath: {
+    workflowName: {
         name: "workflow-name",
         aliases: ["wn"],
         description:

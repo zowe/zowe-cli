@@ -24,7 +24,7 @@ import { DefinitionWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 
 describe("List workflow definition file details handler", () => {
     describe("process method", () => {
-        const definitionFilePath = "fake/Path";
+        const workflowName = "fake/Path";
         it("should get workflow definition", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/workflows/list/retrieveWorkflowDefinition/RetrieveWorkflowDefinition.handler");
@@ -76,7 +76,7 @@ describe("List workflow definition file details handler", () => {
                     arguments: {
                         $0: "zowe",
                         _: ["zos-workflows", "list", "definition-file-details" ],
-                        definitionFilePath
+                        workflowName
                     },
                     response: {
                         format: {
@@ -111,7 +111,7 @@ describe("List workflow definition file details handler", () => {
             expect(DefinitionWorkflow.getWorkflowDefinition).toHaveBeenCalledWith(
                 fakeSession,
                 undefined,
-                definitionFilePath,
+                workflowName,
                 undefined,
                 undefined);
         });

@@ -38,7 +38,7 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
         let error;
         try {
             response = await DefinitionWorkflow.getWorkflowDefinition(
-                this.mSession, undefined, this.arguments.definitionFilePath,
+                this.mSession, undefined, this.arguments.workflowName,
                 this.arguments.listSteps, this.arguments.listVariables);
         } catch (err) {
             error = "List workflow(s) " + err;

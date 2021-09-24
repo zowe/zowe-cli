@@ -37,11 +37,4 @@ describe("List Workflow Definition FIle Details", () => {
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toMatchSnapshot();
     });
-
-    it("Should throw error if positional argumnent is missing.", async () => {
-        const shellScript = path.join(__dirname, "__scripts__", "command", "list_workflow_definition_missing_argument.sh");
-        const response = runCliScript(shellScript, TEST_ENVIRONMENT, [null]);
-        expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toContain("Missing Positional Argument:");
-    });
 });
