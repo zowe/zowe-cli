@@ -30,7 +30,7 @@ Executing 'zowe zos-logs list logs' will by default return logs from current tim
       "aliases": Array [
         "st",
       ],
-      "description": "Specify the time in ISO-8601 time format from when z/OSMF will start to retrieve the logs. For example, '2021-01-26T03:33:18.065Z', '2021-01-26T11:33:18.065+08:00'. Default is the current time.",
+      "description": "Specify the time in ISO-8601 time format from when z/OSMF will start to retrieve the logs. For example,             '2021-01-26T03:33:18.065Z', '2021-01-26T11:33:18.065+08:00'. Default is the current time.",
       "name": "start-time",
       "type": "string",
     },
@@ -54,7 +54,7 @@ Executing 'zowe zos-logs list logs' will by default return logs from current tim
         "r",
       ],
       "defaultValue": "10m",
-      "description": "Specify a time range in which the logs will be retrieved. The format is like nnnu, nnn is 1-999, u is one of 's', 'm', 'h', for example, '999s', '20m', '3h'.",
+      "description": "Specify a time range in which the logs will be retrieved. The format is like nnnu, nnn is 1-999, u is one             of 's', 'm', 'h', for example, '999s', '20m', '3h'.",
       "name": "range",
       "type": "string",
     },

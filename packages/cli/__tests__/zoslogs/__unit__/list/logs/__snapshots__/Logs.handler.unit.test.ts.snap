@@ -9,7 +9,7 @@ Object {
       "jobName": "TCP342  ",
       "message": " EZD1287I TTLS Error RC: 5004 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
       "messageId": "90679641840",
@@ -26,7 +26,7 @@ Object {
       "jobName": "TCP342  ",
       "message": " EZD1287I TTLS Error RC:  406 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
       "messageId": "90679642096",
@@ -52,7 +52,7 @@ exports[`get logs handler tests should be able to get logs using all options 3`]
 exports[`get logs handler tests should be able to get logs using all options 4`] = `
 "2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC: 5004 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1"
 `;
@@ -60,7 +60,7 @@ exports[`get logs handler tests should be able to get logs using all options 4`]
 exports[`get logs handler tests should be able to get logs using all options 5`] = `
 "2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC:  406 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1"
 `;
@@ -74,7 +74,7 @@ Object {
       "jobName": "TCP342  ",
       "message": " EZD1287I TTLS Error RC: 5004 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
       "messageId": "90679641840",
@@ -91,7 +91,7 @@ Object {
       "jobName": "TCP342  ",
       "message": " EZD1287I TTLS Error RC:  406 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
       "messageId": "90679642096",
@@ -117,7 +117,7 @@ exports[`get logs handler tests should be able to get logs using defaults 3`] = 
 exports[`get logs handler tests should be able to get logs using defaults 4`] = `
 "2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC: 5004 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1"
 `;
@@ -125,7 +125,7 @@ exports[`get logs handler tests should be able to get logs using defaults 4`] = 
 exports[`get logs handler tests should be able to get logs using defaults 5`] = `
 "2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC:  406 Initial Handshake
    LOCAL: ::FFFF:000.000.000.002..3973
-   REMOTE: ::FFFF:000.000.000.003..8803
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
    JOBNAME: P00SVR00 RULE: DDSClientRule
    USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1"
 `;
