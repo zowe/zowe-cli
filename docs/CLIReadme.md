@@ -510,10 +510,9 @@ at the host zos124 (default port - 443) and allow self-signed certificates:
 
       * `$  zowe profiles create zosmf-profile zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false`
 
-*  Create a zosmf profile called 'zos124' to connect to z/OSMF
-at the host zos124 (default port - 443) and allow self-signed certificates:
+*  Create a zosmf profile called 'zosAPIML' to connect to z/OSMF via the Zowe API Mediation Layer running at host 'zosAPIML', port '60004', and allow for self-signed certificates. To reduce duplication, you could elect to store the 'host', 'port', 'reject-unauthorized', 'user', and 'password' values for the API Mediation Layer in a base profile and only store the 'base-path' of the service in the zosmf profile.:
 
-      * `$  zowe profiles create zosmf-profile zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath`
+      * `$  zowe profiles create zosmf-profile zosAPIML --host zosAPIML --port 60004 --user ibmuser --password myp4ss --reject-unauthorized false --base-path ibmzosmf/api/v1`
 
 ### tso-profile<a name="profiles-create-tso-profile"></a>
 z/OS TSO/E User Profile
