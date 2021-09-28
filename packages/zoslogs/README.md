@@ -1,7 +1,7 @@
 # z/OS Console Package
 
-Contains APIs to interact with the z/OS logs (using z/OSMF log REST endpoints).
-
+Contains APIs to interact with logs on z/OS (using z/OSMF log REST endpoints).
+z/OSMF version 2.4 (Ensure that the [z/OSMF logger Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930)) or higher is required.
 ## API Examples
 
 **List z/OS logs**
