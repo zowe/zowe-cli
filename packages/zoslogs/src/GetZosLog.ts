@@ -45,9 +45,8 @@ export class GetZosLog {
      */
     public static getResourcePath(commandParms: IZosLogParms): string {
         let path = ZosLogConstants.RESOURCE;
-        let startTime = new Date().toISOString();
         if (commandParms.startTime !== undefined) {
-            startTime = commandParms.startTime;
+            let startTime = commandParms.startTime;
             // in case the input is milliseconds format, which is a long number
             if (!isNaN(commandParms.startTime)) {
                 startTime = new Date(+startTime).toISOString();

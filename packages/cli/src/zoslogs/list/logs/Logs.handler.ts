@@ -45,7 +45,6 @@ export default class LogsHandler extends ZosmfBaseHandler {
             );
             return;
         }
-        // commandParameters.response.console.log("items length: " + logItems.length);
 
         // Return as an object in the response 'data' field when using --response-format-json
         commandParameters.response.data.setObj(resp);
