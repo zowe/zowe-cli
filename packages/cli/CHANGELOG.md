@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Add `workflowName` as required option and remove `baseFilePath` as positional argument for `zowe zos-workflows list definition-file-details` command. [#1150](https://github.com/zowe/zowe-cli/issues/1150)
+- Enhancement: Add `workflow-name` as required option and remove `definitionFilePath` as positional argument for `zowe zos-workflows list definition-file-details` command. [#1150](https://github.com/zowe/zowe-cli/issues/1150)
 
 ## `7.0.0-next.202109032014`
 
