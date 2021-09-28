@@ -236,7 +236,7 @@ const config: IImperativeConfig = {
                         "specified on every command"
                 },
                 {
-                    options: "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
+                    options: "zowe profiles create zosmf-profile zosAPIML --host zosAPIML --port 60004 --user ibmuser --password myp4ss --reject-unauthorized false --base-path ibmzosmf/api/v1",
                     description: "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) " +
                         "and allow self-signed certificates"
                 }
