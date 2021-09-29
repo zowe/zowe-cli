@@ -10,9 +10,11 @@
 */
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession,
-    IHandlerParameters, SessConstants, IConfig, ImperativeError, RestClientError } from "@zowe/imperative";
-import { Login, Services } from "@zowe/core-for-zowe-sdk";
+import { BaseAutoInitHandler, AbstractSession, ICommandArguments, ISession, IHandlerResponseApi,
+    IHandlerParameters, SessConstants, IConfig, ImperativeConfig, ImperativeError, RestClientError
+} from "@zowe/imperative";
+import { IApimlProfileInfo, IApimlSvcAttrsLoaded, Login, Services } from "@zowe/core-for-zowe-sdk";
+import { IAutoInitRpt } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IAutoInitRpt";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -27,6 +29,18 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      * The description of your service to be used in CLI prompt messages
      */
     protected mServiceDescription: string = "your API Mediation Layer";
+
+    /**
+     * This structure is populated during convertApimlProfileInfoToProfileConfig
+     * and retrieved by the auto-init command handler to provide the data for the
+     * output of the auto-init command.
+     * @private
+     */
+    private mAutoInitReport: IAutoInitRpt = {
+        configFileNm: "",
+        typeOfChange: "",
+        profileRpts: []
+    };
 
     /**
      * This is called by the {@link BaseAuthHandler#process} when it needs a
@@ -89,6 +103,78 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             }
         }
 
+        this.recordProfilesFound(profileInfos);
         return profileConfig;
+    }
+
+    /**
+     * This is called by our processAutoInit() base class function to display the set of actions
+     * taken by the auto-init command.
+     */
+    protected displayAutoInitChanges(response: IHandlerResponseApi): void {
+        // all profile updates have been made. Now we can record those updates.
+        this.recordProfileUpdates();
+
+        // display a report of the profile updates
+        // todo: display a real report
+        response.console.log("configFileNm = " + this.mAutoInitReport.configFileNm);
+    }
+
+    /**
+     * Record the set of profiles found by our interrogation of plugins and APIML.
+     * The information is re-arranged to enable easy reporting of the desired information.
+     * This function assumes that the 'services' module continues to use its "first-found" algorithm.
+     * If that changes, this function must also change.
+     *
+     * @param {IApimlProfileInfo} profileInfos
+     *        The profileInfo array returned by services.getServicesByConfig().
+     */
+    private recordProfilesFound(profileInfos: IApimlProfileInfo[]): void {
+        // todo: before auto-init makes any changes, record the starting config
+
+        // record the config file name path
+        this.mAutoInitReport.configFileNm = ImperativeConfig.instance.config.api.layers.get().path;
+
+        /* zzz
+        private m_autoInitReport: IAutoInitRpt = {
+            configFileNm: "",
+            typeOfChange: "",
+            profileRpts: [{
+                selProfNm: "",
+                typeOfChange: "",
+                selProfType: "",
+                selBasePath: "",
+                pluginNms: [],
+
+            }],
+        };
+
+
+        for (const nextProfInfo of profileInfos) {
+            params.response.console.log("_________________________________");
+            params.response.console.log("Created profile '" + nextProfInfo.profName +
+                "'of type '" + nextProfInfo.profType + "'"
+            );
+            for (const nextPluginConfig of nextProfInfo.pluginConfigs) {
+                params.response.console.log("    CLI name = " + nextPluginConfig.pluginName);
+            }
+            for (const nextBasePath of nextProfInfo.basePaths) {
+                params.response.console.log("    Base path = " + nextBasePath);
+            }
+        }
+
+        zzz */
+
+
+        // todo: Record the first profile found for each profile type
+    }
+
+    /**
+     * Record How the profiles have been updated by auto-init.
+     */
+    private recordProfileUpdates(): void {
+        // todo: get our current (ending) config
+
+        // todo: compare starting config with the ending config
     }
 }
