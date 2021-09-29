@@ -70,7 +70,7 @@ describe("Delete Jobs unit tests", () => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return {};
             });
-            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, false);
+            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "1.0");
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 2_0)", async () => {
@@ -78,7 +78,7 @@ describe("Delete Jobs unit tests", () => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return {};
             });
-            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, true);
+            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "2.0");
         });
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
@@ -97,14 +97,14 @@ describe("Delete Jobs unit tests", () => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return {};
             });
-            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: false});
+            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "1.0"});
         });
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 2_0)", async () => {
             ZosmfRestClient.deleteExpectString = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return {};
             });
-            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: true});
+            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "2.0"});
         });
     });
 

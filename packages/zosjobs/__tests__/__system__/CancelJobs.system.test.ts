@@ -68,7 +68,7 @@ describe("CancelJobs System tests", () => {
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
-            await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: true});
+            await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
         }, LONG_TIMEOUT);
     });
 

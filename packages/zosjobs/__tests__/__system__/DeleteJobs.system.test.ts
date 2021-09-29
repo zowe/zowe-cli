@@ -64,7 +64,7 @@ describe("DeleteJobs System tests", () => {
             let caughtError;
             try {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-                await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: true});
+                await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: "2.0"});
             } catch (error) {
                 caughtError = error;
             }

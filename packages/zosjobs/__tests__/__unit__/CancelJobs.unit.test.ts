@@ -70,7 +70,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return {};
             });
-            await CancelJobs.cancelJobForJob(fakeSession, fakeJob, false);
+            await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "1.0");
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 2_0)", async () => {
@@ -78,7 +78,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return {};
             });
-            await CancelJobs.cancelJobForJob(fakeSession, fakeJob, true);
+            await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "2.0");
         });
 
         it("should allow users to call cancelJobCommon with correct parameters", async () => {
@@ -97,7 +97,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return {};
             });
-            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: false });
+            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "1.0" });
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 2_0)", async () => {
@@ -105,7 +105,7 @@ describe("Cancel Jobs unit tests", () => {
                 expect(body).toMatchSnapshot();
                 return {};
             });
-            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: true });
+            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "2.0" });
         });
     });
 

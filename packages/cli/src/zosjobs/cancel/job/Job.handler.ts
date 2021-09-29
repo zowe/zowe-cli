@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { CancelJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { CancelJobs, GetJobs, IJob, JobsConstants } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -42,7 +42,6 @@ export default class JobHandler extends ZosmfBaseHandler {
 
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
-
         // Cancel the job
         await CancelJobs.cancelJobForJob(this.mSession, job, this.arguments.modifyVersion);
 

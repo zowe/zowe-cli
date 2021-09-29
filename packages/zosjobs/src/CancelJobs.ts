@@ -47,7 +47,7 @@ export class CancelJobs {
      * @returns {Promise<void>} -  promise that resolves when the API call is complete
      * @memberof CancelJobs
      */
-    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: boolean) {
+    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0") {
         this.log.trace("cancelJobForJob called with job %s", JSON.stringify(job));
         return CancelJobs.cancelJobCommon(session, { jobname: job.jobname, jobid: job.jobid, version });
     }
@@ -66,20 +66,18 @@ export class CancelJobs {
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
 
-        // set default if unset
-        let jobModifyVersion: string;
-        if (!parms.version) {
-            jobModifyVersion = JobsConstants.DEFAULT_CANCEL_VERSION;
-        } else {
-            jobModifyVersion = JobsConstants.CANCEL_VERSION_2;
-        }
-        this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, jobModifyVersion);
+        this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
         const headers: any = [Headers.APPLICATION_JSON];
+
+        // Set version of the modify request to either "1.0" or "2.0"
+        if (parms.version !== "2.0") {
+            parms.version = JobsConstants.DEFAULT_CANCEL_VERSION
+        }
 
         // build request
         const request: ICancelJob = {
             request: JobsConstants.REQUEST_CANCEL,
-            version: jobModifyVersion
+            version: parms.version
         };
 
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;

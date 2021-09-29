@@ -33,8 +33,8 @@ export interface ICancelJobParms {
 
     /**
      * version of the cancel request
-     * @type {boolean}
+     * @type {string}
      * @memberof ICancelJobParms
      */
-    version?: boolean;
+    version?: string;
 }

@@ -36,8 +36,8 @@ export interface IDeleteJobParms {
      * If omitted, functionality is the same as if specifying "1.0" - the deletion of the job is asynchronous
      * If "2.0" is specified, the cancel and purge is synchronous
      *
-     * @type {boolean}
+     * @type {"1.0" | "2.0"}
      * @memberof IDeleteJobParms
      */
-    modifyVersion?: boolean;
+    modifyVersion?: "1.0" | "2.0";
 }

@@ -12,10 +12,11 @@ Object {
   "name": "job",
   "options": Array [
     Object {
+      "defaultValue": "1.0",
       "description": "If you use this option, X-IBM-Job-Modify-Version will be set to \\"2.0\\" and cancel job API will be synchronous. Otherwise, it will be asynchronous.",
       "name": "modifyVersion",
       "required": false,
-      "type": "boolean",
+      "type": "string",
     },
   ],
   "positionals": Array [
