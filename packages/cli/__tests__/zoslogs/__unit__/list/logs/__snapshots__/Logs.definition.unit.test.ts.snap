@@ -3,11 +3,13 @@
 exports[`zos-logs list logs command definition should not have changed 1`] = `
 Object {
   "aliases": Array [],
-  "description": "List z/OS operlog or syslog within a time range.
+  "description": "List z/OS operlog within a time range.
 
-Use this operation to get the z/OS logs. It invokes z/OSMF REST API to retrieve logs.
+Use this operation to get the z/OS operations logs. It invokes z/OSMF REST API to retrieve logs.
 
-Executing 'zowe zos-logs list logs' will by default return logs from current time and backwards to 10 minutes before.",
+Executing 'zowe zos-logs list logs' will by default return logs from current time and backwards to 10 minutes before.
+
+Note: OPERLOG needs to be configured on z/OS server.",
   "examples": Array [
     Object {
       "description": "List logs starting from '2021-07-26T03:38:37.098Z' and forwards to 5 minutes later",

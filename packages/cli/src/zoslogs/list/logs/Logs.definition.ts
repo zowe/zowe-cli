@@ -17,11 +17,13 @@ export const LogsDefinition: ICommandDefinition = {
     aliases: [],
     summary: "List z/OS operlog or syslog within a time range",
     description:
-        `List z/OS operlog or syslog within a time range.` +
+        `List z/OS operlog within a time range.` +
         `\n\n` +
-        `Use this operation to get the z/OS logs. It invokes z/OSMF REST API to retrieve logs.` +
+        `Use this operation to get the z/OS operations logs. It invokes z/OSMF REST API to retrieve logs.` +
         `\n\n` +
-        `Executing '${Constants.BINARY_NAME} zos-logs list logs' will by default return logs from current time and backwards to 10 minutes before.`,
+        `Executing '${Constants.BINARY_NAME} zos-logs list logs' will by default return logs from current time and backwards to 10 minutes before.` +
+        `\n\n` +
+        `Note: OPERLOG needs to be configured on z/OS server.`,
     type: "command",
     handler: __dirname + "/Logs.handler",
     profile: {
