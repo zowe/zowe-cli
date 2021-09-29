@@ -2,14 +2,18 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.33.3`
+
+- Enhancement: Update post-install script to display a message when the CLI successfully installs due to increased error messaging from USS SDK when optional pre-requisites are not installed.
+
 ## `6.33.1`
 
-- Bugfix: Fix capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
+- Bugfix: Fixed capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
 
 ## `6.33.0`
 
-- Enhancement: Expose new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
-- Enhancement: Update Imperative to add the following features:
+- Enhancement: Exposed new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
+- Enhancement: Updated Imperative to add the following features:
   - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions
   - Enhancement: The `plugins validate` command will return an error code when plugins have errors if the new `--fail-on-error` option is specified. Also adds `--fail-on-warning` option to return with an error code when plugins have warnings. [#463](https://github.com/zowe/imperative/issues/463)
   - BugFix: Fixed regression where characters are not correctly escaped in web help causing extra slashes ("\") to appear. [#644](https://github.com/zowe/imperative/issues/644)
