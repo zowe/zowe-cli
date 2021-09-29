@@ -37,24 +37,33 @@ export default class LogsHandler extends ZosmfBaseHandler {
             range: commandParameters.arguments.range
         };
 
-        const resp: IZosLogType = await GetZosLog.getZosLog(this.mSession, zosLogParms);
-        const logItems: Array<IZosLogItemType> = resp.items;
-        if (logItems === undefined || logItems.length === 0) {
+        try{
+            const resp: IZosLogType = await GetZosLog.getZosLog(this.mSession, zosLogParms);
+
+            const logItems: Array<IZosLogItemType> = resp.items;
+            if (logItems === undefined || logItems.length === 0) {
+                commandParameters.response.console.log(
+                    TextUtils.formatMessage(outputHeader, 0, "logs", startTime, new Date(resp.nextTimestamp).toISOString())
+                );
+                return;
+            }
+
+            // Return as an object in the response 'data' field when using --response-format-json
+            commandParameters.response.data.setObj(resp);
+
             commandParameters.response.console.log(
-                TextUtils.formatMessage(outputHeader, 0, "logs", startTime, new Date(resp.nextTimestamp).toISOString())
+                TextUtils.formatMessage(outputHeader, resp.totalitems, resp.source, startTime, new Date(resp.nextTimestamp).toISOString())
             );
-            return;
-        }
-
-        // Return as an object in the response 'data' field when using --response-format-json
-        commandParameters.response.data.setObj(resp);
-
-        commandParameters.response.console.log(
-            TextUtils.formatMessage(outputHeader, resp.totalitems, resp.source, startTime, new Date(resp.nextTimestamp).toISOString())
-        );
-        commandParameters.response.console.log("");
-        for (const logItem of logItems) {
-            commandParameters.response.console.log(new Date(logItem.timestamp).toISOString() + "  " + logItem.message.replace(/\r/g, "\n"));
+            commandParameters.response.console.log("");
+            for (const logItem of logItems) {
+                commandParameters.response.console.log(new Date(logItem.timestamp).toISOString() + "  " + logItem.message.replace(/\r/g, "\n"));
+            }
+        } catch (err) {
+            if(err.mMessage.includes('status 404')){
+                commandParameters.response.console.log("Note: This feature dependents on z/OSMF version 2.4 or higher. Ensure that the z/OSMF" +
+                " Operations Log Support is available via APAR and associated PTFs: https://www.ibm.com/support/pages/apar/PH35930. \n");
+            }
+            throw err;
         }
     }
 }
