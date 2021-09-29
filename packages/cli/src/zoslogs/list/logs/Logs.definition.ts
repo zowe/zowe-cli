@@ -14,7 +14,7 @@ import { Constants } from "../../../Constants";
 
 export const LogsDefinition: ICommandDefinition = {
     name: "logs",
-    aliases: ["logs"],
+    aliases: [],
     summary: "List z/OS operlog or syslog within a time range",
     description:
         `List z/OS operlog or syslog within a time range.` +
@@ -63,7 +63,7 @@ export const LogsDefinition: ICommandDefinition = {
         },
         {
             description: "List logs starting from '2021-07-26T03:38:37.098Z' and backwards to 5 minutes before",
-            options: "--st 2021-07-26T03:38:37.098Z -r 5m"
+            options: "--start-time 2021-07-26T03:38:37.098Z --range 5m"
         }
     ]
 };

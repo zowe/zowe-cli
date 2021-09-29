@@ -3,7 +3,7 @@
 exports[`zos-logs group definition should not have changed 1`] = `
 Object {
   "aliases": Array [
-    "zoslogs",
+    "logs",
   ],
   "description": "Interact with z/OS logs.",
   "name": "zos-logs",

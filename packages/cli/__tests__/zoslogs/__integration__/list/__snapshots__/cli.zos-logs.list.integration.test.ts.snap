@@ -18,7 +18,7 @@ exports[`zos-logs list should display the help 1`] = `
  COMMANDS
  --------
 
-   logs | logs List z/OS operlog or syslog within a time range
+   logs List z/OS operlog or syslog within a time range
 
  GLOBAL OPTIONS
  --------------
@@ -44,8 +44,8 @@ exports[`zos-logs list should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"The help was constructed for command: list.\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List z/OS logs by invoking z/OSMF REST API.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-logs list <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   logs | logs List z/OS operlog or syslog within a time range\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List z/OS logs by invoking z/OSMF REST API.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-logs list <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   logs List z/OS operlog or syslog within a time range\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List z/OS logs by invoking z/OSMF REST API.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-logs list <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   logs | logs List z/OS operlog or syslog within a time range\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   List z/OS logs by invoking z/OSMF REST API.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-logs list <command>\\\\n\\\\n   Where <command> is one of the following:\\\\n\\\\n COMMANDS\\\\n --------\\\\n\\\\n   logs List z/OS operlog or syslog within a time range\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
 }"
 `;

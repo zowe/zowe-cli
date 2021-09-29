@@ -2,9 +2,7 @@
 
 exports[`zos-logs list logs command definition should not have changed 1`] = `
 Object {
-  "aliases": Array [
-    "logs",
-  ],
+  "aliases": Array [],
   "description": "List z/OS operlog or syslog within a time range.
 
 Use this operation to get the z/OS logs. It invokes z/OSMF REST API to retrieve logs.
@@ -21,7 +19,7 @@ Executing 'zowe zos-logs list logs' will by default return logs from current tim
     },
     Object {
       "description": "List logs starting from '2021-07-26T03:38:37.098Z' and backwards to 5 minutes before",
-      "options": "--st 2021-07-26T03:38:37.098Z -r 5m",
+      "options": "--start-time 2021-07-26T03:38:37.098Z --range 5m",
     },
   ],
   "name": "logs",

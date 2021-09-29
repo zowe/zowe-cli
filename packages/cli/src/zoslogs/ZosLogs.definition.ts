@@ -14,7 +14,7 @@ import { ListDefinition } from "./list/List.definition";
 
 export const definition: ICommandDefinition = {
     name: "zos-logs",
-    aliases: ["zoslogs"],
+    aliases: ["logs"],
     type: "group",
     summary: "Interact with z/OS logs",
     description: "Interact with z/OS logs.",
