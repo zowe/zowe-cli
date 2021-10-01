@@ -3,7 +3,7 @@
 ## Contents
 
  - [Debugging in VS Code](#debugging-in-vs-code)
- - [Using development mode](#using-development-mode)
+ - [Using Development Mode](#using-development-mode)
 
 ## Debugging in VS Code
 
@@ -19,7 +19,7 @@ Create a launch configuration like the following. You can have as many launch co
             "name": "Check Status",
             "program": "${workspaceFolder}/packages/cli/lib/main.js",
             "args": ["zosmf", "check", "status"],
-            "outputCapture" : "std"
+            "outputCapture": "std"
         }
     ]
 }
