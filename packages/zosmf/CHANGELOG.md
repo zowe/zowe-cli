@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add support for PEM certificate based authentication
+
 ## `6.33.1`
 
 - Migrated from TSLint (now deprecated) to ESLint for static code analysis.
