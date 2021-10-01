@@ -33,6 +33,10 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      */
     protected mServiceDescription: string = "your API Mediation Layer";
 
+    private readonly NO_CHANGES_MSG = "No changes to";
+    private readonly CREATED_MSG = "Created";
+    private readonly UPDATED_MSG = "Updated";
+
     /**
      * This structure is populated during convertApimlProfileInfoToProfileConfig
      * and retrieved by the auto-init command handler to provide the data for the
@@ -41,7 +45,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      */
     private mAutoInitReport: IAutoInitRpt = {
         configFileNm: "",
-        typeOfChange: "",
+        typeOfChange: this.NO_CHANGES_MSG,
         startingConfig: null,
         endingConfig: null,
         profileRpts: []
@@ -174,12 +178,11 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
     private recordProfilesFound(apimlProfInfos: IApimlProfileInfo[]): void {
         // record the starting config
         if (ImperativeConfig.instance.config.exists) {
-            this.mAutoInitReport.typeOfChange = "Updated";
             this.mAutoInitReport.startingConfig = ImperativeConfig.instance.config;
 
         } else {
-            this.mAutoInitReport.typeOfChange = "Created";
             this.mAutoInitReport.startingConfig = null;
+            this.mAutoInitReport.typeOfChange = this.CREATED_MSG;
         }
 
         // Record the first profile found by APIML for each profile type as a selected profile
@@ -195,7 +198,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
 
             // this is our first encounter with a profile of this type, so we select it
             let newProfRpt: IProfileRpt = {
-                typeOfChange: "Using",  // placeholder until we determine the right value
+                typeOfChange: this.NO_CHANGES_MSG,
                 selProfNm: apimlProfInfos[currProfInx].profName,
                 selProfType: apimlProfInfos[currProfInx].profType,
                 selBasePath: apimlProfInfos[currProfInx].basePaths[0],
@@ -243,6 +246,19 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         this.mAutoInitReport.configFileNm = ImperativeConfig.instance.config.api.layers.get().path;
 
         // todo: compare starting config with the ending config and set values for 'typeOfChange' fields
+        if (this.mAutoInitReport.startingConfig === null) {
+            // We started with ino config file, so every profile was created.
+            for (let profRpt of this.mAutoInitReport.profileRpts) {
+                profRpt.typeOfChange = this.CREATED_MSG;
+            }
+        } else {
+            // must check starting config to ending config to determine if we created or updated a profile
+            let startCfgLayer = this.mAutoInitReport.startingConfig.api.layers.get();
+            let endCfgLayer = this.mAutoInitReport.endingConfig.api.layers.get();
+            for (let profRpt of this.mAutoInitReport.profileRpts) {
+                // zzz profRpt.selProfNm
+            }
+        }
 
         /* todo: Detect previous direct-to-service profile that has a port and has the same
          * profile name as retrieved from APIML (like "zosmf"). Now the profile named "zosmf"
