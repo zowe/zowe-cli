@@ -17,7 +17,7 @@ import { IProfileRpt } from "./IProfileRpt";
  */
 export interface IAutoInitRpt {
     configFileNm: string;       // the affected config file name
-    typeOfChange: string;       // Was the config file created or modified
+    changeForConfig: string;    // Was the config file created, modified, etc
     startingConfig: Config;     // the configuration that we started with
     endingConfig: Config;       // the configuration that we ended with
     profileRpts: IProfileRpt[]; // report about each profile we touched

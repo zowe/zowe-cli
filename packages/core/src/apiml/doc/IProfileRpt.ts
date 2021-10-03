@@ -18,10 +18,10 @@ import { IAltProfile } from "./IAltProfile";
  * the auto-init command.
  */
 export interface IProfileRpt {
-    typeOfChange: string;       // created or modified
-    selProfNm: string;          // selected profile name
-    selProfType: string;        // selected profile type
-    selBasePath: string;        // selected basePath
+    changeForProf: string;      // was the profile created, modified, etc?
+    profName: string;           // profile name
+    profType: string;           // profile type
+    basePath: string;           // basePath
     pluginNms: string[];        // names of plugins using this profile
-    altProfiles: IAltProfile[]; // alternate profiles that were not selected
+    altProfiles: IAltProfile[]; // alternate profiles for this profile
 }
