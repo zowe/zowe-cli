@@ -10,11 +10,14 @@
 */
 
 import * as path from "path";
+import * as lodash from "lodash";
+
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAutoInitHandler, AbstractSession, Config, ICommandArguments, ISession, IHandlerResponseApi,
-    IHandlerParameters, SessConstants, IConfig, ImperativeConfig, ImperativeError, RestClientError
+import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
+    ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
+    ImperativeError, RestClientError
 } from "@zowe/imperative";
-import { IApimlProfileInfo, IApimlSvcAttrsLoaded, Login, Services } from "@zowe/core-for-zowe-sdk";
+import { IApimlProfileInfo, Login, Services } from "@zowe/core-for-zowe-sdk";
 import { IAutoInitRpt } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IAutoInitRpt";
 import { IProfileRpt } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IProfileRpt";
 import { IAltProfile } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IAltProfile";
@@ -35,7 +38,8 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
 
     private readonly NO_CHANGES_MSG = "No changes to";
     private readonly CREATED_MSG = "Created";
-    private readonly UPDATED_MSG = "Updated";
+    private readonly MODIFIED_MSG = "Modified";
+    private readonly REMOVED_MSG = "Removed";
 
     /**
      * This structure is populated during convertApimlProfileInfoToProfileConfig
@@ -45,7 +49,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      */
     private mAutoInitReport: IAutoInitRpt = {
         configFileNm: "",
-        typeOfChange: this.NO_CHANGES_MSG,
+        changeForConfig: this.NO_CHANGES_MSG,
         startingConfig: null,
         endingConfig: null,
         profileRpts: []
@@ -124,45 +128,79 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         // all profile updates have been made. Now we can record those updates.
         this.recordProfileUpdates();
 
-        // information about the config file
-        response.console.log(this.mAutoInitReport.typeOfChange +
-            " the following Zowe configuration file: " + path.basename(this.mAutoInitReport.configFileNm)
+        if (this.mAutoInitReport.changeForConfig === this.NO_CHANGES_MSG) {
+            response.console.log("No changes were needed in the existing Zowe configuration file '" +
+                path.basename(this.mAutoInitReport.configFileNm) + "'."
+            );
+            return;
+        }
+
+        // Report the type of config file changes
+        response.console.log(this.mAutoInitReport.changeForConfig +
+            " the Zowe configuration file '" +
+            path.basename(this.mAutoInitReport.configFileNm) + "'."
         );
 
-        // information about each selected profile
-        let editMsg = "change your Zowe configuration"
-        for (let profRpt of this.mAutoInitReport.profileRpts) {
-            response.console.log("\n" + profRpt.typeOfChange +
-                " profile '" + profRpt.selProfNm + "' of type '" + profRpt.selProfType +
-                "' with basePath '" + profRpt.selBasePath + "'"
+        // display information about each profile
+        for (const nextProfRpt of this.mAutoInitReport.profileRpts) {
+            let defOrAlt: string;
+            const isDefaultProf =
+                this.mAutoInitReport.endingConfig.properties.defaults[nextProfRpt.profType] ===
+                nextProfRpt.profName;
+            if (isDefaultProf)
+            {
+                defOrAlt = "default";
+            } else {
+                defOrAlt = "alternate";
+            }
+
+            response.console.log("\n" + nextProfRpt.changeForProf + " " + defOrAlt +
+                " profile '" + nextProfRpt.profName + "' of type '" + nextProfRpt.profType +
+                "' with basePath '" + nextProfRpt.basePath + "'"
             );
 
-            let msg = "    Plugins that use this profile: ";
-            let loopCount = 1;
-            for (let pluginNm of profRpt.pluginNms) {
-                if (loopCount > 1) {
-                    msg += ", ";
-                }
-                msg += pluginNm;
-                loopCount++;
+            // only report plugins and alternates for the default profile of each type
+            if (!isDefaultProf) {
+                continue;
             }
-            response.console.log(msg);
+
+            // report plugins using this profile (except for base profiles)
+            let msg: string;
+            let loopCount: number;
+            if (nextProfRpt.profType !== "base") {
+                msg = "    Plugins that use profile type '" + nextProfRpt.profType + "': ";
+                loopCount = 1;
+                for (const pluginNm of nextProfRpt.pluginNms) {
+                    if (loopCount > 1) {
+                        msg += ", ";
+                    }
+                    msg += pluginNm;
+                    loopCount++;
+                }
+                response.console.log(msg);
+            }
 
             // display the alternate profiles
-            if (profRpt.altProfiles.length > 0) {
-                response.console.log("    Alternate profiles of type '" + profRpt.selProfType + "' are:");
-                for (let altProf of profRpt.altProfiles) {
-                    response.console.log("        Profile '" + altProf.altProfName +
-                        "' with basePath '" + altProf.altBasePath + "'"
-                    );
+            if (nextProfRpt.altProfiles.length > 0) {
+                msg = "    Alternate profiles of type '" + nextProfRpt.profType + "': ";
+                loopCount = 1;
+                for (const altProf of nextProfRpt.altProfiles) {
+                    if (loopCount > 1) {
+                        msg += ", ";
+                    }
+                    msg += altProf.altProfName;
+                    loopCount++;
                 }
-                editMsg = "select an alternate profile"
+                response.console.log(msg);
             }
         }
-        response.console.log("\nYou can edit this configuration file to " + editMsg + ":\n    " +
-            this.mAutoInitReport.configFileNm);
 
         // todo: display the rest of the report
+
+        response.console.log(
+            "\nYou can edit this configuration file to change your Zowe configuration:\n    " +
+            this.mAutoInitReport.configFileNm
+        );
     }
 
     /**
@@ -176,61 +214,59 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      *        The profileInfo array returned by services.getServicesByConfig().
      */
     private recordProfilesFound(apimlProfInfos: IApimlProfileInfo[]): void {
-        // record the starting config
+        // record our starting config
         if (ImperativeConfig.instance.config.exists) {
-            this.mAutoInitReport.startingConfig = ImperativeConfig.instance.config;
+            this.mAutoInitReport.startingConfig = lodash.cloneDeep(ImperativeConfig.instance.config);
 
         } else {
             this.mAutoInitReport.startingConfig = null;
-            this.mAutoInitReport.typeOfChange = this.CREATED_MSG;
         }
 
-        // Record the first profile found by APIML for each profile type as a selected profile
-        let alreadySelProfTypes: string[] = [];
-        apimlProfsLoop:
-        for (let currProfInx = 0; currProfInx < apimlProfInfos.length; currProfInx++) {
-            // has this profile type already been recorded as selected?
-            for (let alreadySelType of alreadySelProfTypes) {
-                if (apimlProfInfos[currProfInx].profType === alreadySelType) {
-                    continue apimlProfsLoop;
-                }
-            }
-
-            // this is our first encounter with a profile of this type, so we select it
-            let newProfRpt: IProfileRpt = {
-                typeOfChange: this.NO_CHANGES_MSG,
-                selProfNm: apimlProfInfos[currProfInx].profName,
-                selProfType: apimlProfInfos[currProfInx].profType,
-                selBasePath: apimlProfInfos[currProfInx].basePaths[0],
+        // Record the profiles found by APIML for each profile type
+        for (const currProfInfo of apimlProfInfos) {
+            const newProfRpt: IProfileRpt = {
+                changeForProf: this.NO_CHANGES_MSG,
+                profName: currProfInfo.profName,
+                profType: currProfInfo.profType,
+                basePath: currProfInfo.basePaths[0],
                 pluginNms: [],
                 altProfiles: []
             };
 
             // add all of the plugins using this profile
-            for (let pluginObj of apimlProfInfos[currProfInx].pluginConfigs) {
-                newProfRpt.pluginNms.push(pluginObj.pluginName);
+            for (const nextPlugin of currProfInfo.pluginConfigs) {
+                newProfRpt.pluginNms.push(nextPlugin.pluginName);
             }
 
-            // check for the same profile type among our remaining profiles - they are alternates
-            for (let remainProfInx = currProfInx + 1; remainProfInx < apimlProfInfos.length; remainProfInx++) {
-                if (apimlProfInfos[currProfInx].profType === apimlProfInfos[remainProfInx].profType) {
-                    for (let apimlPluginCfg of apimlProfInfos[remainProfInx].pluginConfigs) {
-                        let newAltProf: IAltProfile = {
-                            altProfName: apimlProfInfos[remainProfInx].profName,
-                            altProfType: apimlPluginCfg.connProfType,
-                            altBasePath: "" // placeholder until we determine the right value
-                        }
+            // each additional basePath for the current plugin is an alternate
+            const newAltProf: IAltProfile = {
+                altProfName: "",
+                altProfType: "",
+                altBasePath: ""
+            };
+            for (let basePathInx = 1; basePathInx < currProfInfo.basePaths.length; basePathInx++) {
+                newAltProf.altProfName = currProfInfo.profName;
+                newAltProf.altProfType = currProfInfo.profType;
+                newAltProf.altBasePath = currProfInfo.basePaths[basePathInx];
+                newProfRpt.altProfiles.push(newAltProf);
+            }
 
-                        // each basePath found by apiml for this profile is another alternate
-                        for (let nextBasePath of apimlProfInfos[remainProfInx].basePaths) {
-                            newAltProf.altBasePath = nextBasePath;
-                            newProfRpt.altProfiles.push(newAltProf);
-                        }
+            // each of the other profiles of the same profile type is an alternate
+            for (const nextProfInfoOfType of apimlProfInfos) {
+                if (nextProfInfoOfType.profName !== currProfInfo.profName &&
+                    nextProfInfoOfType.profType === currProfInfo.profType)
+                {
+                    newAltProf.altProfName = nextProfInfoOfType.profName;
+                    newAltProf.altProfType = nextProfInfoOfType.profType;
+
+                    // each basePath constitutes another alternate
+                    for (const nextBasePath of nextProfInfoOfType.basePaths) {
+                        newAltProf.altBasePath = nextBasePath;
+                        newProfRpt.altProfiles.push(newAltProf);
                     }
                 }
             }
 
-            alreadySelProfTypes.push(newProfRpt.selProfType);
             this.mAutoInitReport.profileRpts.push(newProfRpt);
         }
     }
@@ -245,26 +281,124 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         // record the config file name path
         this.mAutoInitReport.configFileNm = ImperativeConfig.instance.config.api.layers.get().path;
 
-        // todo: compare starting config with the ending config and set values for 'typeOfChange' fields
+        this.mAutoInitReport.changeForConfig = this.NO_CHANGES_MSG;
+
         if (this.mAutoInitReport.startingConfig === null) {
-            // We started with ino config file, so every profile was created.
-            for (let profRpt of this.mAutoInitReport.profileRpts) {
-                profRpt.typeOfChange = this.CREATED_MSG;
+            // We started with no config file, so everything was created.
+            this.mAutoInitReport.changeForConfig = this.CREATED_MSG;
+            for (const nextProfRpt of this.mAutoInitReport.profileRpts) {
+                nextProfRpt.changeForProf = this.CREATED_MSG;
             }
         } else {
-            // must check starting config to ending config to determine if we created or updated a profile
-            let startCfgLayer = this.mAutoInitReport.startingConfig.api.layers.get();
-            let endCfgLayer = this.mAutoInitReport.endingConfig.api.layers.get();
-            for (let profRpt of this.mAutoInitReport.profileRpts) {
-                // zzz profRpt.selProfNm
+            /* We must compare starting config to ending config to determine
+             * if we created or updated individual profiles.
+             */
+            const startCfgLayer = this.mAutoInitReport.startingConfig.api.layers.get();
+            const endCfgLayer = this.mAutoInitReport.endingConfig.api.layers.get();
+
+            if (!startCfgLayer.exists && endCfgLayer.exists) {
+                // the starting config file existed, but its layer did not
+                if (this.mAutoInitReport.changeForConfig === this.NO_CHANGES_MSG) {
+                    this.mAutoInitReport.changeForConfig = this.MODIFIED_MSG;
+
+                    // each profile in this previously non-existent layer has been created
+                    for (const nextProfRpt of this.mAutoInitReport.profileRpts) {
+                        nextProfRpt.changeForProf = this.CREATED_MSG;
+                    }
+                }
+            } else {
+                /* We must compare profile-by-profile.
+                 * Look for each profile from the ending config within the staring config
+                 */
+                for (const endProfNm of lodash.keys(endCfgLayer.properties.profiles)) {
+                    if (lodash.has(startCfgLayer.properties.profiles, endProfNm)) {
+                        if (lodash.isEqual(startCfgLayer.properties.profiles[endProfNm],
+                            endCfgLayer.properties.profiles[endProfNm]))
+                        {
+                            // both starting profile and ending profile are the same
+                            this.recordOneProfChange(endProfNm,
+                                endCfgLayer.properties.profiles[endProfNm], this.NO_CHANGES_MSG
+                            );
+                        } else {
+                            this.recordOneProfChange(endProfNm,
+                                endCfgLayer.properties.profiles[endProfNm], this.MODIFIED_MSG
+                            );
+                        }
+                    } else {
+                        /* Each profile in the ending config that is not
+                         * in the starting config has been created.
+                         */
+                        this.recordOneProfChange(endProfNm,
+                            endCfgLayer.properties.profiles[endProfNm], this.CREATED_MSG
+                        );
+                    }
+                }
+
+                // Look for each profile from the staring config within the ending config
+                for (const startProfNm of lodash.keys(startCfgLayer.properties.profiles)) {
+                    /* We already recorded a message for profiles that exist in both
+                     * the starting and ending configs in the loop above,
+                     * so just record when the starting profile has been removed.
+                     */
+                    if (!lodash.has(endCfgLayer.properties.profiles, startProfNm)) {
+                        this.recordOneProfChange(startProfNm,
+                            endCfgLayer.properties.profiles[startProfNm], this.REMOVED_MSG
+                        );
+                    }
+                }
             }
         }
 
-        /* todo: Detect previous direct-to-service profile that has a port and has the same
+        /* todo:
+         * Detect previous direct-to-service profile that has a port and has the same
          * profile name as retrieved from APIML (like "zosmf"). Now the profile named "zosmf"
-         * will have a basePath for APIML, but the old port number form before..
-         * The old port will break connections that will now attempt to connect to APIML.
+         * will have a basePath for APIML, but will have the old port number from before.
+         * The old port will cause an error during any attempt to connect to APIML.
          * This detection might reside in displayAutoInitChanges?
          */
+    }
+
+    /**
+     * Record the change message for one profile with the
+     * this.mAutoInitReport.profileRpts array.
+     *
+     * @param {string} profNmToRecord
+     *        The name of the profile for which we want to record a change.
+     *
+     * @param {IConfigProfile} profObj
+     *        An IConfigProfile object which is used when a new entry must be
+     *        created in the profileRpts array.
+     *
+     * @param {string} msgToRecord
+     *        The message to record for the type of change to this profile.
+     */
+    private recordOneProfChange(
+        profNmToRecord: string,
+        profObj: IConfigProfile,
+        msgToRecord: string
+    ) : void {
+        // when any profile has been modified, we know the config was modified
+        if (msgToRecord !== this.NO_CHANGES_MSG) {
+            this.mAutoInitReport.changeForConfig = this.MODIFIED_MSG;
+        }
+
+        const profRptInx = lodash.findIndex(this.mAutoInitReport.profileRpts,
+            {profName: profNmToRecord}
+        );
+        if (profRptInx >= 0) {
+            // an entry for this profile already exists
+            this.mAutoInitReport.profileRpts[profRptInx].changeForProf = msgToRecord;
+        } else {
+            // we must create a new IProfileRpt entry
+            const newProfRpt: IProfileRpt = {
+                changeForProf: msgToRecord,
+                profName: profNmToRecord,
+                profType: profObj.type,
+                basePath: lodash.get(profObj, "properties.basePath", "Not supplied"),
+                pluginNms: [],
+                altProfiles: []
+            };
+            this.mAutoInitReport.profileRpts.push(newProfRpt);
+        }
     }
 }
