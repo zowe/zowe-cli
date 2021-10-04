@@ -167,25 +167,29 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             // report plugins using this profile (except for base profiles)
             let msg: string;
             let loopCount: number;
-            if (nextProfRpt.profType !== "base") {
-                msg = "    Plugins that use profile type '" + nextProfRpt.profType + "': ";
-                loopCount = 1;
-                for (const pluginNm of nextProfRpt.pluginNms) {
-                    if (loopCount > 1) {
-                        msg += ", ";
+            if (nextProfRpt.pluginNms.length > 0) {
+                if (nextProfRpt.profType !== "base") {
+                    loopCount = 1;
+                    for (const pluginNm of nextProfRpt.pluginNms) {
+                        if (loopCount == 1) {
+                            msg = "    Plugins that use profile type '" + nextProfRpt.profType + "': ";
+                        } else {
+                            msg += ", ";
+                        }
+                        msg += pluginNm;
+                        loopCount++;
                     }
-                    msg += pluginNm;
-                    loopCount++;
+                    response.console.log(msg);
                 }
-                response.console.log(msg);
             }
 
             // display the alternate profiles
             if (nextProfRpt.altProfiles.length > 0) {
-                msg = "    Alternate profiles of type '" + nextProfRpt.profType + "': ";
                 loopCount = 1;
                 for (const altProf of nextProfRpt.altProfiles) {
-                    if (loopCount > 1) {
+                    if (loopCount == 1) {
+                        msg = "    Alternate profiles of type '" + nextProfRpt.profType + "': ";
+                    } else {
                         msg += ", ";
                     }
                     msg += altProf.altProfName;
