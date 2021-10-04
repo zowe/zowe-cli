@@ -10,13 +10,17 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, RestClientError, IRestClientError } from "@zowe/imperative";
+import { SessConstants, RestClientError, IRestClientError, ImperativeConfig } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { Login, Services } from "@zowe/core-for-zowe-sdk";
+import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
 describe("ApimlAutoInitHandler", () => {
-    beforeEach(() => {
+    afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        jest.restoreAllMocks();
     });
 
     it("should not have changed - user & password", async () => {
@@ -35,6 +39,7 @@ describe("ApimlAutoInitHandler", () => {
         Services.getServicesByConfig = mockGetServicesByConfig;
         Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
         Login.apimlLogin = mockLogin;
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
 
         const handler: any = new ApimlAutoInitHandler();
         expect(handler.mProfileType).toBe("base");
@@ -83,6 +88,7 @@ describe("ApimlAutoInitHandler", () => {
         Services.getServicesByConfig = mockGetServicesByConfig;
         Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
         Login.apimlLogin = mockLogin;
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
 
         const handler: any = new ApimlAutoInitHandler();
         expect(handler.mProfileType).toBe("base");
@@ -133,6 +139,7 @@ describe("ApimlAutoInitHandler", () => {
             plugins: []
         });
         const mockLogin = jest.fn().mockResolvedValue("fakeToken");
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
@@ -181,6 +188,7 @@ describe("ApimlAutoInitHandler", () => {
             plugins: []
         });
         const mockLogin = jest.fn().mockResolvedValue("fakeToken");
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
@@ -276,5 +284,363 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockLogin).toHaveBeenCalledTimes(0);
         expect(error).toBeDefined();
         expect(error.message).toContain("HTTP(S) error status 403 received. Verify the user has access to the APIML API Services SAF resource.");
+    });
+
+    describe("reporting", () => {
+        const apimlProfInfos: IApimlProfileInfo[] = [
+            {
+                profName: "abcxyz",
+                profType: "fake",
+                basePaths: ["api/v1"],
+                pluginConfigs: new Set([
+                    {
+                        apiId: "org.abc.xyz",
+                        connProfType: "fake",
+                        pluginName: "@abc/xyz-plugin-for-zowe-cli"
+                    }
+                ]),
+                gatewayUrlConflicts: {}
+            },
+            {
+                profName: "defxyz",
+                profType: "fake",
+                basePaths: ["api/v1"],
+                pluginConfigs: new Set([
+                    {
+                        apiId: "org.def.xyz",
+                        connProfType: "fake",
+                        pluginName: "@def/xyz-plugin-for-zowe-cli"
+                    }
+                ]),
+                gatewayUrlConflicts: {}
+            },
+        ];
+
+        const profileReports: IProfileRpt[] = [
+            {
+                altProfiles: [{
+                    altBasePath: apimlProfInfos[1].basePaths[0],
+                    altProfName: apimlProfInfos[1].profName,
+                    altProfType: apimlProfInfos[1].profType
+                }],
+                baseOverrides: [],
+                basePath: apimlProfInfos[0].basePaths[0],
+                changeForProf: "No changes to",
+                pluginNms: [
+                    [...apimlProfInfos[0].pluginConfigs][0].pluginName
+                ],
+                profName: apimlProfInfos[0].profName,
+                profType: apimlProfInfos[0].profType
+            },
+            {
+                altProfiles: [{
+                    altBasePath: apimlProfInfos[0].basePaths[0],
+                    altProfName: apimlProfInfos[0].profName,
+                    altProfType: apimlProfInfos[0].profType
+                }],
+                baseOverrides: [],
+                basePath: apimlProfInfos[1].basePaths[0],
+                changeForProf: "No changes to",
+                pluginNms: [
+                    [...apimlProfInfos[1].pluginConfigs][0].pluginName
+                ],
+                profName: apimlProfInfos[1].profName,
+                profType: apimlProfInfos[1].profType
+            }
+        ];
+
+        it("should record all profiles with associated API ML services", () => {
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).recordProfilesFound(apimlProfInfos);
+            expect((handler as any).mAutoInitReport.profileRpts).toEqual(profileReports);
+        });
+
+        it("should record that an indexed profile has changed", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: [
+                    {
+                        profName: "zosmf"
+                    }
+                ]
+            };
+            (handler as any).recordOneProfChange("zosmf", { type: "zosmf" }, "Modified");
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            expect((handler as any).mAutoInitReport.profileRpts[0].changeForProf).toBe("Modified");
+        });
+
+        it("should record that an unindexed profile has changed", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: []
+            };
+            (handler as any).recordOneProfChange("zosmf", { type: "zosmf" }, "Modified");
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            expect((handler as any).mAutoInitReport.profileRpts[0]).toMatchObject({
+                changeForProf: "Modified",
+                profName: "zosmf",
+                profType: "zosmf",
+                basePath: "Not supplied",
+                pluginNms: [],
+                altProfiles: [],
+                baseOverrides: []
+            });
+        });
+
+        it("should detect when all profiles are new and config does not exist", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: profileReports,
+                startingConfig: null
+            };
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
+                api: {
+                    layers: {
+                        get: () => ({
+                            exists: true,
+                            path: "fakePath"
+                        })
+                    }
+                },
+                exists: true
+            });
+            (handler as any).recordProfileUpdates();
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Created");
+            for (const profileReport of (handler as any).mAutoInitReport.profileRpts) {
+                expect(profileReport.changeForProf).toBe("Created");
+            }
+        });
+
+        it("should detect when all profiles are new and config already exists", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: profileReports,
+                startingConfig: {
+                    api: {
+                        layers: {
+                            get: () => ({
+                                exists: false
+                            })
+                        }
+                    },
+                    exists: true
+                }
+            };
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
+                api: {
+                    layers: {
+                        get: () => ({
+                            exists: true,
+                            path: "fakePath"
+                        })
+                    }
+                },
+                exists: true
+            });
+            (handler as any).recordProfileUpdates();
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            for (const profileReport of (handler as any).mAutoInitReport.profileRpts) {
+                expect(profileReport.changeForProf).toBe("Created");
+            }
+        });
+
+        it("should detect when a profile is created in config", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: profileReports,
+                startingConfig: {
+                    api: {
+                        layers: {
+                            get: () => ({
+                                exists: true,
+                                properties: {
+                                    profiles: {},
+                                    defaults: {}
+                                }
+                            })
+                        }
+                    },
+                    exists: true
+                }
+            };
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
+                api: {
+                    layers: {
+                        get: () => ({
+                            exists: true,
+                            path: "fakePath",
+                            properties: {
+                                profiles: {
+                                    abcxyz: {
+                                        type: "fake",
+                                        properties: {
+                                            basePath: "abcxyz/api/v1"
+                                        }
+                                    }
+                                },
+                                defaults: {}
+                            }
+                        })
+                    }
+                },
+                exists: true
+            });
+            (handler as any).recordProfileUpdates();
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            expect((handler as any).mAutoInitReport.profileRpts[0].changeForProf).toBe("Created");
+        });
+
+        it("should detect when a profile is removed from config", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: profileReports,
+                startingConfig: {
+                    api: {
+                        layers: {
+                            get: () => ({
+                                exists: true,
+                                properties: {
+                                    profiles: {
+                                        abcxyz: {
+                                            type: "fake",
+                                            properties: {
+                                                basePath: "abcxyz/api/v1"
+                                            }
+                                        }
+                                    },
+                                    defaults: {}
+                                }
+                            })
+                        }
+                    },
+                    exists: true
+                }
+            };
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
+                api: {
+                    layers: {
+                        get: () => ({
+                            exists: true,
+                            path: "fakePath",
+                            properties: {
+                                profiles: {},
+                                defaults: {}
+                            }
+                        })
+                    }
+                },
+                exists: true
+            });
+            (handler as any).recordProfileUpdates();
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            expect((handler as any).mAutoInitReport.profileRpts[0].changeForProf).toBe("Removed");
+        });
+
+        it("should detect when a profile is modified in config", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: profileReports,
+                startingConfig: {
+                    api: {
+                        layers: {
+                            get: () => ({
+                                exists: true,
+                                properties: {
+                                    profiles: {
+                                        abcxyz: {
+                                            type: "fake",
+                                            properties: {
+                                                basePath: "abcxyz/api/v1"
+                                            }
+                                        }
+                                    },
+                                    defaults: {}
+                                }
+                            })
+                        }
+                    },
+                    exists: true
+                }
+            };
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
+                api: {
+                    layers: {
+                        get: () => ({
+                            exists: true,
+                            path: "fakePath",
+                            properties: {
+                                profiles: {
+                                    abcxyz: {
+                                        type: "fake",
+                                        properties: {
+                                            basePath: "abcxyz/api/v2"
+                                        }
+                                    }
+                                },
+                                defaults: {}
+                            }
+                        })
+                    }
+                },
+                exists: true
+            });
+            (handler as any).recordProfileUpdates();
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("Modified");
+            expect((handler as any).mAutoInitReport.profileRpts[0].changeForProf).toBe("Modified");
+        });
+
+        it("should detect when a profile is unchanged in config", () => {
+            const handler = new ApimlAutoInitHandler();
+            (handler as any).mAutoInitReport = {
+                profileRpts: profileReports,
+                startingConfig: {
+                    api: {
+                        layers: {
+                            get: () => ({
+                                exists: true,
+                                properties: {
+                                    profiles: {
+                                        abcxyz: {
+                                            type: "fake",
+                                            properties: {
+                                                basePath: "abcxyz/api/v1"
+                                            }
+                                        }
+                                    },
+                                    defaults: {}
+                                }
+                            })
+                        }
+                    },
+                    exists: true
+                }
+            };
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
+                api: {
+                    layers: {
+                        get: () => ({
+                            exists: true,
+                            path: "fakePath",
+                            properties: {
+                                profiles: {
+                                    abcxyz: {
+                                        type: "fake",
+                                        properties: {
+                                            basePath: "abcxyz/api/v1"
+                                        }
+                                    }
+                                },
+                                defaults: {}
+                            }
+                        })
+                    }
+                },
+                exists: true
+            });
+            (handler as any).recordProfileUpdates();
+            expect((handler as any).mAutoInitReport.changeForConfig).toBe("No changes to");
+            expect((handler as any).mAutoInitReport.profileRpts[0].changeForProf).toBe("No changes to");
+        });
     });
 });
