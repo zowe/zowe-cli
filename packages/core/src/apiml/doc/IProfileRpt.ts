@@ -9,6 +9,7 @@
 *
 */
 
+import { IBaseProfileOverride } from "..";
 import { IAltProfile } from "./IAltProfile";
 
 
@@ -24,4 +25,5 @@ export interface IProfileRpt {
     basePath: string;           // basePath
     pluginNms: string[];        // names of plugins using this profile
     altProfiles: IAltProfile[]; // alternate profiles for this profile
+    baseOverrides: IBaseProfileOverride[];
 }

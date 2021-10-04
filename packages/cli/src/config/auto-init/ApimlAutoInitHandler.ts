@@ -17,10 +17,7 @@ import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConf
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
     ImperativeError, RestClientError
 } from "@zowe/imperative";
-import { IApimlProfileInfo, Login, Services } from "@zowe/core-for-zowe-sdk";
-import { IAutoInitRpt } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IAutoInitRpt";
-import { IProfileRpt } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IProfileRpt";
-import { IAltProfile } from "@zowe/core-for-zowe-sdk/lib/apiml/doc/IAltProfile";
+import { IAltProfile, IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -197,9 +194,22 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 }
                 response.console.log(msg);
             }
-        }
 
-        // todo: display the rest of the report
+            if (nextProfRpt.baseOverrides.length > 0) {
+                const baseProfileName = this.mAutoInitReport.endingConfig.api.layers.get().properties.defaults.base;
+                msg = `    This profile may require manual edits to work with APIML:`;
+                for (const baseOverride of nextProfRpt.baseOverrides) {
+                    msg += `\n        ${baseOverride.propName}: `;
+                    if (!baseOverride.secure) {
+                        msg += `'${baseOverride.priorityValue}' overrides '${baseOverride.baseValue}' in`;
+                    } else {
+                        msg += `secure value overrides`;
+                    }
+                    msg += ` profile '${baseProfileName}'`;
+                }
+                response.console.log(msg);
+            }
+        }
 
         response.console.log(
             "\nYou can edit this configuration file to change your Zowe configuration:\n    " +
@@ -234,7 +244,8 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 profType: currProfInfo.profType,
                 basePath: currProfInfo.basePaths[0],
                 pluginNms: [],
-                altProfiles: []
+                altProfiles: [],
+                baseOverrides: []
             };
 
             // add all of the plugins using this profile
@@ -350,16 +361,10 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                         );
                     }
                 }
+
+                this.recordProfileConflictsWithBase();
             }
         }
-
-        /* todo:
-         * Detect previous direct-to-service profile that has a port and has the same
-         * profile name as retrieved from APIML (like "zosmf"). Now the profile named "zosmf"
-         * will have a basePath for APIML, but will have the old port number from before.
-         * The old port will cause an error during any attempt to connect to APIML.
-         * This detection might reside in displayAutoInitChanges?
-         */
     }
 
     /**
@@ -400,9 +405,48 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 profType: profObj.type,
                 basePath: lodash.get(profObj, "properties.basePath", "Not supplied"),
                 pluginNms: [],
-                altProfiles: []
+                altProfiles: [],
+                baseOverrides: []
             };
             this.mAutoInitReport.profileRpts.push(newProfRpt);
+        }
+    }
+
+    /**
+     * Record info about profile properties that override properties defined in
+     * the base profile. These properties may prevent connecting to the APIML.
+     */
+    private recordProfileConflictsWithBase(): void {
+        const config = this.mAutoInitReport.endingConfig;
+        const configJson = config.api.layers.get().properties;
+        const baseProfileName = configJson.defaults.base;
+        if (baseProfileName == null) {
+            return;
+        }
+
+        const baseProfile = lodash.get(configJson, config.api.profiles.expandPath(baseProfileName)) as IConfigProfile;
+        if (baseProfile == null) {
+            return;
+        }
+
+        for (const profileRpt of this.mAutoInitReport.profileRpts) {
+            if (profileRpt.changeForProf === this.MODIFIED_MSG) {
+                const serviceProfile = lodash.get(configJson, config.api.profiles.expandPath(profileRpt.profName)) as IConfigProfile;
+                for (const [name, value] of Object.entries(baseProfile.properties)) {
+                    if (serviceProfile.properties[name] != null && serviceProfile.properties[name] !== baseProfile.properties[name]) {
+                        if (!serviceProfile.secure.includes(name)) {
+                            profileRpt.baseOverrides.push({
+                                propName: name,
+                                secure: false,
+                                priorityValue: serviceProfile.properties[name],
+                                baseValue: value
+                            });
+                        } else {
+                            profileRpt.baseOverrides.push({ propName: name, secure: true });
+                        }
+                    }
+                }
+            }
         }
     }
 }
