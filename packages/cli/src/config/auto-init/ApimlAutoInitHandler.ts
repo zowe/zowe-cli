@@ -421,12 +421,12 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         const configJson = config.api.layers.get().properties;
         const baseProfileName = configJson.defaults.base;
         if (baseProfileName == null) {
-            return;
+            return;  // default base profile is undefined
         }
 
         const baseProfile = lodash.get(configJson, config.api.profiles.expandPath(baseProfileName)) as IConfigProfile;
         if (baseProfile == null) {
-            return;
+            return;  // default base profile is invalid
         }
 
         for (const profileRpt of this.mAutoInitReport.profileRpts) {
@@ -434,7 +434,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 const serviceProfile = lodash.get(configJson, config.api.profiles.expandPath(profileRpt.profName)) as IConfigProfile;
                 for (const [name, value] of Object.entries(baseProfile.properties)) {
                     if (serviceProfile.properties[name] != null && serviceProfile.properties[name] !== baseProfile.properties[name]) {
-                        if (!serviceProfile.secure.includes(name)) {
+                        if (!baseProfile.secure?.includes(name) && !serviceProfile.secure?.includes(name)) {
                             profileRpt.baseOverrides.push({
                                 propName: name,
                                 secure: false,
