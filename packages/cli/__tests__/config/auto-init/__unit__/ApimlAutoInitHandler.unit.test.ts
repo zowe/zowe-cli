@@ -311,7 +311,7 @@ describe("ApimlAutoInitHandler", () => {
             {
                 profName: "abcxyz",
                 profType: "fake",
-                basePaths: ["api/v1"],
+                basePaths: ["api/v1", "api/v2"],
                 pluginConfigs: new Set([
                     {
                         apiId: "org.abc.xyz",
@@ -338,11 +338,18 @@ describe("ApimlAutoInitHandler", () => {
 
         const profileReports: IProfileRpt[] = [
             {
-                altProfiles: [{
-                    altBasePath: apimlProfInfos[1].basePaths[0],
-                    altProfName: apimlProfInfos[1].profName,
-                    altProfType: apimlProfInfos[1].profType
-                }],
+                altProfiles: [
+                    {
+                        altBasePath: apimlProfInfos[0].basePaths[1],
+                        altProfName: apimlProfInfos[0].profName,
+                        altProfType: apimlProfInfos[0].profType
+                    },
+                    {
+                        altBasePath: apimlProfInfos[1].basePaths[0],
+                        altProfName: apimlProfInfos[1].profName,
+                        altProfType: apimlProfInfos[1].profType
+                    }
+                ],
                 baseOverrides: [],
                 basePath: apimlProfInfos[0].basePaths[0],
                 changeForProf: "No changes to",
@@ -353,11 +360,18 @@ describe("ApimlAutoInitHandler", () => {
                 profType: apimlProfInfos[0].profType
             },
             {
-                altProfiles: [{
-                    altBasePath: apimlProfInfos[0].basePaths[0],
-                    altProfName: apimlProfInfos[0].profName,
-                    altProfType: apimlProfInfos[0].profType
-                }],
+                altProfiles: [
+                    {
+                        altBasePath: apimlProfInfos[0].basePaths[0],
+                        altProfName: apimlProfInfos[0].profName,
+                        altProfType: apimlProfInfos[0].profType
+                    },
+                    {
+                        altBasePath: apimlProfInfos[0].basePaths[1],
+                        altProfName: apimlProfInfos[0].profName,
+                        altProfType: apimlProfInfos[0].profType
+                    }
+                ],
                 baseOverrides: [],
                 basePath: apimlProfInfos[1].basePaths[0],
                 changeForProf: "No changes to",
@@ -674,7 +688,19 @@ describe("ApimlAutoInitHandler", () => {
         it("should display complex auto-init report when changes were made", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
-                profileRpts: [],
+                profileRpts: [{
+                    changeForProf: "Modified",
+                    profName: "abcxyz",
+                    profType: "fake",
+                    basePath: "abcxyz/api/v1",
+                    pluginNms: ["@abc/xyz-for-zowe-cli"],
+                    altProfiles: [{
+                        altProfName: "defxyz",
+                        altProfType: "fake",
+                        altBasePath: "defxyz/api/v1"
+                    }],
+                    baseOverrides: []
+                }],
                 startingConfig: mockConfigApi({
                     profiles: {
                         abcxyz: {
@@ -726,6 +752,8 @@ describe("ApimlAutoInitHandler", () => {
             expect(mockConsoleLog).toHaveBeenCalled();
             expect(output).toContain("Modified the Zowe configuration file 'fakePath'");
             expect(output).toContain("Modified default profile 'abcxyz' of type 'fake' with basePath 'abcxyz/api/v1'");
+            expect(output).toContain("Plugins that use profile type 'fake': @abc/xyz-for-zowe-cli");
+            expect(output).toContain("Alternate profiles of type 'fake': defxyz");
             expect(output).toContain("port: '443' overrides '7554' in profile 'base'");
             expect(output).toContain("Created alternate profile 'defxyz' of type 'fake' with basePath 'defxyz/api/v1'");
             expect(output).toContain("Modified default profile 'base' of type 'base' with basePath 'Not supplied'");

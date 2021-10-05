@@ -254,16 +254,12 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             }
 
             // each additional basePath for the current plugin is an alternate
-            const newAltProf: IAltProfile = {
-                altProfName: "",
-                altProfType: "",
-                altBasePath: ""
-            };
             for (let basePathInx = 1; basePathInx < currProfInfo.basePaths.length; basePathInx++) {
-                newAltProf.altProfName = currProfInfo.profName;
-                newAltProf.altProfType = currProfInfo.profType;
-                newAltProf.altBasePath = currProfInfo.basePaths[basePathInx];
-                newProfRpt.altProfiles.push(newAltProf);
+                newProfRpt.altProfiles.push({
+                    altProfName: currProfInfo.profName,
+                    altProfType: currProfInfo.profType,
+                    altBasePath: currProfInfo.basePaths[basePathInx]
+                });
             }
 
             // each of the other profiles of the same profile type is an alternate
@@ -271,13 +267,13 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 if (nextProfInfoOfType.profName !== currProfInfo.profName &&
                     nextProfInfoOfType.profType === currProfInfo.profType)
                 {
-                    newAltProf.altProfName = nextProfInfoOfType.profName;
-                    newAltProf.altProfType = nextProfInfoOfType.profType;
-
                     // each basePath constitutes another alternate
                     for (const nextBasePath of nextProfInfoOfType.basePaths) {
-                        newAltProf.altBasePath = nextBasePath;
-                        newProfRpt.altProfiles.push(newAltProf);
+                        newProfRpt.altProfiles.push({
+                            altProfName: nextProfInfoOfType.profName,
+                            altProfType: nextProfInfoOfType.profType,
+                            altBasePath: nextBasePath
+                        });
                     }
                 }
             }
