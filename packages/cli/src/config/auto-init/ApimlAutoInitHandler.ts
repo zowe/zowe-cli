@@ -17,7 +17,7 @@ import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConf
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
     ImperativeError, RestClientError
 } from "@zowe/imperative";
-import { IAltProfile, IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
+import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
