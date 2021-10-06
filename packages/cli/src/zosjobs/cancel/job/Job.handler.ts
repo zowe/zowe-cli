@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { CancelJobs, GetJobs, IJob, JobsConstants } from "@zowe/zos-jobs-for-zowe-sdk";
+import { CancelJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
