@@ -54,6 +54,12 @@ export class TempTestProfiles {
         `issue other commands.`;
 
     /**
+     * Override for the ZOWE_CLI_TEST_OLD_PROFILES environment variable. If
+     * set to true, old-school profiles will be created instead of team config.
+     */
+    public static forceOldProfiles: boolean = false;
+
+    /**
      * Create profiles for tests from data in the properties yaml file
      * @param {ITestEnvironment} testEnvironment - with working directory and test properties loaded
      * @param {string[]} profileTypes - array of types of profiles to create
@@ -110,6 +116,7 @@ export class TempTestProfiles {
      * profiles.
      */
     private static get usingTeamConfig(): boolean {
+        if (this.forceOldProfiles) return true;
         const envOldProfiles = process.env.ZOWE_CLI_TEST_OLD_PROFILES;
         return envOldProfiles !== "1" && envOldProfiles?.toLowerCase() !== "true";
     }

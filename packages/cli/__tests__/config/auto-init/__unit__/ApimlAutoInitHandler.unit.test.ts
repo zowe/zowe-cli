@@ -750,14 +750,19 @@ describe("ApimlAutoInitHandler", () => {
                 console: { log: mockConsoleLog }
             });
             expect(mockConsoleLog).toHaveBeenCalled();
-            expect(output).toContain("Modified the Zowe configuration file 'fakePath'");
-            expect(output).toContain("Modified default profile 'abcxyz' of type 'fake' with basePath 'abcxyz/api/v1'");
-            expect(output).toContain("Plugins that use profile type 'fake': @abc/xyz-for-zowe-cli");
-            expect(output).toContain("Alternate profiles of type 'fake': defxyz");
-            expect(output).toContain("port: '443' overrides '7554' in profile 'base'");
-            expect(output).toContain("Created alternate profile 'defxyz' of type 'fake' with basePath 'defxyz/api/v1'");
-            expect(output).toContain("Modified default profile 'base' of type 'base' with basePath 'Not supplied'");
-            expect(output).toContain("You can edit this configuration file to change your Zowe configuration");
+            const expectedLines = [
+                "Modified the Zowe configuration file 'fakePath'",
+                "Modified default profile 'abcxyz' of type 'fake' with basePath 'abcxyz/api/v1'",
+                "Plugins that use profile type 'fake': @abc/xyz-for-zowe-cli",
+                "Alternate profiles of type 'fake': defxyz",
+                "port: '443' overrides '7554' in profile 'base'",
+                "Created alternate profile 'defxyz' of type 'fake' with basePath 'defxyz/api/v1'",
+                "Modified default profile 'base' of type 'base' with basePath 'Not supplied'",
+                "You can edit this configuration file to change your Zowe configuration"
+            ];
+            for (const line of expectedLines) {
+                expect(output).toContain(line);
+            }
         });
     });
 });

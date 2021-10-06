@@ -17,7 +17,7 @@ import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConf
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
     ImperativeError, RestClientError
 } from "@zowe/imperative";
-import { IAltProfile, IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
+import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
 /**
  * This class is used by the auth command handlers as the base class for their implementation.
@@ -196,7 +196,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             }
 
             if (nextProfRpt.baseOverrides.length > 0) {
-                const baseProfileName = this.mAutoInitReport.endingConfig.api.layers.get().properties.defaults.base;
+                const baseProfileName = this.mAutoInitReport.endingConfig.properties.defaults.base;
                 msg = `    This profile may require manual edits to work with APIML:`;
                 for (const baseOverride of nextProfRpt.baseOverrides) {
                     msg += `\n        ${baseOverride.propName}: `;
@@ -230,7 +230,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
     private recordProfilesFound(apimlProfInfos: IApimlProfileInfo[]): void {
         // record our starting config
         if (ImperativeConfig.instance.config.exists) {
-            this.mAutoInitReport.startingConfig = lodash.cloneDeep(ImperativeConfig.instance.config);
+            this.mAutoInitReport.startingConfig = ImperativeConfig.instance.config.api.layers.get();
 
         } else {
             this.mAutoInitReport.startingConfig = null;
@@ -287,10 +287,10 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      */
     private recordProfileUpdates(): void {
         // get our current (ending) config
-        this.mAutoInitReport.endingConfig = ImperativeConfig.instance.config;
+        this.mAutoInitReport.endingConfig = ImperativeConfig.instance.config.api.layers.get();
 
         // record the config file name path
-        this.mAutoInitReport.configFileNm = ImperativeConfig.instance.config.api.layers.get().path;
+        this.mAutoInitReport.configFileNm = this.mAutoInitReport.endingConfig.path;
 
         this.mAutoInitReport.changeForConfig = this.NO_CHANGES_MSG;
 
@@ -304,8 +304,8 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             /* We must compare starting config to ending config to determine
              * if we created or updated individual profiles.
              */
-            const startCfgLayer = this.mAutoInitReport.startingConfig.api.layers.get();
-            const endCfgLayer = this.mAutoInitReport.endingConfig.api.layers.get();
+            const startCfgLayer = this.mAutoInitReport.startingConfig;
+            const endCfgLayer = this.mAutoInitReport.endingConfig;
 
             if (!startCfgLayer.exists && endCfgLayer.exists) {
                 // the starting config file existed, but its layer did not
@@ -413,21 +413,21 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      * the base profile. These properties may prevent connecting to the APIML.
      */
     private recordProfileConflictsWithBase(): void {
-        const config = this.mAutoInitReport.endingConfig;
-        const configJson = config.api.layers.get().properties;
+        const configApi = ImperativeConfig.instance.config.api;
+        const configJson = this.mAutoInitReport.endingConfig.properties;
         const baseProfileName = configJson.defaults.base;
         if (baseProfileName == null) {
             return;  // default base profile is undefined
         }
 
-        const baseProfile = lodash.get(configJson, config.api.profiles.expandPath(baseProfileName)) as IConfigProfile;
+        const baseProfile = lodash.get(configJson, configApi.profiles.expandPath(baseProfileName)) as IConfigProfile;
         if (baseProfile == null) {
             return;  // default base profile is invalid
         }
 
         for (const profileRpt of this.mAutoInitReport.profileRpts) {
             if (profileRpt.changeForProf === this.MODIFIED_MSG) {
-                const serviceProfile = lodash.get(configJson, config.api.profiles.expandPath(profileRpt.profName)) as IConfigProfile;
+                const serviceProfile = lodash.get(configJson, configApi.profiles.expandPath(profileRpt.profName)) as IConfigProfile;
                 for (const [name, value] of Object.entries(baseProfile.properties)) {
                     if (serviceProfile.properties[name] != null && serviceProfile.properties[name] !== baseProfile.properties[name]) {
                         if (!baseProfile.secure?.includes(name) && !serviceProfile.secure?.includes(name)) {

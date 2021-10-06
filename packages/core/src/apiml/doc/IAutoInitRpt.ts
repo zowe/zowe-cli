@@ -9,7 +9,7 @@
 *
 */
 
-import { Config } from "@zowe/imperative";
+import { IConfigLayer } from "@zowe/imperative";
 import { IProfileRpt } from "./IProfileRpt";
 
 /**
@@ -18,7 +18,7 @@ import { IProfileRpt } from "./IProfileRpt";
 export interface IAutoInitRpt {
     configFileNm: string;       // the affected config file name
     changeForConfig: string;    // Was the config file created, modified, etc
-    startingConfig: Config;     // the configuration that we started with
-    endingConfig: Config;       // the configuration that we ended with
+    startingConfig: IConfigLayer;     // the configuration that we started with
+    endingConfig: IConfigLayer;       // the configuration that we ended with
     profileRpts: IProfileRpt[]; // report about each profile we touched
 }
