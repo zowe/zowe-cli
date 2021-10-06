@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Add support for PEM certificate based authentication
 
+## `6.33.4`
+
+- BugFix: Updated dependencies to resolve problems with the ansi-regex package
+
 ## `6.33.3`
 
 - Enhancement: Update post-install script to display a message when the CLI successfully installs due to increased error messaging from USS SDK when optional pre-requisites are not installed.
