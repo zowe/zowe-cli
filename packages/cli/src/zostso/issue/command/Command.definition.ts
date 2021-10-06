@@ -17,7 +17,7 @@ export const CommandDefinition: ICommandDefinition = {
     aliases: ["cmd"],
     summary: "Issue a TSO command",
     description: "Creates a TSO address space, issues a TSO command through the newly created address space, " +
-    "waits for the READY prompt to print the response, and terminates the TSO address space.  All response data " +
+    "waits for the READY prompt to print the response, and terminates the TSO address space. All response data" +
     " are returned to the user up to (but not including) the TSO 'READY' prompt.",
     type: "command",
     handler: __dirname + "/Command.handler",
