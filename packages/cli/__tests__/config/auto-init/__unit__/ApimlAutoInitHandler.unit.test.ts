@@ -59,7 +59,7 @@ describe("ApimlAutoInitHandler", () => {
         Services.getServicesByConfig = mockGetServicesByConfig;
         Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
         Login.apimlLogin = mockLogin;
-        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
 
         const handler: any = new ApimlAutoInitHandler();
         expect(handler.mProfileType).toBe("base");
@@ -108,7 +108,7 @@ describe("ApimlAutoInitHandler", () => {
         Services.getServicesByConfig = mockGetServicesByConfig;
         Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
         Login.apimlLogin = mockLogin;
-        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
 
         const handler: any = new ApimlAutoInitHandler();
         expect(handler.mProfileType).toBe("base");
@@ -159,7 +159,7 @@ describe("ApimlAutoInitHandler", () => {
             plugins: []
         });
         const mockLogin = jest.fn().mockResolvedValue("fakeToken");
-        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
@@ -208,7 +208,7 @@ describe("ApimlAutoInitHandler", () => {
             plugins: []
         });
         const mockLogin = jest.fn().mockResolvedValue("fakeToken");
-        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
 
         ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
         Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
@@ -384,7 +384,7 @@ describe("ApimlAutoInitHandler", () => {
         ];
 
         it("should record all profiles with associated API ML services", () => {
-            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({ exists: true });
+            jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
             const handler = new ApimlAutoInitHandler();
             (handler as any).recordProfilesFound(apimlProfInfos);
             expect((handler as any).mAutoInitReport.profileRpts).toEqual(profileReports);
@@ -408,14 +408,7 @@ describe("ApimlAutoInitHandler", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
-                startingConfig: {
-                    api: {
-                        layers: {
-                            get: jest.fn().mockReturnValue({ exists: false })
-                        }
-                    },
-                    exists: true
-                }
+                startingConfig: { exists: false }
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
             (handler as any).recordProfileUpdates();
@@ -429,10 +422,13 @@ describe("ApimlAutoInitHandler", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
-                startingConfig: mockConfigApi({
-                    profiles: {},
-                    defaults: {}
-                })
+                startingConfig: {
+                    exists: true,
+                    properties: {
+                        profiles: {},
+                        defaults: {}
+                    }
+                }
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi({
                 profiles: {
@@ -454,17 +450,20 @@ describe("ApimlAutoInitHandler", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
-                startingConfig: mockConfigApi({
-                    profiles: {
-                        abcxyz: {
-                            type: "fake",
-                            properties: {
-                                basePath: "abcxyz/api/v1"
+                startingConfig: {
+                    exists: true,
+                    properties: {
+                        profiles: {
+                            abcxyz: {
+                                type: "fake",
+                                properties: {
+                                    basePath: "abcxyz/api/v1"
+                                }
                             }
-                        }
-                    },
-                    defaults: {}
-                })
+                        },
+                        defaults: {}
+                    }
+                }
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi({
                 profiles: {},
@@ -479,17 +478,21 @@ describe("ApimlAutoInitHandler", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
-                startingConfig: mockConfigApi({
-                    profiles: {
-                        abcxyz: {
-                            type: "fake",
-                            properties: {
-                                basePath: "abcxyz/api/v1"
+                startingConfig: {
+                    exists: true,
+                    path: "fakePath",
+                    properties: {
+                        profiles: {
+                            abcxyz: {
+                                type: "fake",
+                                properties: {
+                                    basePath: "abcxyz/api/v1"
+                                }
                             }
-                        }
-                    },
-                    defaults: {}
-                })
+                        },
+                        defaults: {}
+                    }
+                }
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi({
                 profiles: {
@@ -511,17 +514,20 @@ describe("ApimlAutoInitHandler", () => {
             const handler = new ApimlAutoInitHandler();
             (handler as any).mAutoInitReport = {
                 profileRpts: profileReports,
-                startingConfig: mockConfigApi({
-                    profiles: {
-                        abcxyz: {
-                            type: "fake",
-                            properties: {
-                                basePath: "abcxyz/api/v1"
+                startingConfig: {
+                    exists: true,
+                    properties: {
+                        profiles: {
+                            abcxyz: {
+                                type: "fake",
+                                properties: {
+                                    basePath: "abcxyz/api/v1"
+                                }
                             }
-                        }
-                    },
-                    defaults: {}
-                })
+                        },
+                        defaults: {}
+                    }
+                }
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi({
                 profiles: {
@@ -701,21 +707,24 @@ describe("ApimlAutoInitHandler", () => {
                     }],
                     baseOverrides: []
                 }],
-                startingConfig: mockConfigApi({
-                    profiles: {
-                        abcxyz: {
-                            type: "fake",
-                            properties: {
-                                port: 443
+                startingConfig: {
+                    exists: true,
+                    properties: {
+                        profiles: {
+                            abcxyz: {
+                                type: "fake",
+                                properties: {
+                                    port: 443
+                                }
+                            },
+                            base: {
+                                type: "base",
+                                properties: {}
                             }
                         },
-                        base: {
-                            type: "base",
-                            properties: {}
-                        }
-                    },
-                    defaults: {}
-                })
+                        defaults: {}
+                    }
+                }
             };
             jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi({
                 profiles: {
