@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add support for PEM certificate based authentication
+
 ## `6.33.4`
 
 - BugFix: Updated dependencies to resolve problems with the ansi-regex package
