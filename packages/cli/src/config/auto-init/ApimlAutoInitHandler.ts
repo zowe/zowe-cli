@@ -15,7 +15,7 @@ import * as lodash from "lodash";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
-    ImperativeError, RestClientError
+    ImperativeError, RestClientError, TextUtils
 } from "@zowe/imperative";
 import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
@@ -37,6 +37,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
     private readonly CREATED_MSG = "Created";
     private readonly MODIFIED_MSG = "Modified";
     private readonly REMOVED_MSG = "Removed";
+    private readonly WARNING_MSG = "Warning:";
 
     /**
      * This structure is populated during convertApimlProfileInfoToProfileConfig
@@ -133,7 +134,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         }
 
         // Report the type of config file changes
-        response.console.log(this.mAutoInitReport.changeForConfig +
+        response.console.log(this.colorizeKeyword(this.mAutoInitReport.changeForConfig) +
             " the Zowe configuration file '" +
             path.basename(this.mAutoInitReport.configFileNm) + "'."
         );
@@ -151,10 +152,13 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 defOrAlt = "alternate";
             }
 
-            response.console.log("\n" + nextProfRpt.changeForProf + " " + defOrAlt +
-                " profile '" + nextProfRpt.profName + "' of type '" + nextProfRpt.profType +
-                "' with basePath '" + nextProfRpt.basePath + "'"
-            );
+            let msg: string;
+            msg = "\n" + this.colorizeKeyword(nextProfRpt.changeForProf) + " " + defOrAlt +
+                " profile '" + nextProfRpt.profName + "' of type '" + nextProfRpt.profType + "'";
+            if (nextProfRpt.profType !== "base") {
+                msg += " with basePath '" + nextProfRpt.basePath + "'";
+            }
+            response.console.log(msg);
 
             // only report plugins and alternates for the default profile of each type
             if (!isDefaultProf) {
@@ -162,14 +166,13 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             }
 
             // report plugins using this profile (except for base profiles)
-            let msg: string;
             let loopCount: number;
             if (nextProfRpt.pluginNms.length > 0) {
                 if (nextProfRpt.profType !== "base") {
                     loopCount = 1;
                     for (const pluginNm of nextProfRpt.pluginNms) {
                         if (loopCount == 1) {
-                            msg = "    Plugins that use profile type '" + nextProfRpt.profType + "': ";
+                            msg = "    Packages that use profile type '" + nextProfRpt.profType + "': ";
                         } else {
                             msg += ", ";
                         }
@@ -197,7 +200,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
 
             if (nextProfRpt.baseOverrides.length > 0) {
                 const baseProfileName = this.mAutoInitReport.endingConfig.properties.defaults.base;
-                msg = `    This profile may require manual edits to work with APIML:`;
+                msg = `    ${this.colorizeKeyword(this.WARNING_MSG)} This profile may require manual edits to work with APIML:`;
                 for (const baseOverride of nextProfRpt.baseOverrides) {
                     msg += `\n        ${baseOverride.propName}: `;
                     if (!baseOverride.secure) {
@@ -215,6 +218,34 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             "\nYou can edit this configuration file to change your Zowe configuration:\n    " +
             this.mAutoInitReport.configFileNm
         );
+    }
+
+    /**
+     * Colorize a change keyword for a message to be displayed.
+     *
+     * @param {string} changeKeyWd
+     *        The keyword that we want to colorize.
+     *
+     * @returns {string} A string with the keyword in the appropriate color.
+     */
+    private colorizeKeyword(changeKeyword: string): string {
+        let keywordInColor: string;
+        switch(changeKeyword) {
+            case this.CREATED_MSG:
+            case this.MODIFIED_MSG:
+                keywordInColor = TextUtils.chalk.greenBright(changeKeyword);
+                break;
+            case this.REMOVED_MSG:
+                keywordInColor = TextUtils.chalk.redBright(changeKeyword);
+                break;
+            case this.WARNING_MSG:
+                keywordInColor = TextUtils.chalk.yellowBright(changeKeyword);
+                break;
+            default:
+                keywordInColor = changeKeyword;
+                break;
+        }
+        return keywordInColor;
     }
 
     /**
