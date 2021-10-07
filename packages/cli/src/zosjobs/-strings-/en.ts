@@ -13,8 +13,63 @@
 
 export default {
     CANCEL: {
+        SUMMARY: "Cancel a job",
+        DESCRIPTION: "Cancel a single job by job ID. This cancels the job if it is running or on input.",
+        ACTIONS: {
+            JOB: {
+                SUMMARY: "Cancel a single job by job ID",
+                DESCRIPTION: "Cancel a single job by job ID",
+                POSITIONALS: {
+                    JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
+                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
+                        "the job ID if desired. You can use, for example \"J123\"."
+                },
+                OPTIONS: {
+                    MODIFY_VERSION: "Setting this option to \"2.0\" will make the cancel job API synchronous using the X-IBM-Job-Modify-Version header. " +
+                        "Otherwise, it will be asynchronous by default."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Cancel job with job ID JOB03456",
+                        OPTIONS: "JOB03456"
+                    },
+                    EX2: {
+                        DESCRIPTION: "Cancel job with job ID JOB03456 synchronously",
+                        OPTIONS: "JOB03456 --modify-version \"2.0\""
+                    }
+                }
+            }
+        }
     },
     DELETE: {
+        SUMMARY: "Delete a z/OS job",
+        DESCRIPTION: "Delete a single job by job ID in OUTPUT status." +
+                     " This cancels the job if it is running and purges its output from the system.",
+        ACTIONS: {
+            JOB: {
+                SUMMARY: "Delete a single job by job ID",
+                DESCRIPTION: "Delete a single job by job ID",
+                POSITIONALS: {
+                    JOB_ID: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
+                        "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
+                        "the job ID if desired. You can use, for example \"J123\"."
+                },
+                OPTIONS: {
+                    MODIFY_VERSION: "Setting this option to \"2.0\" will make the delete job API synchronous using the X-IBM-Job-Modify-Version header. " +
+                        "Otherwise, it will be asynchronous by default."
+                },
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Delete job with job ID JOB03456",
+                        OPTIONS: "JOB03456"
+                    },
+                    EX2: {
+                        DESCRIPTION: "Delete job with job ID JOB03456 synchronously",
+                        OPTIONS: "JOB03456 --modify-version \"2.0\""
+                    }
+                }
+            }
+        }
     },
     DOWNLOAD: {
     },
@@ -56,13 +111,13 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: {
-                        OPTIONS: "\"ibmuser.cntl(deploy)\"",
-                        DESCRIPTION: "Submit the JCL in the data set \"ibmuser.cntl(deploy)\""
+                        DESCRIPTION: "Submit the JCL in the data set \"ibmuser.cntl(deploy)\"",
+                        OPTIONS: "\"ibmuser.cntl(deploy)\""
                     },
                     EX2: {
-                        OPTIONS: "\"ibmuser.cntl(deploy)\" --vasc",
                         DESCRIPTION: "Submit the JCL in the data set \"ibmuser.cntl(deploy)\", wait for the job to " +
-                        "complete and print all output from the job"
+                        "complete and print all output from the job",
+                        OPTIONS: "\"ibmuser.cntl(deploy)\" --vasc"
                     }
                 }
             },
@@ -76,8 +131,8 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: {
-                        OPTIONS: "\"iefbr14.txt\"",
-                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\""
+                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\"",
+                        OPTIONS: "\"iefbr14.txt\""
                     }
                 }
             },
