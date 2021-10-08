@@ -79,6 +79,7 @@
     "js-yaml": "^3.13.1",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
+    "strip-ansi": "^6.0.1",
     "typedoc": "^0.16.0",
     "typescript": "^3.8.0"
   },

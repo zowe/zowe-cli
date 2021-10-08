@@ -79,7 +79,7 @@ describe("config auto-init without profile", () => {
         const expectedLines = [
             "Created the Zowe configuration file 'zowe.config.json'",
             "Created default profile",
-            "Plugins that use profile type",
+            "Packages that use profile type",
             "You can edit this configuration file to change your Zowe configuration"
         ];
         for (const line of expectedLines) {
@@ -138,7 +138,7 @@ describe("config auto-init without profile", () => {
         const expectedLines = [
             "Modified the Zowe configuration file 'zowe.config.json'",
             "No changes to default profile",
-            "Plugins that use profile type",
+            "Packages that use profile type",
             "Modified default profile",
             "You can edit this configuration file to change your Zowe configuration"
         ];

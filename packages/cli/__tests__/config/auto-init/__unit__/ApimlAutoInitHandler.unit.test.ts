@@ -14,6 +14,7 @@ import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, ICo
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 import * as lodash from "lodash";
+import stripAnsi = require("strip-ansi");
 
 function mockConfigApi(properties: IConfig | undefined) {
     return {
@@ -615,7 +616,9 @@ describe("ApimlAutoInitHandler", () => {
                 },
                 {
                     propName: "tokenValue",
-                    secure: true
+                    secure: true,
+                    priorityValue: "serviceToken",
+                    baseValue: "baseToken"
                 }
             ]);
         });
@@ -732,8 +735,10 @@ describe("ApimlAutoInitHandler", () => {
                         type: "fake",
                         properties: {
                             basePath: "abcxyz/api/v1",
-                            port: 443
-                        }
+                            port: 443,
+                            tokenValue: "serviceToken"
+                        },
+                        secure: ["host", "tokenValue"]
                     },
                     defxyz: {
                         type: "fake",
@@ -744,8 +749,11 @@ describe("ApimlAutoInitHandler", () => {
                     base: {
                         type: "base",
                         properties: {
-                            port: 7554
-                        }
+                            host: "example.com",
+                            port: 7554,
+                            tokenValue: "baseToken"
+                        },
+                        secure: ["host", "tokenValue"]
                     }
                 },
                 defaults: {
@@ -754,7 +762,7 @@ describe("ApimlAutoInitHandler", () => {
                 }
             }));
             let output: string = "";
-            const mockConsoleLog = jest.fn((s: string) => output += s);
+            const mockConsoleLog = jest.fn((s: string) => output += stripAnsi(s));
             (handler as any).displayAutoInitChanges({
                 console: { log: mockConsoleLog }
             });
@@ -762,11 +770,13 @@ describe("ApimlAutoInitHandler", () => {
             const expectedLines = [
                 "Modified the Zowe configuration file 'fakePath'",
                 "Modified default profile 'abcxyz' of type 'fake' with basePath 'abcxyz/api/v1'",
-                "Plugins that use profile type 'fake': @abc/xyz-for-zowe-cli",
+                "Packages that use profile type 'fake': @abc/xyz-for-zowe-cli",
                 "Alternate profiles of type 'fake': defxyz",
+                "host: secure value may override profile 'base'",
                 "port: '443' overrides '7554' in profile 'base'",
+                "tokenValue: secure value overrides profile 'base'",
                 "Created alternate profile 'defxyz' of type 'fake' with basePath 'defxyz/api/v1'",
-                "Modified default profile 'base' of type 'base' with basePath 'Not supplied'",
+                "Modified default profile 'base' of type 'base'",
                 "You can edit this configuration file to change your Zowe configuration"
             ];
             for (const line of expectedLines) {

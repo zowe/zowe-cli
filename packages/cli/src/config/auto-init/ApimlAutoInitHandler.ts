@@ -206,7 +206,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                     if (!baseOverride.secure) {
                         msg += `'${baseOverride.priorityValue}' overrides '${baseOverride.baseValue}' in`;
                     } else {
-                        msg += `secure value overrides`;
+                        msg += "secure value " + ((baseOverride.priorityValue != null) ? "overrides" : "may override");
                     }
                     msg += ` profile '${baseProfileName}'`;
                 }
@@ -446,7 +446,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
     private recordProfileConflictsWithBase(): void {
         const configApi = ImperativeConfig.instance.config.api;
         const configJson = this.mAutoInitReport.endingConfig.properties;
-        const baseProfileName = configJson.defaults.base;
+        const baseProfileName = configJson.defaults?.base;
         if (baseProfileName == null) {
             return;  // default base profile is undefined
         }
@@ -457,20 +457,18 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         }
 
         for (const profileRpt of this.mAutoInitReport.profileRpts) {
-            if (profileRpt.changeForProf === this.MODIFIED_MSG) {
+            if (profileRpt.changeForProf === this.MODIFIED_MSG && profileRpt.profType !== "base") {
                 const serviceProfile = lodash.get(configJson, configApi.profiles.expandPath(profileRpt.profName)) as IConfigProfile;
                 for (const [name, value] of Object.entries(baseProfile.properties)) {
                     if (serviceProfile.properties[name] != null && serviceProfile.properties[name] !== baseProfile.properties[name]) {
-                        if (!baseProfile.secure?.includes(name) && !serviceProfile.secure?.includes(name)) {
-                            profileRpt.baseOverrides.push({
-                                propName: name,
-                                secure: false,
-                                priorityValue: serviceProfile.properties[name],
-                                baseValue: value
-                            });
-                        } else {
-                            profileRpt.baseOverrides.push({ propName: name, secure: true });
-                        }
+                        profileRpt.baseOverrides.push({
+                            propName: name,
+                            secure: (baseProfile.secure || []).includes(name) || (serviceProfile.secure || []).includes(name),
+                            priorityValue: serviceProfile.properties[name],
+                            baseValue: value
+                        });
+                    } else if (serviceProfile.secure?.includes(name) && baseProfile.secure?.includes(name)) {
+                        profileRpt.baseOverrides.push({ propName: name, secure: true });
                     }
                 }
             }
