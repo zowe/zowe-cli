@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Exposed new option `modifyVersion` for the `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands. [#1092](https://github.com/zowe/zowe-cli/issues/1092)
 
+## `6.34.0`
+
+- Enhancement: Add support for PEM certificate based authentication
+
 ## `6.33.4`
 
 - BugFix: Updated dependencies to resolve problems with the ansi-regex package

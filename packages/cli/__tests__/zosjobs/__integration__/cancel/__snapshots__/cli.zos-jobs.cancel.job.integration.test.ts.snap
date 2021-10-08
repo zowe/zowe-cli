@@ -94,6 +94,14 @@ exports[`zos-jobs cancel job command should display the help 1`] = `
       Default value: https
       Allowed values: http, https
 
+   --cert-file  (local file path)
+
+      The file path to a certificate file to use for authentication
+
+   --cert-key-file  (local file path)
+
+      The file path to a certificate key file to use for authentication
+
  PROFILE OPTIONS
  ---------------
 
