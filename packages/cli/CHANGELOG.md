@@ -6,6 +6,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added new feature to manage zos-logs. z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930). [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
 
+## `6.34.0`
+
+- Enhancement: Add support for PEM certificate based authentication
+
+## `6.33.4`
+
+- BugFix: Updated dependencies to resolve problems with the ansi-regex package
+
 ## `6.33.3`
 
 - Enhancement: Update post-install script to display a message when the CLI successfully installs due to increased error messaging from USS SDK when optional pre-requisites are not installed.
