@@ -69,9 +69,9 @@ export class CancelJobs {
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
         const headers: any = [Headers.APPLICATION_JSON];
 
-        // Set version of the modify request to either "1.0" or "2.0"
-        if (parms.version !== "2.0") {
-            parms.version = JobsConstants.DEFAULT_CANCEL_VERSION
+        // set default if unset
+        if (parms.version == null) {
+            parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
         }
 
         // build request
