@@ -467,7 +467,10 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                             priorityValue: serviceProfile.properties[name],
                             baseValue: value
                         });
-                    } else if (serviceProfile.secure?.includes(name) && baseProfile.secure?.includes(name)) {
+                    }
+                }
+                for (const name of (baseProfile.secure || [])) {
+                    if (serviceProfile.secure?.includes(name)) {
                         profileRpt.baseOverrides.push({ propName: name, secure: true });
                     }
                 }

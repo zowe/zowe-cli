@@ -749,7 +749,6 @@ describe("ApimlAutoInitHandler", () => {
                     base: {
                         type: "base",
                         properties: {
-                            host: "example.com",
                             port: 7554,
                             tokenValue: "baseToken"
                         },
