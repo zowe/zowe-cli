@@ -25,7 +25,7 @@ export default {
                         "the job ID if desired. You can use, for example \"J123\"."
                 },
                 OPTIONS: {
-                    MODIFY_VERSION: "Setting this option to \"2.0\" will make the cancel job API synchronous using the X-IBM-Job-Modify-Version header. " +
+                    MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"2.0\" will make the cancel job API synchronous. " +
                         "Otherwise, it will be asynchronous by default."
                 },
                 EXAMPLES: {
@@ -55,7 +55,7 @@ export default {
                         "the job ID if desired. You can use, for example \"J123\"."
                 },
                 OPTIONS: {
-                    MODIFY_VERSION: "Setting this option to \"2.0\" will make the delete job API synchronous using the X-IBM-Job-Modify-Version header. " +
+                    MODIFY_VERSION: "Using this option to set X-IBM-Job-Modify-Version to \"2.0\" will make the delete job API synchronous. " +
                         "Otherwise, it will be asynchronous by default."
                 },
                 EXAMPLES: {
