@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists
+
 ## `6.34.0`
 
 - Enhancement: Add support for PEM certificate based authentication
