@@ -6,6 +6,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Add `workflow-name` as required option and remove `definitionFilePath` as positional argument for `zowe zos-workflows list definition-file-details` command. [#1150](https://github.com/zowe/zowe-cli/issues/1150)
 
+## `7.0.0-next.202110071909`
+
+- Enhancement: Added `config update-schemas [--depth <value>]` command. [#1059](https://github.com/zowe/zowe-cli/issues/1059)
+- Breaking: Changed default log level from DEBUG to WARN to reduce the volume of logs written to disk. The log level can still be overridden using environment variables.
+
 ## `7.0.0-next.202109281609`
 
 - Enhancement: Added `config import` command that imports team config files from a local path or web URL. [#1083](https://github.com/zowe/zowe-cli/issues/1083)
