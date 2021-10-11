@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.34.1`
 
 - BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists
 
