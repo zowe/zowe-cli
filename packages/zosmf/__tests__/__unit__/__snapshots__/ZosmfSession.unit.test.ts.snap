@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`zosmf utils Should create a session object when certFile and certKeyFile are present 1`] = `
+Object {
+  "basePath": "fake",
+  "cert": "/fake/path",
+  "certKey": "/fake/path",
+  "hostname": "fake",
+  "password": undefined,
+  "port": "fake",
+  "protocol": "https",
+  "rejectUnauthorized": false,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "type": "cert-pem",
+  "user": undefined,
+}
+`;
+
 exports[`zosmf utils Should create a session object when tokenValue and tokenType are present 1`] = `
 Object {
   "basePath": "fake",

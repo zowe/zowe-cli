@@ -352,7 +352,7 @@ export default {
             FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",
             FILE: "The path to the local file where you want to download the content. When you omit the option, the command generates a file " +
                 "name automatically for you.",
-            EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension.  When no extension " +
+            EXTENSION: "Save the local files with a specified file extension. For example, .txt. Or \"\" for no extension. When no extension " +
                 "is specified, .txt is used as the default file extension.",
             DIRECTORY: "The directory to where you want to save the members. The command creates the directory for you when it does not already " +
                 "exist. By default, the command creates a folder structure based on the data set qualifiers. For example, the data set " +

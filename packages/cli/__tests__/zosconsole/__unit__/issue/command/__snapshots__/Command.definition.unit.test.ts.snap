@@ -55,7 +55,7 @@ Zowe CLI will issue \\"follow-up\\" API requests by default to collect any addit
         "ko",
         "k",
       ],
-      "description": "Displays only the \\"command response key\\" returned from the z/OSMF console API. You can collect additional messages using the command key with  'zowe zos-console collect sync-responses <key>'. Note that when using this option, you will not be presented with the \\"first set\\" of command response messages (if present in the API response). However, you can view them by using the --response-format-json option.",
+      "description": "Displays only the \\"command response key\\" returned from the z/OSMF console API. You can collect additional messages using the command key with 'zowe zos-console collect sync-responses <key>'. Note that when using this option, you will not be presented with the \\"first set\\" of command response messages (if present in the API response). However, you can view them by using the --response-format-json option.",
       "name": "key-only",
       "type": "boolean",
     },
