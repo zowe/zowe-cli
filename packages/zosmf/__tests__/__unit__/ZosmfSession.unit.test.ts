@@ -38,6 +38,20 @@ describe("zosmf utils", () => {
         const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
         expect(session.ISession).toMatchSnapshot();
     });
+    it("Should create a session object when certFile and certKeyFile are present", () => {
+        const args: ICommandArguments = {
+            $0: "zowe",
+            _: [""],
+            host: "fake",
+            port: "fake",
+            rejectUnauthorized: false,
+            basePath: "fake",
+            certFile: "/fake/path",
+            certKeyFile: "/fake/path"
+        };
+        const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
+        expect(session.ISession).toMatchSnapshot();
+    });
     it("should fail to create a basic session object when username and password are not present", () => {
         let error;
         try {
