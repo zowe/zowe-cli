@@ -13,7 +13,7 @@
 
 export default {
     CANCEL: {
-        SUMMARY: "Cancel a job",
+        SUMMARY: "Cancel a z/OS job",
         DESCRIPTION: "Cancel a single job by job ID. This cancels the job if it is running or on input.",
         ACTIONS: {
             JOB: {
