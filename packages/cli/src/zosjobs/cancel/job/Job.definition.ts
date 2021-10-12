@@ -11,11 +11,15 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
+import i18nTypings from "../../-strings-/en";
+
+const strings = (require("../../-strings-/en").default as typeof i18nTypings).CANCEL;
+
 export const JobDefinition: ICommandDefinition = {
     name: "job",
     type: "command",
-    summary: "Cancel a single job by job ID",
-    description: "Cancel a single job by job ID",
+    summary: strings.ACTIONS.JOB.SUMMARY,
+    description: strings.ACTIONS.JOB.DESCRIPTION,
     handler: __dirname + "/Job.handler",
     profile: {
         optional: ["zosmf"]
@@ -23,17 +27,28 @@ export const JobDefinition: ICommandDefinition = {
     positionals: [
         {
             name: "jobid",
-            description: "The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS batch jobs " +
-                "-- no two jobs on one system can have the same ID. Note: z/OS allows you to abbreviate " +
-                "the job ID if desired. You can use, for example \"J123\".",
+            description: strings.ACTIONS.JOB.POSITIONALS.JOB_ID,
             type: "string",
             required: true
         }
     ],
+    options: [
+        {
+            name: "modifyVersion",
+            description: strings.ACTIONS.JOB.OPTIONS.MODIFY_VERSION,
+            type: "string",
+            required: false,
+            defaultValue: "1.0"
+        }
+    ],
     examples: [
         {
-            description: "Cancel job with job ID JOB03456",
-            options: "JOB03456"
+            description: strings.ACTIONS.JOB.EXAMPLES.EX1.DESCRIPTION,
+            options: strings.ACTIONS.JOB.EXAMPLES.EX1.OPTIONS
+        },
+        {
+            description: strings.ACTIONS.JOB.EXAMPLES.EX2.DESCRIPTION,
+            options: strings.ACTIONS.JOB.EXAMPLES.EX2.OPTIONS
         }
     ]
 };

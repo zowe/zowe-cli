@@ -43,7 +43,7 @@ export default class JobHandler extends ZosmfBaseHandler {
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         // Delete the job
-        await DeleteJobs.deleteJobForJob(this.mSession, job);
+        await DeleteJobs.deleteJobForJob(this.mSession, job, this.arguments.modifyVersion);
 
         const message: string = `Successfully deleted job ${job.jobname} (${jobid})`;
         // Print message to console

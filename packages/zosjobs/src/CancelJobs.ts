@@ -47,7 +47,7 @@ export class CancelJobs {
      * @returns {Promise<void>} -  promise that resolves when the API call is complete
      * @memberof CancelJobs
      */
-    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: string) {
+    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0") {
         this.log.trace("cancelJobForJob called with job %s", JSON.stringify(job));
         return CancelJobs.cancelJobCommon(session, { jobname: job.jobname, jobid: job.jobid, version });
     }
