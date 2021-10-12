@@ -6,6 +6,18 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Removed the misleading `workflow-name` option for the `zowe zos-workflows list definition-file-details` help example. [#659](https://github.com/zowe/zowe-cli/issues/659)
 
+## `6.34.1`
+
+- BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists
+
+## `6.34.0`
+
+- Enhancement: Add support for PEM certificate based authentication
+
+## `6.33.4`
+
+- BugFix: Updated dependencies to resolve problems with the ansi-regex package
+
 ## `6.33.3`
 
 - Enhancement: Update post-install script to display a message when the CLI successfully installs due to increased error messaging from USS SDK when optional pre-requisites are not installed.
