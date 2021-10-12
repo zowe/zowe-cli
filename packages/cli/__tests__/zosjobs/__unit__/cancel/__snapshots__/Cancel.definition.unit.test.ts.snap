@@ -7,7 +7,7 @@ Object {
   ],
   "description": "Cancel a single job by job ID. This cancels the job if it is running or on input.",
   "name": "cancel",
-  "summary": "Cancel a job",
+  "summary": "Cancel a z/OS job",
   "type": "group",
 }
 `;
