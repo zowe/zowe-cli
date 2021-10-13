@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-workflows-for-zowe-sdk",
-  "version": "6.34.1",
+  "version": "6.35.0",
   "description": "Zowe SDK to interact with the z/OS workflows APIs",
   "author": "Broadcom",
   "license": "EPL-2.0",
