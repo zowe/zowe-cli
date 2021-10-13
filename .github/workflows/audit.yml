@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - next
   schedule:
     - cron: '0 10 * * *'
 
