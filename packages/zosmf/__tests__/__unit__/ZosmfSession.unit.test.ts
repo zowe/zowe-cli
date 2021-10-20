@@ -58,19 +58,34 @@ describe("zosmf utils", () => {
         expect(session.ISession.password).toBe(undefined);
     });
 
-    it("Should create a session object when certFile and certKeyFile are present", () => {
+    it("Should create a session object when certFile and certKeyFile are present", async () => {
         const args: ICommandArguments = {
             $0: "zowe",
             _: [""],
-            host: "fake",
-            port: "fake",
+            host: "fakeHost",
+            port: "fakePort",
             rejectUnauthorized: false,
-            basePath: "fake",
-            certFile: "/fake/path",
-            certKeyFile: "/fake/path"
+            basePath: "fakeBasePath",
+            certFile: "/fake/cert/path",
+            certKeyFile: "/fake/key/path"
         };
-        const session: Session = ZosmfSession.createBasicZosmfSessionFromArguments(args);
-        zzz expect(session.ISession).toMatchSnapshot();
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(args),
+            args
+        );
+        const session: Session = new Session(sessCfg);
+
+        expect(session.ISession.hostname).toBe("fakeHost");
+        expect(session.ISession.port).toBe("fakePort");
+        expect(session.ISession.rejectUnauthorized).toBe(false);
+        expect(session.ISession.basePath).toBe("fakeBasePath");
+        expect(session.ISession.cert).toBe("/fake/cert/path");
+        expect(session.ISession.certKey).toBe("/fake/key/path");
+        expect(session.ISession.protocol).toBe("https");
+        expect(session.ISession.user).toBe(undefined);
+        expect(session.ISession.password).toBe(undefined);
+        expect(session.ISession.tokenValue).toBe(undefined);
+        expect(session.ISession.tokenType).toBe(undefined);
     });
 
     it("should fail to create a session when username, password, and token are not present", async () => {
