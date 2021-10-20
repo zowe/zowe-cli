@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "comment-json": "4.1.0",
-    "string-width": "2.1.1"
+    "string-width": "4.2.3"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",

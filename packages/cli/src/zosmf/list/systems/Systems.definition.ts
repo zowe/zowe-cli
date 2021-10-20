@@ -33,7 +33,7 @@ export const SystemsDefinition: ICommandDefinition = {
             options: "--zosmf-profile SomeZosmfProfileName"
         },
         {
-            description: "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
+            description: "Obtain a list of the systems defined to a z/OSMF instance that you specified in the command line",
             options: "--host myhost --port 443 --user myuser --password mypass"
         }
     ]
