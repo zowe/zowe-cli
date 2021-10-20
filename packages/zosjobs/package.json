@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-jobs-for-zowe-sdk",
-  "version": "6.35.0",
+  "version": "6.36.0",
   "description": "Zowe SDK to interact with jobs on z/OS",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -45,11 +45,11 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "6.34.1"
+    "@zowe/zos-files-for-zowe-sdk": "6.36.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/core-for-zowe-sdk": "6.34.1",
+    "@zowe/core-for-zowe-sdk": "6.36.0",
     "@zowe/imperative": "4.17.0",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
