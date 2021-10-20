@@ -228,7 +228,7 @@ describe("auth login/logout apiml do not create profile", () => {
 });
 
 describe("auth login/logout apiml with pem cert", () => {
-    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestCertPemSchema & ITestBaseSchema;
     let token: string[];
 
