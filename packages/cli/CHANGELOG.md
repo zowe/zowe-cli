@@ -10,7 +10,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
         - Use an environment variable named ZOWE_USE_DAEMON with a value of "yes" to determine if zowe commands should run in daemon mode.
         - Automatically launch the background daemon when one is not running.
         - The daemon no longer has its own visible window, making it much more daemon-like.
-    - Bugfixs:
+    - Bug fixes:
         - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
         - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
 
