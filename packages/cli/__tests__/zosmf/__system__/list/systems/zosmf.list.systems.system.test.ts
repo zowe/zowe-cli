@@ -80,6 +80,28 @@ describe("zosmf list systems", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("systemNickName");
         });
+
+        it("should successfully list systems with pem cert", async () => {
+            if (SYSTEM_PROPS.certPem.zosmf.certFile == null) {
+                // Logging a message is the best we can do since Jest doesn't support programmatically skipping tests
+                process.stdout.write("Skipping test because pem cert file is undefined\n");
+            } else {
+                const opts = [
+                    "--host", SYSTEM_PROPS.certPem.zosmf.host || SYSTEM_PROPS.zosmf.host,
+                    "--port", SYSTEM_PROPS.certPem.zosmf.port || SYSTEM_PROPS.zosmf.port,
+                    "--cert-file", SYSTEM_PROPS.certPem.zosmf.certFile,
+                    "--cert-key-file", SYSTEM_PROPS.certPem.zosmf.certKeyFile,
+                    "--reject-unauthorized", SYSTEM_PROPS.certPem.zosmf.rejectUnauthorized || SYSTEM_PROPS.zosmf.rejectUnauthorized
+                ];
+
+                const response = runCliScript(__dirname + "/__scripts__/command/zosmf_list_systems_use_cli_opts.sh",
+                    TEST_ENVIRONMENT_NO_PROF, opts
+                );
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("systemNickName");
+            }
+        });
     });
 
     describe("Success scenarios", () => {

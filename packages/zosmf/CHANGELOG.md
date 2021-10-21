@@ -14,6 +14,11 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
       - In VS Code extensions, replace both of the above with:
         - ProfileInfo.createSession
 
+## `6.34.0`
+
+- Enhancement: Add support for PEM certificate based authentication
+
+
 ## `6.33.1`
 
 - Migrated from TSLint (now deprecated) to ESLint for static code analysis.

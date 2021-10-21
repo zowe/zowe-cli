@@ -95,6 +95,19 @@ const config: IImperativeConfig = {
                     type: "string",
                     secure: true,
                     optionDefinition: Constants.BASE_OPTION_TOKEN_VALUE
+                },
+                certFile: {
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_CERT_FILE
+                },
+                certKeyFile: {
+                    type: "string",
+                    optionDefinition: Constants.BASE_OPTION_CERT_KEY_FILE
+                // },
+                // certFilePassphrase: {
+                //     type: "string",
+                //     secure: true,
+                //     optionDefinition: Constants.BASE_OPTION_CERT_FILE_PASSPHRASE
                 }
             },
             required: []
@@ -142,7 +155,9 @@ const config: IImperativeConfig = {
                         Constants.BASE_OPTION_PORT,
                         Constants.BASE_OPTION_USER,
                         Constants.BASE_OPTION_PASSWORD,
-                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                        Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
+                        Constants.BASE_OPTION_CERT_FILE,
+                        Constants.BASE_OPTION_CERT_KEY_FILE
                     ]
                 },
                 logout: {
@@ -217,6 +232,19 @@ const config: IImperativeConfig = {
                         type: "boolean",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED
                     },
+                    certFile: {
+                        type: "string",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_FILE
+                    },
+                    certKeyFile: {
+                        type: "string",
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
+                    },
+                    // certFilePassphrase: {
+                    //     type: "string",
+                    //     secure: true,
+                    //     optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
+                    // },
                     basePath: {
                         type: "string",
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_BASE_PATH

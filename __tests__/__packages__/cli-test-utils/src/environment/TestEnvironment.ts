@@ -75,6 +75,7 @@ export class TestEnvironment {
         }
 
         // the result of the test environment setup so far is used to create profiles
+        TempTestProfiles.forceOldProfiles = params.createOldProfiles ?? false;
         result.tempProfiles = await TempTestProfiles.createProfiles(result, params.tempProfileTypes);
 
         Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));

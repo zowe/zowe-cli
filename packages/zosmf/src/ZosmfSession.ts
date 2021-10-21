@@ -125,6 +125,36 @@ export class ZosmfSession {
     };
 
     /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    public static ZOSMF_OPTION_CERT_FILE: ICommandOptionDefinition = {
+        name: "cert-file",
+        description: "The file path to a certificate file to use for authentication",
+        type: "existingLocalFile",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the path to the cert's key file for authentication
+     */
+    public static ZOSMF_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
+        name: "cert-key-file",
+        description: "The file path to a certificate key file to use for authentication",
+        type: "existingLocalFile",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    // public static ZOSMF_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
+    //     name: "cert-file-passphrase",
+    //     description: "The passphrase to decrypt a certificate file to use for authentication",
+    //     type: "string",
+    //     group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    // };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -135,7 +165,10 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_PASSWORD,
         ZosmfSession.ZOSMF_OPTION_REJECT_UNAUTHORIZED,
         ZosmfSession.ZOSMF_OPTION_BASE_PATH,
-        ZosmfSession.ZOSMF_OPTION_PROTOCOL
+        ZosmfSession.ZOSMF_OPTION_PROTOCOL,
+        ZosmfSession.ZOSMF_OPTION_CERT_FILE,
+        ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
+        // ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
     ];
 
     /**

@@ -14,6 +14,20 @@ All notable changes to the Zowe CLI package will be documented in this file.
         - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
         - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
 
+## `7.0.0-next.202110211759`
+
+- Enhancement: Display the set of changes made by the 'zowe config auto-init' command.
+
+## `7.0.0-next.202110071909`
+
+- Enhancement: Added `config update-schemas [--depth <value>]` command. [#1059](https://github.com/zowe/zowe-cli/issues/1059)
+- Breaking: Changed default log level from DEBUG to WARN to reduce the volume of logs written to disk. The log level can still be overridden using environment variables.
+
+## `7.0.0-next.202109281609`
+
+- Enhancement: Added `config import` command that imports team config files from a local path or web URL. [#1083](https://github.com/zowe/zowe-cli/issues/1083)
+- Enhancement: Added Help Doc examples for the `zowe config` group of commands. [#1061](https://github.com/zowe/zowe-cli/issues/1061)
+
 ## `7.0.0-next.202109032014`
 
 - Enhancement: Log in to API ML to obtain token value instead of prompting for it in `config secure` command.
@@ -45,6 +59,23 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
+## `6.35.0`
+
+- Enhancement: Removed the misleading `workflow-name` option for the `zowe zos-workflows list definition-file-details` help example. [#659](https://github.com/zowe/zowe-cli/issues/659)
+- Enhancement: Exposed new option `modifyVersion` for the `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands. [#1092](https://github.com/zowe/zowe-cli/issues/1092)
+
+## `6.34.1`
+
+- BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists
+
+## `6.34.0`
+
+- Enhancement: Add support for PEM certificate based authentication
+
+## `6.33.4`
+
+- BugFix: Updated dependencies to resolve problems with the ansi-regex package
 
 ## `6.33.3`
 

@@ -71,7 +71,7 @@ export const IssueCommandDefinition: ICommandDefinition = {
             name: "key-only",
             aliases: ["ko", "k"],
             description: `Displays only the "command response key" returned from the z/OSMF console API. ` +
-            `You can collect additional messages using the command key with  ` +
+            `You can collect additional messages using the command key with ` +
             `'${Constants.BINARY_NAME} zos-console collect sync-responses <key>'. ` +
             `Note that when using this option, you will not be presented ` +
             `with the "first set" of command response messages (if present in the API response). ` +
