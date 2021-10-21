@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202110211759`
 
 - Enhancement: Display the set of changes made by the 'zowe config auto-init' command.
 
