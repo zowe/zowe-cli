@@ -19,6 +19,7 @@ import { ITestUnixSchema } from "./ITestUnixSchema";
 import { ITestDatasetSchema } from "./ITestDatasetSchema";
 import { ITestSshSchema } from "./ITestSshSchema";
 import { ITestBaseSchema } from "./ITestBaseSchema";
+import { ITestCertPemSchema } from "./ITestCertPemSchema";
 
 /**
  * Interface representing the values in the custom_properties.yaml file
@@ -35,4 +36,8 @@ export interface ITestPropertiesSchema {
     unix: ITestUnixSchema;
     ssh: ITestSshSchema;
     base: ITestBaseSchema;
+    certPem: {
+        zosmf: ITestCertPemSchema;
+        base: ITestCertPemSchema;
+    };
 }

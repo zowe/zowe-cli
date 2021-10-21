@@ -54,7 +54,8 @@ describe("cancel job handler tests", () => {
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(CancelJobs.cancelJobForJob).toHaveBeenCalledWith(
             passedSession,
-            GetJobsData.SAMPLE_COMPLETE_JOB
+            GetJobsData.SAMPLE_COMPLETE_JOB,
+            params.arguments.version
         );
     });
 

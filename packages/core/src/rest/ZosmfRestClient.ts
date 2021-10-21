@@ -92,6 +92,10 @@ export class ZosmfRestClient extends RestClient {
                 original.additionalDetails = "Token is not valid or expired.\n\n" +
                     "For CLI usage, see `zowe auth login apiml --help`";
             }
+            // TODO: Add PFX support in the future
+            if (this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM) {
+                original.additionalDetails = "Certificate is not valid or expired.\n\n";
+            }
         }
 
         return original;

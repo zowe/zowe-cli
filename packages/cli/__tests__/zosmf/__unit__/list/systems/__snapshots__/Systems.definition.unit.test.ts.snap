@@ -13,7 +13,7 @@ Object {
       "options": "--zosmf-profile SomeZosmfProfileName",
     },
     Object {
-      "description": "Obtain a list of the systems defined to a z/OSMF instance that you specified in the  command line",
+      "description": "Obtain a list of the systems defined to a z/OSMF instance that you specified in the command line",
       "options": "--host myhost --port 443 --user myuser --password mypass",
     },
   ],
@@ -92,6 +92,18 @@ Object {
       "group": "Zosmf Connection Options",
       "name": "protocol",
       "type": "string",
+    },
+    Object {
+      "description": "The file path to a certificate file to use for authentication",
+      "group": "Zosmf Connection Options",
+      "name": "cert-file",
+      "type": "existingLocalFile",
+    },
+    Object {
+      "description": "The file path to a certificate key file to use for authentication",
+      "group": "Zosmf Connection Options",
+      "name": "cert-key-file",
+      "type": "existingLocalFile",
     },
   ],
   "profile": Object {
