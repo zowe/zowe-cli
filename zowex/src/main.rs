@@ -176,15 +176,20 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
     // form our host, port, and connection strings
     let daemon_host = "127.0.0.1".to_owned();
     let port_string = get_port_string();
-    let host_port_conn_str = format!("{}:{}", daemon_host, port_string);
 
-    /* Attempt to make a TCP connection to the daemon.
+    let mut stream = establish_connection(daemon_host, port_string)?;
+    Ok(talk(&_resp, &mut stream)?)
+}
+
+fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream> {
+        /* Attempt to make a TCP connection to the daemon.
      * Iterate to enable a slow system to start the daemon.
      */
+    let host_port_conn_str = format!("{}:{}", host, port);
     let mut conn_attempt = 1;
     let mut we_started_daemon = false;
     let mut cmd_to_show: String = String::new();
-    let mut stream = loop {
+    let stream = loop {
         let conn_result = TcpStream::connect(&host_port_conn_str);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
@@ -205,7 +210,7 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
             } else {
                 if we_started_daemon {
                     println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
-                        daemon_host, port_string
+                        host, port
                     );
                     println!(
                         "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
@@ -218,7 +223,7 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
 
         if conn_attempt == 5 {
             println!("\nUnable to connect to Zowe daemon with name = {} and pid = {} on host = {} and port = {}.",
-                daemon_proc_info.name, daemon_proc_info.pid, daemon_host, port_string
+                daemon_proc_info.name, daemon_proc_info.pid, host, port
             );
             println!(
                 "Command = {}\nTerminating after maximum retries.",
@@ -235,13 +240,17 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
         conn_attempt = conn_attempt + 1;
     };
 
+    Ok(stream)
+}
+
+fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
-    stream.write(_resp).unwrap(); // write it
+    stream.write(message).unwrap(); // write it
     let mut stream_clone = stream.try_clone().expect("clone failed");
 
-    let mut reader = BufReader::new(&mut stream);
+    let mut reader = BufReader::new(&*stream);
 
     let mut exit_code = 0;
     let mut _progress = false;
