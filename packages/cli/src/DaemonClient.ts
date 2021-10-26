@@ -27,7 +27,7 @@ export class DaemonClient {
      * @memberof DaemonClient
      */
     private static readonly STOP_KEY = "--shutdown";
-    private static readonly ZOWE_DEAMON_HEADER_KEY = "x-zowe-daemon";
+    private static readonly ZOWE_DEAMON_ID = "daemon-client";
 
     /**
      * Creates an instance of DaemonClient.
@@ -74,9 +74,22 @@ export class DaemonClient {
      * @memberof DaemonClient
      */
     private data(data: Buffer) {
-        if (data.toString().indexOf(DaemonClient.ZOWE_DEAMON_HEADER_KEY) > -1) {
-            return;
+
+        const stringData = data.toString();
+
+        // assess if this data is related to a prompt reply and ignore if so
+        if (stringData.indexOf(DaemonClient.ZOWE_DEAMON_ID) > -1) {
+
+            try {
+                const jsonData = JSON.parse(stringData);
+                if (jsonData.id && jsonData.id === DaemonClient.ZOWE_DEAMON_ID) {
+                    return;
+                }
+            } catch {
+                // do nothing
+            }
         }
+
         // NOTE(Kelosky): this is not exposed yet, but will allow for a clean shut down if undocumented `--shutdown`
         // is written to the persistent Processor.  It should be wrapped in a new header and handled in DaemonClient.ts, e.g. x-zowe-daemon-shutdown
         const stopOffset = data.toString().indexOf(DaemonClient.STOP_KEY);
