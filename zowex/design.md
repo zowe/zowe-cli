@@ -12,19 +12,18 @@ In testing a solution, the root command tree takes longer to execute than lower 
 
 ### Rust Client
 
-Native Rust client calls Zowe CLI persistent process (daemon).  An env var can be set for the port to connect to tcp socket.  `ZOWE_DAEMON=<PORT>` environmental variable used or default 4000.
+Native Rust client calls Zowe CLI persistent process (daemon).  An env var can be set for the port to connect to tcp socket.  `ZOWE_DAEMON=<PORT>` environmental variable used or default `4000`.
 
 Rust binderies are released on GitHub and could also be released on scoop, cargo, chocolatey, windows command installer, etc...
 
 Rust client sets `--daemon-client-directory` (or `--dcd`) for Zowe CLI / imperative usage which is the daemon client directory.  This flag is hidden from Zowe help display
 since it's not intended for end users.
 
-Rust client is called `zowex.exe` while in PoC / validation stage.  Otherwise, we might call it `zowe` for seamless transition.
-Imperative
+Rust client is called `zowe.exe`.
 
-Imperative is updated in several places to write to a stream in addition to / instead of stdout & stderr.  Stream is passed in yargs “context” which is our own user data.
+Imperative is updated in several places to write to a stream in addition to / instead of stdout & stderr.  Stream is passed in yargs "context" which is our own user data.
 
-dcd global flag added for Zowe CLI operations that implicitly depend on the current working directory.  For example, Zowe CLI daemon could be running at any arbitrary location on the system; however, we want `zowex` to operate against whatever directory it was run.  --dcd allows for alternate dcd.
+`--dcd` hidden, global flag added for Zowe CLI operations that implicitly depend on the current working directory.  For example, Zowe CLI daemon could be running at any arbitrary location on the system; however, we want `zowe` to operate against whatever directory it was run.  `--dcd` allows for alternate `dcd`.
 
 ### Zowe CLI Server
 
@@ -37,51 +36,45 @@ Zowe CLI is updated to launch a server if an undocumented `--daemon` parm is det
 
 At a high level:
 
-1. Zowe CLI server is started via `zowe --daemon`
-2. `zowex` Rust client calls pass zowe commands to the server via tcp writing
+1. Zowe CLI server is started via `zowe --daemon` manually or via native `zowe` client
+2. `zowe` native client calls pass zowe commands to the server via tcp
 3. zowe server responds with text data from command output as it normally would, but response is directed towards socket connection instead of to console
 
-However, zowe CLI also has features like:
+However, Zowe CLI also has features like:
 
 - progress bars
 - writing to stderr
 - prompting for user input
+- exiting process with non-zero
+- writing output to stdout & stderr
 
-In these cases, a lightweight protocol is built onto the communication between server and client.  The protocol consists of "headers" that begin with `x-zowe-daemon-`.  If detected in data steam on either the client or server side, this data is parsed to control behavior between client and server.
+So, we use a JSON object to describe communication between both server and client.
 
-`DaemonUtils.ts` in imperative describes some rules for headers sent from server to client.
+`IDaemonRequest.ts` & `IDaemonResponse.ts` in the imperative repo describe some of rules and keyword / value parts for data sent between server and client.
 
-All headers must appear on the same line without newline, are separated by `;`, and may contain PRECEDING data that is not part of a header.
+#### Examples
 
-#### Special headers - Server to Client
+The daemon server may send sample messages to daemon client like:
+```
+"{\"stdout\":\"ca11 (default) \\nca112\\ntest\\ntso1\\n\"}"
+"{\"stderr\":\"\\nWarning: The command 'profiles list' is deprecated.\\n\"}
+"{\"stderr\":\"Recommended replacement: The 'config list' command\\n\"}"
+"{\"exitCode\":0}"
+```
 
-The following are headers with special meaning that are sent FROM the server TO the client.  Values for each header, immediately follow it after a `:` and are 32 bit integer types only.
+Or:
+```
+{"prompt":"Enter the host name of your service: "}
+```
 
-##### General Identity headers
-
-- `x-zowe-daemon-headers`, count of total headers being set, also marks beginning of headers
-- `x-zowe-daemon-version`, version of the "protocol"
-- `x-zowe-daemon-end`, end marker of passed headers
-- `x-zowe-daemon-exit`, alternate exit code for daemon client to end with
-
-##### x-zowe-daemon-progress
-
-This header indicates a progress bar is being streamed from the server to the client.  The client needs to continuously write on the same line current progress until a header marks it complete.
-
-##### x-zowe-daemon-prompt
-
-This header indicates a prompt for user input is needed by the server from the client.  The client must prompt the user and send the response to the server.
-
-#### Special headers - Client to Server
-
-##### z-zowe-daemon-reply
-
-This header is sent to the server contain a replay from `x-zowe-daemon-prompt`.
-
+The daemon client sends messages to server like:
+```
+{"reply":"zosmf.com\r\n","id":"daemon-client"}
+```
 ### Testing
 
-- Obtain zowex.exe binary for your platform and add to PATH
-- Run zowe as a background task with a hidden --daemon option:
+- Obtain zowe.exe binary for your platform and add to PATH
+- Run zowe as a background task with a hidden `--daemon` option:
   - Windows start zowe --daemon
   - Linux zowe --daemon &
   - pm2 pm2 start <global-npm-location>/node_modules/@zowe/cli/lib/main.js --name zowe-daemon -- --daemon
