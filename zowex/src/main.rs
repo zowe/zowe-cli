@@ -10,8 +10,6 @@
 */
 
 use serde::{Deserialize, Serialize};
-use serde_json::{Value};
-use std::collections::HashMap;
 use std::env;
 use std::ffi::OsString;
 use std::io::prelude::*;
@@ -113,7 +111,6 @@ fn main() -> std::io::Result<()> {
         }
     } else {
         // user wants to run classic NodeJS zowe
-        println!("Running zowe in classic mode");
         cmd_result = run_nodejs_command(&mut _args);
     }
 
@@ -247,14 +244,15 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
     let mut reader = BufReader::new(&mut stream);
 
     let mut exit_code = 0;
-    let mut progress = false;
+    let mut _progress = false;
 
     loop {
         let mut u_payload: Vec<u8> = Vec::new();
-        let mut payload = String::new();
+        let payload: String;
 
         // read until form feed (\f)
         if reader.read_until(0xC, &mut u_payload).unwrap() > 0 {
+
             // remove form feed and convert to a string
             u_payload.pop(); // remove the 0xC
             payload = str::from_utf8(&u_payload).unwrap().to_string();
@@ -313,7 +311,7 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
                 Some(s) => {
                     print!("{}", s);
                     io::stdout().flush().unwrap();
-                    let mut reply = String::new();
+                    let reply;
                     reply = read_password().unwrap();
                     let response: DaemonResponse = DaemonResponse {
                         reply,
@@ -330,7 +328,7 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
                 None => 0, // do nothing
             };
 
-            progress = match p.progress {
+            _progress = match p.progress {
                 Some(s) => s,
                 None => false, // do nothing
             };
