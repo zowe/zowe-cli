@@ -4,6 +4,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 # Recent Changes
 
+- BugFix: Fixed an issue where plugin install and uninstall did not work with NPM version 8. [#683](https://github.com/zowe/imperative/issues/683)
+
+## `6.36.0`
+
 - Enhancement: Added the command tree JSON object to the `zowe --available-commands` command's data object, returned when `--response-format-json` is specified.
 
 ## `6.35.0`
