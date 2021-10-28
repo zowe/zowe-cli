@@ -48,6 +48,12 @@ export default class LogsHandler extends ZosmfBaseHandler {
                 return;
             }
 
+            // remove control characters, except \u000A(\n) and \u000D(\r)
+            for (const logItem of logItems) {
+                logItem.message = logItem.message.
+                    replace(/[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "");  // eslint-disable-line no-control-regex
+            }
+
             // Return as an object in the response 'data' field when using --response-format-json
             commandParameters.response.data.setObj(resp);
 
@@ -59,7 +65,7 @@ export default class LogsHandler extends ZosmfBaseHandler {
                 commandParameters.response.console.log(new Date(logItem.timestamp).toISOString() + "  " + logItem.message.replace(/\r/g, "\n"));
             }
         } catch (err) {
-            if(err.mMessage.includes('status 404')){
+            if(err.mMessage !== undefined && err.mMessage.includes('status 404')){
                 commandParameters.response.console.log("Note: This feature dependents on z/OSMF version 2.4 or higher. Ensure that the z/OSMF" +
                 " Operations Log Support is available via APAR and associated PTFs: https://www.ibm.com/support/pages/apar/PH35930. \n");
             }

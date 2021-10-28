@@ -15,6 +15,8 @@ import { IZosLogType } from "./doc/IZosLogType";
 import { IZosLogParms } from "./doc/IZosLogParms";
 import { GetZosLogValidator } from "./GetZosLogValidator";
 import { ZosLogConstants } from "./ZosLogConstants";
+import { isNullOrUndefined } from "util";
+
 
 /**
  * Get zos log via z/OSMF restful api
@@ -30,10 +32,17 @@ export class GetZosLog {
      * @return {Promise<IZosLogType>} command response , @see {IZosLogType}
      * @memberof GetLog
      */
-    public static getZosLog(session: AbstractSession, commandParms: IZosLogParms) {
+    public static async getZosLog(session: AbstractSession, commandParms: IZosLogParms) {
         GetZosLogValidator.validateSession(session);
 
-        return ZosmfRestClient.getExpectJSON<IZosLogType>(session, GetZosLog.getResourcePath(commandParms), [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
+        let resp: IZosLogType = await ZosmfRestClient.getExpectJSON<IZosLogType>(session,
+            GetZosLog.getResourcePath(commandParms), [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
+        if (isNullOrUndefined(commandParms.processResponses) || commandParms.processResponses !== false) {
+            // the IBM responses sometimes have \r and sometimes \r\n, we will process them our here and hopefully
+            // return them with just \n.
+            resp = JSON.parse(JSON.stringify(resp).replace(/\\r\\n/g, "\\n").replace(/\\r/g, "\\n"));
+        }
+        return resp;
     }
 
     /**

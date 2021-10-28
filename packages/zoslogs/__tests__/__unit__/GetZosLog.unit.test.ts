@@ -24,6 +24,7 @@ const PRETEND_SESSION: Session = new Session({
 });
 
 const COMMAND_PARAMS_FULL: IZosLogParms = { startTime: "2021-08-11T07:02:52.022Z", direction: "forward", range: "1m" };
+const COMMAND_PARAMS_FULL_PR: IZosLogParms = { startTime: "2021-08-11T07:02:52.022Z", direction: "forward", range: "1m", processResponses: false };
 const EXPECTED_PATH_FULL: string = "/zosmf/restconsoles/v1/log?time=2021-08-11T07:02:52.022Z&direction=forward&timeRange=1m&";
 
 const COMMAND_PARAMS_NUMBER: IZosLogParms = { startTime: "1626912000000" };
@@ -70,6 +71,29 @@ describe("GetZosLog getZosLog", () => {
         let response: IZosLogType;
         try {
             response = await GetZosLog.getZosLog(PRETEND_SESSION, COMMAND_PARAMS_FULL);
+            Imperative.console.info(`Response ${inspect(response)}`);
+        } catch (thrownError) {
+            error = thrownError;
+            Imperative.console.info(`Error ${inspect(error)}`);
+        }
+        expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledTimes(1);
+        expect(ZosmfRestClient.getExpectJSON as any).toHaveBeenCalledWith(PRETEND_SESSION, EXPECTED_PATH_FULL, [ZosmfHeaders.X_CSRF_ZOSMF_HEADER]);
+        expect(response.totalitems).toBeGreaterThan(0);
+    });
+
+    it("should succeed and return unprocessed logs", async () => {
+        (ZosmfRestClient.getExpectJSON as any) = jest.fn<object>((): Promise<object> => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve(GetZosLogsData.SAMPLE_RESP_DATA);
+                });
+            });
+        });
+
+        let error: ImperativeError;
+        let response: IZosLogType;
+        try {
+            response = await GetZosLog.getZosLog(PRETEND_SESSION, COMMAND_PARAMS_FULL_PR);
             Imperative.console.info(`Response ${inspect(response)}`);
         } catch (thrownError) {
             error = thrownError;
