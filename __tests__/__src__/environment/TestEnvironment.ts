@@ -40,7 +40,7 @@ export class TestEnvironment extends BaseTestEnvironment {
 
         // Ensure correct path separator for windows or linux like systems.
         const separator = process.platform === "win32" ? ";" : ":";
-        result.env.PATH = `${nodePath.resolve(__dirname, "../../__resources__/application_instances")}${separator}${process.env.PATH}`;
+        result.env.PATH = `${process.env.PATH}${separator}${nodePath.resolve(__dirname, "../../__resources__/application_instances")}`;
 
         // Return the test environment including working directory that the tests should be using
         return result;
