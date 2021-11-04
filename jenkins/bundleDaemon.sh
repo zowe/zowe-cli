@@ -6,7 +6,7 @@ daemonVersion=$1
 githubAuthHeader=$2
 
 until [[ $(curl -fs https://$githubAuthHeader@api.github.com/repos/zowe/zowe-cli/releases/tags/native-v$daemonVersion |
-    jq -r '.assets | length') = '3' ]]; do
+    jq -r '.assets | length') == "3" ]]; do
     echo "Waiting for Rust CLI Publish workflow to complete..."
     sleep 30
 done
