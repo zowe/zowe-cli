@@ -61,7 +61,7 @@
     "@zowe/zos-console-for-zowe-sdk": "6.36.1",
     "@zowe/zos-files-for-zowe-sdk": "6.36.1",
     "@zowe/zos-jobs-for-zowe-sdk": "6.36.1",
-    "@zowe/zos-logs-for-zowe-sdk": "6.34.0",
+    "@zowe/zos-logs-for-zowe-sdk": "6.36.1",
     "@zowe/zos-tso-for-zowe-sdk": "6.36.1",
     "@zowe/zos-uss-for-zowe-sdk": "6.36.1",
     "@zowe/zos-workflows-for-zowe-sdk": "6.36.1",
