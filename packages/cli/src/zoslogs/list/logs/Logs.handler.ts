@@ -61,9 +61,11 @@ export default class LogsHandler extends ZosmfBaseHandler {
                 TextUtils.formatMessage(outputHeader, resp.totalitems, resp.source, startTime, new Date(resp.nextTimestamp).toISOString())
             );
             commandParameters.response.console.log("");
-            for (const logItem of logItems) {
-                commandParameters.response.console.log(new Date(logItem.timestamp).toISOString() + "  " + logItem.message.replace(/\r/g, "\n"));
-            }
+
+            const memberList = logItems.map((logItem: any) =>
+                new Date(logItem.timestamp).toISOString() + "  " + logItem.message.replace(/\r/g, "\n"));
+            commandParameters.response.console.log(memberList.join("\n"));
+
         } catch (err) {
             if(err.mMessage !== undefined && err.mMessage.includes('status 404')){
                 commandParameters.response.console.log("Note: This feature dependents on z/OSMF version 2.4 or higher. Ensure that the z/OSMF" +
