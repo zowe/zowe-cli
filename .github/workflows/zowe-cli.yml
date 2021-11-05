@@ -59,6 +59,10 @@ jobs:
         name: zowe-linux-latest.tgz
         path: zowe.tgz
 
+    - name: Upload the Prebuilt Linux Binary
+      if: (github.event.run_with_act)
+      run: mkdir -p /toolcache/artifacts && cp zowe.tgz /toolcache/artifacts/zowe-linux-latest.tgz
+
   test:
     name: Cross-Platform Test
     runs-on: ${{ matrix.os }}
@@ -123,6 +127,10 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: zowe-linux-latest.tgz
+
+    - name: Download Prebuilt Linux Binary
+      if: matrix.os == 'ubuntu-latest' && github.event.run_with_act
+      run: cp /toolcache/artifacts/zowe-linux-latest.tgz zowe.tgz
 
     - name: Archive Binary
       if: matrix.os != 'ubuntu-latest'
