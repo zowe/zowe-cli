@@ -4,14 +4,10 @@ General information about GH Workflows
 
 ### Using `act`
 
-1. Read about it: https://github.com/nektos/act (Requires Docker)
-2. Install it https://github.com/nektos/act#installation
-3. Run: `act --eventpath .github/_act_event.json --workflows .github/workflows/zowe-cli.yml --reuse`
-    - Equivalent: `act -re .github/_act_event.json -W .github/workflows/zowe-cli.yml`
-
-`100.` To start from scratch, just remove the containers
-    - `docker rm act-Zowe-CLI-Build-Linux --force`
-    - `docker rm act-Zowe-CLI-Cross-Platform-Test --force`
+- Read it: https://github.com/nektos/act (Requires Docker)
+- Install it https://github.com/nektos/act#installation
+- Run it: `npm run test:act`
+- Clean it: `npm run test:act -- --clean`
 
 **Known Issues for `nektos/act@0.2.24`**
 

@@ -102,3 +102,4 @@ imperative_debug.log
 zowe.config.json
 zowe.config.user.json
 zowe.schema.json
+.github/_act_*.yml
