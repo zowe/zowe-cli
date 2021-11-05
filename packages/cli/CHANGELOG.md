@@ -6,13 +6,30 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added new feature to manage zos-logs. z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930). [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
 
+## `6.36.1`
+
+- BugFix: Fixed an issue where plugin install and uninstall did not work with NPM version 8. [#683](https://github.com/zowe/imperative/issues/683)
+
+## `6.36.0`
+
+- Enhancement: Added the command tree JSON object to the `zowe --available-commands` command's data object, returned when `--response-format-json` is specified.
+
+## `6.35.0`
+
+- Enhancement: Removed the misleading `workflow-name` option for the `zowe zos-workflows list definition-file-details` help example. [#659](https://github.com/zowe/zowe-cli/issues/659)
+- Enhancement: Exposed new option `modifyVersion` for the `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands. [#1092](https://github.com/zowe/zowe-cli/issues/1092)
+
+## `6.34.1`
+
+- BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists.
+
 ## `6.34.0`
 
-- Enhancement: Add support for PEM certificate based authentication
+- Enhancement: Add support for PEM certificate based authentication.
 
 ## `6.33.4`
 
-- BugFix: Updated dependencies to resolve problems with the ansi-regex package
+- BugFix: Updated dependencies to resolve problems with the ansi-regex package.
 
 ## `6.33.3`
 
@@ -26,7 +43,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Exposed new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
 - Enhancement: Updated Imperative to add the following features:
-  - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions
+  - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions.
   - Enhancement: The `plugins validate` command will return an error code when plugins have errors if the new `--fail-on-error` option is specified. Also adds `--fail-on-warning` option to return with an error code when plugins have warnings. [#463](https://github.com/zowe/imperative/issues/463)
   - BugFix: Fixed regression where characters are not correctly escaped in web help causing extra slashes ("\") to appear. [#644](https://github.com/zowe/imperative/issues/644)
 - Renamed the zos-files `--responseTimeout` option to `--response-timeout` in help docs for consistency. [#803](https://github.com/zowe/zowe-cli/issues/803)
