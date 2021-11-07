@@ -31,6 +31,7 @@ const wfPath = ".github/workflows/zowe-cli.yml";
 const epPath = ".github/_act_event.json";
 const opts = {
   help: ["--help", "-h"],
+  verbose: ["--verbose", "-v"],
   clean: "--clean",
   node: "--node",
   os: "--os",
@@ -82,7 +83,7 @@ async function main() {
     wf = yaml.load(fs.readFileSync(path.resolve(__dirname, "..", wfPath)));
   }, `Unable to read "${wfPath}"`);
 
-  // Handle Node versions
+  // Handle Node versions and OS runners
   let osVersion = null;
   if (process.argv.indexOf(opts.os) > 0) {
     osVersion = process.argv[process.argv.indexOf(opts.os) + 1];
@@ -96,9 +97,49 @@ async function main() {
       if (nodeVersion) v.strategy.matrix["node-version"] = nodeVersion.split(",");
       if (osVersion) v.strategy.matrix.os = osVersion.split(",");
     }
+
+    const artPath = "/toolcache/artifacts";
+    for (const [i, c] of v.steps.entries()) {
+      // Workaround for https://github.com/nektos/act/issues/465
+      if(c.if?.indexOf(".outcome") > 0) {
+        v.steps[i].if = c.if.replaceAll(".outcome == 'success'", ".success");
+        v.steps[i].if = c.if.replaceAll(".outcome == 'failure'", ".success");
+      }
+
+      // Replace Upload Artifacts
+      if (c.uses?.indexOf("actions/upload-artifact") >= 0) {
+        // TODO: Research support for wildcards
+        v.steps[i] = {
+          ...v.steps[i],
+          run: `mkdir -p ${artPath} && tar -cvf ${artPath}/${c.with.name} ${c.with.path.split('\n').join(' ')}`
+        };
+        delete v.steps[i].uses;
+        delete v.steps[i].with;
+      } else
+      // Replace Download Artifacts
+      if (c.uses?.indexOf("actions/download-artifact") >= 0) {
+        // TODO: Research support for wildcards
+        v.steps[i] = {
+          ...v.steps[i],
+          run: `tar -xvf ${artPath}/${c.with.name}`
+        };
+        delete v.steps[i].uses;
+        delete v.steps[i].with;
+      } else {
+        // ID specific actions
+        switch (c.id) {
+          case "install-rust": {
+            v.steps[i] = {
+              name: c.name,
+              run: "yum install cargo -y\ncargo --version\n"
+            };
+            break;
+          }
+        }
+      }
+    }
   }
 
-  // TODO: Replace known steps
   // TODO: Replace steps context
 
   // Output generated workflow
@@ -112,7 +153,8 @@ async function main() {
   // Execute workflow locally
   console.log("Executing new workflow...");
   await _sleep();
-  // cp.spawn("act", ["-rW", genWfPath, "-e", epPath], {stdio: "inherit"});
+  const verbose = process.argv.indexOf(opts.verbose[0]) > 0 || process.argv.indexOf(opts.verbose[1]) > 0;
+  cp.spawn("act", ["-rW", genWfPath, "-e", epPath, `${verbose ? "-v" : ""}`], {stdio: "inherit"});
 }
 
 async function help() {
@@ -122,7 +164,11 @@ Usage:
 - npm run test:act -- -h
 - npm run test:act -- --help
 - npm run test:act -- --clean
+- npm run test:act -- --clean -v
+- npm run test:act -- --clean --verbose
 - npm run test:act -- --node 16.x
+- npm run test:act -- --node 16.x -v
+- npm run test:act -- --node 16.x --verbose
 - npm run test:act -- --node 16.x,14.x
 - npm run test:act -- --node 16.x,14.x --os ubuntu-latest
 - npm run test:act -- --node 16.x,14.x --os ubuntu-latest,windows-latest

@@ -33,19 +33,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install Rust toolchain
-      if: (!github.event.run_with_act)
       id: install-rust
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
         toolchain: stable
         override: true
-
-    - name: Install Rust toolchain
-      if: github.event.run_with_act
-      run: |
-        yum install cargo -y
-        cargo --version
 
     - name: Build
       run: cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
@@ -54,15 +47,10 @@ jobs:
       run: tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe
 
     - name: Upload the Prebuilt Linux Binary
-      if: (!github.event.run_with_act)
       uses: actions/upload-artifact@v2
       with:
         name: zowe-linux-latest.tgz
         path: zowe.tgz
-
-    - name: Upload the Prebuilt Linux Binary
-      if: (github.event.run_with_act)
-      run: mkdir -p /toolcache/artifacts && cp zowe.tgz /toolcache/artifacts/zowe-linux-latest.tgz
 
   test:
     name: Cross-Platform Test
@@ -122,14 +110,10 @@ jobs:
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe
 
     - name: Download Prebuilt Linux Binary
-      if: matrix.os == 'ubuntu-latest' && !github.event.run_with_act
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/download-artifact@v2
       with:
         name: zowe-linux-latest.tgz
-
-    - name: Download Prebuilt Linux Binary
-      if: matrix.os == 'ubuntu-latest' && github.event.run_with_act
-      run: cp /toolcache/artifacts/zowe-linux-latest.tgz zowe.tgz
 
     - name: Archive Binary
       if: matrix.os != 'ubuntu-latest'
@@ -142,24 +126,20 @@ jobs:
     - name: Setup Binary in PATH
       id: setup-binary
       run: tar -xvzf zowe.tgz -C ./node_modules/.bin --overwrite
-      # run: |
-      #   mkdir -p $HOME/.zowe/_bin
-      #   tar -xvzf zowe.tgz -C $HOME/.zowe/_bin
-      #   ${{ github.event.run_with_act && 'export PATH=$HOME/.zowe/_bin:$PATH' || 'echo "$HOME/.zowe/_bin" >> $GITHUB_PATH' }}
 
     - name: Unit Tests
       id: unit
-      if: ${{ always() && steps.build.outcome == 'success' }} || github.event.run_with_act
+      if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit >> unit-tests.txt
 
     - name: Integration Tests
       id: integration
-      if: ${{ always() && steps.build.outcome == 'success' }} || github.event.run_with_act
+      if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:integration >> integration-tests.txt
 
     - name: Archive Results
       id: upload
-      if: ${{ always() && steps.build.outcome == 'success' }} && !github.event.run_with_act
+      if: ${{ always() && steps.build.outcome == 'success' }}
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}-${{ matrix.node-version }}-results
@@ -169,7 +149,7 @@ jobs:
           integration-tests.txt
 
     - name: Upload Results to Codecov
-      if: ${{ always() && steps.build.outcome == 'success' }} && !github.event.run_with_act
+      if: ${{ always() && steps.build.outcome == 'success' }}
       uses: codecov/codecov-action@v1.0.7
       with:
         env_vars: OS,NODE

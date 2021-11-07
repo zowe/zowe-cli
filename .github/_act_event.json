@@ -4,6 +4,5 @@
   },
   "inputs": {
     "binary-type": "debug"
-  },
-  "run_with_act": true
+  }
 }

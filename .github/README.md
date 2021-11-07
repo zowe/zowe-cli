@@ -9,6 +9,8 @@ General information about GH Workflows
 - Run it: `npm run test:act`
 - Clean it: `npm run test:act -- --clean`
 
+For more information, run: `npm run test:act -- --help`
+
 **Known Issues for `nektos/act@0.2.24`**
 
 `0.` The first time it will likely take ~3 minutes to run. Subsequent runs (with `--reuse`) should take less than 2 minutes. <br/>
