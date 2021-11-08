@@ -18,6 +18,10 @@ on:
         description: "Specify whether to use a `debug` or a `release` version of the binary"
         default: "debug"
         required: false
+      test-type:
+        description: "Specify whether to run tests using the `binary` or regular `nodejs` executable"
+        default: "binary"
+        required: false
 
 jobs:
   prebuild:
@@ -28,7 +32,10 @@ jobs:
     # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
     container: quay.io/pypa/manylinux2014_x86_64
 
-    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
+    if: |
+      github.event.inputs.test-type == "binary" &&
+      (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) &&
+      !contains(github.event.head_commit.message, '[ci skip]')
     steps:
     - uses: actions/checkout@v2
 
@@ -98,25 +105,25 @@ jobs:
       run: npm run build --if-present
 
     - name: Build Windows Binary
-      if: matrix.os == 'windows-latest'
+      if: matrix.os == 'windows-latest' && github.event.inputs.test-type == "binary"
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe.exe
 
     - name: Build MacOS Binary
-      if: matrix.os == 'macos-latest'
+      if: matrix.os == 'macos-latest' && github.event.inputs.test-type == "binary"
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe
 
     - name: Download Prebuilt Linux Binary
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && github.event.inputs.test-type == "binary"
       uses: actions/download-artifact@v2
       with:
         name: zowe-linux-latest.tgz
 
     - name: Archive Binary
-      if: matrix.os != 'ubuntu-latest'
+      if: matrix.os != 'ubuntu-latest' && github.event.inputs.test-type == "binary"
       id: upload-binary
       uses: actions/upload-artifact@v2
       with:
@@ -124,6 +131,7 @@ jobs:
         path: zowe.tgz
 
     - name: Setup Binary in PATH
+      if: github.event.inputs.test-type == "binary"
       id: setup-binary
       run: tar -xvzf zowe.tgz -C ./node_modules/.bin --overwrite
 

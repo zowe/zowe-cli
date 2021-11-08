@@ -32,6 +32,7 @@ const epPath = ".github/_act_event.json";
 const opts = {
   help: ["--help", "-h"],
   verbose: ["--verbose", "-v"],
+  dryRun: ["--dry-run", "--dr"],
   clean: "--clean",
   node: "--node",
   os: "--os",
@@ -57,10 +58,11 @@ const _yesno = async (q) => {
 }
 
 async function clean() {
-  const containers = ["act-Zowe-CLI-Build-Linux", "act-Zowe-CLI-Cross-Platform-Test"];
+  const containers = cp.spawnSync("docker", ["ps", "--filter", "name=^act-", "--format", "'{{ .Names }}'"]).stdout.toString().trim().split("\n");
   for (const c of containers) {
+    if (c === "") continue;
     if (await _yesno(`Remove Container: ${c}\nAre you sure? [y/n]`)) {
-      cp.spawn("docker", ["rm", c, "--force"], {stdio: "inherit"});
+      cp.spawn("docker", ["rm", c.split("'").join(""), "--force"], {stdio: "ignore"});
     } else {
       console.log(`Skip Container: ${c}`);
     }
@@ -74,8 +76,8 @@ async function main() {
   _handle(() => {
     console.log(`Using "nektos/act", ${cp.spawnSync("act", ["--version"]).stdout.toString().trim()}`);
   }, `Please install "act", https://github.com/nektos/act`);
-
   await _sleep();
+  const verbose = process.argv.indexOf(opts.verbose[0]) > 0 || process.argv.indexOf(opts.verbose[1]) > 0;
 
   // Read given workflow
   let wf;
@@ -111,7 +113,7 @@ async function main() {
         // TODO: Research support for wildcards
         v.steps[i] = {
           ...v.steps[i],
-          run: `mkdir -p ${artPath} && tar -cvf ${artPath}/${c.with.name} ${c.with.path.split('\n').join(' ')}`
+          run: `mkdir -p ${artPath} && tar -c${verbose ? 'v' : ''}f ${artPath}/${c.with.name} ${c.with.path.split('\n').join(' ')}`
         };
         delete v.steps[i].uses;
         delete v.steps[i].with;
@@ -121,7 +123,7 @@ async function main() {
         // TODO: Research support for wildcards
         v.steps[i] = {
           ...v.steps[i],
-          run: `tar -xvf ${artPath}/${c.with.name}`
+          run: `tar -x${verbose ? 'v' : ''}f ${artPath}/${c.with.name}`
         };
         delete v.steps[i].uses;
         delete v.steps[i].with;
@@ -140,8 +142,6 @@ async function main() {
     }
   }
 
-  // TODO: Replace steps context
-
   // Output generated workflow
   const genWfPath = path.resolve(__dirname, "../.github", `_act_${path.basename(wfPath)}`);
   console.log("Generating new workflow...");
@@ -150,11 +150,14 @@ async function main() {
     fs.writeFileSync(genWfPath, yaml.dump(wf, {indent: 2, lineWidth: -1}), {flag: "w"});
   }, `Unable to write "${genWfPath}"`);
 
-  // Execute workflow locally
-  console.log("Executing new workflow...");
-  await _sleep();
-  const verbose = process.argv.indexOf(opts.verbose[0]) > 0 || process.argv.indexOf(opts.verbose[1]) > 0;
-  cp.spawn("act", ["-rW", genWfPath, "-e", epPath, `${verbose ? "-v" : ""}`], {stdio: "inherit"});
+  if (process.argv.indexOf(opts.dryRun[0]) > 0 || process.argv.indexOf(opts.dryRun[1]) > 0) {
+    console.log("New workflow saved:", genWfPath);
+  } else {
+    // Execute workflow locally
+    console.log("Executing new workflow...");
+    await _sleep();
+    cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], {stdio: "inherit"});
+  }
 }
 
 async function help() {
@@ -163,11 +166,13 @@ Usage:
 - npm run test:act
 - npm run test:act -- -h
 - npm run test:act -- --help
+- npm run test:act -- --dr
+- npm run test:act -- --dry-run
 - npm run test:act -- --clean
-- npm run test:act -- --clean -v
 - npm run test:act -- --clean --verbose
 - npm run test:act -- --node 16.x
 - npm run test:act -- --node 16.x -v
+- npm run test:act -- --node 16.x --dr
 - npm run test:act -- --node 16.x --verbose
 - npm run test:act -- --node 16.x,14.x
 - npm run test:act -- --node 16.x,14.x --os ubuntu-latest

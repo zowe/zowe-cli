@@ -3,6 +3,7 @@
     "message": "test"
   },
   "inputs": {
-    "binary-type": "debug"
+    "binary-type": "debug",
+    "test-type": "nodejs"
   }
 }
