@@ -14,6 +14,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
         - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
         - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
 
+## `7.0.0-next.202111041425`
+
+- Enhancement: Added `autoStore` property to config JSON files which defaults to true. When this property is enabled and the CLI prompts you to enter connection info, the values you enter will be saved to disk (or credential vault if they are secure) for future use. [zowe/zowe-cli#923](https://github.com/zowe/zowe-cli/issues/923)
+
 ## `7.0.0-next.202110211759`
 
 - Enhancement: Display the set of changes made by the 'zowe config auto-init' command.
@@ -60,6 +64,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.36.1`
+
+- BugFix: Fixed an issue where plugin install and uninstall did not work with NPM version 8. [#683](https://github.com/zowe/imperative/issues/683)
+
+## `6.36.0`
+
+- Enhancement: Added the command tree JSON object to the `zowe --available-commands` command's data object, returned when `--response-format-json` is specified.
+
 ## `6.35.0`
 
 - Enhancement: Removed the misleading `workflow-name` option for the `zowe zos-workflows list definition-file-details` help example. [#659](https://github.com/zowe/zowe-cli/issues/659)
@@ -67,15 +79,15 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `6.34.1`
 
-- BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists
+- BugFix: Reverts hiding the cert-key-file path so users can see what path was specified and check if the file exists.
 
 ## `6.34.0`
 
-- Enhancement: Add support for PEM certificate based authentication
+- Enhancement: Add support for PEM certificate based authentication.
 
 ## `6.33.4`
 
-- BugFix: Updated dependencies to resolve problems with the ansi-regex package
+- BugFix: Updated dependencies to resolve problems with the ansi-regex package.
 
 ## `6.33.3`
 
@@ -89,7 +101,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Exposed new option `start` for the `zowe zos-files list data-set` command. [#495](https://github.com/zowe/zowe-cli/issues/495)
 - Enhancement: Updated Imperative to add the following features:
-  - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions
+  - Enhancement: Improved command suggestions for mistyped commands, add aliases to command suggestions.
   - Enhancement: The `plugins validate` command will return an error code when plugins have errors if the new `--fail-on-error` option is specified. Also adds `--fail-on-warning` option to return with an error code when plugins have warnings. [#463](https://github.com/zowe/imperative/issues/463)
   - BugFix: Fixed regression where characters are not correctly escaped in web help causing extra slashes ("\") to appear. [#644](https://github.com/zowe/imperative/issues/644)
 - Renamed the zos-files `--responseTimeout` option to `--response-timeout` in help docs for consistency. [#803](https://github.com/zowe/zowe-cli/issues/803)
