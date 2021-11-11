@@ -9,7 +9,6 @@
 *
 */
 
-import Mock = jest.Mock;
 jest.mock("net");
 jest.mock("@zowe/imperative");
 import * as net from "net";
@@ -49,8 +48,45 @@ describe("DaemonClient tests", () => {
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
-        // is what is passed to mocked Imperative.parse via snapshot
+        // and is what is passed to mocked Imperative.parse via snapshot
         (daemonClient as any).data("some data", {whatever: "context I want"});
+    });
+
+    it("should ignore JSON response data used for prompting when received", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn( (data, context) => {
+            // do nothing
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log
+                }
+            },
+            commandLine: "n/a",
+            // parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server);
+
+        daemonClient.run();
+        // force `data` call and verify input is from instantiation of DaemonClient
+        // and is what is passed to mocked Imperative.parse via snapshot
+        const promptResponse = { id: "daemon-client", reply: "some answer" };
+        (daemonClient as any).data(JSON.stringify(promptResponse), {whatever: "context I want"});
+
+        expect(parse).not.toHaveBeenCalled();
     });
 
     it("should shutdown when keyword is specified", () => {
