@@ -1,10 +1,12 @@
 [package]
-name = "zowex"
-version = "0.2.1"
+name = "zowe"
+version = "0.3.0"
 authors = ["Zowe Project"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+pathsearch = "0.2.0"
 rpassword = "5.0"
+sysinfo = "0.20.0"

@@ -169,6 +169,20 @@ node('zowe-jenkins-agent-dind') {
     )
 
     pipeline.createStage(
+        name: "Bundle Daemon Binaries",
+        shouldExecute: {
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+        },
+        timeout: [time: 10, unit: 'MINUTES'],
+        stage: {
+            def daemonVer = readProperties(file: "zowex/Cargo.toml").version
+            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                sh "bash jenkins/bundleDaemon.sh ${daemonVer} \"${USERNAME}:${TOKEN}\""
+            }
+        }
+    )
+
+    pipeline.createStage(
         name: "Bundle Keytar Binaries",
         shouldExecute: {
             return pipeline.protectedBranches.isProtected(BRANCH_NAME)
