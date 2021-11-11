@@ -465,11 +465,12 @@ fn user_wants_daemon() -> bool {
         Err(_e) => env_var_val = "NoDaemon".to_string(),
     }
 
-    if env_var_val.to_lowercase() == "false"
-         || env_var_val.to_lowercase() == "no"
-        || env_var_val == "0"
+    if env_var_val.to_lowercase() == "false" || env_var_val.to_lowercase() == "no" ||
+       env_var_val == "0"
     {
+        return false
         return false;
+    return true;
     }
     return true;
 }
