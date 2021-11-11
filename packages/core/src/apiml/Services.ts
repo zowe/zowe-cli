@@ -279,7 +279,8 @@ export class Services {
 
         const configResult: IConfig = {
             profiles: configProfile.profiles,
-            defaults: configDefaults
+            defaults: configDefaults,
+            autoStore: true
         };
         return configResult;
     }

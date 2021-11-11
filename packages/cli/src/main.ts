@@ -31,6 +31,8 @@ const config: IImperativeConfig = {
 
     try {
         timingApi.mark("BEFORE_INIT");
+
+        if(process.argv.includes("--daemon")) { config.daemonMode = true; }
         await Imperative.init(config);
 
         const processor = new Processor(process.argv);

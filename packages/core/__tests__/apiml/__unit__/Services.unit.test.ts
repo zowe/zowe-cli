@@ -382,7 +382,8 @@ describe("APIML Services unit tests", () => {
         it("should handle null or undefined profileInfoList", () => {
             const expectedJson = `{
     "profiles": {},
-    "defaults": {}
+    "defaults": {},
+    "autoStore": true
 }`;
             let actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(null), null, ConfigConstants.INDENT);
             expect(actualJson).toEqual(expectedJson);
@@ -417,7 +418,8 @@ describe("APIML Services unit tests", () => {
     },
     "defaults": {
         "type0": "test0"
-    }
+    },
+    "autoStore": true
 }`;
             expect(actualJson).toEqual(expectedJson);
         });
@@ -450,7 +452,8 @@ describe("APIML Services unit tests", () => {
     },
     "defaults": {
         "type1": "test1"
-    }
+    },
+    "autoStore": true
 }`;
             expect(actualJson).toEqual(expectedJson);
         });
@@ -502,7 +505,8 @@ describe("APIML Services unit tests", () => {
     },
     "defaults": {
         "type1": "test1"
-    }
+    },
+    "autoStore": true
 }`;
             expect(actualJson).toEqual(expectedJson);
         });
@@ -549,7 +553,8 @@ describe("APIML Services unit tests", () => {
         // Uncomment one of the lines below to set a different default.
         //"type2": "test2.2"
         "type2": "test2.1"
-    }
+    },
+    "autoStore": true
 }`;
             expect(actualJson).toEqual(expectedJson);
         });
@@ -645,7 +650,8 @@ describe("APIML Services unit tests", () => {
         // Uncomment one of the lines below to set a different default.
         //"type4": "test4.2"
         "type4": "test4.1"
-    }
+    },
+    "autoStore": true
 }`;
             expect(actualJson).toEqual(expectedJson);
         });

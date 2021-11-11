@@ -182,7 +182,7 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
 }
 
 fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream> {
-        /* Attempt to make a TCP connection to the daemon.
+    /* Attempt to make a TCP connection to the daemon.
      * Iterate to enable a slow system to start the daemon.
      */
     let host_port_conn_str = format!("{}:{}", host, port);
@@ -261,7 +261,6 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
 
         // read until form feed (\f)
         if reader.read_until(0xC, &mut u_payload).unwrap() > 0 {
-
             // remove form feed and convert to a string
             u_payload.pop(); // remove the 0xC
             payload = str::from_utf8(&u_payload).unwrap().to_string();
@@ -307,12 +306,12 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
                     io::stdin().read_line(&mut reply).unwrap();
                     let response: DaemonResponse = DaemonResponse {
                         reply,
-                        id: X_ZOWE_DAEMON_REPLY.to_string()
+                        id: X_ZOWE_DAEMON_REPLY.to_string(),
                     };
                     let v = serde_json::to_string(&response)?;
 
                     stream_clone.write(v.as_bytes()).unwrap();
-                },
+                }
                 None => (), // do nothing
             }
 
@@ -324,11 +323,11 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
                     reply = read_password().unwrap();
                     let response: DaemonResponse = DaemonResponse {
                         reply,
-                        id: X_ZOWE_DAEMON_REPLY.to_string()
+                        id: X_ZOWE_DAEMON_REPLY.to_string(),
                     };
                     let v = serde_json::to_string(&response)?;
                     stream_clone.write(v.as_bytes()).unwrap();
-                },
+                }
                 None => (), // do nothing
             }
 
@@ -466,7 +465,10 @@ fn user_wants_daemon() -> bool {
         Err(_e) => env_var_val = "NoDaemon".to_string(),
     }
 
-    if env_var_val.to_lowercase() == "false" || env_var_val.to_lowercase() == "no" {
+    if env_var_val.to_lowercase() == "false"
+        || env_var_val.to_lowercase() == "no"
+        || env_var_val == "0"
+    {
         return false;
     }
     return true;
