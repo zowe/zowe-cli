@@ -466,7 +466,7 @@ fn user_wants_daemon() -> bool {
     }
 
     if env_var_val.to_lowercase() == "false"
-        || env_var_val.to_lowercase() == "no"
+         || env_var_val.to_lowercase() == "no"
         || env_var_val == "0"
     {
         return false;
