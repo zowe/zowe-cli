@@ -24,45 +24,9 @@ on:
         required: false
 
 jobs:
-  prebuild:
-    name: Build Linux
-    runs-on: ubuntu-latest
-
-    # Need to build in container with old version of GLIBC to support RHEL 7
-    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
-    container: quay.io/pypa/manylinux2014_x86_64
-
-    if: |
-      github.event.inputs.test-type == "binary" &&
-      (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) &&
-      !contains(github.event.head_commit.message, '[ci skip]')
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Install Rust toolchain
-      id: install-rust
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-
-    - name: Build
-      run: cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-
-    - name: Create Archive
-      run: tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe
-
-    - name: Upload the Prebuilt Linux Binary
-      uses: actions/upload-artifact@v2
-      with:
-        name: zowe-linux-latest.tgz
-        path: zowe.tgz
-
   test:
     name: Cross-Platform Test
     runs-on: ${{ matrix.os }}
-    needs: prebuild
     strategy:
       fail-fast: false
       matrix:
@@ -100,30 +64,28 @@ jobs:
       id: original-npm-version
       run: npm install -g npm@${{ steps.npm-version.outputs.number }}
 
+    - name: Install Rust toolchain
+      id: install-rust
+      if: github.event.inputs.test-type == "binary"
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
     - name: Build Source
       id: build
       run: npm run build --if-present
 
-    - name: Build Windows Binary
-      if: matrix.os == 'windows-latest' && github.event.inputs.test-type == "binary"
+    - name: Build Binary
+      id: build-binary
+      if: github.event.inputs.test-type == "binary"
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe.exe
-
-    - name: Build MacOS Binary
-      if: matrix.os == 'macos-latest' && github.event.inputs.test-type == "binary"
-      run: |
-        cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe
-
-    - name: Download Prebuilt Linux Binary
-      if: matrix.os == 'ubuntu-latest' && github.event.inputs.test-type == "binary"
-      uses: actions/download-artifact@v2
-      with:
-        name: zowe-linux-latest.tgz
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
     - name: Archive Binary
-      if: matrix.os != 'ubuntu-latest' && github.event.inputs.test-type == "binary"
+      if: github.event.inputs.test-type == "binary"
       id: upload-binary
       uses: actions/upload-artifact@v2
       with:

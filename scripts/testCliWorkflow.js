@@ -25,7 +25,7 @@ const fs = require("fs");
 const path = require("path");
 const yaml = require("js-yaml");
 const chalk = require("chalk");
-const rl = require("readline").createInterface({input: process.stdin, output: process.stdout});
+const rl = require("readline").createInterface({ input: process.stdin, output: process.stdout });
 
 const wfPath = ".github/workflows/zowe-cli.yml";
 const epPath = ".github/_act_event.json";
@@ -44,7 +44,7 @@ const _sleep = async (ms) => {
 const _handle = async (fun, msg) => {
   try {
     await fun();
-  } catch(_) {
+  } catch (_) {
     if (msg) console.log(chalk.red(msg));
     console.error(_.toString());
     process.exit(1);
@@ -62,7 +62,7 @@ async function clean() {
   for (const c of containers) {
     if (c === "") continue;
     if (await _yesno(`Remove Container: ${c}\nAre you sure? [y/n]`)) {
-      cp.spawn("docker", ["rm", c.split("'").join(""), "--force"], {stdio: "ignore"});
+      cp.spawn("docker", ["rm", c.split("'").join(""), "--force"], { stdio: "ignore" });
     } else {
       console.log(`Skip Container: ${c}`);
     }
@@ -103,7 +103,7 @@ async function main() {
     const artPath = "/toolcache/artifacts";
     for (const [i, c] of v.steps.entries()) {
       // Workaround for https://github.com/nektos/act/issues/465
-      if(c.if?.indexOf(".outcome") > 0) {
+      if (c.if?.indexOf(".outcome") > 0) {
         v.steps[i].if = c.if.replaceAll(".outcome == 'success'", ".success");
         v.steps[i].if = c.if.replaceAll(".outcome == 'failure'", ".success");
       }
@@ -132,8 +132,19 @@ async function main() {
         switch (c.id) {
           case "install-rust": {
             v.steps[i] = {
-              name: c.name,
-              run: "yum install cargo -y\ncargo --version\n"
+              ...v.steps[i],
+              // run: "yum install cargo -y\ncargo --version\n"
+              run: "apt update -y\napt install build-essential curl -y\ncurl https://sh.rustup.rs -sSf > __install_rust.sh\nchmod u+x __install_rust.sh\n./__install_rust.sh -y\nsource $HOME/.cargo/env\ncargo --version\n"
+            };
+            delete v.steps[i].uses;
+            delete v.steps[i].with;
+            break;
+          }
+          case "build-binary": {
+            v.steps[i] = {
+              ...v.steps[i],
+              // run: "yum install cargo -y\ncargo --version\n"
+              run: "source $HOME/.cargo/env\ncargo --version\n" + c.run
             };
             break;
           }
@@ -147,7 +158,7 @@ async function main() {
   console.log("Generating new workflow...");
   await _sleep();
   _handle(() => {
-    fs.writeFileSync(genWfPath, yaml.dump(wf, {indent: 2, lineWidth: -1}), {flag: "w"});
+    fs.writeFileSync(genWfPath, yaml.dump(wf, { indent: 2, lineWidth: -1 }), { flag: "w" });
   }, `Unable to write "${genWfPath}"`);
 
   if (process.argv.indexOf(opts.dryRun[0]) > 0 || process.argv.indexOf(opts.dryRun[1]) > 0) {
@@ -156,7 +167,16 @@ async function main() {
     // Execute workflow locally
     console.log("Executing new workflow...");
     await _sleep();
-    cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], {stdio: "inherit"});
+    cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], { stdio: "inherit" });
+
+    console.log("Copying existing artifacts...");
+    await _sleep();
+    const copyPath = cp.execSync("docker inspect volume act-toolcache | jq '.[0].Mountpoint'", { encoding: "utf-8" }).trim().replaceAll('"', '');
+    const testPath = path.resolve(__dirname, "..", "__tests__", "__results__", "nektos_act");
+    cp.execSync(`mkdir -p ${path.join(copyPath, "artifacts")} && mkdir -p ${testPath}`);
+    cp.execSync(`tar -zc${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${copyPath} .`);
+    cp.execSync(`tar -zx${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${testPath}`);
+    cp.execSync(`rm -rf __act__artifacts.tgz`);
   }
 }
 

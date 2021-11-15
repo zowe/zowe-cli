@@ -4,6 +4,6 @@
   },
   "inputs": {
     "binary-type": "debug",
-    "test-type": "nodejs"
+    "test-type": "binary"
   }
 }
