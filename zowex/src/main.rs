@@ -200,7 +200,6 @@ fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream
         let daemon_proc_info = is_daemon_running();
 
         // when not running, start it.
-        // if daemon_proc_info.is_running == false {
         if daemon_proc_info.is_running == false {
             if conn_attempt == 1 {
                 // start the daemon and continue trying to connect
