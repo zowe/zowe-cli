@@ -20,7 +20,7 @@ on:
         required: false
       test-type:
         description: "Specify whether to run tests using the `binary` or regular `nodejs` executable"
-        default: "binary"
+        default: 'binary'
         required: false
 
 jobs:
@@ -66,7 +66,7 @@ jobs:
 
     - name: Install Rust toolchain
       id: install-rust
-      if: github.event.inputs.test-type == "binary"
+      if: github.event.inputs.test-type == 'binary'
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
@@ -79,13 +79,13 @@ jobs:
 
     - name: Build Binary
       id: build-binary
-      if: github.event.inputs.test-type == "binary"
+      if: github.event.inputs.test-type == 'binary'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
     - name: Archive Binary
-      if: github.event.inputs.test-type == "binary"
+      if: github.event.inputs.test-type == 'binary'
       id: upload-binary
       uses: actions/upload-artifact@v2
       with:
@@ -93,7 +93,7 @@ jobs:
         path: zowe.tgz
 
     - name: Setup Binary in PATH
-      if: github.event.inputs.test-type == "binary"
+      if: github.event.inputs.test-type == 'binary'
       id: setup-binary
       run: tar -xvzf zowe.tgz -C ./node_modules/.bin --overwrite
 
