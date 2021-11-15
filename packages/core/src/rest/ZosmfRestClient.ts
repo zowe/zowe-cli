@@ -22,11 +22,33 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
 export class ZosmfRestClient extends RestClient {
 
     /**
+     * Not modified if Etag toke is present and matches
+     * @static
+     * @memberof ZosmfRestClient
+     */
+    public static readonly HTTP_STATUS_NOT_MODIFIED = 304;
+
+    /**
      * Use the Brightside logger instead of the imperative logger
      * @type {Logger}
      */
     public get log(): Logger {
         return Logger.getAppLogger();
+    }
+
+    /**
+     * Success for HTTP 304 Not Modified
+     * @readonly
+     * @type {boolean}
+     * @memberof ZosmfRestClient
+     */
+    get requestSuccess(): boolean {
+        if (this.response == null) {
+            return false;
+        } else {
+            return ((this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
+                this.response.statusCode < RestConstants.HTTP_STATUS_300) || this.response.statusCode === ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED);
+        }
     }
 
     /**

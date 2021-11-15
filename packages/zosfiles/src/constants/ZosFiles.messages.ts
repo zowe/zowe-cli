@@ -135,6 +135,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set was downloaded successfully
+     * @type {IMessageDefinition}
+     */
+    datasetDownloadSkipped: {
+        message: "Data set download skipped.\nContent unchanged from: %s"
+    },
+
+    /**
      * Message indicating that the uss file was downloaded successfully
      * @type {IMessageDefinition}
      */

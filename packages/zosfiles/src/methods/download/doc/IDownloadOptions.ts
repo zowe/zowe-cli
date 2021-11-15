@@ -80,4 +80,9 @@ export interface IDownloadOptions extends IOptions {
      * The default value is true for backward compatibility.
      */
     failFast?: boolean;
+
+    /**
+     * Indicates download should only occur if z/OS data hash indicated by ETag is different from input token.
+     */
+    match?: string;
 }

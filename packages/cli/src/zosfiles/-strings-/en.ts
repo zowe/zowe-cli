@@ -347,6 +347,8 @@ export default {
                 "only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
             BINARY: "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process " +
                 "returns each line as-is, without translation. No delimiters are added between records.",
+            ETAG: "Return the ETag token to determine if the data on z/OS host has changed.",
+            MATCH: "ETag token use for match checking before download begins.",
             ENCODING: "Download the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                 "specified.",
             FAIL_FAST: "Set this option to false to continue downloading dataset members if one or more fail.",

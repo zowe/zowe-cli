@@ -118,6 +118,10 @@ export class Download {
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
 
+            if (options.match) {
+                requestOptions.reqHeaders.push({[ZosmfHeaders.IF_NONE_MATCH]: options.match});
+            }
+
             const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
 
             // By default, apiResponse is empty when downloading
@@ -128,11 +132,21 @@ export class Download {
                 apiResponse.etag = request.response.headers.etag;
             }
 
-            return {
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
-                apiResponse
-            };
+            // Message if we skipped download due to unchanged content
+            if (request.response.statusCode === ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED) {
+                return {
+                    success: true,
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, options.match),
+                    apiResponse
+                };
+            } else {
+                return {
+                    success: true,
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                    apiResponse
+                };
+            }
+
         } catch (error) {
             Logger.getAppLogger().error(error);
 

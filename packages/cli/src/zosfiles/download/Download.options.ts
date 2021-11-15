@@ -45,6 +45,26 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
+     * The etag option
+     * @type {ICommandOptionDefinition}
+     */
+    etag: {
+        name: "etag",
+        description: strings.ETAG,
+        type: "boolean"
+    },
+
+    /**
+     * The etag hash to check for match
+     * @type {ICommandOptionDefinition}
+     */
+    match: {
+        name: "match",
+        description: strings.ETAG,
+        type: "string"
+    },
+
+    /**
      * The encoding option
      * @type {ICommandOptionDefinition}
      */
