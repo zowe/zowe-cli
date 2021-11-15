@@ -73,9 +73,20 @@ The daemon client sends messages to server like:
 ```
 ### Testing
 
-- Obtain zowe.exe binary for your platform and add to PATH
-- Run zowe as a background task with a hidden `--daemon` option:
-  - Windows start zowe --daemon
-  - Linux zowe --daemon &
-  - pm2 pm2 start <global-npm-location>/node_modules/@zowe/cli/lib/main.js --name zowe-daemon -- --daemon
-    - npm list -g | head -1 to see <global-npm-location>
+- Obtain zowe.exe binary for your platform and place it into a directory that is earlier in your PATH than the directory which contains the NodeJS zowe scripts (like zowe.cmd).
+
+- Run any zowe command as you normally would.
+
+  The first time you run any zowe command, the command will automatically start a daemon in the background. It will then run your desired command. Since that first command must start the daemon, that first zowe command will actually run slower than a traditional zowe command. However, every zowe command afterward will run significantly faster. The daemon will continue to run in the background until you close your terminal window.
+
+  Example:
+
+  ```text
+  zowe --version
+  Starting a background process to increase performance ...
+  7.0.0-next.202111111904
+  
+  zowe --version
+  7.0.0-next.202111111904
+  ```
+
