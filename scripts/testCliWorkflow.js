@@ -167,20 +167,22 @@ async function main() {
     // Execute workflow locally
     console.log("Executing new workflow...");
     await _sleep();
-    cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], { stdio: "inherit" });
+    const runAct = cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], { stdio: "inherit" });
 
-    console.log("Copying existing artifacts...");
-    await _sleep();
-    const testPath = path.resolve(__dirname, "..", "__tests__", "__results__", "nektos_act");
-    _handle(() => {
-      const copyPath = JSON.parse(cp.execSync("docker inspect act-toolcache").toString().trim())[0].Mountpoint;
-      fs.mkdirSync(path.join(copyPath, "artifacts"), { recursive: true });
-      fs.mkdirSync(testPath, { recursive: true });
-      cp.execSync(`tar -zc${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${copyPath} .`);
-      cp.execSync(`tar -zx${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${testPath}`);
-      fs.rmSync("__act__artifacts.tgz", { force: true });
-      console.log("Artifacts saved to:", testPath);
-    }, `Unable to copy artifacts to: ${testPath}`);
+    runAct.on("close", async () => {
+      console.log("Copying existing artifacts...");
+      await _sleep();
+      const testPath = path.resolve(__dirname, "..", "__tests__", "__results__", "nektos_act");
+      _handle(() => {
+        const copyPath = JSON.parse(cp.execSync("docker inspect act-toolcache").toString().trim())[0].Mountpoint;
+        fs.mkdirSync(path.join(copyPath, "artifacts"), { recursive: true });
+        fs.mkdirSync(testPath, { recursive: true });
+        cp.execSync(`tar -zc${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${copyPath} .`);
+        cp.execSync(`tar -zx${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${testPath}`);
+        fs.rmSync("__act__artifacts.tgz", { force: true });
+        console.log("Artifacts saved to:", testPath);
+      }, `Unable to copy artifacts to: ${testPath}`);
+    });
   }
 }
 
@@ -196,14 +198,14 @@ Usage:
 - npm run test: act -- --clean --verbose
 - npm run test: act -- --node 16.x
 - npm run test: act -- --node 16.x -v
-- npm run test: act -- --node 16.x--dr
-- npm run test: act -- --node 16.x--verbose
+- npm run test: act -- --node 16.x --dr
+- npm run test: act -- --node 16.x --verbose
 - npm run test: act -- --node 16.x, 14.x
-- npm run test: act -- --node 16.x, 14.x--os ubuntu-latest
-- npm run test: act -- --node 16.x, 14.x--os ubuntu-latest, windows-latest
+- npm run test: act -- --node 16.x, 14.x --os ubuntu-latest
+- npm run test: act -- --node 16.x, 14.x --os ubuntu-latest, windows-latest
 
 Note:
-- Node 14.14.0 will be required to delete the __act__artifacts.tgz created for archiving the artifacts
+- Node 14.14.0 (or later) will be required to delete the __act__artifacts.tgz created for archiving the artifacts
 `);
 }
 

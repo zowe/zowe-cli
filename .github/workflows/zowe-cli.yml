@@ -95,7 +95,7 @@ jobs:
     - name: Setup Binary in PATH
       if: github.event.inputs.test-type == 'binary'
       id: setup-binary
-      run: tar -xvzf zowe.tgz -C ./node_modules/.bin --overwrite
+      run: tar -xvzf zowe.tgz -C ./node_modules/.bin ${{ matrix.os != 'windows-latest' && '--overwrite' || '' }}
 
     - name: Unit Tests
       id: unit
@@ -112,7 +112,7 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}-${{ matrix.node-version }}-results
+        name: ${{ matrix.os }}-${{ matrix.node-version }}-results.tgz
         path: |
           __tests__/__results__/
           unit-tests.txt
