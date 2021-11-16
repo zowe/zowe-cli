@@ -167,16 +167,17 @@ async function main() {
     // Execute workflow locally
     console.log("Executing new workflow...");
     await _sleep();
-    cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], { stdio: "inherit" });
+    // cp.spawn("act", [`-r${verbose ? 'v' : ''}W`, genWfPath, "-e", epPath], { stdio: "inherit" });
 
     console.log("Copying existing artifacts...");
     await _sleep();
-    const copyPath = cp.execSync("docker inspect volume act-toolcache | jq '.[0].Mountpoint'", { encoding: "utf-8" }).trim().replaceAll('"', '');
+    const copyPath = JSON.parse(cp.execSync("docker inspect act-toolcache").toString().trim())[0].Mountpoint;
     const testPath = path.resolve(__dirname, "..", "__tests__", "__results__", "nektos_act");
     cp.execSync(`mkdir -p ${path.join(copyPath, "artifacts")} && mkdir -p ${testPath}`);
     cp.execSync(`tar -zc${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${copyPath} .`);
     cp.execSync(`tar -zx${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${testPath}`);
     cp.execSync(`rm -rf __act__artifacts.tgz`);
+    console.log("Artifacts saved to:", testPath);
   }
 }
 
