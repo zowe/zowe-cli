@@ -179,7 +179,7 @@ async function main() {
         fs.mkdirSync(testPath, { recursive: true });
         cp.execSync(`tar -zc${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${copyPath} .`);
         cp.execSync(`tar -zx${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${testPath}`);
-        fs.rmSync("__act__artifacts.tgz", { force: true });
+        fs.unlinkSync("__act__artifacts.tgz");
         console.log("Artifacts saved to:", testPath);
       }, `Unable to copy artifacts to: ${testPath}`);
     });
@@ -203,9 +203,6 @@ Usage:
 - npm run test: act -- --node 16.x, 14.x
 - npm run test: act -- --node 16.x, 14.x --os ubuntu-latest
 - npm run test: act -- --node 16.x, 14.x --os ubuntu-latest, windows-latest
-
-Note:
-- Node 14.14.0 (or later) will be required to delete the __act__artifacts.tgz created for archiving the artifacts
 `);
 }
 
