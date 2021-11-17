@@ -10,7 +10,6 @@
 */
 
 import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
-import { isNullOrUndefined } from "util";
 import * as  fs from "fs";
 import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
@@ -130,7 +129,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         }
 
         // Print the response to the command
-        if (isNullOrUndefined(spoolFilesResponse)) {
+        if (spoolFilesResponse == null) {
             params.response.format.output({
                 fields: ["jobid", "retcode", "jobname", "status"],
                 output: apiObj,
@@ -142,7 +141,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             // Print data from spool content
         } else {
             for (const spoolFile of spoolFilesResponse) {
-                if (!isNullOrUndefined(spoolFile.procName) && spoolFile.procName.length > 0) {
+                if (spoolFile.procName != null && spoolFile.procName.length > 0) {
                     this.console.log("Spool file: %s (ID #%d, Step: %s, ProcStep: %s)",
                         spoolFile.ddName, spoolFile.id, spoolFile.stepName, spoolFile.procName);
                 } else {
@@ -157,7 +156,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
         }
 
         // Print path where spool content was downloaded
-        if (!isNullOrUndefined(directory) && isNullOrUndefined(spoolFilesResponse)) {
+        if (directory != null && spoolFilesResponse == null) {
             directory = directory.includes("./") ? directory : `./${directory}`;
             params.response.console.log(`Successfully downloaded output to ${directory}/${apiObj.jobid}`);
         }

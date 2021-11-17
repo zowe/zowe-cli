@@ -8,7 +8,6 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-
 use std::collections::HashMap;
 use std::env;
 use std::ffi::OsString;
@@ -31,6 +30,8 @@ use rpassword::read_password;
 extern crate sysinfo;
 use sysinfo::{ProcessExt, System, SystemExt};
 
+extern crate json;
+extern crate terminal_menu;
 
 // NOTE(Kelosky): these sync with imperative header values
 const X_ZOWE_DAEMON_HEADERS: &str = "x-zowe-daemon-headers";
@@ -38,8 +39,9 @@ const X_ZOWE_DAEMON_EXIT: &str = "x-zowe-daemon-exit";
 const X_ZOWE_DAEMON_END: &str = "x-zowe-daemon-end";
 const X_ZOWE_DAEMON_PROGRESS: &str = "x-zowe-daemon-progress";
 const X_ZOWE_DAEMON_PROMPT: &str = "x-zowe-daemon-prompt";
+const X_ZOWE_DAEMON_INTERACTIVE: &str = "x-zowe-daemon-interactive";
 const X_ZOWE_DAEMON_VERSION: &str = "x-zowe-daemon-version";
-const X_HEADERS_VERSION_ONE_LENGTH: usize = 8;
+const X_HEADERS_VERSION_ONE_LENGTH: usize = 9;
 const DEFAULT_PORT: i32 = 4000;
 
 const X_ZOWE_DAEMON_REPLY: &str = "x-zowe-daemon-reply:";
@@ -273,11 +275,12 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
                 // else, we received headers and may need to print extraneous data on the same line
                 } else {
                     if pieces.len() > 1 {
-                        print!("{}", pieces[1]);
-                        io::stdout().flush().unwrap();
                         let &prompt = headers.get(X_ZOWE_DAEMON_PROMPT).unwrap();
 
                         if prompt > 0i32 {
+                            print!("{}", pieces[1]);
+                            io::stdout().flush().unwrap();
+
                             // prompt
                             let mut reply = String::new();
 
@@ -300,6 +303,37 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
                             stream_clone.write(full_reply.as_bytes()).unwrap();
 
                             // else, just write this line
+                        }
+
+                        let &interactive = headers.get(X_ZOWE_DAEMON_INTERACTIVE).unwrap();
+                        if interactive > 0i32 {
+                            // parse the json object received
+                            let parsed = json::parse(&pieces[1]).unwrap();
+
+                            // create the menu
+                            let mut items = vec![];
+                            items.push(terminal_menu::label(parsed["header"].as_str().as_deref().unwrap()));
+                            for i in parsed["menu"].members() {
+                                items.push(terminal_menu::button(i.as_str().as_deref().unwrap()));
+                            }
+                            let menu = terminal_menu::menu(items);
+
+                            // // activate and wait for a response
+                            // activate(&menu);
+                            // wait_for_exit(&menu);
+                            terminal_menu::run(&menu);
+                            let selected_entry = terminal_menu::mut_menu(&menu).selected_item_index();
+                            // deactivate(&menu);
+
+                            // append response to header
+                            let mut full_reply = X_ZOWE_DAEMON_REPLY.to_owned();
+                            full_reply.push_str(&selected_entry.to_string());
+
+                            // adjust our state that prompting has been resolved
+                            headers.insert(X_ZOWE_DAEMON_INTERACTIVE.to_string(), 0i32);
+
+                            // write response
+                            stream_clone.write(full_reply.as_bytes()).unwrap();
                         }
                     }
                 }
@@ -346,6 +380,7 @@ fn parse_headers(buf: &String) -> HashMap<String, i32> {
         }
     }
 
+
     // we have a version header
     if headers.contains_key(X_ZOWE_DAEMON_VERSION) {
         let &version = headers.get(X_ZOWE_DAEMON_VERSION).unwrap();
@@ -380,6 +415,7 @@ fn get_beg(buf: &str) -> Vec<String> {
 
     // if this line is long enough to contain headers
     if ss.len() >= 2 {
+        // TODO(???) - Is it safe to assume `x-` is for daemon headers only? What if the data contains `x-`?
         // if this line begins with header info, just return and parse it.  there is no extraneous data at the beginning
         if ss[0] == 'x' && ss[1] == '-' {
             parts.push(buf.to_owned());
@@ -463,6 +499,7 @@ fn is_daemon_running() -> DaemonProcInfo {
     sys.refresh_all();
     for (pid, process) in sys.processes() {
         if process.name().to_lowercase().contains("node") &&
+           process.cmd().len() > 0 &&
            process.cmd()[1].to_lowercase().contains("@zowe") &&
            process.cmd()[1].to_lowercase().contains("cli") &&
            process.cmd()[2].to_lowercase() == "--daemon"

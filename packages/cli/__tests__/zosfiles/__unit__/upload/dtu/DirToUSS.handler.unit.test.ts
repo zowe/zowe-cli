@@ -196,7 +196,6 @@ describe("Upload dir-to-uss handler", () => {
             expect(logMessage).toMatchSnapshot();
         }
 
-
         async function testHandlerGivesExpectedErrorWithParams(errorMsg: string, params: any) {
             try {
                 await handler.process(params);

@@ -1,0 +1,61 @@
+/*
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
+
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+
+export const InteractiveJobsDefinition: ICommandDefinition = {
+    name: "interactive-jobs",
+    aliases: ["ij"],
+    type: "command",
+    summary: "View Jobs Interactively",
+    description: "Interactively select jobs and spool files to view them.",
+    handler: __dirname + "/InteractiveJobs.handler",
+    positionals: [],
+    options: [
+        {
+            name: "owner", aliases: ["o"],
+            description: "Specify the owner of the jobs you want to list. " +
+                "The owner is the individual/user who submitted the job OR the user ID assigned to the job. " +
+                "The command does not prevalidate the owner. " +
+                "You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, " +
+                "which is usually in the form \"USER*\".",
+            type: "string"
+        },
+        {
+            name: "prefix", aliases: ["p"],
+            description: "Specify the job name prefix of the jobs you want to list. " +
+                "The command does not prevalidate the owner. " +
+                "You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, " +
+                "which is usually in the form \"JOB*\".",
+            type: "string"
+        }
+    ] as ICommandOptionDefinition[],
+    profile: {
+        optional: ["zosmf"]
+    },
+    examples:
+        [
+            {
+                options: "",
+                description: "List all jobs with default settings." +
+                    " The command returns jobs owned by your user ID with any job name"
+            },
+            {
+                options: "-o \"ibmu*\" -p \"myjo*\"",
+                description: "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo'"
+            },
+            {
+                options: "--rff jobid --rft table",
+                description: "List all jobs with default owner and prefix settings, displaying only the job ID of each job"
+            }
+        ],
+    outputFormatOptions: true
+};
