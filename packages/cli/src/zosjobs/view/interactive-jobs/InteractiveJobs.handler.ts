@@ -9,7 +9,7 @@
 *
 */
 
-import { CliUtils, IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters } from "@zowe/imperative";
 import { IJob, GetJobs, JobsConstants, IJobFile } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -47,15 +47,9 @@ export default class InteractiveJobsHandler extends ZosmfBaseHandler {
         params.response.console.log("Selected job:", jobs[jobIndex - 1].jobid, "\n");
 
         const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(this.mSession, jobs[jobIndex - 1]);
-
-        const fileTable: string[] = formatter.formatOutput({
-            // Fields:  owner phase subsystem phase-name job-correlator type url jobid class files-url jobname status retcode
-            fields: inputFields?.[1].split(',') ?? ["id", "ddname", "procstep", "stepname"],
-            output: files,
-            format: "table",
-            header: true
-        }).split("\n");
-        const fileIndex = await params.response.console.interactiveSelection(fileTable, { header: fileTable.shift() });
+        const fileIndex = await params.response.console.interactiveSelection(files, {
+            fields: inputFields?.[1].split(',') ?? ["id", "ddname", "procstep", "stepname"]
+        });
         params.response.console.log("Selected spool file:", files[fileIndex - 1].ddname, "\n");
 
         // Get the content, set the JSON response object, and print
