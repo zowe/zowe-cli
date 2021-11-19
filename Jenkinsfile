@@ -171,8 +171,7 @@ node('zowe-jenkins-agent-dind') {
     pipeline.createStage(
         name: "Bundle Daemon Binaries",
         shouldExecute: {
-            return true
-            // return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
         },
         timeout: [time: 10, unit: 'MINUTES'],
         stage: {
