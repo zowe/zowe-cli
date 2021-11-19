@@ -28,10 +28,10 @@ export default class OutputHandler extends ZosmfBaseHandler {
      */
     public async processCmd(params: IHandlerParameters): Promise<void> {
         const response: any = {};
-        const jobid: string = this.mArguments.jobid + "";
-        const outDir: string = this.mArguments.directory;
-        const omitJobidDirectory: boolean = !!this.mArguments.ojd;
-        const extension: string = this.mArguments.extension;
+        const jobid: string = params.arguments.jobid + "";
+        const outDir: string = params.arguments.directory;
+        const omitJobidDirectory: boolean = !!params.arguments.ojd;
+        const extension: string = params.arguments.extension;
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         const options: IDownloadAllSpoolContentParms = {

@@ -10,7 +10,6 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { InteractiveJobsDefinition } from "./interactive-jobs/InteractiveJobs.definition";
 import { JobStatusByJobidDefinition } from "./job-status-by-jobid/JobStatusByJobid.definition";
 import { SpoolFileByIdDefinition } from "./spool-file-by-id/SpoolFileById.definition";
 
@@ -23,6 +22,5 @@ export const ViewDefinition: ICommandDefinition = {
     children: [
         JobStatusByJobidDefinition,
         SpoolFileByIdDefinition,
-        InteractiveJobsDefinition,
     ]
 };
