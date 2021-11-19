@@ -180,7 +180,7 @@ node('zowe-jenkins-agent-dind') {
             withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
                 sh "bash jenkins/bundleDaemon.sh ${daemonVer} \"${USERNAME}:${TOKEN}\""
             }
-            archiveArtifacts artifacts: "packages/cli/prebuilds"
+            archiveArtifacts artifacts: "packages/cli/prebuilds/*"
         }
     )
 
