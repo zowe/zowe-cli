@@ -9,8 +9,8 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
-import { IJob, GetJobs, JobsConstants, IJobFile } from "@zowe/zos-jobs-for-zowe-sdk";
+import { IHandlerParameters, Imperative, ImperativeError } from "@zowe/imperative";
+import { IJob, GetJobs, JobsConstants, IJobFile, DeleteJobs, CancelJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -43,21 +43,64 @@ export default class InteractiveJobsHandler extends ZosmfBaseHandler {
             format: "table",
             header: true
         }).split("\n");
-        const jobIndex = await params.response.console.interactiveSelection(jobTable, { header: jobTable.shift() });
-        params.response.console.log("Selected job:", jobs[jobIndex - 1].jobid, "\n");
-
-        const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(this.mSession, jobs[jobIndex - 1]);
-        const fileIndex = await params.response.console.interactiveSelection(files, {
-            fields: inputFields?.[1].split(',') ?? ["id", "ddname", "procstep", "stepname"]
+        const jobActions = ["View", "Download", "Cancel", "Delete"];
+        const [jobIndex, jobActionIndex] = await params.response.console.interactiveSelection(jobTable, {
+            header: jobTable.shift(),
+            actions: jobActions
         });
-        params.response.console.log("Selected spool file:", files[fileIndex - 1].ddname, "\n");
+        params.response.console.log("Selected job:", jobs[jobIndex - 1].jobid);
+        if (jobActionIndex > 0) params.response.console.log("Selected action:", jobActions[jobActionIndex - 1]);
 
-        // Get the content, set the JSON response object, and print
-        const file = files[fileIndex - 1];
-        const content: string = await GetJobs.getSpoolContentById(this.mSession, file.jobname, file.jobid, file.id);
+        switch (jobActions[jobActionIndex - 1]) {
+            case "View": {
+                const files: IJobFile[] = await GetJobs.getSpoolFilesForJob(this.mSession, jobs[jobIndex - 1]);
+                const [fileIndex, _] = await params.response.console.interactiveSelection(files, {
+                    fields: inputFields?.[1].split(',') ?? ["id", "ddname", "procstep", "stepname"]
+                });
+                params.response.console.log("Selected spool file:", files[fileIndex - 1].ddname, "\n");
 
-        params.response.data.setObj(content);
-        params.response.console.log(Buffer.from(content));
-        params.response.console.log("\n", `Spool file "${file.ddname}" content obtained for job "${file.jobname}(${file.jobid})"`);
+                // Get the content, set the JSON response object, and print
+                const file = files[fileIndex - 1];
+                const content: string = await GetJobs.getSpoolContentById(this.mSession, file.jobname, file.jobid, file.id);
+
+                params.response.data.setObj(content);
+                params.response.console.log(Buffer.from(content));
+                params.response.console.log(`\nSpool file "${file.ddname}" content obtained for job "${file.jobname}(${file.jobid})"`);
+                break;
+            }
+            case "Download": {
+
+                break;
+            }
+            case "Cancel": {
+                const job: IJob = jobs[jobIndex - 1];
+                const jobid: string = job.jobid;
+
+                // TODO: Prompt for modify version (or set ZOWE_OPT_MODIFY_VERSION)
+                await CancelJobs.cancelJobForJob(this.mSession, job);
+
+                const message: string = `Successfully canceled job ${job.jobname} (${jobid})`;
+                this.console.log(message);
+                this.data.setMessage(message);
+                this.data.setObj(job);
+                break;
+            }
+            case "Delete": {
+                const job: IJob = jobs[jobIndex - 1];
+                const jobid: string = job.jobid;
+
+                // TODO: Prompt for modify version (or set ZOWE_OPT_MODIFY_VERSION)
+                await DeleteJobs.deleteJobForJob(this.mSession, job);
+
+                const message: string = `Successfully deleted job ${job.jobname} (${jobid})`;
+                params.response.console.log(message);
+                this.data.setMessage(message);
+                this.data.setObj(job);
+                break;
+            }
+            default: {
+                throw new ImperativeError({ msg: "Unknown job action selected" });
+            }
+        }
     }
 }
