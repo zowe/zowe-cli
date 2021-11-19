@@ -171,7 +171,8 @@ node('zowe-jenkins-agent-dind') {
     pipeline.createStage(
         name: "Bundle Daemon Binaries",
         shouldExecute: {
-            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+            return true
+            // return pipeline.protectedBranches.isProtected(BRANCH_NAME)
         },
         timeout: [time: 10, unit: 'MINUTES'],
         stage: {
@@ -179,6 +180,7 @@ node('zowe-jenkins-agent-dind') {
             withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
                 sh "bash jenkins/bundleDaemon.sh ${daemonVer} \"${USERNAME}:${TOKEN}\""
             }
+            archiveArtifacts artifacts: "packages/cli/prebuilds"
         }
     )
 
