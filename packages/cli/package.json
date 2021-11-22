@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "7.0.0-next.202111111904",
+  "version": "7.0.0-next.202111221932",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -55,17 +55,17 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/core-for-zowe-sdk": "7.0.0-next.202111111904",
+    "@zowe/core-for-zowe-sdk": "7.0.0-next.202111221932",
     "@zowe/imperative": "5.0.0-next.202111192150",
     "@zowe/perf-timing": "1.0.7",
-    "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zos-jobs-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zos-tso-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202111111904",
-    "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202111111904",
+    "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zos-jobs-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zos-tso-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202111221932",
+    "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202111221932",
     "get-stdin": "7.0.0",
     "lodash": "4.17.21",
     "minimatch": "3.0.4"
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.175",
     "@types/node": "^12.12.24",
-    "@zowe/cli-test-utils": "7.0.0-next.202111111904",
+    "@zowe/cli-test-utils": "7.0.0-next.202111221932",
     "comment-json": "^4.1.0",
     "eslint": "^7.32.0",
     "js-yaml": "^3.13.1",
