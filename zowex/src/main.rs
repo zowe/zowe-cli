@@ -463,6 +463,7 @@ fn is_daemon_running() -> DaemonProcInfo {
     sys.refresh_all();
     for (pid, process) in sys.processes() {
         if process.name().to_lowercase().contains("node") &&
+           process.cmd().len() > 0 &&
            process.cmd()[1].to_lowercase().contains("@zowe") &&
            process.cmd()[1].to_lowercase().contains("cli") &&
            process.cmd()[2].to_lowercase() == "--daemon"
