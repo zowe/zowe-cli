@@ -19,5 +19,8 @@ for platform in linux macos windows; do
     curl -fsLOJ https://github.com/zowe/zowe-cli/releases/download/native-v$daemonVersion/zowe-$platform.tgz
 done
 
+curl -fsLOJ https://raw.githubusercontent.com/zowe/zowe-cli/native-v$daemonVersion/zowex/Cargo.toml
+curl -fsLOJ https://raw.githubusercontent.com/zowe/zowe-cli/native-v$daemonVersion/zowex/Cargo.lock
+
 cd ..
 mv prebuilds packages/cli/
