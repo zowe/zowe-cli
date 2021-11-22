@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.0.0-next.202111221932`
+
+- BugFix: Changed credentials to be stored securely by default for v1 profiles to be consistent with the experience for v2 profiles. [#1128](https://github.com/zowe/zowe-cli/issues/1128)
+
 ## `7.0.0-next.202111111904`
 
 - Daemon mode updates:

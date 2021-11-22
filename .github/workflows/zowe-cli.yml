@@ -102,6 +102,10 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' }}
       run: npm run test:unit >> unit-tests.txt
 
+    - name: Unlock Keyring
+      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
+      uses: t1m0thyj/unlock-keyring@master
+
     - name: Integration Tests
       id: integration
       if: ${{ always() && steps.build.outcome == 'success' }}
