@@ -56,8 +56,8 @@ describe("imperative create profile", () => {
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("FAKEHOST");
             expect(response.stdout.toString()).toContain("443");
-            expect(response.stdout.toString()).toContain("FAKEUSER");
-            expect(response.stdout.toString()).toContain("FAKEPASS");
+            // Two values (user and password) should be stored securely
+            expect((response.stdout.toString().match(/managed by Zowe CLI/g) || []).length).toBe(2);
         });
 
         it("should successfully create a profile without username, password, or host", async () => {
@@ -104,7 +104,7 @@ describe("imperative create profile", () => {
             expect(response.stdout.toString()).toContain("FAKEHOST");
             expect(response.stdout.toString()).toContain("22");
             expect(response.stdout.toString()).toContain("FAKEUSER");
-            expect(response.stdout.toString()).toContain("FAKEPASS");
+            expect(response.stdout.toString()).toContain("managed by Zowe CLI");
         });
 
         it("should successfully create a profile without username, password, or host", async () => {
