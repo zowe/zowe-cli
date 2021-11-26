@@ -12,13 +12,16 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { JobDefinition } from "./job/Job.definition";
 
+import i18nTypings from "../-strings-/en";
+
+const strings = (require("../-strings-/en").default as typeof i18nTypings).CANCEL;
+
 export const CancelDefinition: ICommandDefinition = {
     name: "cancel",
     aliases: ["can"],
     type: "group",
-    summary: "Cancel a job",
-    description: "Cancel a single job by job ID." +
-        " This cancels the job if it is running or on input.",
+    summary: strings.SUMMARY,
+    description: strings.DESCRIPTION,
     children: [
         JobDefinition
     ]

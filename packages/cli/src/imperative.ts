@@ -93,7 +93,6 @@ const config: IImperativeConfig = {
                 },
                 certKeyFile: {
                     type: "string",
-                    secure: true,
                     optionDefinition: Constants.BASE_OPTION_CERT_KEY_FILE
                 // },
                 // certFilePassphrase: {
@@ -212,7 +211,6 @@ const config: IImperativeConfig = {
                     },
                     certKeyFile: {
                         type: "string",
-                        secure: true,
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
                     },
                     // certFilePassphrase: {
