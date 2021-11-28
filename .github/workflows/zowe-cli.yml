@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Zowe CLI CI
+name: Zowe CLI
 
 on:
   push:
@@ -12,12 +12,21 @@ on:
     paths-ignore:
     - 'zowex/**'
     - '.github/workflows/rust-cli*.yml'
+  workflow_dispatch:
+    inputs:
+      binary-type:
+        description: "Specify whether to use a `debug` or a `release` version of the binary"
+        default: "debug"
+        required: false
+      test-type:
+        description: "Specify whether to run tests using the `binary` or regular `nodejs` executable"
+        default: 'binary'
+        required: false
 
 jobs:
   test:
-
+    name: Cross-Platform Test
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -30,45 +39,88 @@ jobs:
       NODE_OPTIONS: --max_old_space_size=4096
 
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Use NPM v7
-      id: npm7
-      run: npm install -g npm@^7
+    - name: Get NPM Version
+      id: npm-version
+      run: echo "::set-output name=number::$(npm --version)"
+
+    - name: Use NPM v8
+      id: npm8
+      run: npm install -g npm@^8
 
     - name: Install Node Package Dependencies
       id: install
       run: npm ci
 
+    - name: Use Original NPM Version
+      id: original-npm-version
+      run: npm install -g npm@${{ steps.npm-version.outputs.number }}
+
+    - name: Install Rust toolchain
+      id: install-rust
+      if: github.event.inputs.test-type == 'binary'
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
     - name: Build Source
       id: build
       run: npm run build --if-present
 
+    - name: Build Binary
+      id: build-binary
+      if: github.event.inputs.test-type == 'binary'
+      run: |
+        cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+
+    - name: Archive Binary
+      if: github.event.inputs.test-type == 'binary'
+      id: upload-binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: zowe-${{ matrix.os }}.tgz
+        path: zowe.tgz
+
+    - name: Setup Binary in PATH
+      if: github.event.inputs.test-type == 'binary'
+      id: setup-binary
+      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/application_instances ${{ matrix.os != 'windows-latest' && '--overwrite' || '' }}
+
     - name: Unit Tests
       id: unit
       if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:unit >> file.txt
+      run: npm run test:unit >> unit-tests.txt
+
+    - name: Unlock Keyring
+      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
+      uses: t1m0thyj/unlock-keyring@master
 
     - name: Integration Tests
       id: integration
       if: ${{ always() && steps.build.outcome == 'success' }}
-      run: npm run test:integration >> file.txt
+      run: npm run test:integration >> integration-tests.txt
 
     - name: Archive Results
       id: upload
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}-${{ matrix.node-version }}-results
-        path: __tests__/__results__/
+        name: ${{ matrix.os }}-${{ matrix.node-version }}-results.tgz
+        path: |
+          __tests__/__results__/
+          unit-tests.txt
+          integration-tests.txt
 
     - name: Upload Results to Codecov
       if: ${{ always() && steps.build.outcome == 'success' }}

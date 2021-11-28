@@ -425,10 +425,11 @@ fn is_daemon_running() -> DaemonProcInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
     for (pid, process) in sys.processes() {
-        if process.name().to_lowercase().contains("node")
-            && process.cmd()[1].to_lowercase().contains("@zowe")
-            && process.cmd()[1].to_lowercase().contains("cli")
-            && process.cmd()[2].to_lowercase() == "--daemon"
+        if process.name().to_lowercase().contains("node") &&
+           process.cmd().len() > 0 &&
+           process.cmd()[1].to_lowercase().contains("@zowe") &&
+           process.cmd()[1].to_lowercase().contains("cli") &&
+           process.cmd()[2].to_lowercase() == "--daemon"
         {
             // convert the process command from a vector to a string
             let mut proc_cmd: String = String::new();

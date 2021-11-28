@@ -19,6 +19,7 @@
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "update:imperative": "npm i --save --save-exact @zowe/imperative@next && syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
+    "test:act": "node scripts/testCliWorkflow.js",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
     "test:integration": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.integration\\.(spec|test)\\.ts\\$\" --coverage false",
@@ -35,7 +36,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.0-next.202111101806",
+    "@zowe/imperative": "5.0.0-next.202111192150",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
