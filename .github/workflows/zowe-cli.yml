@@ -95,7 +95,7 @@ jobs:
     - name: Setup Binary in PATH
       if: github.event.inputs.test-type == 'binary'
       id: setup-binary
-      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/application_instances ${{ matrix.os != 'windows-latest' && '--overwrite' || '' }}
+      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/application_instances ${{ matrix.os == 'ubuntu-latest' && '--overwrite' || '' }}
 
     - name: Unit Tests
       id: unit
