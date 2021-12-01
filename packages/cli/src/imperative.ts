@@ -30,6 +30,7 @@ import { ZosFilesOptions } from "./zosfiles/ZosFiles.options";
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
     commandModuleGlobs: [
+        "daemon/*.definition!(.d).*s",
         "provisioning/*.definition!(.d).*s",
         "workflows/*.definition!(.d).*s",
         "zosconsole/*.definition!(.d).*s",
