@@ -13,7 +13,7 @@ jest.mock("net");
 jest.mock("@zowe/imperative");
 import * as net from "net";
 import { Imperative } from "@zowe/imperative";
-import { DaemonClient } from "../src/DaemonClient";
+import { DaemonClient } from "../../../src/daemon/DaemonClient";
 
 describe("DaemonClient tests", () => {
 
