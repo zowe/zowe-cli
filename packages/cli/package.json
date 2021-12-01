@@ -62,6 +62,7 @@
     "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202111222227",
     "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202111222227",
     "@zowe/zos-jobs-for-zowe-sdk": "7.0.0-next.202111222227",
+    "@zowe/zos-logs-for-zowe-sdk": "7.0.0-next.202111222227",
     "@zowe/zos-tso-for-zowe-sdk": "7.0.0-next.202111222227",
     "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202111222227",
     "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202111222227",

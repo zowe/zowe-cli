@@ -6,22 +6,20 @@ name: Zowe CLI
 on:
   push:
     paths-ignore:
-    - 'zowex/**'
-    - '.github/workflows/rust-cli*.yml'
+      - zowex/**
   pull_request:
     paths-ignore:
-    - 'zowex/**'
-    - '.github/workflows/rust-cli*.yml'
+      - zowex/**
   workflow_dispatch:
     inputs:
       binary-type:
-        description: "Specify whether to use a `debug` or a `release` version of the binary"
-        default: "debug"
-        required: true
+        description: Specify whether to use a `debug` or a `release` version of the binary
+        default: debug
+        required: false
       test-type:
-        description: "Specify whether to run tests using the `binary` or regular `nodejs` executable"
-        default: 'binary'
-        required: true
+        description: Specify whether to run tests using the `binary` or regular `nodejs` executable
+        default: binary
+        required: false
 
 jobs:
   test:
