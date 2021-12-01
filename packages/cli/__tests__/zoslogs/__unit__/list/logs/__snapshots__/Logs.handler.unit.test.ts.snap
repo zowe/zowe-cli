@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`get logs handler tests should be able to get logs using all options 1`] = `
+Object {
+  "items": Array [
+    Object {
+      "cart": "0",
+      "color": "green",
+      "jobName": "TCP342  ",
+      "message": " EZD1287I TTLS Error RC: 5004 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
+      "messageId": "90679641840",
+      "replyId": "0",
+      "subType": "NULL",
+      "system": "P00     ",
+      "time": "Tue Aug 10 06:16:35 GMT 2021",
+      "timestamp": 1628576195960,
+      "type": "HARDCOPY",
+    },
+    Object {
+      "cart": "0",
+      "color": "green",
+      "jobName": "TCP342  ",
+      "message": " EZD1287I TTLS Error RC:  406 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
+      "messageId": "90679642096",
+      "replyId": "0",
+      "subType": "NULL",
+      "system": "P00     ",
+      "time": "Tue Aug 10 06:16:35 GMT 2021",
+      "timestamp": 1628576195960,
+      "type": "HARDCOPY",
+    },
+  ],
+  "nextTimestamp": 1628576194965,
+  "source": "OPERLOG",
+  "timezone": -4,
+  "totalitems": 2,
+}
+`;
+
+exports[`get logs handler tests should be able to get logs using all options 2`] = `"Retrieved 2 messages from OPERLOG, starts from 2021-07-22T00:00:00.000Z, ends at 2021-08-10T06:16:34.965Z. "`;
+
+exports[`get logs handler tests should be able to get logs using all options 3`] = `""`;
+
+exports[`get logs handler tests should be able to get logs using all options 4`] = `
+"2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC: 5004 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1
+2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC:  406 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1"
+`;
+
+exports[`get logs handler tests should be able to get logs using defaults 1`] = `
+Object {
+  "items": Array [
+    Object {
+      "cart": "0",
+      "color": "green",
+      "jobName": "TCP342  ",
+      "message": " EZD1287I TTLS Error RC: 5004 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
+      "messageId": "90679641840",
+      "replyId": "0",
+      "subType": "NULL",
+      "system": "P00     ",
+      "time": "Tue Aug 10 06:16:35 GMT 2021",
+      "timestamp": 1628576195960,
+      "type": "HARDCOPY",
+    },
+    Object {
+      "cart": "0",
+      "color": "green",
+      "jobName": "TCP342  ",
+      "message": " EZD1287I TTLS Error RC:  406 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1",
+      "messageId": "90679642096",
+      "replyId": "0",
+      "subType": "NULL",
+      "system": "P00     ",
+      "time": "Tue Aug 10 06:16:35 GMT 2021",
+      "timestamp": 1628576195960,
+      "type": "HARDCOPY",
+    },
+  ],
+  "nextTimestamp": 1628576194965,
+  "source": "OPERLOG",
+  "timezone": -4,
+  "totalitems": 2,
+}
+`;
+
+exports[`get logs handler tests should be able to get logs using defaults 2`] = `"Retrieved 2 messages from OPERLOG, starts from 2021-08-11T07:02:52.022Z, ends at 2021-08-10T06:16:34.965Z. "`;
+
+exports[`get logs handler tests should be able to get logs using defaults 3`] = `""`;
+
+exports[`get logs handler tests should be able to get logs using defaults 4`] = `
+"2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC: 5004 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1
+2021-08-10T06:16:35.960Z   EZD1287I TTLS Error RC:  406 Initial Handshake
+   LOCAL: ::FFFF:000.000.000.002..3973
+   REMOTE: ::FFFF:000.000.000.003                    ..8803
+   JOBNAME: P00SVR00 RULE: DDSClientRule
+   USERID: IZUSVR0 GRPID: 00000003 ENVID: 00000001 CONNID: 0001EEF1"
+`;
+
+exports[`get logs handler tests should be able to get logs using defaults to get empty items 1`] = `"Retrieved 0 messages from logs, starts from 2021-08-11T07:02:52.022Z, ends at 2021-08-16T04:06:02.008Z. "`;
+
+exports[`get logs handler tests should not transform an error from the zosmf rest client 1`] = `"You fail"`;
