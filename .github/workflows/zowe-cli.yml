@@ -17,11 +17,11 @@ on:
       binary-type:
         description: "Specify whether to use a `debug` or a `release` version of the binary"
         default: "debug"
-        required: false
+        required: true
       test-type:
         description: "Specify whether to run tests using the `binary` or regular `nodejs` executable"
         default: 'binary'
-        required: false
+        required: true
 
 jobs:
   test:
@@ -66,7 +66,7 @@ jobs:
 
     - name: Install Rust toolchain
       id: install-rust
-      if: github.event.inputs.test-type == 'binary'
+      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
@@ -79,13 +79,13 @@ jobs:
 
     - name: Build Binary
       id: build-binary
-      if: github.event.inputs.test-type == 'binary'
+      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
     - name: Archive Binary
-      if: github.event.inputs.test-type == 'binary'
+      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: upload-binary
       uses: actions/upload-artifact@v2
       with:
@@ -93,9 +93,9 @@ jobs:
         path: zowe.tgz
 
     - name: Setup Binary in PATH
-      if: github.event.inputs.test-type == 'binary'
+      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: setup-binary
-      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/application_instances ${{ matrix.os != 'windows-latest' && '--overwrite' || '' }}
+      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/application_instances ${{ matrix.os == 'ubuntu-latest' && '--overwrite' || '' }}
 
     - name: Unit Tests
       id: unit
@@ -103,6 +103,7 @@ jobs:
       run: npm run test:unit >> unit-tests.txt
 
     - name: Unlock Keyring
+      id: unlock-keyring
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
       uses: t1m0thyj/unlock-keyring@master
 
@@ -123,6 +124,7 @@ jobs:
           integration-tests.txt
 
     - name: Upload Results to Codecov
+      id: upload-codecov
       if: ${{ always() && steps.build.outcome == 'success' }}
       uses: codecov/codecov-action@v1.0.7
       with:
