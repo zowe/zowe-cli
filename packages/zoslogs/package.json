@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-logs-for-zowe-sdk",
-  "version": "6.36.1",
+  "version": "6.37.0",
   "description": "Zowe SDK to interact with the z/OS logs",
   "author": "Broadcom",
   "license": "EPL-2.0",
