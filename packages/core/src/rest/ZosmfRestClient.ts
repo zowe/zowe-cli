@@ -10,6 +10,7 @@
 */
 
 import { IImperativeError, Logger, RestClient, TextUtils, RestConstants, SessConstants } from "@zowe/imperative";
+import { Writable } from "stream";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
 /**
@@ -21,12 +22,15 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  */
 export class ZosmfRestClient extends RestClient {
 
+
     /**
      * Not modified if Etag toke is present and matches
      * @static
      * @memberof ZosmfRestClient
      */
     public static readonly HTTP_STATUS_NOT_MODIFIED = 304;
+
+    cb: () => Writable;
 
     /**
      * Use the Brightside logger instead of the imperative logger
@@ -46,8 +50,23 @@ export class ZosmfRestClient extends RestClient {
         if (this.response == null) {
             return false;
         } else {
-            return ((this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
-                this.response.statusCode < RestConstants.HTTP_STATUS_300) || this.response.statusCode === ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED);
+            // if (this.response.statusCode === ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED) {
+            //     this.mResponseStream = null;
+            // }
+            const success = this.response.statusCode >= RestConstants.HTTP_STATUS_200 && this.response.statusCode < RestConstants.HTTP_STATUS_300 ||
+                this.response.statusCode === ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED;
+
+
+            if (success && this.response.statusCode !== ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED) {
+                if (this.cb) {
+                    this.mResponseStream = this.cb();
+                }
+            }
+
+            return success;
+            // return success;
+            // return ((this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
+                // this.response.statusCode < RestConstants.HTTP_STATUS_300) || this.response.statusCode === ZosmfRestClient.HTTP_STATUS_NOT_MODIFIED);
         }
     }
 
@@ -105,7 +124,7 @@ export class ZosmfRestClient extends RestClient {
                 "\nHeaders:   " + JSON.stringify(this.mReqHeaders) +
                 "\nPayload:   " + this.mRequest +
                 "\n"
-            ;
+                ;
 
             if (this.session.ISession.type === SessConstants.AUTH_TYPE_BASIC) {
                 original.additionalDetails = "Username or password are not valid or expired.\n\n";

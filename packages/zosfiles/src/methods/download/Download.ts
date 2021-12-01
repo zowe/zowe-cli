@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, IRestOptions, HTTP_VERB } from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -101,13 +101,11 @@ export class Download {
 
             IO.createDirsSyncFromFilePath(destination);
 
-            const writeStream = IO.createWriteStream(destination);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
                 resource: endpoint,
                 reqHeaders,
-                responseStream: writeStream,
                 normalizeResponseNewLines: !options.binary,
                 task: options.task
             };
@@ -119,10 +117,29 @@ export class Download {
             }
 
             if (options.match) {
-                requestOptions.reqHeaders.push({[ZosmfHeaders.IF_NONE_MATCH]: options.match});
+                requestOptions.reqHeaders.push({ [ZosmfHeaders.IF_NONE_MATCH]: options.match });
             }
 
-            const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
+            const rOptions: IRestOptions = {
+                resource: requestOptions.resource,
+                request: HTTP_VERB.GET,
+                reqHeaders: requestOptions.reqHeaders,
+                writeData: requestOptions.writeData,
+                responseStream: requestOptions.responseStream,
+                requestStream: requestOptions.requestStream,
+                normalizeResponseNewLines: requestOptions.normalizeResponseNewLines,
+                normalizeRequestNewLines: requestOptions.normalizeRequestNewLines,
+                task: requestOptions.task,
+            };
+
+            const client = new ZosmfRestClient(session);
+
+            client.cb = () => {
+                return IO.createWriteStream(destination);
+            };
+
+            await client.request(rOptions);
+            const request = (ZosmfRestClient as any).extractExpectedData(client, requestOptions.dataToReturn);
 
             // By default, apiResponse is empty when downloading
             const apiResponse: any = {};
