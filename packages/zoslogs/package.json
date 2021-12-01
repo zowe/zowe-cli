@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-logs-for-zowe-sdk",
-  "version": "6.37.0",
+  "version": "7.0.0-next.202111222227",
   "description": "Zowe SDK to interact with the z/OS logs",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -45,8 +45,9 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/core-for-zowe-sdk": "6.36.1",
-    "@zowe/imperative": "4.17.1",
+    "@zowe/cli-test-utils": "7.0.0-next.202111222227",
+    "@zowe/core-for-zowe-sdk": "7.0.0-next.202111222227",
+    "@zowe/imperative": "5.0.0-next.202111292021",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",
@@ -54,7 +55,7 @@
     "typescript": "^3.8.0"
   },
   "peerDependencies": {
-    "@zowe/core-for-zowe-sdk": "^6.24.1",
-    "@zowe/imperative": "^4.8.1"
+    "@zowe/core-for-zowe-sdk": ">=7.0.0-next <7.0.0",
+    "@zowe/imperative": ">=5.0.0-next.202106041929 <5.0.0"
   }
 }

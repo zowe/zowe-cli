@@ -10,12 +10,13 @@
 */
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { GetZosLog, IZosLogType, noSessionMessage, IZosLogParms } from "../../src";
 import { ZosLogTestUtils } from "../__resources__/utils/ZosLogTestUtils";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 let REAL_SESSION: Session;
 const COMMAND_PARAMS_FULL: IZosLogParms = { startTime: "2021-08-11T07:02:52.022Z", direction: "forward", range: "1m" };

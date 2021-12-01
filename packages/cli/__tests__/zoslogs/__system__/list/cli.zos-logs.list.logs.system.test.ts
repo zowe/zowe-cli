@@ -10,14 +10,13 @@
 */
 
 import { ICommandResponse } from "@zowe/imperative";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import * as fs from "fs";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import * as fs from "fs";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 // Expected length constants
 const FOLLOW_UP_ATTEMPTS: number = 3;
@@ -69,7 +68,7 @@ describe("zos-logs list logs", () => {
 
     describe("without profiles", () => {
         let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
-        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+        let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
         const regex = fs.readFileSync(__dirname + "/__regex__/success_response.regex").toString();
         // Create the unique test environment
         beforeAll(async () => {
@@ -92,7 +91,7 @@ describe("zos-logs list logs", () => {
                 DEFAULT_SYSTEM_PROPS.zosmf.host,
                 DEFAULT_SYSTEM_PROPS.zosmf.port,
                 DEFAULT_SYSTEM_PROPS.zosmf.user,
-                DEFAULT_SYSTEM_PROPS.zosmf.pass
+                DEFAULT_SYSTEM_PROPS.zosmf.password
             ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
