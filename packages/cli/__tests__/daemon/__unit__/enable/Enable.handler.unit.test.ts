@@ -63,8 +63,8 @@ describe("Enable daemon handler", () => {
 
     describe("enableDaemon method", () => {
         it("should return true upon success", async () => {
-            const result = enableHandler.enableDaemon();
-            expect(result).toBe(true);
+            const cmdResult = enableHandler.enableDaemon();
+            expect(cmdResult.success).toBe(true);
         });
     });
 });

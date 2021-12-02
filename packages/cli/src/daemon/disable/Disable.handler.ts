@@ -10,6 +10,7 @@
 */
 
 import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
+import { IDaemonCmdResult } from "../doc/IDaemonCmdResult";
 
 /**
  * Handler to disable daemon mode.
@@ -27,10 +28,11 @@ export default class DisableDaemonHandler implements ICommandHandler {
      * @throws {ImperativeError}
      */
     public process(cmdParams: IHandlerParameters): Promise<void> {
-        if ( this.disableDaemon() ) {
-            cmdParams.response.console.log("Daemon mode disabled");
+        const cmdResult = this.disableDaemon();
+        if ( cmdResult.success ) {
+            cmdParams.response.console.log("Daemon mode disabled.\n" + cmdResult.msgText);
         } else {
-            cmdParams.response.console.log("Failed to disable daemon mode");
+            cmdParams.response.console.log("Failed to disable daemon mode.\n" + cmdResult.msgText);
         }
         return;
     }
@@ -40,7 +42,12 @@ export default class DisableDaemonHandler implements ICommandHandler {
      *
      * @returns True upon success. False otherwise.
      */
-    private disableDaemon(): boolean {
-        return true;
+    private disableDaemon(): IDaemonCmdResult {
+        const cmdResult: IDaemonCmdResult = {
+            success: true,
+            msgText: ""
+        };
+
+        return cmdResult;
     }
 }

@@ -63,8 +63,8 @@ describe("Disable daemon handler", () => {
 
     describe("disableDaemon method", () => {
         it("should return true upon success", async () => {
-            const result = disableHandler.disableDaemon();
-            expect(result).toBe(true);
+            const cmdResult = disableHandler.disableDaemon();
+            expect(cmdResult.success).toBe(true);
         });
     });
 });
