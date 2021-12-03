@@ -49,7 +49,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data("some data", {whatever: "context I want"});
+        (daemonClient as any).data("PWD\fsome data", {whatever: "context I want"});
     });
 
     it("should ignore JSON response data used for prompting when received", () => {

@@ -145,10 +145,11 @@ fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
             arg_string.push(' ');
         }
 
-        /* An argument that contains a space must be enclosed in double quotes
-         * when it is placed into a single argument string.
+        /* An argument that contains a space, or is an empty string, must be
+         * enclosed in double quotes when it is placed into a single argument
+         * string.
          */
-        if next_arg.contains(' ') {
+        if next_arg.contains(' ') || next_arg.len() == 0 {
             arg_string.push('"');
             arg_string.push_str(next_arg);
             arg_string.push('"');
