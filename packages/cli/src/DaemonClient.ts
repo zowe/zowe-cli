@@ -103,9 +103,12 @@ export class DaemonClient {
             // accept input parameters as we do without running in a server mode and pass our clients stream
             // handle as context
         } else {
-            Imperative.api.appLogger.trace(`daemon input command: ${data.toString()}`);
-            Imperative.commandLine = data.toString();
-            Imperative.parse(data.toString(), { stream: this.mClient });
+            const [cwd, cmdInput] = stringData.split("\f", 2);
+            Imperative.api.appLogger.trace(`daemon input command: ${cmdInput}`);
+            Imperative.commandLine = cmdInput;
+            // TODO Remove the --dcd hack - perhaps use PWD env var instead?
+            // This will be a bigger problem when we need to support multitenancy
+            Imperative.parse(`${cmdInput} --dcd ${cwd}`, { stream: this.mClient });
         }
     }
 }

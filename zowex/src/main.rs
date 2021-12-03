@@ -163,10 +163,9 @@ fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
 }
 
 fn run_daemon_command(mut args: String) -> std::io::Result<()> {
-    args.push_str(" --dcd ");
     let path = env::current_dir()?;
-    args.push_str(path.to_str().unwrap());
-    args.push_str("/");
+    args.insert(0, '\x0c');
+    args.insert_str(0, path.to_str().unwrap());
     let mut _resp = args.as_bytes(); // as utf8 bytes
 
     if _resp.is_empty() {

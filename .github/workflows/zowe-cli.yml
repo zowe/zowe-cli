@@ -80,7 +80,7 @@ jobs:
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }}  zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
@@ -93,7 +93,7 @@ jobs:
     - name: Setup Binary in PATH
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: setup-binary
-      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/application_instances ${{ matrix.os == 'ubuntu-latest' && '--overwrite' || '' }}
+      run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
 
     - name: Unit Tests
       id: unit
