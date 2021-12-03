@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
+
 ## `7.0.0-next.202112021313`
 
 - **Next Breaking**: Use JSON-based communication protocol between imperative daemon server and client.
