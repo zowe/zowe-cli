@@ -103,7 +103,7 @@ export class DaemonClient {
             // accept input parameters as we do without running in a server mode and pass our clients stream
             // handle as context
         } else {
-            const [cwd, cmdInput] = stringData.split("\f", 2);
+            const [cwd, cmdInput] = stringData.split("\r", 2);
             Imperative.api.appLogger.trace(`daemon input command: ${cmdInput}`);
             Imperative.commandLine = cmdInput;
             // TODO Remove the --dcd hack - perhaps use PWD env var instead?
