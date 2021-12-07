@@ -18,7 +18,13 @@ import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
     const zosmfMergedArgs = profInfo.mergeArgsForProfile(zosmfProfAttrs, { getSecureVals: true });
     const session = ProfileInfo.createSession(zosmfMergedArgs.knownArgs);
 
-    const accountNumber = "ACCT#";
+    // Load account number from default TSO profile (optional)
+    const tsoProfAttrs = profInfo.getDefaultProfile("tso");
+    const tsoMergedArgs = profInfo.mergeArgsForProfile(tsoProfAttrs);
+    const accountNumberFromProfile = tsoMergedArgs.knownArgs.find(
+        arg => arg.argName === "account").argValue as string;
+
+    const accountNumber = accountNumberFromProfile || "ACCT#";
     const command = "status";
     const response = await IssueTso.issueTsoCommand(session, accountNumber, command);
     if (response.success) {
