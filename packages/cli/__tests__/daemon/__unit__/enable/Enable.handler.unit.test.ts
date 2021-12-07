@@ -8,6 +8,9 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
+import { ISystemInfo, ProcessUtils } from "@zowe/imperative";
+
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
 import { IDaemonCmdResult } from "../../../../src/daemon/doc/IDaemonCmdResult";
 
@@ -44,14 +47,13 @@ describe("Handler for daemon enable", () => {
     } as any;
 
     beforeAll(() => {
-        // instantiate our handler and spy on its private enableDaemon() function
+        // instantiate our handler
         enableHandler = new EnableDaemonHandler();
-        enableDaemonSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "enableDaemon");
     });
 
     beforeEach(() => {
-        // ensure that toHaveBeenCalledTimes does not accumulate for enableDaemonSpy between tests
-        jest.clearAllMocks();
+        // remove enableDaemon spy & mock between tests
+        enableDaemonSpy?.mockRestore();
     });
 
     describe("process method", () => {
@@ -63,6 +65,9 @@ describe("Handler for daemon enable", () => {
                 success: true,
                 msgText: allOkMsg
             };
+
+            // spy on our handler's private enableDaemon() function
+            enableDaemonSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "enableDaemon");
             enableDaemonSpy.mockImplementation(() => {return enableResultOk});
 
             try {
@@ -86,6 +91,9 @@ describe("Handler for daemon enable", () => {
                 success: false,
                 msgText: badStuffMsg
             };
+
+            // spy on our handler's private enableDaemon() function
+            enableDaemonSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "enableDaemon");
             enableDaemonSpy.mockImplementation(() => {return enableResultBad});
 
             try {
@@ -99,6 +107,31 @@ describe("Handler for daemon enable", () => {
             expect(enableDaemonSpy).toHaveBeenCalledTimes(1);
             expect(logMessage).toContain("Failed to enable daemon mode");
             expect(logMessage).toContain(badStuffMsg);
+        });
+
+        it("should fail when on an unsupported platform", async () => {
+            let error;
+
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "BogusArch",
+                    "platform": "BogusPlatform"
+                };
+            });
+
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await enableHandler.process(cmdParms);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(logMessage).toContain("Failed to enable daemon mode");
+            expect(logMessage).toContain("Daemon mode is not supported on the 'BogusPlatform' operating system.");
+            ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
         });
     });
 });
