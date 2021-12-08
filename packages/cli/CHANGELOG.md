@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202112081943`
 
 - **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
 
