@@ -9,7 +9,7 @@
 *
 */
 
-import { ISystemInfo, ProcessUtils } from "@zowe/imperative";
+import { ImperativeConfig, IO, ProcessUtils } from "@zowe/imperative";
 
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
 import { IDaemonCmdResult } from "../../../../src/daemon/doc/IDaemonCmdResult";
@@ -34,6 +34,9 @@ describe("Handler for daemon enable", () => {
                 }),
                 setObj: jest.fn((setObjArgs) => {
                     jsonObj = setObjArgs;
+                }),
+                setExitCode: jest.fn((exitCode) => {
+                    return exitCode;
                 })
             },
             console: {
@@ -120,7 +123,6 @@ describe("Handler for daemon enable", () => {
                 };
             });
 
-
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await enableHandler.process(cmdParms);
@@ -132,6 +134,46 @@ describe("Handler for daemon enable", () => {
             expect(logMessage).toContain("Failed to enable daemon mode");
             expect(logMessage).toContain("Daemon mode is not supported on the 'BogusPlatform' operating system.");
             ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
+        });
+
+        it("should fail if a we cannot create a bin directory", async () => {
+            let error;
+
+            // Mock the IO functions to simulate a failure creating a directory
+            const existsSyncOrig = IO.existsSync;
+            IO.createDirSync = jest.fn(() => {
+                return false;
+            });
+
+            const awfulThrownErr = "Some awful error was thrown";
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn(() => {
+                throw awfulThrownErr;
+            });
+
+            // cliHome is a getter property, so mock the property
+            const impCfg: ImperativeConfig = ImperativeConfig.instance;
+            const mockCliHomeDir = "NotaRealCliHomeDir";
+            Object.defineProperty(impCfg, "cliHome", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return mockCliHomeDir;
+                })
+            });
+
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await enableHandler.process(cmdParms);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(logMessage).toContain("Failed to enable daemon mode");
+            expect(logMessage).toContain(`Unable to create directory '${mockCliHomeDir}`);
+            expect(logMessage).toContain("Reason: " + awfulThrownErr);
+            IO.existsSync = existsSyncOrig;
+            IO.createDirSync = createDirSyncOrig;
         });
     });
 });
