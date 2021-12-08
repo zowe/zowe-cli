@@ -88,6 +88,7 @@ Array [
       "pa",
     ],
     "description": "Show the full allocation attributes",
+    "hidden": true,
     "name": "show-attributes",
     "type": "boolean",
   },
