@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DaemonClient tests should process data when received 1`] = `"some data"`;
+exports[`DaemonClient tests should process data when received 1`] = `"some data --dcd PWD"`;
 
 exports[`DaemonClient tests should process data when received 2`] = `
 Object {
