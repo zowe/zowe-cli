@@ -28,6 +28,10 @@ exports[`Create  Data Set should display the help 1`] = `
  OPTIONS
  -------
 
+   --attributes  | -a (boolean)
+
+      Show the full allocation attributes
+
    --block-size  | --bs | --blksize (number)
 
       The block size for the data set (for example, 6160)
@@ -71,10 +75,6 @@ exports[`Create  Data Set should display the help 1`] = `
    --secondary-space  | --ss (number)
 
       The secondary space allocation (for example, 1)
-
-   --show-attributes  | --pa (boolean)
-
-      Show the full allocation attributes
 
    --size  | --sz (string)
 

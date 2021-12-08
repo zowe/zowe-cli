@@ -36,7 +36,7 @@ export const ZosFilesCreateExtraOptions: { [key: string]: ICommandOptionDefiniti
      * @type {ICommandOptionDefinition}
      * @deprecated
      */
-     showAttributes: {
+    showAttributes: {
         name: "show-attributes",
         aliases: ["pa"],
         description: strings.SHOWATTRIBUTES,
@@ -87,7 +87,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     volser: {
         name: "volume-serial",
-        aliases: ["vs","volser"],
+        aliases: ["vs", "volser"],
         description: strings.VOLSER,
         type: "string"
     },
@@ -98,7 +98,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     unit: {
         name: "device-type",
-        aliases: ["dt","unit"],
+        aliases: ["dt", "unit"],
         description: strings.UNIT,
         type: "string"
     },
@@ -109,7 +109,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     dsorg: {
         name: "data-set-organization",
-        aliases: ["dso","dsorg"],
+        aliases: ["dso", "dsorg"],
         description: strings.DSORG,
         type: "string"
     },
@@ -153,7 +153,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     dirblk: {
         name: "directory-blocks",
-        aliases: ["db","dirblks"],
+        aliases: ["db", "dirblks"],
         description: strings.DIRBLK,
         type: "number"
     },
@@ -175,7 +175,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     recfm: {
         name: "record-format",
-        aliases: ["rf","recfm"],
+        aliases: ["rf", "recfm"],
         description: strings.RECFM,
         type: "string"
     },
@@ -186,7 +186,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     blksize: {
         name: "block-size",
-        aliases: ["bs","blksize"],
+        aliases: ["bs", "blksize"],
         description: strings.BLKSIZE,
         type: "number"
     },
@@ -197,7 +197,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     lrecl: {
         name: "record-length",
-        aliases: ["rl","lrecl"],
+        aliases: ["rl", "lrecl"],
         description: strings.LRECL,
         type: "number"
     },
@@ -241,7 +241,7 @@ export const ZosFilesCreateOptions: { [key: string]: ICommandOptionDefinition } 
      */
     dsntype: {
         name: "data-set-type",
-        aliases: ["dst","dsntype"],
+        aliases: ["dst", "dsntype"],
         description: strings.DSNTYPE,
         type: "string"
     }
