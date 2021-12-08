@@ -4,6 +4,14 @@ exports[`zos-files create  command definition should not have changed 1`] = `
 Array [
   Object {
     "aliases": Array [
+      "a",
+    ],
+    "description": "Show the full allocation attributes",
+    "name": "attributes",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "bs",
       "blksize",
     ],
