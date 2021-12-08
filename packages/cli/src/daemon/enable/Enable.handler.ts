@@ -9,8 +9,15 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
-import { IDaemonCmdResult } from "../doc/IDaemonCmdResult";
+import * as fs from "fs";
+import * as nodeJsPath from "path";
+// todo: import * as tar from "tar";
+import * as zlib from "zlib";
+
+import {
+    ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
+    IO, ISystemInfo, ProcessUtils
+} from "@zowe/imperative";
 
 /**
  * Handler to enable daemon mode.
@@ -28,12 +35,17 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * @throws {ImperativeError}
      */
     public process(cmdParams: IHandlerParameters): Promise<void> {
-        const cmdResult = this.enableDaemon();
-        if ( cmdResult.success ) {
-            cmdParams.response.console.log("Daemon mode enabled.\n" + cmdResult.msgText);
-        } else {
-            cmdParams.response.console.log("Failed to enable daemon mode.\n" + cmdResult.msgText);
+        let userMsg: string;
+        try {
+            userMsg = this.enableDaemon();
+        } catch(impErr) {
+            cmdParams.response.console.log("Failed to enable daemon mode.\n" + (impErr as ImperativeError).message);
+            cmdParams.response.data.setExitCode(1);
+            return;
         }
+
+        cmdParams.response.console.log("Daemon mode enabled.\n" + userMsg);
+        cmdParams.response.data.setExitCode(0);
         return;
     }
 
@@ -41,27 +53,64 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * Enable daemon mode. We extract our native executable and place it
      * in ZOWE_CLI_HOME/bin.
      *
-     * @returns True upon success. False otherwise.
+     * @throws {ImperativeError}
+     *
+     * @returns {string} An informational message to display to the user after
+     *          successful completion of the operation.
      */
-    private enableDaemon(): IDaemonCmdResult {
-        const cmdResult: IDaemonCmdResult = {
-            success: true,
-            msgText: ""
-        };
-
+    private enableDaemon(): string {
         // determine our current OS
+        const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
-        // form the path to our prebuilds directory
+        // form the path to our prebuilds tar file
+        let preBldTgz = __dirname + "../../../../prebuilds/zowe-";
+        switch (sysInfo.platform) {
+            case "darwin": {
+                preBldTgz += "macos.tgz";
+                break;
+            }
+            case "linux": {
+                preBldTgz += "linux.tgz";
+                break;
+            }
+            case "win32": {
+                preBldTgz += "windows.tgz";
+                break;
+            }
+            default: {
+                throw new ImperativeError({
+                    msg: `Daemon mode is not supported on the '${sysInfo.platform}' operating system.`
+                });
+            }
+        }
+        preBldTgz = nodeJsPath.normalize(preBldTgz);
 
-        // find the tar file for our OS executable
+        // form the path to the bin directory in ZOWE_CLI_HOME
+        const zoweHomeBin = nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin");
 
-        // form the path to our ZOWE_CLI_HOME bin directory
+        // Does the ZOWE_CLI_HOME bin directory exist?
+        if (IO.existsSync(zoweHomeBin)) {
+            if (IO.isDir(zoweHomeBin) == false) {
+                throw new ImperativeError({
+                    msg: `The existing file '${zoweHomeBin}' must be a directory.`
+                });
+            }
+        } else {
+            // create the directory
+            try {
+                IO.createDirSync(zoweHomeBin);
+            }
+            catch(err) {
+                throw new ImperativeError({
+                    msg: `Unable to create directory '${zoweHomeBin}'.\nReason: ${err}`
+                });
+            }
+        }
 
-        // create the ZOWE_CLI_HOME bin directory if it does not exist
-
-        // check the version of any existing executable
+        // todo: check the version of any existing executable
 
         // extract executable from the tar file into the bin directory
+        this.unzipTgz(preBldTgz, zoweHomeBin, "todo");
 
         // detect whether ZOWE_CLI_HOME/bin is already on our PATH
 
@@ -71,7 +120,36 @@ export default class EnableDaemonHandler implements ICommandHandler {
 
         // display results and directions to the user
 
-        cmdResult.msgText = "Add ZOWE_CLI_HOME/bin to your path.";
-        return cmdResult;
+        return `You must add '${zoweHomeBin}' to your path.`;
+    }
+
+    /**
+     * Unzip some or all of the content of a gzipped tar file.
+     * in ZOWE_CLI_HOME/bin.
+     *
+     * @param tgzFile The gzipped tar file that we will extract
+     *
+     * @param toDir The directory into whic we extract files
+     *
+     * @param extractRegex The Regex to match files to extract.
+     *
+     * @throws {ImperativeError}
+     */
+    private unzipTgz(tgzFile: string, toDir: string, extractRegex: string): void {
+        console.log("Todo: unzipTgz:\n   tgzFile = " + tgzFile +
+            "\n   toDir = " + toDir +
+            "\n   extractRegex = " + extractRegex
+        );
+
+        /* todo:
+        fs.createReadStream(tgzFile)
+            .on('error', function(err) {
+                throw new ImperativeError({
+                    msg: err
+                });
+            })
+            .pipe(zlib.Unzip())
+            .pipe(tar.Parse())
+        todo */
     }
 }

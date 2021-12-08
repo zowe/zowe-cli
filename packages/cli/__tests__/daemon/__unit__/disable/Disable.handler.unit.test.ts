@@ -14,43 +14,53 @@ describe("Disable daemon handler", () => {
     let disableHandler: any; // use "any" so we can call private functions
     let disableDaemonSpy: any;
 
+    // command parms passed to process() by multiple tests
+    let apiMessage = "";
+    let jsonObj;
+    let logMessage = "";
+    const cmdParms = {
+        arguments: {
+            $0: "fake",
+            _: ["fake"]
+        },
+        response: {
+            data: {
+                setMessage: jest.fn((setMsgArgs) => {
+                    apiMessage = setMsgArgs;
+                }),
+                setObj: jest.fn((setObjArgs) => {
+                    jsonObj = setObjArgs;
+                }),
+                setExitCode: jest.fn((exitCode) => {
+                    return exitCode;
+                })
+            },
+            console: {
+                log: jest.fn((logArgs) => {
+                    logMessage += "\n" + logArgs;
+                })
+            },
+            progress: {}
+        },
+        profiles: {}
+    } as any;
+
     beforeAll(() => {
         // instantiate our handler and spy on its private disableDaemon() function
         disableHandler = new DisableDaemonHandler();
-        disableDaemonSpy = jest.spyOn(disableHandler, "disableDaemon");
     });
 
     describe("process method", () => {
         it("should disable the daemon", async () => {
-            let apiMessage = "";
             let error;
-            let jsonObj;
-            let logMessage = "";
+            const allOkMsg = "Everything worked ok";
+
+            disableDaemonSpy = jest.spyOn(DisableDaemonHandler.prototype as any, "disableDaemon");
+            disableDaemonSpy.mockImplementation(() => {return allOkMsg});
+
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
-                await disableHandler.process({
-                    arguments: {
-                        $0: "fake",
-                        _: ["fake"]
-                    },
-                    response: {
-                        data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
-                            }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
-                            })
-                        },
-                        console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
-                            })
-                        },
-                        progress: {}
-                    },
-                    profiles: {}
-                } as any);
+                await disableHandler.process(cmdParms);
             } catch (e) {
                 error = e;
             }
@@ -58,13 +68,7 @@ describe("Disable daemon handler", () => {
             expect(error).toBeUndefined();
             expect(disableDaemonSpy).toHaveBeenCalledTimes(1);
             expect(logMessage).toContain("Daemon mode disabled");
-        });
-    });
-
-    describe("disableDaemon method", () => {
-        it("should return true upon success", async () => {
-            const cmdResult = disableHandler.disableDaemon();
-            expect(cmdResult.success).toBe(true);
+            expect(logMessage).toContain(allOkMsg);
         });
     });
 });

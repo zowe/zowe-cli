@@ -9,10 +9,9 @@
 *
 */
 
-import { ImperativeConfig, IO, ProcessUtils } from "@zowe/imperative";
+import { ImperativeConfig, ImperativeError, IO, ProcessUtils } from "@zowe/imperative";
 
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
-import { IDaemonCmdResult } from "../../../../src/daemon/doc/IDaemonCmdResult";
 
 describe("Handler for daemon enable", () => {
     let enableHandler: any; // use "any" so we can call private functions
@@ -64,14 +63,9 @@ describe("Handler for daemon enable", () => {
             let error;
             const allOkMsg = "Everything worked ok";
 
-            const enableResultOk: IDaemonCmdResult = {
-                success: true,
-                msgText: allOkMsg
-            };
-
             // spy on our handler's private enableDaemon() function
             enableDaemonSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "enableDaemon");
-            enableDaemonSpy.mockImplementation(() => {return enableResultOk});
+            enableDaemonSpy.mockImplementation(() => {return allOkMsg});
 
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
@@ -90,14 +84,14 @@ describe("Handler for daemon enable", () => {
             let error;
             const badStuffMsg = "Some bad stuff happened";
 
-            const enableResultBad: IDaemonCmdResult = {
-                success: false,
-                msgText: badStuffMsg
-            };
-
             // spy on our handler's private enableDaemon() function
             enableDaemonSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "enableDaemon");
-            enableDaemonSpy.mockImplementation(() => {return enableResultBad});
+            enableDaemonSpy.mockImplementation(() => {
+                throw new ImperativeError({
+                    msg: badStuffMsg
+                });
+            });
+
 
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions

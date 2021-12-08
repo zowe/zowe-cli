@@ -9,8 +9,7 @@
 *
 */
 
-import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
-import { IDaemonCmdResult } from "../doc/IDaemonCmdResult";
+import { ICommandHandler, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 
 /**
  * Handler to disable daemon mode.
@@ -28,26 +27,29 @@ export default class DisableDaemonHandler implements ICommandHandler {
      * @throws {ImperativeError}
      */
     public process(cmdParams: IHandlerParameters): Promise<void> {
-        const cmdResult = this.disableDaemon();
-        if ( cmdResult.success ) {
-            cmdParams.response.console.log("Daemon mode disabled.\n" + cmdResult.msgText);
-        } else {
-            cmdParams.response.console.log("Failed to disable daemon mode.\n" + cmdResult.msgText);
+        let userMsg: string;
+        try {
+            userMsg = this.disableDaemon();
+        } catch(impErr) {
+            cmdParams.response.console.log("Failed to disable daemon mode.\n" + (impErr as ImperativeError).message);
+            cmdParams.response.data.setExitCode(1);
+            return;
         }
+
+        cmdParams.response.console.log("Daemon mode disabled.\n" + userMsg);
+        cmdParams.response.data.setExitCode(0);
         return;
     }
 
     /**
      * Enable daemon mode.
      *
-     * @returns True upon success. False otherwise.
-     */
-    private disableDaemon(): IDaemonCmdResult {
-        const cmdResult: IDaemonCmdResult = {
-            success: true,
-            msgText: ""
-        };
-
-        return cmdResult;
+     * @throws {ImperativeError}
+     *
+     * @returns {string} An informational message to display to the user after
+     *          successful completion of the operation.
+          */
+    private disableDaemon(): string {
+        return "Pretend that we disabled daemon-mode.";
     }
 }
