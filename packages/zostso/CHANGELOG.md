@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: Removed deprecated methods:
+  - IZosfmMessages -> IZosmfMessages
+
 ## `6.33.1`
 
 - Migrated from TSLint (now deprecated) to ESLint for static code analysis.

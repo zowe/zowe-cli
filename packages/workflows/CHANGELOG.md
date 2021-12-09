@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## Recent Changes
+
+- Breaking: Removed deprecated methods:
+  - listWorkflows -> getWorkflows
+  - getResourcesQuery -> getResourceQuery
+  - archiveWorfklowByKey -> archiveWorkflowByKey
+
 ## `6.35.0`
 
 - Enhancement: Removed the misleading `workflow-name` option for the `zowe zos-workflows list definition-file-details` help example. [#659](https://github.com/zowe/zowe-cli/issues/659)
