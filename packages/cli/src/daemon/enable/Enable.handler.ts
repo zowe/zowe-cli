@@ -11,8 +11,7 @@
 
 import * as fs from "fs";
 import * as nodeJsPath from "path";
-// todo: import * as tar from "tar";
-import * as zlib from "zlib";
+import * as tar from "tar";
 
 import {
     ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
@@ -34,10 +33,10 @@ export default class EnableDaemonHandler implements ICommandHandler {
      *
      * @throws {ImperativeError}
      */
-    public process(cmdParams: IHandlerParameters): Promise<void> {
+    public async process(cmdParams: IHandlerParameters): Promise<void> {
         let userMsg: string;
         try {
-            userMsg = this.enableDaemon();
+            userMsg = await this.enableDaemon();
         } catch(impErr) {
             cmdParams.response.console.log("Failed to enable daemon mode.\n" + (impErr as ImperativeError).message);
             cmdParams.response.data.setExitCode(1);
@@ -58,7 +57,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * @returns {string} An informational message to display to the user after
      *          successful completion of the operation.
      */
-    private enableDaemon(): string {
+    private async enableDaemon(): Promise<string> {
         // determine our current OS
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
@@ -83,7 +82,13 @@ export default class EnableDaemonHandler implements ICommandHandler {
                 });
             }
         }
+
         preBldTgz = nodeJsPath.normalize(preBldTgz);
+        if (IO.existsSync(preBldTgz) == false) {
+            throw new ImperativeError({
+                msg: `The zip file for your OS executable does not exist: ${preBldTgz}`
+            });
+        }
 
         // form the path to the bin directory in ZOWE_CLI_HOME
         const zoweHomeBin = nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin");
@@ -110,7 +115,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
         // todo: check the version of any existing executable
 
         // extract executable from the tar file into the bin directory
-        this.unzipTgz(preBldTgz, zoweHomeBin, "todo");
+        await this.unzipTgz(preBldTgz, zoweHomeBin, ImperativeConfig.instance.rootCommandName);
 
         // detect whether ZOWE_CLI_HOME/bin is already on our PATH
 
@@ -124,32 +129,37 @@ export default class EnableDaemonHandler implements ICommandHandler {
     }
 
     /**
-     * Unzip some or all of the content of a gzipped tar file.
-     * in ZOWE_CLI_HOME/bin.
+     * Unzip, from a gzipped tar file, any file that contains fileToExtract as a
+     * substring of the file name. The file will be placed into toDir.
+     * We expect toDir to already exist.
      *
      * @param tgzFile The gzipped tar file that we will extract
      *
-     * @param toDir The directory into whic we extract files
+     * @param toDir The directory into which we extract files
      *
-     * @param extractRegex The Regex to match files to extract.
+     * @param fileToExtract The file name (or substring of the file name) to extract.
      *
      * @throws {ImperativeError}
+     * @returns A void promise to synchronize this operation.
      */
-    private unzipTgz(tgzFile: string, toDir: string, extractRegex: string): void {
-        console.log("Todo: unzipTgz:\n   tgzFile = " + tgzFile +
-            "\n   toDir = " + toDir +
-            "\n   extractRegex = " + extractRegex
-        );
-
-        /* todo:
-        fs.createReadStream(tgzFile)
-            .on('error', function(err) {
-                throw new ImperativeError({
-                    msg: err
+    private async unzipTgz(tgzFile: string, toDir: string, fileToExtract: string): Promise<void> {
+        return new Promise<void>((resolve) => {
+            fs.createReadStream(tgzFile)
+                .on('error', function(err) {
+                    throw new ImperativeError({
+                        msg: err
+                    });
+                })
+                .pipe(new tar.Parse())
+                .on('entry', function(entry: any) {
+                    if (entry.type == "File" && (entry.path as string).includes(fileToExtract)) {
+                        // do not include any path structure from the tgz, just the exe name
+                        entry.pipe(fs.createWriteStream(nodeJsPath.resolve(toDir, nodeJsPath.basename(entry.path))));
+                    }
+                })
+                .on("end", () => {
+                    resolve();
                 });
-            })
-            .pipe(zlib.Unzip())
-            .pipe(tar.Parse())
-        todo */
+        });
     }
 }
