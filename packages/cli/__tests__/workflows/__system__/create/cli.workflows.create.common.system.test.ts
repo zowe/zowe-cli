@@ -56,7 +56,7 @@ describe("Create workflow cli system tests", () => {
     describe("Create workflow using uss file", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
         });
         afterAll(async () => {
             let error;

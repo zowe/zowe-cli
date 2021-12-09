@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, ITaskWithStatus, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 

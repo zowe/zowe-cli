@@ -562,7 +562,7 @@ describe("Upload USS file", () => {
 
 
             try {
-                uploadResponse = await Upload.bufferToUSSFile(REAL_SESSION, ussname, data);
+                uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
@@ -579,7 +579,7 @@ describe("Upload USS file", () => {
             let getResponse;
             const data: Buffer = Buffer.from(testdata);
             try {
-                uploadResponse = await Upload.bufferToUSSFile(REAL_SESSION, ussname, data, true);
+                uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
             } catch (err) {
                 error = err;
@@ -596,7 +596,7 @@ describe("Upload USS file", () => {
             let getResponse;
 
             try {
-                uploadResponse = await Upload.fileToUSSFile(REAL_SESSION, inputfile, ussname);
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
@@ -614,7 +614,7 @@ describe("Upload USS file", () => {
 
 
             try {
-                uploadResponse = await Upload.fileToUSSFile(REAL_SESSION, inputfile, ussname, true);
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
             } catch (err) {
                 error = err;

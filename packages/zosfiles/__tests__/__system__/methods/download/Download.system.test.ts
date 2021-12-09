@@ -705,7 +705,7 @@ describe("Download Data Set", () => {
                 const buffer = new ArrayBuffer(bufferSize);
                 const data = Buffer.from(buffer);
 
-                (await Upload.bufferToUSSFile(REAL_SESSION, ussname, data));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
                 await delay(delayTime);
 
                 const options: IDownloadOptions = {

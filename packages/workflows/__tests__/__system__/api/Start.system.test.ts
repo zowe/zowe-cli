@@ -67,7 +67,7 @@ describe("Start workflow", () => {
             let error;
             let response;
             try {
-                response = await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+                response = await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
