@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zosmf-for-zowe-sdk",
-  "version": "7.0.0-next.202112021313",
+  "version": "7.0.0-next.202112081943",
   "description": "Zowe SDK to interact with the z/OS Management Facility",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -44,8 +44,8 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/cli-test-utils": "7.0.0-next.202112021313",
-    "@zowe/core-for-zowe-sdk": "7.0.0-next.202112021313",
+    "@zowe/cli-test-utils": "7.0.0-next.202112081943",
+    "@zowe/core-for-zowe-sdk": "7.0.0-next.202112081943",
     "@zowe/imperative": "5.0.0-next.202112021611",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
