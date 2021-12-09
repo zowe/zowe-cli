@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS TSO SDK package will be documented in this 
 
 ## Recent Changes
 
-- Breaking: Removed deprecated methods:
+- Breaking: Removed deprecated interfaces:
   - IZosfmMessages -> IZosmfMessages
 
 ## `6.33.1`
