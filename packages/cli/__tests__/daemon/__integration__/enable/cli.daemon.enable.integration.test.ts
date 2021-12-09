@@ -9,9 +9,12 @@
 *
 */
 
+import { IO, ISystemInfo, ProcessUtils } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+
 import * as fs from "fs";
 import * as nodeJsPath from "path";
 
@@ -19,7 +22,9 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon enable", () => {
     const rimraf = require("rimraf").sync;
+    let exePath: string;
     let pathToBin: string;
+    let preBldTgz: string;
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -27,7 +32,37 @@ describe("daemon enable", () => {
             testName: "daemon_enable_integration",
             skipProperties: true
         });
+
+        // determine our current OS
+        const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
+
+        // form the path to our bin directory, executable, and prebuilds tgz file
+        preBldTgz = __dirname + "/../../../../prebuilds/zowe-";
+        switch (sysInfo.platform) {
+            case "darwin": {
+                preBldTgz += "macos.tgz";
+                exePath = "zowe";
+                break;
+            }
+            case "linux": {
+                preBldTgz += "linux.tgz";
+                exePath = "zowe";
+                break;
+            }
+            case "win32": {
+                preBldTgz += "windows.tgz";
+                exePath = "zowe.exe";
+                break;
+            }
+            default: {
+                preBldTgz += "unknownOs.tgz";
+                exePath = "exeForUnknownOs";
+                throw "cli.daemon.enable.integration.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
+            }
+        }
         pathToBin = nodeJsPath.normalize(testEnvironment.workingDir + "/bin");
+        exePath = nodeJsPath.normalize(pathToBin + "/" + exePath);
+        preBldTgz = nodeJsPath.normalize(preBldTgz);
     });
 
     beforeEach(async () => {
@@ -46,6 +81,22 @@ describe("daemon enable", () => {
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 
+    it("should fail when the tgz file does not exist", async () => {
+        // temporarily remove the desired tgz file - keep an eye open for impact on parallel tests
+        const tempRenamedTgz = preBldTgz + "_temp_rename";
+        fs.renameSync(preBldTgz, tempRenamedTgz);
+
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+
+        // restore our tgz file for other tests
+        fs.renameSync(tempRenamedTgz, preBldTgz);
+
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Failed to enable daemon mode.");
+        expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgz}`);
+        expect(response.status).toBe(1);
+    });
+
     it("should fail if a bin file exists", async () => {
         fs.writeFileSync(pathToBin, "not a directory");
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
@@ -58,13 +109,25 @@ describe("daemon enable", () => {
     it("should place exe in a new bin dir", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         expect(response.status).toBe(0);
-        // todo: confirm exe exists
+        expect(IO.existsSync(exePath)).toBe(true);
     });
 
     it("should place exe in an existing bin dir", async () => {
         fs.mkdirSync(pathToBin, 0o755);
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         expect(response.status).toBe(0);
-        // todo: confirm exe exists
+        expect(IO.existsSync(exePath)).toBe(true);
+    });
+
+    it("should overwite an existing exe", async () => {
+        const fakeExeContent = "This is not a real executable";
+        fs.mkdirSync(pathToBin, 0o755);
+        fs.writeFileSync(exePath, fakeExeContent);
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+        expect(response.status).toBe(0);
+        expect(IO.existsSync(exePath)).toBe(true);
+
+        const exeStats = fs.statSync(exePath);
+        expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
     });
 });
