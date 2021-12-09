@@ -7,39 +7,25 @@ Contains APIs to interact with the z/OS console (using z/OSMF console REST endpo
 **Submit a command to the z/OS console**
 
 ```typescript
-import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
-         CredentialManagerFactory } from "@zowe/imperative";
-import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
-import { IssueCommand, IIssueParms, IConsoleResponse } from "@zowe/zos-console-for-zowe-sdk";
+import { ProfileInfo } from "@zowe/imperative";
+import { IIssueParms, IssueCommand } from "@zowe/zos-console-for-zowe-sdk";
 
 (async () => {
-    //Initialize the Imperative Credential Manager Factory and Logger
-    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
-    // Uncommment the below line if the Secure Credential Store is in use
-    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
+    // Load connection info from default z/OSMF profile
+    const profInfo = new ProfileInfo("zowe");
+    await profInfo.readProfilesFromDisk();
+    const zosmfProfAttrs = profInfo.getDefaultProfile("zosmf");
+    const zosmfMergedArgs = profInfo.mergeArgsForProfile(zosmfProfAttrs, { getSecureVals: true });
+    const session = ProfileInfo.createSession(zosmfMergedArgs.knownArgs);
 
-    // Get the default z/OSMF profile and create a z/OSMF session with it
-    let defaultZosmfProfile: IProfile;
-    try {
-        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
-    } catch (err) {
-        throw new ImperativeError({msg: "Failed to get a profile."});
-    }
-
-    // Console Options
     const parms: IIssueParms = {
         command: "D IPLINFO",
         sysplexSystem: undefined,
         solicitedKeyword: undefined,
         async: "N"
-    }
-
-    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
-    let response: IConsoleResponse;
-    response = await IssueCommand.issue(session, parms);
+    };
+    const response = await IssueCommand.issue(session, parms);
     console.log(response);
-    process.exit(0);
 })().catch((err) => {
     console.error(err);
     process.exit(1);
@@ -50,37 +36,24 @@ import { IssueCommand, IIssueParms, IConsoleResponse } from "@zowe/zos-console-f
 **Get the response from a command sent to the z/OS console**
 
 ```typescript
-import { IProfile, Session, Logger, LoggingConfigurer, ImperativeError,
-         CredentialManagerFactory } from "@zowe/imperative";
-import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { getDefaultProfile } from "@zowe/core-for-zowe-sdk";
-import { CollectCommand, ICollectParms, IConsoleResponse } from "@zowe/zos-console-for-zowe-sdk";
+import { ProfileInfo } from "@zowe/imperative";
+import { CollectCommand, ICollectParms } from "@zowe/zos-console-for-zowe-sdk";
 
 (async () => {
-    //Initialize the Imperative Credential Manager Factory and Logger
-    Logger.initLogger(LoggingConfigurer.configureLogger('lib', {name: 'test'}));
-    // Uncommment the below line if the Secure Credential Store is in use
-    // await CredentialManagerFactory.initialize({service: "Zowe-Plugin"});
-
-    // Get the default z/OSMF profile and create a z/OSMF session with it
-    let defaultZosmfProfile: IProfile;
-    try {
-        defaultZosmfProfile = await getDefaultProfile("zosmf", true);
-    } catch (err) {
-        throw new ImperativeError({msg: "Failed to get a profile."});
-    }
+    // Load connection info from default z/OSMF profile
+    const profInfo = new ProfileInfo("zowe");
+    await profInfo.readProfilesFromDisk();
+    const zosmfProfAttrs = profInfo.getDefaultProfile("zosmf");
+    const zosmfMergedArgs = profInfo.mergeArgsForProfile(zosmfProfAttrs, { getSecureVals: true });
+    const session = ProfileInfo.createSession(zosmfMergedArgs.knownArgs);
 
     const parms: ICollectParms = {
         commandResponseKey: "KEY",
         waitToCollect: undefined,
         followUpAttempts: undefined
-    }
-
-    const session: Session = ZosmfSession.createBasicZosmfSession(defaultZosmfProfile);
-    let response: IConsoleResponse;
-    response = await CollectCommand.collect(session, parms);
+    };
+    const response = await CollectCommand.collect(session, parms);
     console.log(response);
-    process.exit(0);
 })().catch((err) => {
     console.error(err);
     process.exit(1);
