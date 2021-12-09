@@ -463,31 +463,6 @@ export class Upload {
 
         return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
     }
-    /**
-     * Upload content to USS file
-     * @deprecated In favor of bufferToUssFile() which implements IUploadOptions
-     * @param {AbstractSession} session - z/OS connection info
-     * @param {string} ussname          - Name of the USS file to write to
-     * @param {Buffer} buffer          - Data to be written
-     * @param {boolean} binary          - The indicator to upload the file in binary mode
-     * @returns {Promise<object>}
-     */
-    public static async bufferToUSSFile(session: AbstractSession,
-        ussname: string,
-        buffer: Buffer,
-        binary: boolean = false,
-        localEncoding?: string,
-        etag?: string,
-        returnEtag?: boolean,
-        responseTimeout?: number) {
-        return this.bufferToUssFile(session, ussname, buffer, {
-            binary,
-            localEncoding,
-            etag,
-            returnEtag,
-            responseTimeout
-        });
-    }
 
     /**
      * Upload content to USS file
@@ -535,30 +510,6 @@ export class Upload {
             commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
             apiResponse
         };
-    }
-
-    /**
-     * Upload content to USS file
-     * @deprecated - In favor of streamToUssFile() which implements IUploadOptions
-     * @param {AbstractSession} session - z/OS connection info
-     * @param {string} ussname          - Name of the USS file to write to
-     * @param {Buffer} uploadStream          - Data to be written
-     * @param {boolean} binary          - The indicator to upload the file in binary mode
-     * @returns {Promise<object>}
-     */
-    public static async streamToUSSFile(session: AbstractSession,
-        ussname: string,
-        uploadStream: Readable,
-        binary: boolean = false,
-        localEncoding?: string,
-        task?: ITaskWithStatus,
-        etag?: string) {
-        return this.streamToUssFile(session, ussname, uploadStream, {
-            binary,
-            localEncoding,
-            task,
-            etag
-        });
     }
 
     /**
@@ -620,33 +571,6 @@ export class Upload {
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
             apiResponse: result
         };
-    }
-
-    /**
-     * @deprecated In favor of fileToUssFile() which implements IUploadOptions
-     * @param session
-     * @param inputFile
-     * @param ussname
-     * @param binary
-     * @param localEncoding
-     * @param task
-     * @param etag
-     */
-    public static async fileToUSSFile(session: AbstractSession,
-        inputFile: string,
-        ussname: string,
-        binary: boolean = false,
-        localEncoding?: string,
-        task?: ITaskWithStatus,
-        etag?: string,
-        returnEtag?: boolean): Promise<IZosFilesResponse> {
-        return this.fileToUssFile(session, inputFile, ussname, {
-            binary,
-            localEncoding,
-            task,
-            etag,
-            returnEtag
-        });
     }
 
     /**
