@@ -5,6 +5,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: update a "show attributes" flag to be `-a` instead of `--pa`.  `--pa` is a "hidden" alias.
+
+## `7.0.0-next.202112081943`
+
 - **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
 
 ## `7.0.0-next.202112021313`
