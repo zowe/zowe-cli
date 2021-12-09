@@ -65,7 +65,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             enableDaemonSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "enableDaemon");
-            enableDaemonSpy.mockImplementation(() => {return allOkMsg});
+            enableDaemonSpy.mockImplementation(() => {return allOkMsg;});
 
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions

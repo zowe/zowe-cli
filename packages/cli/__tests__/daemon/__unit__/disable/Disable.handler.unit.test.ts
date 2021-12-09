@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import DisableDaemonHandler from "../../../../src/daemon/disable/Disable.handler";
 
 describe("Disable daemon handler", () => {
@@ -56,7 +57,7 @@ describe("Disable daemon handler", () => {
             const allOkMsg = "Everything worked ok";
 
             disableDaemonSpy = jest.spyOn(DisableDaemonHandler.prototype as any, "disableDaemon");
-            disableDaemonSpy.mockImplementation(() => {return allOkMsg});
+            disableDaemonSpy.mockImplementation(() => {return allOkMsg;});
 
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
