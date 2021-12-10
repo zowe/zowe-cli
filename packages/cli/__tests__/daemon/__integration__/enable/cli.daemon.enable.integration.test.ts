@@ -135,6 +135,19 @@ describe("daemon enable", () => {
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
+    it("should overwite an existing exe", async () => {
+        const fakeExeContent = "This is not a real executable";
+        fs.mkdirSync(pathToBin, 0o755);
+        fs.writeFileSync(exePath, fakeExeContent);
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+        expect(response.status).toBe(0);
+        expect(IO.existsSync(exePath)).toBe(true);
+
+        // our test tgz file is more than 10 bytes larger than this fake tgz
+        const exeStats = fs.statSync(exePath);
+        expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
+    });
+
     it("should identify that bin is not on the PATH", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         expect(response.status).toBe(0);
@@ -145,7 +158,7 @@ describe("daemon enable", () => {
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
-    it("should NOT talk about PATH when bin is on the PATH", async () => {
+    it("should say nothing when bin is already on the PATH", async () => {
         const pathOrig = testEnvironment.env["PATH"];
         testEnvironment.env["PATH"] = pathToBin + nodeJsPath.delimiter + process.env.PATH;
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
@@ -158,16 +171,38 @@ describe("daemon enable", () => {
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
-    it("should overwite an existing exe", async () => {
-        const fakeExeContent = "This is not a real executable";
-        fs.mkdirSync(pathToBin, 0o755);
-        fs.writeFileSync(exePath, fakeExeContent);
+    it("should identify that ZOWE_USE_DAEMON is set to 'no'", async () => {
+        testEnvironment.env["ZOWE_USE_DAEMON"] = "no";
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+        delete testEnvironment.env.ZOWE_USE_DAEMON;
+
+        expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain("Your ZOWE_USE_DAEMON environment variable is set to 'no'");
+        expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
+        expect(IO.existsSync(exePath)).toBe(true);
+    });
+
+    it("should say nothing when ZOWE_USE_DAEMON is unset", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(testEnvironment.env["ZOWE_USE_DAEMON"]).toBeFalsy();
+        expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
         expect(IO.existsSync(exePath)).toBe(true);
+    });
 
-        // our test tgz file is more than 10 bytes larger than this fake tgz
-        const exeStats = fs.statSync(exePath);
-        expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
+    it("should say nothing when ZOWE_USE_DAEMON is set to 'yes'", async () => {
+        testEnvironment.env["ZOWE_USE_DAEMON"] = "yes";
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+        delete testEnvironment.env.ZOWE_USE_DAEMON;
+
+        expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
+        expect(IO.existsSync(exePath)).toBe(true);
     });
 });
