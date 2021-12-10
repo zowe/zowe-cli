@@ -121,6 +121,8 @@ describe("daemon enable", () => {
     it("should place exe in a new bin dir", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
@@ -128,6 +130,31 @@ describe("daemon enable", () => {
         fs.mkdirSync(pathToBin, 0o755);
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(IO.existsSync(exePath)).toBe(true);
+    });
+
+    it("should identify that bin is not on the PATH", async () => {
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+        expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain(`Add '${pathToBin}' to your path`);
+        expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
+        expect(IO.existsSync(exePath)).toBe(true);
+    });
+
+    it("should NOT talk about PATH when bin is on the PATH", async () => {
+        const pathOrig = testEnvironment.env["PATH"];
+        testEnvironment.env["PATH"] = pathToBin + nodeJsPath.delimiter + process.env.PATH;
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
+        testEnvironment.env["PATH"] = pathOrig;
+
+        expect(response.status).toBe(0);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your path`);
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
