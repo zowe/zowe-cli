@@ -22,9 +22,11 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon enable", () => {
     const rimraf = require("rimraf").sync;
+    const fakeExeContent = "This is not a real executable";
+
     let exePath: string;
     let pathToBin: string;
-    let preBldTgz: string;
+    let preBldTgzPath: string;
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -37,32 +39,42 @@ describe("daemon enable", () => {
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
         // form the path to our bin directory, executable, and prebuilds tgz file
-        preBldTgz = __dirname + "/../../../../prebuilds/zowe-";
+        preBldTgzPath = "zowe-";
         switch (sysInfo.platform) {
             case "darwin": {
-                preBldTgz += "macos.tgz";
+                preBldTgzPath += "macos.tgz";
                 exePath = "zowe";
                 break;
             }
             case "linux": {
-                preBldTgz += "linux.tgz";
+                preBldTgzPath += "linux.tgz";
                 exePath = "zowe";
                 break;
             }
             case "win32": {
-                preBldTgz += "windows.tgz";
+                preBldTgzPath += "windows.tgz";
                 exePath = "zowe.exe";
                 break;
             }
             default: {
-                preBldTgz += "unknownOs.tgz";
+                preBldTgzPath += "unknownOs.tgz";
                 exePath = "exeForUnknownOs";
                 throw "cli.daemon.enable.integration.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
             }
         }
-        pathToBin = nodeJsPath.normalize(testEnvironment.workingDir + "/bin");
-        exePath = nodeJsPath.normalize(pathToBin + "/" + exePath);
-        preBldTgz = nodeJsPath.normalize(preBldTgz);
+        const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", preBldTgzPath);
+        const preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
+        preBldTgzPath = nodeJsPath.resolve(preBldDir, preBldTgzPath);
+        pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
+        exePath = nodeJsPath.resolve(pathToBin, exePath);
+
+        // copy a fake tgz file from resources to our prebuilds directory for testing
+        if (!IO.existsSync(preBldDir)) {
+            IO.createDirSync(preBldDir);
+        }
+        if (!IO.existsSync(preBldTgzPath)) {
+            fs.copyFileSync(tgzResourcePath, preBldTgzPath);
+        }
     });
 
     beforeEach(async () => {
@@ -83,17 +95,17 @@ describe("daemon enable", () => {
 
     it("should fail when the tgz file does not exist", async () => {
         // temporarily remove the desired tgz file - keep an eye open for impact on parallel tests
-        const tempRenamedTgz = preBldTgz + "_temp_rename";
-        fs.renameSync(preBldTgz, tempRenamedTgz);
+        const tempRenamedTgz = preBldTgzPath + "_temp_rename";
+        fs.renameSync(preBldTgzPath, tempRenamedTgz);
 
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
 
         // restore our tgz file for other tests
-        fs.renameSync(tempRenamedTgz, preBldTgz);
+        fs.renameSync(tempRenamedTgz, preBldTgzPath);
 
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("Failed to enable daemon mode.");
-        expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgz}`);
+        expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgzPath}`);
         expect(response.status).toBe(1);
     });
 
@@ -127,6 +139,7 @@ describe("daemon enable", () => {
         expect(response.status).toBe(0);
         expect(IO.existsSync(exePath)).toBe(true);
 
+        // our test tgz file is more than 10 bytes larger than this fake tgz
         const exeStats = fs.statSync(exePath);
         expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
     });
