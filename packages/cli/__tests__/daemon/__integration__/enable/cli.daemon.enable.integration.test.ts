@@ -104,7 +104,7 @@ describe("daemon enable", () => {
         fs.renameSync(tempRenamedTgz, preBldTgzPath);
 
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Failed to enable daemon mode.");
+        expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
         expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgzPath}`);
         expect(response.status).toBe(1);
     });
@@ -113,7 +113,7 @@ describe("daemon enable", () => {
         fs.writeFileSync(pathToBin, "not a directory");
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Failed to enable daemon mode.");
+        expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
         expect(stdoutStr).toContain(`The existing file '${pathToBin}' must be a directory.`);
         expect(response.status).toBe(1);
     });

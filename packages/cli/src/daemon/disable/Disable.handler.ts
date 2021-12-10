@@ -31,12 +31,12 @@ export default class DisableDaemonHandler implements ICommandHandler {
         try {
             userMsg = this.disableDaemon();
         } catch(impErr) {
-            cmdParams.response.console.log("Failed to disable daemon mode.\n" + (impErr as ImperativeError).message);
+            cmdParams.response.console.log("Failed to disable Zowe CLI daemon mode.\n" + (impErr as ImperativeError).message);
             cmdParams.response.data.setExitCode(1);
             return;
         }
 
-        cmdParams.response.console.log("Daemon mode disabled.\n" + userMsg);
+        cmdParams.response.console.log("Zowe CLI daemon mode disabled.\n" + userMsg);
         cmdParams.response.data.setExitCode(0);
         return;
     }

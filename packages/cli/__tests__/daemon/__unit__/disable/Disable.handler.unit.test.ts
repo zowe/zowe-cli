@@ -68,7 +68,7 @@ describe("Disable daemon handler", () => {
 
             expect(error).toBeUndefined();
             expect(disableDaemonSpy).toHaveBeenCalledTimes(1);
-            expect(logMessage).toContain("Daemon mode disabled");
+            expect(logMessage).toContain("Zowe CLI daemon mode disabled");
             expect(logMessage).toContain(allOkMsg);
         });
     });

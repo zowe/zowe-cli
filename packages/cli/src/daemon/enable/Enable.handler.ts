@@ -38,12 +38,12 @@ export default class EnableDaemonHandler implements ICommandHandler {
         try {
             userMsg = await this.enableDaemon();
         } catch(impErr) {
-            cmdParams.response.console.log("Failed to enable daemon mode.\n" + (impErr as ImperativeError).message);
+            cmdParams.response.console.log("Failed to enable Zowe CLI daemon mode.\n" + (impErr as ImperativeError).message);
             cmdParams.response.data.setExitCode(1);
             return;
         }
 
-        cmdParams.response.console.log("Daemon mode enabled.\n" + userMsg);
+        cmdParams.response.console.log("Zowe CLI daemon mode enabled.\n" + userMsg);
         cmdParams.response.data.setExitCode(0);
         return;
     }
@@ -112,20 +112,33 @@ export default class EnableDaemonHandler implements ICommandHandler {
             }
         }
 
-        // todo: check the version of any existing executable
-
         // extract executable from the tar file into the bin directory
         await this.unzipTgz(preBldTgz, zoweHomeBin, ImperativeConfig.instance.rootCommandName);
 
-        // detect whether ZOWE_CLI_HOME/bin is already on our PATH
+        // display the version of the executable
+        let userInfoMsg: string = "Zowe CLI native executable version = 'todo: get the version'.";
 
-        // start the daemon if it is already on our PATH
+        // if ZOWE_CLI_HOME/bin is not on our PATH, add an instruction to add it
+        if (process.env?.PATH?.length > 0) {
+            if (!process.env.PATH.includes(zoweHomeBin)) {
+                userInfoMsg += `\n\nAdd '${zoweHomeBin}' to your path.` +
+                    "\nOtherwise, you will continue to run the classic Zowe CLI interpreter.";
+            }
+        }
 
-        // Check if ZOWE_USE_DAEMON has a value
+        // if ZOWE_USE_DAEMON is set, and turned off, add a warning message
+        if (process.env?.ZOWE_USE_DAEMON?.length > 0) {
+            switch (process.env.ZOWE_USE_DAEMON) {
+                case "no":
+                case "false":
+                case "0": {
+                    userInfoMsg += `\n\nYour ZOWE_USE_DAEMON environment variable is set to '${process.env.ZOWE_USE_DAEMON}'.` +
+                    "\nYou must remove it, or set it to 'yes' to use daemon mode.";
+                }
+            }
+        }
 
-        // display results and directions to the user
-
-        return `You must add '${zoweHomeBin}' to your path.`;
+        return userInfoMsg;
     }
 
     /**

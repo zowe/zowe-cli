@@ -76,7 +76,7 @@ describe("Handler for daemon enable", () => {
 
             expect(error).toBeUndefined();
             expect(enableDaemonSpy).toHaveBeenCalledTimes(1);
-            expect(logMessage).toContain("Daemon mode enabled");
+            expect(logMessage).toContain("Zowe CLI daemon mode enabled.");
             expect(logMessage).toContain(allOkMsg);
         });
 
@@ -102,7 +102,7 @@ describe("Handler for daemon enable", () => {
 
             expect(error).toBeUndefined();
             expect(enableDaemonSpy).toHaveBeenCalledTimes(1);
-            expect(logMessage).toContain("Failed to enable daemon mode");
+            expect(logMessage).toContain("Failed to enable Zowe CLI daemon mode");
             expect(logMessage).toContain(badStuffMsg);
         });
 
@@ -125,7 +125,7 @@ describe("Handler for daemon enable", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(logMessage).toContain("Failed to enable daemon mode");
+            expect(logMessage).toContain("Failed to enable Zowe CLI daemon mode");
             expect(logMessage).toContain("Daemon mode is not supported on the 'BogusPlatform' operating system.");
             ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
         });
@@ -163,7 +163,7 @@ describe("Handler for daemon enable", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(logMessage).toContain("Failed to enable daemon mode");
+            expect(logMessage).toContain("Failed to enable Zowe CLI daemon mode");
             expect(logMessage).toContain(`Unable to create directory '${mockCliHomeDir}`);
             expect(logMessage).toContain("Reason: " + awfulThrownErr);
             IO.existsSync = existsSyncOrig;
