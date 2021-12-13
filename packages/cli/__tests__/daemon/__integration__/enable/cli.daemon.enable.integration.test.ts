@@ -38,33 +38,35 @@ describe("daemon enable", () => {
         // determine our current OS
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
-        // form the path to our bin directory, executable, and prebuilds tgz file
-        preBldTgzPath = "zowe-";
+        // form our tgz file name
+        let tgzFileName = "zowe-";
         switch (sysInfo.platform) {
             case "darwin": {
-                preBldTgzPath += "macos.tgz";
+                tgzFileName += "macos.tgz";
                 exePath = "zowe";
                 break;
             }
             case "linux": {
-                preBldTgzPath += "linux.tgz";
+                tgzFileName += "linux.tgz";
                 exePath = "zowe";
                 break;
             }
             case "win32": {
-                preBldTgzPath += "windows.tgz";
+                tgzFileName += "windows.tgz";
                 exePath = "zowe.exe";
                 break;
             }
             default: {
-                preBldTgzPath += "unknownOs.tgz";
+                tgzFileName += "unknownOs.tgz";
                 exePath = "exeForUnknownOs";
                 throw "cli.daemon.enable.integration.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
             }
         }
-        const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", preBldTgzPath);
+
+        // form the path to our bin directory, executable, and prebuilds tgz file
+        const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
         const preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
-        preBldTgzPath = nodeJsPath.resolve(preBldDir, preBldTgzPath);
+        preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
         pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
         exePath = nodeJsPath.resolve(pathToBin, exePath);
 

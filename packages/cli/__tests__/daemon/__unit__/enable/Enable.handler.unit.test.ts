@@ -9,9 +9,12 @@
 *
 */
 
-import { ImperativeConfig, ImperativeError, IO, ProcessUtils } from "@zowe/imperative";
+import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
+
+import * as fs from "fs";
+import * as nodeJsPath from "path";
 
 describe("Handler for daemon enable", () => {
     let enableHandler: any; // use "any" so we can call private functions
@@ -51,6 +54,39 @@ describe("Handler for daemon enable", () => {
     beforeAll(() => {
         // instantiate our handler
         enableHandler = new EnableDaemonHandler();
+
+        // form our tgz file name
+        const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
+        let tgzFileName = "zowe-";
+        switch (sysInfo.platform) {
+            case "darwin": {
+                tgzFileName += "macos.tgz";
+                break;
+            }
+            case "linux": {
+                tgzFileName += "linux.tgz";
+                break;
+            }
+            case "win32": {
+                tgzFileName += "windows.tgz";
+                break;
+            }
+            default: {
+                tgzFileName += "unknownOs.tgz";
+                throw "Enable.handler.unit.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
+            }
+        }
+
+        // copy a fake tgz file from resources to our prebuilds directory for testing
+        const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
+        const preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
+        const preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
+        if (!IO.existsSync(preBldDir)) {
+            IO.createDirSync(preBldDir);
+        }
+        if (!IO.existsSync(preBldTgzPath)) {
+            fs.copyFileSync(tgzResourcePath, preBldTgzPath);
+        }
     });
 
     beforeEach(() => {
