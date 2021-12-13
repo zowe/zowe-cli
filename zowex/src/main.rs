@@ -145,10 +145,11 @@ fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
             arg_string.push(' ');
         }
 
-        /* An argument that contains a space must be enclosed in double quotes
-         * when it is placed into a single argument string.
+        /* An argument that contains a space, or is an empty string, must be
+         * enclosed in double quotes when it is placed into a single argument
+         * string.
          */
-        if next_arg.contains(' ') {
+        if next_arg.contains(' ') || next_arg.len() == 0 {
             arg_string.push('"');
             arg_string.push_str(next_arg);
             arg_string.push('"');
@@ -163,10 +164,9 @@ fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
 }
 
 fn run_daemon_command(mut args: String) -> std::io::Result<()> {
-    args.push_str(" --dcd ");
     let path = env::current_dir()?;
-    args.push_str(path.to_str().unwrap());
-    args.push_str("/");
+    args.insert(0, '\r');
+    args.insert_str(0, path.to_str().unwrap());
     let mut _resp = args.as_bytes(); // as utf8 bytes
 
     if _resp.is_empty() {
@@ -426,7 +426,7 @@ fn is_daemon_running() -> DaemonProcInfo {
     sys.refresh_all();
     for (pid, process) in sys.processes() {
         if process.name().to_lowercase().contains("node") &&
-           process.cmd().len() > 0 &&
+           process.cmd().len() > 2 &&
            process.cmd()[1].to_lowercase().contains("@zowe") &&
            process.cmd()[1].to_lowercase().contains("cli") &&
            process.cmd()[2].to_lowercase() == "--daemon"

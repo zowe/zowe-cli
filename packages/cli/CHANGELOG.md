@@ -2,7 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202112081943`
+
+- **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
+
+## `7.0.0-next.202112021313`
 
 - **Next Breaking**: Use JSON-based communication protocol between imperative daemon server and client.
 
@@ -75,6 +79,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
+## `6.37.0`
+
+- Enhancement: Added new feature to manage zos-logs. z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930). [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
 
 ## `6.36.1`
 

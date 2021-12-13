@@ -41,13 +41,13 @@ const opts = {
 const _sleep = async (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms ?? 1000));
 }
-const _handle = async (fun, msg) => {
+const _handle = async (fun, msg, exit=1) => {
   try {
     await fun();
   } catch (_) {
     if (msg) console.log(chalk.red(msg));
     console.error(_.toString());
-    process.exit(1);
+    process.exit(exit);
   }
 }
 
@@ -112,7 +112,7 @@ async function main() {
       if (c.uses?.indexOf("actions/upload-artifact") >= 0) {
         // TODO: Research support for wildcards
         v.steps[i] = {
-          ...v.steps[i],
+          ...c,
           run: `mkdir -p ${artPath} && tar -c${verbose ? 'v' : ''}f ${artPath}/${c.with.name} ${c.with.path.split('\n').join(' ')}`
         };
         delete v.steps[i].uses;
@@ -122,7 +122,7 @@ async function main() {
       if (c.uses?.indexOf("actions/download-artifact") >= 0) {
         // TODO: Research support for wildcards
         v.steps[i] = {
-          ...v.steps[i],
+          ...c,
           run: `tar -x${verbose ? 'v' : ''}f ${artPath}/${c.with.name}`
         };
         delete v.steps[i].uses;
@@ -130,9 +130,19 @@ async function main() {
         } else {
         // ID specific actions
         switch (c.id) {
+          case "unlock-keyring":
+          case "upload-codecov": {
+            v.steps[i] = {
+              ...c,
+              run: "echo Skip: " + c.id
+            }
+            if (c.uses) delete v.steps[i].uses;
+            if (c.with) delete v.steps[i].with;
+            break;
+          }
           case "install-rust": {
             v.steps[i] = {
-              ...v.steps[i],
+              ...c,
               // run: "yum install cargo -y\ncargo --version\n"
               run: "apt update -y\napt install build-essential curl -y\ncurl https://sh.rustup.rs -sSf > __install_rust.sh\nchmod u+x __install_rust.sh\n./__install_rust.sh -y\nsource $HOME/.cargo/env\ncargo --version\n"
             };
@@ -142,10 +152,19 @@ async function main() {
           }
           case "build-binary": {
             v.steps[i] = {
-              ...v.steps[i],
+              ...c,
               // run: "yum install cargo -y\ncargo --version\n"
               run: "source $HOME/.cargo/env\ncargo --version\n" + c.run
             };
+            break;
+          }
+          case "unit":
+          case "integration": {
+            // workaround for issue https://github.com/nektos/act/issues/442
+            v.steps[i] = {
+              ...c,
+              run: c.run + " || true"
+            }
             break;
           }
         }
@@ -173,15 +192,27 @@ async function main() {
       console.log("Copying existing artifacts...");
       await _sleep();
       const testPath = path.resolve(__dirname, "..", "__tests__", "__results__", "nektos_act");
+      let copyPath = null;
       _handle(() => {
-        const copyPath = JSON.parse(cp.execSync("docker inspect act-toolcache").toString().trim())[0].Mountpoint;
-        fs.mkdirSync(path.join(copyPath, "artifacts"), { recursive: true });
+        copyPath = path.join(JSON.parse(cp.execSync("docker inspect act-toolcache").toString().trim())[0].Mountpoint, "artifacts");
+        fs.mkdirSync(copyPath, { recursive: true });
         fs.mkdirSync(testPath, { recursive: true });
         cp.execSync(`tar -zc${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${copyPath} .`);
         cp.execSync(`tar -zx${verbose ? 'v' : ''}f __act__artifacts.tgz -C ${testPath}`);
         fs.unlinkSync("__act__artifacts.tgz");
         console.log("Artifacts saved to:", testPath);
       }, `Unable to copy artifacts to: ${testPath}`);
+
+      if (copyPath != null) {
+        _handle(() => {
+          console.log("Removing cached artifacts:", copyPath);
+          if (process.version.startsWith("v16")) {
+            fs.rmSync(copyPath, { recursive: true, force: true }); // requires node 14.14.0
+          } else {
+            fs.rmdirSync(copyPath, { recursive: true, force: true }); // deprecated in node 16
+          }
+        }, `Unable to remove cached artifacts from: ${copyPath}`);
+      }
     });
   }
 }

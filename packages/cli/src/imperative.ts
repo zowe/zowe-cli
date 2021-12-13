@@ -38,7 +38,8 @@ const config: IImperativeConfig = {
         "zosjobs/*.definition!(.d).*s",
         "zosmf/*.definition!(.d).*s",
         "zostso/*.definition!(.d).*s",
-        "zosuss/*.definition!(.d).*s"
+        "zosuss/*.definition!(.d).*s",
+        "zoslogs/*.definition!(.d).*s"
     ],
     rootCommandDescription: Constants.DESCRIPTION,
     defaultHome: Constants.HOME_DIR,

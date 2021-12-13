@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-logs group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "logs",
+  ],
+  "description": "Interact with z/OS logs.",
+  "name": "zos-logs",
+  "summary": "Interact with z/OS logs",
+  "type": "group",
+}
+`;
