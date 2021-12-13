@@ -56,6 +56,7 @@ describe("Handler for daemon enable", () => {
     beforeEach(() => {
         // remove enableDaemon spy & mock between tests
         enableDaemonSpy?.mockRestore();
+        logMessage = "";
     });
 
     describe("process method", () => {
