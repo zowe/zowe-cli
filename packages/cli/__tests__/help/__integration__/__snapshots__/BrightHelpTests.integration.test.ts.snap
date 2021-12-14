@@ -34,6 +34,7 @@ exports[`Root level help tests top level help should contain support link 1`] = 
                                  responses                                    
    zos-files | files             Manage z/OS data sets                        
    zos-jobs | jobs               Manage z/OS jobs                             
+   zos-logs | logs               Interact with z/OS logs                      
    zos-ssh | ssh | zos-uss | uss Issue z/OS USS commands and receive responses
    zos-tso | tso                 Interact with TSO                            
    zos-workflows | wf            Create and manage z/OSMF workflows           

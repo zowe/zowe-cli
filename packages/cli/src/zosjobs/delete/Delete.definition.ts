@@ -12,13 +12,16 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { JobDefinition } from "./job/Job.definition";
 
+import i18nTypings from "../-strings-/en";
+
+const strings = (require("../-strings-/en").default as typeof i18nTypings).DELETE;
+
 export const DeleteDefinition: ICommandDefinition = {
     name: "delete",
     aliases: ["del"],
     type: "group",
-    summary: "Delete a job",
-    description: "Delete a single job by job ID in OUTPUT status." +
-                " This cancels the job if it is running and purges its output from the system.",
+    summary: strings.SUMMARY,
+    description: strings.DESCRIPTION,
     children: [
         JobDefinition
     ]

@@ -130,3 +130,19 @@ ssh:
   keyPassphrase: ssh-keyPassphrase
   # timeout for SSH connection. Specify null to use the default or 0 for no timeout
   handshakeTimeout: ssh-handshakeTimeout
+#-------------------------------------------------------------------------#
+#  PEM certificate testing properties                                     #
+#-------------------------------------------------------------------------#
+certPem:
+  zosmf:
+    # pem cert file to connect to zosmf on z/OS. specify null to skip.
+    certFile: cert-pem-file
+    # pem key file to connect to zosmf on z/OS
+    certKeyFile: cert-key-file
+    # optionally add host, port, rejectUnauthorized to override the profile above
+  base:
+    # pem cert file to connect to apiml gateway on z/OS. specify null to skip.
+    certFile: cert-pem-file
+    # pem key file to connect to apiml gateway on z/OS
+    certKeyFile: cert-key-file
+    # optionally add host, port, rejectUnauthorized to override the profile above
