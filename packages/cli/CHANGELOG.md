@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Upgrade Imperative so that secure prompts do not show input and zowe.config.json secure properties are not be logged. [#1106](https://github.com/zowe/zowe-cli/issues/1106)
+
 ## `7.0.0-next.202112081943`
 
 - **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
