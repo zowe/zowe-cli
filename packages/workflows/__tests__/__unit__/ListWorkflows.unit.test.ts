@@ -107,7 +107,15 @@ describe("List workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, workflowName, category, system, owner, vendor, statusName );
+            response = await ListWorkflows.getWorkflows(PRETEND_SESSION, {
+                zOSMFVersion: undefined,
+                workflowName,
+                category,
+                system,
+                owner,
+                vendor,
+                statusName
+            });
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -132,7 +140,7 @@ describe("List workflows", () => {
         let error: ImperativeError;
         let response: any;
         try {
-            response = await ListWorkflows.listWorkflows(PRETEND_SESSION);
+            response = await ListWorkflows.getWorkflows(PRETEND_SESSION);
             Imperative.console.info(`Response ${response}`);
         } catch (thrownError) {
             error = thrownError;
@@ -149,7 +157,14 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(PRETEND_SESSION, undefined, badString, badString1, badString, badString, badString);
+                response = await ListWorkflows.getWorkflows(PRETEND_SESSION, {
+                    zOSMFVersion: undefined,
+                    workflowName: badString,
+                    category: badString1,
+                    system: badString,
+                    owner: badString,
+                    vendor: badString
+                });
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -161,7 +176,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(undefined);
+                response = await ListWorkflows.getWorkflows(undefined);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;

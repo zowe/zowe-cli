@@ -42,7 +42,7 @@ describe("USS Utilities", () => {
     });
 
     it("Should tag a binary file", async () => {
-        await Upload.fileToUSSFile(REAL_SESSION,localfile,ussname);
+        await Upload.fileToUssFile(REAL_SESSION,localfile,ussname);
         await Utilities.chtag(REAL_SESSION,ussname,Tag.BINARY);
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("b binary");
@@ -52,7 +52,7 @@ describe("USS Utilities", () => {
     });
 
     it("Should tag a text file", async () => {
-        await Upload.fileToUSSFile(REAL_SESSION,localfile,ussname);
+        await Upload.fileToUssFile(REAL_SESSION,localfile,ussname);
         await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "ISO8859-1");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t ISO8859-1");
@@ -62,7 +62,7 @@ describe("USS Utilities", () => {
     });
 
     it("Should flag an EBCDIC file as text", async () => {
-        await Upload.fileToUSSFile(REAL_SESSION,localfile,ussname);
+        await Upload.fileToUssFile(REAL_SESSION,localfile,ussname);
         await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "IBM-1047");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t IBM-1047");

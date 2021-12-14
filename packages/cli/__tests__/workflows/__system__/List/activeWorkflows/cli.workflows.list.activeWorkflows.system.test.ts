@@ -50,7 +50,7 @@ describe("List workflow cli system tests", () => {
     describe("List all workflows", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
 
             // Create a workflow to list
             await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);

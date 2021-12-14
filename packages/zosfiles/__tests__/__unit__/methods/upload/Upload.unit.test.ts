@@ -1293,7 +1293,7 @@ describe("z/OS Files - Upload", () => {
         });
     });
 
-    describe("bufferToUSSFile", () => {
+    describe("bufferToUssFile", () => {
         const zosmfExpectSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
         let USSresponse: string;
         beforeEach(() => {
@@ -1305,7 +1305,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should throw an error if USS file name is not specified", async () => {
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, undefined, Buffer.from("testing"));
+                USSresponse = await Upload.bufferToUssFile(dummySession, undefined, Buffer.from("testing"));
             } catch (err) {
                 error = err;
             }
@@ -1322,7 +1322,7 @@ describe("z/OS Files - Upload", () => {
             zosmfExpectSpy.mockRejectedValueOnce(testError);
 
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, Buffer.from("testing"));
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, Buffer.from("testing"));
             } catch (err) {
                 error = err;
             }
@@ -1337,7 +1337,7 @@ describe("z/OS Files - Upload", () => {
             const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data);
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data);
             } catch (err) {
                 error = err;
             }
@@ -1355,7 +1355,13 @@ describe("z/OS Files - Upload", () => {
             const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, undefined, undefined, false, responseTimeout);
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
+                    binary: false,
+                    localEncoding: undefined,
+                    etag: undefined,
+                    returnEtag: false,
+                    responseTimeout
+                });
             } catch (err) {
                 error = err;
             }
@@ -1372,7 +1378,7 @@ describe("z/OS Files - Upload", () => {
             const headers = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, true);
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, { binary: true });
             } catch (err) {
                 error = err;
             }
@@ -1389,7 +1395,11 @@ describe("z/OS Files - Upload", () => {
             const headers = [ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, undefined, etagValue);
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
+                    binary: false,
+                    localEncoding: undefined,
+                    etag: etagValue
+                });
             } catch (err) {
                 error = err;
             }
@@ -1406,7 +1416,10 @@ describe("z/OS Files - Upload", () => {
             const headers = [{"Content-Type": "UCS-2"}, ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
-                USSresponse = await Upload.bufferToUSSFile(dummySession, dsName, data, false, "UCS-2");
+                USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
+                    binary: false,
+                    localEncoding: "UCS-2"
+                });
             } catch (err) {
                 error = err;
             }
@@ -2193,68 +2206,6 @@ describe("z/OS Files - Upload", () => {
                 expect(chtagSpy).toHaveBeenCalledTimes(1);
                 expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1");
             });
-        });
-    });
-
-    describe("Deprecated Functions", () => {
-        let USSresponse: IZosFilesResponse;
-        const streamToUssFileSpy = jest.spyOn(Upload, "streamToUssFile");
-        const fileToUssFileSpy = jest.spyOn(Upload, "fileToUssFile");
-
-        beforeEach(() => {
-            USSresponse = undefined;
-            error = undefined;
-
-            streamToUssFileSpy.mockReset();
-            streamToUssFileSpy.mockImplementation(() => null);
-
-            fileToUssFileSpy.mockClear();
-            fileToUssFileSpy.mockImplementation(() => null);
-        });
-
-        it("return with proper response when upload USS file using deprecated function - streamToUSSFile", async () => {
-            const inputStream = new Readable();
-            inputStream.push("testing");
-            inputStream.push(null);
-            const streamResponse: IZosFilesResponse = {
-                success: true,
-                commandResponse: undefined,
-                apiResponse: undefined };
-            streamToUssFileSpy.mockReturnValueOnce(streamResponse);
-            try {
-                USSresponse = await Upload.streamToUSSFile(dummySession, dsName, inputStream);
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-
-            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, dsName, inputStream, {
-                binary: false});
-        });
-        it("return with proper response when upload USS file using deprecated function - fileToUSSFile", async () => {
-            const inputFile = "/path/to/file1.txt";
-            const streamResponse: IZosFilesResponse = {
-                success: true,
-                commandResponse: undefined,
-                apiResponse: undefined };
-            fileToUssFileSpy.mockReturnValueOnce(streamResponse);
-            try {
-                USSresponse = await Upload.fileToUSSFile(dummySession, dsName, inputFile);
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-
-            expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession, dsName, inputFile, {
-                binary: false});
         });
     });
 });

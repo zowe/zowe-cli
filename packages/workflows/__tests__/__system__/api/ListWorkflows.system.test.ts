@@ -70,7 +70,7 @@ describe("List workflows", () => {
     describe("Success Scenarios", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
         });
         afterAll(async () => {
             let error;
@@ -98,7 +98,7 @@ describe("List workflows", () => {
             let response;
 
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION);
+                response = await ListWorkflows.getWorkflows(REAL_SESSION);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -111,7 +111,15 @@ describe("List workflows", () => {
             let response;
 
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined, wfName, category, system, owner, vendor, statusName);
+                response = await ListWorkflows.getWorkflows(REAL_SESSION, {
+                    zOSMFVersion: undefined,
+                    workflowName: wfName,
+                    category,
+                    system,
+                    owner,
+                    vendor,
+                    statusName
+                });
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -124,7 +132,7 @@ describe("List workflows", () => {
             let response;
 
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, undefined);
+                response = await ListWorkflows.getWorkflows(REAL_SESSION, { zOSMFVersion: undefined });
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -138,7 +146,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(undefined);
+                response = await ListWorkflows.getWorkflows(undefined);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -150,7 +158,14 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, badString, badString1, badString, badString, badString);
+                response = await ListWorkflows.getWorkflows(REAL_SESSION, {
+                    zOSMFVersion: undefined,
+                    workflowName: badString,
+                    category: badString1,
+                    system: badString,
+                    owner: badString,
+                    vendor: badString
+                });
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -162,7 +177,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, "");
+                response = await ListWorkflows.getWorkflows(REAL_SESSION, { zOSMFVersion: "" });
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
@@ -174,7 +189,7 @@ describe("List workflows", () => {
             let error: ImperativeError;
             let response: any;
             try {
-                response = await ListWorkflows.listWorkflows(REAL_SESSION, null);
+                response = await ListWorkflows.getWorkflows(REAL_SESSION, null);
                 Imperative.console.info(`Response ${response}`);
             } catch (thrownError) {
                 error = thrownError;
