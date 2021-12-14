@@ -92,7 +92,7 @@ describe("zos-logs list logs", () => {
                 DEFAULT_SYSTEM_PROPS.zosmf.host,
                 DEFAULT_SYSTEM_PROPS.zosmf.port,
                 DEFAULT_SYSTEM_PROPS.zosmf.user,
-                DEFAULT_SYSTEM_PROPS.zosmf.pass
+                DEFAULT_SYSTEM_PROPS.zosmf.password
             ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
