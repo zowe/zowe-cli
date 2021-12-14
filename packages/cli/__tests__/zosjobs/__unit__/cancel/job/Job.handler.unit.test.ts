@@ -25,7 +25,7 @@ process.env.FORCE_COLOR = "0";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-jobs", "cancel", "job"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },

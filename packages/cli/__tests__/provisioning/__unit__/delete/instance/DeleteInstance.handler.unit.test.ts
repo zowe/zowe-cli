@@ -27,7 +27,7 @@ import {
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["provisioning", "delete", "instance"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },

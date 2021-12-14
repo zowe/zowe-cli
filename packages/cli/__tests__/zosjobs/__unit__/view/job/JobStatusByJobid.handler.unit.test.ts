@@ -25,7 +25,7 @@ process.env.FORCE_COLOR = "0";
 // Mocked parameters for the unit tests
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-jobs", "view", "job"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },

@@ -38,7 +38,7 @@ const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-jobs", "view", "job"],
         ...ZOSMF_PROF_OPTS
     },

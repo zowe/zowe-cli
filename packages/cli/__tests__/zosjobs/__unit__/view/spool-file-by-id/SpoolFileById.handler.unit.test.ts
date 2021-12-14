@@ -25,7 +25,7 @@ const TEST_RESOURCES_DIR = __dirname + "/../../../__resources__";
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-jobs", "view", "spool-file-by-id"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
