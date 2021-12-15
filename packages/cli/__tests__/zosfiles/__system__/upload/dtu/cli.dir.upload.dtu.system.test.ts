@@ -17,7 +17,7 @@ import { getUniqueDatasetName, runCliScript, getTag } from "../../../../../../..
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Download, Get, ZosFilesConstants, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
+import { Get, ZosFilesConstants, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
@@ -43,7 +43,7 @@ describe("Upload directory to USS", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
@@ -223,9 +223,14 @@ describe("Upload directory to USS", () => {
                     localDirName,
                     ussname
                 ]);
-            const downloadResponse = await Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
-            const downloadedFileContents = fs.readFileSync(localFileLocation).toString();
-            expect(downloadResponse.success).toBe(true);
+
+
+            // const downloadResponse = await Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
+            // expect(downloadResponse.success).toBe(true);
+            // // fs.readFileSync(localFileLocation).toString(); returns an empty buffer ???? Getting the file directly seems to work consistently
+            // const downloadedFileContents = fs.readFileSync(localFileLocation).toString();
+
+            const downloadedFileContents = (await Get.USSFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), {binary: false})).toString();
             expect(downloadedFileContents).toContain("00000000125");
             expect(downloadedFileContents).toContain("13424013123");
             expect(response.stderr.toString()).not.toContain("Rest API failure with HTTP(S) status 500");
