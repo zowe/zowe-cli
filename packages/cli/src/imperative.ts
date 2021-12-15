@@ -211,7 +211,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST_PROFILE,
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST,
                         includeInTemplate: true
                     },
                     port: {
@@ -222,12 +222,12 @@ const config: IImperativeConfig = {
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER_PROFILE
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD_PROFILE
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD
                     },
                     rejectUnauthorized: {
                         type: "boolean",

@@ -36,11 +36,6 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
-    public static ZOSMF_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
-        ...ZosmfSession.ZOSMF_OPTION_HOST,
-        required: false
-    };
-
     /**
      * Option used in profile creation and commands for port for z/OSMF
      */
@@ -65,11 +60,6 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
-    public static ZOSMF_OPTION_USER_PROFILE: ICommandOptionDefinition = {
-        ...ZosmfSession.ZOSMF_OPTION_USER,
-        required: false
-    };
-
     /**
      * Option used in profile creation and commands for password/passphrase for z/OSMF
      */
@@ -80,11 +70,6 @@ export class ZosmfSession {
         type: "string",
         required: false,
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
-    };
-
-    public static ZOSMF_OPTION_PASSWORD_PROFILE: ICommandOptionDefinition = {
-        ...ZosmfSession.ZOSMF_OPTION_PASSWORD,
-        required: false
     };
 
     /**
