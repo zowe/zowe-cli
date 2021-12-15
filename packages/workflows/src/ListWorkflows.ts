@@ -26,27 +26,6 @@ export class ListWorkflows {
      * This operation returns list of workflows.
      * Parameters are optional,request can include one or more parameters to filter the results.
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
-     * @param {string} workflowName - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} category - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} system - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} owner - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} vendor - the URI path with optional parameter for listing filtered workflows.
-     * @param {string} statusName - the URI path with optional parameter for listing filtered workflows.
-     * @returns {string} z/OSMF response object
-     * @memberof ListWorkflows
-     * @deprecated
-     */
-    public static async listWorkflows(session: AbstractSession, zOSMFVersion = WorkflowConstants.ZOSMF_VERSION,
-        workflowName?: string, category?: string, system?: string,
-        owner?: string, vendor?: string, statusName?: string ) {
-        return this.getWorkflows(session, {zOSMFVersion, workflowName, category, system, owner, vendor, statusName});
-    }
-
-    /**
-     * This operation returns list of workflows.
-     * Parameters are optional,request can include one or more parameters to filter the results.
-     * @param {AbstractSession} session - z/OSMF connection info
      * @param {IGetWorkflowsOptions} options - Options to filter the request
      * @returns {string} z/OSMF response object
      * @memberof ListWorkflows
@@ -63,28 +42,6 @@ export class ListWorkflows {
         WorkflowValidator.validateNotEmptyString(options.zOSMFVersion, nozOSMFVersion.message);
         const resourcesQuery: string = ListWorkflows.getResourceQuery(options);
         return ZosmfRestClient.getExpectJSON(session, resourcesQuery);
-    }
-
-    /**
-     * This operation Builds URI path from provided parameters.
-     * @param {string} zOSMFVersion - the URI path that identifies the version of the provisioning service.
-     * @param {string} params - The array with URI path with filters for listing filtered workflows.
-     * @returns {string} URI path for the REST call.
-     * @memberof ListWorkflows
-     * @deprecated
-     */
-    public static getResourcesQuery(zOSMFVersion: string, params: Array <{key: string, value: string}>) {
-        let query: string = `${WorkflowConstants.RESOURCE}/${zOSMFVersion}/${WorkflowConstants.WORKFLOW_RESOURCE}`;
-        let sign = "?";
-        params.forEach((element) => {
-            if (element.value) {
-                // Validate if parameter value does not contains ? or &
-                WorkflowValidator.validateParameter(element.value, wrongString.message);
-                query += sign + `${element.key}=${element.value}`;
-                sign = "&";
-            }
-        });
-        return query;
     }
 
     /**

@@ -52,7 +52,7 @@ async function removeWorkflows() {
 describe("Archive workflow unit tests - successful scenarios", () => {
     beforeAll(async ()=> {
         await setup();
-        await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
+        await Upload.fileToUssFile(session, localWorkflowPath, remoteWorkflowPath, { binary: true});
     });
     beforeEach(async ()=> {
         const systemName = testEnvironment.systemTestProperties.workflows.system;
@@ -163,7 +163,7 @@ describe("Missing workflow key", ()=> {
 describe("Errors caused by the user interaction", ()=>{
     beforeAll(async () => {
         await setup();
-        await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
+        await Upload.fileToUssFile(session, localWorkflowPath, remoteWorkflowPath, { binary: true });
     });
     it("404 Not Found", async ()=>{
         try {

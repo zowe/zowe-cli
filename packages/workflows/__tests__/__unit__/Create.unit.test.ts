@@ -434,7 +434,7 @@ describe("Create workflow", () => {
 describe("Create workflow from local file", () => {
     describe("Successful scenarios", () => {
         it("Should succeed even with zOSMF version undefined (because of default value).", async () => {
-            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+            (Upload.fileToUssFile as any) = jest.fn<string>(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve("success");
@@ -468,7 +468,7 @@ describe("Create workflow from local file", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expect((Upload.fileToUSSFile as any)).toHaveBeenCalledTimes(2);
+            expect((Upload.fileToUssFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledTimes(1);
             expect((Delete.ussFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
@@ -477,7 +477,7 @@ describe("Create workflow from local file", () => {
             expect((Delete.ussFile as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_INPUT_PARMS.workflowDefinitionFile.slice(1));
         });
         it("Should succeed and keep files", async () => {
-            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+            (Upload.fileToUssFile as any) = jest.fn<string>(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
                         resolve("success");
@@ -504,7 +504,7 @@ describe("Create workflow from local file", () => {
                 error = thrownError;
                 Imperative.console.info(`Error ${error}`);
             }
-            expect((Upload.fileToUSSFile as any)).toHaveBeenCalledTimes(2);
+            expect((Upload.fileToUssFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledTimes(1);
             expect((CreateWorkflow.getTempFile as any)).toHaveBeenCalledTimes(2);
             expect((CreateWorkflow.createWorkflow as any)).toHaveBeenCalledWith(PRETEND_SESSION, wfName, PRETEND_INPUT_PARMS.workflowDefinitionFile,
@@ -651,7 +651,7 @@ describe("Create workflow from local file", () => {
         it("Throws an error if uss files were not uploaded successfully", async () => {
             let error: ImperativeError;
             let response: any;
-            (Upload.fileToUSSFile as any) = jest.fn<string>(() => {
+            (Upload.fileToUssFile as any) = jest.fn<string>(() => {
                 return new Promise((resolve, reject) => {
                     process.nextTick(() => {
                         reject(new ImperativeError({msg : "failed"}));
