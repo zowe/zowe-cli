@@ -340,7 +340,7 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[0].name).toEqual(".");
                 expect(response.apiResponse.items[0].mode.startsWith("d")).toBeTruthy();
                 expect(response.apiResponse.items[1].name).toEqual("..");
-                expect(response.apiResponse.items[2].name).toEqual(filename);
+                expect(response.apiResponse.items[2].name).toEqual(filename); // Intermittent failure : (
                 expect(response.apiResponse.items[2].mode.startsWith("d")).toBeFalsy();
             });
 

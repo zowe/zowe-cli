@@ -95,9 +95,10 @@ describe("auth login/logout apiml show token", () => {
             ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
-        expect(JSON.parse(response.stdout.toString()).data.tokenType).toEqual("apimlAuthenticationToken");
-        expect(JSON.parse(response.stdout.toString()).data.tokenValue).not.toEqual(token[token.length-3]);
-        expect(JSON.parse(response.stdout.toString()).data.tokenValue.length).toEqual(token[token.length-3].length);
+        const responseData = JSON.parse(response.stdout.toString()).data;
+        expect(responseData.tokenType).toEqual("apimlAuthenticationToken");
+        expect(responseData.tokenValue).not.toEqual(token[token.length-3]); // Intermittent failure : (
+        expect(responseData.tokenValue.length).toEqual(token[token.length-3].length);
     });
 
     it("should successfully issue the logout command without profiles", () => {
