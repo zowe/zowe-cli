@@ -35,6 +35,7 @@ const DEFAULT_PORT: i32 = 4000;
 
 const X_ZOWE_DAEMON_REPLY: &str = "daemon-client";
 
+const EXIT_CODE_SUCCESS: i32 = 0;
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
 const EXIT_CODE_CANNOT_GET_MY_PATH: i32 = 101;
 const EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH: i32 = 102;
@@ -81,13 +82,21 @@ struct DaemonResponse {
 fn main() -> std::io::Result<()> {
     // turn args into vector
     let mut _args: Vec<String> = env::args().collect();
+    let cmd_result: Result<i32, i32>;
 
     _args.drain(..1); // remove first (exe name)
+
+    // Do we only need to display our version?
+    if _args.len() <= 1 {
+        if _args[0] == "--version-exe" {
+            println!("{}", env!("CARGO_PKG_VERSION"));
+            std::process::exit(EXIT_CODE_SUCCESS);
+        }
+    }
 
     // daemon commands that overwrite our executable cannot be run by our executable
     exit_when_alt_cmd_needed(&_args);
 
-    let cmd_result: Result<i32, i32>;
     if user_wants_daemon() {
         /* Convert our vector of arguments into a single string of arguments
          * for transmittal to the daemon.
