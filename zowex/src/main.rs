@@ -87,7 +87,7 @@ fn main() -> std::io::Result<()> {
     _args.drain(..1); // remove first (exe name)
 
     // Do we only need to display our version?
-    if _args.len() <= 1 {
+    if _args.len() >= 1 {
         if _args[0] == "--version-exe" {
             println!("{}", env!("CARGO_PKG_VERSION"));
             std::process::exit(EXIT_CODE_SUCCESS);
