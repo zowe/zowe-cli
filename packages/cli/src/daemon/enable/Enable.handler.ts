@@ -12,9 +12,10 @@
 import * as fs from "fs";
 import * as nodeJsPath from "path";
 import * as tar from "tar";
+import { execSync, StdioOptions } from "child_process";
 
 import {
-    ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
+    CliUtils, ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
     IO, ISystemInfo, ProcessUtils
 } from "@zowe/imperative";
 
@@ -115,8 +116,27 @@ export default class EnableDaemonHandler implements ICommandHandler {
         // extract executable from the tar file into the bin directory
         await this.unzipTgz(preBldTgz, zoweHomeBin, ImperativeConfig.instance.rootCommandName);
 
+        /* Even though we await the unzip above, the OS still considers the exe file in-use
+         * for a while. We will get the following error message when trying to run the exe.
+         * "The process cannot access the file because it is being used by another process."
+         * So, we wait a little bit.
+         */
+        const halfSecOfMillis = 500;
+        await CliUtils.sleep(halfSecOfMillis);
+
         // display the version of the executable
-        let userInfoMsg: string = "Zowe CLI native executable version = 'todo: get the version'.";
+        let userInfoMsg: string = "Zowe CLI native executable version = ";
+        const zoweExePath = nodeJsPath.resolve(zoweHomeBin, "zowe");
+        const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
+        try {
+            const execOutput = execSync(`"${zoweExePath}" --version-exe`, {
+                stdio: pipe
+            });
+            // remove any newlines from the version number
+            userInfoMsg += execOutput.toString().replace(/\r?\n|\r/g, "");
+        } catch (err) {
+            userInfoMsg += err.message;
+        }
 
         // if ZOWE_CLI_HOME/bin is not on our PATH, add an instruction to add it
         if (process.env?.PATH?.length > 0) {
