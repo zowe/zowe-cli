@@ -2,7 +2,12 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Removed usage of internal Imperative method to delete team config profiles.
+
 ## `7.0.0-next.202110211759`
+
 - Add option to create team configuration or old style profiles.
 
 ## `7.0.0-next.202108302038`
