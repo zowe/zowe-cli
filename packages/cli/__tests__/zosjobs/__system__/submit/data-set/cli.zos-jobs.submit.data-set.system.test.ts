@@ -160,7 +160,8 @@ describe("zos-jobs submit data-set command", () => {
                         SYSTEM_PROPS.zosmf.host,
                         SYSTEM_PROPS.zosmf.port,
                         SYSTEM_PROPS.zosmf.user,
-                        SYSTEM_PROPS.zosmf.password                    ]);
+                        SYSTEM_PROPS.zosmf.password,
+                    ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("jobname");

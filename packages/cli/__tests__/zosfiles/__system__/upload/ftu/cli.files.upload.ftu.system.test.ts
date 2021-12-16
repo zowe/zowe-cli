@@ -75,7 +75,8 @@ describe("Upload uss file", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.password                ]);
+                    defaultSys.zosmf.password,
+                ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file uploaded successfully.");

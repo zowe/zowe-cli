@@ -88,7 +88,8 @@ describe("zos-tso send as", () => {
                     DEFAULT_SYSTEM_PROPS.zosmf.host,
                     DEFAULT_SYSTEM_PROPS.zosmf.port,
                     DEFAULT_SYSTEM_PROPS.zosmf.user,
-                    DEFAULT_SYSTEM_PROPS.zosmf.password                ]);
+                    DEFAULT_SYSTEM_PROPS.zosmf.password,
+                ]);
             StopTso.stop(REAL_SESSION, key);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

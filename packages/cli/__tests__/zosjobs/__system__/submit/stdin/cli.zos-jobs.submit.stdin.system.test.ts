@@ -127,7 +127,8 @@ describe("zos-jobs submit stdin command", () => {
                         DEFAULT_SYSTEM_PROPS.zosmf.host,
                         DEFAULT_SYSTEM_PROPS.zosmf.port,
                         DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.password                    ]);
+                        DEFAULT_SYSTEM_PROPS.zosmf.password,
+                    ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("jobname");
