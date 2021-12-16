@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed socket connection error on macOS after commands that run in daemon mode. [#1192](https://github.com/zowe/zowe-cli/issues/1192)
+- BugFix: Fixed daemon failing to run in path that contains space in directory name. [#1237](https://github.com/zowe/zowe-cli/issues/1237)
 
 ## `7.0.0-next.202112142155`
 
