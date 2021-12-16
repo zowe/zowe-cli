@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- Deprecated: Duplicate property names on the ZosmfSession class:
+  - ZOSMF_OPTION_HOST_PROFILE -> ZOSMF_OPTION_HOST
+  - ZOSMF_OPTION_USER_PROFILE -> ZOSMF_OPTION_USER
+  - ZOSMF_OPTION_PASSWORD_PROFILE -> ZOSMF_OPTION_PASSWORD
+
 ## `7.0.0-next.202106071827`
 
 - **Breaking**: Removed the following [deprecated API functions](https://github.com/zowe/zowe-cli/pull/1022):
