@@ -125,6 +125,7 @@ describe("daemon enable", () => {
         expect(response.status).toBe(0);
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain("Zowe CLI native executable version =");
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
@@ -134,6 +135,7 @@ describe("daemon enable", () => {
         expect(response.status).toBe(0);
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain("Zowe CLI native executable version =");
         expect(IO.existsSync(exePath)).toBe(true);
     });
 
@@ -155,6 +157,7 @@ describe("daemon enable", () => {
         expect(response.status).toBe(0);
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain("Zowe CLI native executable version =");
         expect(stdoutStr).toContain(`Add '${pathToBin}' to your path`);
         expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
         expect(IO.existsSync(exePath)).toBe(true);
@@ -169,6 +172,7 @@ describe("daemon enable", () => {
         expect(response.status).toBe(0);
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain("Zowe CLI native executable version =");
         expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your path`);
         expect(IO.existsSync(exePath)).toBe(true);
     });
@@ -181,6 +185,7 @@ describe("daemon enable", () => {
         expect(response.status).toBe(0);
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+        expect(stdoutStr).toContain("Zowe CLI native executable version =");
         expect(stdoutStr).toContain("Your ZOWE_USE_DAEMON environment variable is set to 'no'");
         expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
         expect(IO.existsSync(exePath)).toBe(true);
