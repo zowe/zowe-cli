@@ -9,24 +9,29 @@
 *
 */
 
+import * as fs from "fs";
+import * as nodeJsPath from "path";
+import * as which from "which";
+
 import { IO, ISystemInfo, ProcessUtils } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-import * as fs from "fs";
-import * as nodeJsPath from "path";
-
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon enable", () => {
     const rimraf = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
+    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe-CLI native executable.";
+    const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
+    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
     let exePath: string;
     let pathToBin: string;
     let preBldTgzPath: string;
+    let isZoweExe: boolean = false; // is the zowe command that we will run an executable?
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -77,6 +82,16 @@ describe("daemon enable", () => {
         if (!IO.existsSync(preBldTgzPath)) {
             fs.copyFileSync(tgzResourcePath, preBldTgzPath);
         }
+
+        // Get the zowe program from the PATH that will be used in the test
+        const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
+
+        // We know that our zowe EXE will be bigger than our zowe scripts
+        const exeMinSize: number = 2000;
+        const zowePgmStats = fs.statSync(zowePgmInPath);
+        if (zowePgmStats.size >= exeMinSize) {
+            isZoweExe = true;
+        }
     });
 
     beforeEach(async () => {
@@ -89,19 +104,26 @@ describe("daemon enable", () => {
     });
 
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/daemon_enable_help.sh", testEnvironment);
-        const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("COMMAND NAME");
-        expect(stdoutStr).toContain("Enables daemon-mode operation of the Zowe-CLI.");
-        expect(stdoutStr).toContain("USAGE");
-        expect(stdoutStr).toContain("zowe daemon enable [options]");
-        expect(stdoutStr).toContain("GLOBAL OPTIONS");
-        expect(stdoutStr).toContain("--help  | -h (boolean)");
-        expect(stdoutStr).toContain("EXAMPLES");
-        expect(stdoutStr).toContain("Enable daemon-mode:");
-        expect(stdoutStr).toContain("$ zowe daemon enable");
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
+        /* Our EXE can display help, but actually launching the daemon causes the
+         * convoluted set of zowe EXEs, fake zowe EXEs, and zowe scripts to hang.
+         * Just skip this test for the EXE. For the remaining tests, the EXE
+         * works completely within itself, and never launches the daemon.
+         */
+        if (!isZoweExe) {
+            const response = runCliScript(__dirname + "/__scripts__/daemon_enable_help.sh", testEnvironment);
+            const stdoutStr = response.stdout.toString();
+            expect(stdoutStr).toContain("COMMAND NAME");
+            expect(stdoutStr).toContain("Enables daemon-mode operation of the Zowe-CLI.");
+            expect(stdoutStr).toContain("USAGE");
+            expect(stdoutStr).toContain("zowe daemon enable [options]");
+            expect(stdoutStr).toContain("GLOBAL OPTIONS");
+            expect(stdoutStr).toContain("--help  | -h (boolean)");
+            expect(stdoutStr).toContain("EXAMPLES");
+            expect(stdoutStr).toContain("Enable daemon-mode:");
+            expect(stdoutStr).toContain("$ zowe daemon enable");
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should fail when the tgz file does not exist", async () => {
@@ -115,37 +137,61 @@ describe("daemon enable", () => {
         fs.renameSync(tempRenamedTgz, preBldTgzPath);
 
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
-        expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgzPath}`);
-        expect(response.status).toBe(1);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
+            expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgzPath}`);
+            expect(response.status).toBe(1);
+        }
     });
 
     it("should fail if a bin file exists", async () => {
         fs.writeFileSync(pathToBin, "not a directory");
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
-        expect(stdoutStr).toContain(`The existing file '${pathToBin}' must be a directory.`);
-        expect(response.status).toBe(1);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
+            expect(stdoutStr).toContain(`The existing file '${pathToBin}' must be a directory.`);
+            expect(response.status).toBe(1);
+        }
     });
 
     it("should place exe in a new bin dir", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(stdoutStr).toContain("Zowe CLI native executable version =");
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should place exe in an existing bin dir", async () => {
         fs.mkdirSync(pathToBin, 0o755);
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(stdoutStr).toContain("Zowe CLI native executable version =");
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should overwite an existing exe", async () => {
@@ -153,38 +199,57 @@ describe("daemon enable", () => {
         fs.mkdirSync(pathToBin, 0o755);
         fs.writeFileSync(exePath, fakeExeContent);
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
-        expect(response.stdout.toString()).toContain("Zowe CLI daemon mode enabled");
-        expect(IO.existsSync(exePath)).toBe(true);
+        const stdoutStr = response.stdout.toString();
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(IO.existsSync(exePath)).toBe(true);
 
-        // our test tgz file is more than 10 bytes larger than this fake tgz
-        const exeStats = fs.statSync(exePath);
-        expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
-        expect(response.status).toBe(0);
+            // our test tgz file is more than 10 bytes larger than this fake tgz
+            const exeStats = fs.statSync(exePath);
+            expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should identify that bin is not on the PATH", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(stdoutStr).toContain("Zowe CLI native executable version =");
-        expect(stdoutStr).toContain(`Add '${pathToBin}' to your path`);
-        expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(stdoutStr).toContain(`Add '${pathToBin}' to your path`);
+            expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should say nothing when bin is already on the PATH", async () => {
         const pathOrig = testEnvironment.env["PATH"];
-        testEnvironment.env["PATH"] = pathToBin + nodeJsPath.delimiter + process.env.PATH;
+        testEnvironment.env["PATH"] = pathToBin + nodeJsPath.delimiter + testEnvironment.env["PATH"];
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         testEnvironment.env["PATH"] = pathOrig;
 
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(stdoutStr).toContain("Zowe CLI native executable version =");
-        expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your path`);
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your path`);
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should identify that ZOWE_USE_DAEMON is set to 'no'", async () => {
@@ -193,22 +258,34 @@ describe("daemon enable", () => {
         delete testEnvironment.env.ZOWE_USE_DAEMON;
 
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(stdoutStr).toContain("Zowe CLI native executable version =");
-        expect(stdoutStr).toContain("Your ZOWE_USE_DAEMON environment variable is set to 'no'");
-        expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(stdoutStr).toContain("Your ZOWE_USE_DAEMON environment variable is set to 'no'");
+            expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should say nothing when ZOWE_USE_DAEMON is unset", async () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(testEnvironment.env["ZOWE_USE_DAEMON"]).toBeFalsy();
-        expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(testEnvironment.env["ZOWE_USE_DAEMON"]).toBeFalsy();
+            expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should say nothing when ZOWE_USE_DAEMON is set to 'yes'", async () => {
@@ -217,9 +294,15 @@ describe("daemon enable", () => {
         delete testEnvironment.env.ZOWE_USE_DAEMON;
 
         const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
-        expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
-        expect(IO.existsSync(exePath)).toBe(true);
-        expect(response.status).toBe(0);
+        if (isZoweExe) {
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        } else {
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
+            expect(IO.existsSync(exePath)).toBe(true);
+            expect(response.status).toBe(0);
+        }
     });
 });
