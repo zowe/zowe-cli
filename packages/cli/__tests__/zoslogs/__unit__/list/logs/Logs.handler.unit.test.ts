@@ -37,7 +37,7 @@ const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-logs", "get"],
         startTime: "2021-08-11T07:02:52.022Z",
         ...ZOSMF_PROF_OPTS

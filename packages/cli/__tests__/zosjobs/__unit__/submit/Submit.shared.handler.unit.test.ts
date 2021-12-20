@@ -35,7 +35,7 @@ const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-jobs", "submit", "data-set"],
         ...ZOSMF_PROF_OPTS
     },
@@ -79,7 +79,7 @@ const LOCALFILE_PARAMETERS: IHandlerParameters = {
     ...DEFAULT_PARAMETERS,
     ...{
         arguments: {
-            $0: "bright",
+            $0: "zowe",
             _: ["zos-jobs", "submit", "local-file"],
             ...ZOSMF_PROF_OPTS
         }

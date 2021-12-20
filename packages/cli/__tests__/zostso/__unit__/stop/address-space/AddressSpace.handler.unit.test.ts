@@ -35,7 +35,7 @@ const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-tso", "stop", "address-space"]
     },
     positionals: ["zos-tso", "stop", "address-space"],

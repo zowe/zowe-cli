@@ -6,7 +6,7 @@ wait=$4
 set -e
 
 echo "================Z/OS WORKFLOWS START WORKFLOW-NAME ==============="
-bright zos-workflows start workflow-step $step --workflow-name $wn --resolve-conflict-by $resolve $wait
+zowe zos-workflows start workflow-step $step --workflow-name $wn --resolve-conflict-by $resolve $wait
 if [ $? -gt 0 ]
 then
     exit $?

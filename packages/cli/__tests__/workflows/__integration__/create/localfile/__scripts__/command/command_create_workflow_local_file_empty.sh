@@ -1,9 +1,9 @@
 #!/bin/bash
-	set -e
+set -e
 
-	echo "================Z/OS WORKFLOWS CREATE USS-FILE EMPTY==============="
-	bright zos-workflows create workflow-from-local-file
-	if [ $? -gt 0 ]
-	then
-	    exit $?
-	fi
+echo "================Z/OS WORKFLOWS CREATE USS-FILE EMPTY==============="
+zowe zos-workflows create workflow-from-local-file
+if [ $? -gt 0 ]
+then
+	exit $?
+fi
