@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202112201801`
 
 - Deprecated: Duplicate property names on the ZosmfSession class:
   - ZOSMF_OPTION_HOST_PROFILE -> ZOSMF_OPTION_HOST
