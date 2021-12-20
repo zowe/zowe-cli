@@ -22,6 +22,9 @@ use std::str;
 use std::thread;
 use std::time::Duration;
 
+extern crate atty;
+use atty::Stream;
+
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
@@ -268,8 +271,10 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
                 Ok(p) => p,
                 Err(_e) => {
                     // TODO(Kelosky): handle this only if progress bar mode is active
-                    print!("{}", payload);
-                    io::stdout().flush().unwrap();
+                    if atty::is(Stream::Stderr) {
+                        eprint!("{}", payload);
+                        io::stderr().flush().unwrap();
+                    }
                     DaemonRequest {
                         stdout: None,
                         stderr: None,
@@ -292,7 +297,7 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
             match p.stderr {
                 Some(s) => {
                     eprint!("{}", s);
-                    io::stdout().flush().unwrap();
+                    io::stderr().flush().unwrap();
                 }
                 None => (), // do nothing
             }
