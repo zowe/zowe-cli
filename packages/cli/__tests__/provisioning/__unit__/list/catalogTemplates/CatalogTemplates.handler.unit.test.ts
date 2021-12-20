@@ -24,7 +24,7 @@ jest.mock("../../../../../../../packages/provisioning/src/ListCatalogTemplates")
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["provisioning", "list", "catalog-templates"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },

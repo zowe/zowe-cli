@@ -40,7 +40,7 @@ const UNIT_TEST_PROFILES_SSH = new CommandProfiles(UNIT_TEST_PROFILE_MAP);
 // Mocked parameters for the unit tests
 const DEFAULT_PARAMETERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-uss", "issue", "ssh"],
         ...UNIT_TEST_SSH_PROF_OPTS
     },

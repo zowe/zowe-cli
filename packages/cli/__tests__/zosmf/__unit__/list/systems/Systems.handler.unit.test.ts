@@ -23,7 +23,7 @@ import {
 
 const goodCmdParms: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zosmf", "check", "status"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },

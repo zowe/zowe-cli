@@ -108,7 +108,7 @@ export class DaemonClient {
             Imperative.commandLine = cmdInput;
             // TODO Remove the --dcd hack - perhaps use PWD env var instead?
             // This will be a bigger problem when we need to support multitenancy
-            Imperative.parse(`${cmdInput} --dcd ${cwd}`, { stream: this.mClient });
+            Imperative.parse(`${cmdInput} --dcd "${cwd}"`, { stream: this.mClient });
         }
     }
 }

@@ -6,7 +6,7 @@ owner=$4
 set -e
 
 echo "================Z/OS WORKFLOWS CREATE USS-FILE ==============="
-bright zos-workflows create workflow-from-uss-file $wname --uss-file "$definiton" --system-name $sysname --owner $owner $5
+zowe zos-workflows create workflow-from-uss-file $wname --uss-file "$definiton" --system-name $sysname --owner $owner $5
 if [ $? -gt 0 ]
 then
     exit $?

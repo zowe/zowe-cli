@@ -345,7 +345,16 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
         }
     }
 
-    stream.shutdown(Shutdown::Both)?; // terminate connection
+    // Terminate connection. Ignore NotConnected errors returned on macOS.
+    // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
+    match stream.shutdown(Shutdown::Read) {
+        Err(ref e) if e.kind() == std::io::ErrorKind::NotConnected => (),
+        result => result?,
+    }
+    match stream.shutdown(Shutdown::Write) {
+        Err(ref e) if e.kind() == std::io::ErrorKind::NotConnected => (),
+        result => result?,
+    }
 
     // TODO(Kelosky): maybe this should just be a `return Err`
     if exit_code != 0 {

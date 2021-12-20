@@ -7,7 +7,7 @@ set -e
 
 echo "================Z/OS WORKFLOWS LIST ARCHIVED WORKFLOWS==========="
 
-bright wf list arw --rfj
+zowe wf list arw --rfj
 if [ $? -gt 0 ]
 then
     exit $?
