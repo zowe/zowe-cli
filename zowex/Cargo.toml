@@ -1,6 +1,6 @@
 [package]
 name = "zowe"
-version = "0.4.2"
+version = "0.5.0"
 authors = ["Zowe Project"]
 edition = "2018"
 license = "EPL-2.0"
