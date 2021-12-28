@@ -60,9 +60,6 @@ describe("Zowe native executable", () => {
             expect(response.stdout.toString()).toMatch(/[0-9]\.[0-9]\.[0-9]/);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-        } else {
-            // just skip this executable test
-            expect(true).toBe(true);
         }
     });
 });
