@@ -42,7 +42,7 @@ describe("Zowe CLI Logging", () => {
 
         // Create the basic auth header
         const zosmfUsername = TEST_ENVIRONMENT.systemTestProperties.zosmf.user;
-        const zosmfPassword = TEST_ENVIRONMENT.systemTestProperties.zosmf.pass;
+        const zosmfPassword = TEST_ENVIRONMENT.systemTestProperties.zosmf.password;
         const encodedAuth = Buffer.from(zosmfUsername + ":" + zosmfPassword).toString("base64");
 
         // Grab both log files
@@ -66,7 +66,7 @@ describe("Zowe CLI Logging", () => {
 
         // Create the basic auth header
         const zosmfUsername = TEST_ENVIRONMENT.systemTestProperties.zosmf.user;
-        const zosmfPassword = TEST_ENVIRONMENT.systemTestProperties.zosmf.pass;
+        const zosmfPassword = TEST_ENVIRONMENT.systemTestProperties.zosmf.password;
         const encodedAuth = Buffer.from(zosmfUsername + ":" + zosmfPassword).toString("base64");
 
         // Issue a few commands (after the setup created a profile)

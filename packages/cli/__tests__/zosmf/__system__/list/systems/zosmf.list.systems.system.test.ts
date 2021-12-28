@@ -34,7 +34,7 @@ describe("zosmf list systems", () => {
         host = testEnvironment.systemTestProperties.zosmf.host;
         port = testEnvironment.systemTestProperties.zosmf.port;
         user = testEnvironment.systemTestProperties.zosmf.user;
-        pass = testEnvironment.systemTestProperties.zosmf.pass;
+        pass = testEnvironment.systemTestProperties.zosmf.password;
     });
 
     afterAll(async () => {
@@ -64,7 +64,7 @@ describe("zosmf list systems", () => {
                 "--host", SYSTEM_PROPS.zosmf.host,
                 "--port", SYSTEM_PROPS.zosmf.port,
                 "--user", SYSTEM_PROPS.zosmf.user,
-                "--password", SYSTEM_PROPS.zosmf.pass,
+                "--password", SYSTEM_PROPS.zosmf.password,
                 "--reject-unauthorized", SYSTEM_PROPS.zosmf.rejectUnauthorized
             ];
 

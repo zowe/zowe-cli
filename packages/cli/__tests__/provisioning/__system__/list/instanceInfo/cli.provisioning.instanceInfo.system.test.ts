@@ -94,7 +94,7 @@ describe("provisioning list instance-info", () => {
                         zOSMF.host,
                         zOSMF.port,
                         zOSMF.user,
-                        zOSMF.pass
+                        zOSMF.password
                     ]
                 );
                 expect(response.stderr.toString()).toBe("");

@@ -9,7 +9,7 @@ JOBID2=`zowe zos-jobs submit data-set $1 --rff jobid --rft string`
 echo "Listing jobs to find job IDs $JOBID1 and $JOBID2"
 
 LIST_JOB_OUTPUT=`zowe zos-jobs list jobs`
-if [ $LIST_JOB_OUTPUT =~ $JOBID1 ]
+if echo $LIST_JOB_OUTPUT | grep -q $JOBID1
 then
    echo "First job ID $JOBID1 found"
 else
@@ -17,7 +17,7 @@ else
    exit 1
 fi
 
-if [ $LIST_JOB_OUTPUT =~ $JOBID2 ]
+if echo $LIST_JOB_OUTPUT | grep -q $JOBID2
 then
    echo "Second job ID $JOBID2 found"
 else

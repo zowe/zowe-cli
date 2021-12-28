@@ -73,7 +73,7 @@ describe("List Defined Systems Api", () => {
             const badHostName = "badHost";
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
+                password: defaultSystem.zosmf.password,
                 hostname: badHostName,
                 port: defaultSystem.zosmf.port,
                 type: "basic",
@@ -92,14 +92,14 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(`Error: getaddrinfo ENOTFOUND ${badHostName}`);
+            expect(error.message).toMatch(/(Error: getaddrinfo).*(badHost)/);
         });
 
         it("should return with proper message for invalid port", async () => {
             const badPort = 9999;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
-                password: defaultSystem.zosmf.pass,
+                password: defaultSystem.zosmf.password,
                 hostname: defaultSystem.zosmf.host,
                 port: badPort,
                 type: "basic",
@@ -118,8 +118,7 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(`Error: connect ECONNREFUSED`);
-            expect(error.message).toContain(badPort);
+            expect(error.message).toMatch(/Error: (connect|read) (ECONNREFUSED|ECONNRESET)/);
         });
     });
 });

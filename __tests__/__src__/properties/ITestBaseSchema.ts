@@ -11,7 +11,7 @@
 
 export interface ITestBaseSchema {
     user: string;
-    pass: string;
+    password: string;
     host: string;
     port: number;
     rejectUnauthorized: boolean;

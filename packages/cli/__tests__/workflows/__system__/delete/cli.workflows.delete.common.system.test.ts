@@ -93,7 +93,7 @@ describe("Delete workflow cli system tests", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_key.sh",
                 testEnvironment, [wfKey + fakewfkey]);
             expect(response.status).toBe(1);
-            expect(response.stderr.toString()).toContain("was not found");
+            expect(response.stderr.toString()).toContain("does not exist");
         });
         it("Should throw error if no workflow with this wf name was found", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_workflow_name.sh",

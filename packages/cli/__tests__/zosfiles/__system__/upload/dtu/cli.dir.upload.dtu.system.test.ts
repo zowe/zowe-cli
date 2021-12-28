@@ -43,7 +43,7 @@ describe("Upload directory to USS", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
@@ -104,7 +104,7 @@ describe("Upload directory to USS", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.pass
+                    defaultSys.zosmf.password,
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -215,7 +215,8 @@ describe("Upload directory to USS", () => {
             expect(response.stdout.toString()).toContain("Directory uploaded successfully.");
         });
 
-        it("should give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
+        it("should not give error when upload local directory to USS directory in default ascii if it contains also binary files", async () => {
+            const localFileLocation = path.join(TEST_ENVIRONMENT.workingDir, "bin_file.pax");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir");
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT,
@@ -223,8 +224,18 @@ describe("Upload directory to USS", () => {
                     localDirName,
                     ussname
                 ]);
-            expect(response.stderr.toString()).toContain("Rest API failure with HTTP(S) status 500");
-            expect(response.status).toBe(1);
+
+
+            // const downloadResponse = await Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
+            // expect(downloadResponse.success).toBe(true);
+            // // fs.readFileSync(localFileLocation).toString(); returns an empty buffer ???? Getting the file directly seems to work consistently
+            // const downloadedFileContents = fs.readFileSync(localFileLocation).toString();
+
+            const downloadedFileContents = (await Get.USSFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), {binary: false})).toString();
+            expect(downloadedFileContents).toContain("00000000125");
+            expect(downloadedFileContents).toContain("13424013123");
+            expect(response.stderr.toString()).not.toContain("Rest API failure with HTTP(S) status 500");
+            expect(response.status).not.toBe(1);
         });
 
         it("should upload local directory to USS directory with response-format-json flag", async () => {
