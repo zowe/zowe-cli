@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Errors caused by the user interaction 404 Not Found: archive_404_snap 1`] = `[Error: Expect Error: Imperative API Error No session was supplied.]`;

@@ -19,7 +19,7 @@ echo "$SPOOL_FILES"
 IFS='
 '
 for FILE in $SPOOL_FILES; do
-    if [ $FILE = *"SYSTSPRT"* ]
+    if echo $FILE | grep -q "SYSTSPRT";
     then 
         echo "*********************************************************************"
         echo "*   !!!SPOOL FILE!!!"

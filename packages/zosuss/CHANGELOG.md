@@ -20,10 +20,6 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 
 - Bugfix: Update `ssh2` dependency to avoid false positives on a vulnerability
 
-## `6.33.1`
-
-- Migrated from TSLint (now deprecated) to ESLint for static code analysis.
-
 ## `6.32.1`
 
 - Updated Imperative version
