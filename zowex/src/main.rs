@@ -175,9 +175,30 @@ fn exit_when_alt_cmd_needed(cmd_line_args: &Vec<String>) {
     // show the NodeJS zowe command that the user can run instead
     println!("You cannot run this 'daemon' command while using the Zowe-CLI native executable.");
     println!("Copy and paste the following command instead:");
-    let mut zowe_cmd_to_show = String::new();
-    let njs_zowe_path = get_nodejs_zowe_path();
 
+    //
+    let mut zowe_cmd_to_show = String::new();
+    if env::consts::OS == "windows" {
+        // We use COMSPEC so that the command will work for CMD and PowerShell
+        match env::var("COMSPEC") {
+            Ok(comspec_val) => {
+                if comspec_val.len() > 0 {
+                    if comspec_val.contains(' ') {
+                        zowe_cmd_to_show.push('"');
+                        zowe_cmd_to_show.push_str(&comspec_val);
+                        zowe_cmd_to_show.push('"');
+                    } else {
+                        zowe_cmd_to_show.push_str(&comspec_val);
+                    }
+                    zowe_cmd_to_show.push_str(" /C ");
+                }
+            },
+            Err(_e) => { /* do not add COMSPEC */ },
+        }
+    }
+
+    // add the zowe nodeJS path to our command
+    let njs_zowe_path = get_nodejs_zowe_path();
     if njs_zowe_path.contains(' ') {
         zowe_cmd_to_show.push('"');
         zowe_cmd_to_show.push_str(&njs_zowe_path);
