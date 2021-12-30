@@ -62,7 +62,8 @@ export default class DisableDaemonHandler implements ICommandHandler {
 
         // add the right EXE file name for the current OS
         switch (sysInfo.platform) {
-            case "darwin" || "linux": {
+            case "darwin":
+            case "linux": {
                 zoweExePath += "zowe";
                 break;
             }
