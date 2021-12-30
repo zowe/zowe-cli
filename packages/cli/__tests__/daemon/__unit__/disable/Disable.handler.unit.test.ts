@@ -53,12 +53,10 @@ describe("Disable daemon handler", () => {
 
     describe("process method", () => {
         it("should disable the daemon", async () => {
-            let error;
-            const allOkMsg = "Everything worked ok";
-
             disableDaemonSpy = jest.spyOn(DisableDaemonHandler.prototype as any, "disableDaemon");
-            disableDaemonSpy.mockImplementation(() => {return allOkMsg;});
+            disableDaemonSpy.mockImplementation(() => {return;});
 
+            let error;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await disableHandler.process(cmdParms);
@@ -68,8 +66,7 @@ describe("Disable daemon handler", () => {
 
             expect(error).toBeUndefined();
             expect(disableDaemonSpy).toHaveBeenCalledTimes(1);
-            expect(logMessage).toContain("Zowe CLI daemon mode disabled");
-            expect(logMessage).toContain(allOkMsg);
+            expect(logMessage).toContain("Zowe CLI daemon mode is disabled.");
         });
     });
 });
