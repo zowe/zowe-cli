@@ -451,5 +451,6 @@ describe("Handler for daemon enable", () => {
             IO.existsSync = existsSyncOrig;
             IO.isDir = isDirOrig;
             IO.createDirSync = createDirSyncOrig;
-        });    }); // end enableDaemon method
+        });
+    }); // end enableDaemon method
 }); // end Handler
