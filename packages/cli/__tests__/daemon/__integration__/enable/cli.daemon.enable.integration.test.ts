@@ -104,26 +104,19 @@ describe("daemon enable", () => {
     });
 
     it("should display the help", async () => {
-        /* Our EXE can display help, but actually launching the daemon causes the
-         * convoluted set of zowe EXEs, fake zowe EXEs, and zowe scripts to hang.
-         * Just skip this test for the EXE. For the remaining tests, the EXE
-         * works completely within itself, and never launches the daemon.
-         */
-        if (!isZoweExe) {
-            const response = runCliScript(__dirname + "/__scripts__/daemon_enable_help.sh", testEnvironment);
-            const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("COMMAND NAME");
-            expect(stdoutStr).toContain("Enables daemon-mode operation of the Zowe-CLI.");
-            expect(stdoutStr).toContain("USAGE");
-            expect(stdoutStr).toContain("zowe daemon enable [options]");
-            expect(stdoutStr).toContain("GLOBAL OPTIONS");
-            expect(stdoutStr).toContain("--help  | -h (boolean)");
-            expect(stdoutStr).toContain("EXAMPLES");
-            expect(stdoutStr).toContain("Enable daemon-mode:");
-            expect(stdoutStr).toContain("$ zowe daemon enable");
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-        }
+        const response = runCliScript(__dirname + "/__scripts__/daemon_enable_help.sh", testEnvironment);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("COMMAND NAME");
+        expect(stdoutStr).toContain("Enables daemon-mode operation of the Zowe-CLI.");
+        expect(stdoutStr).toContain("USAGE");
+        expect(stdoutStr).toContain("zowe daemon enable [options]");
+        expect(stdoutStr).toContain("GLOBAL OPTIONS");
+        expect(stdoutStr).toContain("--help  | -h (boolean)");
+        expect(stdoutStr).toContain("EXAMPLES");
+        expect(stdoutStr).toContain("Enable daemon-mode:");
+        expect(stdoutStr).toContain("$ zowe daemon enable");
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
     });
 
     it("should fail when the tgz file does not exist", async () => {
