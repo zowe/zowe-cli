@@ -173,7 +173,7 @@ fn exit_when_alt_cmd_needed(cmd_line_args: &Vec<String>) {
     }
 
     // show the NodeJS zowe command that the user can run instead
-    println!("You cannot run this 'daemon' command while using the Zowe-CLI native executable.");
+    println!("You cannot run this 'daemon' command while using the Zowe CLI native executable.");
     println!("Copy and paste the following command instead:");
 
     //

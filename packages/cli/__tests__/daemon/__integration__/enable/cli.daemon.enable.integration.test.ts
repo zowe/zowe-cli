@@ -24,7 +24,7 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 describe("daemon enable", () => {
     const rimraf = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
-    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe-CLI native executable.";
+    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe CLI native executable.";
     const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
     const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
@@ -107,7 +107,7 @@ describe("daemon enable", () => {
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable_help.sh", testEnvironment);
         const stdoutStr = response.stdout.toString();
         expect(stdoutStr).toContain("COMMAND NAME");
-        expect(stdoutStr).toContain("Enables daemon-mode operation of the Zowe-CLI.");
+        expect(stdoutStr).toContain("Enables daemon-mode operation of the Zowe CLI.");
         expect(stdoutStr).toContain("USAGE");
         expect(stdoutStr).toContain("zowe daemon enable [options]");
         expect(stdoutStr).toContain("GLOBAL OPTIONS");

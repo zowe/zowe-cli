@@ -101,7 +101,7 @@ export default class DisableDaemonHandler implements ICommandHandler {
                 powerShellHint = "\nPowershell.exe may not be on your PATH.";
             }
             throw new ImperativeError({
-                msg: "Failed while searching for the Zowe-CLI daemon process.\n"
+                msg: "Failed while searching for the Zowe CLI daemon process.\n"
                      + `Reason: ${err}`
                      + powerShellHint
             });

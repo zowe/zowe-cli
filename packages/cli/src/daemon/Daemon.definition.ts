@@ -17,7 +17,7 @@ const definition: ICommandDefinition = {
     name: "daemon",
     type: "group",
     summary: "Daemon operations",
-    description: "Perform operations that control the daemon-mode functionality of the Zowe-CLI. " +
+    description: "Perform operations that control the daemon-mode functionality of the Zowe CLI. " +
                  "Daemon-mode runs the CLI command processor as a daemon to improve performance.",
     children: [
         EnableCommand,

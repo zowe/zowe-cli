@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 jest.mock("child_process"); // using child_process from the __mocks__ directory
 
 import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";

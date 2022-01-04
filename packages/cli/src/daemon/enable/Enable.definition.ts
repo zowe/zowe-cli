@@ -13,9 +13,9 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 export const EnableCommand: ICommandDefinition = {
     name: "enable",
-    description: "Enables daemon-mode operation of the Zowe-CLI. " +
+    description: "Enables daemon-mode operation of the Zowe CLI. " +
         "You only need to run the enable command once after each " +
-        "new installation of the Zowe-CLI. Afterwards, any zowe command " +
+        "new installation of the Zowe CLI. Afterwards, any zowe command " +
         "will automatically start a daemon as needed.",
     type: "command",
     handler: __dirname + "/Enable.handler",
