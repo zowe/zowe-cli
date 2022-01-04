@@ -141,7 +141,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
         // if ZOWE_CLI_HOME/bin is not on our PATH, add an instruction to add it
         if (process.env?.PATH?.length > 0) {
             if (!process.env.PATH.includes(zoweHomeBin)) {
-                userInfoMsg += `\n\nAdd '${zoweHomeBin}' to your path.` +
+                userInfoMsg += `\n\nAdd '${zoweHomeBin}' to your PATH.` +
                     "\nOtherwise, you will continue to run the classic Zowe CLI interpreter.";
             }
         }

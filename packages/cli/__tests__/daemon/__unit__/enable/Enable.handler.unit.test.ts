@@ -368,7 +368,7 @@ describe("Handler for daemon enable", () => {
 
             expect(error).toBeUndefined();
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
-            expect(userInfoMsg).toContain(`Add '${zoweBinDirMock}' to your path.`);
+            expect(userInfoMsg).toContain(`Add '${zoweBinDirMock}' to your PATH.`);
 
             IO.existsSync = existsSyncOrig;
             IO.isDir = isDirOrig;

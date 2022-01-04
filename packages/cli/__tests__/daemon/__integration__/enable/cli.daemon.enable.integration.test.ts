@@ -218,7 +218,7 @@ describe("daemon enable", () => {
         } else {
             expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
-            expect(stdoutStr).toContain(`Add '${pathToBin}' to your path`);
+            expect(stdoutStr).toContain(`Add '${pathToBin}' to your PATH`);
             expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
@@ -239,7 +239,7 @@ describe("daemon enable", () => {
         } else {
             expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
-            expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your path`);
+            expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your PATH`);
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
         }
