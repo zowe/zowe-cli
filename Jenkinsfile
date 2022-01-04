@@ -9,12 +9,6 @@
 *                                                                                 *
 */
 
-/* A PR pipeline was not created by jenkins because it cannot find Jenkinsfile.
- * But this is the Jenkinsfile, and it is obviously here.
- * This comment was just added so that I can push the Jenkinsfile and hope that
- * Jenkins will pick it up. This comment can be deleted at any time.
- */
-
 @Library('shared-pipelines') import org.zowe.pipelines.nodejs.NodeJSPipeline
 
 import org.zowe.pipelines.nodejs.models.SemverLevel
