@@ -268,6 +268,7 @@ fn run_daemon_command(mut args: String) -> std::io::Result<()> {
  * Iterate to enable a slow system to start the daemon.
  */
 fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream> {
+    const THREE_SEC_DELAY: u64 = 3;
     const THREE_MIN_OF_RETRIES: i32 = 60;
     const RETRY_TO_SHOW_DIAG: i32 = 5;
 
@@ -313,7 +314,7 @@ fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream
         }
 
         // pause between attempts to connect
-        thread::sleep(Duration::from_secs(3));
+        thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
 
         // before we wait too long, show diagnostics
         if conn_retries == RETRY_TO_SHOW_DIAG {
