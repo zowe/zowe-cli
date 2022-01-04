@@ -2,6 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add the commands `zowe daemon enable` and `zowe daemon disable`. These commands enable end-users to set up daemon mode without having to download a separate executable and place it by hand into some directory.
+- **Next Breaking**: The Daemon-related class named `Processor` was renamed to `DaemonDecider`.
+
+
 ## `7.0.0-next.202112081943`
 
 - **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
