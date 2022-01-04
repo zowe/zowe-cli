@@ -32,7 +32,6 @@ describe("daemon disable", () => {
 
     let exePath: string;
     let pathToBin: string;
-    let preBldTgzPath: string; // zzz
     let isZoweExe: boolean = false; // is the zowe command that we will run an executable?
 
     beforeAll(async () => {
@@ -72,18 +71,8 @@ describe("daemon disable", () => {
 
         // form the path to our bin directory, executable, and prebuilds tgz file
         const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
-        preBldTgzPath = nodeJsPath.resolve(__dirname, "../../../../prebuilds", tgzFileName);
         pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
         exePath = nodeJsPath.resolve(pathToBin, exePath);
-
-        /* zzz move into a test - copy target/debug/exe to cliHome/bin/exe
-        if (!IO.existsSync(pathToBin)) {
-            IO.createDirSync(pathToBin);
-        }
-        if (!IO.existsSync(exePath)) {
-            fs.copyFileSync(tgzResourcePath, exePath);
-        }
-        */
 
         // Get the zowe program from the PATH that will be used in the test
         const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
