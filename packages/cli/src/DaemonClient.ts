@@ -19,6 +19,12 @@ import * as net from "net";
  */
 export class DaemonClient {
     /**
+     * The character sent when Ctrl+C is pressed to terminate a process.
+     * @internal
+     */
+    public static readonly CTRL_C_CHAR = "\x03";
+
+    /**
      * Creates an instance of DaemonClient.
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
@@ -114,11 +120,11 @@ export class DaemonClient {
         const stdinData = jsonEndIdx !== -1 ? stringData.slice(jsonEndIdx + 2) : undefined;
 
         if (jsonData.stdin != null) {
-            if (jsonData.stdin !== "\x03") {
+            if (jsonData.stdin !== DaemonClient.CTRL_C_CHAR) {
                 // This data is related to a prompt reply so we ignore it
                 return;
             } else if (this.mServer) {
-                // Ctrl+C was sent (ASCII 3) so we shutdown the server
+                // Ctrl+C signal was sent so we shutdown the server
                 this.shutdown();
             }
         } else {

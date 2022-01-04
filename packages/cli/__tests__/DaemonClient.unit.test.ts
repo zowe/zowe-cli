@@ -184,7 +184,7 @@ describe("DaemonClient tests", () => {
         const shutdownSpy = jest.spyOn(daemonClient as any, "shutdown");
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
-        const shutdownResponse = { stdin: "\x03" };
+        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR };
         (daemonClient as any).data(JSON.stringify(shutdownResponse), {whatever: "context I want"});
 
         expect(shutdownSpy).toHaveBeenCalledTimes(1);

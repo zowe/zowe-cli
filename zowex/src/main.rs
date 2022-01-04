@@ -54,7 +54,7 @@ struct DaemonProcInfo {
     cmd: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 #[allow(non_snake_case)]
 struct DaemonRequest {
     stdout: Option<String>,
@@ -65,7 +65,7 @@ struct DaemonRequest {
     securePrompt: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 #[allow(non_snake_case)]
 struct DaemonResponse {
     argv: Option<Vec<String>>,
@@ -490,7 +490,6 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
     let exit_code: i32;
     match Command::new(njs_zowe_path.to_owned())
         .args(cmd_line_args.to_owned())
-        .envs(get_zowe_env())
         .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -564,7 +563,6 @@ fn start_daemon(njs_zowe_path: &str) -> String {
     let daemon_arg = "--daemon";
     match Command::new(njs_zowe_path.to_owned())
         .arg(daemon_arg)
-        .envs(get_zowe_env())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn()
