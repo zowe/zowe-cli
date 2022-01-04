@@ -9,7 +9,7 @@
 *
 */
 
-import { IDaemonResponse, Imperative } from "@zowe/imperative";
+import { DaemonRequest, IDaemonResponse, Imperative } from "@zowe/imperative";
 import * as net from "net";
 
 /**
@@ -115,7 +115,7 @@ export class DaemonClient {
     private data(data: Buffer) {
         // Split JSON body and binary data from multipart response
         const stringData = data.toString();
-        const jsonEndIdx = stringData.indexOf("}\n");
+        const jsonEndIdx = stringData.indexOf("}" + DaemonRequest.EOW_DELIMITER);
         const jsonData: IDaemonResponse = JSON.parse(jsonEndIdx !== -1 ? stringData.slice(0, jsonEndIdx + 1) : stringData);
         const stdinData = jsonEndIdx !== -1 ? stringData.slice(jsonEndIdx + 2) : undefined;
 

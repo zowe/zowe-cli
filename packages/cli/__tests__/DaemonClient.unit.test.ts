@@ -12,6 +12,7 @@
 jest.mock("net");
 jest.mock("@zowe/imperative");
 import * as net from "net";
+import getStdin = require("get-stdin");
 import { IDaemonResponse, Imperative } from "@zowe/imperative";
 import { DaemonClient } from "../src/DaemonClient";
 
@@ -97,12 +98,12 @@ describe("DaemonClient tests", () => {
             stdinLength: stdinData.length,
             stdin: null
         };
-        const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin");
+        const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin").mockReturnValueOnce(undefined);
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        const stringData = JSON.stringify(daemonResponse) + "\n" + stdinData;
+        const stringData = JSON.stringify(daemonResponse) + "\f" + stdinData;
         (daemonClient as any).data(stringData, {whatever: "context I want"});
 
         expect(writeToStdinSpy).toHaveBeenCalledWith(stdinData, stdinData.length);
@@ -237,4 +238,10 @@ describe("DaemonClient tests", () => {
         expect(log).toHaveBeenLastCalledWith('client closed');
     });
 
+    it("should be able to write to stdin multiple times", async () => {
+        for (const animal of ["aardvark", "bonobo", "cheetah"]) {
+            (DaemonClient.prototype as any).writeToStdin(animal, animal.length);
+            expect(await getStdin()).toBe(animal);
+        }
+    });
 });

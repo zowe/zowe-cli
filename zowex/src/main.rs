@@ -132,6 +132,40 @@ fn main() -> std::io::Result<()> {
     }
 }
 
+/**
+ * Convert a vector of command line arguments into a single string of arguments.
+ * @param cmd_line_args
+ *      The user-supplied command line arguments to the zowe command.
+ *      Each argument is in its own vector element.
+ * @returns
+ *      A String containing all of the command line arguments.
+ */
+fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
+    let mut arg_string = String::new();
+    let mut arg_count = 1;
+    for next_arg in arg_vec.iter() {
+        if arg_count > 1 {
+            arg_string.push(' ');
+        }
+
+        /* An argument that contains a space, or is an empty string, must be
+         * enclosed in double quotes when it is placed into a single argument
+         * string.
+         */
+        if next_arg.contains(' ') || next_arg.len() == 0 {
+            arg_string.push('"');
+            arg_string.push_str(next_arg);
+            arg_string.push('"');
+        } else {
+            arg_string.push_str(next_arg);
+        }
+
+        arg_count = arg_count + 1;
+    }
+
+    return arg_string;
+}
+
 fn get_zowe_env() -> HashMap<String, String> {
     env::vars().filter(|&(ref k, _)|
         k.starts_with("ZOWE_")
@@ -153,7 +187,7 @@ fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
     };
     let mut _resp = serde_json::to_string(&response)?;
     if response.stdinLength.unwrap() > 0 {
-        _resp.push('\n');
+        _resp.push('\x0c');
         _resp.push_str(&stdin);
     }
 
