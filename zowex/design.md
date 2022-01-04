@@ -1,6 +1,10 @@
 # Daemon Mode Design Overview
 
-Zowe CLI start up time can be slow 3 - 15 seconds.  Part of the reason this operation can be slow is the overhead involved in startup of the Node.js runtime (measured with V8 instrumentations).
+Zowe CLI start up time can be slow: 3 - 15 seconds.  This often occurs in virtualized environments where the directories, into which the Zowe CLI is installed, are geographically remote from the server that hosts the virtualized environments. Part of the reason this operation can be slow is the overhead involved in the startup of the Node.js runtime (measured with V8 instrumentations). The Node.js modules used by the Zowe CLI must be loaded every time a user issues another zowe command. The module loading process can be time consuming due to the delays associated with network transfers over a large geographic distance.
+
+A customer site can address this situation by installing Zowe CLI onto a disk that is located in the same geographic location as the site's server of virtual environments. Pointing the ZOWE_CLI_HOME directory to a disk drive co-located with the server will also help.
+
+When the Zowe CLI user community at a given customer site does not have the adminstrative privileges to control where the Zowe CLI is installed, an alternative approach is to use the Zowe-CLI daemon to significantly improve performance.
 
 ## Solution Overview
 
@@ -85,7 +89,7 @@ The daemon client sends messages to server like:
   zowe --version
   Starting a background process to increase performance ...
   7.0.0-next.202111111904
-  
+
   zowe --version
   7.0.0-next.202111111904
   ```
