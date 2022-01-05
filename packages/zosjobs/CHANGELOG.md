@@ -6,6 +6,10 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 - Enhancement: Exposed new option `modifyVersion` for the `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands. [#1092](https://github.com/zowe/zowe-cli/issues/1092)
 
+## `6.33.1`
+
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
+
 ## `6.32.1`
 
 - Updated Imperative version
