@@ -46,7 +46,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
 
         cmdParams.response.console.log("Zowe CLI daemon mode enabled.\n" + userMsg);
         cmdParams.response.data.setExitCode(0);
-        return;
     }
 
     /**
@@ -85,7 +84,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
         }
 
         preBldTgz = nodeJsPath.normalize(preBldTgz);
-        if (IO.existsSync(preBldTgz) == false) {
+        if (!IO.existsSync(preBldTgz)) {
             throw new ImperativeError({
                 msg: `The zip file for your OS executable does not exist: ${preBldTgz}`
             });
@@ -96,7 +95,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
 
         // Does the ZOWE_CLI_HOME bin directory exist?
         if (IO.existsSync(zoweHomeBin)) {
-            if (IO.isDir(zoweHomeBin) == false) {
+            if (!IO.isDir(zoweHomeBin)) {
                 throw new ImperativeError({
                     msg: `The existing file '${zoweHomeBin}' must be a directory.`
                 });

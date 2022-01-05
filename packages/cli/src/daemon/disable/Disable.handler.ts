@@ -42,7 +42,6 @@ export default class DisableDaemonHandler implements ICommandHandler {
 
         cmdParams.response.console.log("Zowe CLI daemon mode is disabled.");
         cmdParams.response.data.setExitCode(0);
-        return;
     }
 
     /**
