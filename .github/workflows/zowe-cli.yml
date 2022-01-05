@@ -78,7 +78,7 @@ jobs:
       id: checkout-imperative
       if: github.event_name == 'workflow_dispatch' && github.event.inputs.imperative-branch != ''
       run: |
-        cd node_modules/@zowe && rm -rf imperative
+        cd node_modules/@zowe && npx rimraf imperative
         git clone --branch ${{ github.event.inputs.imperative-branch }} --depth 1 https://github.com/zowe/imperative.git
         cd imperative && npm ci --ignore-scripts && npx tsc
 
