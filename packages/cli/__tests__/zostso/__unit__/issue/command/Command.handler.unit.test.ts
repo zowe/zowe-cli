@@ -24,7 +24,7 @@ import {
 
 const DEFAULT_PARAMTERS: IHandlerParameters = {
     arguments: {
-        $0: "bright",
+        $0: "zowe",
         _: ["zos-tso", "issue", "address-space"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS,
         ...UNIT_TEST_TSO_PROF_OPTS

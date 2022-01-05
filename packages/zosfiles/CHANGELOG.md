@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.0.0-next.202112142155`
+
+- Breaking: Removed deprecated methods:
+  - bufferToUSSFile -> buffertoUssFile
+  - streamToUSSFile -> streamToUssFile
+  - fileToUSSFile -> fileToUssFile
+
 ## `6.33.1`
 
 - Migrated from TSLint (now deprecated) to ESLint for static code analysis.

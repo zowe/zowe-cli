@@ -214,7 +214,7 @@ export class TempTestProfiles {
 
         // Remove profile from config JSON
         config.delete(config.api.profiles.expandPath(profileName));
-        if (config.layerActive().properties.defaults[profileType] === profileName) {
+        if (config.api.layers.get().properties.defaults[profileType] === profileName) {
             config.delete(`defaults.${profileType}`);
         }
         await config.api.layers.write();

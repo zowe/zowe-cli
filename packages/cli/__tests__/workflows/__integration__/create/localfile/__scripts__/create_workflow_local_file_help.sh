@@ -1,13 +1,13 @@
 #!/bin/bash
-	set -e
+set -e
 
-	echo "================Z/OS WORKFLOWS CREATE LOCAL-FILE HELP==============="
-	bright zos-workflows create workflow-from-local-file --help
-	if [ $? -gt 0 ]
-	then
-	    exit $?
-	fi
-
-	echo "================Z/OS WORKFLOWS CREATE LOCAL-FILE HELP RFJ==========="
-	bright zos-workflows create workflow-from-local-file --help --rfj
+echo "================Z/OS WORKFLOWS CREATE LOCAL-FILE HELP==============="
+zowe zos-workflows create workflow-from-local-file --help
+if [ $? -gt 0 ]
+then
 	exit $?
+fi
+
+echo "================Z/OS WORKFLOWS CREATE LOCAL-FILE HELP RFJ==========="
+zowe zos-workflows create workflow-from-local-file --help --rfj
+exit $?

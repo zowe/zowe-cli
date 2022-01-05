@@ -79,8 +79,8 @@ describe("Create workflow", () => {
     describe("Success Scenarios", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
-            await Upload.fileToUSSFile(REAL_SESSION, vars, inputFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
+            await Upload.fileToUssFile(REAL_SESSION, vars, inputFile, { binary: true });
         });
         afterAll(async () => {
             let error;

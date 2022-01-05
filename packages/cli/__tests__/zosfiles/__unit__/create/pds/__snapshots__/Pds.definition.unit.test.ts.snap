@@ -4,6 +4,14 @@ exports[`zos-files create pds command definition should not have changed 1`] = `
 Array [
   Object {
     "aliases": Array [
+      "a",
+    ],
+    "description": "Show the full allocation attributes",
+    "name": "attributes",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "bs",
       "blksize",
     ],
@@ -98,6 +106,7 @@ Array [
       "pa",
     ],
     "description": "Show the full allocation attributes",
+    "hidden": true,
     "name": "show-attributes",
     "type": "boolean",
   },

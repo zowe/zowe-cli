@@ -63,7 +63,7 @@ describe("Properties workflow", () => {
     });
     describe("Success Scenarios", () => {
         beforeAll(async () => {
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
         });
         afterAll(async () => {
             let error;
@@ -192,7 +192,7 @@ describe("Properties workflow", () => {
     });
     describe("Fail scenarios", () => {
         beforeAll(async () => {
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
         });
         afterAll(async () => {
             let error;

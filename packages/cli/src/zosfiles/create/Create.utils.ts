@@ -33,7 +33,7 @@ export function generateZosmfOptions(commandArguments: Arguments): ICreateDataSe
         mgntclass: commandArguments.managementClass,
         dataclass: commandArguments.dataClass,
         dsntype: commandArguments.dataSetType,
-        showAttributes: commandArguments.showAttributes,
+        showAttributes: commandArguments.showAttributes || commandArguments.attributes,
         size: commandArguments.size,
         responseTimeout: commandArguments.responseTimeout
     }));

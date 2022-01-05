@@ -57,7 +57,7 @@ describe("List active workflow details cli system tests", () => {
 
             // Upload files only for successful scenarios
             try {
-                await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+                await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
                 await delay(delayTime);
             } catch (err) {
                 error = err;
