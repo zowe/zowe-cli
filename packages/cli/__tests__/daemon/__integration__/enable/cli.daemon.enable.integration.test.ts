@@ -85,7 +85,6 @@ describe("daemon enable", () => {
 
         // Get the zowe program from the PATH that will be used in the test
         const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
-        console.log("TODO: Remove this: zowePgmInPath = " + zowePgmInPath);
 
         // We know that our zowe EXE will be bigger than our zowe scripts
         const maxScriptSize: number = 2000;
