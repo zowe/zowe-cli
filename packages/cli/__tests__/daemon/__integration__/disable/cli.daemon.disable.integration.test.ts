@@ -76,11 +76,12 @@ describe("daemon disable", () => {
 
         // Get the zowe program from the PATH that will be used in the test
         const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
+        console.log("TODO: Remove this: zowePgmInPath = " + zowePgmInPath);
 
         // We know that our zowe EXE will be bigger than our zowe scripts
-        const exeMinSize: number = 2000;
+        const maxScriptSize: number = 2000;
         const zowePgmStats = fs.statSync(zowePgmInPath);
-        if (zowePgmStats.size >= exeMinSize) {
+        if (zowePgmStats.size >= maxScriptSize) {
             isZoweExe = true;
         }
     });
@@ -90,26 +91,19 @@ describe("daemon disable", () => {
     });
 
     it("should display the help", async () => {
-        /* Our EXE can display help, but actually launching the daemon causes the
-         * convoluted set of zowe EXEs, fake zowe EXEs, and zowe scripts to hang.
-         * Just skip this test for the EXE. For the remaining tests, the EXE
-         * works completely within itself, and never launches the daemon.
-         */
-        if (!isZoweExe) {
-            const response = runCliScript(__dirname + "/__scripts__/daemon_disable_help.sh", testEnvironment);
-            const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("COMMAND NAME");
-            expect(stdoutStr).toContain("Disables daemon-mode operation of the Zowe CLI.");
-            expect(stdoutStr).toContain("USAGE");
-            expect(stdoutStr).toContain("zowe daemon disable [options]");
-            expect(stdoutStr).toContain("GLOBAL OPTIONS");
-            expect(stdoutStr).toContain("--help  | -h (boolean)");
-            expect(stdoutStr).toContain("EXAMPLES");
-            expect(stdoutStr).toContain("Disable daemon-mode:");
-            expect(stdoutStr).toContain("$ zowe daemon disable");
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-        }
+        const response = runCliScript(__dirname + "/__scripts__/daemon_disable_help.sh", testEnvironment);
+        const stdoutStr = response.stdout.toString();
+        expect(stdoutStr).toContain("COMMAND NAME");
+        expect(stdoutStr).toContain("Disables daemon-mode operation of the Zowe CLI.");
+        expect(stdoutStr).toContain("USAGE");
+        expect(stdoutStr).toContain("zowe daemon disable [options]");
+        expect(stdoutStr).toContain("GLOBAL OPTIONS");
+        expect(stdoutStr).toContain("--help  | -h (boolean)");
+        expect(stdoutStr).toContain("EXAMPLES");
+        expect(stdoutStr).toContain("Disable daemon-mode:");
+        expect(stdoutStr).toContain("$ zowe daemon disable");
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
     });
 
     it("should succeed when no EXE exists", async () => {
