@@ -15,7 +15,7 @@ import { IssueCommandDefinition } from "./command/Command.definition";
 export const IssueCommand: ICommandDefinition = {
     name: "issue",
     type: "group",
-    summary: "Issue z/OS Console Commands",
+    summary: "Issue z/OS console commands",
     description: "Issue z/OS console commands and optionally collect responses.",
     children: [
         IssueCommandDefinition
