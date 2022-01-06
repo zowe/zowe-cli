@@ -239,6 +239,7 @@ describe("DaemonClient tests", () => {
     });
 
     it("should be able to write to stdin multiple times", async () => {
+        (DaemonClient.prototype as any).writeToStdin("X", 1);
         for (const animal of ["aardvark", "bonobo", "cheetah"]) {
             (DaemonClient.prototype as any).writeToStdin(animal, animal.length);
             expect(await getStdin()).toBe(animal);

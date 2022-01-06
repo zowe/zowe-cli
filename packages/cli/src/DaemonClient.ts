@@ -92,12 +92,15 @@ export class DaemonClient {
 
         // Normally Node.js reads from process.stdin only once, and the stream is not reusable.
         // To work around this, we store a copy of the `_readableState` object before stdin has been used.
-        // To reuse stdin, we reset the `_readableState` object back to its initial value.
+        // To reuse stdin, we clear any old data and reset the `_readableState` object back to its initial value.
         if (stdin._readableStateOld == null) {
             stdin._readableStateOld = { ...stdin._readableState };
         } else {
-            stdin._readableState = { ...stdin._readableStateOld };
+            if (!process.stdin.readableEnded) {
+                process.stdin.read();
+            }
             process.stdin.removeAllListeners();
+            stdin._readableState = { ...stdin._readableStateOld };
         }
 
         // Calling stdin.write throws an EPIPE error because Node.js thinks the stream is read-only.
