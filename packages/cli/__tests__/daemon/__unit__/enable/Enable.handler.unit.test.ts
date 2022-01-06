@@ -289,7 +289,7 @@ describe("Handler for daemon enable", () => {
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
 
             // we set a bogus cliHome, so we know it cannot launch the executable
-            expect(userInfoMsg).toContain("Zowe CLI native executable version = Command failed:");
+            expect(userInfoMsg).toContain("Zowe CLI native executable version = Failed to get version number");
 
             IO.existsSync = existsSyncOrig;
             IO.isDir = isDirOrig;
@@ -313,7 +313,7 @@ describe("Handler for daemon enable", () => {
 
             // This uses child_process from the __mocks__ directory
             const exeVerNumMock = "9.9.9";
-            require("child_process").setExecSyncOutput(exeVerNumMock);
+            require("child_process").setSpawnSyncOutput(exeVerNumMock);
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");

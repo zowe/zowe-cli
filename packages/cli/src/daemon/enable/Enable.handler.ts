@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import * as nodeJsPath from "path";
 import * as tar from "tar";
-import { execSync, StdioOptions } from "child_process";
+import { spawnSync, StdioOptions } from "child_process";
 
 import {
     CliUtils, ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
@@ -63,6 +63,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
 
         // form the path to our prebuilds tar file
         let preBldTgz = __dirname + "../../../../prebuilds/zowe-";
+        let exeFileName = "zowe";
         switch (sysInfo.platform) {
             case "darwin": {
                 preBldTgz += "macos.tgz";
@@ -74,6 +75,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
             }
             case "win32": {
                 preBldTgz += "windows.tgz";
+                exeFileName += ".exe";
                 break;
             }
             default: {
@@ -125,14 +127,19 @@ export default class EnableDaemonHandler implements ICommandHandler {
 
         // display the version of the executable
         let userInfoMsg: string = "Zowe CLI native executable version = ";
-        const zoweExePath = nodeJsPath.resolve(zoweHomeBin, "zowe");
+        const zoweExePath = nodeJsPath.resolve(zoweHomeBin, exeFileName);
         const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
         try {
-            const execOutput = execSync(`"${zoweExePath}" --version-exe`, {
-                stdio: pipe
+            const spawnResult = spawnSync(zoweExePath, ["--version-exe"], {
+                stdio: pipe,
+                shell: false
             });
-            // remove any newlines from the version number
-            userInfoMsg += execOutput.toString().replace(/\r?\n|\r/g, "");
+            if (spawnResult.stdout) {
+                // remove any newlines from the version number
+                userInfoMsg += spawnResult.stdout.toString().replace(/\r?\n|\r/g, "");
+            } else {
+                userInfoMsg += "Failed to get version number";
+            }
         } catch (err) {
             userInfoMsg += err.message;
         }
