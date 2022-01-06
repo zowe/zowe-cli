@@ -90,19 +90,24 @@ describe("daemon disable", () => {
     });
 
     it("should display the help", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/daemon_disable_help.sh", testEnvironment);
-        const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("COMMAND NAME");
-        expect(stdoutStr).toContain("Disables daemon-mode operation of the Zowe CLI.");
-        expect(stdoutStr).toContain("USAGE");
-        expect(stdoutStr).toContain("zowe daemon disable [options]");
-        expect(stdoutStr).toContain("GLOBAL OPTIONS");
-        expect(stdoutStr).toContain("--help  | -h (boolean)");
-        expect(stdoutStr).toContain("EXAMPLES");
-        expect(stdoutStr).toContain("Disable daemon-mode:");
-        expect(stdoutStr).toContain("$ zowe daemon disable");
-        expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
+        /* Our EXE will spawn a daemon to get the help. We do not want a daemon as part of this test suite.
+         * We just want to confirm that our enable help is reasonable.
+         */
+        if (!isZoweExe) {
+            const response = runCliScript(__dirname + "/__scripts__/daemon_disable_help.sh", testEnvironment);
+            const stdoutStr = response.stdout.toString();
+            expect(stdoutStr).toContain("COMMAND NAME");
+            expect(stdoutStr).toContain("Disables daemon-mode operation of the Zowe CLI.");
+            expect(stdoutStr).toContain("USAGE");
+            expect(stdoutStr).toContain("zowe daemon disable [options]");
+            expect(stdoutStr).toContain("GLOBAL OPTIONS");
+            expect(stdoutStr).toContain("--help  | -h (boolean)");
+            expect(stdoutStr).toContain("EXAMPLES");
+            expect(stdoutStr).toContain("Disable daemon-mode:");
+            expect(stdoutStr).toContain("$ zowe daemon disable");
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+        }
     });
 
     it("should succeed when no EXE exists", async () => {
