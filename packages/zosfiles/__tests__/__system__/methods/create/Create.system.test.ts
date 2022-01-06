@@ -29,7 +29,17 @@ let volume: string;
 let filename: string;
 let basePath: string;
 
-const LONGER_TIMEOUT = 10000;
+const LONGER_TIMEOUT = 20000;
+
+const waitFiveSeconds = () => {
+    return new Promise<void>((resolveWaitTime) => {
+        const fiveSeconds = 5000;
+        setTimeout(() => {
+            resolveWaitTime();
+        }, fiveSeconds);
+    }
+    );
+};
 
 describe("Create data set", () => {
 
@@ -315,6 +325,7 @@ describe("Create z/OS file system", () => {
         let response;
         try {
             response = await Delete.zfs(REAL_SESSION, fsname);
+            await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -324,6 +335,7 @@ describe("Create z/OS file system", () => {
         let response;
         try {
             response = await Delete.zfs(REAL_SESSION, fsname);
+            await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }

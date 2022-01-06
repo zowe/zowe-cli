@@ -85,7 +85,7 @@ describe("List data set", () => {
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
-                    defaultSys.zosmf.password
+                    defaultSys.zosmf.password,
                 ]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -159,8 +159,8 @@ describe("List data set", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_data_set.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname + ".dummy"]);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toEqual("");
-            expect(response.stdout.toString()).toEqual("");
+            expect(response.stderr.toString().trim()).toEqual("");
+            expect(response.stdout.toString().trim()).toEqual("");
         });
     });
 

@@ -92,7 +92,7 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(`Error: getaddrinfo ENOTFOUND ${badHostName}`);
+            expect(error.message).toMatch(/(Error: getaddrinfo).*(badHost)/);
         });
 
         it("should return with proper message for invalid port", async () => {
@@ -118,8 +118,7 @@ describe("List Defined Systems Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(`Error: connect ECONNREFUSED`);
-            expect(error.message).toContain(badPort);
+            expect(error.message).toMatch(/Error: (connect|read) (ECONNREFUSED|ECONNRESET)/);
         });
     });
 });
