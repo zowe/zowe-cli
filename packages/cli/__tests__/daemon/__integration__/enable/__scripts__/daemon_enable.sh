@@ -2,10 +2,8 @@
 set -e
 
 echo "================ TODO: Remove this ==============="
+where zowe
 echo PATH = $PATH
 echo "================ daemon enable ==============="
 zowe daemon enable
-if [ $? -gt 0 ]
-then
-    exit $?
-fi
+exit $?

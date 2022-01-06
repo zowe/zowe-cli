@@ -32,8 +32,6 @@ describe("daemon enable", () => {
     let pathToBin: string;
     let preBldTgzPath: string;
     let isZoweExe: boolean = false; // is the zowe command that we will run an executable?
-    let zowePgmInPath: string; // TODO: Remove this - make it a const below
-    let zowePgmStats: any;     // TODO: Remove this - make it a const below
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -86,11 +84,11 @@ describe("daemon enable", () => {
         }
 
         // Get the zowe program from the PATH that will be used in the test
-        zowePgmInPath = which.sync('zowe', { path: testEnvironment.env.PATH });
+        const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
 
         // We know that our zowe EXE will be bigger than our zowe scripts
         const maxScriptSize: number = 2000;
-        zowePgmStats = fs.statSync(zowePgmInPath);
+        const zowePgmStats = fs.statSync(zowePgmInPath);
         if (zowePgmStats.size >= maxScriptSize) {
             isZoweExe = true;
         }
@@ -253,7 +251,6 @@ describe("daemon enable", () => {
         delete testEnvironment.env.ZOWE_USE_DAEMON;
 
         const stdoutStr = response.stdout.toString();
-        expect(zowePgmInPath).toContain("TODO: Remove this");
         if (isZoweExe) {
             expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
             expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
@@ -291,7 +288,6 @@ describe("daemon enable", () => {
         delete testEnvironment.env.ZOWE_USE_DAEMON;
 
         const stdoutStr = response.stdout.toString();
-        expect(zowePgmStats.size).toEqual(999); // TODO: Remove this
         if (isZoweExe) {
             expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
             expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
