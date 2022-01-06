@@ -129,6 +129,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `6.33.1`
 
 - Bugfix: Fixed capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.33.0`
 
