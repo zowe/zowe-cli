@@ -241,11 +241,13 @@ describe("daemon enable", () => {
     });
 
     it("should say nothing when bin is already on the PATH", async () => {
+        /* TODO: Remove comment
         const pathOrig = testEnvironment.env["PATH"];
         testEnvironment.env["PATH"] = pathToBin + nodeJsPath.delimiter + testEnvironment.env["PATH"];
+        */
         const weRanOurExe = isZoweExe();
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
-        testEnvironment.env["PATH"] = pathOrig;
+        // TODO: Remove comment: testEnvironment.env["PATH"] = pathOrig;
 
         const stdoutStr = response.stdout.toString();
         if (weRanOurExe) {
@@ -263,9 +265,9 @@ describe("daemon enable", () => {
     });
 
     it("should identify that ZOWE_USE_DAEMON is set to 'no'", async () => {
-        testEnvironment.env["ZOWE_USE_DAEMON"] = "no";
+        // TODO: Remove comment: testEnvironment.env["ZOWE_USE_DAEMON"] = "no";
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
-        delete testEnvironment.env.ZOWE_USE_DAEMON;
+        // TODO: Remove comment: delete testEnvironment.env.ZOWE_USE_DAEMON;
 
         const stdoutStr = response.stdout.toString();
         if (isZoweExe()) {
@@ -302,9 +304,9 @@ describe("daemon enable", () => {
     });
 
     it("should say nothing when ZOWE_USE_DAEMON is set to 'yes'", async () => {
-        testEnvironment.env["ZOWE_USE_DAEMON"] = "yes";
+        // TODO: Remove comment: testEnvironment.env["ZOWE_USE_DAEMON"] = "yes";
         const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
-        delete testEnvironment.env.ZOWE_USE_DAEMON;
+        // TODO: Remove comment: delete testEnvironment.env.ZOWE_USE_DAEMON;
 
         const stdoutStr = response.stdout.toString();
         if (isZoweExe()) {
