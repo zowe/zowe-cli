@@ -71,7 +71,7 @@ Object {
     "cwd": "fake",
     "env": Object {},
     "stdin": null,
-    "stdinLength": 11,
+    "stdinLength": 256,
   },
   "stream": Object {
     "on": [MockFunction] {

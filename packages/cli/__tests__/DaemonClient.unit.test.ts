@@ -57,12 +57,12 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+        (daemonClient as any).data(JSON.stringify(daemonResponse));
 
         expect(parse).toHaveBeenCalled();
     });
 
-    it("should process response with binary stdin data when received", () => {
+    it("should process response with binary stdin data when received", async () => {
 
         const log = jest.fn(() => {
             // do nothing
@@ -90,7 +90,7 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server);
-        const stdinData = "binary\0data";
+        const stdinData = String.fromCharCode(...Array(256).keys());
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "cat"],
             cwd: "fake",
@@ -98,13 +98,13 @@ describe("DaemonClient tests", () => {
             stdinLength: stdinData.length,
             stdin: null
         };
-        const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin").mockReturnValueOnce(undefined);
+        const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin").mockResolvedValueOnce(undefined);
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse) + "\f" + stdinData;
-        (daemonClient as any).data(stringData, {whatever: "context I want"});
+        await (daemonClient as any).data(stringData);
 
         expect(writeToStdinSpy).toHaveBeenCalledWith(stdinData, stdinData.length);
         expect(parse).toHaveBeenCalled();
@@ -142,7 +142,7 @@ describe("DaemonClient tests", () => {
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const promptResponse = { stdin: "some answer" };
-        (daemonClient as any).data(JSON.stringify(promptResponse), {whatever: "context I want"});
+        (daemonClient as any).data(JSON.stringify(promptResponse));
 
         expect(parse).not.toHaveBeenCalled();
     });
@@ -186,7 +186,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
         const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR };
-        (daemonClient as any).data(JSON.stringify(shutdownResponse), {whatever: "context I want"});
+        (daemonClient as any).data(JSON.stringify(shutdownResponse));
 
         expect(shutdownSpy).toHaveBeenCalledTimes(1);
         expect(parse).not.toHaveBeenCalled();
