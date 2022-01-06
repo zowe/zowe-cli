@@ -37,6 +37,9 @@ use serde::{Deserialize, Serialize};
 extern crate sysinfo;
 use sysinfo::{ProcessExt, System, SystemExt};
 
+extern crate whoami;
+use whoami::username;
+
 const DEFAULT_PORT: i32 = 4000;
 
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
@@ -73,6 +76,7 @@ struct DaemonResponse {
     env: Option<HashMap<String, String>>,
     stdinLength: Option<i32>,
     stdin: Option<String>,
+    user: Option<String>,
 }
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
@@ -184,6 +188,7 @@ fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
         env: Some(get_zowe_env()),
         stdinLength: Some(stdin.len() as i32),
         stdin: None,
+        user: Some(username()),
     };
     let mut _resp = serde_json::to_vec(&response)?;
     if response.stdinLength.unwrap() > 0 {
@@ -329,6 +334,7 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
                         env: None,
                         stdinLength: None,
                         stdin: Some(reply),
+                        user: Some(username()),
                     };
                     let v = serde_json::to_string(&response)?;
 
@@ -349,6 +355,7 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
                         env: None,
                         stdinLength: None,
                         stdin: Some(reply),
+                        user: Some(username()),
                     };
                     let v = serde_json::to_string(&response)?;
                     stream_clone.write(v.as_bytes()).unwrap();

@@ -11,6 +11,7 @@
 
 import { Imperative } from "@zowe/imperative";
 import * as net from "net";
+import { userInfo } from "os";
 import { DaemonClient } from "./DaemonClient";
 
 // TODO(Kelosky): handle prompting cases from login command
@@ -59,6 +60,14 @@ export class Processor {
     private mPort: number;
 
     /**
+     * Hold current owner for the server
+     * @private
+     * @type {number}
+     * @memberof Processor
+     */
+    private mUser: string;
+
+    /**
      * Indicator for whether or not to start the server
      * @private
      * @type {boolean}
@@ -81,9 +90,9 @@ export class Processor {
 
         this.initialParse();
         if (this.startServer) {
-
+            this.mUser = userInfo().username;
             this.mServer = net.createServer((c) => {
-                new DaemonClient(c, this.mServer).run();
+                new DaemonClient(c, this.mServer, this.mUser).run();
             });
 
             this.mServer.on('error', this.error.bind(this));

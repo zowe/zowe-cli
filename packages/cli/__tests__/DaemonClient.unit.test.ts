@@ -45,13 +45,14 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "dog"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
-            stdin: null
+            stdin: null,
+            user: "fake"
         };
 
         daemonClient.run();
@@ -89,14 +90,15 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         const stdinData = "binary\0data";
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "cat"],
             cwd: "fake",
             env: {},
             stdinLength: stdinData.length,
-            stdin: null
+            stdin: null,
+            user: "fake"
         };
         const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin").mockReturnValueOnce(undefined);
 
@@ -136,7 +138,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
@@ -181,7 +183,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server as any);
+        const daemonClient = new DaemonClient(client as any, server as any, "fake");
         const shutdownSpy = jest.spyOn(daemonClient as any, "shutdown");
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
@@ -209,7 +211,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         daemonClient.run();
         (daemonClient as any).end();
         expect(log).toHaveBeenLastCalledWith('daemon client disconnected');
@@ -232,7 +234,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         daemonClient.run();
         (daemonClient as any).close();
         expect(log).toHaveBeenLastCalledWith('client closed');

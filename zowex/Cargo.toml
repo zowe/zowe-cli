@@ -15,3 +15,4 @@ rpassword = "5.0.1"
 sysinfo = "0.21.1"
 serde_json = "1.0.69"
 serde = { version = "1.0.130", features = ["derive"]}
+whoami = "1.2.1"

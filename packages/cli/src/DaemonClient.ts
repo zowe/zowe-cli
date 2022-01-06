@@ -28,9 +28,10 @@ export class DaemonClient {
      * Creates an instance of DaemonClient.
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
+     * @param {string} mOwner
      * @memberof DaemonClient
      */
-    constructor(private mClient: net.Socket, private mServer: net.Server) {
+    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string) {
     }
 
     /**
@@ -121,6 +122,28 @@ export class DaemonClient {
         const jsonEndIdx = stringData.indexOf("}" + DaemonRequest.EOW_DELIMITER);
         const jsonData: IDaemonResponse = JSON.parse(jsonEndIdx !== -1 ? stringData.slice(0, jsonEndIdx + 1) : stringData);
         const stdinData = jsonEndIdx !== -1 ? stringData.slice(jsonEndIdx + 2) : undefined;
+
+        if (jsonData.user == null) {
+            // Someone tried connecting but is missing something important.
+            Imperative.api.appLogger.warn("A connection was attempted without a valid user.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The daemon client did not supply user information.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        } else if (jsonData.user != this.mOwner) {
+            // Someone else is trying to use the daemon, and should be stopped.
+            Imperative.api.appLogger.warn("The user '" + jsonData.user + "' attempted to connect.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The user '" + jsonData.user + "' cannot use this daemon.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        }
 
         if (jsonData.stdin != null) {
             if (jsonData.stdin !== DaemonClient.CTRL_C_CHAR) {
