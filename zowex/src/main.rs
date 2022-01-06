@@ -174,9 +174,9 @@ fn get_zowe_env() -> HashMap<String, String> {
 
 fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
     let cwd = env::current_dir()?;
-    let mut stdin = String::new();
+    let mut stdin = Vec::new();
     if !atty::is(Stream::Stdin) {
-        io::stdin().read_to_string(&mut stdin)?;
+        io::stdin().read_to_end(&mut stdin)?;
     }
     let response: DaemonResponse = DaemonResponse {
         argv: Some(args.to_vec()),
@@ -185,10 +185,10 @@ fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
         stdinLength: Some(stdin.len() as i32),
         stdin: None,
     };
-    let mut _resp = serde_json::to_string(&response)?;
+    let mut _resp = serde_json::to_vec(&response)?;
     if response.stdinLength.unwrap() > 0 {
-        _resp.push('\x0c');
-        _resp.push_str(&stdin);
+        _resp.push(b'\x0c');
+        _resp.append(&mut stdin);
     }
 
     // form our host, port, and connection strings
@@ -196,7 +196,7 @@ fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
     let port_string = get_port_string();
 
     let mut stream = establish_connection(daemon_host, port_string)?;
-    Ok(talk(&_resp.as_bytes(), &mut stream)?)
+    Ok(talk(&_resp, &mut stream)?)
 }
 
 fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
