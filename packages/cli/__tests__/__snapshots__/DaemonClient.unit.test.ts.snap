@@ -18,8 +18,10 @@ Object {
     "env": Object {},
     "stdin": null,
     "stdinLength": 0,
+    "user": "ZmFrZQ==",
   },
   "stream": Object {
+    "end": [MockFunction],
     "on": [MockFunction] {
       "calls": Array [
         Array [
@@ -50,6 +52,7 @@ Object {
         },
       ],
     },
+    "write": [MockFunction],
   },
 }
 `;
@@ -72,8 +75,10 @@ Object {
     "env": Object {},
     "stdin": null,
     "stdinLength": 11,
+    "user": "ZmFrZQ==",
   },
   "stream": Object {
+    "end": [MockFunction],
     "on": [MockFunction] {
       "calls": Array [
         Array [
@@ -104,6 +109,7 @@ Object {
         },
       ],
     },
+    "write": [MockFunction],
   },
 }
 `;
