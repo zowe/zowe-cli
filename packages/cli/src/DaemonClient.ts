@@ -25,6 +25,11 @@ export class DaemonClient {
     public static readonly CTRL_C_CHAR = "\x03";
 
     /**
+     * The number of stdin bytes remaining to read from the daemon client.
+     */
+    private pendingStdinLength = 0;
+
+    /**
      * Creates an instance of DaemonClient.
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
@@ -85,11 +90,10 @@ export class DaemonClient {
      * @private
      * @memberof DaemonClient
      */
-    private writeToStdin(data: string, expectedLength: number) {
+    private async writeToStdin(data: Buffer, expectedLength: number) {
         // stdin.isTTY is checked by get-stdin and should be false if stdin contains valid data.
-        // We set it to false if the number of bytes received matches the expected `stdinLength`.
         const stdin: any = process.stdin;
-        Object.defineProperty(process.stdin, "isTTY", { value: data.length !== expectedLength });
+        Object.defineProperty(process.stdin, "isTTY", { value: false });
 
         // Normally Node.js reads from process.stdin only once, and the stream is not reusable.
         // To work around this, we store a copy of the `_readableState` object before stdin has been used.
@@ -107,6 +111,25 @@ export class DaemonClient {
         // Calling stdin.write throws an EPIPE error because Node.js thinks the stream is read-only.
         // So we simulate calls to stdin.write and stdin.end by pushing to the internal buffer.
         process.stdin.push(data);
+        this.pendingStdinLength = expectedLength - data.byteLength;
+
+        if (this.pendingStdinLength > 0) {
+            // Handle really large stdin data that is buffered and received in multiple chunks
+            // TODO Handle multiple concurrent sources of piped input
+            await new Promise<void>((resolve, reject) => {
+                const outer: DaemonClient = this;  // eslint-disable-line @typescript-eslint/no-this-alias
+                this.mClient.on("data", function listener(data) {
+                    process.stdin.push(data);
+                    outer.pendingStdinLength -= data.byteLength;
+
+                    if (outer.pendingStdinLength <= 0) {
+                        outer.mClient.removeListener("data", listener);
+                        resolve();
+                    }
+                });
+            });
+        }
+
         process.stdin.push(null);
     }
 
@@ -116,12 +139,14 @@ export class DaemonClient {
      * @param {Buffer} data
      * @memberof DaemonClient
      */
-    private data(data: Buffer) {
+    private async data(data: Buffer) {
+        if (this.pendingStdinLength > 0) return;
+
         // Split JSON body and binary data from multipart response
         const stringData = data.toString();
         const jsonEndIdx = stringData.indexOf("}" + DaemonRequest.EOW_DELIMITER);
         const jsonData: IDaemonResponse = JSON.parse(jsonEndIdx !== -1 ? stringData.slice(0, jsonEndIdx + 1) : stringData);
-        const stdinData = jsonEndIdx !== -1 ? stringData.slice(jsonEndIdx + 2) : undefined;
+        const stdinData = jsonEndIdx !== -1 ? data.slice(jsonEndIdx + 2) : undefined;
 
         let requestUser: string = undefined;
         if (jsonData.user != null) {
@@ -164,7 +189,7 @@ export class DaemonClient {
             }
         } else {
             if (stdinData != null) {
-                this.writeToStdin(stdinData, jsonData.stdinLength);
+                await this.writeToStdin(stdinData, jsonData.stdinLength);
             }
 
             Imperative.commandLine = jsonData.argv.join(" ");
