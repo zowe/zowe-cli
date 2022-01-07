@@ -20,8 +20,12 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("Zowe native executable", () => {
+    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe CLI native executable.";
+    const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
+    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
+
     let zoweExePath: string;
-    let canTestExe: boolean = true;
+    let willRunZoweExe: boolean = true;
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -45,14 +49,14 @@ describe("Zowe native executable", () => {
         if (!IO.existsSync(zoweExePath)) {
             zoweExePath = nodeJsPath.normalize(zoweExeGrandParentDir + "/debug/zowe" + exeExt);
             if (!IO.existsSync(zoweExePath)) {
-                canTestExe = false;
+                willRunZoweExe = false;
                 zoweExePath = "./NoZoweExeExists";
             }
         }
     });
 
     it("should display its version number", async () => {
-        if (canTestExe) {
+        if (willRunZoweExe) {
             const response = runCliScript(
                 __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
                 [zoweExePath, "--version-exe"]
@@ -60,6 +64,32 @@ describe("Zowe native executable", () => {
             expect(response.stdout.toString()).toMatch(/[0-9]\.[0-9]\.[0-9]/);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
+        }
+    });
+
+    it("should refuse to run the enable command", async () => {
+        if (willRunZoweExe) {
+            const response = runCliScript(
+                __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
+                [zoweExePath, "daemon", "enable"]
+            );
+            const stdoutStr = response.stdout.toString();
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+        }
+    });
+
+    it("should refuse to run the disable command", async () => {
+        if (willRunZoweExe) {
+            const response = runCliScript(
+                __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
+                [zoweExePath, "daemon", "disable"]
+            );
+            const stdoutStr = response.stdout.toString();
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
+            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
+            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
         }
     });
 });

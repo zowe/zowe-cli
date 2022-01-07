@@ -26,13 +26,10 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 describe("daemon disable", () => {
     const rimraf = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
-    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe CLI native executable.";
-    const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
-    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
     let exePath: string;
     let pathToBin: string;
-    let isZoweExe: boolean = false; // is the zowe command that we will run an executable?
+    let willRunNodeJsZowe: boolean = true; // is the zowe command that we will run our Node.js script?
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -81,7 +78,7 @@ describe("daemon disable", () => {
         const maxScriptSize: number = 2000;
         const zowePgmStats = fs.statSync(zowePgmInPath);
         if (zowePgmStats.size >= maxScriptSize) {
-            isZoweExe = true;
+            willRunNodeJsZowe = false;
         }
     });
 
@@ -93,7 +90,7 @@ describe("daemon disable", () => {
         /* Our EXE will spawn a daemon to get the help. We do not want a daemon as part of this test suite.
          * We just want to confirm that our enable help is reasonable.
          */
-        if (!isZoweExe) {
+        if (willRunNodeJsZowe) {
             const response = runCliScript(__dirname + "/__scripts__/daemon_disable_help.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
             expect(stdoutStr).toContain("COMMAND NAME");
@@ -111,23 +108,19 @@ describe("daemon disable", () => {
     });
 
     it("should succeed when no EXE exists", async () => {
-        if (IO.existsSync(pathToBin)) {
-            rimraf(pathToBin);
-        }
-        const response = runCliScript(__dirname + "/__scripts__/daemon_disable.sh", testEnvironment);
-        const stdoutStr = response.stdout.toString();
-        if (isZoweExe) {
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
-            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
-        } else {
+        if (willRunNodeJsZowe) {
+            if (IO.existsSync(pathToBin)) {
+                rimraf(pathToBin);
+            }
+            const response = runCliScript(__dirname + "/__scripts__/daemon_disable.sh", testEnvironment);
+            const stdoutStr = response.stdout.toString();
             expect(stdoutStr).toContain("Zowe CLI daemon mode is disabled.");
             expect(response.status).toBe(0);
         }
     });
 
     it("should delete an existing EXE", async () => {
-        if (!isZoweExe) {
+        if (willRunNodeJsZowe) {
             if (!IO.existsSync(pathToBin)) {
                 IO.createDirSync(pathToBin);
             }
@@ -143,7 +136,7 @@ describe("daemon disable", () => {
     });
 
     it("should succeed when no daemon is running", async () => {
-        if (!isZoweExe) {
+        if (willRunNodeJsZowe) {
             // find any running daemon
             const findProc = require('find-process');
             const procArray = await findProc('name', 'node', true);
@@ -165,7 +158,7 @@ describe("daemon disable", () => {
     });
 
     it("should stop a running zowe daemon", async () => {
-        if (!isZoweExe) {
+        if (willRunNodeJsZowe) {
             // start a daemon
             exec("zowe --daemon");
 
