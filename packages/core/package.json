@@ -50,7 +50,7 @@
   "devDependencies": {
     "@types/node": "^12.12.24",
     "@zowe/cli-test-utils": "7.0.0-next.202112281543",
-    "@zowe/imperative": "5.0.0-next.202201071721",
+    "@zowe/imperative": "5.0.0-next.202201102100",
     "chalk": "^4.1.0",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
