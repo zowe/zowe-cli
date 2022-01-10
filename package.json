@@ -38,7 +38,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.0-next.202112221912",
+    "@zowe/imperative": "5.0.0-next.202201102100",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
@@ -85,8 +85,8 @@
     "typedoc": "^0.16.0",
     "typedoc-plugin-external-module-map": "^1.2.1",
     "typescript": "^3.8.0",
-    "which": "2.0.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "which": "2.0.2"
   },
   "jest": {
     "globals": {
