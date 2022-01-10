@@ -110,6 +110,49 @@ describe("DaemonClient tests", () => {
         expect(parse).toHaveBeenCalled();
     });
 
+    it("should fail to process invalid data when received", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn( (data, context) => {
+            expect(data).toMatchSnapshot();
+            expect(context).toMatchSnapshot();
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    logError: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server);
+
+        daemonClient.run();
+        // force `data` call and verify input is from instantiation of DaemonClient
+        // and is what is passed to mocked Imperative.parse via snapshot
+        (daemonClient as any).data("not json");
+
+        expect(log).toHaveBeenCalledTimes(3);
+        expect(log).toHaveBeenLastCalledWith("First 1024 bytes of daemon request:\n", "not json");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
     it("should ignore JSON response data used for prompting when received", () => {
 
         const log = jest.fn(() => {
