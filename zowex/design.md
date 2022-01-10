@@ -4,6 +4,8 @@ Zowe CLI start up time can be slow 3 - 15 seconds.  Part of the reason this oper
 
 ## Solution Overview
 
+***This solution should NOT be deployed in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
+
 We can run Zowe CLI as a persistent process “daemon” to have a one-time startup of the Node.js cost and have a native-built, Rust client to communicate with the daemon via TCP/IP sockets.
 
 Root level help, `zowe --help` response time is reduced from ~3 seconds to just under ` second in daemon mode.
@@ -11,6 +13,8 @@ Root level help, `zowe --help` response time is reduced from ~3 seconds to just 
 In testing a solution, the root command tree takes longer to execute than lower level command tree items, e.g. `zowe -h` is observably slower than `zowe jobs list -h` which has near instantaneous response time
 
 ### Rust Client
+
+***This client should NOT be deployed in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
 Native Rust client calls Zowe CLI persistent process (daemon).  An env var can be set for the port to connect to tcp socket.  `ZOWE_DAEMON=<PORT>` environmental variable used or default `4000`.
 
@@ -23,6 +27,8 @@ Imperative is updated in several places to write to a stream in addition to / in
 Rust client loads cwd (current working directory), env (environment variables), and stdin (piped input), and sends them to the daemon server.  For example, Zowe CLI daemon could be running at any arbitrary location on the system; however, we want `zowe` to operate against whatever directory it was run.
 
 ### Zowe CLI Server
+
+***This server should NOT be deployed in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
 Zowe CLI is updated to launch a server if an undocumented `--daemon` parm is detected.  The server is a simple tcpip server.
 

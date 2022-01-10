@@ -33,7 +33,8 @@ describe("DaemonClient tests", () => {
             api: {
                 appLogger: {
                     trace: log,
-                    debug: log
+                    debug: log,
+                    warn: log
                 }
             },
             commandLine: "n/a",
@@ -42,16 +43,19 @@ describe("DaemonClient tests", () => {
 
         const server: net.Server = undefined;
         const client = {
-            on: jest.fn()
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "dog"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
-            stdin: null
+            stdin: null,
+            user: Buffer.from("fake").toString('base64')
         };
 
         daemonClient.run();
@@ -59,6 +63,8 @@ describe("DaemonClient tests", () => {
         // and is what is passed to mocked Imperative.parse via snapshot
         (daemonClient as any).data(JSON.stringify(daemonResponse));
 
+        expect(log).toHaveBeenLastCalledWith('daemon input command: feed dog');
+        expect(log).toHaveBeenCalledTimes(2);
         expect(parse).toHaveBeenCalled();
     });
 
@@ -77,7 +83,8 @@ describe("DaemonClient tests", () => {
             api: {
                 appLogger: {
                     trace: log,
-                    debug: log
+                    debug: log,
+                    warn: log
                 }
             },
             commandLine: "n/a",
@@ -86,17 +93,20 @@ describe("DaemonClient tests", () => {
 
         const server: net.Server = undefined;
         const client = {
-            on: jest.fn()
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         const stdinData = String.fromCharCode(...Array(256).keys());
         const daemonResponse: IDaemonResponse = {
             argv: ["feed", "cat"],
             cwd: "fake",
             env: {},
             stdinLength: stdinData.length,
-            stdin: null
+            stdin: null,
+            user: Buffer.from("fake").toString('base64')
         };
         const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin").mockResolvedValueOnce(undefined);
 
@@ -106,6 +116,8 @@ describe("DaemonClient tests", () => {
         const stringData = JSON.stringify(daemonResponse) + "\f" + stdinData;
         await (daemonClient as any).data(stringData);
 
+        expect(log).toHaveBeenLastCalledWith('daemon input command: feed cat');
+        expect(log).toHaveBeenCalledTimes(2);
         expect(writeToStdinSpy).toHaveBeenCalledWith(stdinData, stdinData.length);
         expect(parse).toHaveBeenCalled();
     });
@@ -167,7 +179,8 @@ describe("DaemonClient tests", () => {
             api: {
                 appLogger: {
                     trace: log,
-                    debug: log
+                    debug: log,
+                    warn: log
                 }
             },
             commandLine: "n/a",
@@ -176,17 +189,20 @@ describe("DaemonClient tests", () => {
 
         const server: net.Server = undefined;
         const client = {
-            on: jest.fn()
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        const promptResponse = { stdin: "some answer" };
+        const promptResponse = { stdin: "some answer", user: Buffer.from("fake").toString('base64') };
         (daemonClient as any).data(JSON.stringify(promptResponse));
 
+        expect(log).toHaveBeenCalledTimes(1);
         expect(parse).not.toHaveBeenCalled();
     });
 
@@ -205,7 +221,8 @@ describe("DaemonClient tests", () => {
             api: {
                 appLogger: {
                     trace: log,
-                    debug: log
+                    debug: log,
+                    warn: log
                 }
             },
             commandLine: "n/a",
@@ -224,13 +241,14 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server as any);
+        const daemonClient = new DaemonClient(client as any, server as any, "fake");
         const shutdownSpy = jest.spyOn(daemonClient as any, "shutdown");
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
-        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR };
+        const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64') };
         (daemonClient as any).data(JSON.stringify(shutdownResponse));
 
+        expect(log).toHaveBeenCalledTimes(2);
         expect(shutdownSpy).toHaveBeenCalledTimes(1);
         expect(parse).not.toHaveBeenCalled();
     });
@@ -243,7 +261,7 @@ describe("DaemonClient tests", () => {
 
         (Imperative as any).api = {
             appLogger: {
-                trace: log
+                trace: log,
             }
         };
 
@@ -252,7 +270,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         daemonClient.run();
         (daemonClient as any).end();
         expect(log).toHaveBeenLastCalledWith('daemon client disconnected');
@@ -275,7 +293,7 @@ describe("DaemonClient tests", () => {
             on: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
         daemonClient.run();
         (daemonClient as any).close();
         expect(log).toHaveBeenLastCalledWith('client closed');
@@ -287,5 +305,157 @@ describe("DaemonClient tests", () => {
             (DaemonClient.prototype as any).writeToStdin(animal, animal.length);
             expect(await getStdin()).toBe(animal);
         }
+    });
+
+    it("should not process data when received from another user", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn( (data, context) => {
+            expect(data).toMatchSnapshot();
+            expect(context).toMatchSnapshot();
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    warn: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "dog"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: Buffer.from("ekaf").toString('base64')
+        };
+
+        daemonClient.run();
+        // force `data` call and verify input is from instantiation of DaemonClient
+        // and is what is passed to mocked Imperative.parse via snapshot
+        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+
+        expect(log).toHaveBeenCalledTimes(2);
+        expect(log).toHaveBeenLastCalledWith("The user 'ekaf' attempted to connect.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should not process data when no user is specified", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn( (data, context) => {
+            expect(data).toMatchSnapshot();
+            expect(context).toMatchSnapshot();
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    warn: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "dog"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null
+        };
+
+        daemonClient.run();
+        // force `data` call and verify input is from instantiation of DaemonClient
+        // and is what is passed to mocked Imperative.parse via snapshot
+        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+
+        expect(log).toHaveBeenCalledTimes(2);
+        expect(log).toHaveBeenLastCalledWith("A connection was attempted without a valid user.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should not process data or crash when invalid user data is specified", () => {
+
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const parse = jest.fn( (data, context) => {
+            expect(data).toMatchSnapshot();
+            expect(context).toMatchSnapshot();
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    warn: log
+                }
+            },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        const client = {
+            on: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
+        };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "dog"],
+            cwd: "fake",
+            env: {},
+            stdinLength: 0,
+            stdin: null,
+            user: "ekaf"
+        };
+
+        daemonClient.run();
+        // force `data` call and verify input is from instantiation of DaemonClient
+        // and is what is passed to mocked Imperative.parse via snapshot
+        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+
+        expect(log).toHaveBeenCalledTimes(2);
+        expect(log).toHaveBeenLastCalledWith("The user 'zF�' attempted to connect.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
     });
 });

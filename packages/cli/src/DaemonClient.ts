@@ -33,9 +33,10 @@ export class DaemonClient {
      * Creates an instance of DaemonClient.
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
+     * @param {string} mOwner
      * @memberof DaemonClient
      */
-    constructor(private mClient: net.Socket, private mServer: net.Server) {
+    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string) {
     }
 
     /**
@@ -159,6 +160,37 @@ export class DaemonClient {
             Imperative.api.appLogger.trace("First 1024 bytes of daemon request:\n", stringData.slice(0, 1024));
             const responsePayload: string = DaemonRequest.create({
                 stderr: "Failed to parse data received from daemon client:\n" + error.stack,
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        }
+
+        let requestUser: string = undefined;
+        if (jsonData.user != null) {
+            try {
+                requestUser = Buffer.from(jsonData.user, 'base64').toString();
+            } catch (err) {
+                Imperative.api.appLogger.error("The user field on a daemon request was malformed.");
+            }
+        }
+
+        if (requestUser == null || requestUser === '') {
+            // Someone tried connecting but is missing something important.
+            Imperative.api.appLogger.warn("A connection was attempted without a valid user.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The daemon client did not supply user information or supplied bad information.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        } else if (requestUser != this.mOwner) {
+            // Someone else is trying to use the daemon, and should be stopped.
+            Imperative.api.appLogger.warn("The user '" + requestUser + "' attempted to connect.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The user '" + requestUser + "' cannot use this daemon.\n",
                 exitCode: 1
             });
             this.mClient.write(responsePayload);
