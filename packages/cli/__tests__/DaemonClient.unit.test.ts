@@ -152,7 +152,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
-        const daemonClient = new DaemonClient(client as any, server);
+        const daemonClient = new DaemonClient(client as any, server, "fake");
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
@@ -350,7 +350,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+        (daemonClient as any).data(JSON.stringify(daemonResponse));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("The user 'ekaf' attempted to connect.");
@@ -400,7 +400,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+        (daemonClient as any).data(JSON.stringify(daemonResponse));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("A connection was attempted without a valid user.");
@@ -451,7 +451,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse), {whatever: "context I want"});
+        (daemonClient as any).data(JSON.stringify(daemonResponse));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("The user 'zF�' attempted to connect.");
