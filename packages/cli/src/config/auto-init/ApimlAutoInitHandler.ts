@@ -93,7 +93,8 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 type: "base",
                 properties: {
                     host: session.ISession.hostname,
-                    port: session.ISession.port
+                    port: session.ISession.port,
+                    rejectUnauthorized: session.ISession.rejectUnauthorized
                 },
                 secure: []
             };
