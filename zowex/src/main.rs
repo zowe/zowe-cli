@@ -45,6 +45,7 @@ use whoami::username;
 
 const DEFAULT_PORT: i32 = 4000;
 
+const EXIT_CODE_SUCCESS: i32 = 0;
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
 const EXIT_CODE_CANNOT_GET_MY_PATH: i32 = 101;
 const EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH: i32 = 102;
@@ -52,6 +53,7 @@ const EXIT_CODE_CANNOT_START_DAEMON: i32 = 103;
 const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 104;
 const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 105;
 const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
+const EXIT_CODE_CANT_RUN_DAEMON_CMD: i32 = 107;
 
 struct DaemonProcInfo {
     is_running: bool,
@@ -95,10 +97,21 @@ struct DaemonResponse {
 fn main() -> std::io::Result<()> {
     // turn args into vector
     let mut _args: Vec<String> = env::args().collect();
+    let cmd_result: Result<i32, i32>;
 
     _args.drain(..1); // remove first (exe name)
 
-    let cmd_result: Result<i32, i32>;
+    // Do we only need to display our version?
+    if _args.len() >= 1 {
+        if _args[0] == "--version-exe" {
+            println!("{}", env!("CARGO_PKG_VERSION"));
+            std::process::exit(EXIT_CODE_SUCCESS);
+        }
+    }
+
+    // daemon commands that overwrite our executable cannot be run by our executable
+    exit_when_alt_cmd_needed(&_args);
+
     if user_wants_daemon() {
         // send command to the daemon
         match run_daemon_command(&mut _args) {
@@ -140,6 +153,75 @@ fn main() -> std::io::Result<()> {
 }
 
 /**
+ * Determine if the command to run is a "zowe daemon" command that we cannot
+ * run from our executable. For such commands, display a zowe NodeJs command
+ * that can be run instead, and exit the current command.
+ *
+ * @param cmd_line_args
+ *      The user-supplied command line arguments to the zowe command.
+ *      Each argument is in its own vector element.
+ */
+fn exit_when_alt_cmd_needed(cmd_line_args: &Vec<String>) {
+    // commands other than daemon commands can be run by our exe
+    if cmd_line_args.len() < 2 {
+        return;
+    }
+    if cmd_line_args[0] != "daemon" {
+        return;
+    }
+    if cmd_line_args[1] != "enable"  &&  cmd_line_args[1] != "disable"  {
+        return;
+    }
+
+    // we can run any of the help requests for the daemon commands
+    if cmd_line_args.len() >= 3 {
+        let third_parm: &str = cmd_line_args[2].as_str();
+        match third_parm {
+            "--help" | "-h" | "--h" | "--help-web" | "--hw" | "--help-examples" => return,
+            _ => { /* pass on through to next statement */ }
+        }
+    }
+
+    // show the NodeJS zowe command that the user can run instead
+    println!("You cannot run this 'daemon' command while using the Zowe CLI native executable.");
+    println!("Copy and paste the following command instead:");
+
+    //
+    let mut zowe_cmd_to_show = String::new();
+    if env::consts::OS == "windows" {
+        // We use COMSPEC so that the command will work for CMD and PowerShell
+        match env::var("COMSPEC") {
+            Ok(comspec_val) => {
+                if comspec_val.len() > 0 {
+                    if comspec_val.contains(' ') {
+                        zowe_cmd_to_show.push('"');
+                        zowe_cmd_to_show.push_str(&comspec_val);
+                        zowe_cmd_to_show.push('"');
+                    } else {
+                        zowe_cmd_to_show.push_str(&comspec_val);
+                    }
+                    zowe_cmd_to_show.push_str(" /C ");
+                }
+            },
+            Err(_e) => { /* do not add COMSPEC */ },
+        }
+    }
+
+    // add the zowe nodeJS path to our command
+    let njs_zowe_path = get_nodejs_zowe_path();
+    if njs_zowe_path.contains(' ') {
+        zowe_cmd_to_show.push('"');
+        zowe_cmd_to_show.push_str(&njs_zowe_path);
+        zowe_cmd_to_show.push('"');
+    } else {
+        zowe_cmd_to_show.push_str(&njs_zowe_path);
+    }
+    println!("{} {}", zowe_cmd_to_show, arg_vec_to_string(cmd_line_args));
+
+    std::process::exit(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+}
+
+/**
  * Convert a vector of command line arguments into a single string of arguments.
  * @param cmd_line_args
  *      The user-supplied command line arguments to the zowe command.
@@ -147,7 +229,7 @@ fn main() -> std::io::Result<()> {
  * @returns
  *      A String containing all of the command line arguments.
  */
-fn arg_vec_to_string(arg_vec: Vec<String>) -> String {
+fn arg_vec_to_string(arg_vec: &Vec<String>) -> String {
     let mut arg_string = String::new();
     let mut arg_count = 1;
     for next_arg in arg_vec.iter() {
@@ -207,14 +289,20 @@ fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
     Ok(talk(&_resp, &mut stream)?)
 }
 
-fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
-    /* Attempt to make a TCP connection to the daemon.
-     * Iterate to enable a slow system to start the daemon.
-     */
+/**
+ * Attempt to make a TCP connection to the daemon.
+ * Iterate to enable a slow system to start the daemon.
+ */
+fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream> {
+    const THREE_SEC_DELAY: u64 = 3;
+    const THREE_MIN_OF_RETRIES: i32 = 60;
+    const RETRY_TO_SHOW_DIAG: i32 = 5;
+
     let host_port_conn_str = format!("{}:{}", host, port);
-    let mut conn_attempt = 1;
+    let mut conn_retries = 0;
     let mut we_started_daemon = false;
     let mut cmd_to_show: String = String::new();
+
     let stream = loop {
         let conn_result = TcpStream::connect(&host_port_conn_str);
         if let Ok(good_stream) = conn_result {
@@ -227,7 +315,7 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
 
         // when not running, start it.
         if daemon_proc_info.is_running == false {
-            if conn_attempt == 1 {
+            if conn_retries == 0 {
                 // start the daemon and continue trying to connect
                 let njs_zowe_path = get_nodejs_zowe_path();
                 we_started_daemon = true;
@@ -246,23 +334,37 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
             }
         }
 
-        if conn_attempt == 5 {
-            println!("\nUnable to connect to Zowe daemon with name = {} and pid = {} on host = {} and port = {}.",
-                daemon_proc_info.name, daemon_proc_info.pid, host, port
-            );
-            println!(
-                "Command = {}\nTerminating after maximum retries.",
-                daemon_proc_info.cmd
-            );
+        if conn_retries > THREE_MIN_OF_RETRIES {
+            println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
             std::process::exit(EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON);
         }
 
         // pause between attempts to connect
-        thread::sleep(Duration::from_secs(3));
-        if conn_attempt == 1 && we_started_daemon == false || conn_attempt > 1 {
-            println!("Attempting to connect to Zowe daemon again ...");
+        thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+
+        // before we wait too long, show diagnostics
+        if conn_retries == RETRY_TO_SHOW_DIAG {
+            println!("\nThe Zowe daemon was started with these options:");
+            if we_started_daemon {
+                println!("Command = {}", cmd_to_show);
+            } else {
+                println!("Command = {}", daemon_proc_info.cmd);
+            }
+            println!("Process name = {}  pid = {}  host = {}  port = {}\n",
+                daemon_proc_info.name, daemon_proc_info.pid, host, port
+            );
         }
-        conn_attempt = conn_attempt + 1;
+
+        let retry_msg;
+        if we_started_daemon {
+            retry_msg = "Waiting for the Zowe daemon to start";
+        } else {
+            retry_msg = "Attempting to connect to the Zowe daemon";
+        }
+        if conn_retries > 0 {
+            println!("{} ({} of {})", retry_msg, conn_retries, THREE_MIN_OF_RETRIES);
+        }
+        conn_retries = conn_retries + 1;
     };
 
     Ok(stream)

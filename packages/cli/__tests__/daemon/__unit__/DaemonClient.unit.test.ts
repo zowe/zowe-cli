@@ -13,8 +13,8 @@ jest.mock("net");
 jest.mock("@zowe/imperative");
 import * as net from "net";
 import getStdin = require("get-stdin");
+import { DaemonClient } from "../../../src/daemon/DaemonClient";
 import { IDaemonResponse, Imperative } from "@zowe/imperative";
-import { DaemonClient } from "../src/DaemonClient";
 
 describe("DaemonClient tests", () => {
 

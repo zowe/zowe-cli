@@ -5,7 +5,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Update Imperative to absorb bugfixes introduced in version `5.0.0-next.202201102100`.
+- Enhancement: Add the commands `zowe daemon enable` and `zowe daemon disable`. These commands enable end-users to set up daemon mode without having to download a separate executable and place it by hand into some directory.
 - Enhancement: Refactored communication between Imperative daemon client and server. Previously the client only sent CLI arguments and the current working directory. Now it sends a JSON object that also includes environment variables and input piped from stdin. [#1179](https://github.com/zowe/zowe-cli/issues/1179)
+- **Next Breaking**: The Daemon-related class named `Processor` was renamed to `DaemonDecider`.
 - **Next Breaking**: Remove `--dcd` argument which was reserved for `--daemon-current-directory`.
 - **Next Breaking**: Add user check to daemon communication
 

@@ -23,15 +23,15 @@ import { DaemonClient } from "./DaemonClient";
 /**
  * Initial paramter parse to handle conditionally starting as a persistent process (e.g. daemon mode)
  * @export
- * @class Processor
+ * @class DaemonDecider
  */
-export class Processor {
+export class DaemonDecider {
 
     /**
      * Default port number
      * @private
      * @static
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private static readonly DEFAULT_PORT = 4000;
 
@@ -39,7 +39,7 @@ export class Processor {
      * Undocumented paramter for launching in server mode
      * @private
      * @static
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private static readonly DAEMON_KEY = "--daemon";
 
@@ -47,7 +47,7 @@ export class Processor {
      * Hold instance of a running server
      * @private
      * @type {net.Server}
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private mServer: net.Server;
 
@@ -55,7 +55,7 @@ export class Processor {
      * Hold current port number for the server
      * @private
      * @type {number}
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private mPort: number;
 
@@ -71,20 +71,20 @@ export class Processor {
      * Indicator for whether or not to start the server
      * @private
      * @type {boolean}
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private mStartServer: boolean;
 
     /**
-     * Creates an instance of Processor.
+     * Creates an instance of DaemonDecider.
      * @param {string[]} mParms
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     constructor(private mParms: string[]) { }
 
     /**
-     * Initialize our processor parse and optionally start the server
-     * @memberof Processor
+     * Initialize our DaemonDecider parse and optionally start the server
+     * @memberof DaemonDecider
      */
     public init() {
 
@@ -103,9 +103,9 @@ export class Processor {
     /**
      * Method to immediately parse or otherwise start the server for later processing from
      * incoming socket connections.
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
-    public process() {
+    public runOrUseDaemon() {
         if (this.mServer) {
             this.mServer.listen(this.mPort, "127.0.0.1", () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mPort}`);
@@ -119,7 +119,7 @@ export class Processor {
     /**
      * Server close handler
      * @private
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private close() {
         Imperative.api.appLogger.debug(`server closed`);
@@ -129,7 +129,7 @@ export class Processor {
      * Server error handler
      * @private
      * @param {Error} err
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private error(err: Error) {
         Imperative.api.appLogger.error(`daemon server error: ${err.message}`);
@@ -139,11 +139,11 @@ export class Processor {
     /**
      * Perform initial parsing of undocumented parameters
      * @private
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private initialParse() {
         const numOfParms = this.mParms.length - 2;
-        this.mPort = Processor.DEFAULT_PORT;
+        this.mPort = DaemonDecider.DEFAULT_PORT;
 
         if (numOfParms > 0) {
             const parm = this.mParms[2];
@@ -152,7 +152,7 @@ export class Processor {
              * NOTE(Kelosky): For now, we use an undocumented paramter `--daemon`.  If found first,
              * we bypass `yargs` and begin running this as a persistent Processor.
              */
-            const portOffset = parm.indexOf(Processor.DAEMON_KEY);
+            const portOffset = parm.indexOf(DaemonDecider.DAEMON_KEY);
 
             if (portOffset > -1) {
                 this.startServer = true;
@@ -171,7 +171,7 @@ export class Processor {
     /**
      * Get whether or not to start the server
      * @private
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private get startServer() {
         return this.mStartServer;
@@ -180,7 +180,7 @@ export class Processor {
     /**
      * Set whether or not to start the server
      * @private
-     * @memberof Processor
+     * @memberof DaemonDecider
      */
     private set startServer(startServer) {
         this.mStartServer = startServer;
