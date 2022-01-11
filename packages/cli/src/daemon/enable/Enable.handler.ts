@@ -192,8 +192,14 @@ export default class EnableDaemonHandler implements ICommandHandler {
                 .pipe(new tar.Parse())
                 .on('entry', function(entry: any) {
                     if (entry.type == "File" && (entry.path as string).includes(fileToExtract)) {
+                        const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
+                        let fileCreateOpts: any = {};
+                        if (sysInfo.platform == "linux" || sysInfo.platform == "darwin") {
+                            // set file permissions to read, write and execute for user, read and execute for group, in octal
+                            fileCreateOpts = { mode: 0o750 };
+                        }
                         // do not include any path structure from the tgz, just the exe name
-                        entry.pipe(fs.createWriteStream(nodeJsPath.resolve(toDir, nodeJsPath.basename(entry.path))));
+                        entry.pipe(fs.createWriteStream(nodeJsPath.resolve(toDir, nodeJsPath.basename(entry.path)), fileCreateOpts));
                     }
                 })
                 .on("end", () => {
