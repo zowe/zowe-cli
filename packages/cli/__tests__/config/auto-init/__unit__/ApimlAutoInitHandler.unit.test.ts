@@ -76,7 +76,7 @@ describe("ApimlAutoInitHandler", () => {
                     user: "fake",
                     password: "fake",
                     type: SessConstants.AUTH_TYPE_BASIC,
-                    tokenType: undefined
+                    tokenType: undefined,
                 }
             }, {
                 arguments: {
@@ -197,6 +197,102 @@ describe("ApimlAutoInitHandler", () => {
         expect(response.profiles.base.secure).not.toContain("tokenValue");
         expect(response.profiles.base.properties.tokenType).not.toBeDefined();
         expect(response.profiles.base.properties.tokenValue).not.toBeDefined();
+    });
+
+    it("should not have changed - rejectUnauthorized flag true", async () => {
+        const mockCreateZosmfSession = jest.fn();
+        const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
+        const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
+        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
+            defaults: {},
+            profiles: {},
+            plugins: []
+        });
+        const mockLogin = jest.fn().mockResolvedValue("fakeToken");
+
+        ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
+        Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
+        Services.getServicesByConfig = mockGetServicesByConfig;
+        Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
+        Login.apimlLogin = mockLogin;
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
+
+        const handler: any = new ApimlAutoInitHandler();
+        expect(handler.mProfileType).toBe("base");
+
+        handler.createSessCfgFromArgs();
+        expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
+
+        const response = await handler.doAutoInit(
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    user: "fake",
+                    password: "fake",
+                    type: SessConstants.AUTH_TYPE_BASIC,
+                    tokenType: undefined,
+                    rejectUnauthorized: true
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
+        expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
+        expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
+        expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
+        expect(mockLogin).toHaveBeenCalledTimes(1);
+        expect(response.profiles.base.properties.rejectUnauthorized).toEqual(true);
+    });
+
+    it("should not have changed - rejectUnauthorized flag false", async () => {
+        const mockCreateZosmfSession = jest.fn();
+        const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
+        const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
+        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue({
+            defaults: {},
+            profiles: {},
+            plugins: []
+        });
+        const mockLogin = jest.fn().mockResolvedValue("fakeToken");
+
+        ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
+        Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
+        Services.getServicesByConfig = mockGetServicesByConfig;
+        Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
+        Login.apimlLogin = mockLogin;
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(undefined));
+
+        const handler: any = new ApimlAutoInitHandler();
+        expect(handler.mProfileType).toBe("base");
+
+        handler.createSessCfgFromArgs();
+        expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
+
+        const response = await handler.doAutoInit(
+            {
+                ISession: {
+                    hostname: "fake",
+                    port: 1234,
+                    user: "fake",
+                    password: "fake",
+                    type: SessConstants.AUTH_TYPE_BASIC,
+                    tokenType: undefined,
+                    rejectUnauthorized: false
+                }
+            }, {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
+            });
+        expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
+        expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
+        expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
+        expect(mockLogin).toHaveBeenCalledTimes(1);
+        expect(response.profiles.base.properties.rejectUnauthorized).toEqual(false);
     });
 
     it("should not have changed - a condition that shouldn't ever happen", async () => {
