@@ -36,6 +36,12 @@ jobs:
       NODE: ${{ matrix.node-version }}
       NODE_OPTIONS: --max_old_space_size=4096
 
+    timeout-minutes: 60
+
+    concurrency:
+      group: ${{ matrix.os }}-node-${{ matrix.node-version }}-ci-${{ github.ref }}
+      cancel-in-progress: true
+
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
 
     steps:
