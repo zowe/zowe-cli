@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "================ daemon enable ==============="
+echo "================ daemon disable ==============="
 zowe daemon disable
 exit $?

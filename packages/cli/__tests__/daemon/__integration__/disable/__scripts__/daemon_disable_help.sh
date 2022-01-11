@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "================ daemon enable help ==============="
+echo "================ daemon disable help ==============="
 zowe daemon disable --help
 exit $?
