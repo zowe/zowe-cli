@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Set executable attribute on zowe executable file on Windows and Mac.
+
 ## `7.0.0-next.202201111811`
 
 - BugFix: Update Imperative to absorb bugfixes introduced in version `5.0.0-next.202201102100`.
