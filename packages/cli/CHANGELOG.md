@@ -1,10 +1,10 @@
 # Change Log
 
+All notable changes to the Zowe CLI package will be documented in this file.
+
 ## Recent Changes
 
 - Enhancement: Ensure `zowe config auto-init` command saves the `rejectUnauthorized` value. [#1109](https://github.com/zowe/zowe-cli/issues/1109)
-
-All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `7.0.0-next.202112281543`
 
