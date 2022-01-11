@@ -121,7 +121,9 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
+            // TODO:gzip
+            // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
         });
 
         it("should get data set content with encoding", async () => {

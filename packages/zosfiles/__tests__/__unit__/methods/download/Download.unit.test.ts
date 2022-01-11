@@ -199,7 +199,9 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false /* don't normalize newlines, binary mode*/,
                 task: undefined /* no progress task */});
@@ -233,7 +235,9 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
                 task: undefined /*no progress task*/});
@@ -947,7 +951,9 @@ describe("z/OS Files - Download", () => {
             //     false, /* don't normalize new lines in binary*/
             //     undefined /* no progress task */);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
                 task: undefined /* no progress task */});
@@ -1049,7 +1055,9 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary */
                 task: undefined /* no progress task */});
