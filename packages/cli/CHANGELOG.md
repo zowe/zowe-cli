@@ -4,11 +4,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Disable gzip compression for z/OSMF requests that download binary files. [#1170](https://github.com/zowe/zowe-cli/issues/1170)
+- BugFix: Disabled gzip compression for z/OSMF requests that download binary files. [#1170](https://github.com/zowe/zowe-cli/issues/1170)
 
 ## `6.37.1`
 
-- BugFix: Update Imperative to absorb bugfixes introduced in version `4.17.2`.
+- BugFix: Updated Imperative to absorb bugfixes introduced in version `4.17.2`.
 
 ## `6.37.0`
 
