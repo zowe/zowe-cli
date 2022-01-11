@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`daemon group definition should have the right command content 1`] = `
+Object {
+  "description": "Perform operations that control the daemon-mode functionality of the Zowe CLI. Daemon-mode runs the CLI command processor as a daemon to improve performance.",
+  "name": "daemon",
+  "summary": "Daemon operations",
+  "type": "group",
+}
+`;

@@ -18,7 +18,7 @@ timingApi.mark("PRE_IMPORT_IMPERATIVE");
 import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
-import { Processor } from "./Processor";
+import { DaemonDecider } from "./daemon/DaemonDecider";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
@@ -35,8 +35,8 @@ const config: IImperativeConfig = {
         if(process.argv.includes("--daemon")) { config.daemonMode = true; }
         await Imperative.init(config);
 
-        const processor = new Processor(process.argv);
-        processor.init();
+        const daemonDecider = new DaemonDecider(process.argv);
+        daemonDecider.init();
 
         timingApi.mark("AFTER_INIT");
         timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");
@@ -45,7 +45,7 @@ const config: IImperativeConfig = {
 
         timingApi.mark("BEFORE_PARSE");
 
-        processor.process();
+        daemonDecider.runOrUseDaemon();
 
         timingApi.mark("AFTER_PARSE");
         timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
