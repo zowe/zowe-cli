@@ -36,7 +36,7 @@ describe("daemon enable", () => {
         const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
 
         // We know that our zowe EXE will be bigger than our zowe scripts
-        const maxScriptSize: number = 2000;
+        const maxScriptSize: number = 5000;
         const zowePgmStats = fs.statSync(zowePgmInPath);
         if (zowePgmStats.size >= maxScriptSize) {
             return false;
