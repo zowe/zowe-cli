@@ -20,6 +20,9 @@ on:
         description: Specify whether to run tests using the `binary` or regular `nodejs` executable
         default: binary
         required: false
+      imperative-branch:
+        description: Specify name of Imperative branch to checkout and build from source
+        required: false
 
 jobs:
   test:
@@ -70,6 +73,14 @@ jobs:
         profile: minimal
         toolchain: stable
         override: true
+
+    - name: Checkout Imperative
+      id: checkout-imperative
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.imperative-branch != ''
+      run: |
+        cd node_modules/@zowe && npx rimraf imperative
+        git clone --branch ${{ github.event.inputs.imperative-branch }} --depth 1 https://github.com/zowe/imperative.git
+        cd imperative && npm ci --ignore-scripts && npx tsc
 
     - name: Build Source
       id: build

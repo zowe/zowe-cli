@@ -8,23 +8,29 @@ When the Zowe CLI user community at a given customer site does not have the admi
 
 ## Solution Overview
 
+***This solution should NOT be attempted in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
+
 The Zowe CLI can run as a persistent “daemon” process to absorb the one-time startup of Node.js modules. A native executable client will then communicate with the daemon via TCP/IP sockets.
 
 Root level help, `zowe --help` response time is reduced from ~3 seconds to just under 1 second in daemon mode. At a site with a remote virtualized environment, the response time can change from around 30 seconds to around 2 seconds.
 
 In testing a solution, the root command tree takes longer to execute than lower level command tree items, e.g. `zowe -h` is observably slower than `zowe jobs list -h` which has near instantaneous response time
 
-## Native executable Client
+## Native Executable Client
+
+***This client should NOT be used in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
 Our native executable client communicates with the Zowe CLI persistent process (daemon) over a TCP/IP socket.  An environment variable can set the TCP/IP port for the daemon.  The environment variable named `ZOWE_DAEMON=<PORT>` is used for the port. If that variable is unset, the default is `4000`.
 
 ## Enabling daemon-mode
 
-Executables for all supported operating systems are included in the Zowe CLI NPM package. To make use of daemon mode, you must run the command `zowe daemon enable`. That command will copy the correct 'zowe' executable for your operating system into your $ZOWE_CLI_HOME/bin directory. You will be instructed to place the $ZOWE_CLI_HOME/bin directory on your PATH ahead of the directory into which NPM installed the Node.js 'zowe' script. After that, each 'zowe' command that you run will run the native executable.
+***Daemon-mode should NOT be enabled in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
+
+Executables for all supported operating systems are included in the Zowe CLI NPM package. To make use of daemon mode, you must run the command `zowe daemon enable`. That command will copy the correct 'zowe' executable for your operating system into your $ZOWE_CLI_HOME/bin directory. You will be instructed to place the $ZOWE_CLI_HOME/bin directory on your PATH ahead of the directory into which NPM installed the Node.js 'zowe' script. After that, each 'zowe' command that you type will run the native executable.
 
 When you run your next 'zowe' command, the executable will automatically launch the daemon in the background and it then sends your desired command to the daemon for processing. Your first such command will be slow, because the daemon process must be started. All future 'zowe' commands will then be much faster.
 
-The daemon will continue to run until you close your comamnd-line terminal window. If you logout and login to your computer each day, your first 'zowe' command in your terminal window will automatically start the daemon.
+The daemon will continue to run until you close your command-line terminal window. If you logout and login to your computer each day, your first 'zowe' command in your terminal window will automatically start the daemon.
 
 
   Example:
@@ -60,7 +66,7 @@ The Node.js zowe script is updated to launch a server when an undocumented `--da
 
 At a high level:
 
-1. Zowe CLI server is started automatically by the native `zowe` executable client. It can also be started manually by running the Node.js Zowe script as `YourPathtoNodeJsScript/zowe --daemon`, although this is not the reccommended approach due to its greater complexity.
+1. Zowe CLI server is started automatically by the native `zowe` executable client. It can also be started manually by running the Node.js Zowe script as `YourPathtoNodeJsScript/zowe --daemon`, although this is not the recommended approach due to its greater complexity.
 2. The `zowe` native executable client passes zowe commands to the server via TCP/IP.
 3. The Zowe daemon responds with text data from command output as it normally would, but the response is directed onto its socket connection instead of to a console window.
 
@@ -93,5 +99,15 @@ Or:
 
 The daemon client sends messages to the daemon server like:
 ```
-{"reply":"zosmf.com\r\n","id":"daemon-client"}
+{
+  "argv": ["zosmf", "check", "status", "--rfj"],
+  "cwd": "C:\\dev",
+  "env": {"ZOWE_OPT_PORT": "1443"},
+  "stdinLength": 0
+}
+```
+
+Or:
+```
+{"stdin":"zosmf.com\r\n"}
 ```

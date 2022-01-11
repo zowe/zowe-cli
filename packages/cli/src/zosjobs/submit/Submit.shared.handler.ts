@@ -15,7 +15,7 @@ import * as  fs from "fs";
 import { ISubmitParms, SubmitJobs, IJob, ISpoolFile } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
-import getstdin = require("get-stdin");
+import getStdin = require("get-stdin");
 
 /**
  * "zos-jobs submit data-set" command handler. Submits a job (JCL) contained within a z/OS data set (PS or PDS member).
@@ -113,7 +113,7 @@ export default class SharedSubmitHandler extends ZosmfBaseHandler {
             }
             // Submit the JCL piped in on stdin
             case "stdin": {
-                const Jcl = await getstdin();
+                const Jcl = await getStdin();
                 apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);
                 source = "stdin";
                 if (parms.viewAllSpoolContent) {

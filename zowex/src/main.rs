@@ -9,12 +9,12 @@
 *
 */
 
-use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::env;
 use std::ffi::OsString;
+use std::io;
 use std::io::prelude::*;
 use std::io::BufReader;
-use std::io::{self, Write};
 use std::net::Shutdown;
 use std::net::TcpStream;
 use std::process::{Command, Stdio};
@@ -22,25 +22,35 @@ use std::str;
 use std::thread;
 use std::time::Duration;
 
+extern crate atty;
+use atty::Stream;
+
+extern crate base64;
+use base64::encode;
+
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
 extern crate rpassword;
 use rpassword::read_password;
 
+extern crate serde;
+use serde::{Deserialize, Serialize};
+
 extern crate sysinfo;
 use sysinfo::{ProcessExt, System, SystemExt};
 
-const DEFAULT_PORT: i32 = 4000;
+extern crate whoami;
+use whoami::username;
 
-const X_ZOWE_DAEMON_REPLY: &str = "daemon-client";
+const DEFAULT_PORT: i32 = 4000;
 
 const EXIT_CODE_SUCCESS: i32 = 0;
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
 const EXIT_CODE_CANNOT_GET_MY_PATH: i32 = 101;
 const EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH: i32 = 102;
 const EXIT_CODE_CANNOT_START_DAEMON: i32 = 103;
-const EXIT_CODE_DEAMON_NOT_RUNNING_AFTER_START: i32 = 104;
+const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 104;
 const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 105;
 const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
 const EXIT_CODE_CANT_RUN_DAEMON_CMD: i32 = 107;
@@ -52,7 +62,7 @@ struct DaemonProcInfo {
     cmd: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 #[allow(non_snake_case)]
 struct DaemonRequest {
     stdout: Option<String>,
@@ -63,10 +73,15 @@ struct DaemonRequest {
     securePrompt: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
+#[allow(non_snake_case)]
 struct DaemonResponse {
-    reply: String,
-    id: String,
+    argv: Option<Vec<String>>,
+    cwd: Option<String>,
+    env: Option<HashMap<String, String>>,
+    stdinLength: Option<i32>,
+    stdin: Option<String>,
+    user: Option<String>,
 }
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
@@ -98,13 +113,8 @@ fn main() -> std::io::Result<()> {
     exit_when_alt_cmd_needed(&_args);
 
     if user_wants_daemon() {
-        /* Convert our vector of arguments into a single string of arguments
-         * for transmittal to the daemon.
-         */
-        let arg_string = arg_vec_to_string(&_args);
-
         // send command to the daemon
-        match run_daemon_command(arg_string) {
+        match run_daemon_command(&mut _args) {
             Ok(_value) => {
                 /* todo: Change run_daemon_command() to return an exit code.
                  * We can then process its cmd_result return value just like
@@ -245,14 +255,30 @@ fn arg_vec_to_string(arg_vec: &Vec<String>) -> String {
     return arg_string;
 }
 
-fn run_daemon_command(mut args: String) -> std::io::Result<()> {
-    let path = env::current_dir()?;
-    args.insert(0, '\r');
-    args.insert_str(0, path.to_str().unwrap());
-    let mut _resp = args.as_bytes(); // as utf8 bytes
+fn get_zowe_env() -> HashMap<String, String> {
+    env::vars().filter(|&(ref k, _)|
+        k.starts_with("ZOWE_")
+    ).collect()
+}
 
-    if _resp.is_empty() {
-        _resp = b" ";
+fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
+    let cwd = env::current_dir()?;
+    let mut stdin = Vec::new();
+    if !atty::is(Stream::Stdin) {
+        io::stdin().read_to_end(&mut stdin)?;
+    }
+    let response: DaemonResponse = DaemonResponse {
+        argv: Some(args.to_vec()),
+        cwd: Some(cwd.into_os_string().into_string().unwrap()),
+        env: Some(get_zowe_env()),
+        stdinLength: Some(stdin.len() as i32),
+        stdin: None,
+        user: Some(encode(username())),
+    };
+    let mut _resp = serde_json::to_vec(&response)?;
+    if response.stdinLength.unwrap() > 0 {
+        _resp.push(b'\x0c');
+        _resp.append(&mut stdin);
     }
 
     // form our host, port, and connection strings
@@ -303,7 +329,7 @@ fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream
                         "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
                         cmd_to_show
                     );
-                    std::process::exit(EXIT_CODE_DEAMON_NOT_RUNNING_AFTER_START);
+                    std::process::exit(EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START);
                 }
             }
         }
@@ -344,7 +370,7 @@ fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream
     Ok(stream)
 }
 
-fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
+fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
@@ -370,8 +396,10 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
                 Ok(p) => p,
                 Err(_e) => {
                     // TODO(Kelosky): handle this only if progress bar mode is active
-                    print!("{}", payload);
-                    io::stdout().flush().unwrap();
+                    if atty::is(Stream::Stderr) {
+                        eprint!("{}", payload);
+                        io::stderr().flush().unwrap();
+                    }
                     DaemonRequest {
                         stdout: None,
                         stderr: None,
@@ -394,7 +422,7 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
             match p.stderr {
                 Some(s) => {
                     eprint!("{}", s);
-                    io::stdout().flush().unwrap();
+                    io::stderr().flush().unwrap();
                 }
                 None => (), // do nothing
             }
@@ -406,8 +434,12 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
                     let mut reply = String::new();
                     io::stdin().read_line(&mut reply).unwrap();
                     let response: DaemonResponse = DaemonResponse {
-                        reply,
-                        id: X_ZOWE_DAEMON_REPLY.to_string(),
+                        argv: None,
+                        cwd: None,
+                        env: None,
+                        stdinLength: None,
+                        stdin: Some(reply),
+                        user: Some(encode(username())),
                     };
                     let v = serde_json::to_string(&response)?;
 
@@ -423,8 +455,12 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
                     let reply;
                     reply = read_password().unwrap();
                     let response: DaemonResponse = DaemonResponse {
-                        reply,
-                        id: X_ZOWE_DAEMON_REPLY.to_string(),
+                        argv: None,
+                        cwd: None,
+                        env: None,
+                        stdinLength: None,
+                        stdin: Some(reply),
+                        user: Some(encode(username())),
                     };
                     let v = serde_json::to_string(&response)?;
                     stream_clone.write(v.as_bytes()).unwrap();
@@ -450,11 +486,11 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> std::io::Result<()> {
     // Terminate connection. Ignore NotConnected errors returned on macOS.
     // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
     match stream.shutdown(Shutdown::Read) {
-        Err(ref e) if e.kind() == std::io::ErrorKind::NotConnected => (),
+        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
     }
     match stream.shutdown(Shutdown::Write) {
-        Err(ref e) if e.kind() == std::io::ErrorKind::NotConnected => (),
+        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
     }
 
@@ -600,6 +636,7 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
     let exit_code: i32;
     match Command::new(njs_zowe_path.to_owned())
         .args(cmd_line_args.to_owned())
+        .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .output()
