@@ -233,7 +233,8 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "issue_ssh",
-            tempProfileTypes: ["ssh"]
+            tempProfileTypes: ["ssh"],
+            createOldProfiles: true
         });
 
 

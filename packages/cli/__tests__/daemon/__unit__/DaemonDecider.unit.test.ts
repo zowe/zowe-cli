@@ -14,10 +14,10 @@ jest.mock("@zowe/imperative");
 import * as net from "net";
 import Mock = jest.Mock;
 import { Imperative } from "@zowe/imperative";
-import { Processor } from "../src/Processor";
-jest.mock("../src/DaemonClient");
+import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
+jest.mock("../../../src/daemon//DaemonClient");
 
-describe("Processor tests", () => {
+describe("DaemonDecider tests", () => {
 
     it("should call normal parse method if no daemon keyword", () => {
 
@@ -47,10 +47,10 @@ describe("Processor tests", () => {
             return {on};
         });
 
-        const processor = new Processor(["--help"]);
-        processor.init();
+        const daemonDecider = new DaemonDecider(["--help"]);
+        daemonDecider.init();
         expect(on).not.toHaveBeenCalled();
-        processor.process();
+        daemonDecider.runOrUseDaemon();
         expect(parse).toHaveBeenCalled();
     });
 
@@ -93,16 +93,16 @@ describe("Processor tests", () => {
             return {on, listen};
         });
 
-        const processor = new Processor(["some/file/path", "zowe", "--daemon"]);
-        processor.init();
+        const daemonDecider = new DaemonDecider(["some/file/path", "zowe", "--daemon"]);
+        daemonDecider.init();
         expect(on).toHaveBeenCalledTimes(2);
-        processor.process();
+        daemonDecider.runOrUseDaemon();
         expect(parse).not.toHaveBeenCalled();
-        (processor as any).close();
+        (daemonDecider as any).close();
         expect(log).toHaveBeenLastCalledWith("server closed");
         let err;
         try {
-            (processor as any).error(new Error("data"));
+            (daemonDecider as any).error(new Error("data"));
         } catch (thrownError) {
             err = thrownError;
         }
@@ -123,14 +123,14 @@ describe("Processor tests", () => {
             }
         };
 
-        const processor = new Processor(["anything"]);
+        const daemonDecider = new DaemonDecider(["anything"]);
 
         const testPort = "1234";
 
-        (processor as any).mParms = ["one", "two", "--daemon"];
+        (daemonDecider as any).mParms = ["one", "two", "--daemon"];
         process.env.ZOWE_DAEMON = testPort;
-        (processor as any).initialParse();
-        expect((processor as any).mPort).toBe(parseInt(testPort, 10));
+        (daemonDecider as any).initialParse();
+        expect((daemonDecider as any).mPort).toBe(parseInt(testPort, 10));
 
     });
 });

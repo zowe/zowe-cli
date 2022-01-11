@@ -10,7 +10,9 @@
   ],
   "scripts": {
     "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
+    "build:exe": "cd zowex && cargo build && cargo test",
     "clean": "lerna run --parallel clean",
+    "clean:exe": "cd zowex && cargo clean",
     "installWithBuild": "npm install && npm run build",
     "checkTestsCompile": "echo \"Checking that test source compiles...\" && tsc --project __tests__/test-tsconfig.json --noEmit",
     "circularDependencyCheck": "lerna run --parallel circularDependencyCheck -- -- --warning --no-spinner",
@@ -36,7 +38,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.0-next.202112221912",
+    "@zowe/imperative": "5.0.0-next.202201102100",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {

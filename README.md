@@ -26,7 +26,7 @@ To try out early access features, install the "next" release of Zowe CLI (`npm i
 For documentation about these features, see these files:
 
 - [Using Global Profile Configuration](https://github.com/zowe/zowe-cli/blob/next/docs/Early%20Access%20-%20Using%20Global%20Profile%20Configuration.md)
-- [Using Daemon Mode with "zowex"](https://github.com/zowe/zowe-cli/blob/next/zowex/design.md)
+- [Daemon Mode Design Overview](https://github.com/zowe/zowe-cli/blob/next/zowex/design.md)
 
 ## Documentation
 
