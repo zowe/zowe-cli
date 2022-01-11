@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202201111811`
 
 - BugFix: Update Imperative to absorb bugfixes introduced in version `5.0.0-next.202201102100`.
 - Enhancement: Add the commands `zowe daemon enable` and `zowe daemon disable`. These commands enable end-users to set up daemon mode without having to download a separate executable and place it by hand into some directory.
