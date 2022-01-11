@@ -139,7 +139,7 @@ describe("daemon enable", () => {
 
             const stdoutStr = response.stdout.toString();
             expect(stdoutStr).toContain("Failed to enable Zowe CLI daemon mode.");
-            expect(stdoutStr).toContain(`The zip file for your OS executable does not exist: ${preBldTgzPath}`);
+            expect(stdoutStr).toContain(`The archive for your OS executable does not exist: ${preBldTgzPath}`);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toBe("");
         }

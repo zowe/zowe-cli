@@ -88,7 +88,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
         preBldTgz = nodeJsPath.normalize(preBldTgz);
         if (!IO.existsSync(preBldTgz)) {
             throw new ImperativeError({
-                msg: `The zip file for your OS executable does not exist: ${preBldTgz}`
+                msg: `The archive for your OS executable does not exist: ${preBldTgz}`
             });
         }
 

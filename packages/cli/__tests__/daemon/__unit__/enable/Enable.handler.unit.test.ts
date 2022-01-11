@@ -205,7 +205,7 @@ describe("Handler for daemon enable", () => {
                 error = e;
             }
 
-            expect(error.mMessage).toBe(`The zip file for your OS executable does not exist: ${preBldTgzPath}`);
+            expect(error.mMessage).toBe(`The archive for your OS executable does not exist: ${preBldTgzPath}`);
             IO.existsSync = existsSyncOrig;
         });
 
