@@ -4,6 +4,8 @@ Zowe CLI start up time can be slow 3 - 15 seconds.  Part of the reason this oper
 
 ## Solution Overview
 
+***This solution should NOT be deployed in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
+
 We can run Zowe CLI as a persistent process “daemon” to have a one-time startup of the Node.js cost and have a native-built, Rust client to communicate with the daemon via TCP/IP sockets.
 
 Root level help, `zowe --help` response time is reduced from ~3 seconds to just under ` second in daemon mode.
@@ -12,20 +14,21 @@ In testing a solution, the root command tree takes longer to execute than lower 
 
 ### Rust Client
 
+***This client should NOT be deployed in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
+
 Native Rust client calls Zowe CLI persistent process (daemon).  An env var can be set for the port to connect to tcp socket.  `ZOWE_DAEMON=<PORT>` environmental variable used or default `4000`.
 
-Rust binderies are released on GitHub and could also be released on scoop, cargo, chocolatey, windows command installer, etc...
-
-Rust client sets `--daemon-client-directory` (or `--dcd`) for Zowe CLI / imperative usage which is the daemon client directory.  This flag is hidden from Zowe help display
-since it's not intended for end users.
+Rust binaries are released on GitHub and could also be released on scoop, cargo, chocolatey, windows command installer, etc...
 
 Rust client is called `zowe.exe`.
 
 Imperative is updated in several places to write to a stream in addition to / instead of stdout & stderr.  Stream is passed in yargs "context" which is our own user data.
 
-`--dcd` hidden, global flag added for Zowe CLI operations that implicitly depend on the current working directory.  For example, Zowe CLI daemon could be running at any arbitrary location on the system; however, we want `zowe` to operate against whatever directory it was run.  `--dcd` allows for alternate `dcd`.
+Rust client loads cwd (current working directory), env (environment variables), and stdin (piped input), and sends them to the daemon server.  For example, Zowe CLI daemon could be running at any arbitrary location on the system; however, we want `zowe` to operate against whatever directory it was run.
 
 ### Zowe CLI Server
+
+***This server should NOT be deployed in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
 Zowe CLI is updated to launch a server if an undocumented `--daemon` parm is detected.  The server is a simple tcpip server.
 
@@ -69,8 +72,19 @@ Or:
 
 The daemon client sends messages to server like:
 ```
-{"reply":"zosmf.com\r\n","id":"daemon-client"}
+{
+  "argv": ["zosmf", "check", "status", "--rfj"],
+  "cwd": "C:\\dev",
+  "env": {"ZOWE_OPT_PORT": "1443"},
+  "stdinLength": 0
+}
 ```
+
+Or:
+```
+{"stdin":"zosmf.com\r\n"}
+```
+
 ### Testing
 
 - Obtain zowe.exe binary for your platform and place it into a directory that is earlier in your PATH than the directory which contains the NodeJS zowe scripts (like zowe.cmd).

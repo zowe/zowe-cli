@@ -156,9 +156,9 @@ describe("List directory", () => {
         it("should fail with an invalid attribute attributes", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_uss.sh");
             response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, "-a", "--rfj"]);
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("Unknown argument");
             expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toContain("Unknown argument");
+            expect(response.stdout.toString()).toBe("");
         });
 
         it("should return directory list with only 1 entry", () => {
