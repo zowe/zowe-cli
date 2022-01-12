@@ -28,6 +28,7 @@
     "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
     "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
     "watch": "lerna run --parallel watch",
+    "watch:exe": "cd zowex && cargo install cargo-watch && cargo watch -x build -x test",
     "watch:test": "jest --watch",
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",

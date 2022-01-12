@@ -94,7 +94,7 @@ struct DaemonResponse {
 //     >> } | Measure-Object -Property TotalSeconds -Average
 // 3.6393932 and 0.76156812 zowe average over 10 run sample = 2.87782508 sec faster on windows
 
-fn main() -> std::io::Result<()> {
+fn main() -> io::Result<()> {
     // turn args into vector
     let mut _args: Vec<String> = env::args().collect();
     let cmd_result: Result<i32, i32>;
@@ -261,7 +261,7 @@ fn get_zowe_env() -> HashMap<String, String> {
     ).collect()
 }
 
-fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
+fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
     let cwd = env::current_dir()?;
     let mut stdin = Vec::new();
     if !atty::is(Stream::Stdin) {
@@ -293,7 +293,7 @@ fn run_daemon_command(args: &mut Vec<String>) -> std::io::Result<()> {
  * Attempt to make a TCP connection to the daemon.
  * Iterate to enable a slow system to start the daemon.
  */
-fn establish_connection(host: String, port: String) -> std::io::Result<TcpStream> {
+fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
     const THREE_SEC_DELAY: u64 = 3;
     const THREE_MIN_OF_RETRIES: i32 = 60;
     const RETRY_TO_SHOW_DIAG: i32 = 5;
