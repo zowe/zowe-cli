@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "gulp updateLicense && lerna run build && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
-    "build:exe": "cd zowex && cargo build && cargo test",
+    "build:exe": "cd zowex && cargo build && cargo clippy && cargo test",
     "clean": "lerna run --parallel clean",
     "clean:exe": "cd zowex && cargo clean",
     "installWithBuild": "npm install && npm run build",
@@ -28,7 +28,7 @@
     "test:system": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.system\\.(spec|test)\\.ts\\$\" --coverage false",
     "test:unit": "cross-env FORCE_COLOR=1 jest \".*__tests__.*\\**\\.unit\\.(spec|test)\\.ts\\$\" --coverage",
     "watch": "lerna run --parallel watch",
-    "watch:exe": "cd zowex && cargo install cargo-watch && cargo watch -x build -x test",
+    "watch:exe": "cd zowex && cargo install cargo-watch && cargo watch -x build -x clippy -x test",
     "watch:test": "jest --watch",
     "doc:clean": "rimraf docs/CLIReadme.md",
     "doc:generate": "npm run doc:clean && gulp doc",

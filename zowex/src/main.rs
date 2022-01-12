@@ -11,7 +11,7 @@
 
 use std::collections::HashMap;
 use std::env;
-use std::ffi::OsString;
+
 use std::io;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -102,11 +102,9 @@ fn main() -> io::Result<()> {
     _args.drain(..1); // remove first (exe name)
 
     // Do we only need to display our version?
-    if _args.len() >= 1 {
-        if _args[0] == "--version-exe" {
-            println!("{}", env!("CARGO_PKG_VERSION"));
-            std::process::exit(EXIT_CODE_SUCCESS);
-        }
+    if !_args.is_empty() && _args[0] == "--version-exe" {
+        println!("{}", env!("CARGO_PKG_VERSION"));
+        std::process::exit(EXIT_CODE_SUCCESS);
     }
 
     // daemon commands that overwrite our executable cannot be run by our executable
@@ -161,7 +159,7 @@ fn main() -> io::Result<()> {
  *      The user-supplied command line arguments to the zowe command.
  *      Each argument is in its own vector element.
  */
-fn exit_when_alt_cmd_needed(cmd_line_args: &Vec<String>) {
+fn exit_when_alt_cmd_needed(cmd_line_args: &[String]) {
     // commands other than daemon commands can be run by our exe
     if cmd_line_args.len() < 2 {
         return;
@@ -192,7 +190,7 @@ fn exit_when_alt_cmd_needed(cmd_line_args: &Vec<String>) {
         // We use COMSPEC so that the command will work for CMD and PowerShell
         match env::var("COMSPEC") {
             Ok(comspec_val) => {
-                if comspec_val.len() > 0 {
+                if !comspec_val.is_empty() {
                     if comspec_val.contains(' ') {
                         zowe_cmd_to_show.push('"');
                         zowe_cmd_to_show.push_str(&comspec_val);
@@ -229,7 +227,7 @@ fn exit_when_alt_cmd_needed(cmd_line_args: &Vec<String>) {
  * @returns
  *      A String containing all of the command line arguments.
  */
-fn arg_vec_to_string(arg_vec: &Vec<String>) -> String {
+fn arg_vec_to_string(arg_vec: &[String]) -> String {
     let mut arg_string = String::new();
     let mut arg_count = 1;
     for next_arg in arg_vec.iter() {
@@ -241,7 +239,7 @@ fn arg_vec_to_string(arg_vec: &Vec<String>) -> String {
          * enclosed in double quotes when it is placed into a single argument
          * string.
          */
-        if next_arg.contains(' ') || next_arg.len() == 0 {
+        if next_arg.contains(' ') || next_arg.is_empty() {
             arg_string.push('"');
             arg_string.push_str(next_arg);
             arg_string.push('"');
@@ -249,10 +247,10 @@ fn arg_vec_to_string(arg_vec: &Vec<String>) -> String {
             arg_string.push_str(next_arg);
         }
 
-        arg_count = arg_count + 1;
+        arg_count += 1;
     }
 
-    return arg_string;
+    arg_string
 }
 
 fn get_zowe_env() -> HashMap<String, String> {
@@ -286,7 +284,7 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
     let port_string = get_port_string();
 
     let mut stream = establish_connection(daemon_host, port_string)?;
-    Ok(talk(&_resp, &mut stream)?)
+    talk(&_resp, &mut stream)
 }
 
 /**
@@ -314,23 +312,21 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
         let daemon_proc_info = is_daemon_running();
 
         // when not running, start it.
-        if daemon_proc_info.is_running == false {
+        if !daemon_proc_info.is_running {
             if conn_retries == 0 {
                 // start the daemon and continue trying to connect
                 let njs_zowe_path = get_nodejs_zowe_path();
                 we_started_daemon = true;
                 cmd_to_show = start_daemon(&njs_zowe_path);
-            } else {
-                if we_started_daemon {
-                    println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
-                        host, port
-                    );
-                    println!(
-                        "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
-                        cmd_to_show
-                    );
-                    std::process::exit(EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START);
-                }
+            } else if we_started_daemon {
+                println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
+                    host, port
+                );
+                println!(
+                    "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
+                    cmd_to_show
+                );
+                std::process::exit(EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START);
             }
         }
 
@@ -364,7 +360,7 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
         if conn_retries > 0 {
             println!("{} ({} of {})", retry_msg, conn_retries, THREE_MIN_OF_RETRIES);
         }
-        conn_retries = conn_retries + 1;
+        conn_retries += 1;
     };
 
     Ok(stream)
@@ -374,7 +370,7 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
-    stream.write(message).unwrap(); // write it
+    stream.write_all(message).unwrap(); // write it
     let mut stream_clone = stream.try_clone().expect("clone failed");
 
     let mut reader = BufReader::new(&*stream);
@@ -411,72 +407,54 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
                 }
             };
 
-            match p.stdout {
-                Some(s) => {
-                    print!("{}", s);
-                    io::stdout().flush().unwrap();
-                }
-                None => (), // do nothing
+            if let Some(s) = p.stdout {
+                print!("{}", s);
+                io::stdout().flush().unwrap();
             }
 
-            match p.stderr {
-                Some(s) => {
-                    eprint!("{}", s);
-                    io::stderr().flush().unwrap();
-                }
-                None => (), // do nothing
+            if let Some(s) = p.stderr {
+                eprint!("{}", s);
+                io::stderr().flush().unwrap();
             }
 
-            match p.prompt {
-                Some(s) => {
-                    print!("{}", s);
-                    io::stdout().flush().unwrap();
-                    let mut reply = String::new();
-                    io::stdin().read_line(&mut reply).unwrap();
-                    let response: DaemonResponse = DaemonResponse {
-                        argv: None,
-                        cwd: None,
-                        env: None,
-                        stdinLength: None,
-                        stdin: Some(reply),
-                        user: Some(encode(username())),
-                    };
-                    let v = serde_json::to_string(&response)?;
+            if let Some(s) = p.prompt {
+                print!("{}", s);
+                io::stdout().flush().unwrap();
+                let mut reply = String::new();
+                io::stdin().read_line(&mut reply).unwrap();
+                let response: DaemonResponse = DaemonResponse {
+                    argv: None,
+                    cwd: None,
+                    env: None,
+                    stdinLength: None,
+                    stdin: Some(reply),
+                    user: Some(encode(username())),
+                };
+                let v = serde_json::to_string(&response)?;
 
-                    stream_clone.write(v.as_bytes()).unwrap();
-                }
-                None => (), // do nothing
+                stream_clone.write_all(v.as_bytes()).unwrap();
             }
 
-            match p.securePrompt {
-                Some(s) => {
-                    print!("{}", s);
-                    io::stdout().flush().unwrap();
-                    let reply;
-                    reply = read_password().unwrap();
-                    let response: DaemonResponse = DaemonResponse {
-                        argv: None,
-                        cwd: None,
-                        env: None,
-                        stdinLength: None,
-                        stdin: Some(reply),
-                        user: Some(encode(username())),
-                    };
-                    let v = serde_json::to_string(&response)?;
-                    stream_clone.write(v.as_bytes()).unwrap();
-                }
-                None => (), // do nothing
+            if let Some(s) = p.securePrompt {
+                print!("{}", s);
+                io::stdout().flush().unwrap();
+                let reply;
+                reply = read_password().unwrap();
+                let response: DaemonResponse = DaemonResponse {
+                    argv: None,
+                    cwd: None,
+                    env: None,
+                    stdinLength: None,
+                    stdin: Some(reply),
+                    user: Some(encode(username())),
+                };
+                let v = serde_json::to_string(&response)?;
+                stream_clone.write_all(v.as_bytes()).unwrap();
             }
 
-            exit_code = match p.exitCode {
-                Some(s) => s,
-                None => 0, // do nothing
-            };
+            exit_code = p.exitCode.unwrap_or(0);
 
-            _progress = match p.progress {
-                Some(s) => s,
-                None => false, // do nothing
-            };
+            _progress = p.progress.unwrap_or(false);
         } else {
             // end of reading
             break;
@@ -510,8 +488,8 @@ fn get_port_string() -> String {
         Ok(val) => _port = val.parse::<i32>().unwrap(),
         Err(_e) => _port = DEFAULT_PORT,
     }
-    let port_string = _port.to_string();
-    return port_string;
+    
+    _port.to_string()
 }
 
 // Get the file path to the command that runs the NodeJS version of Zowe
@@ -541,8 +519,8 @@ fn get_nodejs_zowe_path() -> String {
     let path_ext = env::var_os("PATHEXT");
     for njs_zowe_path_buf in PathSearcher::new(
         zowe_cmd,
-        path.as_ref().map(OsString::as_os_str),
-        path_ext.as_ref().map(OsString::as_os_str),
+        path.as_deref(),
+        path_ext.as_deref(),
     ) {
         njs_zowe_path = njs_zowe_path_buf.to_string_lossy().to_string();
         if njs_zowe_path.to_lowercase().eq(&my_exe_path.to_lowercase()) {
@@ -560,7 +538,7 @@ fn get_nodejs_zowe_path() -> String {
         std::process::exit(EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH);
     }
 
-    return njs_zowe_path;
+    njs_zowe_path
 }
 
 /**
@@ -592,12 +570,12 @@ fn is_daemon_running() -> DaemonProcInfo {
             };
         }
     }
-    return DaemonProcInfo {
+    DaemonProcInfo {
         is_running: false,
         name: "no name".to_string(),
         pid: "no pid".to_string(),
         cmd: "no cmd".to_string(),
-    };
+    }
 }
 
 /**
@@ -618,7 +596,7 @@ fn user_wants_daemon() -> bool {
     {
         return false;
     }
-    return true;
+    true
 }
 
 /**
@@ -655,7 +633,7 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
         }
     };
 
-    return Ok(exit_code);
+    Ok(exit_code)
 }
 
 /**
@@ -726,9 +704,9 @@ fn start_daemon(njs_zowe_path: &str) -> String {
 
     // return the command that we run (for display purposes)
     let mut cmd_to_show: String = njs_zowe_path.to_owned();
-    cmd_to_show.push_str(" ");
+    cmd_to_show.push(' ');
     cmd_to_show.push_str(daemon_arg);
-    return cmd_to_show;
+    cmd_to_show
 }
 
 //
@@ -742,11 +720,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_parse_headers_get_total_length() {
-        assert_eq!(8, 8);
-    }
-
-    #[test]
     fn test_get_port_string() {
         // expect default port with no env
         let port_string = get_port_string();
@@ -756,5 +729,15 @@ mod tests {
         env::set_var("ZOWE_DAEMON", "777");
         let port_string = get_port_string();
         assert_eq!("777", port_string);
+    }
+
+    #[test]
+    fn test_get_zowe_env() {
+        let env = get_zowe_env();
+        assert_eq!(env.keys().len(), 0);
+
+        env::set_var("ZOWE_DAEMON", "777");
+        let env = get_zowe_env();
+        assert_eq!(env.keys().len(), 1);
     }
 }
