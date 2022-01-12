@@ -24,7 +24,7 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon disable", () => {
-    const rimraf = require("rimraf").sync;
+    const rimrafSync = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
 
     let exePath: string;
@@ -75,7 +75,7 @@ describe("daemon disable", () => {
         const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
 
         // We know that our zowe EXE will be bigger than our zowe scripts
-        const maxScriptSize: number = 2000;
+        const maxScriptSize: number = 5000;
         const zowePgmStats = fs.statSync(zowePgmInPath);
         if (zowePgmStats.size >= maxScriptSize) {
             willRunNodeJsZowe = false;
@@ -83,6 +83,7 @@ describe("daemon disable", () => {
     });
 
     afterAll(async () => {
+        rimrafSync(pathToBin);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -110,7 +111,7 @@ describe("daemon disable", () => {
     it("should succeed when no EXE exists", async () => {
         if (willRunNodeJsZowe) {
             if (IO.existsSync(pathToBin)) {
-                rimraf(pathToBin);
+                rimrafSync(pathToBin);
             }
             const response = runCliScript(__dirname + "/__scripts__/daemon_disable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();

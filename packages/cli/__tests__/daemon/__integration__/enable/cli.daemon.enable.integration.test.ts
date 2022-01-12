@@ -22,12 +22,13 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon enable", () => {
-    const rimraf = require("rimraf").sync;
+    const rimrafSync = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
     const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
     let exePath: string;
     let pathToBin: string;
+    let preBldDir: string;
     let preBldTgzPath: string;
 
     // is the zowe command that we will run our Node.js script?
@@ -36,7 +37,7 @@ describe("daemon enable", () => {
         const zowePgmInPath: string = which.sync('zowe', { path: testEnvironment.env.PATH });
 
         // We know that our zowe EXE will be bigger than our zowe scripts
-        const maxScriptSize: number = 2000;
+        const maxScriptSize: number = 5000;
         const zowePgmStats = fs.statSync(zowePgmInPath);
         if (zowePgmStats.size >= maxScriptSize) {
             return false;
@@ -82,7 +83,7 @@ describe("daemon enable", () => {
 
         // form the path to our bin directory, executable, and prebuilds tgz file
         const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
-        const preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
+        preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
         preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
         pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
         exePath = nodeJsPath.resolve(pathToBin, exePath);
@@ -98,10 +99,12 @@ describe("daemon enable", () => {
 
     beforeEach(async () => {
         // Remove any existing bin directory
-        rimraf(pathToBin);
+        rimrafSync(pathToBin);
     });
 
     afterAll(async () => {
+        rimrafSync(pathToBin);
+        rimrafSync(preBldDir);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -165,7 +168,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -178,7 +180,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -197,7 +198,6 @@ describe("daemon enable", () => {
             const exeStats = fs.statSync(exePath);
             expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -211,7 +211,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -228,7 +227,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your PATH`);
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -245,7 +243,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -259,7 +256,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -274,7 +270,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 });

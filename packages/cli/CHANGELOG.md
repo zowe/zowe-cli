@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Set executable attribute on zowe executable file on Linux and Mac.
 - Enhancement: Ensure `zowe config auto-init` command saves the `rejectUnauthorized` value. [#1109](https://github.com/zowe/zowe-cli/issues/1109)
 
 ## `7.0.0-next.202201111811`
