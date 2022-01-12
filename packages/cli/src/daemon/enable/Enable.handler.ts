@@ -192,8 +192,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
                 .pipe(new tar.Parse())
                 .on('entry', function(entry: any) {
                     if (entry.type == "File" && (entry.path as string).includes(fileToExtract)) {
-                        entry.pipe(fs.createWriteStream(nodeJsPath.resolve(toDir, nodeJsPath.basename(entry.path))));
-                        /* Todo: Restore this after testing to prove this causses test failures.
                         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
                         let fileCreateOpts: any = {};
                         if (sysInfo.platform == "linux" || sysInfo.platform == "darwin") {
@@ -202,7 +200,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
                         }
                         // do not include any path structure from the tgz, just the exe name
                         entry.pipe(fs.createWriteStream(nodeJsPath.resolve(toDir, nodeJsPath.basename(entry.path)), fileCreateOpts));
-                        */
                     }
                 })
                 .on("end", () => {
