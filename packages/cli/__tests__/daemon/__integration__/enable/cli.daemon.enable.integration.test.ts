@@ -22,12 +22,13 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon enable", () => {
-    const rimraf = require("rimraf").sync;
+    const rimrafSync = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
     const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
     let exePath: string;
     let pathToBin: string;
+    let preBldDir: string;
     let preBldTgzPath: string;
 
     // is the zowe command that we will run our Node.js script?
@@ -82,7 +83,7 @@ describe("daemon enable", () => {
 
         // form the path to our bin directory, executable, and prebuilds tgz file
         const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
-        const preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
+        preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
         preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
         pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
         exePath = nodeJsPath.resolve(pathToBin, exePath);
@@ -98,10 +99,12 @@ describe("daemon enable", () => {
 
     beforeEach(async () => {
         // Remove any existing bin directory
-        rimraf(pathToBin);
+        rimrafSync(pathToBin);
     });
 
     afterAll(async () => {
+        rimrafSync(pathToBin);
+        rimrafSync(preBldDir);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
