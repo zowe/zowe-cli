@@ -739,5 +739,7 @@ mod tests {
         env::set_var("ZOWE_DAEMON", "777");
         let env = get_zowe_env();
         assert_eq!(env.keys().len(), 1);
+
+        env::remove_var("ZOWE_DAEMON");
     }
 }
