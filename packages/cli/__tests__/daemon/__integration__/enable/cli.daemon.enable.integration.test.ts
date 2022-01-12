@@ -164,7 +164,7 @@ describe("daemon enable", () => {
         if (willRunNodeJsZowe()) {
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled : todo: remove after temp test");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
