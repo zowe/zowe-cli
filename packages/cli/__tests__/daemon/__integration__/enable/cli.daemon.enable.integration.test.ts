@@ -164,11 +164,10 @@ describe("daemon enable", () => {
         if (willRunNodeJsZowe()) {
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled : todo: remove after temp test");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -181,7 +180,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -200,7 +198,6 @@ describe("daemon enable", () => {
             const exeStats = fs.statSync(exePath);
             expect(exeStats.size).toBeGreaterThan(fakeExeContent.length + 10);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -214,7 +211,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -231,7 +227,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your PATH`);
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -248,7 +243,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -262,7 +256,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 
@@ -277,7 +270,6 @@ describe("daemon enable", () => {
             expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
         }
     });
 });
