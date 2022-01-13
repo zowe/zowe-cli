@@ -44,7 +44,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
             return;
         }
 
-        cmdParams.response.console.log("Zowe CLI daemon mode enabled.\n" + userMsg);
+        cmdParams.response.console.log("Zowe CLI daemon mode is enabled.\n" + userMsg);
         cmdParams.response.data.setExitCode(0);
     }
 
@@ -128,10 +128,10 @@ export default class EnableDaemonHandler implements ICommandHandler {
         // display the version of the executable
         let userInfoMsg: string = "Zowe CLI native executable version = ";
         const zoweExePath = nodeJsPath.resolve(zoweHomeBin, exeFileName);
-        const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
+        const ioOpts: StdioOptions = ["pipe", "pipe", process.stderr];
         try {
             const spawnResult = spawnSync(zoweExePath, ["--version-exe"], {
-                stdio: pipe,
+                stdio: ioOpts,
                 shell: false
             });
             if (spawnResult.stdout) {
@@ -145,8 +145,10 @@ export default class EnableDaemonHandler implements ICommandHandler {
         }
 
         // if ZOWE_CLI_HOME/bin is not on our PATH, add an instruction to add it
+        let musSetPath = false;
         if (process.env?.PATH?.length > 0) {
             if (!process.env.PATH.includes(zoweHomeBin)) {
+                musSetPath = true;
                 userInfoMsg += `\n\nAdd '${zoweHomeBin}' to your PATH.` +
                     "\nOtherwise, you will continue to run the classic Zowe CLI interpreter.";
             }
@@ -164,6 +166,9 @@ export default class EnableDaemonHandler implements ICommandHandler {
             }
         }
 
+        if (musSetPath || ProcessUtils.getBasicSystemInfo().platform != "win32") {
+            userInfoMsg += "\n\nTo run further Zowe commands, close this terminal and open a new terminal.";
+        }
         return userInfoMsg;
     }
 

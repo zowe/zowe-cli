@@ -26,6 +26,8 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 describe("daemon disable", () => {
     const rimrafSync = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
+    const zoweCmdRegEx = "zowe.*[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js.* --daemon" + "|" +
+    "[/|\\\\]bin[/|\\\\]zowe.* --daemon";
 
     let exePath: string;
     let pathToBin: string;
@@ -116,6 +118,11 @@ describe("daemon disable", () => {
             const response = runCliScript(__dirname + "/__scripts__/daemon_disable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
             expect(stdoutStr).toContain("Zowe CLI daemon mode is disabled.");
+            if (ProcessUtils.getBasicSystemInfo().platform === "win32") {
+                expect(stdoutStr).not.toContain("close this terminal and open a new terminal");
+            } else {
+                expect(stdoutStr).toContain("close this terminal and open a new terminal");
+            }
             expect(response.status).toBe(0);
         }
     });
@@ -143,9 +150,8 @@ describe("daemon disable", () => {
             const procArray = await findProc('name', 'node', true);
 
             // match and kill any running Zowe daemon
-            const zoweCmdRegEx = "@zowe[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js";
             for (const nextProc of procArray) {
-                if (nextProc.cmd.match(zoweCmdRegEx) && nextProc.cmd.includes("--daemon")) {
+                if (nextProc.cmd.match(zoweCmdRegEx)) {
                     process.kill(nextProc.pid, "SIGINT");
                 }
             }
@@ -173,12 +179,14 @@ describe("daemon disable", () => {
             // match any running Zowe daemon
             const findProc = require('find-process');
             const procArray = await findProc('name', 'node', true);
-            const zoweCmdRegEx = "@zowe[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js";
+            let weFoundDaemon = false;
             for (const nextProc of procArray) {
-                if (nextProc.cmd.match(zoweCmdRegEx) && nextProc.cmd.includes("--daemon")) {
-                    expect("we should not find a daemon").toContain("so the disable command failed.");
+                if (nextProc.cmd.match(zoweCmdRegEx)) {
+                    weFoundDaemon = true;
+                    break;
                 }
             }
+            expect(weFoundDaemon).toBe(false);
         }
     });
 });

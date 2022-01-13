@@ -129,7 +129,7 @@ describe("Handler for daemon enable", () => {
 
             expect(error).toBeUndefined();
             expect(enableDaemonSpy).toHaveBeenCalledTimes(1);
-            expect(logMessage).toContain("Zowe CLI daemon mode enabled.");
+            expect(logMessage).toContain("Zowe CLI daemon mode is enabled.");
             expect(logMessage).toContain(allOkMsg);
         });
 
@@ -369,10 +369,113 @@ describe("Handler for daemon enable", () => {
             expect(error).toBeUndefined();
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
             expect(userInfoMsg).toContain(`Add '${zoweBinDirMock}' to your PATH.`);
+            expect(userInfoMsg).toContain("close this terminal and open a new terminal");
 
             IO.existsSync = existsSyncOrig;
             IO.isDir = isDirOrig;
             IO.createDirSync = createDirSyncOrig;
+            process.env.PATH = pathOrig;
+        });
+
+        it("should tell you to open new terminal on Linux even when PATH is set", async () => {
+            // Mock the IO functions to simulate stuff is working
+            const existsSyncOrig = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const isDirOrig = IO.isDir;
+            IO.isDir = jest.fn(() => {
+                return true;
+            });
+
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn();
+
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "ArchNotNeeded",
+                    "platform": "linux"
+                };
+            });
+
+            const pathOrig = process.env.PATH;
+            process.env.PATH = "stuff/in/path:" +
+                nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin") +
+                ":more/stuff/in/path";
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+
+            let error;
+            let userInfoMsg: string;
+            try {
+                userInfoMsg =  await enableHandler.enableDaemon();
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
+            expect(userInfoMsg).toContain("close this terminal and open a new terminal");
+
+            IO.existsSync = existsSyncOrig;
+            IO.isDir = isDirOrig;
+            IO.createDirSync = createDirSyncOrig;
+            ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
+            process.env.PATH = pathOrig;
+        });
+
+        it("should NOT tell you to open new terminal on Windows when PATH is set", async () => {
+            // Mock the IO functions to simulate stuff is working
+            const existsSyncOrig = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const isDirOrig = IO.isDir;
+            IO.isDir = jest.fn(() => {
+                return true;
+            });
+
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn();
+
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "ArchNotNeeded",
+                    "platform": "win32"
+                };
+            });
+
+            const pathOrig = process.env.PATH;
+            process.env.PATH = "stuff/in/path:" +
+                nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin") +
+                ":more/stuff/in/path";
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+
+            let error;
+            let userInfoMsg: string;
+            try {
+                userInfoMsg =  await enableHandler.enableDaemon();
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
+            expect(userInfoMsg).not.toContain("close this terminal and open a new terminal");
+
+            IO.existsSync = existsSyncOrig;
+            IO.isDir = isDirOrig;
+            IO.createDirSync = createDirSyncOrig;
+            ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
             process.env.PATH = pathOrig;
         });
 

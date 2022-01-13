@@ -164,7 +164,7 @@ describe("daemon enable", () => {
         if (willRunNodeJsZowe()) {
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
@@ -176,7 +176,7 @@ describe("daemon enable", () => {
             fs.mkdirSync(pathToBin, 0o755);
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
@@ -191,7 +191,7 @@ describe("daemon enable", () => {
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
 
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(IO.existsSync(exePath)).toBe(true);
 
             // our test tgz file is more than 10 bytes larger than this fake tgz
@@ -205,10 +205,11 @@ describe("daemon enable", () => {
         if (willRunNodeJsZowe()) {
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(stdoutStr).toContain(`Add '${pathToBin}' to your PATH`);
             expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
+            expect(stdoutStr).toContain("close this terminal and open a new terminal");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
         }
@@ -222,9 +223,14 @@ describe("daemon enable", () => {
             testEnvironment.env["PATH"] = pathOrig;
 
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(stdoutStr).not.toContain(`Add '${pathToBin}' to your PATH`);
+            if (ProcessUtils.getBasicSystemInfo().platform === "win32") {
+                expect(stdoutStr).not.toContain("close this terminal and open a new terminal");
+            } else {
+                expect(stdoutStr).toContain("close this terminal and open a new terminal");
+            }
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
         }
@@ -237,7 +243,7 @@ describe("daemon enable", () => {
             delete testEnvironment.env.ZOWE_USE_DAEMON;
 
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
             expect(stdoutStr).toContain("Your ZOWE_USE_DAEMON environment variable is set to 'no'");
             expect(stdoutStr).toContain("You must remove it, or set it to 'yes' to use daemon mode");
@@ -251,7 +257,7 @@ describe("daemon enable", () => {
             delete testEnvironment.env.ZOWE_USE_DAEMON;
             const response = runCliScript(__dirname + "/__scripts__/daemon_enable.sh", testEnvironment);
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(testEnvironment.env["ZOWE_USE_DAEMON"]).toBeFalsy();
             expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
             expect(IO.existsSync(exePath)).toBe(true);
@@ -266,7 +272,7 @@ describe("daemon enable", () => {
             delete testEnvironment.env.ZOWE_USE_DAEMON;
 
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain("Zowe CLI daemon mode enabled");
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).not.toContain("Your ZOWE_USE_DAEMON environment variable is set to");
             expect(IO.existsSync(exePath)).toBe(true);
             expect(response.status).toBe(0);
