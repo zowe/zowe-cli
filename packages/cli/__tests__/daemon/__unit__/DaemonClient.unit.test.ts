@@ -50,9 +50,9 @@ describe("DaemonClient tests", () => {
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
         const daemonResponse: IDaemonResponse = {
-            argv: ["feed", "dog"],
+            argv: ["feed", "🐶"],
             cwd: "fake",
-            env: {},
+            env: { FORCE_COLOR: "0" },
             stdinLength: 0,
             stdin: null,
             user: Buffer.from("fake").toString('base64')
@@ -61,9 +61,10 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse));
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
 
-        expect(log).toHaveBeenLastCalledWith('daemon input command: feed dog');
+        expect(log).toHaveBeenLastCalledWith('daemon input command: feed 🐶');
         expect(log).toHaveBeenCalledTimes(2);
         expect(parse).toHaveBeenCalled();
     });
@@ -99,9 +100,9 @@ describe("DaemonClient tests", () => {
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
-        const stdinData = String.fromCharCode(...Array(256).keys());
+        const stdinData = String.fromCharCode(...Array(1024).keys());
         const daemonResponse: IDaemonResponse = {
-            argv: ["feed", "cat"],
+            argv: ["feed", "🐱"],
             cwd: "fake",
             env: {},
             stdinLength: stdinData.length,
@@ -114,11 +115,11 @@ describe("DaemonClient tests", () => {
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const stringData = JSON.stringify(daemonResponse) + "\f" + stdinData;
-        await (daemonClient as any).data(stringData);
+        await (daemonClient as any).data(Buffer.from(stringData));
 
-        expect(log).toHaveBeenLastCalledWith('daemon input command: feed cat');
+        expect(log).toHaveBeenLastCalledWith('daemon input command: feed 🐱');
         expect(log).toHaveBeenCalledTimes(2);
-        expect(writeToStdinSpy).toHaveBeenCalledWith(stdinData, stdinData.length);
+        expect(writeToStdinSpy).toHaveBeenCalledWith(Buffer.from(stdinData), stdinData.length);
         expect(parse).toHaveBeenCalled();
     });
 
@@ -157,7 +158,7 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data("not json");
+        (daemonClient as any).data(Buffer.from("not json"));
 
         expect(log).toHaveBeenCalledTimes(3);
         expect(log).toHaveBeenLastCalledWith("First 1024 bytes of daemon request:\n", "not json");
@@ -200,7 +201,8 @@ describe("DaemonClient tests", () => {
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
         const promptResponse = { stdin: "some answer", user: Buffer.from("fake").toString('base64') };
-        (daemonClient as any).data(JSON.stringify(promptResponse));
+        const stringData = JSON.stringify(promptResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
 
         expect(log).toHaveBeenCalledTimes(1);
         expect(parse).not.toHaveBeenCalled();
@@ -246,7 +248,8 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify write method is called with termination message
         const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64') };
-        (daemonClient as any).data(JSON.stringify(shutdownResponse));
+        const stringData = JSON.stringify(shutdownResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(shutdownSpy).toHaveBeenCalledTimes(1);
@@ -339,7 +342,7 @@ describe("DaemonClient tests", () => {
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
         const daemonResponse: IDaemonResponse = {
-            argv: ["feed", "dog"],
+            argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
@@ -350,7 +353,8 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse));
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("The user 'ekaf' attempted to connect.");
@@ -390,7 +394,7 @@ describe("DaemonClient tests", () => {
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
         const daemonResponse: IDaemonResponse = {
-            argv: ["feed", "dog"],
+            argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
@@ -400,7 +404,8 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse));
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("A connection was attempted without a valid user.");
@@ -440,7 +445,7 @@ describe("DaemonClient tests", () => {
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
         const daemonResponse: IDaemonResponse = {
-            argv: ["feed", "dog"],
+            argv: ["feed", "🐶"],
             cwd: "fake",
             env: {},
             stdinLength: 0,
@@ -451,7 +456,8 @@ describe("DaemonClient tests", () => {
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
         // and is what is passed to mocked Imperative.parse via snapshot
-        (daemonClient as any).data(JSON.stringify(daemonResponse));
+        const stringData = JSON.stringify(daemonResponse);
+        (daemonClient as any).data(Buffer.from(stringData));
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("The user 'zF�' attempted to connect.");

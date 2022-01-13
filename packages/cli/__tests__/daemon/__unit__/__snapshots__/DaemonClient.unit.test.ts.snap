@@ -3,7 +3,7 @@
 exports[`DaemonClient tests should process data when received 1`] = `
 Array [
   "feed",
-  "dog",
+  "🐶",
 ]
 `;
 
@@ -12,10 +12,12 @@ Object {
   "daemonResponse": Object {
     "argv": Array [
       "feed",
-      "dog",
+      "🐶",
     ],
     "cwd": "fake",
-    "env": Object {},
+    "env": Object {
+      "FORCE_COLOR": "0",
+    },
     "stdin": null,
     "stdinLength": 0,
     "user": "ZmFrZQ==",
@@ -60,7 +62,7 @@ Object {
 exports[`DaemonClient tests should process response with binary stdin data when received 1`] = `
 Array [
   "feed",
-  "cat",
+  "🐱",
 ]
 `;
 
@@ -69,12 +71,12 @@ Object {
   "daemonResponse": Object {
     "argv": Array [
       "feed",
-      "cat",
+      "🐱",
     ],
     "cwd": "fake",
     "env": Object {},
     "stdin": null,
-    "stdinLength": 256,
+    "stdinLength": 1024,
     "user": "ZmFrZQ==",
   },
   "stream": Object {
