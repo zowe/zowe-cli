@@ -207,7 +207,7 @@ describe("daemon enable", () => {
             const stdoutStr = response.stdout.toString();
             expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
             expect(stdoutStr).toContain("Zowe CLI native executable version =");
-            expect(stdoutStr).toContain(`Add '${pathToBin}' to your PATH`);
+            expect(stdoutStr).toContain(`Manually add '${pathToBin}' to your PATH`);
             expect(stdoutStr).toContain("Otherwise, you will continue to run the classic Zowe CLI interpreter");
             expect(stdoutStr).toContain("close this terminal and open a new terminal");
             expect(IO.existsSync(exePath)).toBe(true);

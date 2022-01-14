@@ -19,6 +19,8 @@ import {
     IO, ISystemInfo, ProcessUtils
 } from "@zowe/imperative";
 
+import { IAnswerQuestions } from "../doc/IAnswerQuestions";
+
 /**
  * Handler to enable daemon mode.
  * @export
@@ -26,6 +28,8 @@ import {
  * @implements {ICommandHandler}
  */
 export default class EnableDaemonHandler implements ICommandHandler {
+    private static openNewTerminalMsg = "To run further Zowe commands, close this terminal and open a new terminal.";
+
     /**
      * Process the enable daemon command and populates the response
      * object as needed.
@@ -37,7 +41,17 @@ export default class EnableDaemonHandler implements ICommandHandler {
     public async process(cmdParams: IHandlerParameters): Promise<void> {
         let userMsg: string;
         try {
-            userMsg = await this.enableDaemon();
+            const userQuestions: IAnswerQuestions = {
+                addBinToPath: {
+                    /* TODO: Use this code block when we are ready to automatically add zowe/bin to the PATH
+                    askUser: true,
+                    defaultVal: "y"
+                     */
+                    askUser: false,
+                    defaultVal: "n"
+                }
+            };
+            userMsg = await this.enableDaemon(userQuestions);
         } catch(impErr) {
             cmdParams.response.console.log("Failed to enable Zowe CLI daemon mode.\n" + (impErr as ImperativeError).message);
             cmdParams.response.data.setExitCode(1);
@@ -54,10 +68,12 @@ export default class EnableDaemonHandler implements ICommandHandler {
      *
      * @throws {ImperativeError}
      *
+     * @param {boolean} canAskQuestions Can we interactively ask the user questions?
+     *
      * @returns {string} An informational message to display to the user after
      *          successful completion of the operation.
      */
-    private async enableDaemon(): Promise<string> {
+    private async enableDaemon(userQuestions: IAnswerQuestions): Promise<string> {
         // determine our current OS
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
@@ -93,29 +109,29 @@ export default class EnableDaemonHandler implements ICommandHandler {
         }
 
         // form the path to the bin directory in ZOWE_CLI_HOME
-        const zoweHomeBin = nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin");
+        const pathToZoweBin = nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin");
 
         // Does the ZOWE_CLI_HOME bin directory exist?
-        if (IO.existsSync(zoweHomeBin)) {
-            if (!IO.isDir(zoweHomeBin)) {
+        if (IO.existsSync(pathToZoweBin)) {
+            if (!IO.isDir(pathToZoweBin)) {
                 throw new ImperativeError({
-                    msg: `The existing file '${zoweHomeBin}' must be a directory.`
+                    msg: `The existing file '${pathToZoweBin}' must be a directory.`
                 });
             }
         } else {
             // create the directory
             try {
-                IO.createDirSync(zoweHomeBin);
+                IO.createDirSync(pathToZoweBin);
             }
             catch(err) {
                 throw new ImperativeError({
-                    msg: `Unable to create directory '${zoweHomeBin}'.\nReason: ${err}`
+                    msg: `Unable to create directory '${pathToZoweBin}'.\nReason: ${err}`
                 });
             }
         }
 
         // extract executable from the tar file into the bin directory
-        await this.unzipTgz(preBldTgz, zoweHomeBin, ImperativeConfig.instance.rootCommandName);
+        await this.unzipTgz(preBldTgz, pathToZoweBin, ImperativeConfig.instance.rootCommandName);
 
         /* Even though we await the unzip above, the OS still considers the exe file in-use
          * for a while. We will get the following error message when trying to run the exe.
@@ -127,8 +143,8 @@ export default class EnableDaemonHandler implements ICommandHandler {
 
         // display the version of the executable
         let userInfoMsg: string = "Zowe CLI native executable version = ";
-        const zoweExePath = nodeJsPath.resolve(zoweHomeBin, exeFileName);
-        const ioOpts: StdioOptions = ["pipe", "pipe", process.stderr];
+        const zoweExePath = nodeJsPath.resolve(pathToZoweBin, exeFileName);
+        const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
         try {
             const spawnResult = spawnSync(zoweExePath, ["--version-exe"], {
                 stdio: ioOpts,
@@ -138,21 +154,17 @@ export default class EnableDaemonHandler implements ICommandHandler {
                 // remove any newlines from the version number
                 userInfoMsg += spawnResult.stdout.toString().replace(/\r?\n|\r/g, "");
             } else {
-                userInfoMsg += "Failed to get version number";
+                userInfoMsg += "Failed to get version number\n";
+                if (spawnResult.stderr) {
+                    userInfoMsg += spawnResult.stderr.toString();
+                }
             }
         } catch (err) {
             userInfoMsg += err.message;
         }
 
-        // if ZOWE_CLI_HOME/bin is not on our PATH, add an instruction to add it
-        let musSetPath = false;
-        if (process.env?.PATH?.length > 0) {
-            if (!process.env.PATH.includes(zoweHomeBin)) {
-                musSetPath = true;
-                userInfoMsg += `\n\nAdd '${zoweHomeBin}' to your PATH.` +
-                    "\nOtherwise, you will continue to run the classic Zowe CLI interpreter.";
-            }
-        }
+        // add our bin directory to the PATH if is it is not already there
+        userInfoMsg += await this.addZoweBinToPath(pathToZoweBin, userQuestions);
 
         // if ZOWE_USE_DAEMON is set, and turned off, add a warning message
         if (process.env?.ZOWE_USE_DAEMON?.length > 0) {
@@ -166,9 +178,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
             }
         }
 
-        if (musSetPath || ProcessUtils.getBasicSystemInfo().platform != "win32") {
-            userInfoMsg += "\n\nTo run further Zowe commands, close this terminal and open a new terminal.";
-        }
         return userInfoMsg;
     }
 
@@ -211,5 +220,121 @@ export default class EnableDaemonHandler implements ICommandHandler {
                     resolve();
                 });
         });
+    }
+
+    /**
+     * Add our .zowe/bin directory to the user's PATH.
+     *
+     * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
+     *
+     * @param {IAnswerQuestions} userQuestions Questions for user (if permitted)
+     *
+     * @returns {string} An informational message to display to the user after
+     *          successful completion of the operation.
+     */
+    private async addZoweBinToPath(pathToZoweBin: string, userQuestions: IAnswerQuestions): Promise<string> {
+        let userInfoMsg: string = "";
+        const osPlatform: string = ProcessUtils.getBasicSystemInfo().platform;
+
+        if (process.env.PATH?.includes(pathToZoweBin)) {
+            // bash & zsh command-path caching forces us to require a new terminal
+            if ( osPlatform !== "win32") {
+                userInfoMsg += "\n\n" + EnableDaemonHandler.openNewTerminalMsg;
+            }
+        } else {
+            // ZOWE_CLI_HOME/bin is not on our PATH, we want to add it
+            let answer: string = null;
+            if (userQuestions.addBinToPath.askUser) {
+                // alter PATH question by OS
+                let pathQuestion = "May we add the Zowe bin directory to your\nPATH in your ";
+                if ( osPlatform === "win32") {
+                    pathQuestion += "permanent user environment";
+                } else {
+                    pathQuestion += ".profile file";
+                }
+                pathQuestion += " [y or n] ? ";
+                // ask user for permission to update PATH
+                answer = await CliUtils.readPrompt(pathQuestion);
+            } else {
+                // don't ask, just use default
+                answer = userQuestions.addBinToPath.defaultVal;
+            }
+
+            if (answer !== null && answer === "y" || answer === "Y") {
+                // user wants us to do it for him/her
+                if ( osPlatform === "win32") {
+                    userInfoMsg += await this.addZoweBinOnWindows(pathToZoweBin);
+                } else {
+                    userInfoMsg += this.addZoweBinOnPosix(pathToZoweBin);
+                }
+            } else {
+                userInfoMsg += `\n\nManually add '${pathToZoweBin}' to your PATH.` +
+                    "\nOtherwise, you will continue to run the classic Zowe CLI interpreter.";
+            }
+
+            // when zowe/bin not already on path, user needs a new terminal
+            userInfoMsg += "\n\n" + EnableDaemonHandler.openNewTerminalMsg;
+        } // end zowe/bin not in path
+
+        return userInfoMsg;
+    }
+
+    /**
+     * Add our .zowe/bin directory to the front of the user's PATH on Windows.
+     *
+     * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
+     *
+     * @returns {string} An informational message to display to the user after
+     *          successful completion of the operation.
+     */
+    private async addZoweBinOnWindows(pathToZoweBin: string): Promise<string> {
+        let userInfoMsg: string = "";
+        try {
+            /* TODO:
+             * - Detect if zowe/bin is in system or user PATH env variable
+             *      - For user PATH :  reg query "HKCU\Environment"
+             *      - For system PATH: reg query "???"
+             * - Add zowe/bin to the front of either user or system PATH
+             * - confirm that we do not exceed max path (1024 for user)
+             * - For system PATH
+             *      - get user name
+             *      - prompt for password
+             * - Use setx to set the new PATH value
+             */
+
+            const ioOptions: StdioOptions = ["pipe", "pipe", "pipe"];
+            const spawnResult = spawnSync("setx",
+                ["zowe_set_env_test", pathToZoweBin + ";" + process.env.PATH],
+                {
+                    stdio: ioOptions,
+                    shell: false
+                }
+            );
+            if (spawnResult.stdout) {
+                userInfoMsg += spawnResult.stdout.toString();
+            }
+            if (spawnResult.stderr) {
+                userInfoMsg += spawnResult.stderr.toString();
+            }
+        } catch (err) {
+            userInfoMsg += "Failed to run setx. Reason = " + err.message;
+        }
+
+        return userInfoMsg;
+    }
+
+    /**
+     * Add our .zowe/bin directory to the front of the user's PATH on Linux and MAC.
+     * Do that by adding a line at the end of the user's .profile file.
+     *
+     * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
+     *
+     * @returns {string} An informational message to display to the user after
+     *          successful completion of the operation.
+     */
+    private addZoweBinOnPosix(pathToZoweBin: string): string {
+        // Todo: Implement addZoweBinOnPosix
+        const userInfoMsg: string = "";
+        return userInfoMsg;
     }
 }

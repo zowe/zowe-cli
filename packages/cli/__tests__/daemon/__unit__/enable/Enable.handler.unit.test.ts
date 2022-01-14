@@ -13,6 +13,7 @@ jest.mock("child_process"); // using child_process from the __mocks__ directory
 
 import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
+import { IAnswerQuestions } from "../../../../src/daemon/doc/IAnswerQuestions";
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
 
 import * as fs from "fs";
@@ -172,6 +173,13 @@ describe("Handler for daemon enable", () => {
         });
         const zoweBinDirMock = cliHomeDirMock + nodeJsPath.sep + "bin";
 
+        const noAskNoAddPath: IAnswerQuestions = {
+            addBinToPath: {
+                askUser: false,
+                defaultVal: "n"
+            }
+        };
+
         it("should fail on an unsupported platform", async () => {
             const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
             ProcessUtils.getBasicSystemInfo = jest.fn(() => {
@@ -183,7 +191,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -200,7 +208,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -222,7 +230,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -247,7 +255,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -280,7 +288,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -322,7 +330,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -361,14 +369,14 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
 
             expect(error).toBeUndefined();
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
-            expect(userInfoMsg).toContain(`Add '${zoweBinDirMock}' to your PATH.`);
+            expect(userInfoMsg).toContain(`Manually add '${zoweBinDirMock}' to your PATH.`);
             expect(userInfoMsg).toContain("close this terminal and open a new terminal");
 
             IO.existsSync = existsSyncOrig;
@@ -412,7 +420,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg =  await enableHandler.enableDaemon();
+                userInfoMsg =  await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -463,7 +471,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg =  await enableHandler.enableDaemon();
+                userInfoMsg =  await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -501,7 +509,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -542,7 +550,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
