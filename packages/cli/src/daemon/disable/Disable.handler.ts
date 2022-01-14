@@ -10,7 +10,6 @@
 */
 
 import * as nodeJsPath from "path";
-import { spawnSync, StdioOptions } from "child_process";
 
 import {
     ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
