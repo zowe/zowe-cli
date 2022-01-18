@@ -13,7 +13,7 @@ jest.mock("child_process"); // using child_process from the __mocks__ directory
 
 import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
-import { IAnswerQuestions } from "../../../../src/daemon/doc/IAnswerQuestions";
+import { IDaemonEnableQuestions } from "../../../../src/daemon/doc/IDaemonEnableQuestions";
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
 
 import * as fs from "fs";
@@ -173,11 +173,9 @@ describe("Handler for daemon enable", () => {
         });
         const zoweBinDirMock = cliHomeDirMock + nodeJsPath.sep + "bin";
 
-        const noAskNoAddPath: IAnswerQuestions = {
-            addBinToPath: {
-                askUser: false,
-                defaultVal: "n"
-            }
+        const noAskNoAddPath: IDaemonEnableQuestions = {
+            canAskUser: false,
+            addBinToPathVal: "n"
         };
 
         it("should fail on an unsupported platform", async () => {

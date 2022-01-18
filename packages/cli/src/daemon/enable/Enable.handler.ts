@@ -19,7 +19,7 @@ import {
     IO, ISystemInfo, ProcessUtils
 } from "@zowe/imperative";
 
-import { IAnswerQuestions } from "../doc/IAnswerQuestions";
+import { IDaemonEnableQuestions } from "../doc/IDaemonEnableQuestions";
 
 /**
  * Handler to enable daemon mode.
@@ -41,15 +41,13 @@ export default class EnableDaemonHandler implements ICommandHandler {
     public async process(cmdParams: IHandlerParameters): Promise<void> {
         let userMsg: string;
         try {
-            const userQuestions: IAnswerQuestions = {
-                addBinToPath: {
-                    /* TODO: Use this code block when we are ready to automatically add zowe/bin to the PATH
-                    askUser: true,
-                    defaultVal: "y"
-                     */
-                    askUser: false,
-                    defaultVal: "n"
-                }
+            const userQuestions: IDaemonEnableQuestions = {
+                /* TODO: Use this code block when we are ready to automatically add zowe/bin to the PATH
+                canAskUser: true,
+                addBinToPathVal: "y"
+                */
+                canAskUser: false,
+                addBinToPathVal: "n"
             };
             userMsg = await this.enableDaemon(userQuestions);
         } catch(impErr) {
@@ -73,7 +71,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * @returns {string} An informational message to display to the user after
      *          successful completion of the operation.
      */
-    private async enableDaemon(userQuestions: IAnswerQuestions): Promise<string> {
+    private async enableDaemon(userQuestions: IDaemonEnableQuestions): Promise<string> {
         // determine our current OS
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
@@ -227,12 +225,12 @@ export default class EnableDaemonHandler implements ICommandHandler {
      *
      * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
      *
-     * @param {IAnswerQuestions} userQuestions Questions for user (if permitted)
+     * @param {IDaemonEnableQuestions} userQuestions Questions for user (if permitted)
      *
      * @returns {string} An informational message to display to the user after
      *          successful completion of the operation.
      */
-    private async addZoweBinToPath(pathToZoweBin: string, userQuestions: IAnswerQuestions): Promise<string> {
+    private async addZoweBinToPath(pathToZoweBin: string, userQuestions: IDaemonEnableQuestions): Promise<string> {
         let userInfoMsg: string = "";
         const osPlatform: string = ProcessUtils.getBasicSystemInfo().platform;
 
@@ -244,7 +242,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
         } else {
             // ZOWE_CLI_HOME/bin is not on our PATH, we want to add it
             let answer: string = null;
-            if (userQuestions.addBinToPath.askUser) {
+            if (userQuestions.canAskUser) {
                 // alter PATH question by OS
                 let pathQuestion = "May we add the Zowe bin directory to your\nPATH in your ";
                 if ( osPlatform === "win32") {
@@ -257,7 +255,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
                 answer = await CliUtils.readPrompt(pathQuestion);
             } else {
                 // don't ask, just use default
-                answer = userQuestions.addBinToPath.defaultVal;
+                answer = userQuestions.addBinToPathVal;
             }
 
             if (answer !== null && answer === "y" || answer === "Y") {
