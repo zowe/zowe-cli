@@ -142,7 +142,7 @@ exports[`zos-uss issue ssh command should fail due to invalid ssh command 1`] = 
 "Command Error:
 Unknown argument: ss
 Command failed due to improper syntax
-Did you mean:  zos-uss issue ssh?
+Did you mean: zos-uss issue ssh?
 
 Command entered: \\"zos-uss issue ss\\"
 Use \\"zowe --help\\" to view groups, commands, and options.
