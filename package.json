@@ -16,7 +16,7 @@
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "update:imperative": "lerna clean -y && npm i --save --save-exact @zowe/imperative@latest && syncpack fix-mismatches --dev --prod --filter @zowe/imperative && npm i",
+    "update:imperative": "npm i --package-lock-only --no-package-lock --save-exact @zowe/imperative@latest && syncpack fix-mismatches --dev --prod --filter @zowe/imperative && npm i",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
