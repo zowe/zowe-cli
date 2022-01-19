@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **BREAKING** Enhancement: Make the `user` field on SSH profiles secure. [#682](https://github.com/zowe/zowe-cli/issues/682)
+
 ## `7.0.0-next.202201121428`
 
 - BugFix: Set executable attribute on zowe executable file on Linux and Mac.
