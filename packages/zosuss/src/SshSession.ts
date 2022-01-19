@@ -57,7 +57,7 @@ export class SshSession {
     /**
      * @deprecated Use SSH_OPTION_HOST
      */
-    public static SSH_OPTION_HOST_PROFILE: ICommandOptionDefinition = this.SSH_OPTION_HOST;
+    public static SSH_OPTION_HOST_PROFILE: ICommandOptionDefinition = SshSession.SSH_OPTION_HOST;
 
     /**
      * Option used in profile creation and commands for port for z/OS SSH
@@ -86,7 +86,7 @@ export class SshSession {
     /**
      * @deprecated Use SSH_OPTION_USER
      */
-    public static SSH_OPTION_USER_PROFILE: ICommandOptionDefinition = this.SSH_OPTION_USER;
+    public static SSH_OPTION_USER_PROFILE: ICommandOptionDefinition = SshSession.SSH_OPTION_USER;
 
     /**
      * Option used in profile creation and commands for password/passphrase for z/OS SSH
