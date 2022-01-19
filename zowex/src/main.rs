@@ -488,7 +488,7 @@ fn get_port_string() -> String {
         Ok(val) => _port = val.parse::<i32>().unwrap(),
         Err(_e) => _port = DEFAULT_PORT,
     }
-    
+
     _port.to_string()
 }
 
@@ -729,17 +729,18 @@ mod tests {
         env::set_var("ZOWE_DAEMON", "777");
         let port_string = get_port_string();
         assert_eq!("777", port_string);
+        env::remove_var("ZOWE_DAEMON");
     }
 
     #[test]
     fn test_get_zowe_env() {
         let env = get_zowe_env();
-        assert_eq!(env.keys().len(), 0);
+        assert_eq!(env.get("ZOWE_EDITOR"), None);
 
-        env::set_var("ZOWE_DAEMON", "777");
+        env::set_var("ZOWE_EDITOR", "nano");
         let env = get_zowe_env();
-        assert_eq!(env.keys().len(), 1);
+        assert_eq!(env.get("ZOWE_EDITOR"), Some(&"nano".to_owned()));
 
-        env::remove_var("ZOWE_DAEMON");
+        env::remove_var("ZOWE_EDITOR");
     }
 }
