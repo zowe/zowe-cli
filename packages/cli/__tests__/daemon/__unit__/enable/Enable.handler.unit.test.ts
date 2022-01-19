@@ -13,6 +13,7 @@ jest.mock("child_process"); // using child_process from the __mocks__ directory
 
 import { ImperativeConfig, ImperativeError, IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
+import { IDaemonEnableQuestions } from "../../../../src/daemon/doc/IDaemonEnableQuestions";
 import EnableDaemonHandler from "../../../../src/daemon/enable/Enable.handler";
 
 import * as fs from "fs";
@@ -129,7 +130,7 @@ describe("Handler for daemon enable", () => {
 
             expect(error).toBeUndefined();
             expect(enableDaemonSpy).toHaveBeenCalledTimes(1);
-            expect(logMessage).toContain("Zowe CLI daemon mode enabled.");
+            expect(logMessage).toContain("Zowe CLI daemon mode is enabled.");
             expect(logMessage).toContain(allOkMsg);
         });
 
@@ -172,6 +173,11 @@ describe("Handler for daemon enable", () => {
         });
         const zoweBinDirMock = cliHomeDirMock + nodeJsPath.sep + "bin";
 
+        const noAskNoAddPath: IDaemonEnableQuestions = {
+            canAskUser: false,
+            addBinToPathVal: "n"
+        };
+
         it("should fail on an unsupported platform", async () => {
             const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
             ProcessUtils.getBasicSystemInfo = jest.fn(() => {
@@ -183,7 +189,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -200,7 +206,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -222,7 +228,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -247,7 +253,7 @@ describe("Handler for daemon enable", () => {
 
             let error;
             try {
-                await enableHandler.enableDaemon();
+                await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -280,7 +286,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -322,7 +328,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -361,18 +367,121 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
 
             expect(error).toBeUndefined();
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
-            expect(userInfoMsg).toContain(`Add '${zoweBinDirMock}' to your PATH.`);
+            expect(userInfoMsg).toContain(`Manually add '${zoweBinDirMock}' to your PATH.`);
+            expect(userInfoMsg).toContain("close this terminal and open a new terminal");
 
             IO.existsSync = existsSyncOrig;
             IO.isDir = isDirOrig;
             IO.createDirSync = createDirSyncOrig;
+            process.env.PATH = pathOrig;
+        });
+
+        it("should tell you to open new terminal on Linux even when PATH is set", async () => {
+            // Mock the IO functions to simulate stuff is working
+            const existsSyncOrig = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const isDirOrig = IO.isDir;
+            IO.isDir = jest.fn(() => {
+                return true;
+            });
+
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn();
+
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "ArchNotNeeded",
+                    "platform": "linux"
+                };
+            });
+
+            const pathOrig = process.env.PATH;
+            process.env.PATH = "stuff/in/path:" +
+                nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin") +
+                ":more/stuff/in/path";
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+
+            let error;
+            let userInfoMsg: string;
+            try {
+                userInfoMsg =  await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
+            expect(userInfoMsg).toContain("close this terminal and open a new terminal");
+
+            IO.existsSync = existsSyncOrig;
+            IO.isDir = isDirOrig;
+            IO.createDirSync = createDirSyncOrig;
+            ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
+            process.env.PATH = pathOrig;
+        });
+
+        it("should NOT tell you to open new terminal on Windows when PATH is set", async () => {
+            // Mock the IO functions to simulate stuff is working
+            const existsSyncOrig = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const isDirOrig = IO.isDir;
+            IO.isDir = jest.fn(() => {
+                return true;
+            });
+
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn();
+
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "ArchNotNeeded",
+                    "platform": "win32"
+                };
+            });
+
+            const pathOrig = process.env.PATH;
+            process.env.PATH = "stuff/in/path:" +
+                nodeJsPath.normalize(ImperativeConfig.instance.cliHome + "/bin") +
+                ":more/stuff/in/path";
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+
+            let error;
+            let userInfoMsg: string;
+            try {
+                userInfoMsg =  await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
+            expect(userInfoMsg).not.toContain("close this terminal and open a new terminal");
+
+            IO.existsSync = existsSyncOrig;
+            IO.isDir = isDirOrig;
+            IO.createDirSync = createDirSyncOrig;
+            ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
             process.env.PATH = pathOrig;
         });
 
@@ -398,7 +507,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
@@ -439,7 +548,7 @@ describe("Handler for daemon enable", () => {
             let error;
             let userInfoMsg: string;
             try {
-                userInfoMsg = await enableHandler.enableDaemon();
+                userInfoMsg = await enableHandler.enableDaemon(noAskNoAddPath);
             } catch (e) {
                 error = e;
             }
