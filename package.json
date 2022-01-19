@@ -16,7 +16,7 @@
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "update:imperative": "npm i --save --save-exact @zowe/imperative@latest && syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
+    "update:imperative": "npm i --package-lock-only --no-package-lock --save-exact @zowe/imperative@latest && syncpack fix-mismatches --dev --prod --filter @zowe/imperative && npm i",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:cleanResults": "rimraf __tests__/__results__",
     "test:cleanUpProfiles": "sh __tests__/__scripts__/clean_profiles.sh",
@@ -34,7 +34,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "4.17.3",
+    "@zowe/imperative": "4.17.4",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
