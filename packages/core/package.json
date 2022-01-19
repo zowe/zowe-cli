@@ -1,6 +1,6 @@
 {
   "name": "@zowe/core-for-zowe-sdk",
-  "version": "6.37.2",
+  "version": "6.37.3",
   "description": "Core libraries shared by Zowe SDK packages",
   "author": "Broadcom",
   "license": "EPL-2.0",
