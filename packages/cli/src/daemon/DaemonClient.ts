@@ -143,13 +143,12 @@ export class DaemonClient {
         if (this.pendingStdinLength > 0) return;
 
         // Split JSON body and binary data from multipart response
-        const stringData = data.toString();
-        const jsonEndIdx = stringData.indexOf("}" + DaemonRequest.EOW_DELIMITER);
+        const jsonEndIdx = data.indexOf("}" + DaemonRequest.EOW_DELIMITER);
         let jsonData: IDaemonResponse;
         let stdinData: Buffer;
 
         try {
-            jsonData = JSON.parse(jsonEndIdx !== -1 ? stringData.slice(0, jsonEndIdx + 1) : stringData);
+            jsonData = JSON.parse((jsonEndIdx !== -1 ? data.slice(0, jsonEndIdx + 1) : data).toString());
             stdinData = jsonEndIdx !== -1 ? data.slice(jsonEndIdx + 2) : undefined;
         } catch (error) {
             Imperative.api.appLogger.logError(new ImperativeError({
@@ -157,7 +156,7 @@ export class DaemonClient {
                 causeErrors: error
             }));
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            Imperative.api.appLogger.trace("First 1024 bytes of daemon request:\n", stringData.slice(0, 1024));
+            Imperative.api.appLogger.trace("First 1024 bytes of daemon request:\n", data.slice(0, 1024).toString());
             const responsePayload: string = DaemonRequest.create({
                 stderr: "Failed to parse data received from daemon client:\n" + error.stack,
                 exitCode: 1

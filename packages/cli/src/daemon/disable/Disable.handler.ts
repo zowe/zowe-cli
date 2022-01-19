@@ -41,6 +41,10 @@ export default class DisableDaemonHandler implements ICommandHandler {
         }
 
         cmdParams.response.console.log("Zowe CLI daemon mode is disabled.");
+        if (ProcessUtils.getBasicSystemInfo().platform != "win32") {
+            cmdParams.response.console.log("To run further Zowe commands, close this terminal and open a new terminal.");
+        }
+
         cmdParams.response.data.setExitCode(0);
     }
 
@@ -106,14 +110,20 @@ export default class DisableDaemonHandler implements ICommandHandler {
             });
         }
 
-        /* Paths in proc list on Windows sometimes have forward slash
-         * and sometimes backslash, so allow either.
+        /* Paths in proc list on Windows sometimes have forward slash and
+         * sometimes backslash, so allow either. This RegEx is designed to
+         * match patterns like these:
+         *
+         * node /home/someUser/.nvm/versions/node/v17.1.0/bin/zowe --daemon
+         * node /home/someUser/GitHub/zowe-cli-next/packages/cli/lib/main.js --daemon
+         * "C:\Program Files\nodejs\node.exe" "C:\Program Files\nodejs\node_modules\@zowe\cli\lib\main.js" --daemon
          */
-        const zoweCmdRegEx = "@zowe[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js";
+        const zoweCmdRegEx = "zowe.*[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js.* --daemon" + "|" +
+                             "[/|\\\\]bin[/|\\\\]zowe.* --daemon";
 
         // match and kill any running Zowe daemon
         for (const nextProc of procArray) {
-            if (nextProc.cmd.match(zoweCmdRegEx) && nextProc.cmd.includes("--daemon")) {
+            if (nextProc.cmd.match(zoweCmdRegEx)) {
                 process.kill(nextProc.pid, "SIGINT");
             }
         }
