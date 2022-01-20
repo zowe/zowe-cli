@@ -9,7 +9,8 @@ CCS141/
 .vscode
 .idea
 src/brightside.iml
-npm-shrinkwrap.json
+package-lock.json
+/packages/cli/npm-shrinkwrap.json
 # Sonar Files
 .sonar_lock
 .scannerwork/

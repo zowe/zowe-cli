@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
+
 ## `7.0.0-next.202201121428`
 
 - BugFix: Set executable attribute on zowe executable file on Linux and Mac.
