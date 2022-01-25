@@ -84,6 +84,60 @@ describe("Disable daemon handler", () => {
             expect(logMessage).toContain("Zowe CLI daemon mode is disabled.");
         });
 
+        it("should tell you to open new terminal on Linux", async () => {
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "ArchNotNeeded",
+                    "platform": "linux"
+                };
+            });
+
+            // spy on our handler's private disableDaemon() function
+            disableDaemonSpy = jest.spyOn(DisableDaemonHandler.prototype as any, "disableDaemon");
+            disableDaemonSpy.mockImplementation(() => {return;});
+
+            let error;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await disableHandler.process(cmdParms);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(disableDaemonSpy).toHaveBeenCalledTimes(1);
+            expect(logMessage).toContain("Zowe CLI daemon mode is disabled.");
+            expect(logMessage).toContain("close this terminal and open a new terminal");
+        });
+
+        it("should NOT tell you to open new terminal on Windows", async () => {
+            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
+            ProcessUtils.getBasicSystemInfo = jest.fn(() => {
+                return {
+                    "arch": "ArchNotNeeded",
+                    "platform": "win32"
+                };
+            });
+
+            // spy on our handler's private disableDaemon() function
+            disableDaemonSpy = jest.spyOn(DisableDaemonHandler.prototype as any, "disableDaemon");
+            disableDaemonSpy.mockImplementation(() => {return;});
+
+            let error;
+            try {
+                // Invoke the handler with a full set of mocked arguments and response functions
+                await disableHandler.process(cmdParms);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(disableDaemonSpy).toHaveBeenCalledTimes(1);
+            expect(logMessage).toContain("Zowe CLI daemon mode is disabled.");
+            expect(logMessage).not.toContain("close this terminal and open a new terminal");
+        });
+
         it("should fail when the disableDaemon function fails", async () => {
             const badStuffMsg = "Some bad exception happened";
 
