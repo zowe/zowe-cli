@@ -19,7 +19,7 @@
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "update:imperative": "npm i --save --save-exact @zowe/imperative@next && syncpack fix-mismatches --dev --prod --filter @zowe/imperative",
+    "update:imperative": "npm i --package-lock-only --no-package-lock --save-exact @zowe/imperative@next && syncpack fix-mismatches --dev --prod --filter @zowe/imperative && npm i",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:act": "node scripts/testCliWorkflow.js",
     "test:cleanResults": "rimraf __tests__/__results__",
@@ -39,7 +39,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.0-next.202201111920",
+    "@zowe/imperative": "5.0.0-next.202201251614",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {
