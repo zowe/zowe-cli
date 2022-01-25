@@ -30,7 +30,7 @@ For documentation about these features, see these files:
 
 ## Documentation
 
-For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
+For detailed information about how to install, configure, and use Zowe CLI, see [Zowe CLI Documentation](https://docs.zowe.org/stable/getting-started/cli-getting-started/). The documentation includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
 The `docs` directory in this repository contains auto-generated typescript documentation under the `docs/typedoc` directory. To access the typescript documentation locally, navigate to the local `node_modules` directory that contains the installed package and access the `docs` directory after you install the Zowe CLI package.
 
