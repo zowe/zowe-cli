@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed 'daemon disable' command to kill any running zowe daemon on Linux and Mac. [#1270](https://github.com/zowe/zowe-cli/issues/1270)
+- BugFix: Fixed stdin data being corrupted when daemon server processes CLI command containing double-byte characters.
+- Enhancement: Added a user message within 'daemon enable' and disable to open a new terminal when needed.
+- **BREAKING** Enhancement: Make the `user` field on SSH profiles secure. [#682](https://github.com/zowe/zowe-cli/issues/682)
+
 ## `7.0.0-next.202201121428`
 
 - BugFix: Set executable attribute on zowe executable file on Linux and Mac.

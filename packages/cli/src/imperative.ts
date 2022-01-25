@@ -379,7 +379,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST_PROFILE,
+                        optionDefinition: SshSession.SSH_OPTION_HOST,
                         includeInTemplate: true
                     },
                     port: {
@@ -389,7 +389,8 @@ const config: IImperativeConfig = {
                     },
                     user: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_USER_PROFILE
+                        secure: true,
+                        optionDefinition: SshSession.SSH_OPTION_USER
                     },
                     password: {
                         type: "string",
