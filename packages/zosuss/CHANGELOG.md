@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202201252014`
 
 - Documentation: Deprecated the following command option definitions:
   - SSH_OPTION_HOST_PROFILE

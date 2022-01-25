@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202201252014`
 
 - BugFix: Fixed 'daemon disable' command to kill any running zowe daemon on Linux and Mac. [#1270](https://github.com/zowe/zowe-cli/issues/1270)
 - BugFix: Fixed stdin data being corrupted when daemon server processes CLI command containing double-byte characters.
