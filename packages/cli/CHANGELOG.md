@@ -2,13 +2,16 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
+
 ## `7.0.0-next.202201252014`
 
 - BugFix: Fixed 'daemon disable' command to kill any running zowe daemon on Linux and Mac. [#1270](https://github.com/zowe/zowe-cli/issues/1270)
 - BugFix: Fixed stdin data being corrupted when daemon server processes CLI command containing double-byte characters.
 - Enhancement: Added a user message within 'daemon enable' and disable to open a new terminal when needed.
 - **BREAKING** Enhancement: Make the `user` field on SSH profiles secure. [#682](https://github.com/zowe/zowe-cli/issues/682)
-- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
 
 ## `7.0.0-next.202201121428`
 
@@ -114,6 +117,13 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+## `6.37.5`
+
+- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
+
+## `6.37.3`
+
+- BugFix: Updated imperative to resolve `--hw` line-break issues. [Imperative #715](https://github.com/zowe/imperative/issues/715)
 
 ## `6.37.2`
 
