@@ -117,7 +117,7 @@ To begin, define a connection to z/OSMF and initialize your configuration files.
 
 Additionally, you can generate a *user-specific* configuration file. In your user config, you can override values that are defined in the global `zowe.config.json`.
 
-Issue the command `zowe config init --global-config --user-config` to generate both global (`zowe.config.json`) and user (`zowe.config.user.json`) config files.
+Issue the command `zowe config init --global-config` or `zowe config init --gc` to create the global (`zowe.config.json`) and `zowe config init --global-config --user-config` or `zowe config init --gc --uc` to generate the user (`zowe.config.user.json`) config files.
 
 In your user-specific file, notice that the top level defaults, plugins, and secure fields are empty. The profiles do not have any properties. You can add your connection details as properties here to override properties in `zowe.config.json`, or add add new connections.
 ## Editing configuration
