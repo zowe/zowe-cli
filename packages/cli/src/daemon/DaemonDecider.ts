@@ -144,7 +144,9 @@ export class DaemonDecider {
      */
     private initialParse() {
         const numOfParms = this.mParms.length - 2;
-        this.mPort = DaemonDecider.DEFAULT_PORT;
+        // TODO Support ZOWE_CLI_HOME environment variable here and in client
+        this.mSocket = (process.platform !== "win32") ? path.join(os.homedir(), ".zowe", "daemon.sock") :
+            `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
 
         if (numOfParms > 0) {
             const parm = this.mParms[2];
@@ -158,10 +160,10 @@ export class DaemonDecider {
             if (daemonOffset > -1) {
                 this.startServer = true;
                 if (process.env.ZOWE_DAEMON) {
-                    try {
-                        this.mPort = parseInt(process.env.ZOWE_DAEMON, 10);
-                    } catch (err) {
-                        // do nothing
+                    if (process.platform !== "win32") {
+                        this.mSocket = process.env.ZOWE_DAEMON;
+                    } else {
+                        this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\${process.env.ZOWE_DAEMON}`;
                     }
                 }
                 Imperative.api.appLogger.debug(`daemon server socket ${this.mSocket}`);
