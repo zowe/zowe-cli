@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.37.6`
 
 - BugFix: Pruned dev dependencies from npm-shrinkwrap file.
 
