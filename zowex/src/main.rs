@@ -11,17 +11,17 @@
 
 use std::collections::HashMap;
 use std::env;
-
-use std::fs::OpenOptions;
 use std::io;
-use std::io::prelude::*;
 use std::io::BufReader;
+use std::io::prelude::*;
 use std::net::Shutdown;
-use std::os::windows::prelude::*;
 use std::process::{Command, Stdio};
 use std::str;
 use std::thread;
 use std::time::Duration;
+
+#[cfg(target_family = "unix")]
+use std::os::unix::net::UnixStream;
 
 extern crate atty;
 use atty::Stream;
@@ -33,13 +33,9 @@ extern crate home;
 #[cfg(target_family = "unix")]
 use home::home_dir;
 
-extern crate mio;
-#[cfg(target_family = "unix")]
-use mio::net::UnixStream;
-
-extern crate mio_named_pipes;
+extern crate named_pipe;
 #[cfg(target_family = "windows")]
-use mio_named_pipes::NamedPipe;
+use named_pipe::PipeClient;
 
 extern crate pathsearch;
 use pathsearch::PathSearcher;
@@ -299,17 +295,7 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
 type DaemonClient = UnixStream;
 
 #[cfg(target_family = "windows")]
-type DaemonClient = NamedPipe;
-
-#[cfg(target_family = "windows")]
-fn create_named_pipe(daemon_socket: &String) -> io::Result<NamedPipe> {
-    const FILE_FLAG_OVERLAPPED: u32 = 0x40000000;
-    let pipe_file = OpenOptions::new().custom_flags(FILE_FLAG_OVERLAPPED).read(true).write(true).open(&daemon_socket);
-    match pipe_file {
-        Ok(file) => unsafe { Ok(NamedPipe::from_raw_handle(file.as_raw_handle())) },
-        Err(e) => Err(e),
-    }
-}
+type DaemonClient = PipeClient;
 
 /**
  * Attempt to make a TCP connection to the daemon.
@@ -328,7 +314,7 @@ fn establish_connection(daemon_socket: String) -> io::Result<DaemonClient> {
         #[cfg(target_family = "unix")]
         let conn_result = UnixStream::connect(&daemon_socket);
         #[cfg(target_family = "windows")]
-        let conn_result = create_named_pipe(&daemon_socket);
+        let conn_result = PipeClient::connect(&daemon_socket);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
             break good_stream;
@@ -397,9 +383,14 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
      * Send the command line arguments to the daemon and await responses.
      */
     stream.write_all(message).unwrap(); // write it
-    // let mut stream_clone = stream.try_clone().expect("clone failed");
 
+    #[cfg(target_family = "unix")]
+    let mut stream_clone = stream.try_clone().expect("clone failed");
+
+    #[cfg(target_family = "unix")]
     let mut reader = BufReader::new(&*stream);
+    #[cfg(target_family = "windows")]
+    let mut reader = BufReader::new(stream);
 
     let mut exit_code = 0;
     let mut _progress = false;
@@ -457,8 +448,9 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
-
-                // stream_clone.write_all(v.as_bytes()).unwrap();
+                #[cfg(target_family = "unix")]
+                stream_clone.write_all(v.as_bytes()).unwrap();
+                #[cfg(target_family = "unix")]
                 stream.write_all(v.as_bytes()).unwrap();
             }
 
@@ -476,7 +468,9 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
-                // stream_clone.write_all(v.as_bytes()).unwrap();
+                #[cfg(target_family = "unix")]
+                stream_clone.write_all(v.as_bytes()).unwrap();
+                #[cfg(target_family = "unix")]
                 stream.write_all(v.as_bytes()).unwrap();
             }
 
@@ -489,17 +483,18 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
         }
     }
 
-    // // Terminate connection. Ignore NotConnected errors returned on macOS.
-    // // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
-    // match stream.shutdown(Shutdown::Read) {
-    //     Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
-    //     result => result?,
-    // }
-    // match stream.shutdown(Shutdown::Write) {
-    //     Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
-    //     result => result?,
-    // }
-    stream.disconnect()?;
+    // Terminate connection. Ignore NotConnected errors returned on macOS.
+    // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
+    #[cfg(target_family = "unix")]
+    match stream.shutdown(Shutdown::Read) {
+        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
+        result => result?,
+    }
+    #[cfg(target_family = "unix")]
+    match stream.shutdown(Shutdown::Write) {
+        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
+        result => result?,
+    }
 
     // TODO(Kelosky): maybe this should just be a `return Err`
     if exit_code != 0 {
