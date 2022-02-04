@@ -23,5 +23,5 @@ curl -fsLOJ https://raw.githubusercontent.com/zowe/zowe-cli/native-v$daemonVersi
 curl -fsLOJ https://raw.githubusercontent.com/zowe/zowe-cli/native-v$daemonVersion/zowex/Cargo.lock
 
 cd ..
-rm -rf packages/cli/prebuilds
-mv prebuilds packages/cli/
+mkdir -p packages/cli/prebuilds
+mv prebuilds/* packages/cli/prebuilds/
