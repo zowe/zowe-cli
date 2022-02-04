@@ -12,11 +12,12 @@
 use std::collections::HashMap;
 use std::env;
 
+use std::fs::OpenOptions;
 use std::io;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::net::Shutdown;
-use std::net::TcpStream;
+use std::os::windows::prelude::*;
 use std::process::{Command, Stdio};
 use std::str;
 use std::thread;
@@ -27,6 +28,18 @@ use atty::Stream;
 
 extern crate base64;
 use base64::encode;
+
+extern crate home;
+#[cfg(target_family = "unix")]
+use home::home_dir;
+
+extern crate mio;
+#[cfg(target_family = "unix")]
+use mio::net::UnixStream;
+
+extern crate mio_named_pipes;
+#[cfg(target_family = "windows")]
+use mio_named_pipes::NamedPipe;
 
 extern crate pathsearch;
 use pathsearch::PathSearcher;
@@ -42,8 +55,6 @@ use sysinfo::{ProcessExt, System, SystemExt};
 
 extern crate whoami;
 use whoami::username;
-
-const DEFAULT_PORT: i32 = 4000;
 
 const EXIT_CODE_SUCCESS: i32 = 0;
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
@@ -279,30 +290,45 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
         _resp.append(&mut stdin);
     }
 
-    // form our host, port, and connection strings
-    let daemon_host = "127.0.0.1".to_owned();
-    let port_string = get_port_string();
-
-    let mut stream = establish_connection(daemon_host, port_string)?;
+    let socket_string = get_socket_string();
+    let mut stream = establish_connection(socket_string)?;
     talk(&_resp, &mut stream)
+}
+
+#[cfg(target_family = "unix")]
+type DaemonClient = UnixStream;
+
+#[cfg(target_family = "windows")]
+type DaemonClient = NamedPipe;
+
+#[cfg(target_family = "windows")]
+fn create_named_pipe(daemon_socket: &String) -> io::Result<NamedPipe> {
+    const FILE_FLAG_OVERLAPPED: u32 = 0x40000000;
+    let pipe_file = OpenOptions::new().custom_flags(FILE_FLAG_OVERLAPPED).read(true).write(true).open(&daemon_socket);
+    match pipe_file {
+        Ok(file) => unsafe { Ok(NamedPipe::from_raw_handle(file.as_raw_handle())) },
+        Err(e) => Err(e),
+    }
 }
 
 /**
  * Attempt to make a TCP connection to the daemon.
  * Iterate to enable a slow system to start the daemon.
  */
-fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
+fn establish_connection(daemon_socket: String) -> io::Result<DaemonClient> {
     const THREE_SEC_DELAY: u64 = 3;
     const THREE_MIN_OF_RETRIES: i32 = 60;
     const RETRY_TO_SHOW_DIAG: i32 = 5;
 
-    let host_port_conn_str = format!("{}:{}", host, port);
     let mut conn_retries = 0;
     let mut we_started_daemon = false;
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        let conn_result = TcpStream::connect(&host_port_conn_str);
+        #[cfg(target_family = "unix")]
+        let conn_result = UnixStream::connect(&daemon_socket);
+        #[cfg(target_family = "windows")]
+        let conn_result = create_named_pipe(&daemon_socket);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
             break good_stream;
@@ -319,8 +345,8 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
                 we_started_daemon = true;
                 cmd_to_show = start_daemon(&njs_zowe_path);
             } else if we_started_daemon {
-                println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
-                    host, port
+                println!("The Zowe daemon that we started is not running on socket: {}.",
+                    daemon_socket
                 );
                 println!(
                     "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
@@ -346,8 +372,8 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
             } else {
                 println!("Command = {}", daemon_proc_info.cmd);
             }
-            println!("Process name = {}  pid = {}  host = {}  port = {}\n",
-                daemon_proc_info.name, daemon_proc_info.pid, host, port
+            println!("Process name = {}  pid = {}  socket = {}\n",
+                daemon_proc_info.name, daemon_proc_info.pid, daemon_socket
             );
         }
 
@@ -366,12 +392,12 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
     Ok(stream)
 }
 
-fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
+fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
     stream.write_all(message).unwrap(); // write it
-    let mut stream_clone = stream.try_clone().expect("clone failed");
+    // let mut stream_clone = stream.try_clone().expect("clone failed");
 
     let mut reader = BufReader::new(&*stream);
 
@@ -432,7 +458,8 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
                 };
                 let v = serde_json::to_string(&response)?;
 
-                stream_clone.write_all(v.as_bytes()).unwrap();
+                // stream_clone.write_all(v.as_bytes()).unwrap();
+                stream.write_all(v.as_bytes()).unwrap();
             }
 
             if let Some(s) = p.securePrompt {
@@ -449,7 +476,8 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
-                stream_clone.write_all(v.as_bytes()).unwrap();
+                // stream_clone.write_all(v.as_bytes()).unwrap();
+                stream.write_all(v.as_bytes()).unwrap();
             }
 
             exit_code = p.exitCode.unwrap_or(0);
@@ -461,16 +489,17 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
         }
     }
 
-    // Terminate connection. Ignore NotConnected errors returned on macOS.
-    // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
-    match stream.shutdown(Shutdown::Read) {
-        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
-        result => result?,
-    }
-    match stream.shutdown(Shutdown::Write) {
-        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
-        result => result?,
-    }
+    // // Terminate connection. Ignore NotConnected errors returned on macOS.
+    // // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
+    // match stream.shutdown(Shutdown::Read) {
+    //     Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
+    //     result => result?,
+    // }
+    // match stream.shutdown(Shutdown::Write) {
+    //     Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
+    //     result => result?,
+    // }
+    stream.disconnect()?;
 
     // TODO(Kelosky): maybe this should just be a `return Err`
     if exit_code != 0 {
@@ -480,16 +509,26 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
     Ok(())
 }
 
-fn get_port_string() -> String {
-    let mut _port = DEFAULT_PORT;
+#[cfg(target_family = "unix")]
+fn get_socket_string() -> String {
+    let mut _socket = format!("{}/{}", home_dir().unwrap().to_string_lossy(), "zowe-daemon.sock");
 
-    match env::var("ZOWE_DAEMON") {
-        // TODO(Kelosky): handle unwrap properly
-        Ok(val) => _port = val.parse::<i32>().unwrap(),
-        Err(_e) => _port = DEFAULT_PORT,
+    if let Ok(socket_path) = env::var("ZOWE_DAEMON") {
+        _socket = format!("{}/{}", socket_path, "zowe-daemon.sock");
     }
 
-    _port.to_string()
+    _socket
+}
+
+#[cfg(target_family = "windows")]
+fn get_socket_string() -> String {
+    let mut _socket = format!("\\\\?\\pipe\\{}\\{}", username(), "ZoweDaemon");
+
+    if let Ok(pipe_name) = env::var("ZOWE_DAEMON") {
+        _socket = format!("\\\\?\\pipe\\{}\\{}", username(), pipe_name);
+    }
+
+    _socket
 }
 
 // Get the file path to the command that runs the NodeJS version of Zowe
@@ -719,18 +758,18 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
-    #[test]
-    fn test_get_port_string() {
-        // expect default port with no env
-        let port_string = get_port_string();
-        assert_eq!("4000", port_string);
+    // #[test]
+    // fn test_get_port_string() {
+    //     // expect default port with no env
+    //     let port_string = get_port_string();
+    //     assert_eq!("4000", port_string);
 
-        // expect override port with env
-        env::set_var("ZOWE_DAEMON", "777");
-        let port_string = get_port_string();
-        assert_eq!("777", port_string);
-        env::remove_var("ZOWE_DAEMON");
-    }
+    //     // expect override port with env
+    //     env::set_var("ZOWE_DAEMON", "777");
+    //     let port_string = get_port_string();
+    //     assert_eq!("777", port_string);
+    //     env::remove_var("ZOWE_DAEMON");
+    // }
 
     #[test]
     fn test_get_zowe_env() {

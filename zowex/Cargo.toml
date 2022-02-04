@@ -11,6 +11,9 @@ repository = "https://github.com/zowe/zowe-cli"
 [dependencies]
 atty = "0.2.14"
 base64 = "0.13.0"
+home = "0.5.3"
+mio = "0.8.0"
+mio-named-pipes = "0.1.7"
 pathsearch = "0.2.0"
 rpassword = "5.0.1"
 serde = { version = "1.0.130", features = ["derive"]}
