@@ -173,7 +173,7 @@ node('zowe-jenkins-agent-dind') {
         shouldExecute: {
             return pipeline.protectedBranches.isProtected(BRANCH_NAME)
         },
-        timeout: [time: 10, unit: 'MINUTES'],
+        timeout: [time: 30, unit: 'MINUTES'],
         stage: {
             def daemonVer = readProperties(file: "zowex/Cargo.toml").version
             withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
