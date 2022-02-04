@@ -33,6 +33,7 @@ extern crate home;
 #[cfg(target_family = "unix")]
 use home::home_dir;
 
+#[cfg(target_family = "windows")]
 extern crate named_pipe;
 #[cfg(target_family = "windows")]
 use named_pipe::PipeClient;
