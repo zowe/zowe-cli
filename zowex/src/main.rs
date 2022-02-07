@@ -385,7 +385,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
     stream.write_all(message).unwrap(); // write it
 
     let mut writer = stream.try_clone().expect("clone failed");
-    let reader = BufReader::new(&*stream);
+    let mut reader = BufReader::new(&*stream);
 
     let mut exit_code = 0;
     let mut _progress = false;
