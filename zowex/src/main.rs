@@ -12,7 +12,6 @@
 use std::collections::HashMap;
 use std::env;
 use std::io;
-use std::io::BufReader;
 use std::io::prelude::*;
 use std::net::Shutdown;
 use std::process::{Command, Stdio};
@@ -29,8 +28,10 @@ use atty::Stream;
 extern crate base64;
 use base64::encode;
 
+extern crate bufstream;
+use bufstream::BufStream;
+
 extern crate home;
-#[cfg(target_family = "unix")]
 use home::home_dir;
 
 #[cfg(target_family = "windows")]
@@ -384,14 +385,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
      * Send the command line arguments to the daemon and await responses.
      */
     stream.write_all(message).unwrap(); // write it
-
-    #[cfg(target_family = "unix")]
-    let mut stream_clone = stream.try_clone().expect("clone failed");
-
-    #[cfg(target_family = "unix")]
-    let mut reader = BufReader::new(&*stream);
-    #[cfg(target_family = "windows")]
-    let mut reader = BufReader::new(stream);
+    let mut stream_clone = BufStream::new(stream);
 
     let mut exit_code = 0;
     let mut _progress = false;
@@ -401,7 +395,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
         let payload: String;
 
         // read until form feed (\f)
-        if reader.read_until(0xC, &mut u_payload).unwrap() > 0 {
+        if stream_clone.read_until(0xC, &mut u_payload).unwrap() > 0 {
             // remove form feed and convert to a string
             u_payload.pop(); // remove the 0xC
             payload = str::from_utf8(&u_payload).unwrap().to_string();
@@ -449,10 +443,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
-                #[cfg(target_family = "unix")]
                 stream_clone.write_all(v.as_bytes()).unwrap();
-                #[cfg(target_family = "unix")]
-                stream.write_all(v.as_bytes()).unwrap();
             }
 
             if let Some(s) = p.securePrompt {
@@ -469,10 +460,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
-                #[cfg(target_family = "unix")]
                 stream_clone.write_all(v.as_bytes()).unwrap();
-                #[cfg(target_family = "unix")]
-                stream.write_all(v.as_bytes()).unwrap();
             }
 
             exit_code = p.exitCode.unwrap_or(0);

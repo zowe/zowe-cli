@@ -11,6 +11,7 @@ repository = "https://github.com/zowe/zowe-cli"
 [dependencies]
 atty = "0.2.14"
 base64 = "0.13.0"
+bufstream = "0.1.4"
 home = "0.5.3"
 pathsearch = "0.2.0"
 rpassword = "5.0.1"
