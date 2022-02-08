@@ -182,21 +182,16 @@ describe("DaemonDecider tests", () => {
         process.env.ZOWE_DAEMON = testSocket;
 
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
-        existsSyncSpy.mockImplementation(() => true);
+        existsSyncSpy.mockReturnValueOnce(true);
 
         const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
-        unlinkSyncSpy.mockImplementation(() => true);
+        unlinkSyncSpy.mockReturnValueOnce(true);
 
         daemonDecider.init();
         daemonDecider.runOrUseDaemon();
 
-        try {
-            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
-            expect(unlinkSyncSpy).toHaveBeenCalledTimes(1);
-        } finally {
-            existsSyncSpy.mockReset();
-            unlinkSyncSpy.mockReset();
-        }
+        expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+        expect(unlinkSyncSpy).toHaveBeenCalledTimes(1);
     });
 
     (process.platform === "win32" ? it : it.skip)("should use the default socket location (win32)", () => {
