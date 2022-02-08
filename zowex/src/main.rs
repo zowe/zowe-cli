@@ -14,6 +14,7 @@ use std::env;
 use std::io;
 use std::io::BufReader;
 use std::io::prelude::*;
+use std::net::Shutdown;
 use std::process::{Command, Stdio};
 use std::str;
 use std::thread;
@@ -29,7 +30,6 @@ extern crate base64;
 use base64::encode;
 
 extern crate home;
-#[cfg(target_family = "unix")]
 use home::home_dir;
 
 #[cfg(target_family = "windows")]
@@ -479,8 +479,18 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
         }
     }
 
+    // Terminate connection. Ignore NotConnected errors returned on macOS.
+    // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
     #[cfg(target_family = "unix")]
-    stream.shutdown(std::net::Shutdown::Both)?; // terminate connection
+    match stream.shutdown(Shutdown::Read) {
+        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
+        result => result?,
+    }
+    #[cfg(target_family = "unix")]
+    match stream.shutdown(Shutdown::Write) {
+        Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
+        result => result?,
+    }
 
     // TODO(Kelosky): maybe this should just be a `return Err`
     if exit_code != 0 {
