@@ -160,10 +160,9 @@ export class DaemonDecider {
             if (daemonOffset > -1) {
                 this.startServer = true;
                 if (process.env.ZOWE_DAEMON) {
-                    if (process.platform !== "win32") {
-                        this.mSocket = process.env.ZOWE_DAEMON;
-                    } else {
-                        this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\${process.env.ZOWE_DAEMON}`;
+                    this.mSocket = process.env.ZOWE_DAEMON;
+                    if (process.platform === "win32") {
+                        this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
                     }
                 }
                 Imperative.api.appLogger.debug(`daemon server socket ${this.mSocket}`);
