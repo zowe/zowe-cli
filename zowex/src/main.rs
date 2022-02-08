@@ -311,10 +311,7 @@ fn establish_connection(daemon_socket: String) -> io::Result<DaemonClient> {
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        #[cfg(target_family = "unix")]
-        let conn_result = UnixStream::connect(&daemon_socket);
-        #[cfg(target_family = "windows")]
-        let conn_result = PipeClient::connect(&daemon_socket);
+        let conn_result = DaemonClient::connect(&daemon_socket);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
             break good_stream;
@@ -384,8 +381,12 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
      */
     stream.write_all(message).unwrap(); // write it
 
+    #[cfg(target_family = "unix")]
     let mut writer = stream.try_clone().expect("clone failed");
+    #[cfg(target_family = "unix")]
     let mut reader = BufReader::new(&*stream);
+    #[cfg(target_family = "windows")]
+    let mut reader = BufReader::new(stream);
 
     let mut exit_code = 0;
     let mut _progress = false;
@@ -443,7 +444,10 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
+                #[cfg(target_family = "unix")]
                 writer.write_all(v.as_bytes()).unwrap();
+                #[cfg(target_family = "windows")]
+                reader.get_mut().write_all(v.as_bytes()).unwrap();
             }
 
             if let Some(s) = p.securePrompt {
@@ -460,7 +464,10 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     user: Some(encode(username())),
                 };
                 let v = serde_json::to_string(&response)?;
+                #[cfg(target_family = "unix")]
                 writer.write_all(v.as_bytes()).unwrap();
+                #[cfg(target_family = "windows")]
+                reader.get_mut().write_all(v.as_bytes()).unwrap();
             }
 
             exit_code = p.exitCode.unwrap_or(0);
@@ -474,10 +481,12 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
 
     // Terminate connection. Ignore NotConnected errors returned on macOS.
     // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
+    #[cfg(target_family = "unix")]
     match stream.shutdown(Shutdown::Read) {
         Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
     }
+    #[cfg(target_family = "unix")]
     match stream.shutdown(Shutdown::Write) {
         Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
