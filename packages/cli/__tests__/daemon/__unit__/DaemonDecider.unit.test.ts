@@ -64,7 +64,7 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const listen = jest.fn((port, hostname, method) => {
+        const listen = jest.fn((socket, method) => {
             // do nothing
             method();
         });
@@ -109,7 +109,7 @@ describe("DaemonDecider tests", () => {
         expect(err.message).toBe("data");
     });
 
-    it("should set port based on env variable", () => {
+    it("should set socket based on env variable", () => {
 
         const log = jest.fn(() => {
             // do nothing
@@ -125,12 +125,11 @@ describe("DaemonDecider tests", () => {
 
         const daemonDecider = new DaemonDecider(["anything"]);
 
-        const testPort = "1234";
-
+        const testSocket = "/fake/pipe/path";
         (daemonDecider as any).mParms = ["one", "two", "--daemon"];
-        process.env.ZOWE_DAEMON = testPort;
+        process.env.ZOWE_DAEMON = testSocket;
         (daemonDecider as any).initialParse();
-        expect((daemonDecider as any).mPort).toBe(parseInt(testPort, 10));
+        expect((daemonDecider as any).mSocket).toBe(process.platform === "win32" ? "\\\\.\\pipe\\" + testSocket : testSocket);
 
     });
 });
