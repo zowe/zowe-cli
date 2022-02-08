@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.0.0-next.202202041954`
+
+- BugFix: Fixed daemon binaries missing from package and Keytar binaries not found at install time.
+
+## `7.0.0-next.202202041533`
+
+- BugFix: Updated Imperative to improve log messages when Keytar module fails to load.
+
 ## `7.0.0-next.202201261615`
 
 - BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.

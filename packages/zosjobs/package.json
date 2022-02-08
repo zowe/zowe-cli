@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-jobs-for-zowe-sdk",
-  "version": "7.0.0-next.202201261615",
+  "version": "7.0.0-next.202202041954",
   "description": "Zowe SDK to interact with jobs on z/OS",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -45,13 +45,13 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json"
   },
   "dependencies": {
-    "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202201261615"
+    "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202202041954"
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/cli-test-utils": "7.0.0-next.202201261615",
-    "@zowe/core-for-zowe-sdk": "7.0.0-next.202201261615",
-    "@zowe/imperative": "5.0.0-next.202201251614",
+    "@zowe/cli-test-utils": "7.0.0-next.202202041954",
+    "@zowe/core-for-zowe-sdk": "7.0.0-next.202202041954",
+    "@zowe/imperative": "5.0.0-next.202202032009",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",
     "rimraf": "^2.6.3",

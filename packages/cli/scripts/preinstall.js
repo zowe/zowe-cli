@@ -9,21 +9,28 @@
 *
 */
 
-/* This script creates an empty "bin" script for the @zowe/cli package.
- * It works around an npm@7 bug: https://github.com/npm/cli/issues/2632
- */
-
 const fs = require("fs");
-const path = require("path");
-const devNodeModulesDir = path.join(__dirname, "..", "..", "..", "node_modules");
-// The bug only happens in *nix environment when installing from source
-if (process.platform !== "win32" && fs.existsSync(devNodeModulesDir)) {
-    const cliLibDir = path.join(devNodeModulesDir, "@zowe", "cli", "lib");
-    if (!fs.existsSync(cliLibDir)) {
-        fs.mkdirSync(cliLibDir, { recursive: true });
+const { join } = require("path");
+
+try {
+    // Skip preinstall script if top-level prebuilds folder doesn't exist
+    const rootPbDir = join(__dirname, "..", "prebuilds");
+    if (!fs.existsSync(rootPbDir)) {
+        process.exit(0);
     }
-    const mainJsFile = path.join(cliLibDir, "main.js");
-    if (!fs.existsSync(mainJsFile)) {
-        fs.writeFileSync(mainJsFile, "");
+
+    // Ensure that prebuilds folder exists in Keytar node_modules
+    const keytarPbDir = join(__dirname, "..", "node_modules", "keytar", "prebuilds");
+    if (!fs.existsSync(keytarPbDir)) {
+        fs.mkdirSync(keytarPbDir, { recursive: true });
     }
+
+    // Copy prebuilt Keytar binaries from top-level folder to Keytar node_modules
+    fs.readdirSync(rootPbDir).forEach((filename) => {
+        if (filename.match(/keytar-.*-napi-.*\.tar\.gz/)) {
+            fs.copyFileSync(join(rootPbDir, filename), join(keytarPbDir, filename));
+        }
+    });
+} catch (err) {
+    console.error(err);
 }
