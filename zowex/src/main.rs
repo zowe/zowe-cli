@@ -502,7 +502,8 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
 
 #[cfg(target_family = "unix")]
 fn get_socket_string() -> String {
-    let mut _socket = format!("{}/{}", home_dir().unwrap().to_string_lossy(), ".zowe/daemon.sock");
+    let cli_home_dir = env::var("ZOWE_CLI_HOME").unwrap_or(format!("{}/{}", home_dir().unwrap().to_string_lossy(), ".zowe"));
+    let mut _socket = format!("{}/{}", cli_home_dir, "daemon.sock");
 
     if let Ok(socket_path) = env::var("ZOWE_DAEMON") {
         _socket = socket_path;
@@ -749,18 +750,18 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
-    // #[test]
-    // fn test_get_port_string() {
-    //     // expect default port with no env
-    //     let port_string = get_port_string();
-    //     assert_eq!("4000", port_string);
+    #[test]
+    fn test_get_socket_string() {
+        // expect default port with no env
+        let socket_string = get_socket_string();
+        assert!(!socket_string.contains("NotADaemon"));
 
-    //     // expect override port with env
-    //     env::set_var("ZOWE_DAEMON", "777");
-    //     let port_string = get_port_string();
-    //     assert_eq!("777", port_string);
-    //     env::remove_var("ZOWE_DAEMON");
-    // }
+        // expect override port with env
+        env::set_var("ZOWE_DAEMON", "NotADaemon");
+        let socket_string = get_socket_string();
+        assert!(socket_string.contains("NotADaemon"));
+        env::remove_var("ZOWE_DAEMON");
+    }
 
     #[test]
     fn test_get_zowe_env() {

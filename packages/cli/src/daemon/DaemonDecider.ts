@@ -14,6 +14,7 @@ import * as net from "net";
 import * as os from "os";
 import * as path from "path";
 import { Imperative } from "@zowe/imperative";
+import { Constants } from "../Constants";
 import { DaemonClient } from "./DaemonClient";
 
 // TODO(Kelosky): handle prompting cases from login command
@@ -104,9 +105,9 @@ export class DaemonDecider {
                 fs.unlinkSync(this.mSocket);
             }
 
-            // TODO Handle other exit signals?
-            process.on("SIGINT", this.close.bind(this));
-            process.on("SIGKILL", this.close.bind(this));
+            ["exit", "SIGINT", "SIGQUIT", "SIGTERM"].forEach((eventType: any) => {
+                process.on(eventType, this.close.bind(this, true));
+            });
 
             this.mServer.listen(this.mSocket, () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
@@ -122,8 +123,11 @@ export class DaemonDecider {
      * @private
      * @memberof DaemonDecider
      */
-    private close() {
+    private close(shouldExit?: boolean) {
         Imperative.api.appLogger.debug(`server closed`);
+        if (shouldExit) {
+            process.exit();
+        }
     }
 
     /**
@@ -143,28 +147,29 @@ export class DaemonDecider {
      * @memberof DaemonDecider
      */
     private initialParse() {
-        const numOfParms = this.mParms.length - 2;
-        // TODO Support ZOWE_CLI_HOME environment variable here and in client
-        this.mSocket = (process.platform !== "win32") ? path.join(os.homedir(), ".zowe", "daemon.sock") :
-            `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
-
-        if (numOfParms > 0) {
-            const parm = this.mParms[2];
-
+        if (this.mParms.length > 2) {
             /**
-             * NOTE(Kelosky): For now, we use an undocumented paramter `--daemon`.  If found first,
+             * NOTE(Kelosky): For now, we use an undocumented parameter `--daemon`.  If found first,
              * we bypass `yargs` and begin running this as a persistent Processor.
              */
+            const parm = this.mParms[2];
             const daemonOffset = parm.indexOf(DaemonDecider.DAEMON_KEY);
 
             if (daemonOffset > -1) {
                 this.startServer = true;
+
                 if (process.env.ZOWE_DAEMON) {
                     this.mSocket = process.env.ZOWE_DAEMON;
                     if (process.platform === "win32") {
                         this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
                     }
+                } else if (process.platform !== "win32") {
+                    const cliHomeDir = process.env[Constants.HOME_ENV_KEY] || path.join(os.homedir(), ".zowe");
+                    this.mSocket = path.join(cliHomeDir, "daemon.sock");
+                } else {
+                    this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                 }
+
                 Imperative.api.appLogger.debug(`daemon server socket ${this.mSocket}`);
             }
         }
