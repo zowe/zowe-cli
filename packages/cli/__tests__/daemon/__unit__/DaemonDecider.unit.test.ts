@@ -23,6 +23,7 @@ jest.mock("../../../src/daemon//DaemonClient");
 describe("DaemonDecider tests", () => {
     afterEach(() => {
         delete process.env.ZOWE_DAEMON;
+        jest.resetAllMocks
     });
 
     it("should call normal parse method if no daemon keyword", () => {
@@ -188,8 +189,14 @@ describe("DaemonDecider tests", () => {
 
         daemonDecider.init();
         daemonDecider.runOrUseDaemon();
-        expect(existsSyncSpy).toHaveBeenCalledTimes(1);
-        expect(unlinkSyncSpy).toHaveBeenCalledTimes(1);
+
+        try {
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(unlinkSyncSpy).toHaveBeenCalledTimes(1);
+        } finally {
+            existsSyncSpy.mockReset();
+            unlinkSyncSpy.mockReset();
+        }
     });
 
     (process.platform === "win32" ? it : it.skip)("should use the default socket location (win32)", () => {
