@@ -492,8 +492,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
 
 #[cfg(target_family = "unix")]
 fn get_socket_string() -> String {
-    let cli_home_dir = env::var("ZOWE_CLI_HOME").unwrap_or(format!("{}/{}", home_dir().unwrap().to_string_lossy(), ".zowe"));
-    let mut _socket = format!("{}/{}", cli_home_dir, "daemon.sock");
+    let mut _socket = format!("{}/{}", home_dir().unwrap().to_string_lossy(), ".zowe-daemon.sock");
 
     if let Ok(socket_path) = env::var("ZOWE_DAEMON") {
         _socket = socket_path;

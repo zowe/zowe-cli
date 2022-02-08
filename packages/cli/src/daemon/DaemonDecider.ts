@@ -14,7 +14,6 @@ import * as net from "net";
 import * as os from "os";
 import * as path from "path";
 import { Imperative } from "@zowe/imperative";
-import { Constants } from "../Constants";
 import { DaemonClient } from "./DaemonClient";
 
 // TODO(Kelosky): handle prompting cases from login command
@@ -164,8 +163,7 @@ export class DaemonDecider {
                         this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
                     }
                 } else if (process.platform !== "win32") {
-                    const cliHomeDir = process.env[Constants.HOME_ENV_KEY] || path.join(os.homedir(), ".zowe");
-                    this.mSocket = path.join(cliHomeDir, "daemon.sock");
+                    this.mSocket = path.join(os.homedir(), ".zowe-daemon.sock");
                 } else {
                     this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                 }
