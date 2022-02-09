@@ -139,146 +139,6 @@ describe("DaemonDecider tests", () => {
 
     });
 
-    (process.platform !== "win32" ? it : it.skip)("should try to delete an existing socket on *nix", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            return {on, listen};
-        });
-
-        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
-        const testSocket = "/fake/pipe/path";
-        process.env.ZOWE_DAEMON = testSocket;
-
-        const existsSyncSpy = jest.spyOn(fs, "existsSync");
-        existsSyncSpy.mockReturnValueOnce(true);
-
-        const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
-        unlinkSyncSpy.mockReturnValueOnce(true);
-
-        daemonDecider.init();
-        daemonDecider.runOrUseDaemon();
-
-        expect(existsSyncSpy).toHaveBeenCalledTimes(1);
-        expect(unlinkSyncSpy).toHaveBeenCalledTimes(1);
-    });
-
-    (process.platform === "win32" ? it : it.skip)("should use the default socket location (win32)", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            return {on, listen};
-        });
-
-        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
-        daemonDecider.init();
-
-        expect((daemonDecider as any).mSocket).toEqual(`\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`);
-    });
-
-    (process.platform !== "win32" ? it : it.skip)("should use the default socket location (not win32)", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = net.createServer as Mock<typeof net.createServer>;
-        fn.mockImplementation((unusedclient, ...args: any[]) => {
-            return {on, listen};
-        });
-
-        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
-        daemonDecider.init();
-
-        expect((daemonDecider as any).mSocket).toEqual(path.join(os.homedir(), ".zowe-daemon.sock"));
-    });
-
     it("should not start a daemon", () => {
         const log = jest.fn(() => {
             // do nothing
@@ -321,5 +181,149 @@ describe("DaemonDecider tests", () => {
 
         expect((daemonDecider as any).mSocket).toBeUndefined();
         expect((daemonDecider as any).startServer).toBeUndefined();
+    });
+
+    (process.platform === "win32" ? describe : describe.skip)("win32 tests", () => {
+        it("should try to delete an existing socket on *nix", () => {
+            const log = jest.fn(() => {
+                // do nothing
+            });
+
+            const on = jest.fn((event, func) => {
+                // do nothing
+            });
+
+            const listen = jest.fn((event, func) => {
+                // do nothing
+            });
+
+            const parse = jest.fn( (data, context) => {
+                expect(data).toBe(undefined);
+                expect(context).toBe(undefined);
+            });
+
+            (Imperative as any) = {
+                api: {
+                    appLogger: {
+                        trace: log,
+                        debug: log,
+                        error: log
+                    }
+                },
+                console: {
+                    info: log
+                },
+                parse
+            };
+
+            const fn = net.createServer as Mock<typeof net.createServer>;
+            fn.mockImplementation((unusedclient, ...args: any[]) => {
+                return {on, listen};
+            });
+
+            const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+            const testSocket = "/fake/pipe/path";
+            process.env.ZOWE_DAEMON = testSocket;
+
+            const existsSyncSpy = jest.spyOn(fs, "existsSync");
+            existsSyncSpy.mockReturnValueOnce(true);
+
+            const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
+            unlinkSyncSpy.mockReturnValueOnce(true);
+
+            daemonDecider.init();
+            daemonDecider.runOrUseDaemon();
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(unlinkSyncSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should use the default socket location (win32)", () => {
+            const log = jest.fn(() => {
+                // do nothing
+            });
+
+            const on = jest.fn((event, func) => {
+                // do nothing
+            });
+
+            const listen = jest.fn((event, func) => {
+                // do nothing
+            });
+
+            const parse = jest.fn( (data, context) => {
+                expect(data).toBe(undefined);
+                expect(context).toBe(undefined);
+            });
+
+            (Imperative as any) = {
+                api: {
+                    appLogger: {
+                        trace: log,
+                        debug: log,
+                        error: log
+                    }
+                },
+                console: {
+                    info: log
+                },
+                parse
+            };
+
+            const fn = net.createServer as Mock<typeof net.createServer>;
+            fn.mockImplementation((unusedclient, ...args: any[]) => {
+                return {on, listen};
+            });
+
+            const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+            daemonDecider.init();
+
+            expect((daemonDecider as any).mSocket).toEqual(`\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`);
+        });
+    });
+
+    (process.platform !== "win32" ? describe : describe.skip)("non-win32 tests", () => {
+        it("should use the default socket location (not win32)", () => {
+            const log = jest.fn(() => {
+                // do nothing
+            });
+
+            const on = jest.fn((event, func) => {
+                // do nothing
+            });
+
+            const listen = jest.fn((event, func) => {
+                // do nothing
+            });
+
+            const parse = jest.fn( (data, context) => {
+                expect(data).toBe(undefined);
+                expect(context).toBe(undefined);
+            });
+
+            (Imperative as any) = {
+                api: {
+                    appLogger: {
+                        trace: log,
+                        debug: log,
+                        error: log
+                    }
+                },
+                console: {
+                    info: log
+                },
+                parse
+            };
+
+            const fn = net.createServer as Mock<typeof net.createServer>;
+            fn.mockImplementation((unusedclient, ...args: any[]) => {
+                return {on, listen};
+            });
+
+            const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+            daemonDecider.init();
+
+            expect((daemonDecider as any).mSocket).toEqual(path.join(os.homedir(), ".zowe-daemon.sock"));
+        });
     });
 });

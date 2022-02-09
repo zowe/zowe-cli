@@ -168,7 +168,7 @@ export class DaemonDecider {
                     this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                 }
 
-                Imperative.api.appLogger.debug(`daemon server socket ${this.mSocket}`);
+                Imperative.api.appLogger.debug(`daemon server will listen on ${this.mSocket}`);
             }
         }
     }
