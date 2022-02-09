@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli-test-utils",
-  "version": "7.0.0-next.202202041954",
+  "version": "7.0.0-next.202202092037",
   "description": "Test utilities package for Zowe CLI plug-ins",
   "author": "Broadcom",
   "license": "EPL-2.0",
