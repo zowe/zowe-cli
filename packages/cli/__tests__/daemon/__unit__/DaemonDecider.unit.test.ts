@@ -23,7 +23,6 @@ jest.mock("../../../src/daemon//DaemonClient");
 describe("DaemonDecider tests", () => {
     afterEach(() => {
         delete process.env.ZOWE_DAEMON;
-        jest.resetAllMocks
     });
 
     it("should call normal parse method if no daemon keyword", () => {
