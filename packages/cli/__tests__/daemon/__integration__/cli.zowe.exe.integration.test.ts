@@ -22,7 +22,7 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 describe("Zowe native executable", () => {
     const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe CLI native executable.";
     const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
-    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
+    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 108;
 
     let zoweExePath: string;
     let willRunZoweExe: boolean = true;
