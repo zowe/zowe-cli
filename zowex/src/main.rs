@@ -57,10 +57,11 @@ const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
 const EXIT_CODE_CANNOT_GET_MY_PATH: i32 = 101;
 const EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH: i32 = 102;
 const EXIT_CODE_CANNOT_START_DAEMON: i32 = 103;
-const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 104;
-const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 105;
-const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
-const EXIT_CODE_CANT_RUN_DAEMON_CMD: i32 = 107;
+const EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON: i32 = 104;
+const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 105;
+const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 106;
+const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 107;
+const EXIT_CODE_CANT_RUN_DAEMON_CMD: i32 = 108;
 
 struct DaemonProcInfo {
     is_running: bool,
@@ -90,6 +91,9 @@ struct DaemonResponse {
     stdin: Option<String>,
     user: Option<String>,
 }
+
+const THREE_SEC_DELAY: u64 = 3;
+const THREE_MIN_OF_RETRIES: i32 = 60;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
@@ -286,9 +290,27 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
         _resp.append(&mut stdin);
     }
 
-    let socket_string = get_socket_string();
-    let mut stream = establish_connection(socket_string)?;
-    talk(&_resp, &mut stream)
+    let mut tries = 0;
+    loop {
+        let socket_string = get_socket_string();
+        let mut stream = establish_connection(socket_string)?;
+        match talk(&_resp, &mut stream) {
+            Ok(result) => { return Ok(result); },
+            Err(ref e) if e.kind() == io::ErrorKind::ConnectionReset => {
+                if tries > THREE_MIN_OF_RETRIES {
+                    println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
+                    std::process::exit(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
+                }
+
+                println!("{} ({} of {})", "The Zowe daemon is in use, retrying", tries, THREE_MIN_OF_RETRIES);
+                
+                // pause between attempts to connect
+                thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+                tries += 1;
+            },
+            Err(e) => { return Err(e); }
+        }
+    }
 }
 
 #[cfg(target_family = "unix")]
@@ -302,8 +324,6 @@ type DaemonClient = PipeClient;
  * Iterate to enable a slow system to start the daemon.
  */
 fn establish_connection(daemon_socket: String) -> io::Result<DaemonClient> {
-    const THREE_SEC_DELAY: u64 = 3;
-    const THREE_MIN_OF_RETRIES: i32 = 60;
     const RETRY_TO_SHOW_DIAG: i32 = 5;
 
     let mut conn_retries = 0;
@@ -396,86 +416,91 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
         let payload: String;
 
         // read until form feed (\f)
-        if reader.read_until(0xC, &mut u_payload).unwrap() > 0 {
-            // remove form feed and convert to a string
-            u_payload.pop(); // remove the 0xC
-            payload = str::from_utf8(&u_payload).unwrap().to_string();
+        match reader.read_until(0xC, &mut u_payload) {
+            Ok(size) => {
+                if size > 0 {
+                    // remove form feed and convert to a string
+                    u_payload.pop(); // remove the 0xC
+                    payload = str::from_utf8(&u_payload).unwrap().to_string();
 
-            let p: DaemonRequest = match serde_json::from_str(&payload) {
-                Ok(p) => p,
-                Err(_e) => {
-                    // TODO(Kelosky): handle this only if progress bar mode is active
-                    if atty::is(Stream::Stderr) {
-                        eprint!("{}", payload);
+                    let p: DaemonRequest = match serde_json::from_str(&payload) {
+                        Ok(p) => p,
+                        Err(_e) => {
+                            // TODO(Kelosky): handle this only if progress bar mode is active
+                            if atty::is(Stream::Stderr) {
+                                eprint!("{}", payload);
+                                io::stderr().flush().unwrap();
+                            }
+                            DaemonRequest {
+                                stdout: None,
+                                stderr: None,
+                                exitCode: Some(0i32),
+                                progress: None,
+                                prompt: None,
+                                securePrompt: None,
+                            }
+                        }
+                    };
+
+                    if let Some(s) = p.stdout {
+                        print!("{}", s);
+                        io::stdout().flush().unwrap();
+                    }
+
+                    if let Some(s) = p.stderr {
+                        eprint!("{}", s);
                         io::stderr().flush().unwrap();
                     }
-                    DaemonRequest {
-                        stdout: None,
-                        stderr: None,
-                        exitCode: Some(0i32),
-                        progress: None,
-                        prompt: None,
-                        securePrompt: None,
+
+                    if let Some(s) = p.prompt {
+                        print!("{}", s);
+                        io::stdout().flush().unwrap();
+                        let mut reply = String::new();
+                        io::stdin().read_line(&mut reply).unwrap();
+                        let response: DaemonResponse = DaemonResponse {
+                            argv: None,
+                            cwd: None,
+                            env: None,
+                            stdinLength: None,
+                            stdin: Some(reply),
+                            user: Some(encode(username())),
+                        };
+                        let v = serde_json::to_string(&response)?;
+                        #[cfg(target_family = "unix")]
+                        writer.write_all(v.as_bytes()).unwrap();
+                        #[cfg(target_family = "windows")]
+                        reader.get_mut().write_all(v.as_bytes()).unwrap();
                     }
+
+                    if let Some(s) = p.securePrompt {
+                        print!("{}", s);
+                        io::stdout().flush().unwrap();
+                        let reply;
+                        reply = read_password().unwrap();
+                        let response: DaemonResponse = DaemonResponse {
+                            argv: None,
+                            cwd: None,
+                            env: None,
+                            stdinLength: None,
+                            stdin: Some(reply),
+                            user: Some(encode(username())),
+                        };
+                        let v = serde_json::to_string(&response)?;
+                        #[cfg(target_family = "unix")]
+                        writer.write_all(v.as_bytes()).unwrap();
+                        #[cfg(target_family = "windows")]
+                        reader.get_mut().write_all(v.as_bytes()).unwrap();
+                    }
+
+                    exit_code = p.exitCode.unwrap_or(0);
+
+                    _progress = p.progress.unwrap_or(false);
+                } else {
+                    // end of reading
+                    break;
                 }
-            };
-
-            if let Some(s) = p.stdout {
-                print!("{}", s);
-                io::stdout().flush().unwrap();
-            }
-
-            if let Some(s) = p.stderr {
-                eprint!("{}", s);
-                io::stderr().flush().unwrap();
-            }
-
-            if let Some(s) = p.prompt {
-                print!("{}", s);
-                io::stdout().flush().unwrap();
-                let mut reply = String::new();
-                io::stdin().read_line(&mut reply).unwrap();
-                let response: DaemonResponse = DaemonResponse {
-                    argv: None,
-                    cwd: None,
-                    env: None,
-                    stdinLength: None,
-                    stdin: Some(reply),
-                    user: Some(encode(username())),
-                };
-                let v = serde_json::to_string(&response)?;
-                #[cfg(target_family = "unix")]
-                writer.write_all(v.as_bytes()).unwrap();
-                #[cfg(target_family = "windows")]
-                reader.get_mut().write_all(v.as_bytes()).unwrap();
-            }
-
-            if let Some(s) = p.securePrompt {
-                print!("{}", s);
-                io::stdout().flush().unwrap();
-                let reply;
-                reply = read_password().unwrap();
-                let response: DaemonResponse = DaemonResponse {
-                    argv: None,
-                    cwd: None,
-                    env: None,
-                    stdinLength: None,
-                    stdin: Some(reply),
-                    user: Some(encode(username())),
-                };
-                let v = serde_json::to_string(&response)?;
-                #[cfg(target_family = "unix")]
-                writer.write_all(v.as_bytes()).unwrap();
-                #[cfg(target_family = "windows")]
-                reader.get_mut().write_all(v.as_bytes()).unwrap();
-            }
-
-            exit_code = p.exitCode.unwrap_or(0);
-
-            _progress = p.progress.unwrap_or(false);
-        } else {
-            // end of reading
-            break;
+            },
+            Err(e) => { return Err(e); }
         }
     }
 
@@ -580,11 +605,16 @@ fn is_daemon_running() -> DaemonProcInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
     for (pid, process) in sys.processes() {
-        if process.name().to_lowercase().contains("node") &&
+        if (process.name().to_lowercase().contains("node") &&
            process.cmd().len() > 2 &&
            process.cmd()[1].to_lowercase().contains("@zowe") &&
            process.cmd()[1].to_lowercase().contains("cli") &&
-           process.cmd()[2].to_lowercase() == "--daemon"
+           process.cmd()[2].to_lowercase() == "--daemon") ||
+           (process.name().to_lowercase().contains("node") &&
+           process.cmd().len() > 2 &&
+           process.cmd()[1].to_lowercase().contains("bin") &&
+           process.cmd()[1].to_lowercase().contains("zowe") &&
+           process.cmd()[2].to_lowercase() == "--daemon")
         {
             // convert the process command from a vector to a string
             let mut proc_cmd: String = String::new();

@@ -108,6 +108,7 @@ export class DaemonDecider {
                 process.on(eventType, this.close.bind(this, true));
             });
 
+            this.mServer.maxConnections = 1;
             this.mServer.listen(this.mSocket, () => {
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
                 Imperative.console.info(`server bound ${this.mSocket}`);
