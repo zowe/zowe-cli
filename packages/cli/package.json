@@ -69,7 +69,7 @@
     "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202202092037",
     "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202202092037",
     "find-process": "1.4.7",
-    "get-stdin": "7.0.0",
+    "get-stream": "6.0.1",
     "lodash": "4.17.21",
     "minimatch": "3.0.4",
     "tar": "6.1.11"

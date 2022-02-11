@@ -9,8 +9,9 @@
 *
 */
 
-import { DaemonRequest, IDaemonResponse, Imperative, ImperativeError } from "@zowe/imperative";
 import * as net from "net";
+import { Duplex, Readable } from "stream";
+import { DaemonRequest, IDaemonResponse, Imperative, ImperativeError } from "@zowe/imperative";
 
 /**
  * Class for handling client connections to our persistent service (e.g. daemon mode)
@@ -27,7 +28,7 @@ export class DaemonClient {
     /**
      * The number of stdin bytes remaining to read from the daemon client.
      */
-    private pendingStdinLength = 0;
+    private stdinBytesRemaining = 0;
 
     /**
      * Creates an instance of DaemonClient.
@@ -90,47 +91,29 @@ export class DaemonClient {
      * @private
      * @memberof DaemonClient
      */
-    private async writeToStdin(data: Buffer, expectedLength: number) {
-        // stdin.isTTY is checked by get-stdin and should be false if stdin contains valid data.
-        const stdin: any = process.stdin;
-        Object.defineProperty(process.stdin, "isTTY", { value: false });
+    private createStdinStream(data: Buffer, expectedLength: number): Readable | undefined {
+        if (data == null) return;
 
-        // Normally Node.js reads from process.stdin only once, and the stream is not reusable.
-        // To work around this, we store a copy of the `_readableState` object before stdin has been used.
-        // To reuse stdin, we clear any old data and reset the `_readableState` object back to its initial value.
-        if (stdin._readableStateOld == null) {
-            stdin._readableStateOld = { ...stdin._readableState };
-        } else {
-            if (!process.stdin.readableEnded) {
-                process.stdin.read();
-            }
-            process.stdin.removeAllListeners();
-            stdin._readableState = { ...stdin._readableStateOld };
-        }
+        const stream = new Duplex();
+        stream.push(data);
+        this.stdinBytesRemaining = expectedLength - data.byteLength;
 
-        // Calling stdin.write throws an EPIPE error because Node.js thinks the stream is read-only.
-        // So we simulate calls to stdin.write and stdin.end by pushing to the internal buffer.
-        process.stdin.push(data);
-        this.pendingStdinLength = expectedLength - data.byteLength;
+        if (this.stdinBytesRemaining > 0) {
+            const outer: DaemonClient = this;  // eslint-disable-line @typescript-eslint/no-this-alias
+            this.mClient.on("data", function listener(data) {
+                stream.push(data);
+                this.stdinBytesRemaining -= data.byteLength;
 
-        if (this.pendingStdinLength > 0) {
-            // Handle really large stdin data that is buffered and received in multiple chunks
-            // TODO Handle multiple concurrent sources of piped input
-            await new Promise<void>((resolve, reject) => {
-                const outer: DaemonClient = this;  // eslint-disable-line @typescript-eslint/no-this-alias
-                this.mClient.on("data", function listener(data) {
-                    process.stdin.push(data);
-                    outer.pendingStdinLength -= data.byteLength;
-
-                    if (outer.pendingStdinLength <= 0) {
-                        outer.mClient.removeListener("data", listener);
-                        resolve();
-                    }
-                });
+                if (this.stdinBytesRemaining <= 0) {
+                    stream.push(null);
+                    outer.mClient.removeListener("data", listener);
+                }
             });
+        } else {
+            stream.push(null);
         }
 
-        process.stdin.push(null);
+        return stream;
     }
 
     /**
@@ -140,7 +123,7 @@ export class DaemonClient {
      * @memberof DaemonClient
      */
     private async data(data: Buffer) {
-        if (this.pendingStdinLength > 0) return;
+        if (this.stdinBytesRemaining > 0) return;
 
         // Split JSON body and binary data from multipart response
         const jsonEndIdx = data.indexOf("}" + DaemonRequest.EOW_DELIMITER);
@@ -206,13 +189,13 @@ export class DaemonClient {
                 this.shutdown();
             }
         } else {
-            if (stdinData != null) {
-                await this.writeToStdin(stdinData, jsonData.stdinLength);
-            }
-
             Imperative.commandLine = jsonData.argv.join(" ");
             Imperative.api.appLogger.trace(`daemon input command: ${Imperative.commandLine}`);
-            Imperative.parse(jsonData.argv, { stream: this.mClient, daemonResponse: jsonData });
+            Imperative.parse(jsonData.argv, {
+                stream: this.mClient,
+                stdinStream: this.createStdinStream(stdinData, jsonData.stdinLength),
+                request: jsonData
+            });
         }
     }
 }
