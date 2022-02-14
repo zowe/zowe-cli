@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Bugfix: Fix "zowe zos-files create data-set" example by adding "--like" flag [#1252](https://github.com/zowe/zowe-cli/issues/1252).
+
 ## `6.37.7`
 
 - BugFix: Fixed some optional dependencies missing from npm-shrinkwrap file.
