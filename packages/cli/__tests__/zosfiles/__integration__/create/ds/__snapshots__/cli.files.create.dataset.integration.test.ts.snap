@@ -199,9 +199,10 @@ exports[`Create  Data Set should display the help 1`] = `
 
       $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --lrecl 1024
 
-   - Create a data set with type LIBRARY:
+   - Create a data set with default parameters and like flag and
+   type LIBRARY:
 
-      $ zowe zos-files create data-set NEW.DATASET --data-set-type LIBRARY
+      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --data-set-type LIBRARY
 
 "
 `;
