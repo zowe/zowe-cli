@@ -65,7 +65,7 @@ export const DsDefinition: ICommandDefinition = {
         },
         {
             description: strings.ACTIONS.DATA_SET_LIKE.EXAMPLES.EX3,
-            options: "NEW.DATASET --data-set-type LIBRARY"
+            options: "NEW.DATASET --like EXISTING.DATASET --data-set-type LIBRARY"
         }
     ]
 };

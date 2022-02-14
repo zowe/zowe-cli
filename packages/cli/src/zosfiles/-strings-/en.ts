@@ -48,7 +48,7 @@ export default {
                 EXAMPLES: {
                     EX1: "Create a data set with default parameters and like flag",
                     EX2: "Create a data set with default parameters and like flag and lrecl flag",
-                    EX3: "Create a data set with type LIBRARY"
+                    EX3: "Create a data set with default parameters and like flag and type LIBRARY"
                 }
             },
             DATA_SET_PARTITIONED: {
