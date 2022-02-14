@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed Keytar not present in top level dependencies when CLI is installed non-globally. [#1314](https://github.com/zowe/zowe-cli/issues/1314)
+
 ## `7.0.0-next.202202112312`
 
 - BugFix: Fixed packaging of daemon binary for macOS.

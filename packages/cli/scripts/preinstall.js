@@ -13,9 +13,11 @@ const fs = require("fs");
 const { join } = require("path");
 
 try {
-    // Skip preinstall script if top-level prebuilds folder doesn't exist
+    // Skip preinstall script in any of the following conditions:
+    // (1) Non-global install into project that may have Keytar dependency located outside of CLI node_modules
+    // (2) Top-level prebuilds folder doesn't exist so we have nothing to copy
     const rootPbDir = join(__dirname, "..", "prebuilds");
-    if (!fs.existsSync(rootPbDir)) {
+    if (!process.env.npm_config_global || !fs.existsSync(rootPbDir)) {
         process.exit(0);
     }
 
