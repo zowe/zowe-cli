@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.0.0-next.202202112312`
+
+- BugFix: Fixed packaging of daemon binary for macOS.
+
 ## `7.0.0-next.202202092037`
 
 - BugFix: Fixed some optional dependencies missing from npm-shrinkwrap file.
