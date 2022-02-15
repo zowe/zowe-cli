@@ -418,7 +418,9 @@ describe("z/OS Files - Upload", () => {
 
             it("should return with proper response when uploading with 'binary' option", async () => {
                 uploadOptions.binary = true;
-                reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
+                // TODO:gzip
+                // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
+                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
 
                 try {
                     response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
@@ -697,7 +699,9 @@ describe("z/OS Files - Upload", () => {
                 binary: true
             };
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            let reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
+            // TODO:gzip
+            // let reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
+            let reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -717,7 +721,9 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for wait option
             uploadOptions.recall = "wait";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
+            // TODO:gzip
+            // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -737,7 +743,9 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for no wait option
             uploadOptions.recall = "nowait";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+            // TODO:gzip
+            // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -757,7 +765,9 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for no error option
             uploadOptions.recall = "error";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
+            // TODO:gzip
+            // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -777,7 +787,9 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test default value
             uploadOptions.recall = "non-existing";
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+            // TODO:gzip
+            // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -797,7 +809,9 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for pass etag option
             uploadOptions.etag = etagValue;
-            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+            // TODO:gzip
+            // reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
+            reqHeaders = [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
                 {"If-Match" : uploadOptions.etag}];
 
             try {
@@ -819,7 +833,8 @@ describe("z/OS Files - Upload", () => {
 
             // Unit test for return etag option
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
-                ZosmfHeaders.ACCEPT_ENCODING,
+                // TODO:gzip
+                // ZosmfHeaders.ACCEPT_ENCODING,
                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
                 {"If-Match" : uploadOptions.etag},
                 ZosmfHeaders.X_IBM_RETURN_ETAG];
@@ -845,7 +860,8 @@ describe("z/OS Files - Upload", () => {
             // Unit test for responseTimeout
             uploadOptions.responseTimeout = 5;
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY,
-                ZosmfHeaders.ACCEPT_ENCODING,
+                // TODO:gzip
+                // ZosmfHeaders.ACCEPT_ENCODING,
                 {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"},
                 ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT,
                 {"If-Match" : uploadOptions.etag},

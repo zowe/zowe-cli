@@ -52,8 +52,6 @@ exports[`provisioning delete should fail with invalid option 1`] = `
 "Command Error:
 Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
-Did you mean:  provisioning delete instance?
-
 Command entered: \\"provisioning delete instance --foo-bar\\"
 Available commands are \\"instance\\".
 Use \\"zowe provisioning delete --help\\" to view groups, commands, and options.
@@ -68,7 +66,7 @@ exports[`provisioning delete should fail with invalid parameter 1`] = `
 "Command Error:
 Unknown argument: foobar
 Command failed due to improper syntax
-Did you mean:  provisioning delete i?
+Did you mean: provisioning delete i?
 
 Command entered: \\"provisioning delete foobar\\"
 Available commands are \\"instance\\".

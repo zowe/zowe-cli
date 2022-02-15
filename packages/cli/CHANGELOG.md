@@ -2,17 +2,42 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+
 ## `6.38.0`
 
 - Enhancement: Inconsistent capitalization with z/OS console command. [Issue 961](https://github.com/zowe/zowe-cli/issues/961)
 
+## `6.37.7`
+
+- BugFix: Fixed some optional dependencies missing from npm-shrinkwrap file.
+
+## `6.37.6`
+
+- BugFix: Pruned dev dependencies from npm-shrinkwrap file.
+
+## `6.37.5`
+
+- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
+
+## `6.37.3`
+
+- BugFix: Updated imperative to resolve `--hw` line-break issues. [Imperative #715](https://github.com/zowe/imperative/issues/715)
+
+## `6.37.2`
+
+- BugFix: Disabled gzip compression for z/OSMF requests that download binary files. [#1170](https://github.com/zowe/zowe-cli/issues/1170)
+
+## `6.37.1`
+
+- BugFix: Updated Imperative to absorb bugfixes introduced in version `4.17.2`.
+
 ## `6.37.0`
 
-- Enhancement: Added new feature to manage zos-logs. z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930). [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
+- Enhancement: Added new feature to manage zos-logs. z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930). [#1104](https://github.com/zowe/zowe-cli/issues/1104)
 
 ## `6.36.1`
 
-- BugFix: Fixed an issue where plugin install and uninstall did not work with NPM version 8. [#683](https://github.com/zowe/imperative/issues/683)
+- BugFix: Fixed an issue where plugin install and uninstall did not work with NPM version 8. [Imperative #683](https://github.com/zowe/imperative/issues/683)
 
 ## `6.36.0`
 
