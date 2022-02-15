@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.38.0`
+
+- Enhancement: Inconsistent capitalization with z/OS console command. [Issue 961](https://github.com/zowe/zowe-cli/issues/961)
+
 ## `6.37.0`
 
 - Enhancement: Added new feature to manage zos-logs. z/OSMF version 2.4 or higher is required. Ensure that the [z/OSMF Operations Log Support is available via APAR and associated PTFs](https://www.ibm.com/support/pages/apar/PH35930). [Issue 1104](https://github.com/zowe/zowe-cli/issues/1104)
