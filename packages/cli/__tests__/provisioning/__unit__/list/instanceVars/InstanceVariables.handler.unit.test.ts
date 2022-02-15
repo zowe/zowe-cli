@@ -18,22 +18,16 @@ import { instanceVariables } from "../../../../../src/provisioning/list/instance
 import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["provisioning", "list", "instance-variables"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "list", "instance-variables"],
-    response: getMockedResponse(),
     definition: instanceVariables,
-    fullDefinition: instanceVariables,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("list instance variables handler tests", () => {
     afterEach(() => {
@@ -51,7 +45,7 @@ describe("list instance variables handler tests", () => {
             }
         );
         const handler = new Handler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         await handler.process(params);
         expect(ListInstanceVariables.listVariablesCommon).toHaveBeenCalledTimes(
             1

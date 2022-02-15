@@ -17,24 +17,18 @@ import * as JobHandler from "../../../../../src/zosjobs/delete/job/Job.handler";
 import * as JobDefinition from "../../../../../src/zosjobs/delete/job/Job.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
-const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zos-jobs", "delete", "job"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "delete", "job"],
-    response: getMockedResponse(),
     definition: JobDefinition.JobDefinition,
-    fullDefinition: JobDefinition.JobDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("delete job handler tests", () => {
     it("should be able to delete a job by job id", async () => {

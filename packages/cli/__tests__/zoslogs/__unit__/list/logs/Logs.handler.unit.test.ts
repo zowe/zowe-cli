@@ -11,72 +11,28 @@
 
 import { GetLogsData } from "../../../__resources__/GetLogsData";
 
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session, Imperative } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, Session, Imperative } from "@zowe/imperative";
 import * as LogsHandler from "../../../../../src/zoslogs/list/logs/Logs.handler";
 import * as LogsDefinition from "../../../../../src/zoslogs/list/logs/Logs.definition";
 import { GetZosLog, IZosLogParms } from "@zowe/zos-logs-for-zowe-sdk";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
-const ZOSMF_PROF_OPTS = {
-    host: "somewhere.com",
-    port: "43443",
-    user: "someone",
-    password: "somesecret"
-};
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set("zosmf", [
-    {
-        name: "zosmf",
-        type: "zosmf",
-        ...ZOSMF_PROF_OPTS
-    }
-]);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
-const DEFAULT_PARAMETERS: IHandlerParameters = {
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: {
-        $0: "zowe",
-        _: ["zos-logs", "get"],
         startTime: "2021-08-11T07:02:52.022Z",
-        ...ZOSMF_PROF_OPTS
+        ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
-    positionals: [],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined),
-            prompt: jest.fn()
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+    positionals: ["zos-logs", "list", "logs"],
     definition: LogsDefinition.LogsDefinition,
-    fullDefinition: LogsDefinition.LogsDefinition,
-    profiles: PROFILES
-};
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
+
 describe("get logs handler tests", () => {
     it("should be able to get logs using defaults", async () => {
         let passedSession: Session;

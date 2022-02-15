@@ -20,22 +20,16 @@ import * as TemplateHandler from "../../../../../src/provisioning/provision/temp
 import * as TemplateDefinition from "../../../../../src/provisioning/provision/template/Template.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF,
-    getMockedResponse
+    UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["provisioning", "provision", "template"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "provision", "template"],
-    response: getMockedResponse(),
     definition: TemplateDefinition.TemplateDefinition,
-    fullDefinition: TemplateDefinition.TemplateDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("provision template handler tests", () => {
     afterEach(() => {
@@ -49,7 +43,7 @@ describe("provision template handler tests", () => {
             }
         );
         const handler = new TemplateHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.zOSMFVersion = ProvisioningConstants.ZOSMF_VERSION;
         params.arguments.templateName = "some_name1";
         await handler.process(params);
@@ -69,7 +63,7 @@ describe("provision template handler tests", () => {
             }
         );
         const handler = new TemplateHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.templateName = "some_bad_name";
         try {
             await handler.process(params);
