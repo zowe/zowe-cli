@@ -16,28 +16,28 @@ export interface IPingResponse {
     /**
      * True if the command was issued and the responses were collected.
      * @type {boolean}
-     * @memberOf IPingResponse
+     * @memberof IPingResponse
      */
     success: boolean;
 
     /**
      * Response from z/OSMF to ping rest call
-     * @type (IZosmfPingResponse}
-     * @memberOf IPingResponse
+     * @type {IZosmfPingResponse}
+     * @memberof IPingResponse
      */
     zosmfPingResponse: IZosmfPingResponse;
 
     /**
      * If an error occurs, returns the ImperativeError, which contains cause error.
      * @type {ImperativeError}
-     * @memberOf IConsoleResponse
+     * @memberof IConsoleResponse
      */
     failureResponse?: ImperativeError;
 
     /**
      * Servlet key from IZosmfPingResponse
-     * @type (string}
-     * @memberOf IPingResponse
+     * @type {string}
+     * @memberof IPingResponse
      */
     servletKey: string;
 

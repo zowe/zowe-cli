@@ -16,28 +16,28 @@ export interface IStartStopResponse {
     /**
      * True if the command was issued and the responses were collected.
      * @type {boolean}
-     * @memberOf IStartStopResponse
+     * @memberof IStartStopResponse
      */
     success: boolean;
 
     /**
      * Response from z/OSMF to start rest call
-     * @type (IZosmfTsoResponse}
-     * @memberOf IStartStopResponse
+     * @type {IZosmfTsoResponse}
+     * @memberof IStartStopResponse
      */
     zosmfTsoResponse: IZosmfTsoResponse;
 
     /**
      * If an error occurs, returns the ImperativeError, which contains cause error.
      * @type {ImperativeError}
-     * @memberOf IStartStopResponse
+     * @memberof IStartStopResponse
      */
     failureResponse?: ImperativeError;
 
     /**
      * Servlet key from IZosmfTsoResponse
-     * @type (string}
-     * @memberOf IStartStopResponse
+     * @type {string}
+     * @memberof IStartStopResponse
      */
     servletKey: string;
 
