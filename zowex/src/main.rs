@@ -291,24 +291,23 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
     }
 
     let mut tries = 0;
+    let socket_string = get_socket_string();
     loop {
-        let socket_string = get_socket_string();
-        let mut stream = establish_connection(socket_string)?;
+        let mut stream = establish_connection(&socket_string)?;
         match talk(&_resp, &mut stream) {
-            Ok(result) => { return Ok(result); },
             Err(ref e) if e.kind() == io::ErrorKind::ConnectionReset => {
                 if tries > THREE_MIN_OF_RETRIES {
                     println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
                     std::process::exit(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
                 }
 
-                println!("{} ({} of {})", "The Zowe daemon is in use, retrying", tries, THREE_MIN_OF_RETRIES);
+                println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
                 
                 // pause between attempts to connect
                 thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
                 tries += 1;
             },
-            Err(e) => { return Err(e); }
+            result => { return result; }
         }
     }
 }
@@ -323,7 +322,7 @@ type DaemonClient = PipeClient;
  * Attempt to make a TCP connection to the daemon.
  * Iterate to enable a slow system to start the daemon.
  */
-fn establish_connection(daemon_socket: String) -> io::Result<DaemonClient> {
+fn establish_connection(daemon_socket: &str) -> io::Result<DaemonClient> {
     const RETRY_TO_SHOW_DIAG: i32 = 5;
 
     let mut conn_retries = 0;
