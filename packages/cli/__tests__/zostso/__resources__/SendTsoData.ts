@@ -20,7 +20,7 @@ export class SendTsoData {
     /**
      * Mocked data for send address-space.
      * @type {ISendResponse}
-     * @memberOf SendTsoData
+     * @memberof SendTsoData
      */
     public static readonly SAMPLE_SEND_RESPONSE: ISendResponse = {
         success: true,

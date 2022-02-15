@@ -25,7 +25,7 @@ export interface ITsoResponseMessage {
     /**
      * description of the data type
      * @type {string}
-     * @memberOf ITsoResponseMessage
+     * @memberof ITsoResponseMessage
      */
     DATA: string;
 }

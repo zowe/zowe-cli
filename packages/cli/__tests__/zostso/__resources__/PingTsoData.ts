@@ -20,7 +20,7 @@ export class PingTsoData {
     /**
      * Mocked data for ping address-space.
      * @type {IPingResponse}
-     * @memberOf PingTsoData
+     * @memberof PingTsoData
      */
     public static readonly SAMPLE_PING_RESPONSE: IPingResponse = {
         success: true,

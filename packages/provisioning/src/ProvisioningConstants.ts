@@ -86,7 +86,7 @@ export class ProvisioningConstants {
      * Version of the z/OSMF software services template service
      * @static
      * @type {string}
-     * @memberOf ProvisioningConstants
+     * @memberof ProvisioningConstants
      */
     public static readonly ZOSMF_VERSION: string = "1.0";
 

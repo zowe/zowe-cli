@@ -28,7 +28,7 @@ export interface IConsoleResponse {
     /**
      * The list of zOSMF console API responses. May issue multiple requests (because of user request) or
      * to ensure that all messages are collected. Each individual response is placed here.
-     * @type (IZosmfIssueResponse[]}
+     * @type {IZosmfIssueResponse[]}
      * @memberof IConsoleResponse
      */
     zosmfResponse: IZosmfIssueResponse[];

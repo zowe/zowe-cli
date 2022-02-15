@@ -169,7 +169,7 @@ const prettyFull: {
 
 /**
  * Main explanation map object for full output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstanceActions
  */
 export const explainProvisionedInstanceActionsFull: IExplanationMap = {
@@ -183,7 +183,7 @@ export const explainProvisionedInstanceActionsFull: IExplanationMap = {
 
 /**
  * Main explanation map object for summary output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstanceActions
  */
 export const explainProvisionedInstanceActionsSummary: IExplanationMap = {
