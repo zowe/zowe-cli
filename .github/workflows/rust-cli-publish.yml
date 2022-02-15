@@ -52,7 +52,7 @@ jobs:
 
 
   build-linux:
-    name: Build
+    name: Build Linux
 
     needs: release
 
@@ -102,7 +102,7 @@ jobs:
 
 
   build-macos:
-    name: Build
+    name: Build MacOS
 
     needs: release
 
@@ -126,7 +126,7 @@ jobs:
     - name: Create Archive
       run: |
         cd target/release
-        tar -cvzf zowe.tgz zowe
+        gtar -cvzf zowe.tgz zowe
 
     - name: Upload Release Asset
       id: upload-release-asset
@@ -141,7 +141,7 @@ jobs:
 
 
   build-windows:
-    name: Build
+    name: Build Windows
 
     needs: release
 
