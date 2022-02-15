@@ -10,8 +10,8 @@
 */
 
 import * as net from "net";
-import { Duplex, Readable } from "stream";
-import { DaemonRequest, IDaemonResponse, Imperative, ImperativeError } from "@zowe/imperative";
+import { PassThrough, Readable } from "stream";
+import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError } from "@zowe/imperative";
 
 /**
  * Class for handling client connections to our persistent service (e.g. daemon mode)
@@ -85,32 +85,31 @@ export class DaemonClient {
     }
 
     /**
-     * Write data received from the daemon client to stdin.
-     * @param data Data to write to stdin
-     * @param expectedLength Expected length of the data to validate
+     * Create readable stream for stdin data received from the daemon client.
+     * @param data First chunk of stdin data
+     * @param expectedLength Expected byte length of stdin data
      * @private
      * @memberof DaemonClient
      */
-    private createStdinStream(data: Buffer, expectedLength: number): Readable | undefined {
-        if (data == null) return;
-
-        const stream = new Duplex();
-        stream.push(data);
+    private createStdinStream(data: Buffer, expectedLength: number): Readable {
+        const stream = new PassThrough();
+        stream.write(data);
         this.stdinBytesRemaining = expectedLength - data.byteLength;
 
         if (this.stdinBytesRemaining > 0) {
+            this.mClient.pipe(stream);
             const outer: DaemonClient = this;  // eslint-disable-line @typescript-eslint/no-this-alias
             this.mClient.on("data", function listener(data) {
-                stream.push(data);
-                this.stdinBytesRemaining -= data.byteLength;
+                outer.stdinBytesRemaining -= data.byteLength;
 
-                if (this.stdinBytesRemaining <= 0) {
-                    stream.push(null);
+                if (outer.stdinBytesRemaining <= 0) {
                     outer.mClient.removeListener("data", listener);
+                    outer.mClient.unpipe(stream);
+                    stream.end();
                 }
             });
         } else {
-            stream.push(null);
+            stream.end();
         }
 
         return stream;
@@ -191,11 +190,11 @@ export class DaemonClient {
         } else {
             Imperative.commandLine = jsonData.argv.join(" ");
             Imperative.api.appLogger.trace(`daemon input command: ${Imperative.commandLine}`);
-            Imperative.parse(jsonData.argv, {
-                stream: this.mClient,
-                stdinStream: this.createStdinStream(stdinData, jsonData.stdinLength),
-                request: jsonData
-            });
+            const context: IDaemonContext = { stream: this.mClient, response: jsonData };
+            if (stdinData != null) {
+                context.stdinStream = this.createStdinStream(stdinData, jsonData.stdinLength);
+            }
+            Imperative.parse(jsonData.argv, context);
         }
     }
 }

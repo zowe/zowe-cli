@@ -9,7 +9,7 @@ Array [
 
 exports[`DaemonClient tests should process data when received 2`] = `
 Object {
-  "daemonResponse": Object {
+  "response": Object {
     "argv": Array [
       "feed",
       "🐶",
@@ -68,7 +68,7 @@ Array [
 
 exports[`DaemonClient tests should process response with binary stdin data when received 2`] = `
 Object {
-  "daemonResponse": Object {
+  "response": Object {
     "argv": Array [
       "feed",
       "🐱",
@@ -79,6 +79,7 @@ Object {
     "stdinLength": 1024,
     "user": "ZmFrZQ==",
   },
+  "stdinStream": Promise {},
   "stream": Object {
     "end": [MockFunction],
     "on": [MockFunction] {
