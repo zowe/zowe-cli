@@ -55,7 +55,7 @@ jobs:
 
     - name: Use NPM v8
       id: npm8
-      run: npm install -g npm@^8
+      run: npm install -g npm@~8.3.2
 
     - name: Install Node Package Dependencies
       id: install
