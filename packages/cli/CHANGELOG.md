@@ -3,7 +3,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 
-## `6.38.0`
+## `6.37.8`
 
 - Enhancement: Inconsistent capitalization with z/OS console command. [Issue 961](https://github.com/zowe/zowe-cli/issues/961)
 
