@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **LTS Breaking**: Added `stdin` property to `IHandlerParameters` which defaults to `process.stdin` and is overridden with another readable stream in daemon mode.
+  - CLI plug-ins that read from `process.stdin` in their command handlers should replace it with `{IHandlerParameters}.stdin` to be compatible with Zowe v2 daemon mode.
+  - This may be a breaking change for unit tests that mock the `IHandlerParameters` interface since a required property has been added.
+  - It is recommended to replace `IHandlerParameters` mocks with the `mockHandlerParameters` method in the @zowe/cli-test-utils package which should protect you from future breaking changes to this interface.
+
 ## `7.0.0-next.202202151759`
 
 - BugFix: Updated Imperative to convert previously used profile property names into V2-compliant property names.
@@ -31,7 +38,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Fixed 'daemon disable' command to kill any running zowe daemon on Linux and Mac. [#1270](https://github.com/zowe/zowe-cli/issues/1270)
 - BugFix: Fixed stdin data being corrupted when daemon server processes CLI command containing double-byte characters.
 - Enhancement: Added a user message within 'daemon enable' and disable to open a new terminal when needed.
-- **BREAKING** Enhancement: Make the `user` field on SSH profiles secure. [#682](https://github.com/zowe/zowe-cli/issues/682)
+- **LTS Breaking**: Make the `user` field on SSH profiles secure. [#682](https://github.com/zowe/zowe-cli/issues/682)
 
 ## `7.0.0-next.202201121428`
 
@@ -99,7 +106,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `7.0.0-next.202110071909`
 
 - Enhancement: Added `config update-schemas [--depth <value>]` command. [#1059](https://github.com/zowe/zowe-cli/issues/1059)
-- Breaking: Changed default log level from DEBUG to WARN to reduce the volume of logs written to disk. The log level can still be overridden using environment variables.
+- **LTS Breaking**: Changed default log level from DEBUG to WARN to reduce the volume of logs written to disk. The log level can still be overridden using environment variables.
 
 ## `7.0.0-next.202109281609`
 
@@ -117,14 +124,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `7.0.0-next.202108202027`
 
 - Update Imperative dependency for the following new features:
-  - Breaking: Make `fail-on-error` option true by default on `zowe plugins validate` command.
+  - **LTS Breaking**: Make `fail-on-error` option true by default on `zowe plugins validate` command.
   - Enhancement: Improved command suggestions
   - Performance: Improved the way that HTTP response chunks are saved, reducing time complexity from O(n<sup>2</sup>) to O(n). This dramatically improves performance for larger requests. [#618](https://github.com/zowe/imperative/pull/618)
 
 ## `7.0.0-next.202108121907`
 
 - Enhancement: Flattened the default profiles structure created by the `config init` command.
-- Breaking: Split up authToken property in team config into tokenType and tokenValue properties to be consistent with Zowe v1 profiles.
+- **Next Breaking**: Split up authToken property in team config into tokenType and tokenValue properties to be consistent with Zowe v1 profiles.
 
 ## `7.0.0-next.202107131230`
 
@@ -136,7 +143,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added daemon mode which runs a persistent background process "zowex" to improve CLI response time. The "zowex" binary can be downloaded from GitHub releases.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
-- **Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+- **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 ## `6.37.5`
 
 - BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.

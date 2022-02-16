@@ -97,6 +97,7 @@ export class DaemonClient {
         this.stdinBytesRemaining = expectedLength - data.byteLength;
 
         if (this.stdinBytesRemaining > 0) {
+            // Handle really large stdin data that is buffered and received in multiple chunks
             this.mClient.pipe(stream);
             const outer: DaemonClient = this;  // eslint-disable-line @typescript-eslint/no-this-alias
             this.mClient.on("data", function listener(data) {
