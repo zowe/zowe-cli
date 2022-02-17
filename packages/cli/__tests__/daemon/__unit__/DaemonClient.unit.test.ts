@@ -307,11 +307,10 @@ describe("DaemonClient tests", () => {
         const chunks = ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yz"];
         const alphabet = chunks.join("");
         const server: net.Server = undefined;
-        const client = stream.Readable.from(chunks);
+        const client = stream.Readable.from(chunks, { objectMode: false });
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
-        client.read(chunks[0].length);  // read first chunk
-        const stdinStream = (daemonClient as any).createStdinStream(Buffer.from(chunks[0]), alphabet.length);
+        const stdinStream = (daemonClient as any).createStdinStream(client.read(), alphabet.length);
         expect(await getStream(stdinStream)).toBe(alphabet);
     });
 
