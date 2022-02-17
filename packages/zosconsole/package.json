@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-console-for-zowe-sdk",
-  "version": "7.0.0-next.202202151759",
+  "version": "7.0.0-next.202202171858",
   "description": "Zowe SDK to interact with the z/OS console",
   "author": "Broadcom",
   "license": "EPL-2.0",
@@ -45,8 +45,8 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.24",
-    "@zowe/cli-test-utils": "7.0.0-next.202202151759",
-    "@zowe/core-for-zowe-sdk": "7.0.0-next.202202151759",
+    "@zowe/cli-test-utils": "7.0.0-next.202202171858",
+    "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
     "@zowe/imperative": "5.0.0-next.202202111730",
     "eslint": "^7.32.0",
     "madge": "^4.0.1",

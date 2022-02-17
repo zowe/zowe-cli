@@ -9,6 +9,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
   - This may be a breaking change for unit tests that mock the `IHandlerParameters` interface since a required property has been added.
   - It is recommended to replace `IHandlerParameters` mocks with the `mockHandlerParameters` method in the @zowe/cli-test-utils package which should protect you from future breaking changes to this interface.
 
+## `7.0.0-next.202202171858`
+
+- **Next Breaking**: Use sockets and named pipes instead of ports for daemon communication for improved access control.
+- BugFix: Fixed Keytar not present in top level dependencies when CLI is installed non-globally. [#1314](https://github.com/zowe/zowe-cli/issues/1314)
+
 ## `7.0.0-next.202202151759`
 
 - BugFix: Updated Imperative to convert previously used profile property names into V2-compliant property names.

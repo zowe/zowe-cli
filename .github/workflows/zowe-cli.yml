@@ -61,7 +61,7 @@ jobs:
 
     - name: Use NPM v8
       id: npm8
-      run: npm install -g npm@^8
+      run: npm install -g npm@~8.3.2
 
     - name: Install Node Package Dependencies
       id: install
@@ -129,10 +129,15 @@ jobs:
       env:
         PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
 
-    - name: Integration Tests
-      id: integration
-      if: ${{ always() && steps.build.outcome == 'success' }}
+    - name: Integration Tests (Native)
+      id: integration-native
+      if: ${{ always() && steps.build.outcome == 'success' && !(github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: npm run test:integration >> integration-tests.txt
+
+    - name: Integration Tests (Daemon)
+      id: integration-daemon
+      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: npm run test:integration -- --runInBand >> integration-tests.txt
 
     - name: Archive Results
       id: upload
