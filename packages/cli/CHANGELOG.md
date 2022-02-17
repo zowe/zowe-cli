@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202202171858`
 
 - **NEXT BREAKING** Enhancement: Use sockets and named pipes instead of ports for daemon communication for improved access control.
 - BugFix: Fixed Keytar not present in top level dependencies when CLI is installed non-globally. [#1314](https://github.com/zowe/zowe-cli/issues/1314)
