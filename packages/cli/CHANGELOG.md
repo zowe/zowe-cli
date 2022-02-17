@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **NEXT BREAKING** Enhancement: Use sockets and named pipes instead of ports for daemon communication for improved access control.
+
 ## `7.0.0-next.202202151759`
 
 - BugFix: Updated Imperative to convert previously used profile property names into V2-compliant property names.

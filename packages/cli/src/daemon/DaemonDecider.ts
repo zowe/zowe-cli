@@ -9,9 +9,11 @@
 *
 */
 
-import { Imperative } from "@zowe/imperative";
+import * as fs from "fs";
 import * as net from "net";
-import { userInfo } from "os";
+import * as os from "os";
+import * as path from "path";
+import { Imperative } from "@zowe/imperative";
 import { DaemonClient } from "./DaemonClient";
 
 // TODO(Kelosky): handle prompting cases from login command
@@ -26,15 +28,6 @@ import { DaemonClient } from "./DaemonClient";
  * @class DaemonDecider
  */
 export class DaemonDecider {
-
-    /**
-     * Default port number
-     * @private
-     * @static
-     * @memberof DaemonDecider
-     */
-    private static readonly DEFAULT_PORT = 4000;
-
     /**
      * Undocumented paramter for launching in server mode
      * @private
@@ -52,12 +45,12 @@ export class DaemonDecider {
     private mServer: net.Server;
 
     /**
-     * Hold current port number for the server
+     * Hold current socket path for the server
      * @private
      * @type {number}
      * @memberof DaemonDecider
      */
-    private mPort: number;
+    private mSocket: string;
 
     /**
      * Hold current owner for the server
@@ -90,7 +83,7 @@ export class DaemonDecider {
 
         this.initialParse();
         if (this.startServer) {
-            this.mUser = userInfo().username;
+            this.mUser = os.userInfo().username;
             this.mServer = net.createServer((c) => {
                 new DaemonClient(c, this.mServer, this.mUser).run();
             });
@@ -107,9 +100,18 @@ export class DaemonDecider {
      */
     public runOrUseDaemon() {
         if (this.mServer) {
-            this.mServer.listen(this.mPort, "127.0.0.1", () => {
-                Imperative.api.appLogger.debug(`daemon server bound ${this.mPort}`);
-                Imperative.console.info(`server bound ${this.mPort}`);
+            if (process.platform !== "win32" && fs.existsSync(this.mSocket)) {
+                fs.unlinkSync(this.mSocket);
+            }
+
+            ["exit", "SIGINT", "SIGQUIT", "SIGTERM"].forEach((eventType: any) => {
+                process.on(eventType, this.close.bind(this, true));
+            });
+
+            this.mServer.maxConnections = 1;
+            this.mServer.listen(this.mSocket, () => {
+                Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
+                Imperative.console.info(`server bound ${this.mSocket}`);
             });
         } else {
             Imperative.parse();
@@ -121,8 +123,11 @@ export class DaemonDecider {
      * @private
      * @memberof DaemonDecider
      */
-    private close() {
+    private close(shouldExit?: boolean) {
         Imperative.api.appLogger.debug(`server closed`);
+        if (shouldExit) {
+            process.exit();
+        }
     }
 
     /**
@@ -142,28 +147,29 @@ export class DaemonDecider {
      * @memberof DaemonDecider
      */
     private initialParse() {
-        const numOfParms = this.mParms.length - 2;
-        this.mPort = DaemonDecider.DEFAULT_PORT;
-
-        if (numOfParms > 0) {
-            const parm = this.mParms[2];
-
+        if (this.mParms.length > 2) {
             /**
-             * NOTE(Kelosky): For now, we use an undocumented paramter `--daemon`.  If found first,
+             * NOTE(Kelosky): For now, we use an undocumented parameter `--daemon`.  If found first,
              * we bypass `yargs` and begin running this as a persistent Processor.
              */
-            const portOffset = parm.indexOf(DaemonDecider.DAEMON_KEY);
+            const parm = this.mParms[2];
+            const daemonOffset = parm.indexOf(DaemonDecider.DAEMON_KEY);
 
-            if (portOffset > -1) {
+            if (daemonOffset > -1) {
                 this.startServer = true;
+
                 if (process.env.ZOWE_DAEMON) {
-                    try {
-                        this.mPort = parseInt(process.env.ZOWE_DAEMON, 10);
-                    } catch (err) {
-                        // do nothing
+                    this.mSocket = process.env.ZOWE_DAEMON;
+                    if (process.platform === "win32") {
+                        this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
                     }
+                } else if (process.platform !== "win32") {
+                    this.mSocket = path.join(os.homedir(), ".zowe-daemon.sock");
+                } else {
+                    this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                 }
-                Imperative.api.appLogger.debug(`daemon server port ${this.mPort}`);
+
+                Imperative.api.appLogger.debug(`daemon server will listen on ${this.mSocket}`);
             }
         }
     }
