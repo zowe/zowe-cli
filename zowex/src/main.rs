@@ -11,22 +11,31 @@
 
 use std::collections::HashMap;
 use std::env;
-
 use std::io;
-use std::io::prelude::*;
 use std::io::BufReader;
+use std::io::prelude::*;
 use std::net::Shutdown;
-use std::net::TcpStream;
 use std::process::{Command, Stdio};
 use std::str;
 use std::thread;
 use std::time::Duration;
+
+#[cfg(target_family = "unix")]
+use std::os::unix::net::UnixStream;
 
 extern crate atty;
 use atty::Stream;
 
 extern crate base64;
 use base64::encode;
+
+extern crate home;
+use home::home_dir;
+
+#[cfg(target_family = "windows")]
+extern crate named_pipe;
+#[cfg(target_family = "windows")]
+use named_pipe::PipeClient;
 
 extern crate pathsearch;
 use pathsearch::PathSearcher;
@@ -43,17 +52,16 @@ use sysinfo::{ProcessExt, System, SystemExt};
 extern crate whoami;
 use whoami::username;
 
-const DEFAULT_PORT: i32 = 4000;
-
 const EXIT_CODE_SUCCESS: i32 = 0;
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
 const EXIT_CODE_CANNOT_GET_MY_PATH: i32 = 101;
 const EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH: i32 = 102;
 const EXIT_CODE_CANNOT_START_DAEMON: i32 = 103;
-const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 104;
-const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 105;
-const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
-const EXIT_CODE_CANT_RUN_DAEMON_CMD: i32 = 107;
+const EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON: i32 = 104;
+const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 105;
+const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 106;
+const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 107;
+const EXIT_CODE_CANT_RUN_DAEMON_CMD: i32 = 108;
 
 struct DaemonProcInfo {
     is_running: bool,
@@ -83,6 +91,9 @@ struct DaemonResponse {
     stdin: Option<String>,
     user: Option<String>,
 }
+
+const THREE_SEC_DELAY: u64 = 3;
+const THREE_MIN_OF_RETRIES: i32 = 60;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`
 // 0.8225 zowex vs 1.6961 zowe average over 10 run sample = .8736 sec faster on linux
@@ -279,30 +290,47 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
         _resp.append(&mut stdin);
     }
 
-    // form our host, port, and connection strings
-    let daemon_host = "127.0.0.1".to_owned();
-    let port_string = get_port_string();
+    let mut tries = 0;
+    let socket_string = get_socket_string();
+    loop {
+        let mut stream = establish_connection(&socket_string)?;
+        match talk(&_resp, &mut stream) {
+            Err(ref e) if e.kind() == io::ErrorKind::ConnectionReset => {
+                if tries > THREE_MIN_OF_RETRIES {
+                    println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
+                    std::process::exit(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
+                }
 
-    let mut stream = establish_connection(daemon_host, port_string)?;
-    talk(&_resp, &mut stream)
+                println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
+                
+                // pause between attempts to connect
+                thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+                tries += 1;
+            },
+            result => { return result; }
+        }
+    }
 }
+
+#[cfg(target_family = "unix")]
+type DaemonClient = UnixStream;
+
+#[cfg(target_family = "windows")]
+type DaemonClient = PipeClient;
 
 /**
  * Attempt to make a TCP connection to the daemon.
  * Iterate to enable a slow system to start the daemon.
  */
-fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
-    const THREE_SEC_DELAY: u64 = 3;
-    const THREE_MIN_OF_RETRIES: i32 = 60;
+fn establish_connection(daemon_socket: &str) -> io::Result<DaemonClient> {
     const RETRY_TO_SHOW_DIAG: i32 = 5;
 
-    let host_port_conn_str = format!("{}:{}", host, port);
     let mut conn_retries = 0;
     let mut we_started_daemon = false;
     let mut cmd_to_show: String = String::new();
 
     let stream = loop {
-        let conn_result = TcpStream::connect(&host_port_conn_str);
+        let conn_result = DaemonClient::connect(&daemon_socket);
         if let Ok(good_stream) = conn_result {
             // We made our connection. Break with the actual stream value
             break good_stream;
@@ -319,8 +347,8 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
                 we_started_daemon = true;
                 cmd_to_show = start_daemon(&njs_zowe_path);
             } else if we_started_daemon {
-                println!("The Zowe daemon that we started is not running on host = {} with port = {}.",
-                    host, port
+                println!("The Zowe daemon that we started is not running on socket: {}.",
+                    daemon_socket
                 );
                 println!(
                     "Command used to start the Zowe daemon was:\n    {}\nTerminating.",
@@ -346,8 +374,8 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
             } else {
                 println!("Command = {}", daemon_proc_info.cmd);
             }
-            println!("Process name = {}  pid = {}  host = {}  port = {}\n",
-                daemon_proc_info.name, daemon_proc_info.pid, host, port
+            println!("Process name = {}  pid = {}  socket = {}\n",
+                daemon_proc_info.name, daemon_proc_info.pid, daemon_socket
             );
         }
 
@@ -366,14 +394,18 @@ fn establish_connection(host: String, port: String) -> io::Result<TcpStream> {
     Ok(stream)
 }
 
-fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
+fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
     stream.write_all(message).unwrap(); // write it
-    let mut stream_clone = stream.try_clone().expect("clone failed");
 
+    #[cfg(target_family = "unix")]
+    let mut writer = stream.try_clone().expect("clone failed");
+    #[cfg(target_family = "unix")]
     let mut reader = BufReader::new(&*stream);
+    #[cfg(target_family = "windows")]
+    let mut reader = BufReader::new(stream);
 
     let mut exit_code = 0;
     let mut _progress = false;
@@ -383,90 +415,102 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
         let payload: String;
 
         // read until form feed (\f)
-        if reader.read_until(0xC, &mut u_payload).unwrap() > 0 {
-            // remove form feed and convert to a string
-            u_payload.pop(); // remove the 0xC
-            payload = str::from_utf8(&u_payload).unwrap().to_string();
+        match reader.read_until(0xC, &mut u_payload) {
+            Ok(size) => {
+                if size > 0 {
+                    // remove form feed and convert to a string
+                    u_payload.pop(); // remove the 0xC
+                    payload = str::from_utf8(&u_payload).unwrap().to_string();
 
-            let p: DaemonRequest = match serde_json::from_str(&payload) {
-                Ok(p) => p,
-                Err(_e) => {
-                    // TODO(Kelosky): handle this only if progress bar mode is active
-                    if atty::is(Stream::Stderr) {
-                        eprint!("{}", payload);
+                    let p: DaemonRequest = match serde_json::from_str(&payload) {
+                        Ok(p) => p,
+                        Err(_e) => {
+                            // TODO(Kelosky): handle this only if progress bar mode is active
+                            if atty::is(Stream::Stderr) {
+                                eprint!("{}", payload);
+                                io::stderr().flush().unwrap();
+                            }
+                            DaemonRequest {
+                                stdout: None,
+                                stderr: None,
+                                exitCode: Some(0i32),
+                                progress: None,
+                                prompt: None,
+                                securePrompt: None,
+                            }
+                        }
+                    };
+
+                    if let Some(s) = p.stdout {
+                        print!("{}", s);
+                        io::stdout().flush().unwrap();
+                    }
+
+                    if let Some(s) = p.stderr {
+                        eprint!("{}", s);
                         io::stderr().flush().unwrap();
                     }
-                    DaemonRequest {
-                        stdout: None,
-                        stderr: None,
-                        exitCode: Some(0i32),
-                        progress: None,
-                        prompt: None,
-                        securePrompt: None,
+
+                    if let Some(s) = p.prompt {
+                        print!("{}", s);
+                        io::stdout().flush().unwrap();
+                        let mut reply = String::new();
+                        io::stdin().read_line(&mut reply).unwrap();
+                        let response: DaemonResponse = DaemonResponse {
+                            argv: None,
+                            cwd: None,
+                            env: None,
+                            stdinLength: None,
+                            stdin: Some(reply),
+                            user: Some(encode(username())),
+                        };
+                        let v = serde_json::to_string(&response)?;
+                        #[cfg(target_family = "unix")]
+                        writer.write_all(v.as_bytes()).unwrap();
+                        #[cfg(target_family = "windows")]
+                        reader.get_mut().write_all(v.as_bytes()).unwrap();
                     }
+
+                    if let Some(s) = p.securePrompt {
+                        print!("{}", s);
+                        io::stdout().flush().unwrap();
+                        let reply;
+                        reply = read_password().unwrap();
+                        let response: DaemonResponse = DaemonResponse {
+                            argv: None,
+                            cwd: None,
+                            env: None,
+                            stdinLength: None,
+                            stdin: Some(reply),
+                            user: Some(encode(username())),
+                        };
+                        let v = serde_json::to_string(&response)?;
+                        #[cfg(target_family = "unix")]
+                        writer.write_all(v.as_bytes()).unwrap();
+                        #[cfg(target_family = "windows")]
+                        reader.get_mut().write_all(v.as_bytes()).unwrap();
+                    }
+
+                    exit_code = p.exitCode.unwrap_or(0);
+
+                    _progress = p.progress.unwrap_or(false);
+                } else {
+                    // end of reading
+                    break;
                 }
-            };
-
-            if let Some(s) = p.stdout {
-                print!("{}", s);
-                io::stdout().flush().unwrap();
-            }
-
-            if let Some(s) = p.stderr {
-                eprint!("{}", s);
-                io::stderr().flush().unwrap();
-            }
-
-            if let Some(s) = p.prompt {
-                print!("{}", s);
-                io::stdout().flush().unwrap();
-                let mut reply = String::new();
-                io::stdin().read_line(&mut reply).unwrap();
-                let response: DaemonResponse = DaemonResponse {
-                    argv: None,
-                    cwd: None,
-                    env: None,
-                    stdinLength: None,
-                    stdin: Some(reply),
-                    user: Some(encode(username())),
-                };
-                let v = serde_json::to_string(&response)?;
-
-                stream_clone.write_all(v.as_bytes()).unwrap();
-            }
-
-            if let Some(s) = p.securePrompt {
-                print!("{}", s);
-                io::stdout().flush().unwrap();
-                let reply;
-                reply = read_password().unwrap();
-                let response: DaemonResponse = DaemonResponse {
-                    argv: None,
-                    cwd: None,
-                    env: None,
-                    stdinLength: None,
-                    stdin: Some(reply),
-                    user: Some(encode(username())),
-                };
-                let v = serde_json::to_string(&response)?;
-                stream_clone.write_all(v.as_bytes()).unwrap();
-            }
-
-            exit_code = p.exitCode.unwrap_or(0);
-
-            _progress = p.progress.unwrap_or(false);
-        } else {
-            // end of reading
-            break;
+            },
+            Err(e) => { return Err(e); }
         }
     }
 
     // Terminate connection. Ignore NotConnected errors returned on macOS.
     // https://doc.rust-lang.org/std/net/struct.TcpStream.html#method.shutdown
+    #[cfg(target_family = "unix")]
     match stream.shutdown(Shutdown::Read) {
         Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
     }
+    #[cfg(target_family = "unix")]
     match stream.shutdown(Shutdown::Write) {
         Err(ref e) if e.kind() == io::ErrorKind::NotConnected => (),
         result => result?,
@@ -480,16 +524,26 @@ fn talk(message: &[u8], stream: &mut TcpStream) -> io::Result<()> {
     Ok(())
 }
 
-fn get_port_string() -> String {
-    let mut _port = DEFAULT_PORT;
+#[cfg(target_family = "unix")]
+fn get_socket_string() -> String {
+    let mut _socket = format!("{}/{}", home_dir().unwrap().to_string_lossy(), ".zowe-daemon.sock");
 
-    match env::var("ZOWE_DAEMON") {
-        // TODO(Kelosky): handle unwrap properly
-        Ok(val) => _port = val.parse::<i32>().unwrap(),
-        Err(_e) => _port = DEFAULT_PORT,
+    if let Ok(socket_path) = env::var("ZOWE_DAEMON") {
+        _socket = socket_path;
     }
 
-    _port.to_string()
+    _socket
+}
+
+#[cfg(target_family = "windows")]
+fn get_socket_string() -> String {
+    let mut _socket = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
+
+    if let Ok(pipe_name) = env::var("ZOWE_DAEMON") {
+        _socket = format!("\\\\.\\pipe\\{}", pipe_name);
+    }
+
+    _socket
 }
 
 // Get the file path to the command that runs the NodeJS version of Zowe
@@ -550,11 +604,16 @@ fn is_daemon_running() -> DaemonProcInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
     for (pid, process) in sys.processes() {
-        if process.name().to_lowercase().contains("node") &&
+        if (process.name().to_lowercase().contains("node") &&
            process.cmd().len() > 2 &&
            process.cmd()[1].to_lowercase().contains("@zowe") &&
            process.cmd()[1].to_lowercase().contains("cli") &&
-           process.cmd()[2].to_lowercase() == "--daemon"
+           process.cmd()[2].to_lowercase() == "--daemon") ||
+           (process.name().to_lowercase().contains("node") &&
+           process.cmd().len() > 2 &&
+           process.cmd()[1].to_lowercase().contains("bin") &&
+           process.cmd()[1].to_lowercase().contains("zowe") &&
+           process.cmd()[2].to_lowercase() == "--daemon")
         {
             // convert the process command from a vector to a string
             let mut proc_cmd: String = String::new();
@@ -720,15 +779,15 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_port_string() {
+    fn test_get_socket_string() {
         // expect default port with no env
-        let port_string = get_port_string();
-        assert_eq!("4000", port_string);
+        let socket_string = get_socket_string();
+        assert!(!socket_string.contains("NotADaemon"));
 
         // expect override port with env
-        env::set_var("ZOWE_DAEMON", "777");
-        let port_string = get_port_string();
-        assert_eq!("777", port_string);
+        env::set_var("ZOWE_DAEMON", "NotADaemon");
+        let socket_string = get_socket_string();
+        assert!(socket_string.contains("NotADaemon"));
         env::remove_var("ZOWE_DAEMON");
     }
 
