@@ -20,7 +20,7 @@ In testing a solution, the root command tree takes longer to execute than lower 
 
 ***This client should NOT be used in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
-Our native executable client communicates with the Zowe CLI persistent process (daemon) over a TCP/IP socket.  An environment variable can set the TCP/IP port for the daemon.  The environment variable named `ZOWE_DAEMON=<PORT>` is used for the port. If that variable is unset, the default is `4000`.
+Our native executable client communicates with the Zowe CLI persistent process (daemon) over named pipes on Windows, and Unix sockets on other operating systems. An environment variable can set the named pipe or Unix socket used by the daemon. The environment variable named `ZOWE_DAEMON=<PATH>` is used to specify the pipe's name or socket's location. If that variable is unset, the default is `<username>\ZoweDaemon` for Windows, and `<homedir>/.zowe-daemon.sock` on other operating systems.
 
 ## Enabling daemon-mode
 
