@@ -99,6 +99,7 @@ struct DaemonResponse {
 
 enum CmdShell {
     Bash,               // Bourne Again SHell
+    Sh,                 // Standard Linux shell
     PowerShellDotNet,   // Newer cross-platform .NET Core PowerShell
     PowerShellExe,      // Legacy Windows executable PowerShell (version 5.x)
     WindowsCmd,         // Classic Windows CMD shell
@@ -567,16 +568,19 @@ fn get_cmd_shell() -> (CmdShell, String) {
                     cmd_shell_nm = par_process.name().to_string();
 
                     // Set any known command shell name
-                    if cmd_shell_nm.to_lowercase().contains("bash") {
+                    if cmd_shell_nm.to_lowercase().starts_with("bash") {
                         cmd_shell_type = CmdShell::Bash;
 
-                    } else if cmd_shell_nm.to_lowercase().contains("pwsh") {
+                    } else if cmd_shell_nm.to_lowercase().starts_with("sh") {
+                            cmd_shell_type = CmdShell::Sh;
+
+                    } else if cmd_shell_nm.to_lowercase().starts_with("pwsh") {
                         cmd_shell_type = CmdShell::PowerShellDotNet;
 
-                    } else if cmd_shell_nm.to_lowercase().contains("powershell") {
+                    } else if cmd_shell_nm.to_lowercase().starts_with("powershell") {
                         cmd_shell_type = CmdShell::PowerShellExe;
 
-                    } else if cmd_shell_nm.to_lowercase().contains("cmd") {
+                    } else if cmd_shell_nm.to_lowercase().starts_with("cmd") {
                         cmd_shell_type = CmdShell::WindowsCmd;
 
                     } else {
@@ -738,36 +742,40 @@ fn run_delayed_zowe_command_and_exit(cmd_line_args: &[String]) {
         // form the command line for the CMD script that we will launch.
         let cmd_shell_to_launch: String;
         let mut args_for_cmd_script = vec![];
+        const CMD_WORKED_SEP: &str = "&&";
+        let cmd_continue_sep: &str;
         if env::consts::OS == "windows" {
             cmd_shell_to_launch = "CMD".to_string();
+            cmd_continue_sep = "&";
             args_for_cmd_script.push("/C");
             args_for_cmd_script.push("echo.");
-            args_for_cmd_script.push("&&");
+            args_for_cmd_script.push(CMD_WORKED_SEP);
 
             if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
                 // Powereshell needs extra newlines before the background process output
                 for next_arg in [
-                    "echo.", "&&", "echo.", "&&", "echo.", "&&",
-                    "echo.", "&&", "echo.", "&&", "echo.", "&&"
+                    "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP,
+                    "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP
                 ] {
                     args_for_cmd_script.push(next_arg);
                 }
-            } else if matches!(curr_cmd_shell, CmdShell::Bash) {
-                // bash on windows needs a newline
+            } else if matches!(curr_cmd_shell, CmdShell::Bash | CmdShell::Sh) {
+                // Unix shells on windows need a newline
                 for next_arg in [
-                    "sleep", "1", "&&", "echo.", "&&"
+                    "sleep", "1", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP
                 ] {
                     args_for_cmd_script.push(next_arg);
                 }
             }
         } else {
             cmd_shell_to_launch = "bash".to_string();
+            cmd_continue_sep = ";";
         }
 
         // display a message, delay, then run zowe script
         for next_arg in [
-            "echo", "Wait", "to", "see", "the", "results", "below", "...", "&&",
-            "ping", "127.0.0.1", "-n", "1", ">nul", "&&", &*njs_zowe_path
+            "echo", "Wait", "to", "see", "the", "results", "below", "...", CMD_WORKED_SEP,
+            "ping", "127.0.0.1", "-n", "1", ">nul", CMD_WORKED_SEP, &*njs_zowe_path
         ] {
             args_for_cmd_script.push(next_arg);
         }
@@ -776,7 +784,7 @@ fn run_delayed_zowe_command_and_exit(cmd_line_args: &[String]) {
         }
 
         // add a message after the script is done
-        args_for_cmd_script.push("&&");
+        args_for_cmd_script.push(cmd_continue_sep);
         for next_arg in ["echo", "Now", "press", "ENTER", "to", "see", "your", "command"] {
             args_for_cmd_script.push(next_arg);
         }
