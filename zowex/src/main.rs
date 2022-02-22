@@ -14,7 +14,6 @@ use std::env;
 use std::io;
 use std::io::BufReader;
 use std::io::prelude::*;
-use std::net::Shutdown;
 use std::process::{Command, Stdio};
 use std::str;
 use std::thread;
@@ -22,6 +21,19 @@ use std::time::Duration;
 
 #[cfg(target_family = "unix")]
 use std::os::unix::net::UnixStream;
+#[cfg(target_family = "unix")]
+use std::net::Shutdown;
+
+#[cfg(target_family = "windows")]
+extern crate named_pipe;
+#[cfg(target_family = "windows")]
+use named_pipe::PipeClient;
+#[cfg(target_family = "windows")]
+extern crate fslock;
+#[cfg(target_family = "windows")]
+use fslock::LockFile;
+#[cfg(target_family = "windows")]
+use std::fs::File;
 
 extern crate atty;
 use atty::Stream;
@@ -31,11 +43,6 @@ use base64::encode;
 
 extern crate home;
 use home::home_dir;
-
-#[cfg(target_family = "windows")]
-extern crate named_pipe;
-#[cfg(target_family = "windows")]
-use named_pipe::PipeClient;
 
 extern crate pathsearch;
 use pathsearch::PathSearcher;
@@ -292,7 +299,31 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
 
     let mut tries = 0;
     let socket_string = get_socket_string();
+    #[cfg(target_family = "windows")]
+    let mut lock_file = get_lock_file().unwrap();
+    #[cfg(target_family = "windows")]
+    let mut locked = false;
     loop {
+        #[cfg(target_family = "windows")]
+        if !locked {
+            match lock_file.try_lock() {
+                Ok(result) if !result => {
+                    if tries > THREE_MIN_OF_RETRIES {
+                        println!("Terminating after {} connection retries.", THREE_MIN_OF_RETRIES);
+                        std::process::exit(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
+                    }
+
+                    println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
+                    
+                    // pause between attempts to connect
+                    thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+                    tries += 1;
+                },
+                Ok(_result) => { locked = true; continue; },
+                Err (ref e) => { panic!("Problem acquiring lock: {:?}", e) }
+            }
+        }
+
         let mut stream = establish_connection(&socket_string)?;
         match talk(&_resp, &mut stream) {
             Err(ref e) if e.kind() == io::ErrorKind::ConnectionReset => {
@@ -544,6 +575,24 @@ fn get_socket_string() -> String {
     }
 
     _socket
+}
+
+#[cfg(target_family = "windows")]
+fn get_lock_file() -> io::Result<LockFile> {
+    let lock_file_name = get_lock_string();
+    let _lock_file_created = File::create(&lock_file_name);
+    LockFile::open(&lock_file_name)
+}
+
+#[cfg(target_family = "windows")]
+fn get_lock_string() -> String {
+    let mut _lock = format!("{}\\{}", home_dir().unwrap().to_string_lossy(), ".zowe-daemon.lock");
+
+    if let Ok(lock_name) = env::var("ZOWE_DAEMON_LOCK") {
+        _lock = lock_name;
+    }
+
+    _lock
 }
 
 // Get the file path to the command that runs the NodeJS version of Zowe

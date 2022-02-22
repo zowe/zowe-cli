@@ -20,4 +20,5 @@ sysinfo = "0.22.5"
 whoami = "1.2.1"
 
 [target.'cfg(windows)'.dependencies]
+fslock = "0.2.1"
 named_pipe = "0.4.1"
