@@ -318,8 +318,9 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
                     // pause between attempts to connect
                     thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
                     tries += 1;
+                    continue;
                 },
-                Ok(_result) => { locked = true; continue; },
+                Ok(_result) => { locked = true; },
                 Err (ref e) => { panic!("Problem acquiring lock: {:?}", e) }
             }
         }
