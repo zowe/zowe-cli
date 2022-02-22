@@ -20,7 +20,11 @@ In testing a solution, the root command tree takes longer to execute than lower 
 
 ***This client should NOT be used in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
-Our native executable client communicates with the Zowe CLI persistent process (daemon) over named pipes on Windows, and Unix sockets on other operating systems. An environment variable can set the named pipe or Unix socket used by the daemon. The environment variable named `ZOWE_DAEMON=<PATH>` is used to specify the pipe's name or socket's location. If that variable is unset, the default is `<username>\ZoweDaemon` for Windows, and `<homedir>/.zowe-daemon.sock` on other operating systems.
+Our native executable client communicates with the Zowe CLI persistent process (daemon) over named pipes on Windows, and Unix sockets on other operating systems. 
+
+An environment variable can set the named pipe or Unix socket used by the daemon. The environment variable named `ZOWE_DAEMON=<PATH>` is used to specify the pipe's name or socket's location. If that variable is unset, the default is `<username>\ZoweDaemon` for Windows, and `<homedir>/.zowe-daemon.sock` on other operating systems.
+
+On Windows systems, a lockfile is used to prevent multiple concurrent requests to the daemon. By default, the lockfile is stored at `<homedir>\.zowe-daemon.lock`. The lockfile location can be overridden with the environment variable `ZOWE_DAEMON_LOCK`, and, if specified, should be set to an absolute path (i.e. `$env:ZOWE_DAEMON_LOCK = "C:\Users\user\.zowe\.zowe-daemon.lock"` for PowerShell, `set ZOWE_DAEMON_LOCK=C:\Users\user\.zowe\.zowe-daemon.lock` for Command Prompt).
 
 ## Enabling daemon-mode
 
