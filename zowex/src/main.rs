@@ -301,11 +301,11 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
                     std::process::exit(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
                 }
 
+                tries += 1;
                 println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
-                
+
                 // pause between attempts to connect
                 thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
-                tries += 1;
             },
             result => { return result; }
         }
@@ -398,7 +398,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
     /*
      * Send the command line arguments to the daemon and await responses.
      */
-    stream.write_all(message).unwrap(); // write it
+    stream.write_all(message)?; // write it
 
     #[cfg(target_family = "unix")]
     let mut writer = stream.try_clone().expect("clone failed");
@@ -411,6 +411,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
     let mut _progress = false;
 
     loop {
+        let mut reply: Option<String> = None;
         let mut u_payload: Vec<u8> = Vec::new();
         let payload: String;
 
@@ -423,22 +424,14 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     payload = str::from_utf8(&u_payload).unwrap().to_string();
 
                     let p: DaemonRequest = match serde_json::from_str(&payload) {
-                        Ok(p) => p,
-                        Err(_e) => {
-                            // TODO(Kelosky): handle this only if progress bar mode is active
+                        Err(_e) if _progress => {
                             if atty::is(Stream::Stderr) {
                                 eprint!("{}", payload);
                                 io::stderr().flush().unwrap();
                             }
-                            DaemonRequest {
-                                stdout: None,
-                                stderr: None,
-                                exitCode: Some(0i32),
-                                progress: None,
-                                prompt: None,
-                                securePrompt: None,
-                            }
-                        }
+                            continue;
+                        },
+                        result => result.unwrap(),
                     };
 
                     if let Some(s) = p.stdout {
@@ -454,45 +447,34 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<()> {
                     if let Some(s) = p.prompt {
                         print!("{}", s);
                         io::stdout().flush().unwrap();
-                        let mut reply = String::new();
-                        io::stdin().read_line(&mut reply).unwrap();
-                        let response: DaemonResponse = DaemonResponse {
-                            argv: None,
-                            cwd: None,
-                            env: None,
-                            stdinLength: None,
-                            stdin: Some(reply),
-                            user: Some(encode(username())),
-                        };
-                        let v = serde_json::to_string(&response)?;
-                        #[cfg(target_family = "unix")]
-                        writer.write_all(v.as_bytes()).unwrap();
-                        #[cfg(target_family = "windows")]
-                        reader.get_mut().write_all(v.as_bytes()).unwrap();
+                        let mut input = String::new();
+                        io::stdin().read_line(&mut input).unwrap();
+                        reply = Some(input);
                     }
 
                     if let Some(s) = p.securePrompt {
                         print!("{}", s);
                         io::stdout().flush().unwrap();
-                        let reply;
-                        reply = read_password().unwrap();
+                        reply = Some(read_password().unwrap());
+                    }
+
+                    if let Some(s) = reply {
                         let response: DaemonResponse = DaemonResponse {
                             argv: None,
                             cwd: None,
                             env: None,
                             stdinLength: None,
-                            stdin: Some(reply),
+                            stdin: Some(s),
                             user: Some(encode(username())),
                         };
                         let v = serde_json::to_string(&response)?;
                         #[cfg(target_family = "unix")]
-                        writer.write_all(v.as_bytes()).unwrap();
+                        writer.write_all(v.as_bytes())?;
                         #[cfg(target_family = "windows")]
-                        reader.get_mut().write_all(v.as_bytes()).unwrap();
+                        reader.get_mut().write_all(v.as_bytes())?;
                     }
 
                     exit_code = p.exitCode.unwrap_or(0);
-
                     _progress = p.progress.unwrap_or(false);
                 } else {
                     // end of reading
