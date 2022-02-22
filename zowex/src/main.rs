@@ -300,7 +300,12 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
     let mut tries = 0;
     let socket_string = get_socket_string();
     #[cfg(target_family = "windows")]
-    let mut lock_file = get_lock_file().unwrap();
+    let mut lock_file;
+    #[cfg(target_family = "windows")]
+    match get_lock_file() {
+        Ok(result) => { lock_file = result; },
+        Err(_e) => { panic!("Could not find or create the lock file. Check your ZOWE_DAEMON_LOCK variable.")}
+    }
     #[cfg(target_family = "windows")]
     let mut locked = false;
     loop {
