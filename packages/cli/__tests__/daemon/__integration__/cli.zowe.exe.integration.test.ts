@@ -20,9 +20,9 @@ import { TestEnvironment } from "../../../../../__tests__/__src__/environment/Te
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("Zowe native executable", () => {
-    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe CLI native executable.";
-    const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
-    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 108;
+    const RUN_IN_BACKGROUND_MSG: string = "command will run in the background ...";
+    const WAIT_TO_SEE_RESULTS_MSG: string = "Wait to see the results below ...";
+    const NOW_PRESS_ENTER_MSG: string = "Now press ENTER to see your command prompt.";
 
     let zoweExePath: string;
     let willRunZoweExe: boolean = true;
@@ -67,29 +67,34 @@ describe("Zowe native executable", () => {
         }
     });
 
-    it("should refuse to run the enable command", async () => {
+    it("should run the enable command in the background", async () => {
         if (willRunZoweExe) {
             const response = runCliScript(
                 __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
                 [zoweExePath, "daemon", "enable"]
             );
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
-            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+            expect(stdoutStr).toContain(RUN_IN_BACKGROUND_MSG);
+            expect(stdoutStr).toContain(WAIT_TO_SEE_RESULTS_MSG);
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(stdoutStr).toContain(NOW_PRESS_ENTER_MSG);
+            expect(response.status).toBe(0);
         }
     });
 
-    it("should refuse to run the disable command", async () => {
+    it("should run the disable command in the background", async () => {
         if (willRunZoweExe) {
             const response = runCliScript(
                 __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
                 [zoweExePath, "daemon", "disable"]
             );
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
-            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+            expect(stdoutStr).toContain(RUN_IN_BACKGROUND_MSG);
+            expect(stdoutStr).toContain(WAIT_TO_SEE_RESULTS_MSG);
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is disabled");
+            expect(stdoutStr).toContain(NOW_PRESS_ENTER_MSG);
+            expect(response.status).toBe(0);
         }
     });
 });
