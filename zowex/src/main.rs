@@ -318,11 +318,11 @@ fn run_daemon_command(args: &mut Vec<String>) -> io::Result<()> {
                         std::process::exit(EXIT_CODE_TIMEOUT_CONNECT_TO_RUNNING_DAEMON);
                     }
 
+                    tries += 1;
                     println!("The Zowe daemon is in use, retrying ({} of {})", tries, THREE_MIN_OF_RETRIES);
                     
                     // pause between attempts to connect
                     thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
-                    tries += 1;
                     continue;
                 },
                 Ok(_result) => { locked = true; },
@@ -659,16 +659,10 @@ fn is_daemon_running() -> DaemonProcInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
     for (pid, process) in sys.processes() {
-        if (process.name().to_lowercase().contains("node") &&
+        if process.name().to_lowercase().contains("node") &&
            process.cmd().len() > 2 &&
-           process.cmd()[1].to_lowercase().contains("@zowe") &&
-           process.cmd()[1].to_lowercase().contains("cli") &&
-           process.cmd()[2].to_lowercase() == "--daemon") ||
-           (process.name().to_lowercase().contains("node") &&
-           process.cmd().len() > 2 &&
-           process.cmd()[1].to_lowercase().contains("bin") &&
            process.cmd()[1].to_lowercase().contains("zowe") &&
-           process.cmd()[2].to_lowercase() == "--daemon")
+           process.cmd()[2].to_lowercase() == "--daemon"
         {
             // convert the process command from a vector to a string
             let mut proc_cmd: String = String::new();
