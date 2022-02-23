@@ -19,10 +19,11 @@ import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
 import { DaemonDecider } from "./daemon/DaemonDecider";
+import { join } from "path";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
-    configurationModule: __dirname + "/imperative"
+    configurationModule: join(__dirname, "imperative")
 };
 
 (async () => {
@@ -32,7 +33,9 @@ const config: IImperativeConfig = {
     try {
         timingApi.mark("BEFORE_INIT");
 
-        if(process.argv.includes("--daemon")) { config.daemonMode = true; }
+        if(process.argv.includes("--daemon") || (process.env.npm_lifecycle_event != null && process.env.npm_lifecycle_event === "postinstall")) {
+            config.daemonMode = true;
+        }
         await Imperative.init(config);
 
         const daemonDecider = new DaemonDecider(process.argv);
