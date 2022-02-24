@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202202241854`
 
 - **LTS Breaking**: Added `stdin` property to `IHandlerParameters` which defaults to `process.stdin` and is overridden with another readable stream in daemon mode.
   - CLI plug-ins that read from `process.stdin` in their command handlers should replace it with `{IHandlerParameters}.stdin` to be compatible with Zowe v2 daemon mode.
