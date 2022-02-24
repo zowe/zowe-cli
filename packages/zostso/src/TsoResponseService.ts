@@ -29,7 +29,7 @@ export class TsoResponseService {
      * Populates start and stop commands response with z/OSMF response details
      * @param {IZosmfTsoResponse} zosmfResponse -  z/OSMF response object, @see {IZosmfTsoResponse}
      * @returns {IStartStopResponse} populated object with type of IStartStopResponse, @see {IStartStopResponse}
-     * @memberOf TsoResponseService
+     * @memberof TsoResponseService
      */
     public static populateStartAndStop(zosmfResponse: IZosmfTsoResponse): IStartStopResponse {
         TsoValidator.validateStartZosmfResponse(zosmfResponse);
@@ -53,7 +53,7 @@ export class TsoResponseService {
      * @param {IZosmfTsoResponse} zosmfResponse -  z/OSMF response object, @see {IZosmfTsoResponse}
      * @param {ICollectedResponses} collectedResponses -  collected z/OSMF responses object, @see {ICollectedResponses}
      * @returns {IStartStopResponse} populated object with type of IStartStopResponse, @see {IStartStopResponse}
-     * @memberOf TsoResponseService
+     * @memberof TsoResponseService
      */
     public static populateStartAndStopCollectAll(zosmfResponse: IZosmfTsoResponse, collectedResponses?: ICollectedResponses): IStartStopResponses {
         TsoValidator.validateStartZosmfResponse(zosmfResponse);
@@ -79,7 +79,7 @@ export class TsoResponseService {
      * Populates ping command response with z/OSMF response details
      * @param {IZosmfPingResponse} zosmfResponse -  z/OSMF response object, @see {IZosmfPingResponse}
      * @returns {PingResponse} populated object with type of IPingResponse
-     * @memberOf TsoResponseService
+     * @memberof TsoResponseService
      */
     public static populatePing(zosmfResponse: IZosmfPingResponse): IPingResponse {
         TsoValidator.validatePingZosmfResponse(zosmfResponse);

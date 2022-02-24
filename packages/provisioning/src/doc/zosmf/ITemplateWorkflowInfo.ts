@@ -55,7 +55,7 @@ export interface ITemplateWorkflowInfo {
 
 /**
  * Main explanation map object for workflow-info response output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof ITemplateRegistryInfo
  */
 export const explainTemplateWorkflowInfoResponse: IExplanationMap = {

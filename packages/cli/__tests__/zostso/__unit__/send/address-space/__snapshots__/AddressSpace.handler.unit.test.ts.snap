@@ -5,17 +5,19 @@ exports[`send address-space handler tests should be able respond with error mess
 with an active z/OS application session."
 `;
 
-exports[`send address-space handler tests should be able to ping address-space 1`] = `undefined`;
+exports[`send address-space handler tests should be able to send data to address-space 1`] = `"READY"`;
 
-exports[`send address-space handler tests should be able to ping address-space 2`] = `
+exports[`send address-space handler tests should be able to send data to address-space 2`] = `
 Object {
-  "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
+  "commandResponse": "READY",
   "success": true,
-  "zosmfPingResponse": Object {
-    "reused": false,
-    "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
-    "timeout": false,
-    "ver": "0100",
-  },
+  "zosmfResponse": Array [
+    Object {
+      "reused": false,
+      "servletKey": "ZOSMFAD-SYS2-55-aaakaaac",
+      "timeout": false,
+      "ver": "0100",
+    },
+  ],
 }
 `;

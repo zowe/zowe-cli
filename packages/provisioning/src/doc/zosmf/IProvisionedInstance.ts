@@ -380,7 +380,7 @@ const prettyFull: {
 
 /**
  * Main explanation map object for provisioned instance summary output without variables and actions.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstance
  */
 export const explainProvisionedInstanceSummary: IExplanationMap = {
@@ -391,7 +391,7 @@ export const explainProvisionedInstanceSummary: IExplanationMap = {
 
 /**
  * Main explanation map object for provisioned instance summary output with variables.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstance
  */
 export const explainProvisionedInstanceSummaryWithVars: IExplanationMap = {
@@ -403,7 +403,7 @@ export const explainProvisionedInstanceSummaryWithVars: IExplanationMap = {
 
 /**
  * Main explanation map object for provisioned instance summary output with actions.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstance
  */
 export const explainProvisionedInstanceSummaryWithActions: IExplanationMap = {
@@ -415,7 +415,7 @@ export const explainProvisionedInstanceSummaryWithActions: IExplanationMap = {
 
 /**
  * Main explanation map object for extended provisioned instance output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstance
  */
 export const explainProvisionedInstanceExtended: IExplanationMap = {
@@ -427,7 +427,7 @@ export const explainProvisionedInstanceExtended: IExplanationMap = {
 
 /**
  * Main explanation map object for full provisioned instance output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstance
  */
 export const explainProvisionedInstanceFull: IExplanationMap = {

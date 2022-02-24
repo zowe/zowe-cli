@@ -13,70 +13,23 @@ import { IGetJobsParms, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, Session } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
 import * as JobsHandler from "../../../../../src/zosjobs/list/jobs/Jobs.handler";
 import * as JobsDefinition from "../../../../../src/zosjobs/list/jobs/Jobs.definition";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
-const ZOSMF_PROF_OPTS = {
-    host: "somewhere.com",
-    port: "43443",
-    user: "someone",
-    password: "somesecret"
-};
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        ...ZOSMF_PROF_OPTS
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
-const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zos-jobs", "view", "job"],
-        ...ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "view", "job"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined),
-            prompt: jest.fn()
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
     definition: JobsDefinition.JobsDefinition,
-    fullDefinition: JobsDefinition.JobsDefinition,
-    profiles: PROFILES
-};
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
 
 describe("list jobs handler tests", () => {
     it("should be able to get a list of jobs using defaults", async () => {

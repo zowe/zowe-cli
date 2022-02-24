@@ -18,7 +18,7 @@ import * as path from "path";
 import Mock = jest.Mock;
 import { Imperative } from "@zowe/imperative";
 import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
-jest.mock("../../../src/daemon//DaemonClient");
+jest.mock("../../../src/daemon/DaemonClient");
 
 describe("DaemonDecider tests", () => {
     afterEach(() => {

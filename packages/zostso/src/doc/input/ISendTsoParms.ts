@@ -18,14 +18,14 @@ export interface ISendTsoParms {
 
     /**
      * Servlet key of an active address space
-     * @type string
-     * @memberOf ISendTsoParms
+     * @type {string}
+     * @memberof ISendTsoParms
      */
     servletKey: string;
     /**
      * Data to be sent to the active address space
-     * @type string
-     * @memberOf ISendTsoParms
+     * @type {string}
+     * @memberof ISendTsoParms
      */
     data: string;
 

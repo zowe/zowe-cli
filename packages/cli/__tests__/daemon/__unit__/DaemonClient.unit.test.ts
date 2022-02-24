@@ -12,7 +12,8 @@
 jest.mock("net");
 jest.mock("@zowe/imperative");
 import * as net from "net";
-import getStdin = require("get-stdin");
+import * as stream from "stream";
+import getStream = require("get-stream");
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
 import { IDaemonResponse, Imperative } from "@zowe/imperative";
 
@@ -109,7 +110,7 @@ describe("DaemonClient tests", () => {
             stdin: null,
             user: Buffer.from("fake").toString('base64')
         };
-        const writeToStdinSpy = jest.spyOn(daemonClient as any, "writeToStdin").mockResolvedValueOnce(undefined);
+        const createStdinStreamSpy = jest.spyOn(daemonClient as any, "createStdinStream").mockResolvedValueOnce(undefined);
 
         daemonClient.run();
         // force `data` call and verify input is from instantiation of DaemonClient
@@ -119,7 +120,7 @@ describe("DaemonClient tests", () => {
 
         expect(log).toHaveBeenLastCalledWith('daemon input command: feed 🐱');
         expect(log).toHaveBeenCalledTimes(2);
-        expect(writeToStdinSpy).toHaveBeenCalledWith(Buffer.from(stdinData), stdinData.length);
+        expect(createStdinStreamSpy).toHaveBeenCalledWith(Buffer.from(stdinData), stdinData.length);
         expect(parse).toHaveBeenCalled();
     });
 
@@ -302,12 +303,18 @@ describe("DaemonClient tests", () => {
         expect(log).toHaveBeenLastCalledWith('client closed');
     });
 
-    it("should be able to write to stdin multiple times", async () => {
-        (DaemonClient.prototype as any).writeToStdin("X", 1);
-        for (const animal of ["aardvark", "bonobo", "cheetah"]) {
-            (DaemonClient.prototype as any).writeToStdin(animal, animal.length);
-            expect(await getStdin()).toBe(animal);
-        }
+    it("should be able to stream stdin data", async () => {
+        const chunks = ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "yz"];
+        const alphabet = chunks.join("");
+        const server: net.Server = undefined;
+        const client = stream.Readable.from(chunks, { objectMode: false });
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const firstChunk = await new Promise((resolve) => {
+            client.once("readable", () => resolve(client.read()));
+        });
+        const stdinStream = (daemonClient as any).createStdinStream(firstChunk, alphabet.length);
+        expect(await getStream(stdinStream)).toBe(alphabet);
     });
 
     it("should not process data when received from another user", () => {

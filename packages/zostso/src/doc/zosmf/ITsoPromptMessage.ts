@@ -12,20 +12,20 @@
 /**
  * TSO Prompt interface for one of TSO/E messages
  * @export
- * @memberOf ITsoPromptMessage
+ * @interface ITsoPromptMessage
  */
 export interface ITsoPromptMessage {
     /**
      * JSON version for message format
-     * @type string
-     * @memberOf ITsoPromptMessage
+     * @type {string}
+     * @memberof ITsoPromptMessage
      */
-    "VERSION": string;
+    VERSION: string;
 
     /**
      * description of the data type
-     * @type string
-     * @memberOf ITsoPromptMessage
+     * @type {string}
+     * @memberof ITsoPromptMessage
      */
-    "HIDDEN": string;
+    HIDDEN: string;
 }

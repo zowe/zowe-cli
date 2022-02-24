@@ -23,33 +23,33 @@ export interface IZosmfPingResponse {
      * @type {string}
      * @memberof IZosmfPingResponse
      */
-    "servletKey": string;
+    servletKey: string;
 
     /**
      * Ping version text.
      * @type {string}
      * @memberof IZosmfPingResponse
      */
-    "ver": string;
+    ver: string;
 
     /**
      * Ping error message response.
      * @type {array}
      * @memberof IZosmfPingResponse
      */
-    "msgData"?: IZosmfMessages[];
+    msgData?: IZosmfMessages[];
 
     /**
      * Ping reused boolean.
      * @type {boolean}
      * @memberof IZosmfPingResponse
      */
-    "reused": boolean;
+    reused: boolean;
 
     /**
      * Ping timeout boolean.
      * @type {boolean}
      * @memberof IZosmfPingResponse
      */
-    "timeout": boolean;
+    timeout: boolean;
 }

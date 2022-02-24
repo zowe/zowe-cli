@@ -11,7 +11,7 @@
         "__tests__/__packages__/*"
       ],
       "dependencies": {
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/perf-timing": "1.0.7"
       },
       "devDependencies": {
@@ -74,7 +74,7 @@
       },
       "devDependencies": {
         "@types/node": "^14.14.37",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "rimraf": "^3.0.2",
         "typescript": "^4.2.3"
@@ -5086,9 +5086,9 @@
       "link": true
     },
     "node_modules/@zowe/imperative": {
-      "version": "5.0.0-next.202202111730",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/imperative/-/@zowe/imperative-5.0.0-next.202202111730.tgz",
-      "integrity": "sha1-bbwtxa/ZmIvRyl2Df98+9D4tVLA=",
+      "version": "5.0.0-next.202202232039",
+      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/imperative/-/@zowe/imperative-5.0.0-next.202202232039.tgz",
+      "integrity": "sha512-K0rm6yaizA0C8lHueccVosTLOP4D7+hFMYsv/G9GO0i9KJvGGjdw+3y1vTzLtkoR4HqlmmpPH982Dox2ztrA5A==",
       "license": "EPL-2.0",
       "dependencies": {
         "@types/lodash-deep": "2.0.0",
@@ -10474,14 +10474,6 @@
       "dev": true,
       "engines": {
         "node": ">=6"
-      }
-    },
-    "node_modules/get-stdin": {
-      "version": "7.0.0",
-      "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-7.0.0.tgz",
-      "integrity": "sha512-zRKcywvrXlXsA0v0i9Io4KDRaAw7+a1ZpjRwl9Wox8PFlVCCHra7E9c4kqXCoCM9nR5tBkaTTZRBoCm60bFqTQ==",
-      "engines": {
-        "node": ">=8"
       }
     },
     "node_modules/get-stream": {
@@ -24669,7 +24661,7 @@
       "license": "EPL-2.0",
       "dependencies": {
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202202171858",
         "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202202171858",
@@ -24681,7 +24673,7 @@
         "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202202171858",
         "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202202171858",
         "find-process": "1.4.7",
-        "get-stdin": "7.0.0",
+        "get-stream": "6.0.1",
         "lodash": "4.17.21",
         "minimatch": "3.0.4",
         "tar": "6.1.11"
@@ -24713,6 +24705,17 @@
         "keytar": "7.8.0"
       }
     },
+    "packages/cli/node_modules/get-stream": {
+      "version": "6.0.1",
+      "resolved": "https://registry.npmjs.org/get-stream/-/get-stream-6.0.1.tgz",
+      "integrity": "sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
     "packages/cli/node_modules/which": {
       "version": "2.0.2",
       "resolved": "https://registry.npmjs.org/which/-/which-2.0.2.tgz",
@@ -24739,7 +24742,7 @@
       "devDependencies": {
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "chalk": "^4.1.0",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -24763,7 +24766,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24792,7 +24795,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24812,7 +24815,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24835,7 +24838,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202202171858",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -24859,7 +24862,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24879,7 +24882,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24899,7 +24902,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24922,7 +24925,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -24945,7 +24948,7 @@
         "@types/node": "^12.12.24",
         "@types/ssh2": "^0.5.44",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -29040,7 +29043,7 @@
         "@types/which": "2.0.1",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/perf-timing": "1.0.7",
         "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202202171858",
         "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202202171858",
@@ -29054,7 +29057,7 @@
         "comment-json": "^4.1.0",
         "eslint": "^7.32.0",
         "find-process": "1.4.7",
-        "get-stdin": "7.0.0",
+        "get-stream": "6.0.1",
         "js-yaml": "^3.13.1",
         "keytar": "7.8.0",
         "lodash": "4.17.21",
@@ -29068,6 +29071,11 @@
         "which": "2.0.2"
       },
       "dependencies": {
+        "get-stream": {
+          "version": "6.0.1",
+          "resolved": "https://registry.npmjs.org/get-stream/-/get-stream-6.0.1.tgz",
+          "integrity": "sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg=="
+        },
         "which": {
           "version": "2.0.2",
           "resolved": "https://registry.npmjs.org/which/-/which-2.0.2.tgz",
@@ -29085,7 +29093,7 @@
         "@types/js-yaml": "^4.0.0",
         "@types/node": "^14.14.37",
         "@types/uuid": "^8.3.0",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "find-up": "^5.0.0",
         "js-yaml": "^4.0.0",
@@ -29136,7 +29144,7 @@
       "requires": {
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "chalk": "^4.1.0",
         "comment-json": "4.1.0",
         "eslint": "^7.32.0",
@@ -29148,9 +29156,9 @@
       }
     },
     "@zowe/imperative": {
-      "version": "5.0.0-next.202202111730",
-      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/imperative/-/@zowe/imperative-5.0.0-next.202202111730.tgz",
-      "integrity": "sha1-bbwtxa/ZmIvRyl2Df98+9D4tVLA=",
+      "version": "5.0.0-next.202202232039",
+      "resolved": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/@zowe/imperative/-/@zowe/imperative-5.0.0-next.202202232039.tgz",
+      "integrity": "sha512-K0rm6yaizA0C8lHueccVosTLOP4D7+hFMYsv/G9GO0i9KJvGGjdw+3y1vTzLtkoR4HqlmmpPH982Dox2ztrA5A==",
       "requires": {
         "@types/lodash-deep": "2.0.0",
         "@types/yargs": "13.0.4",
@@ -29317,7 +29325,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "js-yaml": "3.14.1",
         "madge": "^4.0.1",
@@ -29340,7 +29348,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -29354,7 +29362,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/zos-uss-for-zowe-sdk": "7.0.0-next.202202171858",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -29370,7 +29378,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202202171858",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -29385,7 +29393,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -29399,7 +29407,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202202171858",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -29414,7 +29422,7 @@
         "@types/node": "^12.12.24",
         "@types/ssh2": "^0.5.44",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -29429,7 +29437,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "@zowe/zos-files-for-zowe-sdk": "7.0.0-next.202202171858",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
@@ -29444,7 +29452,7 @@
         "@types/node": "^12.12.24",
         "@zowe/cli-test-utils": "7.0.0-next.202202171858",
         "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-        "@zowe/imperative": "5.0.0-next.202202111730",
+        "@zowe/imperative": "5.0.0-next.202202232039",
         "eslint": "^7.32.0",
         "madge": "^4.0.1",
         "rimraf": "^2.6.3",
@@ -33519,11 +33527,6 @@
       "resolved": "https://registry.npmjs.org/get-port/-/get-port-4.2.0.tgz",
       "integrity": "sha512-/b3jarXkH8KJoOMQc3uVGHASwGLPq3gSFJ7tgJm2diza+bydJPTGOibin2steecKeOylE8oY2JERlVWkAJO6yw==",
       "dev": true
-    },
-    "get-stdin": {
-      "version": "7.0.0",
-      "resolved": "https://registry.npmjs.org/get-stdin/-/get-stdin-7.0.0.tgz",
-      "integrity": "sha512-zRKcywvrXlXsA0v0i9Io4KDRaAw7+a1ZpjRwl9Wox8PFlVCCHra7E9c4kqXCoCM9nR5tBkaTTZRBoCm60bFqTQ=="
     },
     "get-stream": {
       "version": "4.1.0",

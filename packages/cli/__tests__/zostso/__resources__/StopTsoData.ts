@@ -20,7 +20,7 @@ export class StopTsoData {
     /**
      * Mocked data for stop address-space.
      * @type {IStartStopResponse}
-     * @memberOf StopTsoData
+     * @memberof StopTsoData
      */
     public static readonly SAMPLE_STOP_RESPONSE: IStartStopResponse = {
         success: true,
