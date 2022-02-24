@@ -8,6 +8,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
   - CLI plug-ins that read from `process.stdin` in their command handlers should replace it with `{IHandlerParameters}.stdin` to be compatible with Zowe v2 daemon mode.
   - This may be a breaking change for unit tests that mock the `IHandlerParameters` interface since a required property has been added.
   - It is recommended to replace `IHandlerParameters` mocks with the `mockHandlerParameters` method in the @zowe/cli-test-utils package which should protect you from future breaking changes to this interface.
+- BugFix: Fixed Daemon Concurrency problems in Windows by introducing a lock file
 
 ## `7.0.0-next.202202171858`
 
