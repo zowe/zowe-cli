@@ -19,22 +19,22 @@ import { ITsoMessage, ITsoPromptMessage, ITsoResponseMessage } from "../../";
 export interface ITsoMessages {
     /**
      * tso message type of TSO/E messages
-     * @type ITsoMessage
-     * @memberOf ITsoMessages
+     * @type {ITsoMessage}
+     * @memberof ITsoMessages
      */
     "TSO MESSAGE"?: ITsoMessage;
 
     /**
      * tso prompt message type of TSO/E messages
-     * @type ITsoPromptMessage
-     * @memberOf ITsoMessages
+     * @type {ITsoPromptMessage}
+     * @memberof ITsoMessages
      */
     "TSO PROMPT"?: ITsoPromptMessage;
 
     /**
      * tso response message type of TSO/E messages
-     * @type ITsoResponseMessage
-     * @memberOf ITsoMessages
+     * @type {ITsoResponseMessage}
+     * @memberof ITsoMessages
      */
     "TSO RESPONSE"?: ITsoResponseMessage;
 }

@@ -20,7 +20,7 @@ export interface IProvisionedInstanceVariables {
 
     /**
      * Variables for the software services instance.
-     * @type IProvisionedInstanceVariable[], @see {IProvisionedInstanceVariable}
+     * @type {IProvisionedInstanceVariable[]}
      * @memberof IProvisionedInstanceVariables
      */
     variables: IProvisionedInstanceVariable[];

@@ -21,7 +21,7 @@ export interface IPublishedTemplates {
 
     /**
      * Published software service templates.
-     * @type IPublishedTemplate[], @see {IPublishedTemplate}
+     * @type {IPublishedTemplate}
      * @memberof IPublishedTemplates
      */
     "psc-list": IPublishedTemplate[];
@@ -29,7 +29,7 @@ export interface IPublishedTemplates {
 
 /**
  * Main explanation map object for summary output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IPublishedTemplates
  */
 export const explainPublishedTemplatesSummary: IExplanationMap = {
@@ -40,7 +40,7 @@ export const explainPublishedTemplatesSummary: IExplanationMap = {
 
 /**
  * Main explanation map object for full output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IPublishedTemplates
  */
 export const explainPublishedTemplatesFull: IExplanationMap = {

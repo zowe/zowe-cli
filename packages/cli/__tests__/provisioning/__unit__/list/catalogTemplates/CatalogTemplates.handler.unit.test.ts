@@ -16,24 +16,18 @@ import * as Handler from "../../../../../src/provisioning/list/catalogTemplates/
 import { catalogTemplates } from "../../../../../src/provisioning/list/catalogTemplates/CatalogTemplates.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF,
-    getMockedResponse
+    UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 jest.mock("../../../../../../../packages/provisioning/src/ListCatalogTemplates");
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["provisioning", "list", "catalog-templates"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "list", "catalog-templates"],
-    response: getMockedResponse(),
     definition: catalogTemplates,
-    fullDefinition: catalogTemplates,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("list catalog templates handler tests", () => {
     afterEach(() => {
@@ -47,7 +41,7 @@ describe("list catalog templates handler tests", () => {
             }
         );
         const handler = new Handler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         await handler.process(params);
         expect(ListCatalogTemplates.listCatalogCommon).toHaveBeenCalledTimes(1);
     });

@@ -14,8 +14,8 @@ jest.mock("../../../../../../zosuss/lib/Shell");
 import { IHandlerParameters, IProfile, CommandProfiles } from "@zowe/imperative";
 import * as SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
 import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";
-import { getMockedResponse } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
@@ -38,18 +38,12 @@ UNIT_TEST_PROFILE_MAP.set(
 const UNIT_TEST_PROFILES_SSH = new CommandProfiles(UNIT_TEST_PROFILE_MAP);
 
 // Mocked parameters for the unit tests
-const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zos-uss", "issue", "ssh"],
-        ...UNIT_TEST_SSH_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_SSH_PROF_OPTS,
     positionals: ["zos-uss", "issue", "ssh"],
-    response: getMockedResponse(),
     definition: SshDefinition.SshDefinition,
-    fullDefinition: SshDefinition.SshDefinition,
     profiles: UNIT_TEST_PROFILES_SSH
-};
+});
 
 const testOutput = "TEST OUTPUT";
 

@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@zowe/core-for-zowe-sdk": "7.0.0-next.202202171858",
-    "@zowe/imperative": "5.0.0-next.202202111730",
+    "@zowe/imperative": "5.0.0-next.202202232039",
     "@zowe/perf-timing": "1.0.7",
     "@zowe/provisioning-for-zowe-sdk": "7.0.0-next.202202171858",
     "@zowe/zos-console-for-zowe-sdk": "7.0.0-next.202202171858",
@@ -69,7 +69,7 @@
     "@zowe/zos-workflows-for-zowe-sdk": "7.0.0-next.202202171858",
     "@zowe/zosmf-for-zowe-sdk": "7.0.0-next.202202171858",
     "find-process": "1.4.7",
-    "get-stdin": "7.0.0",
+    "get-stream": "6.0.1",
     "lodash": "4.17.21",
     "minimatch": "3.0.4",
     "tar": "6.1.11"

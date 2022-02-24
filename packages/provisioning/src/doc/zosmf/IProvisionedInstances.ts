@@ -21,7 +21,7 @@ export interface IProvisionedInstances {
 
     /**
      * Provisioned software service instances.
-     * @type IProvisionedInstance[], @see {IProvisionedInstance}
+     * @type {IProvisionedInstance[]}
      * @memberof IProvisionedInstances
      */
     "scr-list": IProvisionedInstance[];
@@ -29,7 +29,7 @@ export interface IProvisionedInstances {
 
 /**
  * Main explanation map object for summary output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstances
  */
 export const explainProvisionedInstancesSummary: IExplanationMap = {
@@ -40,7 +40,7 @@ export const explainProvisionedInstancesSummary: IExplanationMap = {
 
 /**
  * Main explanation map object for full output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstances
  */
 export const explainProvisionedInstancesFull: IExplanationMap = {

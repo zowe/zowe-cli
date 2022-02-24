@@ -12,7 +12,7 @@
 /**
  * The possible job status strings (as specified by the z/OSMF documentation). Used in the Jobs APIs for monitoring
  * jobstatus, etc.
- * @type JOB_STATUS (string)
+ * @type {JOB_STATUS} (string)
  */
 export type JOB_STATUS = "ACTIVE" | "OUTPUT" | "INPUT";
 export const JOB_STATUS = {

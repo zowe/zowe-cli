@@ -210,7 +210,7 @@ In addition to external documentation, please thoroughly comment your code for f
  ### JS Documentation
 
 - Use jsdoc annotations - [document this](https://marketplace.visualstudio.com/items?itemName=joelday.docthis) makes extensive use of jsdoc tags.
-  - Common tags to use, `@static`, `@memberOf`, `@returns`, `@params`, `@class`, `@exports`, `@interface`, `@types`, `@throws`, `@link`
+  - Common tags to use, `@static`, `@memberof`, `@returns`, `@params`, `@class`, `@exports`, `@interface`, `@types`, `@throws`, `@link`
 - CLI auto-generated documentation is created via command definitions
 - [tsdoc](https://typedoc.org/) is used to generate html documentation
 
