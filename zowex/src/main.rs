@@ -50,10 +50,13 @@ extern crate serde;
 use serde::{Deserialize, Serialize};
 
 extern crate sysinfo;
-use sysinfo::{ProcessExt, System, SystemExt};
+use sysinfo::{PidExt, Pid, ProcessExt, System, SystemExt};
 
 extern crate whoami;
 use whoami::username;
+
+extern crate simple_error;
+use simple_error::SimpleError;
 
 const EXIT_CODE_SUCCESS: i32 = 0;
 const EXIT_CODE_CANNOT_CONNECT_TO_RUNNING_DAEMON: i32 = 100;
@@ -66,7 +69,6 @@ const EXIT_CODE_DAEMON_FAILED_TO_RUN_CMD: i32 = 106;
 const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 107;
 const EXIT_CODE_CANT_FIND_CMD_SHELL: i32 = 109;
 const EXIT_CODE_UNKNOWN_CMD_SHELL: i32 = 109;
-
 
 struct DaemonProcInfo {
     is_running: bool,
@@ -100,11 +102,14 @@ struct DaemonResponse {
 enum CmdShell {
     Bash,               // Bourne Again SHell
     Sh,                 // Standard Linux shell
+    Korn,               // Korn shell
+    Zshell,             // Z shell
+    Cshell,             // C shell
+    Tenex,              // TENEX C shell
     PowerShellDotNet,   // Newer cross-platform .NET Core PowerShell
     PowerShellExe,      // Legacy Windows executable PowerShell (version 5.x)
     WindowsCmd,         // Classic Windows CMD shell
-    Unknown,            // A command shell that we do not yet understand
-    CantFindProcess     // Unable to find our parent process in the process list
+    Unknown             // A command shell that we do not yet understand
 }
 
 const THREE_SEC_DELAY: u64 = 3;
@@ -178,8 +183,8 @@ fn main() -> io::Result<()> {
 
 /**
  * Convert a vector of command line arguments into a single string of arguments.
- * @param cmd_line_args
- *      The user-supplied command line arguments to the zowe command.
+ * @param arg_vec
+ *      The user-supplied command line arguments.
  *      Each argument is in its own vector element.
  * @returns
  *      A String containing all of the command line arguments.
@@ -544,27 +549,39 @@ fn get_nodejs_zowe_path() -> String {
 /**
  * Get the command shell under which we are running.
  *
- * @returns A tuple consisting of the following:
- *      First is the type of the command shell
- *      Second is the name of the process for that command shell
+ * @returns A Result, which upon success contains a tuple:
+ *          The first item is the type of the command shell
+ *          The second item is the name of the process for that command shell.
+ *
+ *          Upon failure the Result contains a SimpleError.
  */
-fn get_cmd_shell() -> (CmdShell, String) {
-    let mut cmd_shell_type: CmdShell = CmdShell::CantFindProcess;
-    let mut cmd_shell_nm: String = "CantGetName".to_string();
-    let my_pid: u32 = std::process::id();
+fn get_cmd_shell() -> Result<(CmdShell, String), SimpleError> {
+    let mut cmd_shell_type: CmdShell = CmdShell::Unknown;
+    let mut cmd_shell_nm: String = "UnknownCmdShell".to_string();
+    let my_pid: Pid = Pid::from_u32(std::process::id());
 
     // establish the system process list
     let mut sys = System::new_all();
     sys.refresh_all();
 
     // loop though the process list to find our process ID
-    for (pid, process) in sys.processes() {
-        if pid == &(my_pid as usize) {
-            let my_parent_pid: Option<usize> = process.parent();
+    let mut found_my_pid: bool = false;
+    for (next_pid, process) in sys.processes() {
+        if next_pid == &my_pid {
+            found_my_pid = true;
+            let my_parent_pid: Pid;
+            match process.parent() {
+                Some(parent_id) => my_parent_pid = parent_id,
+                None => {
+                    return Err(SimpleError::new("Got invalid parent process ID from the process list."));
+                }
+            }
 
             // loop though the process list to find our parent process ID
-            for (par_pid, par_process) in sys.processes() {
-                if *par_pid == my_parent_pid.unwrap() {
+            let mut found_parent_pid: bool = false;
+            for (next_par_pid, par_process) in sys.processes() {
+                if next_par_pid == &my_parent_pid {
+                    found_parent_pid = true;
                     cmd_shell_nm = par_process.name().to_string();
 
                     // Set any known command shell name
@@ -573,6 +590,18 @@ fn get_cmd_shell() -> (CmdShell, String) {
 
                     } else if cmd_shell_nm.to_lowercase().starts_with("sh") {
                             cmd_shell_type = CmdShell::Sh;
+
+                    } else if cmd_shell_nm.to_lowercase().starts_with("ksh") {
+                        cmd_shell_type = CmdShell::Korn;
+
+                    } else if cmd_shell_nm.to_lowercase().starts_with("zsh") {
+                        cmd_shell_type = CmdShell::Zshell;
+
+                    } else if cmd_shell_nm.to_lowercase().starts_with("csh") {
+                        cmd_shell_type = CmdShell::Cshell;
+
+                    } else if cmd_shell_nm.to_lowercase().starts_with("tcsh") {
+                        cmd_shell_type = CmdShell::Tenex;
 
                     } else if cmd_shell_nm.to_lowercase().starts_with("pwsh") {
                         cmd_shell_type = CmdShell::PowerShellDotNet;
@@ -586,14 +615,28 @@ fn get_cmd_shell() -> (CmdShell, String) {
                     } else {
                         cmd_shell_type = CmdShell::Unknown;
                     }
-                    break; // after we find par_pid, stop seaching process list
-                }
+
+                    // after we find our parent pid, stop seaching process list
+                    break;
+
+                } // end found our parent process ID
+            } // end iteration of process list to find our parent
+
+            if !found_parent_pid {
+                return Err(SimpleError::new("Unable to find our parent process in the process list."));
             }
-            break; // after we find my_pid, stop seaching process list
-        }
+
+            // after we find my_pid, stop seaching process list
+            break;
+
+        } // end found our own process ID
+    }  // end iteration of process list to find our own process
+
+    if !found_my_pid {
+        return Err(SimpleError::new("Unable to find our current process in the process list."));
     }
 
-    (cmd_shell_type, cmd_shell_nm)
+    Ok((cmd_shell_type, cmd_shell_nm))
 }
 
 /**
@@ -661,19 +704,19 @@ fn user_wants_daemon() -> bool {
 
 /**
  * Run the classic NodeJS zowe command.
- * @param cmd_line_args
+ * @param zowe_cmd_args
  *      The user-supplied command line arguments to the zowe command.
  * @returns
  *      Our error code when we fail to the NodeJS zowe.
  *      Otherwise, the exit code of the NodeJs zowe command.
  */
-fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
+fn run_nodejs_command(zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
     let njs_zowe_path = get_nodejs_zowe_path();
 
     // launch classic NodeJS zowe and wait for it to complete.
     let exit_code: i32;
     match Command::new(njs_zowe_path.to_owned())
-        .args(cmd_line_args.to_owned())
+        .args(zowe_cmd_args.to_owned())
         .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -686,7 +729,7 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
             println!("Failed to run the following command:");
             println!(
                 "    Program = {}\n    arguments = {:?}",
-                njs_zowe_path, cmd_line_args
+                njs_zowe_path, zowe_cmd_args
             );
             println!("Due to this error:\n    {}", error);
             exit_code = EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD;
@@ -698,9 +741,8 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
 
 /**
  * Launch a zowe script in the background so that our EXE can exit before
- * the script takes action on the EXE. We use ping to cause a delay in the
- * script which allows our EXE to terminate before the zowe node.js program
- * (which we launch) writes (or deletes) our EXE.
+ * the zowe node.js program (which we launch) writes (or deletes) our EXE.
+ * On Windows We use ping to cause a delay since CMD.exe has no 'sleep'.
  *
  * When our EXE exits, the user will get a new prompt immediately, but the
  * background output will be displayed after that prompt.
@@ -708,11 +750,11 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
  * Under PowerShell, our script first displays some newlines to make some
  * space on the screen. When the user eventually presses ENTER, the prompt
  * will display in the space that we made. If the user presses ENTER enough
- * times, the prompts will overwite the output of the background script.
+ * times, the prompts will overwrite the output of the background script.
  * That is harmless, but it is a little ugly. However, we have no means to
  * control this PowerShell behavior.
  *
- * @param cmd_line_args
+ * @param zowe_cmd_args
  *      The user-supplied command line arguments to the zowe command.
  *
  * @returns
@@ -720,91 +762,123 @@ fn run_nodejs_command(cmd_line_args: &mut Vec<String>) -> Result<i32, i32> {
  *      If it runs a command, it exits with 0 for success, or it exits
  *      with an error code for failing to launch the NodeJs zowe command.
  */
-fn run_delayed_zowe_command_and_exit(cmd_line_args: &[String]) {
+fn run_delayed_zowe_command_and_exit(zowe_cmd_args: &[String]) {
     // Ony run delayed zowe script for specific commands
-    if cmd_line_args.len() >= 2       &&
-       cmd_line_args[0]  == "daemon"  &&
-       (cmd_line_args[1] == "enable"  ||  cmd_line_args[1] == "disable")
+    if zowe_cmd_args.len() >= 2       &&
+       zowe_cmd_args[0]  == "daemon"  &&
+       (zowe_cmd_args[1] == "enable"  ||  zowe_cmd_args[1] == "disable")
     {
         // determine the command shell under which we are running
-        let (curr_cmd_shell, cmd_shell_nm) = get_cmd_shell();
-        if matches!(curr_cmd_shell, CmdShell::CantFindProcess) {
-            println!("Unable to find the current command shell in the process list. Terminating.");
-            std::process::exit(EXIT_CODE_CANT_FIND_CMD_SHELL);
-        }
+        let (curr_cmd_shell, cmd_shell_nm) = match get_cmd_shell() {
+            Ok((curr_cmd_shell, cmd_shell_nm)) => (curr_cmd_shell, cmd_shell_nm),
+            Err(error) => {
+                println!("{} Terminating.", error);
+                std::process::exit(EXIT_CODE_CANT_FIND_CMD_SHELL);
+            }
+
+        };
         if matches!(curr_cmd_shell, CmdShell::Unknown) {
             println!("The command shell process named '{}' is unknown to the Zowe CLI. Terminating.", cmd_shell_nm);
             std::process::exit(EXIT_CODE_UNKNOWN_CMD_SHELL);
         }
 
-        let njs_zowe_path = get_nodejs_zowe_path();
+        // variables representing different sections of our background script.
+        const SCRIPT_WAIT_MSG: &str = "echo Wait to see the results below ... ";
+        const SCRIPT_PROMPT_MSG_FIXED: &str = "echo Now press ENTER to see your command ";
+        let cmd_shell_to_launch: &str;
+        let njs_zowe_path: String = get_nodejs_zowe_path();
 
-        // form the command line for the CMD script that we will launch.
-        let cmd_shell_to_launch: String;
-        let mut args_for_cmd_script = vec![];
-        const CMD_WORKED_SEP: &str = "&&";
-        let cmd_continue_sep: &str;
+        // combine all of our script commands into an argument vector
+        let mut script_arg_vec = vec![];
+        let mut script_string: String;
+
+        // set cmds script choices that are platform-specific
         if env::consts::OS == "windows" {
-            cmd_shell_to_launch = "CMD".to_string();
-            cmd_continue_sep = "&";
-            args_for_cmd_script.push("/C");
-            args_for_cmd_script.push("echo.");
-            args_for_cmd_script.push(CMD_WORKED_SEP);
+            cmd_shell_to_launch = "CMD";
 
+            // add any required newlines to create some space
+            script_arg_vec.push("/C");
+            script_arg_vec.push("echo.");
+            script_arg_vec.push("&&");
             if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
-                // Powereshell needs extra newlines before the background process output
-                for next_arg in [
-                    "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP,
-                    "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP
-                ] {
-                    args_for_cmd_script.push(next_arg);
+                // PowerShell needs extra newlines before the background process output to create space
+                for _count in [1,2,3,4,5,6] {
+                    script_arg_vec.push("echo.");
+                    script_arg_vec.push("&&");
                 }
+
             } else if matches!(curr_cmd_shell, CmdShell::Bash | CmdShell::Sh) {
-                // Unix shells on windows need a newline
-                for next_arg in [
-                    "sleep", "1", CMD_WORKED_SEP, "echo.", CMD_WORKED_SEP
-                ] {
-                    args_for_cmd_script.push(next_arg);
+                // Bash shell on windows needs a delay and a newline in its spacing
+                for next_arg in "sleep 1 && echo. &&".split_whitespace() {
+                    script_arg_vec.push(next_arg);
                 }
             }
-        } else {
-            cmd_shell_to_launch = "bash".to_string();
-            cmd_continue_sep = ";";
-        }
 
-        // display a message, delay, then run zowe script
-        for next_arg in [
-            "echo", "Wait", "to", "see", "the", "results", "below", "...", CMD_WORKED_SEP,
-            "ping", "127.0.0.1", "-n", "1", ">nul", CMD_WORKED_SEP, &*njs_zowe_path
-        ] {
-            args_for_cmd_script.push(next_arg);
-        }
-        for next_arg in cmd_line_args {
-            args_for_cmd_script.push(next_arg);
-        }
-
-        // add a message after the script is done
-        args_for_cmd_script.push(cmd_continue_sep);
-        for next_arg in ["echo", "Now", "press", "ENTER", "to", "see", "your", "command"] {
-            args_for_cmd_script.push(next_arg);
-        }
-        if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
-            for next_arg in [
-                "prompt", "in", "the", "open", "space", "above."
-            ] {
-                args_for_cmd_script.push(next_arg);
+            // make script delay so the EXE can exit
+            for next_arg in SCRIPT_WAIT_MSG.split_whitespace() {
+                script_arg_vec.push(next_arg);
             }
+            script_arg_vec.push("&&");
+
+            // make script delay so the EXE can exit
+            for next_arg in "ping 127.0.0.1 -n 1 >nul &&".split_whitespace() {
+                script_arg_vec.push(next_arg);
+            }
+
+            // run our Zowe command
+            script_arg_vec.push(&njs_zowe_path);
+            for next_arg in zowe_cmd_args {
+                script_arg_vec.push(next_arg);
+            }
+            script_arg_vec.push("&");
+
+            // add a message after the script is done
+            for next_arg in SCRIPT_PROMPT_MSG_FIXED.split_whitespace() {
+                script_arg_vec.push(next_arg);
+            }
+            if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
+                // tell user that prompt will appear in the provided space
+                for next_arg in "prompt in the space above.".split_whitespace() {
+                    script_arg_vec.push(next_arg);
+                }
+            } else {
+                script_arg_vec.push("prompt.");
+            }
+
         } else {
-            args_for_cmd_script.push("prompt.");
+            // we are on a unix-like system
+            cmd_shell_to_launch = "bash";
+            script_arg_vec.push("-c");
+
+            // for Bash, the entire script goes into one argument
+            script_string = "echo \"\" && ".to_string();
+
+            // make script delay so the EXE can exit
+            script_string.push_str(SCRIPT_WAIT_MSG);
+            script_string.push_str(" && sleep 1 && ");
+
+            // run our Zowe command
+            script_string.push_str(&njs_zowe_path);
+            for next_arg in zowe_cmd_args {
+                script_string.push(' ');
+                script_string.push_str(next_arg);
+            }
+            script_string.push_str(" ; ");
+
+            // add a message after the script is done
+            script_string.push_str(SCRIPT_PROMPT_MSG_FIXED);
+            script_string.push_str("prompt.");
+
+            script_arg_vec.push(&script_string);
         }
 
         // The following line gives useful debugging info when it is uncommented.
-        // println!("args_for_cmd_script = {:?}", args_for_cmd_script);
+        // println!("script_arg_vec = {:?}", script_arg_vec);
 
-        println!("The '{}' command will run in the background ...", arg_vec_to_string(cmd_line_args));
+        println!("The '{}' command will run in the background ...", arg_vec_to_string(zowe_cmd_args));
         let exit_code: i32;
         match Command::new(cmd_shell_to_launch)
-            .args(args_for_cmd_script)
+            .args(script_arg_vec)
             .stdin(Stdio::inherit())
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
@@ -817,7 +891,7 @@ fn run_delayed_zowe_command_and_exit(cmd_line_args: &[String]) {
                 println!("Failed to run the following command:");
                 println!(
                     "    cmd_shell_to_launch = {}\n    arguments = {:?}",
-                    njs_zowe_path, cmd_line_args
+                    njs_zowe_path, zowe_cmd_args
                 );
                 println!("Due to this error:\n    {}", error);
                 exit_code = EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD;
