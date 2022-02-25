@@ -5,7 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Inconsistent capitalization with z/OS console command. [Issue 961](https://github.com/zowe/zowe-cli/issues/961)
+- BugFix: Inconsistent capitalization with z/OS console command. [Issue 961](https://github.com/zowe/zowe-cli/issues/961)
 
 ## `6.37.7`
 
