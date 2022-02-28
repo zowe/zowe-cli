@@ -33,7 +33,7 @@ const config: IImperativeConfig = {
     try {
         timingApi.mark("BEFORE_INIT");
 
-        if(process.argv.includes("--daemon") || (process.env.npm_lifecycle_event != null && process.env.npm_lifecycle_event === "postinstall")) {
+        if(process.argv.includes("--daemon") || process.env.npm_lifecycle_event === "postinstall") {
             config.daemonMode = true;
         }
         await Imperative.init(config);
