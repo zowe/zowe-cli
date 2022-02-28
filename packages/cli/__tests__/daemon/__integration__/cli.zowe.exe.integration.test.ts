@@ -64,8 +64,13 @@ describe("Zowe native executable", () => {
             }
         }
 
-        // tar our EXE into a TGZ for this platform, so that we can extract it in tests
         if (willRunZoweExe) {
+            // we may have to create our prebuilds directory
+            if (!IO.existsSync(prebuildsDir)) {
+                IO.createDirSync(prebuildsDir);
+            }
+
+            // tar our EXE into a TGZ for this platform, so that we can extract it in tests
             tar.create({
                 sync: true,
                 gzip: true,
