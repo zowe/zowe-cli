@@ -10,6 +10,7 @@
 */
 
 import * as nodeJsPath from "path";
+import * as tar from "tar";
 
 import { IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
@@ -34,24 +35,43 @@ describe("Zowe native executable", () => {
             skipProperties: true
         });
 
-        // determine executable file extension for our current OS
-        let exeExt: string;
+        // determine executable file name and TGZ path for our current OS
+        const zoweRootDir: string = nodeJsPath.normalize(__dirname + "/../../../../..");
+        const prebuildsDir: string = nodeJsPath.normalize(zoweRootDir + "/packages/cli/prebuilds");
+        let zoweExeTgzPath: string;
+        let zoweExeFileNm: string;
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
         if (sysInfo.platform == "win32") {
-            exeExt = ".exe";
+            zoweExeFileNm = "zowe.exe";
+            zoweExeTgzPath = nodeJsPath.resolve(prebuildsDir, "zowe-windows.tgz");
+        } else if (sysInfo.platform == "linux") {
+            zoweExeFileNm = "zowe";
+            zoweExeTgzPath = nodeJsPath.resolve(prebuildsDir, "zowe-linux.tgz");
         } else {
-            exeExt = "";
+            zoweExeFileNm = "zowe";
+            zoweExeTgzPath = nodeJsPath.resolve(prebuildsDir, "zowe-macos.tgz");
         }
 
         // Form the path name to our executable.
-        const zoweExeGrandParentDir: string = nodeJsPath.normalize(__dirname + "/../../../../../zowex/target");
-        zoweExePath = nodeJsPath.normalize(zoweExeGrandParentDir + "/release/zowe" + exeExt);
+        let zoweExeDirPath: string = nodeJsPath.normalize(zoweRootDir + "/zowex/target/release");
+        zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
         if (!IO.existsSync(zoweExePath)) {
-            zoweExePath = nodeJsPath.normalize(zoweExeGrandParentDir + "/debug/zowe" + exeExt);
+            zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/debug");
+            zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
             if (!IO.existsSync(zoweExePath)) {
                 willRunZoweExe = false;
                 zoweExePath = "./NoZoweExeExists";
             }
+        }
+
+        // tar our EXE into a TGZ for this platform, so that we can extract it in tests
+        if (willRunZoweExe) {
+            tar.create({
+                sync: true,
+                gzip: true,
+                cwd: zoweExeDirPath,
+                file: zoweExeTgzPath
+            }, [zoweExeFileNm]);
         }
     });
 
