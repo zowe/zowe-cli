@@ -150,7 +150,7 @@ export class WorkflowConstants {
      * Version of the z/OSMF
      * @static
      * @type {string}
-     * @memberOf WorkflowConstants
+     * @memberof WorkflowConstants
      */
     public static readonly ZOSMF_VERSION: string = "1.0";
 

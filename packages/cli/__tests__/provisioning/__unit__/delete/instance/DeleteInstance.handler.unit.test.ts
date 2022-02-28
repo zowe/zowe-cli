@@ -21,22 +21,16 @@ import {
 } from "@zowe/provisioning-for-zowe-sdk";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["provisioning", "delete", "instance"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "delete", "instance"],
-    response: getMockedResponse(),
     definition: DeleteInstanceDefinition.DeleteInstanceDefinition,
-    fullDefinition: DeleteInstanceDefinition.DeleteInstanceDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("delete deprovisioned instance handler tests", () => {
     afterEach(() => {
@@ -55,7 +49,7 @@ describe("delete deprovisioned instance handler tests", () => {
             }
         );
         const handler = new DeleteInstanceHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.zOSMFVersion = ProvisioningConstants.ZOSMF_VERSION;
         params.arguments.name = "some_name1";
         await handler.process(params);

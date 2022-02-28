@@ -20,64 +20,64 @@ export interface IZosmfTsoResponse {
 
     /**
      * unique identifier for the servlet entry
-     * @type string
-     * @memberOf IZosmfTsoResponse
+     * @type {string}
+     * @memberof IZosmfTsoResponse
      */
     servletKey: string;
 
     /**
      * message queue ID
-     * @type string
-     * @memberOf IZosmfTsoResponse
+     * @type {string}
+     * @memberof IZosmfTsoResponse
      */
     queueID?: string;
 
     /**
      * structure version
-     * @type string
-     * @memberOf IZosmfTsoResponse
+     * @type {string}
+     * @memberof IZosmfTsoResponse
      */
     ver: string;
 
     /**
      * reconnected indicator
-     * @type boolean
-     * @memberOf IZosmfTsoResponse
+     * @type {boolean}
+     * @memberof IZosmfTsoResponse
      */
     reused: boolean;
 
     /**
      * timeout indicator
-     * @type boolean
-     * @memberOf IZosmfTsoResponse
+     * @type {boolean}
+     * @memberof IZosmfTsoResponse
      */
     timeout: boolean;
 
     /**
      * z/OSMF messages
-     * @type IZosmfMessages[]
-     * @memberOf IZosmfTsoResponse
+     * @type {IZosmfMessages[]}
+     * @memberof IZosmfTsoResponse
      */
     msgData?: IZosmfMessages[];
 
     /**
      * id of the session
-     * @type string
-     * @memberOf IZosmfTsoResponse
+     * @type {string}
+     * @memberof IZosmfTsoResponse
      */
     sessionID?: string;
 
     /**
      * TSO/E messages that were received during the request
-     * @type ITsoMessages[]
-     * @memberOf IZosmfTsoResponse
+     * @type {ITsoMessages[]}
+     * @memberof IZosmfTsoResponse
      */
     tsoData?: ITsoMessages[];
 
     /**
      * application messages
-     * @type string
-     * @memberOf IZosmfTsoRespons
+     * @type {string}
+     * @memberof IZosmfTsoResponse
      */
     appData?: string;
 }

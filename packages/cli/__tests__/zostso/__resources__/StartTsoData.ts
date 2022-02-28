@@ -9,7 +9,7 @@
 *
 */
 
-import { IStartStopResponse } from "@zowe/zos-tso-for-zowe-sdk";
+import { IStartStopResponses } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Mocked data for start tso command.
@@ -19,10 +19,11 @@ export class StartTsoData {
 
     /**
      * Mocked data for starting address-space.
-     * @type {IStartStopResponse}
-     * @memberOf StartTsoData
+     * @static
+     * @type {IStartStopResponses}
+     * @memberof StartTsoData
      */
-    public static readonly SAMPLE_START_RESPONSE: IStartStopResponse = {
+    public static readonly SAMPLE_START_RESPONSE: IStartStopResponses = {
         success: true,
         zosmfTsoResponse: {
             servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
@@ -38,7 +39,9 @@ export class StartTsoData {
                 }
             }]
         },
-        servletKey: "ZOSMFAD-SYS2-55-aaakaaac"
+        collectedResponses: [],
+        servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
+        messages: "READY"
     };
 
 

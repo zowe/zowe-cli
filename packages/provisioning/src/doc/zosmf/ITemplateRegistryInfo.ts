@@ -57,7 +57,7 @@ export interface ITemplateRegistryInfo {
 
 /**
  * Main explanation map object for summary output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof ITemplateRegistryInfo
  */
 export const explainTemplateRegistryInfoResponse: IExplanationMap = {

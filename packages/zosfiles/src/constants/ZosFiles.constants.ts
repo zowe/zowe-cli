@@ -11,7 +11,7 @@
 
 /**
  * Constants to be used by the API
- * @memberOf ZosFilesConstants
+ * @memberof ZosFilesConstants
  */
 export const ZosFilesConstants: { [key: string]: any } = {
     /**
@@ -47,7 +47,7 @@ export const ZosFilesConstants: { [key: string]: any } = {
     /**
      * Indicator of a members request
      * @type {string}
-     * @memberOf ZosFilesConstants
+     * @memberof ZosFilesConstants
      */
     RES_DS_MEMBERS: "/member",
 
@@ -60,14 +60,14 @@ export const ZosFilesConstants: { [key: string]: any } = {
     /**
      * Indicator of a USS File request
      * @type {string}
-     * @memberOf ZosFilesConstants
+     * @memberof ZosFilesConstants
      */
     RES_PATH: "path",
 
     /**
      * Indicator of a ds file name
      * @type {string}
-     * @memberOf ZosFilesConstants
+     * @memberof ZosFilesConstants
      */
     RES_FSNAME: "fsname",
 

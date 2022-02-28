@@ -12,67 +12,21 @@
 jest.mock("../../../../../../zostso/lib/StopTso");
 import { StopTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StopTsoData } from "../../../__resources__/StopTsoData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/stop/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/stop/address-space/AddressSpace.definition";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const ZOSMF_PROF_OPTS = {
-    host: "somewhere.com",
-    port: "43443",
-    user: "someone",
-    password: "somesecret"
-};
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        ...ZOSMF_PROF_OPTS
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zos-tso", "stop", "address-space"]
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-tso", "stop", "address-space"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined),
-            prompt: jest.fn()
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
     definition: AddressSpaceDefinition.AddressSpaceDefinition,
-    fullDefinition: AddressSpaceDefinition.AddressSpaceDefinition,
-    profiles: PROFILES
-};
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
 
 describe("stop address-space handler tests", () => {
 
@@ -85,9 +39,7 @@ describe("stop address-space handler tests", () => {
             return StopTsoData.SAMPLE_STOP_RESPONSE;
         });
         const handler = new AddressSpaceHandler.default();
-        let  params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         await handler.process(params);
         expect(StopTso.stop).toHaveBeenCalledTimes(1);
@@ -101,9 +53,7 @@ describe("stop address-space handler tests", () => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new AddressSpaceHandler.default();
-        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         try {
             await handler.process(params);

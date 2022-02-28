@@ -15,7 +15,7 @@ import { IMessageDefinition } from "@zowe/imperative";
 /**
  * Messages to be used as command responses for different scenarios
  * @type {object.<string, IMessageDefinition>}
- * @memberOf ZosFilesMessages
+ * @memberof ZosFilesMessages
  */
 export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
