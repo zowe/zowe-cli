@@ -10,7 +10,7 @@ When the Zowe CLI user community at a given customer site does not have the admi
 
 ***This solution should NOT be attempted in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
-The Zowe CLI can run as a persistent “daemon” process to absorb the one-time startup of Node.js modules. A native executable client will then communicate with the daemon via TCP/IP sockets.
+The Zowe CLI can run as a persistent “daemon” process to absorb the one-time startup of Node.js modules. A native executable client will then communicate with the daemon via named pipes on Windows and Unix sockets on other operating systems.
 
 Root level help, `zowe --help` response time is reduced from ~3 seconds to just under 1 second in daemon mode. At a site with a remote virtualized environment, the response time can change from around 30 seconds to around 2 seconds.
 
@@ -20,7 +20,11 @@ In testing a solution, the root command tree takes longer to execute than lower 
 
 ***This client should NOT be used in an environment where multiple individuals use the same system (i.e. a shared Linux server).***
 
-Our native executable client communicates with the Zowe CLI persistent process (daemon) over a TCP/IP socket.  An environment variable can set the TCP/IP port for the daemon.  The environment variable named `ZOWE_DAEMON=<PORT>` is used for the port. If that variable is unset, the default is `4000`.
+Our native executable client communicates with the Zowe CLI persistent process (daemon) over named pipes on Windows, and Unix sockets on other operating systems. 
+
+An environment variable can set the named pipe or Unix socket used by the daemon. The environment variable named `ZOWE_DAEMON=<PATH>` is used to specify the pipe's name or socket's location. If that variable is unset, the default is `<username>\ZoweDaemon` for Windows, and `<homedir>/.zowe-daemon.sock` on other operating systems.
+
+On Windows systems, a lockfile is used to prevent multiple concurrent requests to the daemon. By default, the lockfile is stored at `<homedir>\.zowe-daemon.lock`. The lockfile location can be overridden with the environment variable `ZOWE_DAEMON_LOCK`, and, if specified, should be set to an absolute path (i.e. `$env:ZOWE_DAEMON_LOCK = "C:\Users\user\.zowe\.zowe-daemon.lock"` for PowerShell, `set ZOWE_DAEMON_LOCK=C:\Users\user\.zowe\.zowe-daemon.lock` for Command Prompt).
 
 ## Enabling daemon-mode
 
@@ -57,7 +61,7 @@ Imperative is updated in several places to write to a stream in addition to / in
 
 ### Zowe CLI Server
 
-The Node.js zowe script is updated to launch a server when an undocumented `--daemon` parm is supplied.  The server is a simple tcpip server.
+The Node.js zowe script is updated to launch a server when an undocumented `--daemon` parm is supplied.  The server is a simple named pipe server on Windows, or a Unix socket server on other operating systems.
 
 - Server startup is managed by `packages/cli/src/daemon/DaemonDecider.ts`
 - Daemon communication is managed by `packages/cli/src/daemon/DaemonClient.ts`
@@ -67,7 +71,7 @@ The Node.js zowe script is updated to launch a server when an undocumented `--da
 At a high level:
 
 1. Zowe CLI server is started automatically by the native `zowe` executable client. It can also be started manually by running the Node.js Zowe script as `YourPathtoNodeJsScript/zowe --daemon`, although this is not the recommended approach due to its greater complexity.
-2. The `zowe` native executable client passes zowe commands to the server via TCP/IP.
+2. The `zowe` native executable client passes zowe commands to the server via named pipes on Windows, and Unix sockets on other operating systems.
 3. The Zowe daemon responds with text data from command output as it normally would, but the response is directed onto its socket connection instead of to a console window.
 
 Since the Zowe CLI has features like:

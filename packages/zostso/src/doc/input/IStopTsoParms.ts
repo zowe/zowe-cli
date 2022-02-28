@@ -17,8 +17,8 @@
 export interface IStopTsoParms {
     /**
      * servlet key of an active address space
-     * @type string
-     * @memberOf IStopTsoParms
+     * @type {string}
+     * @memberof IStopTsoParms
      */
     servletKey: string;
 }

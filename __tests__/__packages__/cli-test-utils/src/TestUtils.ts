@@ -12,6 +12,7 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
+import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 
 /**
  * Execute a CLI script
@@ -41,7 +42,7 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
             encoding: "buffer"
         });
     } else {
-        throw new Error(`The script file  ${scriptPath} doesn't exist`);
+        throw new Error(`The script file ${scriptPath} doesn't exist`);
 
     }
 }
@@ -56,4 +57,80 @@ export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
         .replace(/Recommended replacement: The 'config [a-z]+' command/g, "")
         .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/g, "")
         .trim().length === 0;
+}
+
+/**
+ * Type for handler data used to build mock IHandlerParameters object.
+ * The type inherits from IHandlerParameters but is different:
+ * - `arguments` omits the required properties `$0` and `_`
+ * - All properties are optional except for `definition`
+ */
+type PartialHandlerParameters = Partial<Omit<IHandlerParameters, "arguments">> & {
+    arguments?: Record<string, any>;
+    definition: ICommandDefinition;
+};
+
+/**
+ * Build a mocked IHandlerParameters object. Includes the following properties:
+ * - `response` - Mocked IHandlerResponseApi
+ * - `arguments`
+ *   - `$0` - hardcoded to "zowe"
+ *   - `_` = `params.positionals`
+ *   - `...params.arguments`
+ * - `positionals` = `params.positionals`
+ * - `profiles` = `params.profiles`
+ * - `definition` = `params.definition`
+ * - `fullDefinition` = `params.definition`
+ * - `stdin` - hardcoded to `process.stdin`
+ * @param params Partial handler parameters object (see above for usage)
+ * @returns Mocked handler parameters object. Most mocks do nothing, but the
+ * following methods call `expect().toMatchSnapshot`:
+ * - `response.data`: `setMessage`, `setObj`
+ * - `response.console`: `log`, `error`
+ * - `response.format`: `output`
+ */
+export function mockHandlerParameters(params: PartialHandlerParameters): IHandlerParameters {
+    return {
+        response: {
+            data: {
+                setMessage: jest.fn((setMsgArgs) => {
+                    expect(setMsgArgs).toMatchSnapshot();
+                }),
+                setObj: jest.fn((setObjArgs) => {
+                    expect(Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs).toMatchSnapshot();
+                }),
+                setExitCode: jest.fn()
+            },
+            console: {
+                log: jest.fn((logs) => {
+                    expect(logs.toString()).toMatchSnapshot();
+                }),
+                error: jest.fn((errors) => {
+                    expect(errors.toString()).toMatchSnapshot();
+                }),
+                errorHeader: jest.fn(() => undefined),
+                prompt: jest.fn(() => null)
+            },
+            progress: {
+                startBar: jest.fn((parms) => undefined),
+                endBar: jest.fn(() => undefined)
+            },
+            format: {
+                output: jest.fn((parms) => {
+                    expect(parms).toMatchSnapshot();
+                })
+            }
+        },
+        arguments: {
+            $0: "zowe",
+            _: params.positionals || [],
+            ...(params.arguments || {})
+        },
+        positionals: params.positionals || [],
+        profiles: params.profiles || new CommandProfiles(new Map()),
+        definition: params.definition,
+        fullDefinition: params.definition,
+        stdin: process.stdin,
+        isChained: params.isChained
+    };
 }

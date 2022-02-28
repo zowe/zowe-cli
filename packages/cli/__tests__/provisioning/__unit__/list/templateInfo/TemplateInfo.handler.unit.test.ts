@@ -16,22 +16,16 @@ import * as Handler from "../../../../../src/provisioning/list/templateInfo/Temp
 import { templateInfo } from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["provisioning", "list", "catalog-templates"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "list", "catalog-templates"],
-    response: getMockedResponse(),
     definition: templateInfo,
-    fullDefinition: templateInfo,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("list template info handler tests", () => {
     afterEach(() => {
@@ -45,7 +39,7 @@ describe("list template info handler tests", () => {
             }
         );
         const handler = new Handler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         await handler.process(params);
         expect(ListTemplateInfo.listTemplateCommon).toHaveBeenCalledTimes(1);
     });

@@ -9,28 +9,29 @@
 *
 */
 
-import { IPingResponse } from "@zowe/zos-tso-for-zowe-sdk";
+import { ISendResponse } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
- * Mocked data for ping tso command.
- * @class PingTsoData
+ * Mocked data for send tso command.
+ * @class SendTsoData
  */
-export class PingTsoData {
+export class SendTsoData {
 
     /**
-     * Mocked data for ping address-space.
-     * @type {IPingResponse}
-     * @memberof PingTsoData
+     * Mocked data for send address-space.
+     * @type {ISendResponse}
+     * @memberof SendTsoData
      */
-    public static readonly SAMPLE_PING_RESPONSE: IPingResponse = {
+    public static readonly SAMPLE_SEND_RESPONSE: ISendResponse = {
         success: true,
-        zosmfPingResponse:
+        zosmfResponse: [
             {
                 servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
                 ver: "0100",
                 reused: false,
                 timeout: false
-            },
-        servletKey: "ZOSMFAD-SYS2-55-aaakaaac"
+            }
+        ],
+        commandResponse: "READY"
     };
 }

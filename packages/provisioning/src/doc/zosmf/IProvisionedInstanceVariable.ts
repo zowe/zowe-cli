@@ -61,7 +61,7 @@ const pretty: {
 
 /**
  * Main explanation map object for the output of provisioned instance variables.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstanceVariable
  */
 export const explainProvisionedInstanceVariable: IExplanationMap = {
@@ -72,7 +72,7 @@ export const explainProvisionedInstanceVariable: IExplanationMap = {
 
 /**
  * Main explanation map object for provisioned instance prompt variables output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstanceVariable
  */
 export const explainPromptVariable: IExplanationMap = {
@@ -83,7 +83,7 @@ export const explainPromptVariable: IExplanationMap = {
 
 /**
  * Main explanation map object for create provisioned instance variables.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionedInstanceVariable
  */
 export const explainAtCreateVariable: IExplanationMap = {

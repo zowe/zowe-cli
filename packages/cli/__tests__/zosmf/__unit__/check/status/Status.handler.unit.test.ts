@@ -15,23 +15,17 @@ import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../../src/zosmf/check/status/Status.handler";
 import * as cmdDef from "../../../../../src/zosmf/check/status/Status.definition";
 import {
-    getMockedResponse,
     UNIT_TEST_ZOSMF_PROF_OPTS,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const goodCmdParms: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zosmf", "check", "status"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const goodCmdParms: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zosmf", "check", "status"],
-    response: getMockedResponse(),
     definition: cmdDef.StatusDefinition,
-    fullDefinition: cmdDef.StatusDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 let checkStatHandler: ICommandHandler = null;
 

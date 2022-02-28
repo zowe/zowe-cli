@@ -11,80 +11,29 @@
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { MonitorJobs, SubmitJobs, ISubmitParms } from "@zowe/zos-jobs-for-zowe-sdk";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile, IO } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError, IO } from "@zowe/imperative";
 import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
-const ZOSMF_PROF_OPTS = {
-    host: "somewhere.com",
-    port: "43443",
-    user: "someone",
-    password: "somesecret"
-};
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        ...ZOSMF_PROF_OPTS
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
-const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zos-jobs", "submit", "data-set"],
-        ...ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "submit", "data-set"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined),
-            prompt: jest.fn()
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
     definition: SubmitDefinition.SubmitDefinition,
-    fullDefinition: SubmitDefinition.SubmitDefinition,
-    profiles: PROFILES
-};
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
 
-const LOCALFILE_PARAMETERS: IHandlerParameters = {
-    ...DEFAULT_PARAMETERS,
-    ...{
-        arguments: {
-            $0: "zowe",
-            _: ["zos-jobs", "submit", "local-file"],
-            ...ZOSMF_PROF_OPTS
-        }
-    }
-};
+const LOCALFILE_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+    positionals: ["zos-jobs", "submit", "local-file"],
+    definition: SubmitDefinition.SubmitDefinition,
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
 
 describe("submit shared handler", () => {
 
@@ -166,7 +115,6 @@ describe("submit shared handler", () => {
             const theDataSet = "DATA.SET";
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
-            copy.profiles = PROFILES;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(copy);
@@ -219,7 +167,6 @@ describe("submit shared handler", () => {
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
             copy.arguments.waitForOutput = true;
-            copy.profiles = PROFILES;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(copy);
@@ -274,7 +221,6 @@ describe("submit shared handler", () => {
             const copy = Object.assign({}, DEFAULT_PARAMETERS);
             copy.arguments.dataset = theDataSet;
             copy.arguments.waitForActive = true;
-            copy.profiles = PROFILES;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(copy);
@@ -319,7 +265,6 @@ describe("submit shared handler", () => {
 
             const copy = Object.assign({}, LOCALFILE_PARAMETERS);
             copy.arguments.localFile = theLocalFile;
-            copy.profiles = PROFILES;
             try {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(copy);

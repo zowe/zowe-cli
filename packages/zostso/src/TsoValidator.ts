@@ -29,7 +29,7 @@ export class TsoValidator {
      * Validate session
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validateSession(session: AbstractSession) {
         ImperativeExpect.toNotBeNullOrUndefined(session,
@@ -39,7 +39,7 @@ export class TsoValidator {
     /**
      * Validate TSO start command parameters
      * @param {IStartTsoParms} parms - object with required parameters, @see {IStartTsoParms}
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validateStartParams(parms: IStartTsoParms) {
         ImperativeExpect.toNotBeNullOrUndefined(parms, noTsoStartInput.message);
@@ -48,7 +48,7 @@ export class TsoValidator {
     /**
      * Validate TSO issue command parameters
      * @param {IStartTsoParms} parms - object with required parameters, @see {IIssueTsoParms}
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validateIssueParams(parms: IIssueTsoParms) {
         ImperativeExpect.toNotBeNullOrUndefined(parms, noTsoIssueInput.message);
@@ -57,7 +57,7 @@ export class TsoValidator {
     /**
      * Validate TSO stop command parameters
      * @param {IStopTsoParms} parms - object with required parameters, @see {IStopTsoParms}
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validateStopParams(parms: IStopTsoParms) {
         ImperativeExpect.toNotBeNullOrUndefined(parms, noTsoStopInput.message);
@@ -66,7 +66,7 @@ export class TsoValidator {
     /**
      * Validate z/OSMF response, needed for service and filtering servlet key
      * @param {IZosmfTsoResponse} parms - object response from z/OSMF, @see {IZosmfTsoResponse}
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validateStartZosmfResponse(parms: IZosmfTsoResponse) {
         ImperativeExpect.toNotBeNullOrUndefined(parms, noZosmfResponse.message);
@@ -111,7 +111,7 @@ export class TsoValidator {
     /**
      * Validate z/OSMF response
      * @param {IZosmfPingResponse} parms - object response from z/OSMF, @see {IZosmfPingResponse}
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validatePingZosmfResponse(parms: IZosmfPingResponse) {
         ImperativeExpect.toNotBeNullOrUndefined(parms, noZosmfResponse.message);
@@ -120,7 +120,7 @@ export class TsoValidator {
     /**
      * Validate z/OSMF response for errors
      * @param {IZosmfTsoResponse} zosmfResponse - object response from z/OSMF, @see {IZosmfTsoResponse}
-     * @memberOf TsoValidator
+     * @memberof TsoValidator
      */
     public static validateErrorMessageFromZosmf(zosmfResponse: IZosmfTsoResponse) {
         if (zosmfResponse.msgData) {

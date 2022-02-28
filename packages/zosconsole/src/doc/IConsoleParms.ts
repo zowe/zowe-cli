@@ -17,7 +17,7 @@
 export interface IConsoleParms {
     /**
      * The z/OS emcs console to direct the commands.
-     * @type (string}
+     * @type {string}
      * @memberof IConsoleParms
      */
     consoleName?: string;

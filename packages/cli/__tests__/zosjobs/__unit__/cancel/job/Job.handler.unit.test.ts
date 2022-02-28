@@ -17,24 +17,18 @@ import * as JobHandler from "../../../../../src/zosjobs/cancel/job/Job.handler";
 import * as JobDefinition from "../../../../../src/zosjobs/cancel/job/Job.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
-const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {
-        $0: "zowe",
-        _: ["zos-jobs", "cancel", "job"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "cancel", "job"],
-    response: getMockedResponse(),
     definition: JobDefinition.JobDefinition,
-    fullDefinition: JobDefinition.JobDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("cancel job handler tests", () => {
     it("should be able to cancel a job by job id", async () => {

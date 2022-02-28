@@ -28,14 +28,14 @@ export interface IProvisionTemplateResponse {
 
     /**
      * Object mapping that matches the response body returned from a registry create action.
-     * @type {ITemplateRegistryInfo}, @see {ITemplateRegistryInfo}
+     * @type {ITemplateRegistryInfo}
      * @memberof IProvisionTemplateResponse
      */
     "registry-info": ITemplateRegistryInfo;
 
     /**
      * Object mapping that matches the response body returned from the workflow create action.
-     * @type {ITemplateWorkflowInfo}, @see {ITemplateWorkflowInfo}
+     * @type {ITemplateWorkflowInfo}
      * @memberof IProvisionTemplateResponse
      */
     "workflow-info": ITemplateWorkflowInfo;
@@ -43,7 +43,7 @@ export interface IProvisionTemplateResponse {
 
 /**
  * Main explanation map object for summary output.
- * @type IExplanationMap, @see {IExplanationMap}
+ * @type {IExplanationMap}
  * @memberof IProvisionTemplateResponse
  */
 export const explainProvisionTemplateResponse: IExplanationMap = {

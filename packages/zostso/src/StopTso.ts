@@ -31,7 +31,7 @@ export class StopTso {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IStopTsoParms} commandParms - object with required parameters, @see {IStopTsoParms}
      * @returns {Promise<IZosmfTsoResponse>} z/OSMF response object, @see {IZosmfTsoResponse}
-     * @memberOf StopTso
+     * @memberof StopTso
      */
     public static async stopCommon(session: AbstractSession, commandParms: IStopTsoParms) {
         TsoValidator.validateSession(session);
@@ -49,7 +49,7 @@ export class StopTso {
      * @param {AbstractSession} session
      * @param {string} servKey - unique servlet entry identifier
      * @returns {Promise<IStartStopResponse>} populated response, @see {IStartStopResponse}
-     * @memberOf StopTso
+     * @memberof StopTso
      */
     public static async stop(session: AbstractSession, servKey: string): Promise<IStartStopResponse> {
         TsoValidator.validateSession(session);
@@ -65,7 +65,7 @@ export class StopTso {
      * Generates query parameter needed for z/OSMF REST call
      * @param {string} servletKey - unique servlet entry identifier
      * @returns {string} generated resources query
-     * @memberOf StopTso
+     * @memberof StopTso
      */
     public static getResources(servletKey: string): string {
         TsoValidator.validateNotEmptyString(servletKey, noServletKeyInput.message);

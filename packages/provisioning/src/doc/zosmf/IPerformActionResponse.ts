@@ -19,14 +19,14 @@ import { IExplanationMap } from "@zowe/imperative";
 export interface IPerformActionResponse {
     /**
      * The ID of the action object that was created by running the action.
-     * @type string
+     * @type {string}
      * @memberof IPerformActionResponse
      */
     "action-id": string;
 
     /**
      * The URI of the new action object.
-     * @type string
+     * @type {string}
      * @memberof IPerformActionResponse
      */
     "action-uri": string;

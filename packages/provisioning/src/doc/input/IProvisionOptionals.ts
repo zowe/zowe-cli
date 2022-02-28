@@ -19,7 +19,7 @@ import { IPropertiesInput } from "../../doc/input/IPropertiesInput";
 export interface IProvisionOptionals {
     /**
      * Runtime property objects.
-     * @type {IPropertiesInput[]}, @see {IPropertiesInput}
+     * @type {IPropertiesInput[]}
      * @memberof IProvisionOptionals
      */
     "input-variables": IPropertiesInput[];

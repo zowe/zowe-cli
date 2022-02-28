@@ -244,7 +244,7 @@ export const noAccountNumber: IMessageDefinition = {
  * No servlet key was provided error message
  * @static
  * @type {IMessageDefinition}
- * @memberOf TsoConstants
+ * @memberof TsoConstants
  */
 export const noServletKeyInput: IMessageDefinition = {
     message: apiErrorHeader.message + ` No servlet key was supplied.`
