@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Enhancement: the `zowe daemon enable` and `zowe daemon disable` commands run a process in the backgound so that they no longer require a user to copy and paste another command to successfully perform the operation.
+
 ## `7.0.0-next.202202241854`
 
 - **LTS Breaking**: Added `stdin` property to `IHandlerParameters` which defaults to `process.stdin` and is overridden with another readable stream in daemon mode.
