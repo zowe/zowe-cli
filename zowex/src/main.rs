@@ -810,95 +810,18 @@ fn run_delayed_zowe_command_and_exit(zowe_cmd_args: &[String]) {
             std::process::exit(EXIT_CODE_UNKNOWN_CMD_SHELL);
         }
 
-        // variables representing different sections of our background script.
-        const SCRIPT_WAIT_MSG: &str = "echo Wait to see the results below ... ";
-        const SCRIPT_PROMPT_MSG_FIXED: &str = "echo Now press ENTER to see your command ";
-        let cmd_shell_to_launch: &str;
+        /* Due to Rust variable lifetime requirements, these variables
+         * must be declared here and passed into all lower functions.
+         */
         let njs_zowe_path: String = get_nodejs_zowe_path();
+        let mut script_string: String = "".to_string();
+        let mut script_arg_vec: Vec<&str> = vec![];
 
-        // combine all of our script commands into an argument vector
-        let mut script_arg_vec = vec![];
-        let mut script_string: String;
-
-        // set cmds script choices that are platform-specific
-        if env::consts::OS == "windows" {
-            cmd_shell_to_launch = "CMD";
-
-            // add any required newlines to create some space
-            script_arg_vec.push("/C");
-            script_arg_vec.push("echo.");
-            script_arg_vec.push("&&");
-            if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
-                // PowerShell needs extra newlines before the background process output to create space
-                for _count in [1,2,3,4,5,6] {
-                    script_arg_vec.push("echo.");
-                    script_arg_vec.push("&&");
-                }
-
-            } else if matches!(curr_cmd_shell, CmdShell::Bash | CmdShell::Sh) {
-                // Bash shell on windows needs a delay and a newline in its spacing
-                for next_arg in "sleep 1 && echo. &&".split_whitespace() {
-                    script_arg_vec.push(next_arg);
-                }
-            }
-
-            // make script delay so the EXE can exit
-            for next_arg in SCRIPT_WAIT_MSG.split_whitespace() {
-                script_arg_vec.push(next_arg);
-            }
-            script_arg_vec.push("&&");
-
-            // make script delay so the EXE can exit
-            for next_arg in "ping 127.0.0.1 -n 1 >nul &&".split_whitespace() {
-                script_arg_vec.push(next_arg);
-            }
-
-            // run our Zowe command
-            script_arg_vec.push(&njs_zowe_path);
-            for next_arg in zowe_cmd_args {
-                script_arg_vec.push(next_arg);
-            }
-            script_arg_vec.push("&");
-
-            // add a message after the script is done
-            for next_arg in SCRIPT_PROMPT_MSG_FIXED.split_whitespace() {
-                script_arg_vec.push(next_arg);
-            }
-            if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
-                // tell user that prompt will appear in the provided space
-                for next_arg in "prompt in the space above.".split_whitespace() {
-                    script_arg_vec.push(next_arg);
-                }
-            } else {
-                script_arg_vec.push("prompt.");
-            }
-
-        } else {
-            // we are on a unix-like system
-            cmd_shell_to_launch = "bash";
-            script_arg_vec.push("-c");
-
-            // for Bash, the entire script goes into one argument
-            script_string = "echo \"\" && ".to_string();
-
-            // make script delay so the EXE can exit
-            script_string.push_str(SCRIPT_WAIT_MSG);
-            script_string.push_str(" && sleep 1 && ");
-
-            // run our Zowe command
-            script_string.push_str(&njs_zowe_path);
-            for next_arg in zowe_cmd_args {
-                script_string.push(' ');
-                script_string.push_str(next_arg);
-            }
-            script_string.push_str(" ; ");
-
-            // add a message after the script is done
-            script_string.push_str(SCRIPT_PROMPT_MSG_FIXED);
-            script_string.push_str("prompt.");
-
-            script_arg_vec.push(&script_string);
-        }
+        // form the command script that we will launch
+        let cmd_shell_to_launch: String = form_cmd_script_arg_vec(
+            zowe_cmd_args, &njs_zowe_path, & curr_cmd_shell,
+            &mut script_string, &mut script_arg_vec
+        );
 
         // The following line gives useful debugging info when it is uncommented.
         // println!("script_arg_vec = {:?}", script_arg_vec);
@@ -927,6 +850,204 @@ fn run_delayed_zowe_command_and_exit(zowe_cmd_args: &[String]) {
         };
         std::process::exit(exit_code);
     } // end if this is a command that we must run delayed
+}
+
+/**
+ * Form the argument vector required to launch deamon enable and disable commands.
+ *
+ * @param zowe_cmd_args
+ *      The user-supplied command line arguments to the zowe command.
+ *
+ * @param njs_zowe_path
+ *      Path to our Node.js zowe command.
+ *
+ * @param curr_cmd_shell
+ *      The current command shell under which we are running.
+ *
+ * @param script_string
+ *      A string into which we can place all of the command names and parameters.
+ *
+ * @param script_arg_vec
+ *      An empty vector into which we place command script arguments.
+ *
+ * @returns The command shell program that we will launch in the
+ *          background to run our script.
+ */
+fn form_cmd_script_arg_vec<'a>(
+    zowe_cmd_args: &'a [String],
+    njs_zowe_path: &'a str,
+    curr_cmd_shell: & CmdShell,
+    script_string: &'a mut String,
+    script_arg_vec: &mut Vec<&'a str>
+) -> String {
+    const SCRIPT_WAIT_MSG: &str = "echo Wait to see the results below ... ";
+    const SCRIPT_PROMPT_MSG_FIXED: &str = "echo Now press ENTER to see your command ";
+
+    if env::consts::OS == "windows"
+    {
+        return form_win_cmd_script_arg_vec(
+            zowe_cmd_args, njs_zowe_path, curr_cmd_shell,
+            SCRIPT_WAIT_MSG, SCRIPT_PROMPT_MSG_FIXED,
+            script_arg_vec
+        );
+    }
+
+    form_bash_cmd_script_arg_vec(
+        zowe_cmd_args, njs_zowe_path, script_string,
+        SCRIPT_WAIT_MSG, SCRIPT_PROMPT_MSG_FIXED,
+        script_arg_vec
+    )
+}
+
+/**
+ * Form the argument vector required to launch deamon enable and disable commands
+ * on Windows. For Windows, each space-separated item on the script's command
+ * line goes into a separate script_arg_vec element.
+ *
+ * @param zowe_cmd_args
+ *      The user-supplied command line arguments to the zowe command.
+ *
+ * @param njs_zowe_path
+ *      Path to our Node.js zowe command.
+ *
+ * @param curr_cmd_shell
+ *      The current command shell under which we are running.
+ *
+ * @param script_wait_msg
+ *      A text message telling the user to wait for our background process.
+ *
+ * @param script_prompt_msg_fixed
+ *      The fixed part of text message telling the user to press ENTER to get a prompt.
+ *
+ * @param script_arg_vec
+ *      An empty vector into which we place command script arguments.
+ *
+ * @returns The command shell program that we will launch in the
+ *          background to run our script.
+ */
+fn form_win_cmd_script_arg_vec<'a>(
+    zowe_cmd_args: &'a [String],
+    njs_zowe_path: &'a str,
+    curr_cmd_shell: & CmdShell,
+    script_wait_msg: &'a str,
+    script_prompt_msg_fixed: &'a str,
+    script_arg_vec: &mut Vec<&'a str>
+) -> String {
+    // add any required newlines to create some space
+    script_arg_vec.push("/C");
+    script_arg_vec.push("echo.");
+    script_arg_vec.push("&&");
+
+    if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
+        // PowerShell needs extra newlines before the background process output to create space
+        for _count in [1,2,3,4,5,6] {
+            script_arg_vec.push("echo.");
+            script_arg_vec.push("&&");
+        }
+
+    } else if matches!(curr_cmd_shell, CmdShell::Bash | CmdShell::Sh) {
+        // Bash shell on windows needs a delay and a newline in its spacing
+        for next_arg in "sleep 1 && echo. &&".split_whitespace() {
+            script_arg_vec.push(next_arg);
+        }
+    }
+
+    // add our wait message
+    for next_arg in script_wait_msg.split_whitespace() {
+        script_arg_vec.push(next_arg);
+    }
+    script_arg_vec.push("&&");
+
+    // make script delay so the EXE can exit
+    for next_arg in "ping 127.0.0.1 -n 1 >nul &&".split_whitespace() {
+        script_arg_vec.push(next_arg);
+    }
+
+    // add our Zowe command to the script
+    script_arg_vec.push(njs_zowe_path);
+    for next_arg in zowe_cmd_args {
+        script_arg_vec.push(next_arg);
+    }
+    script_arg_vec.push("&");
+
+    // add a message after the script is done
+    for next_arg in script_prompt_msg_fixed.split_whitespace() {
+        script_arg_vec.push(next_arg);
+    }
+    if matches!(curr_cmd_shell, CmdShell::PowerShellDotNet | CmdShell::PowerShellExe) {
+        // tell user that prompt will appear in the provided space
+        for next_arg in "prompt in the space above.".split_whitespace() {
+            script_arg_vec.push(next_arg);
+        }
+    } else {
+        script_arg_vec.push("prompt.");
+    }
+
+    // return the shell program that we will launch
+    "CMD".to_string()
+}
+
+/**
+ * Form the argument vector required to launch deamon enable and disable commands
+ * on Bash systems (Linux and MacOs). For Bash, all items on the script's command
+ * line (after the "-c" flag) go into one script_arg_vec argument.
+ *
+ * @param zowe_cmd_args
+ *      The user-supplied command line arguments to the zowe command.
+ *
+ * @param njs_zowe_path
+ *      Path to our Node.js zowe command.
+ *
+ * @param script_string
+ *      A string into which we can place all of the command names and parameters.
+ *
+ * @param script_wait_msg
+ *      A text message telling the user to wait for our background process.
+ *
+ * @param script_prompt_msg_fixed
+ *      The fixed part of text message telling the user to press ENTER to get a prompt.
+ *
+ * @param script_arg_vec
+ *      An empty vector into which we place command script arguments.
+ *
+ * @returns The command shell program that we will launch in the
+ *          background to run our script.
+ */
+fn form_bash_cmd_script_arg_vec<'a>(
+    zowe_cmd_args: &'a [String],
+    njs_zowe_path: &'a str,
+    script_string: &'a mut String,
+    script_wait_msg: &'a str,
+    script_prompt_msg_fixed: &'a str,
+    script_arg_vec: &mut Vec<&'a str>
+) -> String {
+    // -c goes into the first argument
+    script_arg_vec.push("-c");
+
+    // all remaining commands and parameters go into a big string.
+    script_string.push_str("echo \"\" && ");
+
+    // make script delay so the EXE can exit
+    script_string.push_str(script_wait_msg);
+    script_string.push_str(" && sleep 1 && ");
+
+    // add our Zowe command
+    script_string.push_str(njs_zowe_path);
+    for next_arg in zowe_cmd_args {
+        script_string.push(' ');
+        script_string.push_str(next_arg);
+    }
+    script_string.push_str(" ; ");
+
+    // add a message after the script is done
+    script_string.push_str(script_prompt_msg_fixed);
+    script_string.push_str("prompt.");
+
+    // put our big string into the second script argument
+    script_arg_vec.push(script_string);
+
+    // return the shell program that we will launch
+    "bash".to_string()
 }
 
 /**
