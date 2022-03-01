@@ -19,11 +19,14 @@ import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properti
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
+let prebuildsDir: string;
 
 describe("Zowe native executable", () => {
     const RUN_IN_BACKGROUND_MSG: string = "command will run in the background ...";
     const WAIT_TO_SEE_RESULTS_MSG: string = "Wait to see the results below ...";
     const NOW_PRESS_ENTER_MSG: string = "Now press ENTER to see your command prompt.";
+
+    const rimrafSync = require("rimraf").sync;
 
     let zoweExePath: string;
     let willRunZoweExe: boolean = true;
@@ -37,7 +40,7 @@ describe("Zowe native executable", () => {
 
         // determine executable file name and TGZ path for our current OS
         const zoweRootDir: string = nodeJsPath.normalize(__dirname + "/../../../../..");
-        const prebuildsDir: string = nodeJsPath.normalize(zoweRootDir + "/packages/cli/prebuilds");
+        prebuildsDir = nodeJsPath.normalize(zoweRootDir + "/packages/cli/prebuilds");
         let zoweExeTgzPath: string;
         let zoweExeFileNm: string;
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
@@ -64,11 +67,12 @@ describe("Zowe native executable", () => {
             }
         }
 
+        // Remove any existing prebuilds directory
+        rimrafSync(prebuildsDir);
+
         if (willRunZoweExe) {
-            // we may have to create our prebuilds directory
-            if (!IO.existsSync(prebuildsDir)) {
-                IO.createDirSync(prebuildsDir);
-            }
+            // create our prebuilds directory
+            IO.createDirSync(prebuildsDir);
 
             // tar our EXE into a TGZ for this platform, so that we can extract it in tests
             tar.create({
@@ -78,6 +82,11 @@ describe("Zowe native executable", () => {
                 file: zoweExeTgzPath
             }, [zoweExeFileNm]);
         }
+    });
+
+    afterAll(async () => {
+        // Remove any existing prebuilds directory
+        rimrafSync(prebuildsDir);
     });
 
     it("should display its version number", async () => {
