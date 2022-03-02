@@ -14,10 +14,10 @@ base64 = "0.13.0"
 home = "0.5.3"
 pathsearch = "0.2.0"
 rpassword = "5.0.1"
-serde = { version = "1.0.130", features = ["derive"]}
-serde_json = "1.0.69"
+serde = { version = "1.0.136", features = ["derive"]}
+serde_json = "1.0.79"
 simple-error = "0.2.3"
-sysinfo = "0.23.3"
+sysinfo = "0.23.5"
 whoami = "1.2.1"
 
 [target.'cfg(windows)'.dependencies]
