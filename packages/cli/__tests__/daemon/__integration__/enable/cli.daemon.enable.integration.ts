@@ -19,16 +19,14 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
-
 describe("daemon enable", () => {
     const rimrafSync = require("rimraf").sync;
     const fakeExeContent = "This is not a real executable";
     const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
+    let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
     let exePath: string;
     let pathToBin: string;
-    let preBldDir: string;
     let preBldTgzPath: string;
 
     // is the zowe command that we will run our Node.js script?
@@ -44,7 +42,6 @@ describe("daemon enable", () => {
         }
         return true;
     };
-
 
     beforeAll(async () => {
         // Create the unique test environment
@@ -82,19 +79,10 @@ describe("daemon enable", () => {
         }
 
         // form the path to our bin directory, executable, and prebuilds tgz file
-        const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
-        preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
+        const preBldDir = nodeJsPath.resolve(__dirname, "../../../../prebuilds");
         preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
         pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
         exePath = nodeJsPath.resolve(pathToBin, exePath);
-
-        // copy a fake tgz file from resources to our prebuilds directory for testing
-        if (!IO.existsSync(preBldDir)) {
-            IO.createDirSync(preBldDir);
-        }
-        if (!IO.existsSync(preBldTgzPath)) {
-            fs.copyFileSync(tgzResourcePath, preBldTgzPath);
-        }
     });
 
     beforeEach(async () => {
@@ -104,7 +92,6 @@ describe("daemon enable", () => {
 
     afterAll(async () => {
         rimrafSync(pathToBin);
-        rimrafSync(preBldDir);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 

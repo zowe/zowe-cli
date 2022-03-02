@@ -10,7 +10,6 @@
 */
 
 import * as nodeJsPath from "path";
-import * as tar from "tar";
 
 import { IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
@@ -18,16 +17,14 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
-let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
-let prebuildsDir: string;
-
 describe("Zowe native executable", () => {
     const RUN_IN_BACKGROUND_MSG: string = "command will run in the background ...";
     const WAIT_TO_SEE_RESULTS_MSG: string = "Wait to see the results below ...";
     const NOW_PRESS_ENTER_MSG: string = "Now press ENTER to see your command prompt.";
 
-    const rimrafSync = require("rimraf").sync;
-
+    let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
+    let zoweExeFileNm: string;
+    let zoweExeDirPath: string;
     let zoweExePath: string;
     let willRunZoweExe: boolean = true;
 
@@ -38,25 +35,19 @@ describe("Zowe native executable", () => {
             skipProperties: true
         });
 
-        // determine executable file name and TGZ path for our current OS
+        // determine executable file name for our current OS
         const zoweRootDir: string = nodeJsPath.normalize(__dirname + "/../../../../..");
-        prebuildsDir = nodeJsPath.normalize(zoweRootDir + "/packages/cli/prebuilds");
-        let zoweExeTgzPath: string;
-        let zoweExeFileNm: string;
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
         if (sysInfo.platform == "win32") {
             zoweExeFileNm = "zowe.exe";
-            zoweExeTgzPath = nodeJsPath.resolve(prebuildsDir, "zowe-windows.tgz");
         } else if (sysInfo.platform == "linux") {
             zoweExeFileNm = "zowe";
-            zoweExeTgzPath = nodeJsPath.resolve(prebuildsDir, "zowe-linux.tgz");
         } else {
             zoweExeFileNm = "zowe";
-            zoweExeTgzPath = nodeJsPath.resolve(prebuildsDir, "zowe-macos.tgz");
         }
 
         // Form the path name to our executable.
-        let zoweExeDirPath: string = nodeJsPath.normalize(zoweRootDir + "/zowex/target/release");
+        zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/release");
         zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
         if (!IO.existsSync(zoweExePath)) {
             zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/debug");
@@ -66,27 +57,11 @@ describe("Zowe native executable", () => {
                 zoweExePath = "./NoZoweExeExists";
             }
         }
-
-        // Remove any existing prebuilds directory
-        rimrafSync(prebuildsDir);
-
-        if (willRunZoweExe) {
-            // create our prebuilds directory
-            IO.createDirSync(prebuildsDir);
-
-            // tar our EXE into a TGZ for this platform, so that we can extract it in tests
-            tar.create({
-                sync: true,
-                gzip: true,
-                cwd: zoweExeDirPath,
-                file: zoweExeTgzPath
-            }, [zoweExeFileNm]);
-        }
     });
 
     afterAll(async () => {
         // Remove any existing prebuilds directory
-        rimrafSync(prebuildsDir);
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     it("should display its version number", async () => {
