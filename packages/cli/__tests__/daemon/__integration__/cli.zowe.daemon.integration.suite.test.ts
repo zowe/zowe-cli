@@ -24,13 +24,12 @@ describe("Zowe daemon suite", () => {
     const rimrafSync = require("rimraf").sync;
 
     let prebuildsDir: string;
-    let zoweExePath: string;
-    let zoweExeDirPath: string;
-    let zoweExeTgzPath: string;
-    let zoweExeFileNm: string;
 
     // establish path names and record whether we are running our EXE or node.js script
     beforeAll(async () => {
+        let zoweExeTgzPath: string;
+        let zoweExeFileNm: string;
+
         // determine executable file name and TGZ path for our current OS
         const zoweRootDir: string = nodeJsPath.normalize(__dirname + "/../../../../..");
         prebuildsDir = nodeJsPath.normalize(zoweRootDir + "/packages/cli/prebuilds");
@@ -60,13 +59,13 @@ describe("Zowe daemon suite", () => {
         }
 
         // Form the path name to our executable.
-        zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/release");
-        zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
+        let zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/release");
+        let zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
         if (!IO.existsSync(zoweExePath)) {
             zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/debug");
             zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
             if (!IO.existsSync(zoweExePath)) {
-                zoweExePath = "./NoZoweExeExists";
+                zoweExeDirPath = "./NoZoweExeExists";
             }
         }
 
