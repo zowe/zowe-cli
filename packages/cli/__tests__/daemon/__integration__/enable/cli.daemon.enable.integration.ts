@@ -74,7 +74,7 @@ describe("daemon enable", () => {
             default: {
                 tgzFileName += "unknownOs.tgz";
                 exePath = "exeForUnknownOs";
-                throw "cli.daemon.enable.integration.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
+                throw __filename + ": beforeAll: " + sysInfo.platform + " is not a known OS.";
             }
         }
 

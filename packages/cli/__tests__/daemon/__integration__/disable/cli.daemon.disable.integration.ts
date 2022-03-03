@@ -55,7 +55,7 @@ describe("daemon disable", () => {
             }
             default: {
                 exePath = "exeForUnknownOs";
-                throw "cli.daemon.disable.integration.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
+                throw __filename + ": beforeAll: " + sysInfo.platform + " is not a known OS.";
             }
         }
 
