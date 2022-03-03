@@ -28,7 +28,6 @@ describe("Zowe daemon suite", () => {
     let zoweExeDirPath: string;
     let zoweExeTgzPath: string;
     let zoweExeFileNm: string;
-    let willRunZoweExe: boolean = true;
 
     // establish path names and record whether we are running our EXE or node.js script
     beforeAll(async () => {
@@ -67,7 +66,6 @@ describe("Zowe daemon suite", () => {
             zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/debug");
             zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
             if (!IO.existsSync(zoweExePath)) {
-                willRunZoweExe = false;
                 zoweExePath = "./NoZoweExeExists";
             }
         }

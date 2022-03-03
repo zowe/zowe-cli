@@ -40,8 +40,6 @@ describe("Zowe native executable", () => {
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
         if (sysInfo.platform == "win32") {
             zoweExeFileNm = "zowe.exe";
-        } else if (sysInfo.platform == "linux") {
-            zoweExeFileNm = "zowe";
         } else {
             zoweExeFileNm = "zowe";
         }

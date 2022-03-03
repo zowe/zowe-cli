@@ -44,10 +44,7 @@ describe("daemon disable", () => {
 
         // form our tgz file name
         switch (sysInfo.platform) {
-            case "darwin": {
-                exePath = "zowe";
-                break;
-            }
+            case "darwin":
             case "linux": {
                 exePath = "zowe";
                 break;
