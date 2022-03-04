@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202203042035`
 
 - BugFix: Allows the CLI to complete installation when there is invalid config JSON [#1198](https://github.com/zowe/zowe-cli/issues/1198)
 
