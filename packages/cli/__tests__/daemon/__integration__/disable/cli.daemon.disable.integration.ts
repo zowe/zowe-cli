@@ -25,7 +25,6 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon disable", () => {
     const rimrafSync = require("rimraf").sync;
-    const fakeExeContent = "This is not a real executable";
     const zoweCmdRegEx = "zowe.*[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js.* --daemon" + "|" +
     "[/|\\\\]bin[/|\\\\]zowe.* --daemon";
 
@@ -44,32 +43,23 @@ describe("daemon disable", () => {
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
 
         // form our tgz file name
-        let tgzFileName = "zowe-";
         switch (sysInfo.platform) {
-            case "darwin": {
-                tgzFileName += "macos.tgz";
-                exePath = "zowe";
-                break;
-            }
+            case "darwin":
             case "linux": {
-                tgzFileName += "linux.tgz";
                 exePath = "zowe";
                 break;
             }
             case "win32": {
-                tgzFileName += "windows.tgz";
                 exePath = "zowe.exe";
                 break;
             }
             default: {
-                tgzFileName += "unknownOs.tgz";
                 exePath = "exeForUnknownOs";
-                throw "cli.daemon.disable.integration.test.ts: beforeAll: " + sysInfo.platform + " is not a known OS.";
+                throw __filename + ": beforeAll: " + sysInfo.platform + " is not a known OS.";
             }
         }
 
         // form the path to our bin directory, executable, and prebuilds tgz file
-        const tgzResourcePath = nodeJsPath.resolve(__dirname, "../../__resources__", tgzFileName);
         pathToBin = nodeJsPath.resolve(testEnvironment.workingDir, "bin");
         exePath = nodeJsPath.resolve(pathToBin, exePath);
 

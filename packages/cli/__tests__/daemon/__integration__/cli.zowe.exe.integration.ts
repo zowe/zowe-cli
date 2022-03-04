@@ -17,13 +17,14 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 
-let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
-
 describe("Zowe native executable", () => {
-    const exeCantRunDaemonMsg1: string = "You cannot run this 'daemon' command while using the Zowe CLI native executable.";
-    const exeCantRunDaemonMsg2: string = "Copy and paste the following command instead:";
-    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 108;
+    const RUN_IN_BACKGROUND_MSG: string = "command will run in the background ...";
+    const WAIT_TO_SEE_RESULTS_MSG: string = "Wait to see the results below ...";
+    const NOW_PRESS_ENTER_MSG: string = "Now press ENTER to see your command prompt.";
 
+    let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
+    let zoweExeFileNm: string;
+    let zoweExeDirPath: string;
     let zoweExePath: string;
     let willRunZoweExe: boolean = true;
 
@@ -34,25 +35,31 @@ describe("Zowe native executable", () => {
             skipProperties: true
         });
 
-        // determine executable file extension for our current OS
-        let exeExt: string;
+        // determine executable file name for our current OS
+        const zoweRootDir: string = nodeJsPath.normalize(__dirname + "/../../../../..");
         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
         if (sysInfo.platform == "win32") {
-            exeExt = ".exe";
+            zoweExeFileNm = "zowe.exe";
         } else {
-            exeExt = "";
+            zoweExeFileNm = "zowe";
         }
 
         // Form the path name to our executable.
-        const zoweExeGrandParentDir: string = nodeJsPath.normalize(__dirname + "/../../../../../zowex/target");
-        zoweExePath = nodeJsPath.normalize(zoweExeGrandParentDir + "/release/zowe" + exeExt);
+        zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/release");
+        zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
         if (!IO.existsSync(zoweExePath)) {
-            zoweExePath = nodeJsPath.normalize(zoweExeGrandParentDir + "/debug/zowe" + exeExt);
+            zoweExeDirPath = nodeJsPath.normalize(zoweRootDir + "/zowex/target/debug");
+            zoweExePath = nodeJsPath.resolve(zoweExeDirPath, zoweExeFileNm);
             if (!IO.existsSync(zoweExePath)) {
                 willRunZoweExe = false;
                 zoweExePath = "./NoZoweExeExists";
             }
         }
+    });
+
+    afterAll(async () => {
+        // Remove any existing prebuilds directory
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     it("should display its version number", async () => {
@@ -67,29 +74,34 @@ describe("Zowe native executable", () => {
         }
     });
 
-    it("should refuse to run the enable command", async () => {
+    it("should run the enable command in the background", async () => {
         if (willRunZoweExe) {
             const response = runCliScript(
                 __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
                 [zoweExePath, "daemon", "enable"]
             );
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
-            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+            expect(stdoutStr).toContain(RUN_IN_BACKGROUND_MSG);
+            expect(stdoutStr).toContain(WAIT_TO_SEE_RESULTS_MSG);
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is enabled");
+            expect(stdoutStr).toContain("Zowe CLI native executable version =");
+            expect(stdoutStr).toContain(NOW_PRESS_ENTER_MSG);
+            expect(response.status).toBe(0);
         }
     });
 
-    it("should refuse to run the disable command", async () => {
+    it("should run the disable command in the background", async () => {
         if (willRunZoweExe) {
             const response = runCliScript(
                 __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
                 [zoweExePath, "daemon", "disable"]
             );
             const stdoutStr = response.stdout.toString();
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg1);
-            expect(stdoutStr).toContain(exeCantRunDaemonMsg2);
-            expect(response.status).toBe(EXIT_CODE_CANT_RUN_DAEMON_CMD);
+            expect(stdoutStr).toContain(RUN_IN_BACKGROUND_MSG);
+            expect(stdoutStr).toContain(WAIT_TO_SEE_RESULTS_MSG);
+            expect(stdoutStr).toContain("Zowe CLI daemon mode is disabled");
+            expect(stdoutStr).toContain(NOW_PRESS_ENTER_MSG);
+            expect(response.status).toBe(0);
         }
     });
 });
