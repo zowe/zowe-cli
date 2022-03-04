@@ -2,7 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Allows the CLI to complete installation when there is invalid config JSON [#1198](https://github.com/zowe/zowe-cli/issues/1198)
+
 ## `7.0.0-next.202203041732`
+
 - Enhancement: the `zowe daemon enable` and `zowe daemon disable` commands run a process in the backgound so that they no longer require a user to copy and paste another command to successfully perform the operation.
 
 ## `7.0.0-next.202202241854`
