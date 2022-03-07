@@ -6,6 +6,17 @@ Object {
     "in",
   ],
   "description": "Submit a job (JCL) passed to the command via the stdin stream. The command presents errors verbatim from the z/OSMF Jobs REST endpoints. For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+  "examples": Array [
+    Object {
+      "description": "Submit the JCL in the file \\"iefbr14.txt\\" via standard in on Windows",
+      "options": "< iefbr14.txt",
+    },
+    Object {
+      "description": "Submit the JCL in the file \\"iefbr14.txt\\" via standard in on other operating systems",
+      "options": "",
+      "prefix": "cat iefbr14.txt |",
+    },
+  ],
   "name": "stdin",
   "options": Array [
     Object {
