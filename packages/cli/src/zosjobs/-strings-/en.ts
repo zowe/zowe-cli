@@ -143,11 +143,11 @@ export default {
                     "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\" via standard in on Windows",
+                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\" via standard in",
                         OPTIONS: "< iefbr14.txt"
                     },
                     EX2: {
-                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\" via standard in on other operating systems",
+                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\" via standard in from the output of another command",
                         OPTIONS: "",
                         PREFIX: "cat iefbr14.txt |"
                     }
