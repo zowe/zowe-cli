@@ -91,7 +91,7 @@ describe("daemon disable", () => {
             expect(stdoutStr).toContain("USAGE");
             expect(stdoutStr).toContain("zowe daemon disable [options]");
             expect(stdoutStr).toContain("GLOBAL OPTIONS");
-            expect(stdoutStr).toContain("--help  | -h (boolean)");
+            expect(stdoutStr).toContain("--help | -h (boolean)");
             expect(stdoutStr).toContain("EXAMPLES");
             expect(stdoutStr).toContain("Disable daemon-mode:");
             expect(stdoutStr).toContain("$ zowe daemon disable");
