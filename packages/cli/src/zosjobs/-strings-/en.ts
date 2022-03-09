@@ -140,7 +140,18 @@ export default {
                 SUMMARY: "Submit a job read from standard in",
                 DESCRIPTION: "Submit a job (JCL) passed to the command via the stdin stream. " +
                     "The command presents errors verbatim from the z/OSMF Jobs REST endpoints. " +
-                    "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation."
+                    "For more information about z/OSMF Jobs API errors, see the z/OSMF Jobs API REST documentation.",
+                EXAMPLES: {
+                    EX1: {
+                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\" via standard in",
+                        OPTIONS: "< iefbr14.txt"
+                    },
+                    EX2: {
+                        DESCRIPTION: "Submit the JCL in the file \"iefbr14.txt\" via standard in from the output of another command",
+                        OPTIONS: "",
+                        PREFIX: "cat iefbr14.txt |"
+                    }
+                }
             }
         }
     },
