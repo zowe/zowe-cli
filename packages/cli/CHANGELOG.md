@@ -158,6 +158,15 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
+## `6.37.7`
+
+- BugFix: Fixed some optional dependencies missing from npm-shrinkwrap file.
+
+## `6.37.6`
+
+- BugFix: Pruned dev dependencies from npm-shrinkwrap file.
+
 ## `6.37.5`
 
 - BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
