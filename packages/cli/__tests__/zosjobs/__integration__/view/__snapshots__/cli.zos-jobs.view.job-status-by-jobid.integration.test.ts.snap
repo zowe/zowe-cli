@@ -30,78 +30,78 @@ exports[`zos-jobs view job-status-by-jobid command should display the help 1`] =
  ZOSMF CONNECTION OPTIONS
  ------------------------
 
-   --host  | -H (string)
+   --host | -H (string)
 
       The z/OSMF server host name.
 
-   --port  | -P (number)
+   --port | -P (number)
 
       The z/OSMF server port.
 
       Default value: 443
 
-   --user  | -u (string)
+   --user | -u (string)
 
       Mainframe (z/OSMF) user name, which can be the same as your TSO login.
 
-   --password  | --pass | --pw (string)
+   --password | --pass | --pw (string)
 
       Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
-   --reject-unauthorized  | --ru (boolean)
+   --reject-unauthorized | --ru (boolean)
 
       Reject self-signed certificates.
 
       Default value: true
 
-   --base-path  | --bp (string)
+   --base-path | --bp (string)
 
       The base path for your API mediation layer instance. Specify this option to
       prepend the base path to all z/OSMF resources when making REST requests. Do not
       specify this option if you are not using an API mediation layer.
 
-   --protocol  (string)
+   --protocol (string)
 
       The protocol used (HTTP or HTTPS)
 
       Default value: https
       Allowed values: http, https
 
-   --cert-file  (local file path)
+   --cert-file (local file path)
 
       The file path to a certificate file to use for authentication
 
-   --cert-key-file  (local file path)
+   --cert-key-file (local file path)
 
       The file path to a certificate key file to use for authentication
 
  PROFILE OPTIONS
  ---------------
 
-   --zosmf-profile  | --zosmf-p (string)
+   --zosmf-profile | --zosmf-p (string)
 
       The name of a (zosmf) profile to load for this command execution.
 
-   --base-profile  | --base-p (string)
+   --base-profile | --base-p (string)
 
       The name of a (base) profile to load for this command execution.
 
  BASE CONNECTION OPTIONS
  -----------------------
 
-   --token-type  | --tt (string)
+   --token-type | --tt (string)
 
       The type of token to get and use for the API. Omit this option to use the
       default token type, which is provided by 'zowe auth login'.
 
-   --token-value  | --tv (string)
+   --token-value | --tv (string)
 
       The value of the token to pass to the API.
 
  RESPONSE FORMAT OPTIONS
  -----------------------
 
-   --response-format-filter  | --rff (array)
+   --response-format-filter | --rff (array)
 
       Filter (include) fields in the response. Accepts an array of field/property
       names to include in the output response. You can filter JSON objects properties
@@ -109,7 +109,7 @@ exports[`zos-jobs view job-status-by-jobid command should display the help 1`] =
       with '--response-format-type' to reduce the output of a command to a single
       field/property or a list of a single field/property.
 
-   --response-format-type  | --rft (string)
+   --response-format-type | --rft (string)
 
       The command response output format type. Must be one of the following:
 
@@ -129,7 +129,7 @@ exports[`zos-jobs view job-status-by-jobid command should display the help 1`] =
 
       Allowed values: table, list, object, string
 
-   --response-format-header  | --rfh (boolean)
+   --response-format-header | --rfh (boolean)
 
       If \\"--response-format-type table\\" is specified, include the column headers in
       the output.
@@ -137,19 +137,19 @@ exports[`zos-jobs view job-status-by-jobid command should display the help 1`] =
  GLOBAL OPTIONS
  --------------
 
-   --response-format-json  | --rfj (boolean)
+   --response-format-json | --rfj (boolean)
 
       Produce JSON formatted data from a command
 
-   --help  | -h (boolean)
+   --help | -h (boolean)
 
       Display help text
 
-   --help-examples  (boolean)
+   --help-examples (boolean)
 
       Display examples for all the commands in a group
 
-   --help-web  | --hw (boolean)
+   --help-web | --hw (boolean)
 
       Display HTML help in browser
 
@@ -170,9 +170,9 @@ exports[`zos-jobs view job-status-by-jobid command should display the help 1`] =
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"The help was constructed for command: job-status-by-jobid.\\",
-  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job-status-by-jobid | jsbj\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View status details of a single z/OS job on spool/JES queues. The command does\\\\n   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF\\\\n   Jobs REST endpoints (expect for \\\\\\"no jobs found\\\\\\").\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view job-status-by-jobid <jobid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is\\\\n      performed.\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path  | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol  (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file  (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file  (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type  | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value  | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter  | --rff (array)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type  | --rft (string)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header  | --rfh (boolean)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - View status and other details of the job with the job ID\\\\n   JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123\\\\n\\\\n   - Print only the status (for example, \\\\\\"OUTPUT\\\\\\" or \\\\\\"ACTIVE\\\\\\")\\\\n   of the job with the job ID JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123 --rff status --rft string\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job-status-by-jobid | jsbj\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View status details of a single z/OS job on spool/JES queues. The command does\\\\n   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF\\\\n   Jobs REST endpoints (expect for \\\\\\"no jobs found\\\\\\").\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view job-status-by-jobid <jobid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is\\\\n      performed.\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter | --rff (array)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type | --rft (string)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header | --rfh (boolean)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - View status and other details of the job with the job ID\\\\n   JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123\\\\n\\\\n   - Print only the status (for example, \\\\\\"OUTPUT\\\\\\" or \\\\\\"ACTIVE\\\\\\")\\\\n   of the job with the job ID JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123 --rff status --rft string\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job-status-by-jobid | jsbj\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View status details of a single z/OS job on spool/JES queues. The command does\\\\n   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF\\\\n   Jobs REST endpoints (expect for \\\\\\"no jobs found\\\\\\").\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view job-status-by-jobid <jobid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is\\\\n      performed.\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path  | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol  (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file  (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file  (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type  | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value  | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter  | --rff (array)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type  | --rft (string)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header  | --rfh (boolean)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - View status and other details of the job with the job ID\\\\n   JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123\\\\n\\\\n   - Print only the status (for example, \\\\\\"OUTPUT\\\\\\" or \\\\\\"ACTIVE\\\\\\")\\\\n   of the job with the job ID JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123 --rff status --rft string\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   job-status-by-jobid | jsbj\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   View status details of a single z/OS job on spool/JES queues. The command does\\\\n   not prevalidate the JOBID. The command presents errors verbatim from the z/OSMF\\\\n   Jobs REST endpoints (expect for \\\\\\"no jobs found\\\\\\").\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-jobs view job-status-by-jobid <jobid> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   jobid\\\\t\\\\t (string)\\\\n\\\\n      The z/OS JOBID of the job you want to view. No prevalidation of the JOBID is\\\\n      performed.\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n RESPONSE FORMAT OPTIONS\\\\n -----------------------\\\\n\\\\n   --response-format-filter | --rff (array)\\\\n\\\\n      Filter (include) fields in the response. Accepts an array of field/property\\\\n      names to include in the output response. You can filter JSON objects properties\\\\n      OR table columns/fields. In addition, you can use this option in conjunction\\\\n      with '--response-format-type' to reduce the output of a command to a single\\\\n      field/property or a list of a single field/property.\\\\n\\\\n   --response-format-type | --rft (string)\\\\n\\\\n      The command response output format type. Must be one of the following:\\\\n\\\\n      table: Formats output data as a table. Use this option when the output data is\\\\n      an array of homogeneous JSON objects. Each property of the object will become a\\\\n      column in the table.\\\\n\\\\n      list: Formats output data as a list of strings. Can be used on any data type\\\\n      (JSON objects/arrays) are stringified and a new line is added after each entry\\\\n      in an array.\\\\n\\\\n      object: Formats output data as a list of prettified objects (or single object).\\\\n      Can be used in place of \\\\\\"table\\\\\\" to change from tabular output to a list of\\\\n      prettified objects.\\\\n\\\\n      string: Formats output data as a string. JSON objects/arrays are stringified.\\\\n\\\\n      Allowed values: table, list, object, string\\\\n\\\\n   --response-format-header | --rfh (boolean)\\\\n\\\\n      If \\\\\\"--response-format-type table\\\\\\" is specified, include the column headers in\\\\n      the output.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - View status and other details of the job with the job ID\\\\n   JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123\\\\n\\\\n   - Print only the status (for example, \\\\\\"OUTPUT\\\\\\" or \\\\\\"ACTIVE\\\\\\")\\\\n   of the job with the job ID JOB00123:\\\\n\\\\n      $ zowe zos-jobs view job-status-by-jobid j123 --rff status --rft string\\\\n\\\\n\\"
 }"
 `;
 

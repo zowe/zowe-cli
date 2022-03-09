@@ -49,7 +49,7 @@ Refer to the following guidelines for naming `[groups]`, `[actions]`, `[objects]
 
     - Single letter aliases are typed with a single dash (for example, -a) on the command-line while multi-letter aliases require two dashes (for example, `--ac`). So, single letter aliases are attractive because they are the easiest to type. 
 
-    - We have cases of three names/aliases (for example, password includes --password  | --pass | --pw). This example came about due to a desire to have compatiblity across the core CLI and various plugins and the desire to use OS Environmental Variables to assign passwords across services such zOSMF. 
+    - We have cases of three names/aliases (for example, password includes --password | --pass | --pw). This example came about due to a desire to have compatiblity across the core CLI and various plugins and the desire to use OS Environmental Variables to assign passwords across services such zOSMF. 
 
 ## Command Descriptions
 
