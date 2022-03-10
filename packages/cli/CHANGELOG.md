@@ -2,13 +2,17 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added prompt for base profile host property to `zowe config init`. [#1219](https://github.com/zowe/zowe-cli/issues/1219)
+
 ## `7.0.0-next.202203042035`
 
 - BugFix: Allows the CLI to complete installation when there is invalid config JSON [#1198](https://github.com/zowe/zowe-cli/issues/1198)
 
 ## `7.0.0-next.202203041732`
 
-- Enhancement: the `zowe daemon enable` and `zowe daemon disable` commands run a process in the backgound so that they no longer require a user to copy and paste another command to successfully perform the operation.
+- Enhancement: The `zowe daemon enable` and `zowe daemon disable` commands run a process in the background so that they no longer require a user to copy and paste another command to successfully perform the operation.
 
 ## `7.0.0-next.202202241854`
 
@@ -158,6 +162,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
+## `6.37.8`
+
+- Documentation: Updated help text for the `zowe jobs submit stdin` command. [#1284](https://github.com/zowe/zowe-cli/issues/1284)
 
 ## `6.37.7`
 

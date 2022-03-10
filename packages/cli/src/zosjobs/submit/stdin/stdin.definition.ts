@@ -59,5 +59,16 @@ export const StdinDefinition: ICommandDefinition = {
     profile: {
         optional: ["zosmf"]
     },
-    outputFormatOptions: true
+    outputFormatOptions: true,
+    examples: [
+        {
+            description: strings.STDIN.EXAMPLES.EX1.DESCRIPTION,
+            options: strings.STDIN.EXAMPLES.EX1.OPTIONS
+        },
+        {
+            description: strings.STDIN.EXAMPLES.EX2.DESCRIPTION,
+            options: strings.STDIN.EXAMPLES.EX2.OPTIONS,
+            prefix: strings.STDIN.EXAMPLES.EX2.PREFIX
+        }
+    ]
 };
