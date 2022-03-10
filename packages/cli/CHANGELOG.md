@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202203101634`
 
 - Enhancement: Added prompt for base profile host property to `zowe config init`. [#1219](https://github.com/zowe/zowe-cli/issues/1219)
 
