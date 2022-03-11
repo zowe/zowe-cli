@@ -1,10 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`cancel job handler tests should be able to cancel a job by job id 1`] = `"Successfully canceled job IBMUSER$ (TSUxxx)"`;
+exports[`cancel job handler tests should be able to cancel a job by job id 1`] = `"Successfully submitted request to cancel job IBMUSER$ (TSUxxx)"`;
 
-exports[`cancel job handler tests should be able to cancel a job by job id 2`] = `"Successfully canceled job IBMUSER$ (TSUxxx)"`;
+exports[`cancel job handler tests should be able to cancel a job by job id 2`] = `"Successfully submitted request to cancel job IBMUSER$ (TSUxxx)"`;
 
 exports[`cancel job handler tests should be able to cancel a job by job id 3`] = `
+Object {
+  "class": "A",
+  "files-url": "www.nowhere.com/restjobs/jobs/files",
+  "job-correlator": "123545asdfadf",
+  "jobid": "TSUxxx",
+  "jobname": "IBMUSER$",
+  "owner": "IBMUSER",
+  "phase": 88,
+  "phase-name": "testagain",
+  "retcode": "CC 0000",
+  "status": "OUTPUT",
+  "subsystem": "JES2",
+  "type": "job",
+  "url": "www.nowhere.com/restjobs/jobs",
+}
+`;
+
+exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 1`] = `"Successfully cancelled job IBMUSER$ (TSUxxx)"`;
+
+exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 2`] = `"Successfully cancelled job IBMUSER$ (TSUxxx)"`;
+
+exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 3`] = `
 Object {
   "class": "A",
   "files-url": "www.nowhere.com/restjobs/jobs/files",

@@ -44,7 +44,7 @@ describe("Delete Jobs unit tests", () => {
     };
     describe("Positive tests", () => {
         it("should allow users to call deleteJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(returnEmpty);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnEmpty);
             let caughtError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB00001");
@@ -55,7 +55,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(returnEmpty);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnEmpty);
             let caughtError;
             try {
                 await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
@@ -66,7 +66,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 1_0)", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return {};
             });
@@ -74,7 +74,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 2_0)", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return {};
             });
@@ -82,7 +82,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(returnEmpty);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnEmpty);
             let caughtError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001"});
@@ -93,14 +93,14 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 1_0)", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
                 return {};
             });
             await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "1.0"});
         });
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 2_0)", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(async (session: any, resource: string, headers: any[]) => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
                 return {};
             });
@@ -110,7 +110,7 @@ describe("Delete Jobs unit tests", () => {
 
     describe("Error handling tests - async/await", () => {
         it("should be able to catch errors from deleteJob with async/await syntax", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB0000");
@@ -123,7 +123,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from deleteJobForJob with async/await syntax", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
@@ -136,7 +136,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from deleteJobCommon with async/await syntax", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {
@@ -155,7 +155,7 @@ describe("Delete Jobs unit tests", () => {
     describe("Error handling tests - Promise catch() syntax", () => {
         /* eslint-disable jest/no-done-callback */
         it("should be able to catch errors from deleteJob with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB0000").then(() => {
                 expect(".catch() should have been called").toEqual("test failed");
             }).catch((err) => {
@@ -167,7 +167,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from deleteJobForJob with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             DeleteJobs.deleteJobForJob(fakeSession, fakeJob)
                 .then(() => {
                     expect(".catch() should have been called").toEqual("test failed");
@@ -180,7 +180,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should be able to catch errors from deleteJobCommon with Promise.catch() syntax", (done: any) => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             DeleteJobs.deleteJobCommon(fakeSession, {
                 jobname: "MYJOB1",
                 jobid: "JOB0001"
@@ -199,7 +199,7 @@ describe("Delete Jobs unit tests", () => {
     describe("Parameter validation", () => {
 
         it("should reject calls to deleteJob that omit jobname", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, undefined, "JOB0000");
@@ -212,7 +212,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should reject calls to deleteJob that omit jobid", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJob(fakeSession, "MYJOB1", undefined);
@@ -225,7 +225,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should reject calls to deleteJobForJob that omit jobname", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             const badJob: IJob = JSON.parse(JSON.stringify(fakeJob));
             delete badJob.jobname;
@@ -240,7 +240,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should reject calls to deleteJobForJob that omit jobid", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             const badJob: IJob = JSON.parse(JSON.stringify(fakeJob));
             delete badJob.jobid;
@@ -255,7 +255,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should reject calls to deleteJobCommon that omit jobname from the parms object", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {
@@ -271,7 +271,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should reject calls to deleteJobCommon that omit jobid from the parms object", async () => {
-            ZosmfRestClient.deleteExpectString = jest.fn(throwImperativeError);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(throwImperativeError);
             let err: Error | ImperativeError;
             try {
                 await DeleteJobs.deleteJobCommon(fakeSession, {
