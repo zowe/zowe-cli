@@ -72,7 +72,9 @@ const EXIT_CODE_DAEMON_NOT_RUNNING_AFTER_START: i32 = 105;
 const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
 const EXIT_CODE_CANT_FIND_CMD_SHELL: i32 = 107;
 const EXIT_CODE_UNKNOWN_CMD_SHELL: i32 = 108;
+#[cfg(target_family = "windows")]
 const EXIT_CODE_CANNOT_FIND_LOCK: i32 = 109;
+#[cfg(target_family = "windows")]
 const EXIT_CODE_CANNOT_ACQUIRE_LOCK: i32 = 110;
 const EXIT_CODE_COMM_IO_ERROR: i32 = 111;
 const EXIT_CODE_ENV_ERROR: i32 = 112;
@@ -464,7 +466,7 @@ fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
             }
         }
 
-        let mut stream: PipeClient;
+        let mut stream;
         match establish_connection(njs_zowe_path, &socket_string) {
             Ok(ok_val) => stream = ok_val,
             Err(err_val) => {
