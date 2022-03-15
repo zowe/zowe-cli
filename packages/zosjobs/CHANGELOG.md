@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-# Recent Changes
+## Recent Changes
 
 - Enhancement: Updated the `cancelJobs` and `deleteJobs` functions to return an IJobFeedback object
   - The object is only fully populated for synchronous requests (modifyVersion 2.0)
