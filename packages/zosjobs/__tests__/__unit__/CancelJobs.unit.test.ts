@@ -12,11 +12,12 @@
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
 import { CancelJobs, IJob } from "../../src";
+import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnEmpty = async () => {
-    return;
+const returnCancelJobsDataAsync = async () => {
+    return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
 };
 
 const mockErrorText = "My fake error for unit tests has this text - Cancel Jobs unit tests";
@@ -42,70 +43,99 @@ describe("Cancel Jobs unit tests", () => {
         "phase-name": "OUTPUT",
         "job-correlator": "mycorrelator"
     };
+
     describe("Positive tests", () => {
         it("should allow users to call cancelJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnEmpty);
+            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
             let caughtError;
+            let response;
             try {
-                await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB00001");
+                response = await CancelJobs.cancelJob(fakeSession, "MYJOB1", "JOB00001");
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnEmpty);
+            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
             let caughtError;
+            let response;
             try {
-                await CancelJobs.cancelJobForJob(fakeSession, fakeJob);
+                response = await CancelJobs.cancelJobForJob(fakeSession, fakeJob);
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 1_0)", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
-            await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "1.0");
+            const response = await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "1.0");
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call cancelJobForJob with correct parameters (with version 2_0)", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
-            await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "2.0");
+            const response = await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "2.0");
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
+        });
+
+        it("should allow users to call cancelJobForJob with correct parameters (with version 2_0) and get a bad response", async () => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+                expect(body).toMatchSnapshot();
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
+            });
+            const response = await CancelJobs.cancelJobForJob(fakeSession, fakeJob, "2.0");
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });
 
         it("should allow users to call cancelJobCommon with correct parameters", async () => {
-            ZosmfRestClient.putExpectJSON = jest.fn(returnEmpty);
+            ZosmfRestClient.putExpectJSON = jest.fn(returnCancelJobsDataAsync);
             let caughtError;
+            let response;
             try {
-                await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001" });
+                response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001" });
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 1_0)", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
-            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "1.0" });
+            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "1.0" });
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call cancelJobCommon with correct parameters (with version 2_0)", async () => {
             ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
                 expect(body).toMatchSnapshot();
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
-            await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "2.0" });
+            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "2.0" });
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
+        });
+
+        it("should allow users to call cancelJobCommon with correct parameters (with version 2_0) and get a failed response", async () => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any) => {
+                expect(body).toMatchSnapshot();
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
+            });
+            const response = await CancelJobs.cancelJobCommon(fakeSession, { jobname: "MYJOB1", jobid: "JOB00001", version: "2.0" });
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });
     });
 

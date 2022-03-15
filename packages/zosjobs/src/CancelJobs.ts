@@ -98,6 +98,8 @@ export class CancelJobs {
 
         if (parms.version === "2.0") {
             responseFeedback = responseJson as IJobFeedback;
+            // Turns out status is a number, but we cannot introduce breaking changes.
+            responseFeedback.status = responseFeedback.status.toString();
         } else {
             // If run asynchronously, we do not know if it succeeded, so behave as though it did
             responseFeedback.status = "0";

@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { DeleteJobs, SubmitJobs } from "../../src";
+import { DeleteJobs, IJobFeedback, SubmitJobs } from "../../src";
 import { IJob } from "../../src/doc/response/IJob";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -45,30 +45,35 @@ describe("DeleteJobs System tests", () => {
         it("should be able to delete a job using deleteJob", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
             expect(job.retcode).toEqual("CC 0000");
-            await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
+            const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobForJob", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
             expect(job.retcode).toEqual("CC 0000");
-            await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
+            const response = await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
             expect(job.retcode).toEqual("CC 0000");
-            await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+            const response = await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon (job modify version 2.0 - synchronous)", async () => {
             let caughtError;
+            let response: IJobFeedback;
             try {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-                await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: "2.0"});
+                response = await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, modifyVersion: "2.0"});
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
     });
 

@@ -12,11 +12,12 @@
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ImperativeError } from "@zowe/imperative";
 import { DeleteJobs, IJob } from "../../src";
+import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnEmpty = async () => {
-    return;
+const returnDeleteJobsDataAsync = async () => {
+    return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
 };
 
 const mockErrorText = "My fake error for unit tests has this text - Delete Jobs unit tests";
@@ -42,69 +43,99 @@ describe("Delete Jobs unit tests", () => {
         "phase-name": "OUTPUT",
         "job-correlator": "mycorrelator"
     };
+
     describe("Positive tests", () => {
         it("should allow users to call deleteJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnEmpty);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
             let caughtError;
+            let response;
             try {
-                await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB00001");
+                response = await DeleteJobs.deleteJob(fakeSession, "MYJOB1", "JOB00001");
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnEmpty);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
             let caughtError;
+            let response;
             try {
-                await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
+                response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob);
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 1_0)", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
-            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "1.0");
+            const response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "1.0");
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 2_0)", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
-            await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "2.0");
+            const response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "2.0");
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
+        });
+
+        it("should allow users to call deleteJobForJob with correct parameters (with modify version 2_0) and receive a failure", async () => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+                expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
+            });
+            const response = await DeleteJobs.deleteJobForJob(fakeSession, fakeJob, "2.0");
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnEmpty);
+            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
             let caughtError;
+            let response;
             try {
-                await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001"});
+                response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001"});
             } catch (error) {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 1_0)", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_1);
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
             });
-            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "1.0"});
+            const response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "1.0"});
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
         });
+
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 2_0)", async () => {
             ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
                 expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
-                return {};
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD;
             });
-            await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "2.0"});
+            const response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "2.0"});
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
+        });
+
+        it("should allow users to call deleteJobCommon with correct parameters (with modify version 2_0) and receive a failure", async () => {
+            ZosmfRestClient.deleteExpectJSON = jest.fn(async (session: any, resource: string, headers: any[]) => {
+                expect(headers).toContain(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
+                return CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD;
+            });
+            const response = await DeleteJobs.deleteJobCommon(fakeSession, {jobname: "MYJOB1", jobid: "JOB00001", modifyVersion: "2.0"});
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_BAD);
         });
     });
 
