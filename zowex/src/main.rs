@@ -390,7 +390,7 @@ fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> R
 
     // create the response structure for this message
     let response: DaemonResponse;
-    if zowe_cmd_args[0] == SHUTDOWN_REQUEST {
+    if zowe_cmd_args.len() > 0  &&  zowe_cmd_args[0] == SHUTDOWN_REQUEST {
         // Sending Control-C shutdown request
         let control_c: String = "\x03".to_string();
         response = DaemonResponse {
