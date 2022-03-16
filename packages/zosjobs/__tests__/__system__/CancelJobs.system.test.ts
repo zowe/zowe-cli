@@ -75,7 +75,7 @@ describe("CancelJobs System tests", () => {
             expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
-        it("should be fail to cancel a job a second time using cancelJobCommon (job version 2.0 - synchronous)", async () => {
+        it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous) and return an error feedback object", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
             let response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});

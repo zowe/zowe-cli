@@ -22,9 +22,9 @@ Object {
 }
 `;
 
-exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 1`] = `"Successfully cancelled job IBMUSER$ (TSUxxx)"`;
+exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 1`] = `"Successfully canceled job IBMUSER$ (TSUxxx)"`;
 
-exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 2`] = `"Successfully cancelled job IBMUSER$ (TSUxxx)"`;
+exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 2`] = `"Successfully canceled job IBMUSER$ (TSUxxx)"`;
 
 exports[`cancel job handler tests should be able to cancel a job by job id version 2.0 3`] = `
 Object {

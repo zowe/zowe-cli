@@ -50,14 +50,14 @@ describe("zos-jobs cancel job command", () => {
             expect(response.stderr.toString()).toContain("failed: Job not found");
         });
 
-        it("should surface an error from z/OSMF if the jobid was already cancelled", () => {
+        it("should surface an error from z/OSMF if the jobid was already canceled", () => {
             runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Failed to cancel job");
             expect(response.stderr.toString()).toContain("Job not cancellable or purgeable");
             expect(response.stderr.toString()).toContain("returned on second cancel");
-            expect(response.stdout.toString()).toContain("Successfully cancelled job");
+            expect(response.stdout.toString()).toContain("Successfully canceled job");
         });
     });
 
@@ -73,7 +73,7 @@ describe("zos-jobs cancel job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully cancelled job");
+            expect(response.stdout.toString()).toContain("Successfully canceled job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
         });
 
@@ -122,7 +122,7 @@ describe("zos-jobs cancel job command", () => {
                     ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Successfully cancelled job");
+                expect(response.stdout.toString()).toContain("Successfully canceled job");
             });
         });
     });

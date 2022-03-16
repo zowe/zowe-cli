@@ -49,7 +49,7 @@ export default class JobHandler extends ZosmfBaseHandler {
         if ((this.arguments.modifyVersion == null || this.arguments.modifyVersion === "1.0") && response.status === "0") {
             message = `Successfully submitted request to cancel job ${job.jobname} (${jobid})`;
         } else if (this.arguments.modifyVersion === "2.0" && response.status === "0") {
-            message = `Successfully cancelled job ${job.jobname} (${jobid})`;
+            message = `Successfully canceled job ${job.jobname} (${jobid})`;
         } else {
             throw new ImperativeError({
                 msg: `Failed to cancel job ${job.jobname} (${jobid})`,
