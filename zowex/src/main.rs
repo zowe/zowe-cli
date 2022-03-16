@@ -232,7 +232,7 @@ fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
 
     // Start a new daemon. Note that start_daemon() exits on failure.
     start_daemon(njs_zowe_path);
-    println!("A new daemon has been started.");
+    println!("A new daemon has started.");
     Ok(EXIT_CODE_SUCCESS)
 }
 
