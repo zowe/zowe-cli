@@ -66,7 +66,8 @@ const config: IImperativeConfig = {
             properties: {
                 host: {
                     type: "string",
-                    optionDefinition: Constants.BASE_OPTION_HOST
+                    optionDefinition: Constants.BASE_OPTION_HOST,
+                    includeInTemplate: true
                 },
                 port: {
                     type: "number",
@@ -212,8 +213,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST,
-                        includeInTemplate: true
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST
                     },
                     port: {
                         type: "number",
@@ -379,8 +379,7 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST,
-                        includeInTemplate: true
+                        optionDefinition: SshSession.SSH_OPTION_HOST
                     },
                     port: {
                         type: "number",
