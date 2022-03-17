@@ -62,7 +62,7 @@ node('zowe-jenkins-agent-dind') {
     ]
 
     // Initialize the pipeline library, should create 5 steps.
-    pipeline.setup(nodeJsVersion: 'v12.22.1', npmVersion: '^7')
+    pipeline.setup(nodeJsVersion: 'v16.13.1', npmVersion: '^8')
 
     // When we need to build the CLI with imperative from Github repo source,
     // we need lots of time to install imperative, since imperative

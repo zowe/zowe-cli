@@ -2,6 +2,22 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `6.37.8`
+
+- Documentation: Updated help text for the `zowe jobs submit stdin` command. [#1284](https://github.com/zowe/zowe-cli/issues/1284)
+
+## `6.37.7`
+
+- BugFix: Fixed some optional dependencies missing from npm-shrinkwrap file.
+
+## `6.37.6`
+
+- BugFix: Pruned dev dependencies from npm-shrinkwrap file.
+
+## `6.37.5`
+
+- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
+
 ## `6.37.3`
 
 - BugFix: Updated imperative to resolve `--hw` line-break issues. [Imperative #715](https://github.com/zowe/imperative/issues/715)

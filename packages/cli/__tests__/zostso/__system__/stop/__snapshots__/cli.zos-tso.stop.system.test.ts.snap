@@ -4,8 +4,6 @@ exports[`zos-tso stop should fail with invalid option 1`] = `
 "Command Error:
 Unknown arguments: foo-bar, fooBar
 Command failed due to improper syntax
-Did you mean:  zos-tso start as?
-
 Command entered: \\"zos-tso start as --foo-bar\\"
 Available commands are \\"address-space\\".
 Use \\"zowe zos-tso start --help\\" to view groups, commands, and options.
@@ -23,7 +21,7 @@ exports[`zos-tso stop should fail with invalid parameter 1`] = `
 "Command Error:
 Unknown argument: foobar
 Command failed due to improper syntax
-Did you mean:  zos-tso stop as?
+Did you mean: zos-tso stop as?
 
 Command entered: \\"zos-tso stop foobar\\"
 Available commands are \\"address-space\\".
