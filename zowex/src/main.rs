@@ -1281,7 +1281,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_socket_string() {
+    fn unit_test_get_socket_string() {
         // expect default port with no env
         let socket_string = get_socket_string();
         assert!(!socket_string.contains("NotADaemon"));
@@ -1294,7 +1294,7 @@ mod tests {
     }
 
     #[test]
-    fn test_get_zowe_env() {
+    fn unit_test_get_zowe_env() {
         let env = get_zowe_env();
         assert_eq!(env.get("ZOWE_EDITOR"), None);
 
@@ -1307,44 +1307,47 @@ mod tests {
 
     #[test]
     // test daemon restart
-    fn test_restart() {
+    fn integration_test_restart() {
         let njs_zowe_path = get_nodejs_zowe_path();
 
-        // run a restart when no daemon is running
         let mut daemon_proc_info = get_daemon_process_info();
-        if !daemon_proc_info.is_running {
-            // Stopping a running daemon
+        if daemon_proc_info.is_running {
+            println!("--- Test msg: To initializes test, stop a running daemon.");
             let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
-            if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
-                assert_eq!("Shutdown should have worked", "Shutdown failed");
+            if let Err(err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
+                assert_eq!("Shutdown should have worked", "Shutdown failed", "exit code = {}", err_val);
             }
 
             // confirm that the daemon has stopped
             daemon_proc_info = get_daemon_process_info();
-            assert_eq!(daemon_proc_info.is_running, false);
+            assert_eq!(daemon_proc_info.is_running, false, "The daemon did not stop.");
         }
 
         // now try the restart
+        println!("--- Test msg: Run a restart when no daemon is running.");
         let result = run_restart_command(&njs_zowe_path);
-        assert_eq!(result.unwrap(), 0);
+        assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
         // confirm that the daemon is running
         thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
         daemon_proc_info = get_daemon_process_info();
-        assert_eq!(daemon_proc_info.is_running, true);
+        assert_eq!(daemon_proc_info.is_running, true, "The daemon is not running after restart.");
         let first_daemon_pid = daemon_proc_info.pid;
 
-        // With daemon now running, run another restart
+        println!("--- Test msg: Run a restart with a daemon already running.");
         let result = run_restart_command(&njs_zowe_path);
-        assert_eq!(result.unwrap(), 0);
+        assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
         // confirm that a new and different daemon is running
         thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
         daemon_proc_info = get_daemon_process_info();
-        assert_eq!(daemon_proc_info.is_running, true);
-        assert_ne!(daemon_proc_info.pid, first_daemon_pid);
+        assert_eq!(daemon_proc_info.is_running, true, "A daemon should be running now.");
+        assert_ne!(daemon_proc_info.pid, first_daemon_pid,
+            "Last pid = {} should not equal current PID = {}", first_daemon_pid, daemon_proc_info.pid,
+        );
 
         // As a cleanup step, stop the daemon
+        println!("--- Test msg: To cleanup, stop the running daemon.");
         let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
         if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
             assert_eq!("Shutdown should have worked", "Shutdown failed");
@@ -1352,6 +1355,6 @@ mod tests {
 
         // confirm that the daemon has stopped
         daemon_proc_info = get_daemon_process_info();
-        assert_eq!(daemon_proc_info.is_running, false);
+        assert_eq!(daemon_proc_info.is_running, false, "The daemon should have stopped for the end of the test.");
     }
 }
