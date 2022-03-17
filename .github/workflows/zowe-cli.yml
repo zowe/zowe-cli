@@ -132,7 +132,7 @@ jobs:
     - name: Rust Tests (Daemon)
       id: rust-test-daemon
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: cargo test -- --nocapture
+      run: cargo test --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Integration Tests (Native)
       id: integration-native
