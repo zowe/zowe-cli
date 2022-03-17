@@ -129,6 +129,11 @@ jobs:
       env:
         PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
 
+    - name: Rust Tests (Daemon)
+      id: integration-daemon
+      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: cargo test -- --nocapture
+
     - name: Integration Tests (Native)
       id: integration-native
       if: ${{ always() && steps.build.outcome == 'success' && !(github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
