@@ -1304,4 +1304,54 @@ mod tests {
 
         env::remove_var("ZOWE_EDITOR");
     }
+
+    #[test]
+    // test daemon restart
+    fn test_restart() {
+        let njs_zowe_path = get_nodejs_zowe_path();
+
+        // run a restart when no daemon is running
+        let mut daemon_proc_info = get_daemon_process_info();
+        if !daemon_proc_info.is_running {
+            // Stopping a running daemon
+            let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
+            if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
+                assert_eq!("Shutdown should have worked", "Shutdown failed");
+            }
+
+            // confirm that the daemon has stopped
+            daemon_proc_info = get_daemon_process_info();
+            assert_eq!(daemon_proc_info.is_running, false);
+        }
+
+        // now try the restart
+        let result = run_restart_command(&njs_zowe_path);
+        assert_eq!(result.unwrap(), 0);
+
+        // confirm that the daemon is running
+        thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+        daemon_proc_info = get_daemon_process_info();
+        assert_eq!(daemon_proc_info.is_running, true);
+        let first_daemon_pid = daemon_proc_info.pid;
+
+        // With daemon now running, run another restart
+        let result = run_restart_command(&njs_zowe_path);
+        assert_eq!(result.unwrap(), 0);
+
+        // confirm that a new and different daemon is running
+        thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+        daemon_proc_info = get_daemon_process_info();
+        assert_eq!(daemon_proc_info.is_running, true);
+        assert_ne!(daemon_proc_info.pid, first_daemon_pid);
+
+        // As a cleanup step, stop the daemon
+        let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
+        if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
+            assert_eq!("Shutdown should have worked", "Shutdown failed");
+        }
+
+        // confirm that the daemon has stopped
+        daemon_proc_info = get_daemon_process_info();
+        assert_eq!(daemon_proc_info.is_running, false);
+    }
 }
