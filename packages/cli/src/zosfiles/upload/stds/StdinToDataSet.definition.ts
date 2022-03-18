@@ -41,6 +41,7 @@ export const StdinToDataSetDefinition: ICommandDefinition = {
     options: [
         UploadOptions.volume,
         UploadOptions.binary,
+        UploadOptions.record,
         UploadOptions.recall
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
