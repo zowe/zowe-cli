@@ -10,6 +10,7 @@
 */
 
 import * as nodeJsPath from "path";
+import { spawn, spawnSync, StdioOptions } from "child_process"; // zzz
 
 import { IO, ProcessUtils, ISystemInfo } from "@zowe/imperative";
 
@@ -102,6 +103,29 @@ describe("Zowe native executable", () => {
             expect(stdoutStr).toContain("Zowe CLI daemon mode is disabled");
             expect(stdoutStr).toContain(NOW_PRESS_ENTER_MSG);
             expect(response.status).toBe(0);
+        }
+    });
+
+    it("should run restart", async () => {
+        console.log("willRunZoweExe = ", willRunZoweExe);
+        if (willRunZoweExe) {
+            let spawnResult;
+            const ioOpts: StdioOptions = ["pipe", "pipe", "pipe"];
+            try {
+                spawnResult = spawn("sh",
+                    [__dirname + "/__scripts__/run_zowe_exe.sh", "daemon", "restart"],
+                    {
+                        stdio: ioOpts,
+                        shell: false
+                    }
+                );
+            } catch (err) {
+                console.log("failed top spawn restart\nError = ", err);
+                expect(err.message).toBe("this should have worked");
+            }
+
+            expect(spawnResult.stdout).toContain("zzz");
+            expect(1).toBe(1);
         }
     });
 });
