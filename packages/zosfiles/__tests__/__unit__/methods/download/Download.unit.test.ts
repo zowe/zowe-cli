@@ -249,6 +249,117 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
         });
 
+        it("should download a data set to the given file in binary mode if record specified", async () => {
+            let response;
+            let caughtError;
+            const binary = true;
+            const record = true;
+            const file = "my/test/file.xyz";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {binary, record, file});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, file),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
+                task: undefined /*no progress task*/});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+        });
+
+        it("should download a data set in record mode and default extension", async () => {
+            let response;
+            let caughtError;
+            const record = true;
+            const destination = dsFolder + ".txt";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {record});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: false /* don't normalize newlines, record mode*/,
+                task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should download a data set to the given file in record mode", async () => {
+            let response;
+            let caughtError;
+            const record = true;
+            const file = "my/test/file.xyz";
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, {record, file});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, file),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: false, /* no normalizing new lines, record mode*/
+                task: undefined /*no progress task*/});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+        });
+
         it("should download a data set specifying preserveOriginalLetterCase", async () => {
             let response;
             let caughtError;
@@ -575,6 +686,41 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download all members specifying directory, volume, extension, and record mode", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path/";
+            const extension = ".xyz";
+            const record = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    record
+                });
+            });
+        });
+
         it("should download all members specifying directory, volume, extension, responseTimeout and binary mode", async () => {
             let response;
             let caughtError;
@@ -607,6 +753,44 @@ describe("z/OS Files - Download", () => {
                     volume,
                     file: `${directory}/${mem.member.toLowerCase()}${extension}`,
                     binary,
+                    encoding: undefined,
+                    responseTimeout
+                });
+            });
+        });
+
+        it("should download all members specifying directory, volume, extension, responseTimeout and record mode", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path/";
+            const extension = ".xyz";
+            const record = true;
+            const responseTimeout = 5;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record, responseTimeout});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedSuccessfully.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    record,
                     encoding: undefined,
                     responseTimeout
                 });
@@ -891,6 +1075,21 @@ describe("z/OS Files - Download", () => {
             expect(response).toBeUndefined();
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+
+        it("should throw an error if the requested USS file data type is record", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, {record: true});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.unsupportedDataType.message);
         });
 
         it("should download uss file", async () => {

@@ -231,7 +231,7 @@ export class Upload {
             resource: endpoint,
             reqHeaders,
             requestStream: fileStream,
-            normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not uploading in binary*/,
+            normalizeRequestNewLines: !(options.binary || options.record) /* only normalize newlines if we are not uploading in binary*/,
             task: options.task
         };
 
@@ -455,7 +455,8 @@ export class Upload {
         ussname: string,
         buffer: Buffer,
         options: IUploadOptions = {}) {
-        options.binary = options.binary? options.binary : false;
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        options.binary = options.binary ? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
@@ -478,6 +479,7 @@ export class Upload {
         uploadStream: Readable,
         options: IUploadOptions = {}) {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         ussname = path.posix.normalize(ussname);
         ussname = ZosFilesUtils.formatUnixFilepath(ussname);
         ussname = encodeURIComponent(ussname);
@@ -527,6 +529,7 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(inputFile, ZosFilesMessages.missingInputFile.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
 
         const promise = new Promise((resolve, reject) => {
             fs.lstat(inputFile, (err, stats) => {
@@ -589,6 +592,7 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(inputDirectory, "", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
 
         // Set default values for options
         options.binary = options.binary == null ? false : options.binary;
@@ -708,6 +712,7 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(inputDirectory, "", ZosFilesMessages.missingInputDirectory.message);
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSDirectoryName.message);
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSDirectoryName.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
 
         // Set default values
         options.binary = options.binary == null ? false : options.binary;
@@ -931,6 +936,8 @@ export class Upload {
                 if (options.binary) {
                     reqHeaders.push(ZosmfHeaders.OCTET_STREAM);
                     reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
+                } else if (options.record) {
+                    reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
                 } else if (options.localEncoding) {
                     reqHeaders.push({"Content-Type": options.localEncoding});
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
