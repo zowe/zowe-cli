@@ -99,6 +99,13 @@ jobs:
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
+    - name: Rust Tests (Daemon)
+      id: rust-test-daemon
+      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+      env:
+        PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
+
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: upload-binary
@@ -126,13 +133,6 @@ jobs:
       id: start-daemon
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: ./__tests__/__resources__/daemon_instances/zowe
-      env:
-        PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
-
-    - name: Rust Tests (Daemon)
-      id: rust-test-daemon
-      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: cargo test --manifest-path=zowex/Cargo.toml -- --nocapture
       env:
         PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
 
