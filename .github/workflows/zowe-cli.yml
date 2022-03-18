@@ -115,15 +115,12 @@ jobs:
     - name: Place Zowe script directory on PATH
       id: zowe-script-dir-on-path
       if: ${{ steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      shell: bash
       run: echo ${{ github.workspace }}/__tests__/__resources__/application_instances >> $GITHUB_PATH
 
     - name: Rust Tests (Daemon)
       id: rust-test-daemon
       if: ${{ steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: |
-        echo ${PATH}
-        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       id: unit
@@ -139,8 +136,6 @@ jobs:
       id: start-daemon
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: ./__tests__/__resources__/daemon_instances/zowe
-      env:
-        PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
 
     - name: Integration Tests (Native)
       id: integration-native
