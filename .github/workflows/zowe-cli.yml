@@ -104,7 +104,7 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
       env:
-        PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances;${{ env.PATH }}
+        PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances${{ matrix.os == 'windows-latest' && ';' || ':' }}${{ env.PATH }}
 
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
