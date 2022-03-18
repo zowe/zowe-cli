@@ -99,16 +99,6 @@ jobs:
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
         tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
-    - name: Rust Tests (Daemon)
-      id: rust-test-daemon
-      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: |
-        echo ${PATH}
-        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
-      env:
-        RUST_TEST_PATH: ${{ github.workspace }}\__tests__\__resources__\application_instances${{ matrix.os == 'windows-latest' && ';' || ':' }}${{ env.PATH }}
-        PATH: ${{ env.RUST_TEST_PATH }}
-
     - name: Archive Binary
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: upload-binary
@@ -121,6 +111,19 @@ jobs:
       if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
       id: setup-binary
       run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
+
+    - name: Place Zowe script directory on PATH
+      id: zowe-script-dir-on-path
+      if: ${{ steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      shell: bash
+      run: echo ${{ github.workspace }}/__tests__/__resources__/application_instances >> $GITHUB_PATH
+
+    - name: Rust Tests (Daemon)
+      id: rust-test-daemon
+      if: ${{ steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: |
+        echo ${PATH}
+        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       id: unit
