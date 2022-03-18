@@ -112,15 +112,24 @@ jobs:
       id: setup-binary
       run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
 
-    - name: Place Zowe script directory on PATH
-      id: zowe-script-dir-on-path
-      if: ${{ steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+    - name: Place Zowe windows script directory on PATH
+      id: zowe-win-script-dir-on-path
+      if: ${{ matrix.os == 'windows-latest' && steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: echo ${{ github.workspace }}\__tests__\__resources__\application_instances >> $GITHUB_PATH
+
+    - name: Place Zowe Linux script directory on PATH
+      id: zowe-linux-script-dir-on-path
+      if: ${{ matrix.os != 'windows-latest' && steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: echo ${{ github.workspace }}/__tests__/__resources__/application_instances >> $GITHUB_PATH
 
     - name: Rust Tests (Daemon)
       id: rust-test-daemon
-      if: ${{ steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+      if: ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: |
+        echo "workspace = ${{ github.workspace }}"
+        echo "Linux PATH=$PATH"
+        echo "Window PATH=$env:PATH"
+        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       id: unit
