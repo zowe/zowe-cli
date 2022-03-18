@@ -45,6 +45,18 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
+     * The record option
+     * @type {ICommandOptionDefinition}
+     */
+    record: {
+        name: "record",
+        aliases: ["b"],
+        description: strings.RECORD,
+        type: "boolean",
+        conflictsWith: ["binary"]
+    },
+
+    /**
      * The encoding option
      * @type {ICommandOptionDefinition}
      */

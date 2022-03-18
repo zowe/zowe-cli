@@ -42,6 +42,7 @@ export const AllMembersDefinition: ICommandDefinition = {
         DownloadOptions.volume,
         DownloadOptions.directory,
         DownloadOptions.binary,
+        DownloadOptions.record,
         DownloadOptions.encoding,
         DownloadOptions.extension,
         DownloadOptions.maxConcurrentRequests,

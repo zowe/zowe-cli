@@ -45,6 +45,18 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
     },
 
     /**
+     * The record option
+     * @type {ICommandOptionDefinition}
+     */
+    record: {
+        name: "record",
+        aliases: ["r"],
+        description: strings.RECORD,
+        type: "boolean",
+        conflictsWith: ["binary"]
+    },
+
+    /**
      * The encoding option
      * @type {ICommandOptionDefinition}
      */
