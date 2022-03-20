@@ -112,23 +112,27 @@ jobs:
       id: setup-binary
       run: tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
 
-    - name: Place Zowe windows script directory on PATH
-      id: zowe-win-script-dir-on-path
-      if: ${{ matrix.os == 'windows-latest' && steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: echo ${{ github.workspace }}\__tests__\__resources__\application_instances >> $GITHUB_PATH
-
-    - name: Place Zowe Linux script directory on PATH
-      id: zowe-linux-script-dir-on-path
-      if: ${{ matrix.os != 'windows-latest' && steps.build.outcome == 'success' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: echo ${{ github.workspace }}/__tests__/__resources__/application_instances >> $GITHUB_PATH
-
-    - name: Rust Tests (Daemon)
-      id: rust-test-daemon
-      if: ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+    - name: Test Rust Linux EXE and zowe script
+      id: test-linux-exe-and-script
+      if: ${{ matrix.os != 'windows-latest' && ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: |
-        echo "workspace = ${{ github.workspace }}"
-        echo "Linux PATH=$PATH"
-        echo "Window PATH=$env:PATH"
+        export PATH=$PATH:${{ github.workspace }}/__tests__/__resources__/application_instances
+        echo "PATH = $PATH"
+        cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
+
+    - name: Test Rust Windows EXE and zowe script
+      id: test-win-exe-and-script
+      if: ${{ matrix.os == 'windows-latest' && ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      run: |
+        # GHActions PATH settings fail. Maybe Windows PATH is too long for GHA?
+        $ErrorActionPreference = 'silentlycontinue'
+        $shortPath = Split-Path (Get-Command pwsh).Path
+        if ( $shortPath.length -le 0 ) {
+            $shortPath = Split-Path (Get-Command Powershell).Path
+        }
+        $shortPath = "$shortPath;$(Split-Path (Get-Command node).Path);$(Split-Path (Get-Command cargo).Path);${{ github.workspace }}\__tests__\__resources__\application_instances"
+        $env:Path = $shortPath
+        echo "Path = $env:Path"
         cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
