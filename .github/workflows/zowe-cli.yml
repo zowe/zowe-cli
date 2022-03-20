@@ -124,7 +124,7 @@ jobs:
       id: test-win-exe-and-script
       if: ${{ matrix.os == 'windows-latest' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: |
-        # GHActions PATH settings fail. Maybe Windows PATH is too long for GHA?
+        # Because GHActions Path settings do not work (maybe Windows Path is too long?) we set Path in our script
         $ErrorActionPreference = 'silentlycontinue'
         $shortPath = Split-Path (Get-Command pwsh).Path
         if ( $shortPath.length -le 0 ) {
