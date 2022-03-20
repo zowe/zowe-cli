@@ -1312,7 +1312,7 @@ mod tests {
 
         let mut daemon_proc_info = get_daemon_process_info();
         if daemon_proc_info.is_running {
-            println!("--- Test msg: To initializes test, stop a running daemon.");
+            println!("--- test_restart: To initializes test, stop a running daemon.");
             let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
             if let Err(err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
                 assert_eq!("Shutdown should have worked", "Shutdown failed", "exit code = {}", err_val);
@@ -1324,7 +1324,7 @@ mod tests {
         }
 
         // now try the restart
-        println!("--- Test msg: Run a restart when no daemon is running.");
+        println!("--- test_restart: Run a restart when no daemon is running.");
         let result = run_restart_command(&njs_zowe_path);
         assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
@@ -1334,7 +1334,7 @@ mod tests {
         assert_eq!(daemon_proc_info.is_running, true, "The daemon is not running after restart.");
         let first_daemon_pid = daemon_proc_info.pid;
 
-        println!("--- Test msg: Run a restart with a daemon already running.");
+        println!("--- test_restart: Run a restart with a daemon already running.");
         let result = run_restart_command(&njs_zowe_path);
         assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
@@ -1347,7 +1347,7 @@ mod tests {
         );
 
         // As a cleanup step, stop the daemon
-        println!("--- Test msg: To cleanup, stop the running daemon.");
+        println!("--- test_restart: To cleanup, stop the running daemon.");
         let mut restart_cmd_args: Vec<String> = vec![SHUTDOWN_REQUEST.to_string()];
         if let Err(_err_val) = run_daemon_command(&njs_zowe_path, &mut restart_cmd_args) {
             assert_eq!("Shutdown should have worked", "Shutdown failed");
