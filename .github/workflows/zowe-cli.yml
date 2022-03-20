@@ -124,7 +124,7 @@ jobs:
       id: test-win-exe-and-script
       if: ${{ matrix.os == 'windows-latest' && steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: |
-        # Adding to Path in GHActions is unreliable (maybe Windows Path is too long?). So we set Path in our script.
+        # Adding to Path in GHActions is unreliable. Maybe Windows Path is too long? So we set Path in our script.
         $ErrorActionPreference = 'silentlycontinue'
         $shortPath = Split-Path (Get-Command pwsh).Path
         if ( $shortPath.length -le 0 ) {
@@ -145,11 +145,11 @@ jobs:
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
       uses: t1m0thyj/unlock-keyring@master
 
-    - name: Start Daemon
+    - name: Start Daemon on Windows only
       id: start-daemon
       if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
       run: |
-        # Adding to Path in GHActions is unreliable (maybe Windows Path is too long?). So we set Path in our script.
+        # Adding to Path in GHActions is unreliable. Maybe Windows Path is too long? So we set Path in our script.
         $ErrorActionPreference = 'silentlycontinue'
         $shortPath = Split-Path (Get-Command pwsh).Path
         if ( $shortPath.length -le 0 ) {
@@ -158,7 +158,7 @@ jobs:
         $shortPath = "$shortPath;$(Split-Path (Get-Command node).Path);$(Split-Path (Get-Command cargo).Path);${{ github.workspace }}\__tests__\__resources__\application_instances"
         $env:Path = $shortPath
         echo "Path = $env:Path"
-       ./__tests__/__resources__/daemon_instances/zowe
+        ./__tests__/__resources__/daemon_instances/zowe
 
     - name: Integration Tests (Native)
       id: integration-native
