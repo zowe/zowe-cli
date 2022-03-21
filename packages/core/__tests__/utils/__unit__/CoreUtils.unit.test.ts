@@ -16,6 +16,12 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 describe("CoreUtils", () => {
+    afterAll(() => {
+        // Just to be safe
+        jest.unmock("fs");
+        jest.restoreAllMocks();
+    });
+
     const dummyString = "test";
     describe("padLeft", () => {
         it("should throw an error if we try to pad with 0 characters", () => {

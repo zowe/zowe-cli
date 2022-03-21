@@ -39,7 +39,7 @@ const fakeProfileMissingInformation: imperative.IProfile = {
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
-describe("CoreUtils", () => {
+describe("ProfileUtils", () => {
     describe("getDefaultProfile", () => {
         beforeAll(async () => {
             TEST_ENVIRONMENT = await TestEnvironment.setUp({

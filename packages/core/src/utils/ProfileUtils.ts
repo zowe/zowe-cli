@@ -11,6 +11,7 @@
 
 import { ImperativeConfig, IProfileLoaded, CliProfileManager, IProfile, Logger, ImperativeError } from "@zowe/imperative";
 import * as path from "path";
+import * as os from "os";
 
 /**
  * Retrieves the Zowe CLI home directory. In the situation Imperative has
@@ -18,9 +19,11 @@ import * as path from "path";
  * @returns {string} - Returns the Zowe home directory
  */
 export function getZoweDir(): string {
-    if (ImperativeConfig.instance.loadedConfig == null) {
+    const defaultHome = path.join(os.homedir(), ".zowe");
+    if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
         ImperativeConfig.instance.loadedConfig = {
-            defaultHome: path.join(require("os").homedir(), ".zowe"),
+            name: "zowe",
+            defaultHome,
             envVariablePrefix: "ZOWE"
         };
     }
