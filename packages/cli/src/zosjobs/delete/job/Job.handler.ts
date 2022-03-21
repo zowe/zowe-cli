@@ -46,15 +46,15 @@ export default class JobHandler extends ZosmfBaseHandler {
         const response = await DeleteJobs.deleteJobForJob(this.mSession, job, this.arguments.modifyVersion);
 
         let message: string;
-        if ((this.arguments.modifyVersion == null || this.arguments.modifyVersion === "1.0") && response.status === "0") {
+        if (this.arguments.modifyVersion == null || this.arguments.modifyVersion === "1.0") {
             message = `Successfully submitted request to delete job ${job.jobname} (${jobid})`;
-        } else if (this.arguments.modifyVersion === "2.0" && response.status === "0") {
+        } else if (this.arguments.modifyVersion === "2.0" && response?.status === "0") {
             message = `Successfully deleted job ${job.jobname} (${jobid})`;
         } else {
             throw new ImperativeError({
                 msg: `Failed to delete job ${job.jobname} (${jobid})`,
-                additionalDetails: response.message,
-                errorCode: response["internal-code"]
+                additionalDetails: response?.message,
+                errorCode: response?.["internal-code"]
             });
         }
 

@@ -30,10 +30,10 @@ export class CancelJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
-     * @returns {Promise<IJobFeedback>} - promise that resolves when the API call is complete
+     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
      * @memberof CancelJobs
      */
-    public static async cancelJob(session: AbstractSession, jobname: string, jobid: string, version?: string): Promise<IJobFeedback> {
+    public static async cancelJob(session: AbstractSession, jobname: string, jobid: string, version?: string): Promise<IJobFeedback|undefined> {
         this.log.trace("cancelJob called with jobname %s jobid %s", jobname, jobid);
         return CancelJobs.cancelJobCommon(session, { jobname, jobid, version });
     }
@@ -45,10 +45,10 @@ export class CancelJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job that you want to cancel
      * @param {string} version - version of cancel request
-     * @returns {Promise<IJobFeedback>} -  promise that resolves when the API call is complete
+     * @returns {Promise<IJobFeedback|undefined>} -  promise that resolves when the API call is complete
      * @memberof CancelJobs
      */
-    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0"): Promise<IJobFeedback> {
+    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0"): Promise<IJobFeedback|undefined> {
         this.log.trace("cancelJobForJob called with job %s", JSON.stringify(job));
         return CancelJobs.cancelJobCommon(session, { jobname: job.jobname, jobid: job.jobid, version });
     }
@@ -59,10 +59,10 @@ export class CancelJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ICancelJobParms} parms - parm object (see ICancelJobParms interface for details)
-     * @returns {Promise<IJobFeedback>} - promise that resolves when the API call is complete
+     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
      * @memberof CancelJobs
      */
-    public static async cancelJobCommon(session: AbstractSession, parms: ICancelJobParms): Promise<IJobFeedback> {
+    public static async cancelJobCommon(session: AbstractSession, parms: ICancelJobParms): Promise<IJobFeedback|undefined> {
         this.log.trace("cancelJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
@@ -83,29 +83,12 @@ export class CancelJobs {
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
         const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
 
-        let responseFeedback: IJobFeedback = {
-            jobid: undefined,
-            jobname: undefined,
-            "original-jobid": undefined,
-            owner: undefined,
-            member: undefined,
-            sysname: undefined,
-            "job-correlator": undefined,
-            status: undefined,
-            "internal-code": undefined,
-            message: undefined
-        };
-
         if (parms.version === "2.0") {
-            responseFeedback = responseJson as IJobFeedback;
+            const responseFeedback = responseJson as IJobFeedback;
             // Turns out status is a number, but we cannot introduce breaking changes.
             responseFeedback.status = responseFeedback.status.toString();
-        } else {
-            // If run asynchronously, we do not know if it succeeded, so behave as though it did
-            responseFeedback.status = "0";
-        }
-
-        return responseFeedback;
+            return responseFeedback;
+        } else { return undefined; }
     }
 
 

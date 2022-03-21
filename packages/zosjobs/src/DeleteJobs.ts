@@ -29,10 +29,10 @@ export class DeleteJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
-     * @returns {Promise<IJobFeedback>} - promise that resolves when the API call is complete
+     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
      * @memberof DeleteJobs
      */
-    public static async deleteJob(session: AbstractSession, jobname: string, jobid: string): Promise<IJobFeedback> {
+    public static async deleteJob(session: AbstractSession, jobname: string, jobid: string): Promise<IJobFeedback|undefined> {
         this.log.trace("deleteJob called with jobname %s jobid %s", jobname, jobid);
         return DeleteJobs.deleteJobCommon(session, {jobname, jobid});
     }
@@ -44,10 +44,10 @@ export class DeleteJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job that you want to delete
      * @param {"1.0"| "2.0"} modifyVersion - version of the X-IBM-Job-Modify-Version header to use (see ZosmfHeaders)
-     * @returns {Promise<IJobFeedback>} -  promise that resolves when the API call is completel
+     * @returns {Promise<IJobFeedback|undefined>} -  promise that resolves when the API call is completel
      * @memberof DeleteJobs
      */
-    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0"): Promise<IJobFeedback> {
+    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0"): Promise<IJobFeedback|undefined> {
         this.log.trace("deleteJobForJob called with job %s", JSON.stringify(job));
         return DeleteJobs.deleteJobCommon(session, {jobname: job.jobname, jobid: job.jobid, modifyVersion});
     }
@@ -58,10 +58,10 @@ export class DeleteJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IDeleteJobParms} parms - parm object (see IDeleteJobParms interface for details)
-     * @returns {Promise<IJobFeedback>} - promise that resolves when the API call is complete
+     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
      * @memberof DeleteJobs
      */
-    public static async deleteJobCommon(session: AbstractSession, parms: IDeleteJobParms) {
+    public static async deleteJobCommon(session: AbstractSession, parms: IDeleteJobParms): Promise<IJobFeedback|undefined> {
         this.log.trace("deleteJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to delete.");
@@ -78,29 +78,12 @@ export class DeleteJobs {
         const parameters: string = IO.FILE_DELIM + parms.jobname + IO.FILE_DELIM + parms.jobid;
         const responseJson = await ZosmfRestClient.deleteExpectJSON(session, JobsConstants.RESOURCE + parameters, headers);
 
-        let responseFeedback: IJobFeedback = {
-            jobid: undefined,
-            jobname: undefined,
-            "original-jobid": undefined,
-            owner: undefined,
-            member: undefined,
-            sysname: undefined,
-            "job-correlator": undefined,
-            status: undefined,
-            "internal-code": undefined,
-            message: undefined
-        };
-
         if (parms.modifyVersion === "2.0") {
-            responseFeedback = responseJson as IJobFeedback;
+            const responseFeedback = responseJson as IJobFeedback;
             // Turns out status is a number, but we cannot introduce breaking changes.
             responseFeedback.status = responseFeedback.status.toString();
-        } else {
-            // If run asynchronously, we do not know if it succeeded, so behave as though it did
-            responseFeedback.status = "0";
-        }
-
-        return responseFeedback;
+            return responseFeedback;
+        } else { return undefined; }
     }
 
 

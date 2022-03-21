@@ -21,7 +21,7 @@ export class CancelJobsData {
     /**
      * Sample Job Feedback
      * @static
-     * @type {IJobFeedback}
+     * @type {IJobFeedback|undefined}
      * @memberof CancelJobsData
      */
     public static readonly SAMPLE_JOB_FEEDBACK_GOOD: IJobFeedback = {
@@ -40,7 +40,7 @@ export class CancelJobsData {
     /**
      * Sample Job Feedback
      * @static
-     * @type {IJobFeedback}
+     * @type {IJobFeedback|undefined}
      * @memberof CancelJobsData
      */
     public static readonly SAMPLE_JOB_FEEDBACK_BAD: IJobFeedback = {
@@ -59,19 +59,8 @@ export class CancelJobsData {
     /**
      * Sample Job Feedback
      * @static
-     * @type {IJobFeedback}
+     * @type {IJobFeedback|undefined}
      * @memberof CancelJobsData
      */
-    public static readonly SAMPLE_JOB_FEEDBACK_ASYNC: IJobFeedback = {
-        "jobid": undefined,
-        "jobname": undefined,
-        "original-jobid": undefined,
-        "owner": undefined,
-        "member": undefined,
-        "sysname": undefined,
-        "job-correlator": undefined,
-        "status": "0",
-        "internal-code": undefined,
-        "message": undefined
-    };
+    public static readonly SAMPLE_JOB_FEEDBACK_ASYNC: undefined = undefined;
 }

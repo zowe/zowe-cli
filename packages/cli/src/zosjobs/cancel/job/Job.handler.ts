@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
-import { CancelJobs, GetJobs, IJob, IJobFeedback } from "@zowe/zos-jobs-for-zowe-sdk";
+import { CancelJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -43,18 +43,18 @@ export default class JobHandler extends ZosmfBaseHandler {
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         // Cancel the job
-        const response: IJobFeedback = await CancelJobs.cancelJobForJob(this.mSession, job, this.arguments.modifyVersion);
+        const response = await CancelJobs.cancelJobForJob(this.mSession, job, this.arguments.modifyVersion);
         let message: string;
 
-        if ((this.arguments.modifyVersion == null || this.arguments.modifyVersion === "1.0") && response.status === "0") {
+        if (this.arguments.modifyVersion == null || this.arguments.modifyVersion === "1.0") {
             message = `Successfully submitted request to cancel job ${job.jobname} (${jobid})`;
-        } else if (this.arguments.modifyVersion === "2.0" && response.status === "0") {
+        } else if (this.arguments.modifyVersion === "2.0" && response?.status === "0") {
             message = `Successfully canceled job ${job.jobname} (${jobid})`;
         } else {
             throw new ImperativeError({
                 msg: `Failed to cancel job ${job.jobname} (${jobid})`,
-                additionalDetails: response.message,
-                errorCode: response["internal-code"]
+                additionalDetails: response?.message,
+                errorCode: response?.["internal-code"]
             });
         }
 
