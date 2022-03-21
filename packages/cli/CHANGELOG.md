@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202203211751`
 
 - BugFix: Updated Imperative to allow applications to update credentials from the `ProfileInfo` APIs. [zowe/vscode-extension-for-zowe#1646](https://github.com/zowe/vscode-extension-for-zowe/issues/1646)
 
