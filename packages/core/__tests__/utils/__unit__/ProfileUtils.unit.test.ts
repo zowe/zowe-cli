@@ -17,6 +17,12 @@ jest.mock("os");
 const os = require("os");
 
 describe("ProfileUtils", () => {
+    afterAll(() => {
+        // Just to be safe
+        jest.unmock("os");
+        jest.restoreAllMocks();
+    });
+
     describe("getZoweDir", () => {
         const expectedLoadedConfig = {
             name: "zowe",
