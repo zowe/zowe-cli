@@ -39,7 +39,7 @@ describe("ProfileUtils", () => {
             defaultHome = path.join(expectedLoadedConfig.defaultHome, ".zowe");
         });
 
-        it("should return the ENV cliHome even if set", () => {
+        it("should return the ENV cliHome even if loadedConfig is set in the process", () => {
             jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ cliHome: { value: "test" } } as any);
             expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
             expect(ProfileUtils.getZoweDir()).toEqual("test");
