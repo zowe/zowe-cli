@@ -63,3 +63,67 @@ exports[`Upload file-to-data-set handler process method should upload a file to 
 
 uploaded"
 `;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set in binary format if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-file",
+      "success": true,
+      "to": "testing",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": true,
+}
+`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set in binary format if requested 2`] = `""`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set in binary format if requested 3`] = `
+"
+[33msuccess: [39m[32mtrue[39m
+[33mfrom: [39m   test-file
+[33mto: [39m     testing
+
+
+[33mfile_to_upload: [39m[34m1[39m
+[33msuccess: [39m       [34m1[39m
+[33merror: [39m         [34m0[39m
+[33mskipped: [39m       [34m0[39m
+
+
+uploaded"
+`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set in record format if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-file",
+      "success": true,
+      "to": "testing",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": true,
+}
+`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set in record format if requested 2`] = `""`;
+
+exports[`Upload file-to-data-set handler process method should upload a file to a data set in record format if requested 3`] = `
+"
+[33msuccess: [39m[32mtrue[39m
+[33mfrom: [39m   test-file
+[33mto: [39m     testing
+
+
+[33mfile_to_upload: [39m[34m1[39m
+[33msuccess: [39m       [34m1[39m
+[33merror: [39m         [34m0[39m
+[33mskipped: [39m       [34m0[39m
+
+
+uploaded"
+`;
