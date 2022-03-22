@@ -29,10 +29,10 @@ export class DeleteJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
-     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof DeleteJobs
      */
-    public static async deleteJob(session: AbstractSession, jobname: string, jobid: string): Promise<IJobFeedback|undefined> {
+    public static async deleteJob(session: AbstractSession, jobname: string, jobid: string): Promise<undefined|IJobFeedback> {
         this.log.trace("deleteJob called with jobname %s jobid %s", jobname, jobid);
         return DeleteJobs.deleteJobCommon(session, {jobname, jobid});
     }
@@ -44,10 +44,10 @@ export class DeleteJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job that you want to delete
      * @param {"1.0"| "2.0"} modifyVersion - version of the X-IBM-Job-Modify-Version header to use (see ZosmfHeaders)
-     * @returns {Promise<IJobFeedback|undefined>} -  promise that resolves when the API call is completel
+     * @returns {Promise<undefined|IJobFeedback>} -  promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof DeleteJobs
      */
-    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0"): Promise<IJobFeedback|undefined> {
+    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0"): Promise<undefined|IJobFeedback> {
         this.log.trace("deleteJobForJob called with job %s", JSON.stringify(job));
         return DeleteJobs.deleteJobCommon(session, {jobname: job.jobname, jobid: job.jobid, modifyVersion});
     }
@@ -58,10 +58,10 @@ export class DeleteJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IDeleteJobParms} parms - parm object (see IDeleteJobParms interface for details)
-     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof DeleteJobs
      */
-    public static async deleteJobCommon(session: AbstractSession, parms: IDeleteJobParms): Promise<IJobFeedback|undefined> {
+    public static async deleteJobCommon(session: AbstractSession, parms: IDeleteJobParms): Promise<undefined|IJobFeedback> {
         this.log.trace("deleteJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to delete.");

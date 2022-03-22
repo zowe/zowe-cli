@@ -30,10 +30,10 @@ export class CancelJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
-     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof CancelJobs
      */
-    public static async cancelJob(session: AbstractSession, jobname: string, jobid: string, version?: string): Promise<IJobFeedback|undefined> {
+    public static async cancelJob(session: AbstractSession, jobname: string, jobid: string, version?: string): Promise<undefined|IJobFeedback> {
         this.log.trace("cancelJob called with jobname %s jobid %s", jobname, jobid);
         return CancelJobs.cancelJobCommon(session, { jobname, jobid, version });
     }
@@ -45,10 +45,10 @@ export class CancelJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job that you want to cancel
      * @param {string} version - version of cancel request
-     * @returns {Promise<IJobFeedback|undefined>} -  promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof CancelJobs
      */
-    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0"): Promise<IJobFeedback|undefined> {
+    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0"): Promise<undefined|IJobFeedback> {
         this.log.trace("cancelJobForJob called with job %s", JSON.stringify(job));
         return CancelJobs.cancelJobCommon(session, { jobname: job.jobname, jobid: job.jobid, version });
     }
@@ -59,16 +59,16 @@ export class CancelJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ICancelJobParms} parms - parm object (see ICancelJobParms interface for details)
-     * @returns {Promise<IJobFeedback|undefined>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof CancelJobs
      */
-    public static async cancelJobCommon(session: AbstractSession, parms: ICancelJobParms): Promise<IJobFeedback|undefined> {
+    public static async cancelJobCommon(session: AbstractSession, parms: ICancelJobParms): Promise<undefined|IJobFeedback> {
         this.log.trace("cancelJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
 
-        // set default if unset
-        if (parms.version == null) {
+        // set to default if default, unset or invalid
+        if (parms.version !== "2.0") {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
         }
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
