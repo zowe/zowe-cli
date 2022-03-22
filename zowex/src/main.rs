@@ -709,7 +709,8 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                     u_payload.pop(); // remove the 0xC
                     payload = str::from_utf8(&u_payload).unwrap().to_string();
 
-                    let p: DaemonRequest = match serde_json::from_str(&payload) {
+                    let p: DaemonRequest;
+                    match serde_json::from_str(&payload) {
                         Err(_e) if _progress => {
                             if atty::is(Stream::Stderr) {
                                 eprint!("{}", payload);
@@ -717,7 +718,17 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                             }
                             continue;
                         },
-                        result => result.unwrap(),
+                        result => {
+                            match result {
+                                Ok(ok_val) => {
+                                    p = ok_val;
+                                },
+                                Err(err_val) => {
+                                    eprint!("You may be running mismatched versions of Zowe executable and Zowe daemon.\n");
+                                    return Err(std::io::Error::new(std::io::ErrorKind::Other, err_val))
+                                }
+                            }
+                        }
                     };
 
                     if let Some(s) = p.stdout {
