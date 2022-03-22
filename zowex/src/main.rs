@@ -724,7 +724,7 @@ fn talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<i32> {
                                     p = ok_val;
                                 },
                                 Err(err_val) => {
-                                    eprint!("You may be running mismatched versions of Zowe executable and Zowe daemon.\n");
+                                    eprintln!("You may be running mismatched versions of Zowe executable and Zowe daemon.");
                                     return Err(std::io::Error::new(std::io::ErrorKind::Other, err_val))
                                 }
                             }
