@@ -50,7 +50,7 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
      */
     record: {
         name: "record",
-        aliases: ["b"],
+        aliases: ["r"],
         description: strings.RECORD,
         type: "boolean",
         conflictsWith: ["binary"]
