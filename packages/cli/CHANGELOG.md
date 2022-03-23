@@ -2,10 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-
 ## Recent Changes
 
 - BugFix: Inconsistent capitalization with z/OS console command. [Issue 961](https://github.com/zowe/zowe-cli/issues/961)
+
+## `6.37.8`
+
+- Documentation: Updated help text for the `zowe jobs submit stdin` command. [#1284](https://github.com/zowe/zowe-cli/issues/1284)
 
 ## `6.37.7`
 
