@@ -167,6 +167,12 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.38.0`
+
+- Enhancement: Exported the `@zowe/imperative` package as the `imperative` namespace.
+  If your project depends on both Zowe CLI and Imperative, you can now `import { imperative } from "@zowe/cli"` without declaring `@zowe/imperative` as a separate dependency in package.json. No change is required for CLI plug-ins.
+- BugFix: Fixed inconsistent capitalization with z/OS console command. [#961](https://github.com/zowe/zowe-cli/issues/961)
+
 ## `6.37.8`
 
 - Documentation: Updated help text for the `zowe jobs submit stdin` command. [#1284](https://github.com/zowe/zowe-cli/issues/1284)
