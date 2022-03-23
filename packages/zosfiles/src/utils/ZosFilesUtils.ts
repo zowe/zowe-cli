@@ -141,7 +141,7 @@ export class ZosFilesUtils {
 
         // TODO:gzip Always accept encoding after z/OSMF truncating gzipped binary data is fixed
         // See https://github.com/zowe/zowe-cli/issues/1170
-        if (!options.binary) {
+        if (!options.binary && !options.record) {
             reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
         }
 
