@@ -223,6 +223,33 @@ describe("Download Data Set", () => {
                 file = dsname.replace(regex, "/") + ".txt";
             });
 
+            it("should download a data set in record mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                const options: IDownloadOptions = {
+                    record: true
+                };
+
+                try {
+                    response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                // convert the data set name to use as a path/file for clean up in AfterEach
+                const regex = /\./gi;
+                file = dsname.replace(regex, "/") + ".txt";
+            });
+
+
             it("should download a data set and return Etag", async () => {
                 let error;
                 let response: IZosFilesResponse;
@@ -447,6 +474,39 @@ describe("Download Data Set", () => {
 
                 const options: IDownloadOptions = {
                     binary: true
+                };
+
+                try {
+                    response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                // convert the data set name to use as a path/file for clean up in AfterEach
+                const regex = /\./gi;
+                file = dsname.replace(regex, "/") + "/member.txt";
+            });
+
+            it("should download a data set in record mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // TODO - convert to UPLOAD APIs when available
+                // upload data to the newly created data set
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "(member)";
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await delay(delayTime);
+
+                const options: IDownloadOptions = {
+                    record: true
                 };
 
                 try {
@@ -824,6 +884,23 @@ describe("Download Data Set", () => {
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(error.message).toContain("Expect Error: Specify the USS file name.");
+            });
+
+            it("should display proper error message when uss file data type is record", async () => {
+                let response: IZosFilesResponse;
+                let error;
+
+                const options: IDownloadOptions = {file: `test1.txt`, record: true};
+
+                try {
+                    response = await Download.ussFile(REAL_SESSION, ussname, options);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(error.message).toContain("Expect Error: Unsupported data type 'record' specified for USS file operation.");
             });
         });
     });

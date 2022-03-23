@@ -125,6 +125,8 @@ export class ZosFilesUtils {
 
         if (options.binary) {
             reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
+        } else if (options.record) {
+            reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
         } else if (options.encoding) {
 
             const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
