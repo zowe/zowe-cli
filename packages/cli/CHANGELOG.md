@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.38.0`
 
 - Enhancement: Exported the `@zowe/imperative` package as the `imperative` namespace.
   If your project depends on both Zowe CLI and Imperative, you can now `import { imperative } from "@zowe/cli"` without declaring `@zowe/imperative` as a separate dependency in package.json. No change is required for CLI plug-ins.
