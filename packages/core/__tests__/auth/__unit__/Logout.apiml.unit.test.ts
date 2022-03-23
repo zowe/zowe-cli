@@ -31,7 +31,7 @@ const badDataExpired = {
         {
             messageType: "ERROR",
             messageNumber: "ZWEAM701E",
-            messageContent: "The request to the URL '/api/v1/gateway/auth/logout' has failed: TokenExpireException: " +
+            messageContent: "The request to the URL '/gateway/api/v1/auth/logout' has failed: TokenExpireException: " +
                 "Token is expired. caused by: TokenExpireException: Token is expired.",
             messageKey: "org.zowe.apiml.common.internalRequestError"
         }
