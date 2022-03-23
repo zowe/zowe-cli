@@ -957,7 +957,9 @@ export class Upload {
                 break;
             default: {
                 const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY), ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
+                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY),
+                    ...Object.keys(ZosmfHeaders.X_IBM_RECORD),
+                    ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
                 if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
                     reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
                 }
