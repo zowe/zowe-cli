@@ -70,16 +70,13 @@ export class DaemonClient {
     }
 
     /**
-     * Shutdown the daemon server cleanly
+     * Shutdown the daemon server cleanly. This is triggered when our EXE
+     * sends Control-C in the stdin property of its request object.
      * @private
      * @memberof DaemonClient
      */
     private shutdown() {
-        // NOTE(Kelosky): this is not exposed yet, but will allow for a clean shut down if
-        // undocumented `--shutdown` is written to the persistent Processor.  It should be wrapped
-        // in a new header and handled in DaemonClient.ts, e.g. x-zowe-daemon-shutdown
         Imperative.api.appLogger.debug("shutting down");
-        this.mClient.write(`Terminating server`);
         this.mClient.end();
         this.mServer.close();
     }
