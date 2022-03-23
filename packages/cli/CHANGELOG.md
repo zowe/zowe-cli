@@ -7,6 +7,12 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Provided more accurate output for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
 - BugFix: Fixed inconsistent case on `modify-version` option for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
 
+## `6.38.0`
+
+- Enhancement: Exported the `@zowe/imperative` package as the `imperative` namespace.
+  If your project depends on both Zowe CLI and Imperative, you can now `import { imperative } from "@zowe/cli"` without declaring `@zowe/imperative` as a separate dependency in package.json. No change is required for CLI plug-ins.
+- BugFix: Fixed inconsistent capitalization with z/OS console command. [#961](https://github.com/zowe/zowe-cli/issues/961)
+
 ## `6.37.8`
 
 - Documentation: Updated help text for the `zowe jobs submit stdin` command. [#1284](https://github.com/zowe/zowe-cli/issues/1284)

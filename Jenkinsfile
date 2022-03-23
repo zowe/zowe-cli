@@ -162,10 +162,11 @@ node('zowe-jenkins-agent-dind') {
     // Check Vulnerabilities
     pipeline.checkVulnerabilities()
 
-    pipeline.checkChangelog(
-        file: "CHANGELOG.md",
-        header: "## Recent Changes"
-    )
+    // Disable checkChangelog from Jenkins
+    // pipeline.checkChangelog(
+    //     file: "CHANGELOG.md",
+    //     header: "## Recent Changes"
+    // )
 
     // Perform the versioning email mechanism
     pipeline.version(
