@@ -312,7 +312,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
-                reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_RECORD],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false /* don't normalize newlines, record mode*/,
                 task: undefined /* no progress task */});
@@ -348,7 +348,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
-                reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_RECORD],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, record mode*/
                 task: undefined /*no progress task*/});
