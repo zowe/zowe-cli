@@ -45,7 +45,7 @@ jobs:
         path: zowex/target/debug/zowe.tgz
 
     - name: Run tests
-      run: cargo test --verbose --manifest-path=zowex/Cargo.toml
+      run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml
 
   build-macos:
     name: Build MacOS
@@ -69,7 +69,7 @@ jobs:
         path: zowex/target/debug/zowe.tgz
 
     - name: Run tests
-      run: cargo test --verbose --manifest-path=zowex/Cargo.toml
+      run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml
 
   build-windows:
     name: Build Windows
@@ -93,4 +93,4 @@ jobs:
         path: zowex/target/debug/zowe.tgz
 
     - name: Run tests
-      run: cargo test --verbose --manifest-path=zowex/Cargo.toml
+      run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml
