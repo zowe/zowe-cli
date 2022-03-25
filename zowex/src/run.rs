@@ -11,7 +11,6 @@
 
 /* Functions that run Zowe commands in the various ways that
  * our executable accomplishes desired operations.
- * Public function names are prefixed with run_.
  */
 
 use std::env;
@@ -130,7 +129,7 @@ pub fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
  *      Our error code when we fail to the NodeJS zowe.
  *      Otherwise, the exit code of the NodeJs zowe command.
  */
-pub fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
+fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
     // launch classic NodeJS zowe and wait for it to complete.
     let exit_code: i32;
     match Command::new(njs_zowe_path.to_owned())
@@ -182,7 +181,7 @@ pub fn run_nodejs_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
  *      A successful exit code in Result's Ok option.
  *      A falure exit code in the Result's Err option.
  */
-pub fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Result<i32, i32> {
+fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Result<i32, i32> {
     // determine the command shell under which we are running
     let (curr_cmd_shell, cmd_shell_nm) = match proc_get_cmd_shell() {
         Ok((curr_cmd_shell, cmd_shell_nm)) => (curr_cmd_shell, cmd_shell_nm),

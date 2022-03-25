@@ -9,9 +9,7 @@
 *
 */
 
-/* Functions related to the manipulation of processes.
- * Public functions are prefixed with proc_.
- */
+// Functions related to the manipulation of processes.
 
 use std::env;
 use std::process::{Command, Stdio};

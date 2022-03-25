@@ -22,7 +22,7 @@ mod util;
 #[cfg(test)]
 mod test;
 
-// Zowe daemon executable modules
+// Modules that we actually reference
 use run::*;
 
 // TODO(Kelosky): performance tests, `time for i in {1..10}; do zowe -h >/dev/null; done`

@@ -9,9 +9,7 @@
 *
 */
 
-/* Functions related to daemon cummunication.
- * Public functions are prefixed with comm_.
- */
+// Functions related to daemon cummunication.
 
 use std::io;
 use std::io::BufReader;

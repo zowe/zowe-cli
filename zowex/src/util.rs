@@ -9,9 +9,7 @@
 *
 */
 
-/* Utility functions.
-* Public functions are prefixed with util_.
-*/
+// Utility functions.
 
 use std::collections::HashMap;
 use std::env;
