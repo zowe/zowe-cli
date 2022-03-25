@@ -27,14 +27,15 @@ extern crate whoami;
 use whoami::username;
 
 #[cfg(target_family = "windows")]
-extern crate fslock;
+    extern crate home;
 #[cfg(target_family = "windows")]
-use fslock::LockFile;
+    extern crate fslock;
 #[cfg(target_family = "windows")]
-use std::fs::File;
-
-extern crate home;
-use home::home_dir;
+    use {
+        fslock::LockFile,
+        home::home_dir,
+        std::fs::File
+    };
 
 // Zowe daemon executable modules
 use crate::defs::*;

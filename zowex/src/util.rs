@@ -14,11 +14,18 @@
 use std::collections::HashMap;
 use std::env;
 
+#[cfg(target_family = "unix")]
+    extern crate home;
+#[cfg(target_family = "unix")]
+    use home::home_dir;
+
 extern crate pathsearch;
 use pathsearch::PathSearcher;
 
-extern crate whoami;
-use whoami::username;
+#[cfg(target_family = "windows")]
+    extern crate whoami;
+#[cfg(target_family = "windows")]
+    use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;

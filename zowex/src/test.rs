@@ -96,6 +96,7 @@ fn integration_test_restart() {
     }
 
     // confirm that the daemon has stopped
+    thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
     daemon_proc_info = proc_get_daemon_info();
     assert_eq!(daemon_proc_info.is_running, false, "The daemon should have stopped for the end of the test.");
 }

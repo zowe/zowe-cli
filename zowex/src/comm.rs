@@ -19,9 +19,10 @@ use std::thread;
 use std::time::Duration;
 
 #[cfg(target_family = "unix")]
-use std::net::Shutdown;
-#[cfg(target_family = "unix")]
-use std::os::unix::net::UnixStream;
+use {
+    std::net::Shutdown,
+    std::os::unix::net::UnixStream
+};
 
 extern crate atty;
 use atty::Stream;
@@ -30,9 +31,9 @@ extern crate base64;
 use base64::encode;
 
 #[cfg(target_family = "windows")]
-extern crate named_pipe;
+    extern crate named_pipe;
 #[cfg(target_family = "windows")]
-use named_pipe::PipeClient;
+    use named_pipe::PipeClient;
 
 extern crate rpassword;
 use rpassword::read_password;
@@ -45,10 +46,10 @@ use crate::defs::*;
 use crate::proc::*;
 
 #[cfg(target_family = "unix")]
-type DaemonClient = UnixStream;
+    type DaemonClient = UnixStream;
 
 #[cfg(target_family = "windows")]
-type DaemonClient = PipeClient;
+    type DaemonClient = PipeClient;
 
 /**
  * Attempt to make a TCP connection to the daemon.
