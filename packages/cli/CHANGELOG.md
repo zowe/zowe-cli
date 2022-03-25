@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
+
 ## `7.0.0-next.202203211751`
 
 - BugFix: Updated Imperative to allow applications to update credentials from the `ProfileInfo` APIs. [zowe/vscode-extension-for-zowe#1646](https://github.com/zowe/vscode-extension-for-zowe/issues/1646)
