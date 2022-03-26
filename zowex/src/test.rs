@@ -25,29 +25,13 @@ use crate::util::*;
 #[test]
 fn unit_test_get_socket_string() {
     // expect default port with no env
-    match util_get_socket_string() {
-        Ok(ok_val) => {
-            assert!(!ok_val.contains("NotADaemon"));
-        }
-        Err(err_val) => {
-            assert_eq!("util_get_socket_string should have worked",
-                "It Failed", "exit code = {}", err_val
-            );
-        }
-    }
+    let socket_string = util_get_socket_string();
+    assert!(!socket_string.contains("NotADaemon"));
 
     // expect override port with env
     env::set_var("ZOWE_DAEMON", "NotADaemon");
-    match util_get_socket_string() {
-        Ok(ok_val) => {
-            assert!(ok_val.contains("NotADaemon"));
-        }
-        Err(err_val) => {
-            assert_eq!("util_get_socket_string should have worked",
-                "It Failed", "exit code = {}", err_val
-            );
-        }
-    }
+    let socket_string = util_get_socket_string();
+    assert!(socket_string.contains("NotADaemon"));
     env::remove_var("ZOWE_DAEMON");
 }
 

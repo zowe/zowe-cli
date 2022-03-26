@@ -164,7 +164,7 @@ export class DaemonDecider {
                         this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
                     }
                 } else if (process.platform !== "win32") {
-                    this.mSocket = path.join(os.homedir(), ".zowe", "daemon", "daemon.sock");
+                    this.mSocket = path.join(os.homedir(), ".zowe-daemon.sock");
                 } else {
                     this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                 }
