@@ -14,8 +14,7 @@
  * @export
  * @class JobsConstants
  */
- export class JobsConstants {
-
+export class JobsConstants {
     /**
      * Step data query string
      * @static
