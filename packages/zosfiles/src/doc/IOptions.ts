@@ -20,9 +20,19 @@ import { IZosFilesOptions } from "./IZosFilesOptions";
 export interface IOptions extends IZosFilesOptions {
     /**
      * The indicator to view the data set or USS file in binary mode
+     * Has priority over record for datasets
+     * If binary and record are both specified, binary is used
      * @type {boolean}
      */
     binary?: boolean;
+
+    /**
+     * The indicator to view the data set in record mode
+     * Should not be specified for USS files
+     * If binary and record are both specified, binary is used
+     * @type {boolean}
+     */
+    record?: boolean;
 
     /**
      * Code page encoding
