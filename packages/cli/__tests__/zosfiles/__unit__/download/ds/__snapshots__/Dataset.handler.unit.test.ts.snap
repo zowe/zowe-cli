@@ -13,3 +13,31 @@ exports[`Download data set handler process method should download a single data 
 "
 downloaded"
 `;
+
+exports[`Download data set handler process method should download a single data set in binary mode if requested 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download data set handler process method should download a single data set in binary mode if requested 2`] = `""`;
+
+exports[`Download data set handler process method should download a single data set in binary mode if requested 3`] = `
+"
+downloaded"
+`;
+
+exports[`Download data set handler process method should download a single data set in record mode if requested 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download data set handler process method should download a single data set in record mode if requested 2`] = `""`;
+
+exports[`Download data set handler process method should download a single data set in record mode if requested 3`] = `
+"
+downloaded"
+`;

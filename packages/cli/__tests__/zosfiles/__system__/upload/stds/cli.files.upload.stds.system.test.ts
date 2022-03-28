@@ -152,6 +152,23 @@ describe("Upload Data Set", () => {
             expect(uploadedContent.subarray(0, randomData.length)).toEqual(randomData);
         });
 
+        it("should upload data set from standard input in record mode", async () => {
+            const localFile = path.join(__dirname, "__data__", "command_upload_stds_record.txt");
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds_record.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, localFile]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("success: true");
+            expect(stdoutText).toContain("from:    stdin");
+            expect(stdoutText).toContain("Data set uploaded successfully.");
+
+            const uploadedContent = await Get.dataSet(REAL_SESSION, dsname, {record: true});
+            expect(uploadedContent.toString().trim()).toEqual(
+                IO.readFileSync(localFile).toString().trim()
+            );
+        });
+
         it("should leave the dataset empty when no standard input is supplied", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds_noinput.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname ]);

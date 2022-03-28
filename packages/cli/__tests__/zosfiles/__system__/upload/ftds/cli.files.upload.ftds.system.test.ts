@@ -243,6 +243,40 @@ describe("Upload file to data set", () => {
             );
         });
 
+        it("should upload data set from a local file in record mode", async () => {
+            const localFileName = path.join(
+                __dirname,
+                "__data__",
+                "command_upload_ftds_record.txt"
+            );
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_upload_ftds_record.sh"
+            );
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [
+                localFileName,
+                dsname + "(member)"
+            ]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("success: true");
+            expect(stdoutText).toContain("from:");
+            expect(stdoutText).toContain(localFileName);
+            expect(stdoutText).toContain("Data set uploaded successfully.");
+
+            const uploadedContent = await Get.dataSet(
+                REAL_SESSION,
+                dsname + "(member)",
+                { record: true }
+            );
+            expect(uploadedContent.toString().trim()).toEqual(
+                IO.readFileSync(localFileName).toString().trim()
+            );
+        });
+
         it("should upload data set with response-format-json flag", async () => {
             const shellScript = path.join(
                 __dirname,

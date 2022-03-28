@@ -111,6 +111,22 @@ describe("Download All Member", () => {
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
         });
 
+        it("should download all data set member of pds in binary format", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--binary"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+        });
+
+        it("should download all data set member of pds in record format", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--record"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+        });
+
         it("should download all data set member of pds with response timeout", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
