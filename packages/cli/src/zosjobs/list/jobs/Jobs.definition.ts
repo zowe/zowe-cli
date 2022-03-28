@@ -67,7 +67,16 @@ export const JobsDefinition: ICommandDefinition = {
             },
             {
                 options: "--ed=true",
-                description: "List all jobs, displaying default, as well as, other fields showing execution data"
+                description: "List all jobs and return job execution data along with the default information"
+            },
+            {
+                options: "-o \"ibmu*\" --ed=true",
+                description: "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information"
+            },
+            {
+                options: "-o \"ibmu*\" -p \"myjo*\" --ed=true",
+                description: "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and \
+                            return job execution data along with the default information"
             }
         ],
     outputFormatOptions: true

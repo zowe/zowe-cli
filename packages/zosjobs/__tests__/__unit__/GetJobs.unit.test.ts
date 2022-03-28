@@ -333,19 +333,31 @@ describe("GetJobs tests", () => {
             GetJobs.getJobsCommon(pretendSession, {owner: "fakeOwner", prefix: "fakePrefix", maxJobs: 2, jobid: "fakeID"});
         });
 
-        // it("should get jobs with their execution data - 2", async () => {
-        //     (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
-
-        //     const jobs = await GetJobs.getJobsCommon(pretendSession, {owner: "fakeOwner", prefix: "fakePrefix", maxJobs: 2, jobid: "fakeID", execdata: true});
-        //     // expect(jobs).toMatchSnapshot();
-        // });
-
-        it("should get a list of jobs from getJobs and getJobsCommon with their execution data", async () => {
+        it("should get a list of jobs from getJobsCommon with their execution data", async () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
 
-            // const jobs = await GetJobs.getJobs(pretendSession, {execdata: true});
             const jobCommon = await GetJobs.getJobsCommon(pretendSession, {execdata: true});
-            // expect(jobs).toMatchSnapshot();
+            expect(jobCommon).toMatchSnapshot();
+        });
+
+        it("should get a list of jobs from getJobsCommon with their execution data with maxJobs param", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {maxJobs: 2, execdata: true});
+            expect(jobCommon).toMatchSnapshot();
+        });
+
+        it("should get a list of jobs from getJobsCommon with their execution data with owner and maxJobs params", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {owner: "someOwner", maxJobs: 2, execdata: true});
+            expect(jobCommon).toMatchSnapshot();
+        });
+
+        it("should get a list of jobs from getJobsCommon with their execution data with multiple other params", async () => {
+            (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
+
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {owner: "someOwner", prefix: "fakePrefix", maxJobs: 2, execdata: true});
             expect(jobCommon).toMatchSnapshot();
         });
     });
