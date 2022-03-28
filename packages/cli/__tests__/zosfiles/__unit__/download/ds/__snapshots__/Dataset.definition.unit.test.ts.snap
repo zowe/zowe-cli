@@ -45,6 +45,17 @@ Array [
   },
   Object {
     "aliases": Array [
+      "r",
+    ],
+    "conflictsWith": Array [
+      "binary",
+    ],
+    "description": "Download the file content in record mode, which means that no data conversion is performed and the record length is prepended to the data. The data transfer process returns each line as-is, without translation. No delimiters are added between records. Conflicts with binary.",
+    "name": "record",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "vs",
     ],
     "description": "The volume serial (VOLSER) where the data set resides. You can use this option at any time. However, the VOLSER is required only when the data set is not cataloged on the system. A VOLSER is analogous to a drive name on a PC.",
