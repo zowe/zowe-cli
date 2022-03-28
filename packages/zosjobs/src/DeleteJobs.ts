@@ -14,6 +14,7 @@ import { JobsConstants } from "./JobsConstants";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { IDeleteJobParms } from "./doc/input/IDeleteJobParms";
+import { IJobFeedback } from "./doc/response/IJobFeedback";
 
 /**
  * Class to handle deletion of job information
@@ -28,10 +29,10 @@ export class DeleteJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
-     * @returns {Promise<void>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof DeleteJobs
      */
-    public static async deleteJob(session: AbstractSession, jobname: string, jobid: string) {
+    public static async deleteJob(session: AbstractSession, jobname: string, jobid: string): Promise<undefined|IJobFeedback> {
         this.log.trace("deleteJob called with jobname %s jobid %s", jobname, jobid);
         return DeleteJobs.deleteJobCommon(session, {jobname, jobid});
     }
@@ -43,10 +44,10 @@ export class DeleteJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job that you want to delete
      * @param {"1.0"| "2.0"} modifyVersion - version of the X-IBM-Job-Modify-Version header to use (see ZosmfHeaders)
-     * @returns {Promise<void>} -  promise that resolves when the API call is completel
+     * @returns {Promise<undefined|IJobFeedback>} -  promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof DeleteJobs
      */
-    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0") {
+    public static async deleteJobForJob(session: AbstractSession, job: IJob, modifyVersion?: "1.0" | "2.0"): Promise<undefined|IJobFeedback> {
         this.log.trace("deleteJobForJob called with job %s", JSON.stringify(job));
         return DeleteJobs.deleteJobCommon(session, {jobname: job.jobname, jobid: job.jobid, modifyVersion});
     }
@@ -57,10 +58,10 @@ export class DeleteJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IDeleteJobParms} parms - parm object (see IDeleteJobParms interface for details)
-     * @returns {Promise<void>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof DeleteJobs
      */
-    public static async deleteJobCommon(session: AbstractSession, parms: IDeleteJobParms) {
+    public static async deleteJobCommon(session: AbstractSession, parms: IDeleteJobParms): Promise<undefined|IJobFeedback> {
         this.log.trace("deleteJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to delete.");
@@ -75,7 +76,14 @@ export class DeleteJobs {
         }
 
         const parameters: string = IO.FILE_DELIM + parms.jobname + IO.FILE_DELIM + parms.jobid;
-        await ZosmfRestClient.deleteExpectString(session, JobsConstants.RESOURCE + parameters, headers);
+        const responseJson = await ZosmfRestClient.deleteExpectJSON(session, JobsConstants.RESOURCE + parameters, headers);
+
+        if (parms.modifyVersion === "2.0") {
+            const responseFeedback = responseJson as IJobFeedback;
+            // Turns out status is a number, but we cannot introduce breaking changes.
+            responseFeedback.status = responseFeedback.status.toString();
+            return responseFeedback;
+        } else { return undefined; }
     }
 
 

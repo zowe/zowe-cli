@@ -14,6 +14,13 @@ Object {
 }
 `;
 
+exports[`Cancel Jobs unit tests Positive tests should allow users to call cancelJobCommon with correct parameters (with version 2_0) and get a failed response 1`] = `
+Object {
+  "request": "cancel",
+  "version": "2.0",
+}
+`;
+
 exports[`Cancel Jobs unit tests Positive tests should allow users to call cancelJobForJob with correct parameters (with version 1_0) 1`] = `
 Object {
   "request": "cancel",
@@ -22,6 +29,13 @@ Object {
 `;
 
 exports[`Cancel Jobs unit tests Positive tests should allow users to call cancelJobForJob with correct parameters (with version 2_0) 1`] = `
+Object {
+  "request": "cancel",
+  "version": "2.0",
+}
+`;
+
+exports[`Cancel Jobs unit tests Positive tests should allow users to call cancelJobForJob with correct parameters (with version 2_0) and get a bad response 1`] = `
 Object {
   "request": "cancel",
   "version": "2.0",

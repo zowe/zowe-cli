@@ -23,7 +23,7 @@ then
 fi
 
 # Cancel the job
-zowe jobs cancel job $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false
+zowe jobs cancel job $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --modify-version 2.0
 RC=$?
 
 if [ $RC -gt 0 ]
