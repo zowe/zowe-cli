@@ -157,6 +157,12 @@ export class GetJobs {
                 }
                 query += (JobsConstants.QUERY_JOBID + parms.jobid);
             }
+            if (parms.execdata) {
+                if (RestClient.hasQueryString(query)) {
+                    query += JobsConstants.COMBO_ID;
+                }
+                query += (JobsConstants.EXEC_DATA);
+            }
         }
 
         let resource = JobsConstants.RESOURCE;
@@ -354,5 +360,4 @@ export class GetJobs {
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
     }
-
 }

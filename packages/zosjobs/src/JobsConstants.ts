@@ -14,7 +14,7 @@
  * @export
  * @class JobsConstants
  */
-export class JobsConstants {
+ export class JobsConstants {
 
     /**
      * Step data query string
@@ -133,4 +133,12 @@ export class JobsConstants {
      * @memberof JobsConstants
      */
     public static readonly DEFAULT_CANCEL_VERSION = "1.0";
+
+    /**
+     * Execution data query string
+     * @static
+     * @type {string}
+     * @memberof JobsConstants
+     */
+    public static readonly EXEC_DATA: string = "exec-data=Y";
 }

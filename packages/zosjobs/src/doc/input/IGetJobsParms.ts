@@ -14,7 +14,7 @@
  * @export
  * @interface IGetJobsParms
  */
-export interface IGetJobsParms {
+ export interface IGetJobsParms {
 
     /**
      * Owner for which to obtain jobs for.
@@ -46,4 +46,11 @@ export interface IGetJobsParms {
      * @memberof IJob
      */
     jobid?: string;
+
+    /**
+     * Return execution data about jobs
+     * @type {boolean}
+     * @memberof IGetJobsParms
+     */
+    execdata?: boolean;
 }
