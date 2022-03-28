@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add the `data-exec` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
+
 ## `6.35.0`
 
 - Enhancement: Exposed new option `modifyVersion` for the `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands. [#1092](https://github.com/zowe/zowe-cli/issues/1092)
