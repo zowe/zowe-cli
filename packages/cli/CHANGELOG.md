@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Add the `data-exec` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
+
 ## `6.38.0`
 
 - Enhancement: Exported the `@zowe/imperative` package as the `imperative` namespace.
