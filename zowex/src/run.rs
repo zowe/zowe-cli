@@ -613,18 +613,11 @@ fn form_win_cmd_script_arg_vec<'a>(
 #[cfg(target_family = "windows")]
 fn get_win_lock_file() -> Result<LockFile, i32> {
     let mut lock_path: PathBuf;
-    if let Ok(env_lock_string) = env::var("ZOWE_DAEMON_LOCK") {
-        // use a lock file specified by user env variable
-        lock_path = PathBuf::new();
-        lock_path.push(env_lock_string);
-    } else {
-        // use default lock directory
-        match util_get_daemon_dir() {
-            Ok(ok_val) => lock_path = ok_val,
-            Err(err_val) => return Err(err_val)
-        }
-        lock_path.push("daemon.lock");
+    match util_get_daemon_dir() {
+        Ok(ok_val) => lock_path = ok_val,
+        Err(err_val) => return Err(err_val)
     }
+    lock_path.push("daemon.lock");
 
     if let Err(err_val) = File::create(&lock_path) {
         println!("Unable to create zowe daemon lock file = {}.", &lock_path.display());

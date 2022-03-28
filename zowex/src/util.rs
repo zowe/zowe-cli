@@ -84,25 +84,30 @@ pub fn util_get_nodejs_zowe_path() -> String {
 }
 
 /**
- * Get the path to the .zowe_daemon directory within the user's HOME directory.
+ * Get the path to the zowe daemon directory (defaults to ~/.zowe/daemon).
  * Ensures that the directory exists, or we create it.
  *
- * @returns The path to the .zowe_daemon directory.
+ * @returns The path to the zowe daemon directory.
  */
 pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
     let mut daemon_dir: PathBuf;
-    match home_dir() {
-        Some(path_buf_val) => daemon_dir = path_buf_val,
-        None => {
-            println!("Unable to get user's home directory.");
-            return Err(EXIT_CODE_ENV_ERROR);
+    if let Ok(ok_val) = env::var("ZOWE_DAEMON_DIR") {
+        daemon_dir = PathBuf::new();
+        daemon_dir.push(ok_val);
+    } else {
+        match home_dir() {
+            Some(path_buf_val) => daemon_dir = path_buf_val,
+            None => {
+                println!("Unable to get user's home directory.");
+                return Err(EXIT_CODE_ENV_ERROR);
+            }
         }
+        daemon_dir.push(".zowe");
+        daemon_dir.push("daemon");
     }
-    daemon_dir.push(".zowe");
-    daemon_dir.push("daemon");
 
     if !daemon_dir.exists() {
-        if let Err(err_val) = std::fs::create_dir(&daemon_dir) {
+        if let Err(err_val) = std::fs::create_dir_all(&daemon_dir) {
             println!("Unable to create zowe daemon directory = {}.", &daemon_dir.display());
             println!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
@@ -115,18 +120,11 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
 #[cfg(target_family = "unix")]
 pub fn util_get_socket_string() -> Result<String, i32> {
     let mut socket_path: PathBuf;
-    if let Ok(env_socket_string) = env::var("ZOWE_DAEMON") {
-        // use a socket directory specified by user env variable
-        socket_path = PathBuf::new();
-        socket_path.push(env_socket_string);
-    } else {
-        // use default socket directory
-        match util_get_daemon_dir() {
-            Ok(ok_val) => socket_path = ok_val,
-            Err(err_val) => return Err(err_val)
-        }
-        socket_path.push("daemon.sock");
+    match util_get_daemon_dir() {
+        Ok(ok_val) => socket_path = ok_val,
+        Err(err_val) => return Err(err_val)
     }
+    socket_path.push("daemon.sock");
     Ok(socket_path.into_os_string().into_string().unwrap())
 }
 
@@ -134,7 +132,7 @@ pub fn util_get_socket_string() -> Result<String, i32> {
 pub fn util_get_socket_string() -> Result<String, i32> {
     let mut _socket = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
 
-    if let Ok(pipe_name) = env::var("ZOWE_DAEMON") {
+    if let Ok(pipe_name) = env::var("ZOWE_DAEMON_PIPE") {
         _socket = format!("\\\\.\\pipe\\{}", pipe_name);
     }
     Ok(_socket)

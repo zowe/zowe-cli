@@ -158,15 +158,25 @@ export class DaemonDecider {
             if (daemonOffset > -1) {
                 this.startServer = true;
 
-                if (process.env.ZOWE_DAEMON) {
-                    this.mSocket = process.env.ZOWE_DAEMON;
-                    if (process.platform === "win32") {
-                        this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
+                if (process.platform === "win32") {
+                    // On windows we use a pipe instead of a socket
+                    if (process.env.ZOWE_DAEMON_PIPE) {
+                        // user can choose some pipe path
+                        this.mSocket = "\\\\.\\pipe\\" + process.env.ZOWE_DAEMON_PIPE;
+                    } else {
+                        // use default pipe path name
+                        this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                     }
-                } else if (process.platform !== "win32") {
-                    this.mSocket = path.join(os.homedir(), ".zowe", "daemon", "daemon.sock");
                 } else {
-                    this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
+                    // Linux-like systems use domain sockets
+                    if (process.env.ZOWE_DAEMON_DIR) {
+                        // user can choose a daemon directory for storing runtime artifacts
+                        this.mSocket = process.env.ZOWE_DAEMON_DIR;
+                        this.mSocket = path.join(this.mSocket, "daemon.sock");
+                    } else {
+                        // use default daemon directory to hold our socket file
+                        this.mSocket = path.join(os.homedir(), ".zowe", "daemon", "daemon.sock");
+                    }
                 }
 
                 Imperative.api.appLogger.debug(`daemon server will listen on ${this.mSocket}`);

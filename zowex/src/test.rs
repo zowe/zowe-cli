@@ -16,6 +16,8 @@ use std::env;
 use std::thread;
 use std::time::Duration;
 
+use whoami::username;
+
 // Zowe daemon executable modules
 use crate::defs::*;
 use crate::proc::*;
@@ -24,10 +26,17 @@ use crate::util::*;
 
 #[test]
 fn unit_test_get_socket_string() {
-    // expect default port with no env
+    // expect default socket string with no env
     match util_get_socket_string() {
+        #[cfg(target_family = "windows")]
         Ok(ok_val) => {
-            assert!(!ok_val.contains("NotADaemon"));
+            let pipe_path: String = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
+            assert!(ok_val.contains(&pipe_path));
+        }
+        #[cfg(target_family = "unix")]
+        Ok(ok_val) => {
+            let sock_path: String = format!("{}/.zowe/daemon/daemon.sock", username());
+            assert!(ok_val.contains(&sock_path));
         }
         Err(err_val) => {
             assert_eq!("util_get_socket_string should have worked",
@@ -36,19 +45,39 @@ fn unit_test_get_socket_string() {
         }
     }
 
-    // expect override port with env
-    env::set_var("ZOWE_DAEMON", "NotADaemon");
-    match util_get_socket_string() {
-        Ok(ok_val) => {
-            assert!(ok_val.contains("NotADaemon"));
+    // expect to override pipe name with env on Windows
+    #[cfg(target_family = "windows")]
+    {
+        env::set_var("ZOWE_DAEMON_PIPE", "FakePipePath");
+        match util_get_socket_string() {
+            Ok(ok_val) => {
+                assert!(ok_val.contains("\\\\.\\pipe\\FakePipePath"));
+            }
+            Err(err_val) => {
+                assert_eq!("util_get_socket_string should have worked",
+                    "It Failed", "exit code = {}", err_val
+                );
+            }
         }
-        Err(err_val) => {
-            assert_eq!("util_get_socket_string should have worked",
-                "It Failed", "exit code = {}", err_val
-            );
-        }
+        env::remove_var("ZOWE_DAEMON_PIPE");
     }
-    env::remove_var("ZOWE_DAEMON");
+
+    // expect to override socket string with env on Linux
+    #[cfg(target_family = "unix")]
+    {
+        env::set_var("ZOWE_DAEMON_DIR", "~/.zowe/daemon_test_dir");
+        match util_get_socket_string() {
+            Ok(ok_val) => {
+                assert!(ok_val.contains("/.zowe/daemon_test_dir/daemon.sock"));
+            }
+            Err(err_val) => {
+                assert_eq!("util_get_socket_string should have worked",
+                    "It Failed", "exit code = {}", err_val
+                );
+            }
+        }
+        env::remove_var("ZOWE_DAEMON_DIR");
+    }
 }
 
 #[test]

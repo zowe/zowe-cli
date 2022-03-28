@@ -269,7 +269,7 @@ describe("DaemonDecider tests", () => {
             const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
             daemonDecider.init();
 
-            expect((daemonDecider as any).mSocket).toEqual(path.join(os.homedir(), ".zowe-daemon.sock"));
+            expect((daemonDecider as any).mSocket).toEqual(path.join(os.homedir(), ".zowe/daemon/daemon.sock"));
         });
 
         it("should try to delete an existing socket on *nix", () => {
