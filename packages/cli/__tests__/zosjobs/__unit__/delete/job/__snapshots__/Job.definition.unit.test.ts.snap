@@ -18,7 +18,7 @@ Object {
     Object {
       "defaultValue": "1.0",
       "description": "Using this option to set X-IBM-Job-Modify-Version to \\"2.0\\" will make the delete job API synchronous. Otherwise, it will be asynchronous by default.",
-      "name": "modifyVersion",
+      "name": "modify-version",
       "required": false,
       "type": "string",
     },
