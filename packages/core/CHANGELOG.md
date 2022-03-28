@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `6.39.0`
 
 - Enhancement: Added the `record` data type header
 

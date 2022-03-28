@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `6.39.0`
 
 - Enhancement: Added support for `record` data type on dataset upload, download, and get APIs.
 

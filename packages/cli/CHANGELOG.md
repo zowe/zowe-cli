@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `6.39.0`
 
 - BugFix: Provided more accurate output for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
 - BugFix: Fixed inconsistent case on `modify-version` option for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
