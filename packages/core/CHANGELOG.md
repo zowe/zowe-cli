@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `6.39.0`
+
+- Enhancement: Added the `record` data type header
+
 ## `6.34.0`
 
 - Enhancement: Add support for PEM certificate based authentication
