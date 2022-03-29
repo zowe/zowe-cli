@@ -39,7 +39,7 @@ fn unit_test_get_socket_string() {
         Ok(ok_val) => {
             let sock_path: String = format!("{}/.zowe/daemon/daemon.sock", username());
             println!("ok_val    = {}", ok_val);
-            println!("pipe_path = {}", pipe_path);
+            println!("sock_path = {}", sock_path);
             assert!(ok_val.contains(&sock_path));
         }
         Err(err_val) => {
