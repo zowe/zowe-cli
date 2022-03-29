@@ -15,6 +15,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
 import { ICancelJobParms } from "./doc/input/ICancelJobParms";
 import { ICancelJob } from "./doc/input/ICancelJob";
+import { IJobFeedback } from "./doc/response/IJobFeedback";
 
 /**
  * Class to handle deletion of job information
@@ -29,12 +30,12 @@ export class CancelJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} jobname - job name to be translated into parms object
      * @param {string} jobid - job id to be translated into parms object
-     * @returns {Promise<void>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof CancelJobs
      */
-    public static async cancelJob(session: AbstractSession, jobname: string, jobid: string, version?: string) {
+    public static async cancelJob(session: AbstractSession, jobname: string, jobid: string, version?: string): Promise<undefined|IJobFeedback> {
         this.log.trace("cancelJob called with jobname %s jobid %s", jobname, jobid);
-        return CancelJobs.cancelJobCommon(session, { jobname, jobid });
+        return CancelJobs.cancelJobCommon(session, { jobname, jobid, version });
     }
 
     /**
@@ -44,10 +45,10 @@ export class CancelJobs {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IJob} job - the job that you want to cancel
      * @param {string} version - version of cancel request
-     * @returns {Promise<void>} -  promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof CancelJobs
      */
-    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0") {
+    public static async cancelJobForJob(session: AbstractSession, job: IJob, version?: "1.0" | "2.0"): Promise<undefined|IJobFeedback> {
         this.log.trace("cancelJobForJob called with job %s", JSON.stringify(job));
         return CancelJobs.cancelJobCommon(session, { jobname: job.jobname, jobid: job.jobid, version });
     }
@@ -58,16 +59,16 @@ export class CancelJobs {
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {ICancelJobParms} parms - parm object (see ICancelJobParms interface for details)
-     * @returns {Promise<void>} - promise that resolves when the API call is complete
+     * @returns {Promise<undefined|IJobFeedback>} - promise of undefined, or IJobFeedback object returned by API if modifyVersion is 2.0
      * @memberof CancelJobs
      */
-    public static async cancelJobCommon(session: AbstractSession, parms: ICancelJobParms) {
+    public static async cancelJobCommon(session: AbstractSession, parms: ICancelJobParms): Promise<undefined|IJobFeedback> {
         this.log.trace("cancelJobCommon called with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"],
             "You must specify jobname and jobid for the job you want to cancel.");
 
-        // set default if unset
-        if (parms.version == null) {
+        // set to default if default, unset or invalid
+        if (parms.version !== "2.0") {
             parms.version = JobsConstants.DEFAULT_CANCEL_VERSION;
         }
         this.log.info("Canceling job %s(%s). Job modify version?: %s", parms.jobname, parms.jobid, parms.version);
@@ -80,7 +81,14 @@ export class CancelJobs {
         };
 
         const parameters: string = "/" + parms.jobname + "/" + parms.jobid;
-        await ZosmfRestClient.putExpectString(session, JobsConstants.RESOURCE + parameters, headers, request);
+        const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+
+        if (parms.version === "2.0") {
+            const responseFeedback = responseJson as IJobFeedback;
+            // Turns out status is a number, but we cannot introduce breaking changes.
+            responseFeedback.status = responseFeedback.status.toString();
+            return responseFeedback;
+        } else { return undefined; }
     }
 
 
