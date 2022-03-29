@@ -5,9 +5,6 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 ## Recent Changes
 
 - Enhancement: Add the `data-exec` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
-- Enhancement: Updated the `cancelJobs` and `deleteJobs` functions to return an IJobFeedback object
-  - The object is only fully populated for synchronous requests (modifyVersion 2.0)
-  - Asynchronous requests return the object with all fields undefined except status, which is "0"
 
 ## `6.35.0`
 
