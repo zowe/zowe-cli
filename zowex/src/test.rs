@@ -16,7 +16,10 @@ use std::env;
 use std::thread;
 use std::time::Duration;
 
-use whoami::username;
+#[cfg(target_family = "unix")]
+    use home::home_dir;
+#[cfg(target_family = "windows")]
+    use whoami::username;
 
 // Zowe daemon executable modules
 use crate::defs::*;
@@ -25,22 +28,28 @@ use crate::run::*;
 use crate::util::*;
 
 #[test]
-fn unit_test_get_socket_string() {
+fn unit_test_util_get_socket_string() {
     // expect default socket string with no env
     match util_get_socket_string() {
         #[cfg(target_family = "windows")]
         Ok(ok_val) => {
-            let pipe_path: String = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
-            println!("ok_val    = {}", ok_val);
-            println!("pipe_path = {}", pipe_path);
-            assert!(ok_val.contains(&pipe_path));
+            let expected_pipe_path: String = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
+            println!("--- test_util_get_socket_string: ok_val = {}  expected_pipe_path = {}", ok_val, expected_pipe_path);
+            assert!(ok_val.contains(&expected_pipe_path));
         }
         #[cfg(target_family = "unix")]
         Ok(ok_val) => {
-            let sock_path: String = format!("{}/.zowe/daemon/daemon.sock", username());
-            println!("ok_val    = {}", ok_val);
-            println!("sock_path = {}", sock_path);
-            assert!(ok_val.contains(&sock_path));
+            let mut expected_sock_path: String = "NotYetInitialized".to_string();
+            match home_dir() {
+                Some(path_buf_val) => expected_sock_path = format!("{}/.zowe/daemon/daemon.sock", path_buf_val.display()),
+                None => {
+                    assert_eq!("util_get_socket_string should have gotten user home dir",
+                        "It got None"
+                    );
+                }
+            }
+            println!("--- test_util_get_socket_string: ok_val = {}  expected_sock_path = {}", ok_val, expected_sock_path);
+            assert!(ok_val.contains(&expected_sock_path));
         }
         Err(err_val) => {
             assert_eq!("util_get_socket_string should have worked",
