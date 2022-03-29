@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `7.0.0-next.202203282106`
+
+- Enhancement: Added support for `record` data type on dataset upload, download, and get APIs.
+
 ## `7.0.0-next.202112142155`
 
 - Breaking: Removed deprecated methods:

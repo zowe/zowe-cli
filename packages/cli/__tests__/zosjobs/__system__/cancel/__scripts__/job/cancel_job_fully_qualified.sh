@@ -28,6 +28,6 @@ RC=$?
 
 if [ $RC -gt 0 ]
 then
-    echo "The delcancelete job command returned a non-zero rc: $RC" 1>&2
+    echo "The cancel job command returned a non-zero rc: $RC" 1>&2
     exit $RC
 fi

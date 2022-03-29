@@ -34,6 +34,7 @@ export default class DirToPdsHandler extends ZosFilesBaseHandler {
             {
                 volume: commandParameters.arguments.volumeSerial,
                 binary: commandParameters.arguments.binary,
+                record: commandParameters.arguments.record,
                 encoding: commandParameters.arguments.encoding,
                 task: status,
                 responseTimeout: commandParameters.arguments.responseTimeout

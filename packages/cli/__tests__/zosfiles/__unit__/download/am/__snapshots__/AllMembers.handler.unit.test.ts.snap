@@ -13,3 +13,31 @@ exports[`Download AllMembers handler process method should download all members 
 "
 downloaded"
 `;
+
+exports[`Download AllMembers handler process method should download all members from a PDS in binary format if requested 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS in binary format if requested 2`] = `""`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS in binary format if requested 3`] = `
+"
+downloaded"
+`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS in record format if requested 1`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS in record format if requested 2`] = `""`;
+
+exports[`Download AllMembers handler process method should download all members from a PDS in record format if requested 3`] = `
+"
+downloaded"
+`;
