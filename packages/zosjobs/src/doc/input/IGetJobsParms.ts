@@ -14,7 +14,7 @@
  * @export
  * @interface IGetJobsParms
  */
- export interface IGetJobsParms {
+export interface IGetJobsParms {
 
     /**
      * Owner for which to obtain jobs for.
