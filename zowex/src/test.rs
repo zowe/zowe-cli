@@ -31,8 +31,8 @@ fn unit_test_get_socket_string() {
         #[cfg(target_family = "windows")]
         Ok(ok_val) => {
             let pipe_path: String = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
-            println!("ok_val    = ", ok_val);
-            println!("pipe_path = ", pipe_path);
+            println!("ok_val    = {}", ok_val);
+            println!("pipe_path = {}", pipe_path);
             assert!(ok_val.contains(&pipe_path));
         }
         #[cfg(target_family = "unix")]
