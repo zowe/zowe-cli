@@ -108,7 +108,7 @@ export class Download {
                 resource: endpoint,
                 reqHeaders,
                 responseStream: writeStream,
-                normalizeResponseNewLines: !options.binary,
+                normalizeResponseNewLines: !(options.binary || options.record),
                 task: options.task
             };
 
@@ -228,6 +228,7 @@ export class Download {
                     volume: options.volume,
                     file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
                     binary: options.binary,
+                    record: options.record,
                     encoding: options.encoding,
                     responseTimeout: options.responseTimeout
                 }).catch((err) => {
@@ -289,6 +290,7 @@ export class Download {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
 
             // Get a proper destination for the file to be downloaded

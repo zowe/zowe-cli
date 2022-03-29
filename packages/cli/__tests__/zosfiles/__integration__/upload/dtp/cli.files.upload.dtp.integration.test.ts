@@ -65,6 +65,14 @@ describe("Upload directory to PDS", () => {
             expect(stripNewLines(response.stderr.toString())).toContain("localDirThatDoesNotExist");
         });
 
+        it("should fail when binary and record are both specified", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [__dirname, "mf.data.set", "--binary", "--record"]);
+            expect(response.status).toBe(1);
+            expect(stripNewLines(response.stderr.toString())).toContain("following options conflict");
+            expect(stripNewLines(response.stderr.toString())).toContain("--record");
+            expect(stripNewLines(response.stderr.toString())).toContain("--binary");
+        });
     });
 });
 

@@ -12,3 +12,29 @@ exports[`Upload dir-to-pds handler process method should upload a directory to a
 
 "
 `;
+
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 1`] = `undefined`;
+
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 2`] = `""`;
+
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in binary format if requested 3`] = `
+"
+[33msuccess: [39m[32mtrue[39m
+[33mfrom: [39m   test-dir
+[33mto: [39m     testing
+
+"
+`;
+
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 1`] = `undefined`;
+
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 2`] = `""`;
+
+exports[`Upload dir-to-pds handler process method should upload a directory to a PDS in record format if requested 3`] = `
+"
+[33msuccess: [39m[32mtrue[39m
+[33mfrom: [39m   test-dir
+[33mto: [39m     testing
+
+"
+`;

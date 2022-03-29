@@ -31,6 +31,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data type is unsupported for USS files
+     * @type {IMessageDefinition}
+     */
+    unsupportedDataType: {
+        message: "Unsupported data type 'record' specified for USS file operation."
+    },
+
+    /**
      * Message indicating that the data set type is required
      * @type {IMessageDefinition}
      */

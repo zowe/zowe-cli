@@ -119,6 +119,34 @@ describe("Upload directory to PDS", () => {
             expect(stdoutText).toContain("Data set uploaded successfully.");
         });
 
+        it("should upload data set from local directory in binary format", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir_binary");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, dsname, "--binary"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("file_to_upload: 5");
+            expect(stdoutText).toContain("success:        5");
+            expect(stdoutText).toContain("error:          0");
+            expect(stdoutText).toContain("skipped:        0");
+            expect(stdoutText).toContain("Data set uploaded successfully.");
+        });
+
+        it("should upload data set from local directory in record format", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
+            const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir_record");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [localDirName, dsname, "--record"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            const stdoutText = response.stdout.toString();
+            expect(stdoutText).toContain("file_to_upload: 5");
+            expect(stdoutText).toContain("success:        5");
+            expect(stdoutText).toContain("error:          0");
+            expect(stdoutText).toContain("skipped:        0");
+            expect(stdoutText).toContain("Data set uploaded successfully.");
+        });
+
         it("should upload local directory with response-format-json flag", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtp.sh");
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtp_dir");

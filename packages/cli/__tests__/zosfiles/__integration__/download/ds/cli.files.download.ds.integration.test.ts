@@ -46,4 +46,12 @@ describe("Download Data Set", () => {
         expect(response.stderr.toString()).toContain("dataSetName");
     });
 
+    it("should fail due to specifying both binary and record", async () => {
+        const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
+        const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["test", "--binary", "--record"]);
+        expect(response.status).toBe(1);
+        expect(response.stderr.toString()).toContain("following options conflict");
+        expect(response.stderr.toString()).toContain("--record");
+        expect(response.stderr.toString()).toContain("--binary");
+    });
 });

@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `6.39.0`
+
+- Enhancement: Added support for `record` data type on dataset upload, download, and get APIs.
+
 ## `6.37.2`
 
 - BugFix: Disabled gzip compression for z/OSMF requests that download binary files. [#1170](https://github.com/zowe/zowe-cli/issues/1170)
