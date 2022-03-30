@@ -41,9 +41,9 @@ export const JobsDefinition: ICommandDefinition = {
             type: "string"
         },
         {
-            name: "execdata", aliases: ["ed"],
+            name: "exec-data", aliases: ["ed"],
             description: "Use this option to retrieve execution data for jobs via the z/OSMF REST API.",
-            type: "bool",
+            type: "boolean",
             default: false
         }
     ] as ICommandOptionDefinition[]),
@@ -66,15 +66,15 @@ export const JobsDefinition: ICommandDefinition = {
                 description: "List all jobs with default owner and prefix settings, displaying only the job ID of each job"
             },
             {
-                options: "--ed=true",
+                options: "--exec-data",
                 description: "List all jobs and return job execution data along with the default information"
             },
             {
-                options: "-o \"ibmu*\" --ed=true",
+                options: "-o \"ibmu*\" --exec-data",
                 description: "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information"
             },
             {
-                options: "-o \"ibmu*\" -p \"myjo*\" --ed=true",
+                options: "-o \"ibmu*\" -p \"myjo*\" --exec-data",
                 description: "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and \
                             return job execution data along with the default information"
             }
