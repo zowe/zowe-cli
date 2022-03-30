@@ -198,7 +198,9 @@ const config: IImperativeConfig = {
                 Constants.AUTO_INIT_OPTION_PASSWORD,
                 Constants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
                 Constants.AUTO_INIT_OPTION_TOKEN_TYPE,
-                Constants.AUTO_INIT_OPTION_TOKEN_VALUE
+                Constants.AUTO_INIT_OPTION_TOKEN_VALUE,
+                Constants.AUTO_INIT_OPTION_CERT_FILE,
+                Constants.AUTO_INIT_OPTION_CERT_KEY_FILE
             ]
         },
         profileType: "base"

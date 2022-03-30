@@ -174,6 +174,36 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
 
+    /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    public static BASE_OPTION_CERT_FILE: ICommandOptionDefinition = {
+        name: "cert-file",
+        description: "The file path to a certificate file to use for authentication",
+        type: "existingLocalFile",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    public static BASE_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
+        name: "cert-key-file",
+        description: "The file path to a certificate key file to use for authentication",
+        type: "existingLocalFile",
+        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the path to the certificate file for authentication
+     */
+    // public static BASE_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
+    //     name: "cert-file-passphrase",
+    //     description: "The passphrase to decrypt a certificate file to use for authentication",
+    //     type: "string",
+    //     group: Constants.BASE_CONNECTION_OPTION_GROUP
+    // };
+
 
     public static readonly AUTO_INIT_OPTION_GROUP = "APIML Connection Options";
 
@@ -243,32 +273,20 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
     /**
      * Option used to specify the path to the certificate file for authentication
      */
-    public static BASE_OPTION_CERT_FILE: ICommandOptionDefinition = {
-        name: "cert-file",
-        description: "The file path to a certificate file to use for authentication",
-        type: "existingLocalFile",
-        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    public static AUTO_INIT_OPTION_CERT_FILE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_CERT_FILE,
+        description: "The file path to a certificate file to use to authenticate to the API Mediation Layer",
+        group: Constants.AUTO_INIT_OPTION_GROUP
     };
 
     /**
      * Option used to specify the path to the certificate file for authentication
      */
-    public static BASE_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
-        name: "cert-key-file",
-        description: "The file path to a certificate key file to use for authentication",
-        type: "existingLocalFile",
-        group: Constants.BASE_CONNECTION_OPTION_GROUP
+    public static AUTO_INIT_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_CERT_KEY_FILE,
+        description: "The file path to a certificate key file to use to authenticate to the API Mediation Layer",
+        group: Constants.AUTO_INIT_OPTION_GROUP
     };
-
-    /**
-     * Option used to specify the path to the certificate file for authentication
-     */
-    // public static BASE_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
-    //     name: "cert-file-passphrase",
-    //     description: "The passphrase to decrypt a certificate file to use for authentication",
-    //     type: "string",
-    //     group: Constants.BASE_CONNECTION_OPTION_GROUP
-    // };
 
     /**
      * Summary of auth command group
