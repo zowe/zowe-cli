@@ -6,6 +6,10 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 - BugFix: Updated paths to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
 
+## `7.0.0-next.202203282106`
+
+- Enhancement: Added the `record` data type header
+
 ## `7.0.0-next.202203211751`
 
 - BugFix: Updated `ProfileUtils.getZoweDir` method to include the `name` property. [zowe/vscode-extension-for-zowe#1697](https://github.com/zowe/vscode-extension-for-zowe/issues/1697)

@@ -48,15 +48,32 @@ describe("zos-jobs cancel job command", () => {
             expect(response.stderr.toString()).toContain("Obtaining job info for a single job id JOB00000 on");
             expect(response.stderr.toString()).toContain("failed: Job not found");
         });
+
+        it("should surface an error from z/OSMF if the jobid was already canceled", () => {
+            runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("Failed to cancel job");
+            expect(response.stderr.toString()).toContain("Job not cancellable or purgeable");
+            expect(response.stderr.toString()).toContain("returned on second cancel");
+            expect(response.stdout.toString()).toContain("Successfully canceled job");
+        });
     });
 
     describe("successful scenario", () => {
         it("should cancel a job", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job.sh",
-                TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
+        });
+
+        it("should cancel a job v2", () => {
+            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully canceled job");
+            expect(response.stdout.toString()).not.toContain("Failed to cancel job");
         });
 
         describe("without profiles", () => {
@@ -79,6 +96,21 @@ describe("zos-jobs cancel job command", () => {
 
             it("cancel a job without a profile", async () => {
                 const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_fully_qualified.sh",
+                    TEST_ENVIRONMENT_NO_PROF,
+                    [
+                        LOCAL_JCL_FILE,
+                        DEFAULT_SYSTEM_PROPS.zosmf.host,
+                        DEFAULT_SYSTEM_PROPS.zosmf.port,
+                        DEFAULT_SYSTEM_PROPS.zosmf.user,
+                        DEFAULT_SYSTEM_PROPS.zosmf.password,
+                    ]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
+            });
+
+            it("cancel a job without a profile 2.0", async () => {
+                const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_fully_qualified.sh",
                     TEST_ENVIRONMENT_NO_PROF,
                     [
                         LOCAL_JCL_FILE,

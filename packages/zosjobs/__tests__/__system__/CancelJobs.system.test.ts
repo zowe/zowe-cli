@@ -50,25 +50,38 @@ describe("CancelJobs System tests", () => {
         it("should be able to cancel a job using cancelJob", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
-            await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
+            const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
+            expect(response).toBeUndefined();
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
-            await CancelJobs.cancelJobForJob(REAL_SESSION, job);
+            const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
+            expect(response).toBeUndefined();
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
-            await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+            const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+            expect(response).toBeUndefined();
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
-            await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
+            const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
+            expect(response.status).toEqual("0"); // intermittent failure
+        }, LONG_TIMEOUT);
+
+        it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous) and return an error feedback object", async () => {
+            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL, status: "INPUT"});
+            expect(job.retcode).toBeNull(); // job is not complete, no CC
+            let response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
+            expect(response.status).toEqual("0");
+            response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
+            expect(response.status).toEqual("156");
         }, LONG_TIMEOUT);
     });
 
