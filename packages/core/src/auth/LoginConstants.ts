@@ -24,6 +24,6 @@ export class LoginConstants {
      * @type {string}
      * @memberof LoginConstants
      */
-    public static readonly APIML_V1_RESOURCE: string = "/api/v1/gateway/auth/login";
+    public static readonly APIML_V1_RESOURCE: string = "/gateway/api/v1/auth/login";
 
 }

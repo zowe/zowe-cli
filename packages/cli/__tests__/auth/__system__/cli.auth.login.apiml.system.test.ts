@@ -210,22 +210,6 @@ describe("auth login/logout apiml do not create profile", () => {
         expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
-
-    it("should successfully issue the login command and timeout while creating a profile", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create_timeout.sh",
-            TEST_ENVIRONMENT_CREATE_PROF,
-            [
-                base.host,
-                base.port,
-                base.user,
-                base.password,
-                base.rejectUnauthorized
-            ]);
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
-        expect(response.stdout.toString()).toContain("Login successful.");
-    });
 });
 
 describe("auth login/logout apiml with pem cert", () => {

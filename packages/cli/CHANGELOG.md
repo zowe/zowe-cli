@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
 - BugFix: Updated Imperative to avoid loading the credential manager if the given config file is not secure. [zowe/imperative#762](https://github.com/zowe/imperative/issues/762)
 
 ## `7.0.0-next.202203282106`

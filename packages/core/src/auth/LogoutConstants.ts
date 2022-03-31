@@ -24,7 +24,7 @@ export class LogoutConstants {
      * @type {string}
      * @memberof LogoutConstants
      */
-    public static readonly APIML_V1_RESOURCE: string = "/api/v1/gateway/auth/logout";
+    public static readonly APIML_V1_RESOURCE: string = "/gateway/api/v1/auth/logout";
 
     /**
      * Zowe Token Expired Error Code
