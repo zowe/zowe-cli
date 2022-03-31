@@ -58,7 +58,7 @@ describe("Logout system test", () => {
             client.session.ISession.tokenType = "apimlAuthenticationToken";
             client.session.ISession.tokenValue = token;
 
-            await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
+            await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
@@ -74,7 +74,7 @@ describe("Logout system test", () => {
             client.session.ISession.tokenType = "apimlAuthenticationToken";
             client.session.ISession.tokenValue = token;
 
-            await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
+            await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
