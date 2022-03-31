@@ -289,6 +289,9 @@ describe("DaemonDecider tests", () => {
         const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
         unlinkSyncSpy.mockReturnValueOnce(true);
 
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+        unlinkSyncSpy.mockReturnValueOnce(true);
+
         daemonDecider.init();
         daemonDecider.runOrUseDaemon();
 
@@ -297,6 +300,7 @@ describe("DaemonDecider tests", () => {
             timesCalled = 0;
         }
 
+        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(existsSyncSpy).toHaveBeenCalledTimes(timesCalled);
         expect(unlinkSyncSpy).toHaveBeenCalledTimes(timesCalled);
     });
