@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202203311904`
 
 - BugFix: Updated paths to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
 
