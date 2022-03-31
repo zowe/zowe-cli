@@ -15,6 +15,7 @@ import * as os from "os";
 import * as path from "path";
 import { Imperative } from "@zowe/imperative";
 import { DaemonClient } from "./DaemonClient";
+import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";
 
 // TODO(Kelosky): handle prompting cases from login command
 // TODO(Kelosky): prompt* broken - hangs, must restart daemon
@@ -51,6 +52,15 @@ export class DaemonDecider {
      * @memberof DaemonDecider
      */
     private mSocket: string;
+
+    /**
+     * Contains the path to the daemon directory.
+     * It is intialized with our default location.
+     * @private
+     * @type {number}
+     * @memberof DaemonDecider
+     */
+    private mDaemonDir: string = path.join(os.homedir(), ".zowe", "daemon");
 
     /**
      * Hold current owner for the server
@@ -90,6 +100,8 @@ export class DaemonDecider {
 
             this.mServer.on('error', this.error.bind(this));
             this.mServer.on('close', this.close.bind(this));
+
+            this.recordDaemonPid();
         }
     }
 
@@ -116,6 +128,33 @@ export class DaemonDecider {
         } else {
             Imperative.parse();
         }
+    }
+
+    /**
+     * Record the process ID of the daemon that is being started for the current user.
+     * On a multi-user system, each user gets his/her own daemon.
+     *
+     * @private
+     * @memberof DaemonDecider
+     */
+    private recordDaemonPid() {
+        const pidForUser: IDaemonPidForUser = {
+            user: os.userInfo().username,
+            pid: process.pid
+        };
+
+        const pidFilePath = path.join(this.mDaemonDir, "daemon_pid.json");
+        const pidForUserStr = JSON.stringify(pidForUser, null, 2);
+
+        try {
+            fs.writeFileSync(pidFilePath, pidForUserStr);
+        } catch(err) {
+            throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
+        }
+
+        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath +
+            "\n" + pidForUserStr
+        );
     }
 
     /**
@@ -171,12 +210,9 @@ export class DaemonDecider {
                     // Linux-like systems use domain sockets
                     if (process.env.ZOWE_DAEMON_DIR) {
                         // user can choose a daemon directory for storing runtime artifacts
-                        this.mSocket = process.env.ZOWE_DAEMON_DIR;
-                        this.mSocket = path.join(this.mSocket, "daemon.sock");
-                    } else {
-                        // use default daemon directory to hold our socket file
-                        this.mSocket = path.join(os.homedir(), ".zowe", "daemon", "daemon.sock");
+                        this.mDaemonDir = process.env.ZOWE_DAEMON_DIR;
                     }
+                    this.mSocket = path.join(this.mDaemonDir, "daemon.sock");
                 }
 
                 Imperative.api.appLogger.debug(`daemon server will listen on ${this.mSocket}`);
