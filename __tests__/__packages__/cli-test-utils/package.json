@@ -38,6 +38,7 @@
     "@types/uuid": "^8.3.0",
     "find-up": "^5.0.0",
     "js-yaml": "^4.0.0",
+    "rimraf": "^3.0.2",
     "uuid": "^8.3.2",
     "yocto-queue": "^0.1.0"
   },
@@ -45,7 +46,6 @@
     "@types/node": "^14.14.37",
     "@zowe/imperative": "5.0.0-next.202203231534",
     "eslint": "^7.32.0",
-    "rimraf": "^3.0.2",
     "typescript": "^4.2.3"
   },
   "peerDependencies": {

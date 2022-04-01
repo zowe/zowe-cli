@@ -97,6 +97,10 @@ export class TestEnvironment {
         if (testEnvironment.tempProfiles != null) {
             await TempTestProfiles.deleteProfiles(testEnvironment);
         }
+        if (testEnvironment.pluginInstalled) {
+            const pluginDir = testEnvironment.workingDir + "/plugins";
+            require("rimraf").sync(pluginDir);
+        }
     }
 
     /**
@@ -117,13 +121,13 @@ export class TestEnvironment {
     protected static readonly DEFAULT_PROPERTIES_LOCATION = nodePath.resolve(TEST_RESOURCE_DIR + "/properties") + "/";
 
     /**
-     *  Load the properties file specified with system test configuration information.
-     *  @static
-     *  @param {string} filePath - Specify the filePath of the properties file. Leave empty to use the properties
-     *   file specified in the process.env (see gulp tasks for more information).
-     *   @param {string} testDirectory - the working directory to log  informational messages to
-     *  @returns {ITestPropertiesSchema} - The parsed test properties.
-     *  @memberof TestEnvironment
+     * Load the properties file specified with system test configuration information.
+     * @static
+     * @param {string} filePath - Specify the filePath of the properties file. Leave empty to use the properties
+     *  file specified in the process.env (see gulp tasks for more information).
+     * @param {string} testDirectory - the working directory to log  informational messages to
+     * @returns {ITestPropertiesSchema} - The parsed test properties.
+     * @memberof TestEnvironment
      */
     protected static loadSystemTestProperties<T>(filePath: string | null = null, testDirectory: string): T {
         const logger: Logger = this.getMockFileLogger(testDirectory);

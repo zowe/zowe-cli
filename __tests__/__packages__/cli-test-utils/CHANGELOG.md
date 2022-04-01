@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed plugins directory not being deleted when TestEnvironment cleans up.
+
 ## `7.0.0-next.202112201801`
 
 - BugFix: Removed usage of internal Imperative method to delete team config profiles.
