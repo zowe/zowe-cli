@@ -155,6 +155,33 @@ describe("Get", () => {
                 expect(response).toBeTruthy();
                 expect(response.subarray(0, data.length)).toEqual(data);
             });
+            it("should get data set content in record mode", async () => {
+                let error;
+                let response: Buffer;
+
+                const bufferLength = 84;
+                const options: IGetOptions = {
+                    record: true
+                };
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.dataSet(REAL_SESSION, dsname, options);
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.length).toEqual(bufferLength);
+                expect(response.subarray(0, 4)).toEqual(Buffer.from("00000050", "hex")); // Data size
+                expect(response.subarray(4, 30)).toEqual(Buffer.from("818283848586878889919293949596979899a2a3a4a5a6a7a8a9", "hex")); // Our data
+                // Empty space
+                expect(response.subarray(30, 60)).toEqual(Buffer.from("404040404040404040404040404040404040404040404040404040404040", "hex"));
+                expect(response.subarray(60, 81)).toEqual(Buffer.from("404040404040404040404040404040404040404040", "hex"));
+            });
         });
         describe("USS File", () => {
             beforeEach(async () => {
@@ -290,6 +317,25 @@ describe("Get", () => {
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("File not found.");
+            });
+
+            it("should display a proper message when getting the content of a file with record option", async () => {
+                let response: Buffer;
+                let error;
+                const record = true;
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz\n";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+
+                try {
+                    response = await Get.USSFile(REAL_SESSION, ussname, {record});
+                } catch (err) {
+                    error = err;
+                }
+                expect(response).toBeFalsy();
+                expect(error).toBeTruthy();
+                expect(stripNewLines(error.message)).toContain("Unsupported data type 'record' specified for USS file operation.");
             });
         });
     });

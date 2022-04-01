@@ -126,6 +126,49 @@ describe("z/OS Files - View", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
         });
 
+        it("should get data set content in binary mode if record is specified", async () => {
+            let response;
+            let caughtError;
+            const binary = true;
+            const record = true;
+
+            try {
+                response = await Get.dataSet(dummySession, dsname, {binary, record});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            // TODO:gzip
+            // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY]);
+        });
+
+        it("should get data set content in record mode", async () => {
+            let response;
+            let caughtError;
+            const record = true;
+
+            try {
+                response = await Get.dataSet(dummySession, dsname, {record});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(content);
+
+            expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_RECORD]);
+        });
+
         it("should get data set content with encoding", async () => {
             let response;
             let caughtError;
@@ -241,6 +284,22 @@ describe("z/OS Files - View", () => {
                 expect(response).toBeUndefined();
                 expect(caughtError).toBeDefined();
                 expect(caughtError.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+            });
+
+            it("should throw an error if the uss file data type is record", async () => {
+                let response;
+                let caughtError;
+                const record = true;
+
+                try {
+                    response = await Get.USSFile(dummySession, ussfile, {record});
+                } catch (e) {
+                    caughtError = e;
+                }
+
+                expect(response).toBeUndefined();
+                expect(caughtError).toBeDefined();
+                expect(caughtError.message).toContain(ZosFilesMessages.unsupportedDataType.message);
             });
 
             it("should get uss file content", async () => {

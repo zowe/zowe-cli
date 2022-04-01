@@ -119,6 +119,13 @@ export class ZosmfHeaders {
     public static readonly X_IBM_BINARY: IHeaderContent = { "X-IBM-Data-Type": "binary" };
 
     /**
+     * record transfer header
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RECORD: IHeaderContent = { "X-IBM-Data-Type": "record" };
+
+    /**
      * binary by record header
      * @static
      * @memberof ZosmfHeaders

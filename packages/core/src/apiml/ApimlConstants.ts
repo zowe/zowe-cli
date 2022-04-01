@@ -21,5 +21,5 @@ export class ApimlConstants {
      * @type {string}
      * @memberof ApimlConstants
      */
-    public static readonly SERVICES_ENDPOINT: string = "/api/v1/gateway/services";
+    public static readonly SERVICES_ENDPOINT: string = "/gateway/api/v1/services";
 }

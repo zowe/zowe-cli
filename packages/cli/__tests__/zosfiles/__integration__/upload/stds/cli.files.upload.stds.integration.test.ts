@@ -45,6 +45,15 @@ describe("Upload Data Set", () => {
             expect(response.stderr.toString()).toContain("Missing Positional Argument");
             expect(response.stderr.toString()).toContain("dataSetName");
         });
+
+        it("should fail if we specify both binary and record options", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_stds.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["mf.test.ds", "--binary", "--record"]);
+            expect(response.status).toBe(1);
+            expect(response.stderr.toString()).toContain("following options conflict");
+            expect(response.stderr.toString()).toContain("--record");
+            expect(response.stderr.toString()).toContain("--binary");
+        });
     });
 });
 

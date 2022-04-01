@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-zowe auth login apiml
+echo "y" | zowe auth login apiml
 
 exit $?

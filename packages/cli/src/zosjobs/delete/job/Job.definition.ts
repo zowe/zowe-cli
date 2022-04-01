@@ -34,7 +34,7 @@ export const JobDefinition: ICommandDefinition = {
     ],
     options: [
         {
-            name: "modifyVersion",
+            name: "modify-version",
             description: strings.ACTIONS.JOB.OPTIONS.MODIFY_VERSION,
             type: "string",
             required: false,
