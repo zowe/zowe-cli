@@ -15,6 +15,7 @@ import * as os from "os";
 import * as path from "path";
 import { Imperative } from "@zowe/imperative";
 import { DaemonClient } from "./DaemonClient";
+import { DaemonUtil } from "./DaemonUtil";
 import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";
 
 // TODO(Kelosky): handle prompting cases from login command
@@ -52,15 +53,6 @@ export class DaemonDecider {
      * @memberof DaemonDecider
      */
     private mSocket: string;
-
-    /**
-     * Contains the path to the daemon directory.
-     * It is intialized with our default location.
-     * @private
-     * @type {number}
-     * @memberof DaemonDecider
-     */
-    private mDaemonDir: string = path.join(os.homedir(), ".zowe", "daemon");
 
     /**
      * Hold current owner for the server
@@ -143,7 +135,7 @@ export class DaemonDecider {
             pid: process.pid
         };
 
-        const pidFilePath = path.join(this.mDaemonDir, "daemon_pid.json");
+        const pidFilePath = path.join(DaemonUtil.getDaemonDir(), "daemon_pid.json");
         const pidForUserStr = JSON.stringify(pidForUser, null, 2);
 
         try {
@@ -199,7 +191,7 @@ export class DaemonDecider {
 
                 if (process.platform === "win32") {
                     // On windows we use a pipe instead of a socket
-                    if (process.env.ZOWE_DAEMON_PIPE) {
+                    if (process.env?.ZOWE_DAEMON_PIPE?.length > 0) {
                         // user can choose some pipe path
                         this.mSocket = "\\\\.\\pipe\\" + process.env.ZOWE_DAEMON_PIPE;
                     } else {
@@ -208,11 +200,7 @@ export class DaemonDecider {
                     }
                 } else {
                     // Linux-like systems use domain sockets
-                    if (process.env.ZOWE_DAEMON_DIR) {
-                        // user can choose a daemon directory for storing runtime artifacts
-                        this.mDaemonDir = process.env.ZOWE_DAEMON_DIR;
-                    }
-                    this.mSocket = path.join(this.mDaemonDir, "daemon.sock");
+                    this.mSocket = path.join(DaemonUtil.getDaemonDir(), "daemon.sock");
                 }
 
                 Imperative.api.appLogger.debug(`daemon server will listen on ${this.mSocket}`);
