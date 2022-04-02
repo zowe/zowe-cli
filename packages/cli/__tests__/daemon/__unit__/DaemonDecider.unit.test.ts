@@ -18,6 +18,7 @@ import * as path from "path";
 import Mock = jest.Mock;
 import { Imperative } from "@zowe/imperative";
 import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
+
 jest.mock("../../../src/daemon/DaemonClient");
 
 describe("DaemonDecider tests", () => {
@@ -283,14 +284,17 @@ describe("DaemonDecider tests", () => {
         process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
 
+
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
         existsSyncSpy.mockReturnValueOnce(true);
 
-        const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
-        unlinkSyncSpy.mockReturnValueOnce(true);
+        const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync").mockImplementation((path) => {
+            // Nothing to do
+        });
 
-        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-        unlinkSyncSpy.mockReturnValueOnce(true);
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((file, data) => {
+            // Nothing to do
+        });
 
         daemonDecider.init();
         daemonDecider.runOrUseDaemon();
