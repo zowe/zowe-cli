@@ -9,9 +9,12 @@
 *
 */
 
+import * as fs from "fs";
 import * as net from "net";
+import * as path from "path";
 import { PassThrough, Readable } from "stream";
 import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError } from "@zowe/imperative";
+import { DaemonUtil } from "./DaemonUtil";
 
 /**
  * Class for handling client connections to our persistent service (e.g. daemon mode)
@@ -77,6 +80,14 @@ export class DaemonClient {
      */
     private shutdown() {
         Imperative.api.appLogger.debug("shutting down");
+
+        const pidFilePath = path.join(DaemonUtil.getDaemonDir(), "daemon_pid.json");
+        try {
+            fs.unlinkSync(pidFilePath);
+        } catch(err) {
+            throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
+        }
+
         this.mClient.end();
         this.mServer.close();
     }
