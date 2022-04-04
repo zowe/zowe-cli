@@ -9,14 +9,17 @@
 *
 */
 
+// using __mocks__/fs.ts
+jest.mock("fs");
+const fs = require("fs");
+
 jest.mock("net");
 jest.mock("@zowe/imperative");
-import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
 import Mock = jest.Mock;
-import { Imperative } from "@zowe/imperative";
+import { Imperative, IO } from "@zowe/imperative";
 import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
 
 jest.mock("../../../src/daemon/DaemonClient");
@@ -25,6 +28,12 @@ describe("DaemonDecider tests", () => {
     afterEach(() => {
         delete process.env.ZOWE_DAEMON_DIR;
         delete process.env.ZOWE_DAEMON_PIPE;
+    });
+
+    afterAll(() => {
+        // Just to be safe
+        jest.unmock("fs");
+        jest.restoreAllMocks();
     });
 
     it("should call normal parse method if no daemon keyword", () => {
@@ -284,28 +293,29 @@ describe("DaemonDecider tests", () => {
         process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
 
+        // setup data for __mocks__/fs.ts
+        const pathToDaemonDir = "./path/to/daemonDir";
+        const contents = "Contents for a directory is just used to confirm existence";
+        const MOCK_FILE_INFO = {
+            [pathToDaemonDir]: contents
+        };
+        fs.__setMockFiles(MOCK_FILE_INFO);
 
-        const existsSyncSpy = jest.spyOn(fs, "existsSync");
-        existsSyncSpy.mockReturnValueOnce(true);
-
-        const unlinkSyncSpy = jest.spyOn(fs, "unlinkSync").mockImplementation((path) => {
-            // Nothing to do
-        });
-
-        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((file, data) => {
-            // Nothing to do
-        });
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
 
         daemonDecider.init();
         daemonDecider.runOrUseDaemon();
 
-        let timesCalled = 1;
+        // Linux times
+        let existTimes;
         if (process.platform === "win32") {
-            timesCalled = 0;
+            existTimes = 3;
+        } else {
+            existTimes = 9;
         }
 
-        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(existsSyncSpy).toHaveBeenCalledTimes(timesCalled);
-        expect(unlinkSyncSpy).toHaveBeenCalledTimes(timesCalled);
+        expect(writeFileSyncSpy).toHaveBeenCalledTimes(3);
+        expect(existsSyncSpy).toHaveBeenCalledTimes(existTimes);
     });
 });

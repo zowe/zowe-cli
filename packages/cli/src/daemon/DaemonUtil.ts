@@ -11,6 +11,7 @@
 
 import * as os from "os";
 import * as path from "path";
+import { IO } from "@zowe/imperative";
 
 /**
  * Class containing daemon utility functions.
@@ -20,16 +21,26 @@ import * as path from "path";
 export class DaemonUtil {
     /**
      * Get the directory that holds daemon-related runtime files.
+     * Ensures that the directory exists, or we create it.
      *
      * @returns The absolute path to the daemon directory.
      */
     public static getDaemonDir(): string {
+        let daemonDir: string = "NotYetAssigned";
         if (process.env?.ZOWE_DAEMON_DIR?.length > 0) {
             // user can choose a daemon directory for storing runtime artifacts
-            return process.env.ZOWE_DAEMON_DIR;
+            daemonDir = process.env.ZOWE_DAEMON_DIR;
         } else {
             // our default location.
-            return path.join(os.homedir(), ".zowe", "daemon");
+            daemonDir = path.join(os.homedir(), ".zowe", "daemon");
         }
+        if (!IO.existsSync(daemonDir)) {
+            try {
+                IO.mkdirp(daemonDir);
+            } catch(err) {
+                throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
+            }
+        }
+        return daemonDir;
     }
 }

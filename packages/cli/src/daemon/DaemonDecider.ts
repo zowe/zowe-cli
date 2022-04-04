@@ -13,10 +13,11 @@ import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
-import { Imperative } from "@zowe/imperative";
+import { Imperative, IO } from "@zowe/imperative";
 import { DaemonClient } from "./DaemonClient";
 import { DaemonUtil } from "./DaemonUtil";
 import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";
+
 
 // TODO(Kelosky): handle prompting cases from login command
 // TODO(Kelosky): prompt* broken - hangs, must restart daemon
@@ -104,8 +105,8 @@ export class DaemonDecider {
      */
     public runOrUseDaemon() {
         if (this.mServer) {
-            if (process.platform !== "win32" && fs.existsSync(this.mSocket)) {
-                fs.unlinkSync(this.mSocket);
+            if (process.platform !== "win32" && IO.existsSync(this.mSocket)) {
+                IO.deleteFile(this.mSocket);
             }
 
             ["exit", "SIGINT", "SIGQUIT", "SIGTERM"].forEach((eventType: any) => {
