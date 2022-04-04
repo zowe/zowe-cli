@@ -6,6 +6,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Launch a separate Zowe CLI daemon for each user on multi-user systems.
 
+## `7.0.0-next.202203311904`
+
+- BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
+- BugFix: Updated Imperative to avoid loading the credential manager if the given config file is not secure. [zowe/imperative#762](https://github.com/zowe/imperative/issues/762)
+
 ## `7.0.0-next.202203282106`
 
 - Enhancement: Added support for `--record` format on `zowe zos-files download (data-set|all-members)` and `zowe zos-files upload (dir-to-pds|file-to-data-set|stdin-to-data-set)` [#539](https://github.com/zowe/zowe-cli/issues/539)
