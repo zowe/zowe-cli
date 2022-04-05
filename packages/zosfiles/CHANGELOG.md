@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added check for USS tags to `Download.ussFile` method to automatically detect file encoding. [#740](https://github.com/zowe/zowe-cli/issues/740)
+
 ## `7.0.0-next.202203282106`
 
 - Enhancement: Added support for `record` data type on dataset upload, download, and get APIs.

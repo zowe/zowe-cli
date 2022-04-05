@@ -9,10 +9,11 @@
 *
 */
 
+import { posix } from "path";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { AbstractSession, Imperative } from "@zowe/imperative";
+import { AbstractSession, Imperative, IO } from "@zowe/imperative";
 import { Utilities, Tag, Upload, Create, Download, Delete } from "../../../../src";
 import { getUniqueDatasetName, getTag } from "../../../../../../__tests__/__src__/TestUtils";
 
@@ -89,6 +90,9 @@ describe("USS Utilities", () => {
         await Utilities.renameUSSFile(REAL_SESSION, createdName, newName);
         const result = await Download.ussFile(REAL_SESSION, newName);
         expect(result.success).toBe(true);
+
+        // Delete created local file
+        IO.deleteFile(posix.basename(newName));
     });
 
     describe("applyTaggedEncoding", () => {

@@ -62,6 +62,7 @@ describe("Download Data Set", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
+
     describe("Success Scenarios", () => {
 
         describe("Physical sequential data set", () => {
@@ -595,6 +596,11 @@ describe("Download Data Set", () => {
     });
 
     describe("Failure Scenarios", () => {
+        afterAll(() => {
+            // delete the top-level folder and the folders and file below
+            const folders = dsname.split(".");
+            rimraf(folders[0].toLowerCase());
+        });
 
         describe("Physical sequential data set", () => {
 
@@ -613,7 +619,7 @@ describe("Download Data Set", () => {
                 expect(error.message).toContain("Expect Error: Required object must be defined");
             });
 
-            it("should display proper message when downloading a data set that does not exists", async () => {
+            it("should display proper message when downloading a data set that does not exist", async () => {
                 let response: IZosFilesResponse;
                 let error;
 
@@ -663,8 +669,8 @@ describe("Download Data Set", () => {
     });
 
     describe("Download USS File", () => {
-        // Delete created uss file
         afterAll(async () => {
+            // Delete created uss file
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
             try {
@@ -673,15 +679,12 @@ describe("Download Data Set", () => {
             } catch (err) {
                 Imperative.console.error(err);
             }
+
+            // Delete created local file
+            IO.deleteFile(`./${posix.basename(ussname)}`);
         });
 
         describe("Successful scenarios", () => {
-            afterAll(() => {
-                // delete the top-level folder and the folders and file below
-                const folders = ussname.split("/");
-                rimraf(folders[folders.indexOf("a")]);
-            });
-
             it("should download uss file without any options", async () => {
                 let error;
                 let response: IZosFilesResponse;
@@ -862,7 +865,7 @@ describe("Download Data Set", () => {
                 expect(fileContents).toEqual(data.slice(0, -1) + "€");
             });
 
-            it("Download uss file content to local file", async () => {
+            it("should download uss file content to local file", async () => {
 
                 let error;
                 let response: IZosFilesResponse;
