@@ -336,28 +336,28 @@ describe("GetJobs tests", () => {
         it("should get a list of jobs from getJobsCommon with their execution data", async () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
 
-            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {execdata: true});
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {execData: true});
             expect(jobCommon).toMatchSnapshot();
         });
 
         it("should get a list of jobs from getJobsCommon with their execution data with maxJobs param", async () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
 
-            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {maxJobs: 2, execdata: true});
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {maxJobs: 2, execData: true});
             expect(jobCommon).toMatchSnapshot();
         });
 
         it("should get a list of jobs from getJobsCommon with their execution data with owner and maxJobs params", async () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
 
-            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {owner: "someOwner", maxJobs: 2, execdata: true});
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {owner: "someOwner", maxJobs: 2, execData: true});
             expect(jobCommon).toMatchSnapshot();
         });
 
         it("should get a list of jobs from getJobsCommon with their execution data with multiple other params", async () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsJSONData([GetJobsData.SAMPLE_COMPLETE_JOB, GetJobsData.SAMPLE_ACTIVE_JOB]);
 
-            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {owner: "someOwner", prefix: "fakePrefix", maxJobs: 2, execdata: true});
+            const jobCommon = await GetJobs.getJobsCommon(pretendSession, {owner: "someOwner", prefix: "fakePrefix", maxJobs: 2, execData: true});
             expect(jobCommon).toMatchSnapshot();
         });
     });

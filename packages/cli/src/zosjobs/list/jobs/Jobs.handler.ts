@@ -32,14 +32,14 @@ export default class JobsHandler extends ZosmfBaseHandler {
         // Obtain the list of jobs - by default uses the session user and * for owner and prefix.
         const owner: string = (params.arguments.owner != null) ? params.arguments.owner : null;
         const prefix: string = (params.arguments.prefix != null) ? params.arguments.prefix : JobsConstants.DEFAULT_PREFIX;
-        const execdata: boolean = params.arguments["exec-data"];
-        const jobs: IJob[] = await GetJobs.getJobsCommon(this.mSession, {owner, prefix, execdata});
+        const execData: boolean = params.arguments.execData;
+        const jobs: IJob[] = await GetJobs.getJobsCommon(this.mSession, {owner, prefix, execData});
 
         // Populate the response object
         params.response.data.setObj(jobs);
         params.response.data.setMessage(`List of jobs returned for prefix "${prefix}" and owner "${owner}"`);
 
-        if (!params.arguments["exec-data"]) {
+        if (!params.arguments.execData) {
             // Format the output with the default fields
             params.response.format.output({
                 fields: ["jobid", "retcode", "jobname", "status"],

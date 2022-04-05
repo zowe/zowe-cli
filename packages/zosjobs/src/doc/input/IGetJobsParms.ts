@@ -52,5 +52,5 @@ export interface IGetJobsParms {
      * @type {boolean}
      * @memberof IGetJobsParms
      */
-    execdata?: boolean;
+    execData?: boolean;
 }

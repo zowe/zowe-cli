@@ -157,7 +157,7 @@ export class GetJobs {
                 }
                 query += (JobsConstants.QUERY_JOBID + parms.jobid);
             }
-            if (parms.execdata) {
+            if (parms.execData) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
