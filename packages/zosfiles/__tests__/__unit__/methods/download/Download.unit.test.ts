@@ -10,7 +10,7 @@
 */
 
 import { IO, Session } from "@zowe/imperative";
-import { ZosFilesMessages } from "../../../../src";
+import { Utilities, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
 import { posix } from "path";
@@ -1018,6 +1018,7 @@ describe("z/OS Files - Download", () => {
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
         const fakeStream: any = {fakeStream: true};
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
+        const putUSSPayloadSpy = jest.spyOn(Utilities, "putUSSPayload");
         const fakeResponseWithEtag = {data: ussFileContent, response:{headers:{etag: etagValue}}};
 
         beforeEach(() => {
@@ -1035,6 +1036,9 @@ describe("z/OS Files - Download", () => {
 
             ioWriteStreamSpy.mockClear();
             ioWriteStreamSpy.mockImplementation(() => fakeStream);
+
+            putUSSPayloadSpy.mockClear();
+            putUSSPayloadSpy.mockResolvedValue("{}");
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -1187,6 +1191,85 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
                 reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: true,
+                task: undefined /* no progress task */
+            });
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
+        it("should download ISO8859-1 uss file in binary mode", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+            putUSSPayloadSpy.mockResolvedValueOnce(JSON.stringify({
+                stdout: ["t ISO8859-1\tT=on\t" + ussname]
+            }));
+            try {
+                response = await Download.ussFile(dummySession, ussname, {});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            // expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeStream,
+            //     false, /* don't normalize new lines in binary*/
+            //     undefined /* no progress task */);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                // TODO:gzip
+                // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
+                task: undefined /* no progress task */});
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
+        it("should download IBM-1147 uss file with encoding mode", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+            putUSSPayloadSpy.mockResolvedValueOnce(JSON.stringify({
+                stdout: ["t IBM-1147\tT=on\t" + ussname]
+            }));
+            try {
+                response = await Download.ussFile(dummySession, ussname, {});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedSuccessfully.message, destination),
+                apiResponse: {}
+            });
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=1147" }, ZosmfHeaders.ACCEPT_ENCODING],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */

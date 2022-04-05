@@ -17,6 +17,8 @@ import {
     Upload,
     IDownloadOptions,
     IZosFilesResponse,
+    Tag,
+    Utilities,
     ZosFilesConstants,
     ZosFilesMessages
 } from "../../../../src";
@@ -793,7 +795,7 @@ describe("Download Data Set", () => {
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz";
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                (await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data));
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
                 await delay(delayTime);
 
                 try {
@@ -808,6 +810,56 @@ describe("Download Data Set", () => {
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(data);
+            });
+
+            it("should download ISO8859-1 uss file in binary mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const options: IDownloadOptions = {};
+
+                const data: string = "abcdefghijklmnopqrstuvwxyz";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
+                await delay(delayTime);
+
+                try {
+                    response = await Download.ussFile(REAL_SESSION, ussname, options);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                expect(fileContents).toEqual(data);
+            });
+
+            it("should download IBM-1147 uss file with encoding mode", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const options: IDownloadOptions = {};
+
+                const data: string = "Hello, world¤";
+                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_TEXT], data);
+                await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1147");
+                await delay(delayTime);
+
+                try {
+                    response = await Download.ussFile(REAL_SESSION, ussname, options);
+                } catch (err) {
+                    error = err;
+                }
+
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(readFileSync(`./${posix.basename(ussname)}`).toString());
+                expect(fileContents).toEqual(data.slice(0, -1) + "€");
             });
 
             it("Download uss file content to local file", async () => {
