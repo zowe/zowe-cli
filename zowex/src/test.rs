@@ -27,6 +27,8 @@ use crate::proc::*;
 use crate::run::*;
 use crate::util::*;
 
+pub const START_STOP_DELAY: u64 = 5; // 5 seconds
+
 #[test]
 fn unit_test_util_get_socket_string() {
     // expect default socket string with no env
@@ -129,7 +131,7 @@ fn integration_test_restart() {
     assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
     // confirm that the daemon is running
-    thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+    thread::sleep(Duration::from_secs(START_STOP_DELAY));
     daemon_proc_info = proc_get_daemon_info();
     assert_eq!(daemon_proc_info.is_running, true, "The daemon is not running after restart.");
     let first_daemon_pid = daemon_proc_info.pid;
@@ -139,7 +141,7 @@ fn integration_test_restart() {
     assert_eq!(result.unwrap(), 0, "The run_restart_command failed.");
 
     // confirm that a new and different daemon is running
-    thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+    thread::sleep(Duration::from_secs(START_STOP_DELAY));
     daemon_proc_info = proc_get_daemon_info();
     assert_eq!(daemon_proc_info.is_running, true, "A daemon should be running now.");
     assert_ne!(daemon_proc_info.pid, first_daemon_pid,
@@ -154,7 +156,7 @@ fn integration_test_restart() {
     }
 
     // confirm that the daemon has stopped
-    thread::sleep(Duration::from_secs(THREE_SEC_DELAY));
+    thread::sleep(Duration::from_secs(START_STOP_DELAY));
     daemon_proc_info = proc_get_daemon_info();
     assert_eq!(daemon_proc_info.is_running, false, "The daemon should have stopped for the end of the test.");
 }

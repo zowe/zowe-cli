@@ -66,6 +66,12 @@ pub struct DaemonResponse {
     pub user: Option<String>,
 }
 
+#[derive(Deserialize)]
+pub struct DaemonPidForUser {
+    pub user: String,
+    pub pid: i32
+}
+
 pub enum CmdShell {
     Bash,               // Bourne Again SHell
     Sh,                 // Standard Linux shell
