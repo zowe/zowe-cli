@@ -52,7 +52,8 @@ export default class JobsHandler extends ZosmfBaseHandler {
             params.response.format.output({
                 fields: ["jobid", "retcode", "jobname", "status", "exec-system", "exec-member", "exec-submitted", "exec-started", "exec-ended"],
                 output: jobs,
-                format: "table"
+                format: "table",
+                header: true
             });
         }
     }
