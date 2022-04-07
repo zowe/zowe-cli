@@ -26,7 +26,7 @@ export class DaemonUtil {
      * @returns The absolute path to the daemon directory.
      */
     public static getDaemonDir(): string {
-        let daemonDir: string = "NotYetAssigned";
+        let daemonDir: string;
         if (process.env?.ZOWE_DAEMON_DIR?.length > 0) {
             // user can choose a daemon directory for storing runtime artifacts
             daemonDir = process.env.ZOWE_DAEMON_DIR;
