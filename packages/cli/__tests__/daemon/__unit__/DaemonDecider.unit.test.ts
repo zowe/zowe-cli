@@ -300,22 +300,40 @@ describe("DaemonDecider tests", () => {
             [pathToDaemonDir]: contents
         };
         fs.__setMockFiles(MOCK_FILE_INFO);
-
-        const existsSyncSpy = jest.spyOn(IO, "existsSync");
         const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
 
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
+        const deleteSyncSpy = jest.spyOn(IO, "deleteFile").mockImplementation(() => {return;});
+
         daemonDecider.init();
+
+        // fool our function into thinking we are linux
+        const realPlatform = process.platform;
+        Object.defineProperty(process, 'platform', {
+            value: 'Linux'
+        });
+
+        // fool our function into thinking that a socket file exists
+        existsSyncSpy.mockImplementation(() => {return true;});
+
+        // call our function that will try to delete the socket file
         daemonDecider.runOrUseDaemon();
 
-        // Linux times
+        // restore our real platform
+        Object.defineProperty(process, 'platform', {
+            value: realPlatform
+        });
+
         let existTimes;
         if (process.platform === "win32") {
-            existTimes = 3;
+            existsSyncSpy.mockImplementationOnce
+            existTimes = 4;
         } else {
             existTimes = 9;
         }
 
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(3);
         expect(existsSyncSpy).toHaveBeenCalledTimes(existTimes);
+        expect(deleteSyncSpy).toHaveBeenCalledTimes(1);
     });
 });
