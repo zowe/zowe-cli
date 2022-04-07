@@ -335,5 +335,69 @@ describe("DaemonDecider tests", () => {
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(3);
         expect(existsSyncSpy).toHaveBeenCalledTimes(existTimes);
         expect(deleteSyncSpy).toHaveBeenCalledTimes(1);
+        writeFileSyncSpy.mockClear();
+    });
+
+    it("should throw an error when it cannot write the process ID file", () => {
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const on = jest.fn((event, func) => {
+            // do nothing
+        });
+
+        const listen = jest.fn((event, func) => {
+            // do nothing
+        });
+
+        const parse = jest.fn( (data, context) => {
+            expect(data).toBe(undefined);
+            expect(context).toBe(undefined);
+        });
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    error: log
+                }
+            },
+            console: {
+                info: log
+            },
+            parse
+        };
+
+        const fn = net.createServer as Mock<typeof net.createServer>;
+        fn.mockImplementation((unusedclient, ...args: any[]) => {
+            return {on, listen};
+        });
+
+        process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
+        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+
+        // make the write function fail
+        const badStuffMsg = "Some bad stuff happened";
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+        writeFileSyncSpy.mockImplementation(() => {
+            throw new Error(badStuffMsg);
+        });
+
+        let error: Error;
+        try {
+            // call the function that will try to write the process ID file
+            daemonDecider.init();
+        } catch (e) {
+            error = e;
+        }
+
+        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to write file");
+        expect(error.message).toContain("daemon_pid.json");
+        expect(error.message).toContain(badStuffMsg);
+        writeFileSyncSpy.mockClear();
     });
 });
