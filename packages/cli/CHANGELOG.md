@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to enhance backward compatibility with v1 profiles and other enhancements and bug fixes (More details: Imperative [v5.0.0-next.202204051515](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204051515) and [v5.0.0-next.202204081605](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204081605))
 ## `7.0.0-next.202203311904`
 
 - BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
