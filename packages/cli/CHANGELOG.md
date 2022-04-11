@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.0-next.202204111828`
 
 - Enhancement: Added help for `zowe daemon restart` command.
 - Enhancement: Changed type of `encoding` property on z/OSMF profile from number to string to support more values (e.g., "ISO8859-1").
