@@ -141,6 +141,7 @@ export class DaemonDecider {
 
         try {
             fs.writeFileSync(pidFilePath, pidForUserStr);
+            fs.chmodSync(pidFilePath, 0o600);
         } catch(err) {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
         }

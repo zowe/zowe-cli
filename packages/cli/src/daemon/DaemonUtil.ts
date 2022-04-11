@@ -9,6 +9,7 @@
 *
 */
 
+import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import { IO } from "@zowe/imperative";
@@ -37,6 +38,7 @@ export class DaemonUtil {
         if (!IO.existsSync(daemonDir)) {
             try {
                 IO.mkdirp(daemonDir);
+                fs.chmodSync(daemonDir, 0o700);
             } catch(err) {
                 throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
             }
