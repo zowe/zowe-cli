@@ -13,8 +13,11 @@ import * as fs from "fs";
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
-import { Imperative } from "@zowe/imperative";
+import { Imperative, IO } from "@zowe/imperative";
 import { DaemonClient } from "./DaemonClient";
+import { DaemonUtil } from "./DaemonUtil";
+import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";
+
 
 // TODO(Kelosky): handle prompting cases from login command
 // TODO(Kelosky): prompt* broken - hangs, must restart daemon
@@ -90,6 +93,8 @@ export class DaemonDecider {
 
             this.mServer.on('error', this.error.bind(this));
             this.mServer.on('close', this.close.bind(this));
+
+            this.recordDaemonPid();
         }
     }
 
@@ -100,8 +105,8 @@ export class DaemonDecider {
      */
     public runOrUseDaemon() {
         if (this.mServer) {
-            if (process.platform !== "win32" && fs.existsSync(this.mSocket)) {
-                fs.unlinkSync(this.mSocket);
+            if (process.platform !== "win32" && IO.existsSync(this.mSocket)) {
+                IO.deleteFile(this.mSocket);
             }
 
             ["exit", "SIGINT", "SIGQUIT", "SIGTERM"].forEach((eventType: any) => {
@@ -116,6 +121,35 @@ export class DaemonDecider {
         } else {
             Imperative.parse();
         }
+    }
+
+    /**
+     * Record the process ID of the daemon that is being started for the current user.
+     * On a multi-user system, each user gets his/her own daemon.
+     *
+     * @private
+     * @memberof DaemonDecider
+     */
+    private recordDaemonPid() {
+        const pidForUser: IDaemonPidForUser = {
+            user: os.userInfo().username,
+            pid: process.pid
+        };
+
+        const pidFilePath = path.join(DaemonUtil.getDaemonDir(), "daemon_pid.json");
+        const pidForUserStr = JSON.stringify(pidForUser, null, 2);
+
+        try {
+            fs.writeFileSync(pidFilePath, pidForUserStr);
+            const ownerReadWrite = 0o600;
+            fs.chmodSync(pidFilePath, ownerReadWrite);
+        } catch(err) {
+            throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
+        }
+
+        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath +
+            "\n" + pidForUserStr
+        );
     }
 
     /**
@@ -158,15 +192,18 @@ export class DaemonDecider {
             if (daemonOffset > -1) {
                 this.startServer = true;
 
-                if (process.env.ZOWE_DAEMON) {
-                    this.mSocket = process.env.ZOWE_DAEMON;
-                    if (process.platform === "win32") {
-                        this.mSocket = `\\\\.\\pipe\\${this.mSocket}`;
+                if (process.platform === "win32") {
+                    // On windows we use a pipe instead of a socket
+                    if (process.env?.ZOWE_DAEMON_PIPE?.length > 0) {
+                        // user can choose some pipe path
+                        this.mSocket = "\\\\.\\pipe\\" + process.env.ZOWE_DAEMON_PIPE;
+                    } else {
+                        // use default pipe path name
+                        this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
                     }
-                } else if (process.platform !== "win32") {
-                    this.mSocket = path.join(os.homedir(), ".zowe-daemon.sock");
                 } else {
-                    this.mSocket = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
+                    // Linux-like systems use domain sockets
+                    this.mSocket = path.join(DaemonUtil.getDaemonDir(), "daemon.sock");
                 }
 
                 Imperative.api.appLogger.debug(`daemon server will listen on ${this.mSocket}`);

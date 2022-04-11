@@ -12,16 +12,23 @@
 // Functions related to the manipulation of processes.
 
 use std::env;
+use std::fs::File;
+use std::io::BufReader;
 use std::process::{Command, Stdio};
+use std::path::PathBuf;
 
 extern crate sysinfo;
-use sysinfo::{PidExt, Pid, ProcessExt, System, SystemExt};
+use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
 
 extern crate simple_error;
 use simple_error::SimpleError;
 
+extern crate whoami;
+use whoami::username;
+
 // Zowe daemon executable modules
 use crate::defs::*;
+use crate::util::*;
 
 /**
  * Get the command shell under which we are running.
@@ -117,36 +124,47 @@ pub fn proc_get_cmd_shell() -> Result<(CmdShell, String), SimpleError> {
 }
 
 /**
- * Get information about our running daemon process.
+ * Get information about any daemon process that is running
+ * for the current user ID.
  *
  * @returns A structure containing properties about the daemon process.
- *      It includes such information as:
- *          Is the zowe daemon currently running?
- *          Name of the process
- *          Process ID
- *          Command used to run the process
+ *          It includes such information as:
+ *          - Is a zowe daemon currently running?
+ *          - Name of the process
+ *          - Process ID
+ *          - Command used to run the process
  */
 pub fn proc_get_daemon_info() -> DaemonProcInfo {
+    // get the pid if this user has an existing daemon
+    let my_daemon_pid_opt: Option<Pid> = read_pid_for_user();
+
+    // loop through the process list
     let mut sys = System::new_all();
     sys.refresh_all();
-    for (pid, process) in sys.processes() {
-        if process.name().to_lowercase().contains("node") &&
-           process.cmd().len() > 2 &&
-           process.cmd()[1].to_lowercase().contains("zowe") &&
-           process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION
+    for (next_pid, next_process) in sys.processes() {
+        // is this a zowe daemon process?
+        if next_process.name().to_lowercase().contains("node") &&
+           next_process.cmd().len() > 2 &&
+           next_process.cmd()[1].to_lowercase().contains("zowe") &&
+           next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION
         {
-            // convert the process command from a vector to a string
-            let mut proc_cmd: String = String::new();
-            for cmd_part in process.cmd() {
-                proc_cmd.push_str(cmd_part);
-                proc_cmd.push(' ');
+            // ensure we have found the daemon for the current user
+            if my_daemon_pid_opt != None && &my_daemon_pid_opt.unwrap() == next_pid {
+                // convert the process's command line from a vector to a string
+                let mut proc_cmd: String = String::new();
+                for cmd_part in next_process.cmd() {
+                    proc_cmd.push_str(cmd_part);
+                    proc_cmd.push(' ');
+                }
+
+                // return the info for the daemon that belongs to the current user
+                return DaemonProcInfo {
+                    is_running: true,
+                    name: next_process.name().to_string(),
+                    pid: next_pid.to_string(),
+                    cmd: proc_cmd,
+                };
             }
-            return DaemonProcInfo {
-                is_running: true,
-                name: process.name().to_string(),
-                pid: pid.to_string(),
-                cmd: proc_cmd,
-            };
         }
     }
     DaemonProcInfo {
@@ -155,6 +173,62 @@ pub fn proc_get_daemon_info() -> DaemonProcInfo {
         pid: "no pid".to_string(),
         cmd: "no cmd".to_string(),
     }
+}
+
+/**
+ * Read the process ID for a daemon running for the current user from
+ * the pid file of the current user.
+ *
+ * @returns The Pid of the daemon for the current user.
+ *          Returns None if no daemon is running for the user.
+ */
+fn read_pid_for_user() -> Option<sysinfo::Pid> {
+    // form that path name for the daemon pid file
+    let mut pid_file_path: PathBuf;
+    match util_get_daemon_dir() {
+        Ok(ok_val) => pid_file_path = ok_val,
+        Err(_err_val) => { return None; }
+    }
+    pid_file_path.push("daemon_pid.json");
+
+    if !pid_file_path.exists() {
+        // A daemon pid file does not exist, but that is ok.
+        return None;
+    }
+
+    // read in the pid file contents
+    let pid_file: File;
+    match File::open(&pid_file_path) {
+        Ok(ok_val) => pid_file = ok_val,
+        Err(err_val) => {
+            // we should not continue if we cannot open an existing pid file
+            println!("Unable to open file = {}\nDetails = {}",
+                pid_file_path.display(), err_val
+            );
+            std::process::exit(EXIT_CODE_FILE_IO_ERROR);
+        }
+    }
+    let pid_reader = BufReader::new(pid_file);
+    let daemon_pid_for_user: DaemonPidForUser;
+    match serde_json::from_reader(pid_reader) {
+        Ok(ok_val) => daemon_pid_for_user = ok_val,
+        Err(err_val) => {
+            // we should not continue if we cannot read an existing pid file
+            println!("Unable to read file = {}\nDetails = {}",
+                pid_file_path.display(), err_val
+            );
+            std::process::exit(EXIT_CODE_FILE_IO_ERROR);
+        }
+    }
+
+    if daemon_pid_for_user.user != username() {
+        // our pid file should only contain our own user name
+        println!("User name of '{}' in file '{}' does not match current user = '{}'.",
+            daemon_pid_for_user.user, pid_file_path.display(), username()
+        );
+        std::process::exit(EXIT_CODE_CANT_CONVERT_JSON);
+    }
+    Some(Pid::from_u32(daemon_pid_for_user.pid as u32))
 }
 
 /**
