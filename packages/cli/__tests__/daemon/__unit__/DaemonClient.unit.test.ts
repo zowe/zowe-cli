@@ -15,7 +15,7 @@ import * as net from "net";
 import * as stream from "stream";
 import getStream = require("get-stream");
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
-import { IDaemonResponse, Imperative } from "@zowe/imperative";
+import { IDaemonResponse, Imperative, IO } from "@zowe/imperative";
 
 describe("DaemonClient tests", () => {
 
@@ -211,8 +211,9 @@ describe("DaemonClient tests", () => {
 
     it("should shutdown when keyword is specified", () => {
 
-        const log = jest.fn(() => {
-            // do nothing
+        let recordedLogMsg: string;
+        const log = jest.fn((logMsg) => {
+            recordedLogMsg = logMsg;
         });
 
         const parse = jest.fn( (data, context) => {
@@ -225,6 +226,7 @@ describe("DaemonClient tests", () => {
                 appLogger: {
                     trace: log,
                     debug: log,
+                    error: log,
                     warn: log
                 }
             },
@@ -246,15 +248,37 @@ describe("DaemonClient tests", () => {
 
         const daemonClient = new DaemonClient(client as any, server as any, "fake");
         const shutdownSpy = jest.spyOn(daemonClient as any, "shutdown");
+
+        // fool our function into thinking that a PID file exists and must be deleted
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
+        existsSyncSpy.mockImplementation(() => {return true;});
+
+        // fool our function into thinking that the delete fails
+        const pidFileName = "daemon_pid.json";
+        const badStuffMsg = "Some bad stuff happened";
+        const deleteFileSpy = jest.spyOn(IO, "deleteFile");
+        deleteFileSpy.mockImplementation((filePath) => {
+            if (filePath.includes(pidFileName)) {
+                throw new Error(badStuffMsg);
+            }
+        });
+
+        // call our function that will do the shutdown
         daemonClient.run();
+
         // force `data` call and verify write method is called with termination message
         const shutdownResponse = { stdin: DaemonClient.CTRL_C_CHAR, user: Buffer.from("fake").toString('base64') };
         const stringData = JSON.stringify(shutdownResponse);
         (daemonClient as any).data(Buffer.from(stringData));
 
-        expect(log).toHaveBeenCalledTimes(2);
         expect(shutdownSpy).toHaveBeenCalledTimes(1);
         expect(parse).not.toHaveBeenCalled();
+        expect(deleteFileSpy).toHaveBeenCalledTimes(1);
+        expect(IO.deleteFile).toHaveBeenCalledTimes(1);
+        expect(log).toHaveBeenCalledTimes(3);
+        expect(recordedLogMsg).toContain("Failed to delete file");
+        expect(recordedLogMsg).toContain(pidFileName);
+        expect(recordedLogMsg).toContain(badStuffMsg);
     });
 
     it("should call the end method", () => {

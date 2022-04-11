@@ -16,6 +16,7 @@
 use std::env;
 use std::io;
 use std::io::prelude::*;
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;
@@ -33,7 +34,6 @@ use whoami::username;
 #[cfg(target_family = "windows")]
     use {
         fslock::LockFile,
-        home::home_dir,
         std::fs::File
     };
 
@@ -251,7 +251,7 @@ fn run_delayed_zowe_command(njs_zowe_path: &str, zowe_cmd_args: &[String]) -> Re
  *      An empty Result upon success. Otherwise an error Result.
  */
 pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) -> Result<i32, i32> {
-    let cwd: std::path::PathBuf;
+    let cwd: PathBuf;
     match env::current_dir() {
         Ok(ok_val) => cwd = ok_val,
         Err(err_val) => {
@@ -308,17 +308,15 @@ pub fn run_daemon_command(njs_zowe_path: &str, zowe_cmd_args: &mut Vec<String>) 
     }
 
     let mut tries = 0;
-    let socket_string = util_get_socket_string();
-    #[cfg(target_family = "windows")]
-    let mut lock_file;
-    #[cfg(target_family = "windows")]
-    match get_lock_file() {
-        Ok(result) => { lock_file = result; },
-        Err(err_val) => {
-            println!("Could not find or create the lock file. Check your ZOWE_DAEMON_LOCK variable.\nDetails = {}", err_val);
-            return Err(EXIT_CODE_CANNOT_FIND_LOCK);
-        }
+    let socket_string: String;
+    match util_get_socket_string() {
+        Ok(ok_val) => socket_string = ok_val,
+        Err(err_val) => return Err(err_val)
     }
+
+    #[cfg(target_family = "windows")]
+    let mut lock_file = get_win_lock_file()?;
+
     #[cfg(target_family = "windows")]
     let mut locked = false;
     loop {
@@ -613,21 +611,29 @@ fn form_win_cmd_script_arg_vec<'a>(
 }
 
 #[cfg(target_family = "windows")]
-fn get_lock_file() -> io::Result<LockFile> {
-    let lock_file_name = get_lock_string();
-    let _lock_file_created = File::create(&lock_file_name);
-    LockFile::open(&lock_file_name)
-}
-
-#[cfg(target_family = "windows")]
-fn get_lock_string() -> String {
-    let mut _lock = format!("{}\\{}", home_dir().unwrap().to_string_lossy(), ".zowe-daemon.lock");
-
-    if let Ok(lock_name) = env::var("ZOWE_DAEMON_LOCK") {
-        _lock = lock_name;
+fn get_win_lock_file() -> Result<LockFile, i32> {
+    let mut lock_path: PathBuf;
+    match util_get_daemon_dir() {
+        Ok(ok_val) => lock_path = ok_val,
+        Err(err_val) => return Err(err_val)
     }
+    lock_path.push("daemon.lock");
 
-    _lock
+    if let Err(err_val) = File::create(&lock_path) {
+        println!("Unable to create zowe daemon lock file = {}.", &lock_path.display());
+        println!("Reason = {}.", err_val);
+        return Err(EXIT_CODE_FILE_IO_ERROR);
+    }
+    let lock_file:LockFile;
+    match LockFile::open(&lock_path) {
+        Ok(ok_val) => lock_file = ok_val,
+        Err(err_val) => {
+            println!("Unable to open zowe daemon lock file = {}.", &lock_path.display());
+            println!("Reason = {}.", err_val);
+            return Err(EXIT_CODE_FILE_IO_ERROR);
+        }
+    }
+    Ok(lock_file)
 }
 
 /**

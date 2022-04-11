@@ -26,10 +26,9 @@ pub const EXIT_CODE_FAILED_TO_RUN_NODEJS_CMD: i32 = 106;
 pub const EXIT_CODE_CANT_FIND_CMD_SHELL: i32 = 107;
 pub const EXIT_CODE_UNKNOWN_CMD_SHELL: i32 = 108;
 #[cfg(target_family = "windows")]
-pub const EXIT_CODE_CANNOT_FIND_LOCK: i32 = 109;
-#[cfg(target_family = "windows")]
-pub const EXIT_CODE_CANNOT_ACQUIRE_LOCK: i32 = 110;
-pub const EXIT_CODE_COMM_IO_ERROR: i32 = 111;
+pub const EXIT_CODE_CANNOT_ACQUIRE_LOCK: i32 = 109;
+pub const EXIT_CODE_COMM_IO_ERROR: i32 = 110;
+pub const EXIT_CODE_FILE_IO_ERROR: i32 = 111;
 pub const EXIT_CODE_ENV_ERROR: i32 = 112;
 pub const EXIT_CODE_CANT_CONVERT_JSON: i32 = 113;
 
@@ -65,6 +64,12 @@ pub struct DaemonResponse {
     pub stdinLength: Option<i32>,
     pub stdin: Option<String>,
     pub user: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct DaemonPidForUser {
+    pub user: String,
+    pub pid: i32
 }
 
 pub enum CmdShell {

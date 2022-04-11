@@ -13,11 +13,10 @@
 
 use std::collections::HashMap;
 use std::env;
+use std::path::PathBuf;
 
-#[cfg(target_family = "unix")]
-    extern crate home;
-#[cfg(target_family = "unix")]
-    use home::home_dir;
+extern crate home;
+use home::home_dir;
 
 extern crate pathsearch;
 use pathsearch::PathSearcher;
@@ -30,7 +29,12 @@ use pathsearch::PathSearcher;
 // Zowe daemon executable modules
 use crate::defs::*;
 
-// Get the file path to the command that runs the NodeJS version of Zowe
+
+/**
+ * Get the file path to the command that runs the NodeJS version of Zowe.
+ *
+ * @returns File path to the NodeJS zowe script.
+ */
 pub fn util_get_nodejs_zowe_path() -> String {
     /* On Linux/Mac both our executable and shell script are named 'zowe'.
      * First get the path name to my own zowe rust executable.
@@ -79,26 +83,59 @@ pub fn util_get_nodejs_zowe_path() -> String {
     njs_zowe_path
 }
 
-#[cfg(target_family = "unix")]
-pub fn util_get_socket_string() -> String {
-    let mut _socket = format!("{}/{}", home_dir().unwrap().to_string_lossy(), ".zowe-daemon.sock");
-
-    if let Ok(socket_path) = env::var("ZOWE_DAEMON") {
-        _socket = socket_path;
+/**
+ * Get the path to the zowe daemon directory (defaults to ~/.zowe/daemon).
+ * Ensures that the directory exists, or we create it.
+ *
+ * @returns The path to the zowe daemon directory.
+ */
+pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
+    let mut daemon_dir: PathBuf;
+    if let Ok(ok_val) = env::var("ZOWE_DAEMON_DIR") {
+        daemon_dir = PathBuf::new();
+        daemon_dir.push(ok_val);
+    } else {
+        match home_dir() {
+            Some(path_buf_val) => daemon_dir = path_buf_val,
+            None => {
+                println!("Unable to get user's home directory.");
+                return Err(EXIT_CODE_ENV_ERROR);
+            }
+        }
+        daemon_dir.push(".zowe");
+        daemon_dir.push("daemon");
     }
 
-    _socket
+    if !daemon_dir.exists() {
+        if let Err(err_val) = std::fs::create_dir_all(&daemon_dir) {
+            println!("Unable to create zowe daemon directory = {}.", &daemon_dir.display());
+            println!("Reason = {}.", err_val);
+            return Err(EXIT_CODE_FILE_IO_ERROR);
+        }
+    }
+
+    Ok(daemon_dir)
+}
+
+#[cfg(target_family = "unix")]
+pub fn util_get_socket_string() -> Result<String, i32> {
+    let mut socket_path: PathBuf;
+    match util_get_daemon_dir() {
+        Ok(ok_val) => socket_path = ok_val,
+        Err(err_val) => return Err(err_val)
+    }
+    socket_path.push("daemon.sock");
+    Ok(socket_path.into_os_string().into_string().unwrap())
 }
 
 #[cfg(target_family = "windows")]
-pub fn util_get_socket_string() -> String {
+pub fn util_get_socket_string() -> Result<String, i32> {
     let mut _socket = format!("\\\\.\\pipe\\{}\\{}", username(), "ZoweDaemon");
 
-    if let Ok(pipe_name) = env::var("ZOWE_DAEMON") {
+    if let Ok(pipe_name) = env::var("ZOWE_DAEMON_PIPE") {
         _socket = format!("\\\\.\\pipe\\{}", pipe_name);
     }
-
-    _socket
+    Ok(_socket)
 }
 
 pub fn util_get_zowe_env() -> HashMap<String, String> {

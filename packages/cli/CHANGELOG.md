@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Launch a separate Zowe CLI daemon for each user on multi-user systems.
+- **Next Breaking**: Removed environment variables ZOWE_DAEMON and ZOWE_DAEMON_LOCK. Replaced them with ZOWE_DAEMON_DIR and ZOWE_DAEMON_PIPE.
+
 ## `7.0.0-next.202204111431`
 
 - BugFix: Updated Imperative to enhance backward compatibility with v1 profiles and other enhancements and bug fixes (More details: Imperative [v5.0.0-next.202204051515](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204051515) and [v5.0.0-next.202204081605](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204081605))
