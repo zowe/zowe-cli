@@ -172,7 +172,7 @@ describe("z/OS Files - View", () => {
         it("should get data set content with encoding", async () => {
             let response;
             let caughtError;
-            const encoding = 285;
+            const encoding = "285";
 
             try {
                 response = await Get.dataSet(dummySession, dsname, {encoding});

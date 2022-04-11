@@ -256,13 +256,13 @@ const config: IImperativeConfig = {
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_PROTOCOL
                     },
                     encoding: {
-                        type: "number",
+                        type: "string",
                         optionDefinition: {
                             name: "encoding",
                             aliases: ["ec"],
                             description: "The encoding for download and upload of z/OS data set and USS files." +
-                                " The default encoding if not specified is 1047.",
-                            type: "number"
+                                " The default encoding if not specified is IBM-1047.",
+                            type: "string"
                         }
                     },
                     responseTimeout: {

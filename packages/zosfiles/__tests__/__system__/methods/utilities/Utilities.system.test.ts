@@ -9,11 +9,12 @@
 *
 */
 
+import { posix } from "path";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { AbstractSession, Imperative } from "@zowe/imperative";
-import { Utilities, Tag, Upload, Create, Download } from "../../../../src";
+import { AbstractSession, Imperative, IO } from "@zowe/imperative";
+import { Utilities, Tag, Upload, Create, Download, Delete } from "../../../../src";
 import { getUniqueDatasetName, getTag } from "../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: AbstractSession;
@@ -38,36 +39,37 @@ describe("USS Utilities", () => {
 
     });
     afterAll(async () => {
+        await Delete.ussFile(REAL_SESSION, ussname);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    it("Should tag a binary file", async () => {
-        await Upload.fileToUssFile(REAL_SESSION,localfile,ussname);
-        await Utilities.chtag(REAL_SESSION,ussname,Tag.BINARY);
+    it("should tag a binary file", async () => {
+        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        await Utilities.chtag(REAL_SESSION, ussname, Tag.BINARY);
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("b binary");
 
-        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(true);
     });
 
-    it("Should tag a text file", async () => {
-        await Upload.fileToUssFile(REAL_SESSION,localfile,ussname);
-        await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "ISO8859-1");
+    it("should tag a text file", async () => {
+        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t ISO8859-1");
 
-        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(true);
     });
 
-    it("Should flag an EBCDIC file as text", async () => {
-        await Upload.fileToUssFile(REAL_SESSION,localfile,ussname);
-        await Utilities.chtag(REAL_SESSION,ussname,Tag.TEXT, "IBM-1047");
+    it("should flag an EBCDIC file as text", async () => {
+        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1047");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t IBM-1047");
 
-        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(false);
     });
 
@@ -88,5 +90,63 @@ describe("USS Utilities", () => {
         await Utilities.renameUSSFile(REAL_SESSION, createdName, newName);
         const result = await Download.ussFile(REAL_SESSION, newName);
         expect(result.success).toBe(true);
+
+        // Delete created local file
+        IO.deleteFile(posix.basename(newName));
+    });
+
+    describe("applyTaggedEncoding", () => {
+        beforeAll(async () => {
+            await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        });
+
+        it("should set binary property if file is tagged as binary", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.BINARY);
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is ISO8859-1", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is UCS-2", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "UCS-2");
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is UTF-8", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "UTF-8");
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set encoding property if file encoding has IBM prefix", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1047");
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBeUndefined();
+            expect(options.encoding).toBe("IBM-1047");
+        });
+
+        it("should do nothing if file is untagged", async () => {
+            await Utilities.putUSSPayload(REAL_SESSION, ussname,
+                { request: "chtag", action: "remove" });
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBeUndefined();
+            expect(options.encoding).toBeUndefined();
+        });
     });
 });

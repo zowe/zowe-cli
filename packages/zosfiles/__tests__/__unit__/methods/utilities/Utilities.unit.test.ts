@@ -369,43 +369,115 @@ describe("Utilities.putUSSPayload", () => {
                 [{"Content-Type": "application/json"}, {"Content-Length": "35"}, ZosmfHeaders.ACCEPT_ENCODING], payload);
         });
     });
-});
 
-describe("renameUSSFile", () => {
-    const dummySession = new Session({
-        user: "fake",
-        password: "fake",
-        hostname: "fake",
-        port: 443,
-        protocol: "https",
-        type: "basic"
-    });
-    it("should fail if new file path is not passed in", async () => {
-        let error: Error;
-        try {
-            await Utilities.renameUSSFile(dummySession, "/u/zowe/test", undefined);
-        } catch (err) {
-            error = err;
-        }
+    describe("applyTaggedEncoding", () => {
+        const dummySession = new Session({
+            user: "fake",
+            password: "fake",
+            hostname: "fake",
+            port: 443,
+            protocol: "https",
+            type: "basic"
+        });
+        const ussname = "/u/zowe/test";
 
-        expect(error).toBeDefined();
-        expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        it("should set binary property if file is tagged as binary", async () => {
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+                stdout: ["b binary\tT=off\t" + ussname]
+            }));
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(dummySession, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is ISO8859-1", async () => {
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+                stdout: ["t ISO8859-1\tT=on\t" + ussname]
+            }));
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(dummySession, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is UCS-2", async () => {
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+                stdout: ["t UCS-2\tT=on\t" + ussname]
+            }));
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(dummySession, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is UTF-8", async () => {
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+                stdout: ["t UTF-8\tT=on\t" + ussname]
+            }));
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(dummySession, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set encoding property if file encoding has IBM prefix", async () => {
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+                stdout: ["t IBM-1047\tT=on\t" + ussname]
+            }));
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(dummySession, ussname, options);
+            expect(options.binary).toBeUndefined();
+            expect(options.encoding).toBe("IBM-1047");
+        });
+
+        it("should do nothing if file is untagged", async () => {
+            jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(JSON.stringify({
+                stdout: ["- untagged\tT=off\t" + ussname]
+            }));
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(dummySession, ussname, options);
+            expect(options.binary).toBeUndefined();
+            expect(options.encoding).toBeUndefined();
+        });
     });
-    it("should execute if all parameters are provided", async () => {
-        let error: Error;
-        let renameResponse;
-        jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockReturnValue({});
-        const zosmfExpectSecondSpy = jest.spyOn(Utilities, "putUSSPayload");
-        const oldPath = "/u/zowe/test";
-        const newPath= "/u/zowe/test1";
-        try {
-            renameResponse = await Utilities.renameUSSFile(dummySession, oldPath, newPath);
-        } catch (err) {
-            error = err;
-        }
-        expect(error).not.toBeDefined();
-        expect(renameResponse).toBeTruthy();
-        const payload = { request: "move", from: oldPath };
-        expect(zosmfExpectSecondSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload);
+
+    describe("renameUSSFile", () => {
+        const dummySession = new Session({
+            user: "fake",
+            password: "fake",
+            hostname: "fake",
+            port: 443,
+            protocol: "https",
+            type: "basic"
+        });
+        it("should fail if new file path is not passed in", async () => {
+            let error: Error;
+            try {
+                await Utilities.renameUSSFile(dummySession, "/u/zowe/test", undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+        it("should execute if all parameters are provided", async () => {
+            let error: Error;
+            let renameResponse;
+            jest.spyOn(ZosmfRestClient, "putExpectBuffer").mockReturnValue({});
+            const zosmfExpectSecondSpy = jest.spyOn(Utilities, "putUSSPayload");
+            const oldPath = "/u/zowe/test";
+            const newPath= "/u/zowe/test1";
+            try {
+                renameResponse = await Utilities.renameUSSFile(dummySession, oldPath, newPath);
+            } catch (err) {
+                error = err;
+            }
+            expect(error).not.toBeDefined();
+            expect(renameResponse).toBeTruthy();
+            const payload = { request: "move", from: oldPath };
+            expect(zosmfExpectSecondSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload);
+        });
     });
 });

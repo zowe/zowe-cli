@@ -285,7 +285,7 @@ describe("z/OS Files - Upload", () => {
             expect(dataSetSpy).toHaveBeenLastCalledWith(dummySession, testPath, dsName, {responseTimeout: 5});
         });
         it("return with proper response with encoding", async () => {
-            const encoding = 1048;
+            const encoding = "1048";
             const testReturn = {};
             const testPath = "test/path";
             isDirSpy.mockReturnValueOnce(true);
@@ -299,7 +299,7 @@ describe("z/OS Files - Upload", () => {
                     dummySession,
                     testPath,
                     dsName,
-                    { encoding: 1048 }
+                    { encoding }
                 );
             } catch (err) {
                 error = err;
@@ -476,7 +476,7 @@ describe("z/OS Files - Upload", () => {
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'encoding' option", async () => {
-                const anotherEncoding = 285;
+                const anotherEncoding = "285";
                 uploadOptions.encoding = anotherEncoding;
                 reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING];
 
@@ -1122,7 +1122,7 @@ describe("z/OS Files - Upload", () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
             const reqHeaders = [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING];
             const uploadOptions: IUploadOptions = {
-                encoding: 285
+                encoding: "285"
             };
             try {
                 response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
