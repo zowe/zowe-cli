@@ -38,7 +38,8 @@ export class DaemonUtil {
         if (!IO.existsSync(daemonDir)) {
             try {
                 IO.mkdirp(daemonDir);
-                fs.chmodSync(daemonDir, 0o700);
+                const ownerReadWriteTraverse = 0o700;
+                fs.chmodSync(daemonDir, ownerReadWriteTraverse);
             } catch(err) {
                 throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
             }
