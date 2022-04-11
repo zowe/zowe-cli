@@ -397,7 +397,7 @@ describe("z/OS Files - Download", () => {
         it("should download a data set to the given file in encoding requested mode", async () => {
             let response;
             let caughtError;
-            const encoding = 285;
+            const encoding = "285";
             const file = "my/test/file.xyz";
 
             try {
@@ -804,7 +804,7 @@ describe("z/OS Files - Download", () => {
             const volume = "testVs";
             const directory = "my/test/path/";
             const extension = ".xyz";
-            const encoding = 285;
+            const encoding = "285";
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
@@ -1173,7 +1173,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const destination = localFileName;
             try {
-                response = await Download.ussFile(dummySession, ussname, {encoding: 285});
+                response = await Download.ussFile(dummySession, ussname, { encoding: "285" });
             } catch (e) {
                 caughtError = e;
             }
@@ -1269,7 +1269,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=1147" }, ZosmfHeaders.ACCEPT_ENCODING],
+                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=IBM-1147" }, ZosmfHeaders.ACCEPT_ENCODING],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */

@@ -130,10 +130,10 @@ export class Utilities {
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const columns = (jsonObj.stdout[0] as string).trim().split(/\s+/);
             // Tests if binary tag set
-            if (columns[0] === "b" || columns[1].startsWith("UTF-") || columns[1].startsWith("ISO8859-")) {
+            if (columns[0] === "b" || columns[1]?.startsWith("ISO8859-") || columns[1]?.startsWith("UCS-") || columns[1]?.startsWith("UTF-")) {
                 options.binary = true;
-            } else if (columns[1].startsWith("IBM-")) {
-                options.encoding = parseInt(columns[1].split("-", 2)[1]);
+            } else if (columns[1]?.startsWith("IBM-")) {
+                options.encoding = columns[1];
             }
         }
     }

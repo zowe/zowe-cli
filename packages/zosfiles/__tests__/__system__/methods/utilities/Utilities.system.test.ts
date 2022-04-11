@@ -108,16 +108,24 @@ describe("USS Utilities", () => {
             expect(options.encoding).toBeUndefined();
         });
 
-        it("should set binary property if file encoding is UTF-8", async () => {
-            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "UTF-8");
+        it("should set binary property if file encoding is ISO8859-1", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
             const options: any = {};
             await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
             expect(options.binary).toBe(true);
             expect(options.encoding).toBeUndefined();
         });
 
-        it("should set binary property if file encoding is ISO8859-1", async () => {
-            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
+        it("should set binary property if file encoding is UCS-2", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "UCS-2");
+            const options: any = {};
+            await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
+            expect(options.binary).toBe(true);
+            expect(options.encoding).toBeUndefined();
+        });
+
+        it("should set binary property if file encoding is UTF-8", async () => {
+            await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "UTF-8");
             const options: any = {};
             await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
             expect(options.binary).toBe(true);
@@ -129,7 +137,7 @@ describe("USS Utilities", () => {
             const options: any = {};
             await Utilities.applyTaggedEncoding(REAL_SESSION, ussname, options);
             expect(options.binary).toBeUndefined();
-            expect(options.encoding).toBe(1047);
+            expect(options.encoding).toBe("IBM-1047");
         });
 
         it("should do nothing if file is untagged", async () => {
