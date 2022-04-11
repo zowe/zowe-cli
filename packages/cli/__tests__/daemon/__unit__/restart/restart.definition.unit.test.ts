@@ -11,13 +11,15 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("daemon group definition", () => {
-    it("should have the right command content", () => {
-        const numOfDaemonCmds = 3;
-        const definition: ICommandDefinition = require("../../../src/daemon/Daemon.definition");
+describe("daemon restart definition", () => {
+    it("should not have changed", () => {
+        const definition: ICommandDefinition = require("../../../../src/daemon/restart/Restart.definition").RestartCommand;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(numOfDaemonCmds);
-        delete definition.children;
+        delete definition.handler;
+
+        // Should not contain children since this is a command
+        expect(definition.children).toBeUndefined();
+
         expect(definition).toMatchSnapshot();
     });
 });
