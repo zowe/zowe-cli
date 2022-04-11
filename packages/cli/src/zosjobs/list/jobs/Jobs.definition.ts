@@ -39,6 +39,12 @@ export const JobsDefinition: ICommandDefinition = {
                 "You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, " +
                 "which is usually in the form \"JOB*\".",
             type: "string"
+        },
+        {
+            name: "exec-data", aliases: ["ed"],
+            description: "Use this option to retrieve execution data for jobs via the z/OSMF REST API.",
+            type: "boolean",
+            default: false
         }
     ] as ICommandOptionDefinition[]),
     profile: {
@@ -58,6 +64,19 @@ export const JobsDefinition: ICommandDefinition = {
             {
                 options: "--rff jobid --rft table",
                 description: "List all jobs with default owner and prefix settings, displaying only the job ID of each job"
+            },
+            {
+                options: "--exec-data",
+                description: "List all jobs and return job execution data along with the default information"
+            },
+            {
+                options: "-o \"ibmu*\" --exec-data",
+                description: "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information"
+            },
+            {
+                options: "-o \"ibmu*\" -p \"myjo*\" --exec-data",
+                description: "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and \
+                            return job execution data along with the default information"
             }
         ],
     outputFormatOptions: true

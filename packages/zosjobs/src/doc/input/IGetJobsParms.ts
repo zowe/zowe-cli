@@ -46,4 +46,11 @@ export interface IGetJobsParms {
      * @memberof IJob
      */
     jobid?: string;
+
+    /**
+     * Return execution data about jobs
+     * @type {boolean}
+     * @memberof IGetJobsParms
+     */
+    execData?: boolean;
 }
