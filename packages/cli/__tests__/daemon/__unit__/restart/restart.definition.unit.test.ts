@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("daemon restart definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/daemon/restart/restart.definition").RestartCommand;
+        const definition: ICommandDefinition = require("../../../../src/daemon/restart/Restart.definition").RestartCommand;
         expect(definition).toBeDefined();
         delete definition.handler;
 
