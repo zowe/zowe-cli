@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added help for `zowe daemon restart` command. 
+
 ## `7.0.0-next.202204111523`
 
 - Enhancement: Launch a separate Zowe CLI daemon for each user on multi-user systems.
