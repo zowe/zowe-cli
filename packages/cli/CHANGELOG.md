@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated the version number of the Zowe-CLI executable.
+
 ## `7.0.0-next.202204111828`
 
 - Enhancement: Added help for `zowe daemon restart` command.
