@@ -19,6 +19,18 @@ Object {
       "description": "List all jobs with default owner and prefix settings, displaying only the job ID of each job",
       "options": "--rff jobid --rft table",
     },
+    Object {
+      "description": "List all jobs and return job execution data along with the default information",
+      "options": "--exec-data",
+    },
+    Object {
+      "description": "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information",
+      "options": "-o \\"ibmu*\\" --exec-data",
+    },
+    Object {
+      "description": "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and                             return job execution data along with the default information",
+      "options": "-o \\"ibmu*\\" -p \\"myjo*\\" --exec-data",
+    },
   ],
   "name": "jobs",
   "options": Array [
@@ -37,6 +49,15 @@ Object {
       "description": "Specify the job name prefix of the jobs you want to list. The command does not prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs REST endpoint documentation, which is usually in the form \\"JOB*\\".",
       "name": "prefix",
       "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ed",
+      ],
+      "default": false,
+      "description": "Use this option to retrieve execution data for jobs via the z/OSMF REST API.",
+      "name": "exec-data",
+      "type": "boolean",
     },
   ],
   "outputFormatOptions": true,

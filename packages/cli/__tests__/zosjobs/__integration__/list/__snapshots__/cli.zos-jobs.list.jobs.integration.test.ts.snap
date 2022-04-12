@@ -36,6 +36,10 @@ exports[`zos-jobs list command should display the help 1`] = `
       prevalidate the owner. You can specify a wildcard according to the z/OSMF Jobs
       REST endpoint documentation, which is usually in the form \\"JOB*\\".
 
+   --exec-data  | --ed (boolean)
+
+      Use this option to retrieve execution data for jobs via the z/OSMF REST API.
+
  ZOSMF CONNECTION OPTIONS
  ------------------------
 
@@ -179,6 +183,22 @@ exports[`zos-jobs list command should display the help 1`] = `
    displaying only the job ID of each job:
 
       $ zowe zos-jobs list jobs --rff jobid --rft table
+
+   - List all jobs and return job execution data along with the
+   default information:
+
+      $ zowe zos-jobs list jobs --exec-data
+
+   - List all jobs owned by user IDs starting with 'ibmu' and
+   return job execution data along with the default information:
+
+      $ zowe zos-jobs list jobs -o \\"ibmu*\\" --exec-data
+
+   - List all jobs owned by user IDs starting with 'ibmu' and
+   job names starting with 'myjo' and                             return job
+   execution data along with the default information:
+
+      $ zowe zos-jobs list jobs -o \\"ibmu*\\" -p \\"myjo*\\" --exec-data
 
 {
   \\"success\\": true,

@@ -190,10 +190,20 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.40.0`
+
+- Enhancement: Added the `exec-data` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
+
+## `6.39.1`
+
+- BugFix: Updated Imperative to consume security updates in `4.18.2`.
+
+
 ## `6.39.0`
 
 - BugFix: Provided more accurate output for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
 - BugFix: Fixed inconsistent case on `modify-version` option for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
+- Enhancement: Added support for `--record` format on `zowe zos-files download (data-set|all-members)` and `zowe zos-files upload (dir-to-pds|file-to-data-set|stdin-to-data-set)` [#539](https://github.com/zowe/zowe-cli/issues/539)
 
 ## `6.38.0`
 
@@ -265,7 +275,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `6.33.1`
 
 - Bugfix: Fixed capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
-- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.33.0`
 
