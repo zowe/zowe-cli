@@ -68,7 +68,7 @@ describe("Zowe native executable", () => {
                 __dirname + "/__scripts__/run_zowe_exe.sh", testEnvironment,
                 [zoweExePath, "--version-exe"]
             );
-            expect(response.stdout.toString()).toMatch(/[0-9]\.[0-9]\.[0-9]/);
+            expect(response.stdout.toString()).toMatch(/1\.[0-9]\.[0-9]/);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         }
