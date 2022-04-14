@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the imperative version to consume ProfileInfo API updates and to remove the `moment` dependency.
+
 ## `7.0.0-next.202204141408`
 
 - Enhancement: Updated the version number of the Zowe-CLI executable.
