@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the imperative version to consume ProfileInfo API updates and to remove the `moment` dependency.
+
 ## `7.0.0-next.202204141408`
 
 - Enhancement: Updated the version number of the Zowe-CLI executable.
@@ -193,6 +197,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
+## `6.40.1`
+
+- BugFix: Updated the imperative version to remove the `moment` dependency.
 
 ## `6.40.0`
 
