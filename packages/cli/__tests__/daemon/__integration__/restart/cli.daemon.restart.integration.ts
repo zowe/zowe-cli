@@ -96,15 +96,7 @@ describe("daemon restart", () => {
         }
     });
 
-    it("should succeed when daemon is running", async () => {
-        const response = runCliScript(__dirname + "/__scripts__/daemon_restart.sh", testEnvironment);
-        const stdoutStr = response.stdout.toString();
-        expect(stdoutStr).toContain("Starting a background process to increase performance ...");
-        expect(stdoutStr).toContain("A new daemon has started.");
-        expect(response.status).toBe(0);
-    });
-
-    it("should succeed when no EXE exists", async () => {
+    it("should display message when Node.js zowe is run", async () => {
         if (willRunNodeJsZowe) {
             if (IO.existsSync(pathToBin)) {
                 rimrafSync(pathToBin);
