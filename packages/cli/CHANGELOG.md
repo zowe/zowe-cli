@@ -194,6 +194,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.40.1`
+
+- BugFix: Updated the imperative version to remove the `moment` dependency.
+
 ## `6.40.0`
 
 - Enhancement: Added the `exec-data` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
