@@ -174,6 +174,72 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
         group: Constants.BASE_CONNECTION_OPTION_GROUP
     };
 
+
+    public static readonly AUTO_INIT_OPTION_GROUP = "APIML Connection Options";
+
+    /**
+     * Option used in profile creation and commands for hostname
+     */
+    public static AUTO_INIT_OPTION_HOST: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_HOST,
+        description: "Host name of the mainframe running the API Mediation Layer.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for port
+     */
+    public static AUTO_INIT_OPTION_PORT: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_PORT,
+        description: "Port number of API Mediation Layer on the mainframe.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for username / ID
+     */
+    public static AUTO_INIT_OPTION_USER: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_USER,
+        description: "User name to authenticate to the API Mediation Layer on the mainframe.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for password/passphrase
+     */
+    public static AUTO_INIT_OPTION_PASSWORD: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_PASSWORD,
+        description: "Password to authenticate to the API Mediation Layer on the mainframe.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF
+     */
+    public static AUTO_INIT_OPTION_REJECT_UNAUTHORIZED: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenType
+     */
+    public static AUTO_INIT_OPTION_TOKEN_TYPE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_TOKEN_TYPE,
+        description: "The type of token to get and use for the API Mediation Layer. " +
+            "Omit this option to use the default token type, which is provided by 'zowe auth login'.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for tokenValue to be used to interact with APIs
+     */
+    public static AUTO_INIT_OPTION_TOKEN_VALUE: ICommandOptionDefinition = {
+        ...Constants.BASE_OPTION_TOKEN_VALUE,
+        description: "The value of the token to pass to the API Mediation Layer.",
+        group: Constants.AUTO_INIT_OPTION_GROUP
+    };
+
     /**
      * Option used to specify the path to the certificate file for authentication
      */

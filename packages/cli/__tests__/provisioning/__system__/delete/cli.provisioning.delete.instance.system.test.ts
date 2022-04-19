@@ -10,9 +10,9 @@
 */
 
 import { Imperative } from "@zowe/imperative";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { PerformAction, ProvisioningConstants } from "@zowe/provisioning-for-zowe-sdk";
 import { ProvisioningTestUtils } from "../../../../../provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
@@ -20,7 +20,7 @@ import { ITestZosmfSchema } from "../../../../../../__tests__/__src__/properties
 const RESPONSE_CHECK = "was successfully deleted";
 
 describe("provisioning delete instance with profile", () => {
-    let TEST_ENVIRONMENT: ITestEnvironment;
+    let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
     let instance: any;
     let instanceID: string;
     let instanceName: string;
@@ -65,7 +65,7 @@ describe("provisioning delete instance with profile", () => {
 
 
 describe("provisioning delete instance without profiles", () => {
-    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let zOSMF: ITestZosmfSchema;
     let instance: any;
     let instanceID: string;

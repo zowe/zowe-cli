@@ -2,13 +2,20 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
+## `7.0.0-next.202112142155`
+
+- Breaking: Removed deprecated methods:
+  - listWorkflows -> getWorkflows
+  - getResourcesQuery -> getResourceQuery
+  - archiveWorfklowByKey -> archiveWorkflowByKey
+
 ## `6.35.0`
 
 - Enhancement: Removed the misleading `workflow-name` option for the `zowe zos-workflows list definition-file-details` help example. [#659](https://github.com/zowe/zowe-cli/issues/659)
 
 ## `6.33.1`
 
-- Migrated from TSLint (now deprecated) to ESLint for static code analysis.
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.32.1`
 

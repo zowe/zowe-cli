@@ -1,0 +1,1706 @@
+{
+  "productDisplayName": "Zowe CLI",
+  "commandModuleGlobs": [
+    "provisioning/*.definition!(.d).*s",
+    "workflows/*.definition!(.d).*s",
+    "zosconsole/*.definition!(.d).*s",
+    "zosfiles/*.definition!(.d).*s",
+    "zosjobs/*.definition!(.d).*s",
+    "zosmf/*.definition!(.d).*s",
+    "zostso/*.definition!(.d).*s",
+    "zosuss/*.definition!(.d).*s"
+  ],
+  "rootCommandDescription": "Welcome to Zowe CLI!\n\nZowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.\n\nFor additional Zowe CLI documentation, visit https://docs.zowe.org\n\nFor Zowe CLI support, visit https://www.zowe.org\n",
+  "defaultHome": "C:\\Users\\ej608771/.zowe",
+  "envVariablePrefix": "ZOWE",
+  "webHelpLogoImgPath": "C:\\ourstuff\\repos\\zowe-cli\\packages\\cli\\web-help-logo.png",
+  "logging": {
+    "appLogging": {
+      "logFile": "zowe/logs/zowe.log",
+      "apiName": "app",
+      "category": "app"
+    },
+    "imperativeLogging": {
+      "apiName": "imperative",
+      "category": "imperative"
+    }
+  },
+  "apimlConnLookup": [
+    {
+      "apiId": "ibm.zosmf",
+      "gatewayUrl": "api/v1",
+      "connProfType": "zosmf"
+    }
+  ],
+  "baseProfile": {
+    "type": "base",
+    "schema": {
+      "type": "object",
+      "title": "Base Profile",
+      "description": "Base profile that stores values shared by multiple service profiles",
+      "properties": {
+        "host": {
+          "type": "string",
+          "optionDefinition": {
+            "name": "host",
+            "aliases": [
+              "H"
+            ],
+            "description": "Host name of service on the mainframe.",
+            "type": "string",
+            "group": "Base Connection Options"
+          }
+        },
+        "port": {
+          "type": "number",
+          "optionDefinition": {
+            "name": "port",
+            "aliases": [
+              "P"
+            ],
+            "description": "Port number of service on the mainframe.",
+            "type": "number",
+            "group": "Base Connection Options"
+          }
+        },
+        "user": {
+          "type": "string",
+          "secure": true,
+          "optionDefinition": {
+            "name": "user",
+            "aliases": [
+              "u"
+            ],
+            "description": "User name to authenticate to service on the mainframe.",
+            "type": "string",
+            "group": "Base Connection Options"
+          },
+          "includeInTemplate": true
+        },
+        "password": {
+          "type": "string",
+          "secure": true,
+          "optionDefinition": {
+            "name": "password",
+            "aliases": [
+              "pass",
+              "pw"
+            ],
+            "description": "Password to authenticate to service on the mainframe.",
+            "type": "string",
+            "group": "Base Connection Options"
+          },
+          "includeInTemplate": true
+        },
+        "rejectUnauthorized": {
+          "type": "boolean",
+          "optionDefinition": {
+            "name": "reject-unauthorized",
+            "aliases": [
+              "ru"
+            ],
+            "description": "Reject self-signed certificates.",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Base Connection Options"
+          },
+          "includeInTemplate": true
+        },
+        "tokenType": {
+          "type": "string",
+          "optionDefinition": {
+            "name": "token-type",
+            "aliases": [
+              "tt"
+            ],
+            "description": "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by 'zowe auth login'.",
+            "type": "string",
+            "group": "Base Connection Options"
+          }
+        },
+        "tokenValue": {
+          "type": "string",
+          "secure": true,
+          "optionDefinition": {
+            "name": "token-value",
+            "aliases": [
+              "tv"
+            ],
+            "description": "The value of the token to pass to the API.",
+            "type": "string",
+            "group": "Base Connection Options"
+          }
+        }
+      },
+      "required": []
+    },
+    "createProfileExamples": [
+      {
+        "options": "base1 --host example.com --port 443 --user admin --password 123456",
+        "description": "Create a profile called 'base1' to connect to host example.com and port 443"
+      },
+      {
+        "options": "base2 --host example.com --user admin --password 123456 --reject-unauthorized false",
+        "description": "Create a profile called 'base2' to connect to host example.com (default port - 443) and allow self-signed certificates"
+      },
+      {
+        "options": "base3 --host example.com --port 1443",
+        "description": "Create a profile called 'base3' to connect to host example.com and port 1443,  not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+      },
+      {
+        "options": "base4 --reject-unauthorized false",
+        "description": "Create a zosmf profile called 'base4' to connect to default port 443 and allow self-signed certificates, not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+      }
+    ],
+    "updateProfileExamples": [
+      {
+        "options": "base1 --user newuser --password newp4ss",
+        "description": "Update a base profile named 'base1' with a new username and password"
+      }
+    ],
+    "authConfig": [
+      {
+        "serviceName": "apiml",
+        "handler": "C:\\ourstuff\\repos\\zowe-cli\\packages\\cli\\lib/auth/ApimlAuthHandler",
+        "login": {
+          "summary": "Log in to API ML authentication service",
+          "description": "Log in to Zowe API Mediation Layer authentication service and obtain or update a token.\n\nThe token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, you should omit username and password in service profiles so that the token in the base profile is used.",
+          "examples": [
+            {
+              "description": "Log in to an API ML instance to obtain or update the token stored in your base profile",
+              "options": ""
+            },
+            {
+              "description": "Log in to an API ML instance to obtain a token without storing it in a profile",
+              "options": "--show-token"
+            }
+          ],
+          "options": [
+            {
+              "name": "host",
+              "aliases": [
+                "H"
+              ],
+              "description": "Host name of service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "port",
+              "aliases": [
+                "P"
+              ],
+              "description": "Port number of service on the mainframe.",
+              "type": "number",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "user",
+              "aliases": [
+                "u"
+              ],
+              "description": "User name to authenticate to service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "password",
+              "aliases": [
+                "pass",
+                "pw"
+              ],
+              "description": "Password to authenticate to service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "reject-unauthorized",
+              "aliases": [
+                "ru"
+              ],
+              "description": "Reject self-signed certificates.",
+              "type": "boolean",
+              "defaultValue": true,
+              "group": "Base Connection Options"
+            }
+          ]
+        },
+        "logout": {
+          "summary": "Log out of API ML authentication service",
+          "description": "Log out of the Zowe API Mediation Layer authentication service and revoke the token so it can no longer authenticate. Also remove the token from the default base profile, if it is stored on disk.",
+          "examples": [
+            {
+              "description": "Log out of an API ML instance to revoke the token that was in use and remove it from your base profile",
+              "options": ""
+            },
+            {
+              "description": "Log out of an API ML instance to revoke a token that was not stored in a profile",
+              "options": "--token-value <token>"
+            }
+          ],
+          "options": [
+            {
+              "name": "host",
+              "aliases": [
+                "H"
+              ],
+              "description": "Host name of service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "port",
+              "aliases": [
+                "P"
+              ],
+              "description": "Port number of service on the mainframe.",
+              "type": "number",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "token-type",
+              "aliases": [
+                "tt"
+              ],
+              "description": "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by 'zowe auth login'.",
+              "type": "string",
+              "group": "Base Connection Options",
+              "allowableValues": {
+                "values": [
+                  "apimlAuthenticationToken",
+                  "jwtToken",
+                  "LtpaToken2"
+                ]
+              }
+            },
+            {
+              "name": "token-value",
+              "aliases": [
+                "tv"
+              ],
+              "description": "The value of the token to pass to the API.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            {
+              "name": "reject-unauthorized",
+              "aliases": [
+                "ru"
+              ],
+              "description": "Reject self-signed certificates.",
+              "type": "boolean",
+              "defaultValue": true,
+              "group": "Base Connection Options"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "authGroupConfig": {
+    "authGroup": {
+      "summary": "Connect to Zowe API ML authentication service",
+      "description": "Connect to Zowe API Mediation Layer authentication service and obtain a token, or disconnect from the authentication service and revoke the token.\n\nThe token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, you should omit username and password in service profiles so that the token in the base profile is used."
+    }
+  },
+  "profiles": [
+    {
+      "type": "zosmf",
+      "schema": {
+        "type": "object",
+        "title": "z/OSMF Profile",
+        "description": "z/OSMF Profile",
+        "properties": {
+          "host": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "host",
+              "aliases": [
+                "H"
+              ],
+              "description": "The z/OSMF server host name.",
+              "type": "string",
+              "required": false,
+              "group": "Zosmf Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "port": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "port",
+              "aliases": [
+                "P"
+              ],
+              "description": "The z/OSMF server port.",
+              "type": "number",
+              "defaultValue": 443,
+              "group": "Zosmf Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "user": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "user",
+              "aliases": [
+                "u"
+              ],
+              "description": "Mainframe (z/OSMF) user name, which can be the same as your TSO login.",
+              "type": "string",
+              "required": false,
+              "group": "Zosmf Connection Options"
+            }
+          },
+          "password": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "password",
+              "aliases": [
+                "pass",
+                "pw"
+              ],
+              "description": "Mainframe (z/OSMF) password, which can be the same as your TSO password.",
+              "type": "string",
+              "required": false,
+              "group": "Zosmf Connection Options"
+            }
+          },
+          "rejectUnauthorized": {
+            "type": "boolean",
+            "optionDefinition": {
+              "name": "reject-unauthorized",
+              "aliases": [
+                "ru"
+              ],
+              "description": "Reject self-signed certificates.",
+              "type": "boolean",
+              "defaultValue": true,
+              "group": "Zosmf Connection Options"
+            }
+          },
+          "basePath": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "base-path",
+              "aliases": [
+                "bp"
+              ],
+              "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all z/OSMF resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
+              "type": "string",
+              "group": "Zosmf Connection Options"
+            }
+          },
+          "protocol": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "protocol",
+              "description": "The protocol used (HTTP or HTTPS)",
+              "type": "string",
+              "defaultValue": "https",
+              "group": "Zosmf Connection Options",
+              "allowableValues": {
+                "values": [
+                  "http",
+                  "https"
+                ],
+                "caseSensitive": false
+              }
+            }
+          },
+          "encoding": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "encoding",
+              "aliases": [
+                "ec"
+              ],
+              "description": "The encoding for download and upload of z/OS data set and USS files. The default encoding if not specified is IBM-1047.",
+              "type": "string"
+            }
+          },
+          "responseTimeout": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "responseTimeout",
+              "aliases": [
+                "rto"
+              ],
+              "description": "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response. Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+              "type": "number",
+              "numericValueRange": [
+                5,
+                600
+              ]
+            }
+          }
+        },
+        "required": []
+      },
+      "createProfileExamples": [
+        {
+          "options": "zos123 --host zos123 --port 1443 --user ibmuser --password myp4ss",
+          "description": "Create a zosmf profile called 'zos123' to connect to z/OSMF at host zos123 and port 1443"
+        },
+        {
+          "options": "zos124 --host zos124 --user ibmuser --password myp4ss --reject-unauthorized false",
+          "description": "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) and allow self-signed certificates"
+        },
+        {
+          "options": "zos125 --host zos125 --port 1443",
+          "description": "Create a zosmf profile called 'zos125' to connect to z/OSMF at the host zos125 and port 1443,  not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+        },
+        {
+          "options": "zos126 --reject-unauthorized false",
+          "description": "Create a zosmf profile called 'zos126' to connect to z/OSMF on the default port 443 and allow self-signed certificates, not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+        },
+        {
+          "options": "zosAPIML --host zosAPIML --port 2020 --user ibmuser --password myp4ss --reject-unauthorized false --base-path basePath",
+          "description": "Create a zosmf profile called 'zos124' to connect to z/OSMF at the host zos124 (default port - 443) and allow self-signed certificates"
+        }
+      ],
+      "updateProfileExamples": [
+        {
+          "options": "zos123 --user newuser --password newp4ss",
+          "description": "Update a zosmf profile named 'zos123' with a new username and password"
+        }
+      ]
+    },
+    {
+      "type": "tso",
+      "schema": {
+        "type": "object",
+        "title": "TSO Profile",
+        "description": "z/OS TSO/E User Profile",
+        "properties": {
+          "account": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "account",
+              "aliases": [
+                "a"
+              ],
+              "description": "Your z/OS TSO/E accounting information.",
+              "type": "string",
+              "required": false,
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            },
+            "includeInTemplate": true
+          },
+          "characterSet": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "character-set",
+              "aliases": [
+                "cs"
+              ],
+              "description": "Character set for address space to convert messages and responses from UTF-8 to EBCDIC.",
+              "type": "string",
+              "defaultValue": "697",
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            }
+          },
+          "codePage": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "code-page",
+              "aliases": [
+                "cp"
+              ],
+              "description": "Codepage value for TSO/E address space to convert messages and responses from UTF-8 to EBCDIC.",
+              "type": "string",
+              "defaultValue": "1047",
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            },
+            "includeInTemplate": true
+          },
+          "columns": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "columns",
+              "aliases": [
+                "cols"
+              ],
+              "description": "The number of columns on a screen.",
+              "type": "number",
+              "defaultValue": 80,
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            }
+          },
+          "logonProcedure": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "logon-procedure",
+              "aliases": [
+                "l"
+              ],
+              "description": "The logon procedure to use when creating TSO procedures on your behalf.",
+              "type": "string",
+              "defaultValue": "IZUFPROC",
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            },
+            "includeInTemplate": true
+          },
+          "regionSize": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "region-size",
+              "aliases": [
+                "rs"
+              ],
+              "description": "Region size for the TSO/E address space.",
+              "type": "number",
+              "defaultValue": 4096,
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            }
+          },
+          "rows": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "rows",
+              "description": "The number of rows on a screen.",
+              "type": "number",
+              "defaultValue": 24,
+              "group": "TSO ADDRESS SPACE OPTIONS"
+            }
+          }
+        },
+        "required": []
+      },
+      "createProfileExamples": [
+        {
+          "description": "Create a tso profile called 'myprof' with default settings and JES accounting information of 'IZUACCT'",
+          "options": "myprof -a IZUACCT"
+        },
+        {
+          "description": "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and JES accounting information of '1234'",
+          "options": "largeregion -a 1234 --rs 8192"
+        },
+        {
+          "description": "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user account on disk",
+          "options": "myprof2 --rs 8192"
+        }
+      ],
+      "updateProfileExamples": [
+        {
+          "description": "Update a tso profile called myprof with new JES accounting information",
+          "options": "myprof -a NEWACCT"
+        }
+      ]
+    },
+    {
+      "type": "ssh",
+      "schema": {
+        "type": "object",
+        "title": "z/OS SSH Profile",
+        "description": "z/OS SSH Profile",
+        "properties": {
+          "host": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "host",
+              "aliases": [
+                "H"
+              ],
+              "description": "The z/OS SSH server host name.",
+              "type": "string",
+              "required": false,
+              "group": "z/OS Ssh Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "port": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "port",
+              "aliases": [
+                "P"
+              ],
+              "description": "The z/OS SSH server port.",
+              "type": "number",
+              "defaultValue": 22,
+              "group": "z/OS Ssh Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "user": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "user",
+              "aliases": [
+                "u"
+              ],
+              "description": "Mainframe user name, which can be the same as your TSO login.",
+              "type": "string",
+              "required": false,
+              "group": "z/OS Ssh Connection Options"
+            }
+          },
+          "password": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "password",
+              "aliases": [
+                "pass",
+                "pw"
+              ],
+              "description": "Mainframe password, which can be the same as your TSO password.",
+              "type": "string",
+              "group": "z/OS Ssh Connection Options"
+            }
+          },
+          "privateKey": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "privateKey",
+              "aliases": [
+                "key",
+                "pk"
+              ],
+              "description": "Path to a file containing your private key, that must match a public key stored in the server for authentication",
+              "type": "string",
+              "group": "z/OS Ssh Connection Options"
+            }
+          },
+          "keyPassphrase": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "keyPassphrase",
+              "aliases": [
+                "passphrase",
+                "kp"
+              ],
+              "description": "Private key passphrase, which unlocks the private key.",
+              "type": "string",
+              "group": "z/OS Ssh Connection Options"
+            }
+          },
+          "handshakeTimeout": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "handshakeTimeout",
+              "aliases": [
+                "timeout",
+                "to"
+              ],
+              "description": "How long in milliseconds to wait for the SSH handshake to complete.",
+              "type": "number",
+              "group": "z/OS Ssh Connection Options"
+            }
+          }
+        },
+        "required": []
+      },
+      "createProfileExamples": [
+        {
+          "options": "ssh111 --host sshhost --user ibmuser --password myp4ss",
+          "description": "Create a ssh profile called 'ssh111' to connect to z/OS SSH server at host 'zos123' and default port 22"
+        },
+        {
+          "options": "ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss",
+          "description": "Create a ssh profile called 'ssh222' to connect to z/OS SSH server at host 'zos123' and port 13022"
+        },
+        {
+          "options": "ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
+          "description": "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' for privatekey authentication"
+        },
+        {
+          "options": "ssh444 --privateKey /path/to/privatekey",
+          "description": "Create a ssh profile called 'ssh444' to connect to z/OS SSH server on default port 22, without specifying username, host, or password, preventing those values from being stored on disk"
+        }
+      ]
+    },
+    {
+      "type": "endevor",
+      "schema": {
+        "type": "object",
+        "title": "The CA Endevor SCM endevor profile",
+        "description": "The CA Endevor SCM endevor profile schema, where you specify your endevor session information and credentials",
+        "properties": {
+          "host": {
+            "optionDefinition": {
+              "description": "The hostname of the endevor session",
+              "type": "string",
+              "name": "host",
+              "aliases": [
+                "hostname"
+              ]
+            },
+            "type": "string"
+          },
+          "port": {
+            "optionDefinition": {
+              "description": "The port number of the endevor session",
+              "type": "number",
+              "name": "port",
+              "aliases": [
+                "p"
+              ]
+            },
+            "type": "number"
+          },
+          "user": {
+            "optionDefinition": {
+              "description": "The username of the endevor session",
+              "type": "string",
+              "name": "user",
+              "aliases": [
+                "username"
+              ]
+            },
+            "secure": true,
+            "type": "string"
+          },
+          "password": {
+            "optionDefinition": {
+              "description": "The password of the user",
+              "type": "string",
+              "name": "password",
+              "aliases": [
+                "pass"
+              ]
+            },
+            "secure": true,
+            "type": "string"
+          },
+          "protocol": {
+            "optionDefinition": {
+              "description": "The protocol used for connecting to CA Endevor SCM Rest API",
+              "type": "string",
+              "name": "protocol",
+              "aliases": [
+                "prot"
+              ],
+              "defaultValue": "http",
+              "allowableValues": {
+                "values": [
+                  "http",
+                  "https"
+                ],
+                "caseSensitive": false
+              }
+            },
+            "type": "string"
+          },
+          "basePath": {
+            "optionDefinition": {
+              "description": "The base path used for connecting to CA Endevor SCM Rest API",
+              "type": "string",
+              "name": "base-path",
+              "aliases": [
+                "bp"
+              ],
+              "defaultValue": "EndevorService/api/v2"
+            },
+            "type": "string"
+          },
+          "rejectUnauthorized": {
+            "optionDefinition": {
+              "description": "If set, the server certificate is verified against the list of supplied CAs",
+              "type": "boolean",
+              "name": "reject-unauthorized",
+              "aliases": [
+                "ru"
+              ]
+            },
+            "type": "boolean"
+          }
+        }
+      },
+      "validationPlanModule": "C:\\Users\\ej608771\\.zowe\\plugins\\installed\\node_modules\\@broadcom\\endevor-for-zowe-cli\\lib\\cli\\profiles/EndevorProfileValidationPlan",
+      "createProfileExamples": [
+        {
+          "options": "ndvrSample --host ndvr123 --port 8080 --user ibmuser --password myp4ss --prot http --base-path  EndevorService/api/v2 --reject-unauthorized false",
+          "description": "Create an endevor profile called 'ndvrSample' to connect to CA Endevor SCM web services at host ndvr123 and port 8080,using http protocol, with / EndevorService/api/v2 base path, allowing self-signed certificates"
+        }
+      ]
+    },
+    {
+      "type": "endevor-location",
+      "schema": {
+        "type": "object",
+        "title": "The CA Endevor SCM element inventory location specification profile",
+        "description": "The CA Endevor SCM element location, where you specify your working environment, system and subsystem",
+        "properties": {
+          "instance": {
+            "optionDefinition": {
+              "description": "The STC/datasource of the session",
+              "type": "string",
+              "name": "instance",
+              "aliases": [
+                "i"
+              ]
+            },
+            "type": "string"
+          },
+          "environment": {
+            "optionDefinition": {
+              "description": "The CA Endevor SCM environment where your project resides",
+              "type": "string",
+              "name": "environment",
+              "aliases": [
+                "env"
+              ],
+              "defaultValue": "DEV",
+              "stringLengthRange": [
+                1,
+                8
+              ]
+            },
+            "type": "string"
+          },
+          "system": {
+            "optionDefinition": {
+              "description": "The CA Endevor SCM system where the element resides",
+              "type": "string",
+              "name": "system",
+              "aliases": [
+                "sys"
+              ],
+              "stringLengthRange": [
+                1,
+                8
+              ]
+            },
+            "type": "string"
+          },
+          "subsystem": {
+            "optionDefinition": {
+              "description": "The CA Endevor SCM subsystem where your element resides",
+              "type": "string",
+              "name": "subsystem",
+              "aliases": [
+                "sub"
+              ],
+              "stringLengthRange": [
+                1,
+                8
+              ]
+            },
+            "type": "string"
+          },
+          "type": {
+            "optionDefinition": {
+              "description": "Name of the CA Endevor SCM element's type",
+              "type": "string",
+              "name": "type",
+              "aliases": [
+                "typ"
+              ],
+              "stringLengthRange": [
+                1,
+                8
+              ]
+            },
+            "type": "string"
+          },
+          "stageNumber": {
+            "optionDefinition": {
+              "description": "The CA Endevor SCM stage where your project resides",
+              "type": "string",
+              "name": "stage-number",
+              "aliases": [
+                "sn"
+              ],
+              "allowableValues": {
+                "values": [
+                  "1",
+                  "2"
+                ]
+              }
+            },
+            "type": "string"
+          },
+          "comment": {
+            "optionDefinition": {
+              "description": "The CA Endevor SCM comment you want to use when performing an action",
+              "type": "string",
+              "name": "comment",
+              "aliases": [
+                "com"
+              ],
+              "stringLengthRange": [
+                1,
+                40
+              ]
+            },
+            "type": "string"
+          },
+          "ccid": {
+            "optionDefinition": {
+              "description": "The CA Endevor SCM CCID you want to use when performing an action",
+              "type": "string",
+              "name": "ccid",
+              "aliases": [
+                "cci"
+              ],
+              "stringLengthRange": [
+                1,
+                12
+              ]
+            },
+            "type": "string"
+          },
+          "maxrc": {
+            "optionDefinition": {
+              "description": "The return code of CA Endevor SCM that defines a failed action",
+              "type": "number",
+              "name": "maxrc",
+              "defaultValue": 12
+            },
+            "type": "number"
+          }
+        }
+      },
+      "createProfileExamples": [
+        {
+          "options": "ndvrLoc --env ENV --sys SYS --sub SUBSYS --typ COBOL --sn 1 -i ENDEVOR",
+          "description": "Create a location profile called 'ndvrLoc' to work at CA Endevor SCM location ENV/1/SYS/SUBSYS, with elements of type COBOL, using CA Endevor SCM web services configuration ENDEVOR"
+        },
+        {
+          "options": "ndvrLoc2 --env ENV --sys SYS --sub SUBSYS --sn 1 --com 'sample comment' --cci 'CCID'",
+          "description": "Create a location profile called 'ndvrLoc2' to work at CA Endevor SCM location ENV/1/SYS/SUBSYS, using CCID 'CCID' and comment 'sample comment'"
+        }
+      ]
+    },
+    {
+      "type": "jclcheck",
+      "schema": {
+        "type": "object",
+        "title": "JCLCheck Profile",
+        "description": "A JCLCheck profile is required to issue commands in the jcl command group that interact with JCLCheck. The JCLCheck profile contains your host and port for the JCLCheck instance of your choice.",
+        "properties": {
+          "host": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "host",
+              "aliases": [
+                "H"
+              ],
+              "type": "string",
+              "description": "Host name of the JCLCheck API service that is running on the mainframe system.",
+              "required": false,
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "port": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "port",
+              "aliases": [
+                "P"
+              ],
+              "type": "number",
+              "description": "Port for the JCLCheck API service that is running on the mainframe system.",
+              "required": false,
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "user": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "user",
+              "aliases": [
+                "u"
+              ],
+              "type": "string",
+              "description": "User name for authenticating connections to the JCLCheck API service that is running on the mainframe system.",
+              "required": false,
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "password": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "password",
+              "aliases": [
+                "pass",
+                "pw"
+              ],
+              "type": "string",
+              "description": "Password for authenticating connections to the JCLCheck API service that is running on the mainframe system.",
+              "required": false,
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "basePath": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "base-path",
+              "aliases": [
+                "bp"
+              ],
+              "description": "The base path for your API mediation layer instance. Specify this option to prepend the base path to all resources when making REST requests. Do not specify this option if you are not using an API mediation layer.",
+              "type": "string",
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "rejectUnauthorized": {
+            "type": "boolean",
+            "optionDefinition": {
+              "name": "reject-unauthorized",
+              "aliases": [
+                "ru"
+              ],
+              "description": "Reject self-signed certificates.",
+              "type": "boolean",
+              "defaultValue": true,
+              "required": false,
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "protocol": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "protocol",
+              "aliases": [
+                "o"
+              ],
+              "description": "Specifies protocol to use for JCLCheck connection (http or https).",
+              "type": "string",
+              "defaultValue": "https",
+              "required": false,
+              "allowableValues": {
+                "values": [
+                  "http",
+                  "https"
+                ],
+                "caseSensitive": false
+              },
+              "group": "JCLCheck Connection Options"
+            }
+          },
+          "jclcheckOptions": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "jclcheck-options",
+              "aliases": [
+                "jo"
+              ],
+              "description": "The desired set of JCLCheck runtime options. Specify the options exactly as you would on the PARM= or OPTIONS DD on a batch run of JCLCheck. See the JCLCheck runtime options documentation for details on available runtime options. If you specify options that change the format of the JCLCheck reports, you should request '--raw-output'. Changing the format of the report will affect the ability to produce a structured API response.",
+              "type": "stringOrEmpty",
+              "required": false,
+              "group": "JCLCheck Connection Options"
+            }
+          }
+        },
+        "required": []
+      },
+      "createProfileExamples": [
+        {
+          "options": "jcl123 --host zos123 --port 1234 --user ibmuser --pass myp4ss",
+          "description": "Create a JCLCheck profile named 'jcl123' to run JCLCheck at host zos123 and port 1234"
+        },
+        {
+          "options": "jcl123 --host zos123 --port 1234 --user ibmuser --pass myp4ss --jo \"NOAS NOAU NOHCD NOJCL NORES NOSIGN\"",
+          "description": "Create a JCLCheck profile with default set of JCLCheck runtime options specified"
+        }
+      ]
+    },
+    {
+      "type": "base",
+      "schema": {
+        "type": "object",
+        "title": "Base Profile",
+        "description": "Base profile that stores values shared by multiple service profiles",
+        "properties": {
+          "host": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "host",
+              "aliases": [
+                "H"
+              ],
+              "description": "Host name of service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            }
+          },
+          "port": {
+            "type": "number",
+            "optionDefinition": {
+              "name": "port",
+              "aliases": [
+                "P"
+              ],
+              "description": "Port number of service on the mainframe.",
+              "type": "number",
+              "group": "Base Connection Options"
+            }
+          },
+          "user": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "user",
+              "aliases": [
+                "u"
+              ],
+              "description": "User name to authenticate to service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "password": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "password",
+              "aliases": [
+                "pass",
+                "pw"
+              ],
+              "description": "Password to authenticate to service on the mainframe.",
+              "type": "string",
+              "group": "Base Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "rejectUnauthorized": {
+            "type": "boolean",
+            "optionDefinition": {
+              "name": "reject-unauthorized",
+              "aliases": [
+                "ru"
+              ],
+              "description": "Reject self-signed certificates.",
+              "type": "boolean",
+              "defaultValue": true,
+              "group": "Base Connection Options"
+            },
+            "includeInTemplate": true
+          },
+          "tokenType": {
+            "type": "string",
+            "optionDefinition": {
+              "name": "token-type",
+              "aliases": [
+                "tt"
+              ],
+              "description": "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by 'zowe auth login'.",
+              "type": "string",
+              "group": "Base Connection Options"
+            }
+          },
+          "tokenValue": {
+            "type": "string",
+            "secure": true,
+            "optionDefinition": {
+              "name": "token-value",
+              "aliases": [
+                "tv"
+              ],
+              "description": "The value of the token to pass to the API.",
+              "type": "string",
+              "group": "Base Connection Options"
+            }
+          }
+        },
+        "required": []
+      },
+      "createProfileExamples": [
+        {
+          "options": "base1 --host example.com --port 443 --user admin --password 123456",
+          "description": "Create a profile called 'base1' to connect to host example.com and port 443"
+        },
+        {
+          "options": "base2 --host example.com --user admin --password 123456 --reject-unauthorized false",
+          "description": "Create a profile called 'base2' to connect to host example.com (default port - 443) and allow self-signed certificates"
+        },
+        {
+          "options": "base3 --host example.com --port 1443",
+          "description": "Create a profile called 'base3' to connect to host example.com and port 1443,  not specifying a username or password so they are not stored on disk; these will need to be specified on every command"
+        },
+        {
+          "options": "base4 --reject-unauthorized false",
+          "description": "Create a zosmf profile called 'base4' to connect to default port 443 and allow self-signed certificates, not specifying a username, password, or host so they are not stored on disk; these will need to be specified on every command"
+        }
+      ],
+      "updateProfileExamples": [
+        {
+          "options": "base1 --user newuser --password newp4ss",
+          "description": "Update a base profile named 'base1' with a new username and password"
+        }
+      ],
+      "authConfig": [
+        {
+          "serviceName": "apiml",
+          "handler": "C:\\ourstuff\\repos\\zowe-cli\\packages\\cli\\lib/auth/ApimlAuthHandler",
+          "login": {
+            "summary": "Log in to API ML authentication service",
+            "description": "Log in to Zowe API Mediation Layer authentication service and obtain or update a token.\n\nThe token provides authentication to services that support the API ML SSO (Single Sign-On) capability. When you log in, the token is stored in your default base profile until it expires. Base profiles store connection information shared by multiple services (e.g., z/OSMF), and are used if you do not supply connection information in a service profile. To take advantage of the API ML SSO capability, you should omit username and password in service profiles so that the token in the base profile is used.",
+            "examples": [
+              {
+                "description": "Log in to an API ML instance to obtain or update the token stored in your base profile",
+                "options": ""
+              },
+              {
+                "description": "Log in to an API ML instance to obtain a token without storing it in a profile",
+                "options": "--show-token"
+              }
+            ],
+            "options": [
+              {
+                "name": "host",
+                "aliases": [
+                  "H"
+                ],
+                "description": "Host name of service on the mainframe.",
+                "type": "string",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "port",
+                "aliases": [
+                  "P"
+                ],
+                "description": "Port number of service on the mainframe.",
+                "type": "number",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "user",
+                "aliases": [
+                  "u"
+                ],
+                "description": "User name to authenticate to service on the mainframe.",
+                "type": "string",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "password",
+                "aliases": [
+                  "pass",
+                  "pw"
+                ],
+                "description": "Password to authenticate to service on the mainframe.",
+                "type": "string",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "reject-unauthorized",
+                "aliases": [
+                  "ru"
+                ],
+                "description": "Reject self-signed certificates.",
+                "type": "boolean",
+                "defaultValue": true,
+                "group": "Base Connection Options"
+              }
+            ]
+          },
+          "logout": {
+            "summary": "Log out of API ML authentication service",
+            "description": "Log out of the Zowe API Mediation Layer authentication service and revoke the token so it can no longer authenticate. Also remove the token from the default base profile, if it is stored on disk.",
+            "examples": [
+              {
+                "description": "Log out of an API ML instance to revoke the token that was in use and remove it from your base profile",
+                "options": ""
+              },
+              {
+                "description": "Log out of an API ML instance to revoke a token that was not stored in a profile",
+                "options": "--token-value <token>"
+              }
+            ],
+            "options": [
+              {
+                "name": "host",
+                "aliases": [
+                  "H"
+                ],
+                "description": "Host name of service on the mainframe.",
+                "type": "string",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "port",
+                "aliases": [
+                  "P"
+                ],
+                "description": "Port number of service on the mainframe.",
+                "type": "number",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "token-type",
+                "aliases": [
+                  "tt"
+                ],
+                "description": "The type of token to get and use for the API. Omit this option to use the default token type, which is provided by 'zowe auth login'.",
+                "type": "string",
+                "group": "Base Connection Options",
+                "allowableValues": {
+                  "values": [
+                    "apimlAuthenticationToken",
+                    "jwtToken",
+                    "LtpaToken2"
+                  ]
+                }
+              },
+              {
+                "name": "token-value",
+                "aliases": [
+                  "tv"
+                ],
+                "description": "The value of the token to pass to the API.",
+                "type": "string",
+                "group": "Base Connection Options"
+              },
+              {
+                "name": "reject-unauthorized",
+                "aliases": [
+                  "ru"
+                ],
+                "description": "Reject self-signed certificates.",
+                "type": "boolean",
+                "defaultValue": true,
+                "group": "Base Connection Options"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "name": "@zowe/cli",
+  "definitions": [
+    {
+      "name": "config",
+      "type": "group",
+      "summary": "Manage JSON project and global configuration",
+      "description": "Manage JSON project and global configuration",
+      "children": [
+        {
+          "name": "list",
+          "aliases": [
+            "ls"
+          ],
+          "type": "command",
+          "summary": "list config properties",
+          "description": "List config properties",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\config\\cmd\\list\\list.handler",
+          "positionals": [
+            {
+              "name": "property",
+              "description": "The config property to list. Blank to list all properties.",
+              "type": "string"
+            }
+          ],
+          "options": [
+            {
+              "name": "locations",
+              "description": "Separate the config properties into their respective config file locations. Helpful to determine where configuration value is specified.",
+              "type": "boolean"
+            },
+            {
+              "name": "root",
+              "description": "List only the root level property names. For example, specify in addition to '--locations' to get a list of config file paths only.",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "name": "secure",
+          "type": "command",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\config\\cmd\\secure\\secure.handler",
+          "summary": "secure configuration properties",
+          "description": "prompt for secure configuration properties",
+          "options": [
+            {
+              "name": "global",
+              "description": "Secure properties in global config.",
+              "aliases": [
+                "g"
+              ],
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "name": "user",
+              "description": "Secure properties in user config.",
+              "type": "boolean",
+              "defaultValue": false
+            }
+          ]
+        },
+        {
+          "name": "set",
+          "type": "command",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\config\\cmd\\set\\set.handler",
+          "summary": "set configuration property",
+          "description": "create or update a configuration property",
+          "positionals": [
+            {
+              "name": "property",
+              "description": "The property to set. You may specify a path using dot notation (e.g. profiles.host1.profiles.service1.properties.setting)",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "description": "The property value to set. The value may be JSON. Use '--json' to indicate.",
+              "type": "string"
+            }
+          ],
+          "options": [
+            {
+              "name": "global",
+              "description": "Set the property in global config.",
+              "aliases": [
+                "g"
+              ],
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "name": "user",
+              "description": "Set the property in user config.",
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "name": "json",
+              "description": "The property value is JSON.",
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "name": "secure",
+              "description": "Store the property value securely. If omitted, any property named in the secure array of the config file will be saved securely.",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "name": "init",
+          "type": "command",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\config\\cmd\\init\\init.handler",
+          "summary": "init config files",
+          "description": "Initialize config files. Defaults to initializing \"zowe.config.json\" in the current working directory unless otherwise specified.\n\nUse \"--user\" to init \"zowe.config.user.json\". Use \"--global\" to initialize the configuration files in your home \"~/.zowe\" directory.\n\nUse \"--no-prompt\" to skip prompting for values in a CI environment.",
+          "options": [
+            {
+              "name": "global",
+              "description": "Target the global config files.",
+              "aliases": [
+                "g"
+              ],
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "name": "user",
+              "description": "Target the user config files.",
+              "type": "boolean",
+              "defaultValue": false
+            },
+            {
+              "name": "prompt",
+              "description": "Prompt for secure values. Useful for disabling prompting in CI environments.",
+              "type": "boolean",
+              "defaultValue": true
+            }
+          ]
+        },
+        {
+          "name": "schema",
+          "type": "command",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\config\\cmd\\schema\\schema.handler",
+          "summary": "dumps the JSON schema for the config",
+          "description": "Dumps the JSON schema for the config. The schema is dynamically created based on your available plugins. Direct the output of this command to a file and include in your config with '$schema' property to get editor completion."
+        },
+        {
+          "name": "profiles",
+          "type": "command",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\config\\cmd\\profiles\\profiles.handler",
+          "summary": "displays profile paths",
+          "description": "Displays profile paths."
+        }
+      ]
+    },
+    {
+      "name": "plugins",
+      "type": "group",
+      "description": "Install and manage plug-ins",
+      "children": [
+        {
+          "name": "install",
+          "type": "command",
+          "summary": "Install a plug-in",
+          "description": "Install plug-ins to an application.",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\plugins\\cmd\\install\\install.handler",
+          "positionals": [
+            {
+              "name": "plugin...",
+              "type": "string",
+              "description": "A space-separated list of plug-ins to install. A plug-in can be any format that is accepted by the `npm install` command (local directory, TAR file, git URL, public package, private package, etc...).\n\nTo use a relative local directory, at least one '/' or '\\' must exist in the plug-in path. For example, you have a local plug-in in a folder called 'test-plugin' that you want to install. Specify the relative local directory by issuing the following command:\n\nzowe plugins install ./test-plugin\n\nIf you omit the './', then the install command looks for 'test-plugin' in an npm registry.\n\nIf the plugin argument is omitted, the plugins.json file will determine which plug-ins are installed. For more information on the plugins.json file, see the --file option.",
+              "required": false
+            }
+          ],
+          "options": [
+            {
+              "name": "file",
+              "type": "existingLocalFile",
+              "description": "Specifies the location of a plugins.json file that contains the plug-ins you want to install.\n\nAll plug-ins specified in plugins.json will be installed to the base CLI and the contents will be placed into C:\\Users\\ej608771\\.zowe\\plugins\\plugins.json.\n\nIf you do not specify a plugins.json file and do not specify a plug-in, the default plugin.json file (C:\\Users\\ej608771\\.zowe\\plugins\\plugins.json) will be used. This provides a way to install plug-ins that were lost or corrupted after reinstalling or updating Zowe CLI.",
+              "required": false,
+              "conflictsWith": [
+                "registry"
+              ]
+            },
+            {
+              "name": "registry",
+              "type": "string",
+              "description": "The npm registry that is used when installing remote packages. When this value is omitted, the value returned by `npm config get registry` is used.\n\nFor more information about npm registries, see: https://docs.npmjs.com/misc/registry",
+              "required": false
+            },
+            {
+              "name": "login",
+              "type": "boolean",
+              "description": "The flag to add a registry user account to install from secure registry. It saves credentials to the .npmrc file using `npm adduser`. When this value is omitted, credentials from .npmrc file is used. If you used this flag once for specific registry, you don't have to use it again, it uses credentials from .npmrc file.\n\nFor more information about npm registries, see: https://docs.npmjs.com/cli/adduser",
+              "required": false,
+              "implies": [
+                "registry"
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "description": "Install plug-ins saved in C:\\Users\\ej608771\\.zowe\\plugins\\plugins.json",
+              "options": ""
+            },
+            {
+              "description": "Install plug-ins saved in a properly formatted config file",
+              "options": "--file /some/file/path/file_name.json"
+            },
+            {
+              "description": "Install a remote plug-in",
+              "options": "my-plugin"
+            },
+            {
+              "description": "Install a remote plug-in using semver",
+              "options": "my-plugin@\"^1.2.3\""
+            },
+            {
+              "description": "Install a remote plug-in from the specified registry",
+              "options": "my-plugin --registry https://registry.npmjs.org/"
+            },
+            {
+              "description": "Install a local folder, local TAR file, and a git URL",
+              "options": "./local-file /root/tar/some-tar.tgz git://github.com/project/repository.git#v1.0.0"
+            },
+            {
+              "description": "Install a remote plug-in from the registry which requires authorization(don't need to use this flag if you have already logged in before)",
+              "options": "my-plugin --registry https://registry.npmjs.org/ --login"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "type": "command",
+          "summary": "List installed plug-ins",
+          "description": "List all plug-ins installed.",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\plugins\\cmd\\list\\list.handler"
+        },
+        {
+          "name": "uninstall",
+          "type": "command",
+          "summary": "Uninstall a plug-in",
+          "description": "Uninstall plug-ins.",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\plugins\\cmd\\uninstall\\uninstall.handler",
+          "positionals": [
+            {
+              "name": "plugin...",
+              "type": "string",
+              "description": "The name of the plug-in to uninstall.\n\nIf the plug-in argument is omitted, no action is taken.",
+              "required": false
+            }
+          ],
+          "examples": [
+            {
+              "description": "Uninstall a plug-in",
+              "options": "my-plugin"
+            }
+          ]
+        },
+        {
+          "name": "update",
+          "type": "command",
+          "summary": "Update a plug-in",
+          "description": "Update plug-ins.",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\plugins\\cmd\\update\\update.handler",
+          "positionals": [
+            {
+              "name": "plugin...",
+              "type": "string",
+              "description": "The name of the plug-in to update.\n\nIf the plug-in argument is omitted, no action is taken.",
+              "required": false
+            }
+          ],
+          "options": [
+            {
+              "name": "registry",
+              "type": "string",
+              "description": "The npm registry that is used when installing remote packages. When this value is omitted, the value returned by `npm config get registry` is used.\n\nFor more information about npm registries, see: https://docs.npmjs.com/misc/registry",
+              "required": false
+            },
+            {
+              "name": "login",
+              "type": "boolean",
+              "description": "The flag to add a registry user account to install from secure registry. It saves credentials to the .npmrc file using `npm adduser`. When this value is omitted, credentials from .npmrc file is used. If you used this flag once for specific registry, you don't have to use it again, it uses credentials from .npmrc file.\n\nFor more information about npm registries, see: https://docs.npmjs.com/cli/adduser",
+              "required": false,
+              "implies": [
+                "registry"
+              ]
+            }
+          ],
+          "examples": [
+            {
+              "description": "Update a plug-in",
+              "options": "my-plugin"
+            },
+            {
+              "description": "Update a remote plug-in from the registry which requires authorization(don't need to use this flag if you have already logged in before)",
+              "options": "my-plugin --registry https://registry.npmjs.org/ --login"
+            }
+          ]
+        },
+        {
+          "name": "validate",
+          "type": "command",
+          "summary": "Validate a plug-in",
+          "description": "Validate a plug-in that has been installed.",
+          "handler": "C:\\ourstuff\\repos\\imperative\\lib\\imperative\\src\\plugins\\cmd\\validate\\validate.handler",
+          "positionals": [
+            {
+              "name": "plugin",
+              "type": "string",
+              "description": "The name of the plug-in to validate.\nValidation issues identified for this plug-in are displayed.\n\nIf the plug-in argument is omitted, all installed plug-ins are validated.",
+              "required": false
+            }
+          ],
+          "examples": [
+            {
+              "description": "Validate a plug-in named my-plugin",
+              "options": "my-plugin"
+            },
+            {
+              "description": "Validate all installed plug-ins",
+              "options": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "overrides": {},
+  "primaryTextColor": "yellow",
+  "secondaryTextColor": "blue",
+  "allowConfigGroup": true,
+  "allowPlugins": true
+}

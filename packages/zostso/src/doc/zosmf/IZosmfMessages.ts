@@ -12,35 +12,27 @@
 /**
  * The z/OSMF Ping API error message parameters. See the z/OSMF REST API documentation for full details.
  * @export
- * @deprecated Use `IZosmfMessages` instead because it is spelled correctly
- * @interface IZosfmMessages
- */
-export type IZosfmMessages = IZosmfMessages;
-
-/**
- * The z/OSMF Ping API error message parameters. See the z/OSMF REST API documentation for full details.
- * @export
  * @interface IZosmfMessages
  */
 export interface IZosmfMessages {
     /**
      * Error message text.
-     * @type string
-     * @memberOf IZosmfMessages
+     * @type {string}
+     * @memberof IZosmfMessages
      */
-    "messageText": string;
+    messageText: string;
 
     /**
      * Error message text ID.
-     * @type string
-     * @memberOf IZosmfMessages
+     * @type {string}
+     * @memberof IZosmfMessages
      */
-    "messageId": string;
+    messageId: string;
 
     /**
      * Error message stack trace.
-     * @type string
-     * @memberOf IZosmfMessages
+     * @type {string}
+     * @memberof IZosmfMessages
      */
-    "stackTrace": string;
+    stackTrace: string;
 }

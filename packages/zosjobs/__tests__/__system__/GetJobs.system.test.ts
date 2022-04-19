@@ -12,12 +12,12 @@
 import { JOB_STATUS } from "./../../src/types/JobStatus";
 import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../src";
-import * as  fs from "fs";
+import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
 import { join } from "path";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 
 /**********************************************************************************/
 let ACCOUNT: string;
@@ -54,7 +54,7 @@ const waitThreeSeconds = () => {
 };
 
 let defaultSystem: ITestPropertiesSchema;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 // Utility function to cleanup
 async function cleanTestJobs(prefix: string) {

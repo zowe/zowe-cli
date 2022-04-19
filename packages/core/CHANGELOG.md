@@ -2,9 +2,21 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## `6.39.0`
+## `7.0.0-next.202203311904`
+
+- BugFix: Updated paths to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
+
+## `7.0.0-next.202203282106`
 
 - Enhancement: Added the `record` data type header
+
+## `7.0.0-next.202203211751`
+
+- BugFix: Updated `ProfileUtils.getZoweDir` method to include the `name` property. [zowe/vscode-extension-for-zowe#1697](https://github.com/zowe/vscode-extension-for-zowe/issues/1697)
+
+## `7.0.0-next.202111041425`
+
+- Enhancement: Updated `Services.convertApimlProfileInfoToProfileConfig` method to include the `autoStore` property in config it creates
 
 ## `6.34.0`
 
@@ -16,7 +28,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## `6.33.1`
 
-- Migrated from TSLint (now deprecated) to ESLint for static code analysis.
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.32.1`
 

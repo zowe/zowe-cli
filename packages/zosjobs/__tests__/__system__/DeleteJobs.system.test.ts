@@ -12,16 +12,16 @@
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, IJobFeedback, SubmitJobs } from "../../src";
 import { IJob } from "../../src/doc/response/IJob";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let iefbr14JCL: string;
 
 let defaultSystem: ITestPropertiesSchema;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
 
 describe("DeleteJobs System tests", () => {

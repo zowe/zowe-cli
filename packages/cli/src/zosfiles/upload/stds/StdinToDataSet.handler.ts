@@ -12,7 +12,6 @@
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
 import { IZosFilesResponse, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { Readable } from "stream";
 
 /**
  * Handler to stream data from stdin to a data set
@@ -30,11 +29,7 @@ export default class StdinToDataSetHandler extends ZosFilesBaseHandler {
         commandParameters.response.progress.startBar({task});
 
         const result = await Upload.streamToDataSet(session,
-            process.stdin as unknown as Readable,
-            /* process.stdin has all the functions/properties we need to treat it as a Readable stream
-            *  from the rest client,
-            *  such as .on("data"), and .on("error")
-            */
+            commandParameters.stdin,
             commandParameters.arguments.dataSetName, {
                 volume: commandParameters.arguments.volumeSerial,
                 binary: commandParameters.arguments.binary,

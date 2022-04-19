@@ -11,7 +11,6 @@
 */
 
 import { PerfTiming } from "@zowe/perf-timing";
-
 const timingApi = PerfTiming.api;
 
 timingApi.mark("PRE_IMPORT_IMPERATIVE");
@@ -19,10 +18,12 @@ timingApi.mark("PRE_IMPORT_IMPERATIVE");
 import { IImperativeConfig, Imperative } from "@zowe/imperative";
 import { Constants } from "./Constants";
 import { inspect } from "util";
+import { DaemonDecider } from "./daemon/DaemonDecider";
+import { join } from "path";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {
-    configurationModule: __dirname + "/imperative"
+    configurationModule: join(__dirname, "imperative")
 };
 
 (async () => {
@@ -31,20 +32,34 @@ const config: IImperativeConfig = {
 
     try {
         timingApi.mark("BEFORE_INIT");
+
+        if(process.argv.includes("--daemon") || process.env.npm_lifecycle_event === "postinstall") {
+            config.daemonMode = true;
+        }
         await Imperative.init(config);
+
+        const daemonDecider = new DaemonDecider(process.argv);
+        daemonDecider.init();
+
         timingApi.mark("AFTER_INIT");
         timingApi.measure("imperative.init", "BEFORE_INIT", "AFTER_INIT");
 
         Imperative.api.appLogger.trace("Init was successful");
 
         timingApi.mark("BEFORE_PARSE");
-        Imperative.parse();
+
+        daemonDecider.runOrUseDaemon();
+
         timingApi.mark("AFTER_PARSE");
         timingApi.measure("Imperative.parse", "BEFORE_PARSE", "AFTER_PARSE");
     } catch (initErr) {
-        Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
-            ":\n "
-            + inspect(initErr));
+        if (initErr?.suppressDump) {
+            Imperative.console.fatal(initErr.message);
+        } else {
+            Imperative.console.fatal("Error initializing " + Constants.DISPLAY_NAME +
+                ":\n "
+                + inspect(initErr));
+        }
         process.exit(1);
     }
 })();

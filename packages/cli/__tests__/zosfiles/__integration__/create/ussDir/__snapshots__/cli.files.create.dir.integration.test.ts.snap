@@ -28,11 +28,11 @@ exports[`Create z/OS USS directory should display the help 1`] = `
  OPTIONS
  -------
 
-   --mode  | -m (string)
+   --mode | -m (string)
 
       Specifies the file permission bits to use when creating the directory.
 
-   --response-timeout  | --rto (number)
+   --response-timeout | --rto (number)
 
       The maximum amount of time in seconds the z/OSMF Files TSO servlet should run
       before returning a response. Any request exceeding this amount of time will be
@@ -41,90 +41,90 @@ exports[`Create z/OS USS directory should display the help 1`] = `
  ZOSMF CONNECTION OPTIONS
  ------------------------
 
-   --host  | -H (string)
+   --host | -H (string)
 
       The z/OSMF server host name.
 
-   --port  | -P (number)
+   --port | -P (number)
 
       The z/OSMF server port.
 
       Default value: 443
 
-   --user  | -u (string)
+   --user | -u (string)
 
       Mainframe (z/OSMF) user name, which can be the same as your TSO login.
 
-   --password  | --pass | --pw (string)
+   --password | --pass | --pw (string)
 
       Mainframe (z/OSMF) password, which can be the same as your TSO password.
 
-   --reject-unauthorized  | --ru (boolean)
+   --reject-unauthorized | --ru (boolean)
 
       Reject self-signed certificates.
 
       Default value: true
 
-   --base-path  | --bp (string)
+   --base-path | --bp (string)
 
       The base path for your API mediation layer instance. Specify this option to
       prepend the base path to all z/OSMF resources when making REST requests. Do not
       specify this option if you are not using an API mediation layer.
 
-   --protocol  (string)
+   --protocol (string)
 
       The protocol used (HTTP or HTTPS)
 
       Default value: https
       Allowed values: http, https
 
-   --cert-file  (local file path)
+   --cert-file (local file path)
 
       The file path to a certificate file to use for authentication
 
-   --cert-key-file  (local file path)
+   --cert-key-file (local file path)
 
       The file path to a certificate key file to use for authentication
 
  PROFILE OPTIONS
  ---------------
 
-   --zosmf-profile  | --zosmf-p (string)
+   --zosmf-profile | --zosmf-p (string)
 
       The name of a (zosmf) profile to load for this command execution.
 
-   --base-profile  | --base-p (string)
+   --base-profile | --base-p (string)
 
       The name of a (base) profile to load for this command execution.
 
  BASE CONNECTION OPTIONS
  -----------------------
 
-   --token-type  | --tt (string)
+   --token-type | --tt (string)
 
       The type of token to get and use for the API. Omit this option to use the
       default token type, which is provided by 'zowe auth login'.
 
-   --token-value  | --tv (string)
+   --token-value | --tv (string)
 
       The value of the token to pass to the API.
 
  GLOBAL OPTIONS
  --------------
 
-   --response-format-json  | --rfj (boolean)
+   --response-format-json | --rfj (boolean)
 
       Produce JSON formatted data from a command
 
-   --help  | -h (boolean)
+   --help | -h (boolean)
 
       Display help text
 
-   --help-examples  (boolean)
+   --help-examples (boolean)
 
       Display examples for all the commands in a group
 
-   --help-web  | --hw (boolean)
+   --help-web | --hw (boolean)
 
       Display HTML help in browser
 
@@ -145,8 +145,8 @@ exports[`Create z/OS USS directory should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"The help was constructed for command: uss-directory.\\",
-  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   uss-directory | dir\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create a UNIX directory.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create uss-directory <ussPath> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   ussPath\\\\t\\\\t (string)\\\\n\\\\n      The name of the directory that you want to create.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --mode  | -m (string)\\\\n\\\\n      Specifies the file permission bits to use when creating the directory.\\\\n\\\\n   --response-timeout  | --rto (number)\\\\n\\\\n      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run\\\\n      before returning a response. Any request exceeding this amount of time will be\\\\n      terminated and return an error. Allowed values: 5 - 600\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path  | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol  (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file  (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file  (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type  | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value  | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" with mode\\\\n   \\\\\\"rwxrwxrwx\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir -m rwxrwxrwx\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   uss-directory | dir\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create a UNIX directory.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create uss-directory <ussPath> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   ussPath\\\\t\\\\t (string)\\\\n\\\\n      The name of the directory that you want to create.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --mode | -m (string)\\\\n\\\\n      Specifies the file permission bits to use when creating the directory.\\\\n\\\\n   --response-timeout | --rto (number)\\\\n\\\\n      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run\\\\n      before returning a response. Any request exceeding this amount of time will be\\\\n      terminated and return an error. Allowed values: 5 - 600\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" with mode\\\\n   \\\\\\"rwxrwxrwx\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir -m rwxrwxrwx\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   uss-directory | dir\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create a UNIX directory.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create uss-directory <ussPath> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   ussPath\\\\t\\\\t (string)\\\\n\\\\n      The name of the directory that you want to create.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --mode  | -m (string)\\\\n\\\\n      Specifies the file permission bits to use when creating the directory.\\\\n\\\\n   --response-timeout  | --rto (number)\\\\n\\\\n      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run\\\\n      before returning a response. Any request exceeding this amount of time will be\\\\n      terminated and return an error. Allowed values: 5 - 600\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host  | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port  | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user  | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password  | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized  | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path  | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol  (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file  (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file  (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile  | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile  | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type  | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value  | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json  | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help  | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples  (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web  | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" with mode\\\\n   \\\\\\"rwxrwxrwx\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir -m rwxrwxrwx\\\\n\\\\n\\"
+  \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   uss-directory | dir\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Create a UNIX directory.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   zowe zos-files create uss-directory <ussPath> [options]\\\\n\\\\n POSITIONAL ARGUMENTS\\\\n --------------------\\\\n\\\\n   ussPath\\\\t\\\\t (string)\\\\n\\\\n      The name of the directory that you want to create.\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --mode | -m (string)\\\\n\\\\n      Specifies the file permission bits to use when creating the directory.\\\\n\\\\n   --response-timeout | --rto (number)\\\\n\\\\n      The maximum amount of time in seconds the z/OSMF Files TSO servlet should run\\\\n      before returning a response. Any request exceeding this amount of time will be\\\\n      terminated and return an error. Allowed values: 5 - 600\\\\n\\\\n ZOSMF CONNECTION OPTIONS\\\\n ------------------------\\\\n\\\\n   --host | -H (string)\\\\n\\\\n      The z/OSMF server host name.\\\\n\\\\n   --port | -P (number)\\\\n\\\\n      The z/OSMF server port.\\\\n\\\\n      Default value: 443\\\\n\\\\n   --user | -u (string)\\\\n\\\\n      Mainframe (z/OSMF) user name, which can be the same as your TSO login.\\\\n\\\\n   --password | --pass | --pw (string)\\\\n\\\\n      Mainframe (z/OSMF) password, which can be the same as your TSO password.\\\\n\\\\n   --reject-unauthorized | --ru (boolean)\\\\n\\\\n      Reject self-signed certificates.\\\\n\\\\n      Default value: true\\\\n\\\\n   --base-path | --bp (string)\\\\n\\\\n      The base path for your API mediation layer instance. Specify this option to\\\\n      prepend the base path to all z/OSMF resources when making REST requests. Do not\\\\n      specify this option if you are not using an API mediation layer.\\\\n\\\\n   --protocol (string)\\\\n\\\\n      The protocol used (HTTP or HTTPS)\\\\n\\\\n      Default value: https\\\\n      Allowed values: http, https\\\\n\\\\n   --cert-file (local file path)\\\\n\\\\n      The file path to a certificate file to use for authentication\\\\n\\\\n   --cert-key-file (local file path)\\\\n\\\\n      The file path to a certificate key file to use for authentication\\\\n\\\\n PROFILE OPTIONS\\\\n ---------------\\\\n\\\\n   --zosmf-profile | --zosmf-p (string)\\\\n\\\\n      The name of a (zosmf) profile to load for this command execution.\\\\n\\\\n   --base-profile | --base-p (string)\\\\n\\\\n      The name of a (base) profile to load for this command execution.\\\\n\\\\n BASE CONNECTION OPTIONS\\\\n -----------------------\\\\n\\\\n   --token-type | --tt (string)\\\\n\\\\n      The type of token to get and use for the API. Omit this option to use the\\\\n      default token type, which is provided by 'zowe auth login'.\\\\n\\\\n   --token-value | --tv (string)\\\\n\\\\n      The value of the token to pass to the API.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-examples (boolean)\\\\n\\\\n      Display examples for all the commands in a group\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n EXAMPLES\\\\n --------\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir\\\\n\\\\n   - Create a USS directory named \\\\\\"testDir\\\\\\" with mode\\\\n   \\\\\\"rwxrwxrwx\\\\\\" :\\\\n\\\\n      $ zowe zos-files create uss-directory testDir -m rwxrwxrwx\\\\n\\\\n\\"
 }"
 `;

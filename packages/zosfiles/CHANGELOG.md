@@ -2,13 +2,25 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## `6.39.0`
+## `7.0.0-next.202204111828`
+
+- Enhancement: Added check for USS tags to `Download.ussFile` method to automatically detect file encoding. [#740](https://github.com/zowe/zowe-cli/issues/740)
+- **Breaking:** Changed type of `encoding` property on `IOptions` interface from number to string.
+
+## `7.0.0-next.202203282106`
 
 - Enhancement: Added support for `record` data type on dataset upload, download, and get APIs.
 
-## `6.37.2`
+## `7.0.0-next.202112142155`
 
-- BugFix: Disabled gzip compression for z/OSMF requests that download binary files. [#1170](https://github.com/zowe/zowe-cli/issues/1170)
+- Breaking: Removed deprecated methods:
+  - bufferToUSSFile -> buffertoUssFile
+  - streamToUSSFile -> streamToUssFile
+  - fileToUSSFile -> fileToUssFile
+
+## `6.33.1`
+
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.32.1`
 

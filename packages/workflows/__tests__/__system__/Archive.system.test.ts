@@ -13,14 +13,15 @@ import { Session, Imperative } from "@zowe/imperative";
 import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../../src";
 import { WorkflowConstants } from "../../src/WorkflowConstants";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { CreateWorkflow } from "../../src/Create";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 
 let session: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const workflowKeyConst: string = "0123-456789-abc-def";
 let workflowKeyActual: string;
 const localWorkflowPath: string = `${__dirname}/testfiles/demo.xml`;
@@ -51,7 +52,7 @@ async function removeWorkflows() {
 describe("Archive workflow unit tests - successful scenarios", () => {
     beforeAll(async () => {
         await setup();
-        await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
+        await Upload.fileToUssFile(session, localWorkflowPath, remoteWorkflowPath, { binary: true});
     });
     beforeEach(async () => {
         const systemName = testEnvironment.systemTestProperties.workflows.system;
@@ -162,7 +163,7 @@ describe("Missing workflow key", () => {
 describe("Errors caused by the user interaction", () => {
     beforeAll(async () => {
         await setup();
-        await Upload.fileToUSSFile(session, localWorkflowPath, remoteWorkflowPath, true);
+        await Upload.fileToUssFile(session, localWorkflowPath, remoteWorkflowPath, { binary: true });
     });
     it("404 Not Found", async () => {
         try {

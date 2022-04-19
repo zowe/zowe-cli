@@ -1,0 +1,179 @@
+name: Rust CLI Publish
+
+on:
+  push:
+    branches:
+        - "master"
+        - "next"
+    paths:
+    - 'zowex/**'
+    - '.github/workflows/rust-cli*.yml'
+
+jobs:
+
+  release:
+
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get version
+      id: get-version
+      run: |
+        cd zowex
+        echo "::set-output name=ZOWEX_VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: native-v${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        release_name: Native Client Release ${{ steps.get-version.outputs.ZOWEX_VERSION }}
+        body: |
+          Native Zowe CLI client which communicates with a "daemon" version of Zowe CLI.
+        draft: false
+        prerelease: false
+
+    - name: Output Release URL File
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > zowex/release_url.txt
+
+    - run: "ls -la"
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: repo
+        path: |
+          zowex/**
+          !.git
+
+
+  build-linux:
+    name: Build Linux
+
+    needs: release
+
+    runs-on: ubuntu-latest
+
+    # Need to build in container with old version of GLIBC to support RHEL 7
+    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: repo
+
+    - name: Build
+      run: cargo build --verbose --release
+
+    - name: Get Upload URL
+      id: get_upload_url
+      run: echo "::set-output name=upload_url::$(cat release_url.txt)"
+
+    - run: echo ${{ steps.get_upload_url.outputs.upload_url }}
+
+    - name: Create Archive
+      run: |
+        cd target/release
+        tar -cvzf zowe.tgz zowe
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target/release/zowe.tgz
+        asset_name: zowe-linux.tgz
+        asset_content_type: application/octet-stream
+
+
+  build-macos:
+    name: Build MacOS
+
+    needs: release
+
+    runs-on: macos-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: repo
+
+    - name: Build
+      run: cargo build --verbose --release
+
+    - name: Get Upload URL
+      id: get_upload_url
+      run: echo "::set-output name=upload_url::$(cat release_url.txt)"
+
+    - run: echo ${{ steps.get_upload_url.outputs.upload_url }}
+
+    - name: Create Archive
+      run: |
+        cd target/release
+        gtar -cvzf zowe.tgz zowe
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target/release/zowe.tgz
+        asset_name: zowe-macos.tgz
+        asset_content_type: application/octet-stream
+
+
+  build-windows:
+    name: Build Windows
+
+    needs: release
+
+    runs-on: windows-latest
+
+    steps:
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: repo
+
+    - name: Build
+      run: cargo build --verbose --release
+
+    - name: Get Upload URL
+      id: get_upload_url
+      run: echo "::set-output name=upload_url::$(type release_url.txt)"
+
+    - run: echo "${{ steps.get_upload_url.outputs.upload_url }}"
+
+    - name: Create Archive
+      run: |
+        cd target/release
+        tar -cvzf zowe.tgz zowe.exe
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_upload_url.outputs.upload_url }}
+        asset_path: target\release\zowe.tgz
+        asset_name: zowe-windows.tgz
+        asset_content_type: application/octet-stream

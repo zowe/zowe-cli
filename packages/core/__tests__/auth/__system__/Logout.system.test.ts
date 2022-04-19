@@ -9,14 +9,15 @@
 *
 */
 
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../../src/auth/Login";
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let token: string;
 
@@ -57,7 +58,7 @@ describe("Logout system test", () => {
             client.session.ISession.tokenType = "apimlAuthenticationToken";
             client.session.ISession.tokenValue = token;
 
-            await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
+            await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);
@@ -73,7 +74,7 @@ describe("Logout system test", () => {
             client.session.ISession.tokenType = "apimlAuthenticationToken";
             client.session.ISession.tokenValue = token;
 
-            await client.request({request: "GET", resource: "/api/v1/gateway/auth/query"});
+            await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});
         } catch (thrownError) {
             error = thrownError;
             Imperative.console.info(`Error ${error}`);

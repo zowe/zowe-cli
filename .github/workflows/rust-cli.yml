@@ -1,0 +1,96 @@
+name: Rust CLI CI
+
+on:
+  push:
+    branches-ignore:
+      - "master"
+      - "next"
+    paths:
+      - "zowex/**"
+      - '.github/workflows/rust-cli*.yml'
+  pull_request:
+    paths: "zowex/**"
+
+jobs:
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+
+    # Need to build in container with old version of GLIBC to support RHEL 7
+    # https://kobzol.github.io/rust/ci/2021/05/07/building-rust-binaries-in-ci-that-work-with-older-glibc.html
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+
+    - name: Build
+      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+
+    - name: Create Archive
+      run: |
+        cd zowex/target/debug
+        tar -cvzf zowe.tgz zowe
+
+    - name: Archive Results
+      id: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: zowe-linux.tgz
+        path: zowex/target/debug/zowe.tgz
+
+    - name: Run tests
+      run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture
+
+  build-macos:
+    name: Build MacOS
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+
+    - name: Create Archive
+      run: |
+        cd zowex/target/debug
+        gtar -cvzf zowe.tgz zowe
+
+    - name: Archive Results
+      id: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: zowe-macos.tgz
+        path: zowex/target/debug/zowe.tgz
+
+    - name: Run tests
+      run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: cargo build --verbose --manifest-path=zowex/Cargo.toml
+
+    - name: Create Archive
+      run: |
+        cd zowex/target/debug
+        tar -cvzf zowe.tgz zowe.exe
+
+    - name: Archive Results
+      id: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: zowe-windows.tgz
+        path: zowex/target/debug/zowe.tgz
+
+    - name: Run tests
+      run: cargo test unit --verbose --manifest-path=zowex/Cargo.toml -- --nocapture

@@ -9,7 +9,7 @@
 *
 */
 
-import { IProfile, CommandProfiles, IHandlerResponseApi } from "@zowe/imperative";
+import { IProfile, CommandProfiles } from "@zowe/imperative";
 // Some test constants that are needed by multiple packages for unit tests
 
 // Mocked profile options to be added to args
@@ -53,39 +53,3 @@ UNIT_TEST_PROFILE_MAP_ZOSMF_TSO.set(
     }]
 );
 export const UNIT_TEST_PROFILES_ZOSMF_TSO: CommandProfiles = new CommandProfiles(UNIT_TEST_PROFILE_MAP_ZOSMF_TSO);
-
-/**
- * Returns a jest.fn mocked version of the handler arguments
- * @returns {IHandlerResponseApi}
- */
-export function getMockedResponse(): IHandlerResponseApi {
-    return {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs.toString()).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors.toString()).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    };
-}

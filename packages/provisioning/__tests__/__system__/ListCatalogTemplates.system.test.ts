@@ -12,8 +12,9 @@
 import { inspect } from "util";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import {
     IPublishedTemplates,
     ListCatalogTemplates,
@@ -22,7 +23,7 @@ import {
 } from "../../src";
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 
 describe("ListCatalogTemplates", () => {

@@ -13,6 +13,9 @@ module.exports = {
     ],
     "overrides": [
         {
+            "excludedFiles": [
+                "__tests__/__packages__/**/*.ts"
+            ],
             "extends": [
                 "plugin:jest/recommended"
             ],

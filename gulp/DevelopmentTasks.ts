@@ -155,6 +155,7 @@ const doc: ITaskFunction = async () => {
         } else {
             anchorTag = definition.name;
         }
+
         tableOfContentsText += util.format("%s* [%s](#%s)\n", tabIndent.repeat(indentLevel), commandNameSummary, anchorTag.trim());
 
         markdownContent += util.format("#%s %s<a name=\"%s\"></a>\n", "#".repeat(indentLevel), commandNameSummary, anchorTag.trim());

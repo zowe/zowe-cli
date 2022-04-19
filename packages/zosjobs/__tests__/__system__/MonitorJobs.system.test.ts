@@ -15,8 +15,8 @@ import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // long running test timeout
@@ -58,7 +58,7 @@ async function cleanTestJobs() {
 }
 
 let defaultSystem: ITestPropertiesSchema;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 const trimMessage = (message: string) => {
     // don't use more than one space or tab when checking error details
@@ -153,11 +153,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Change the jobclass after a period of time
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
@@ -233,11 +237,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Release the job
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
@@ -551,11 +559,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Change the jobclass after a period of time
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {
@@ -600,11 +612,15 @@ describe("System Tests - Monitor Jobs", () => {
 
                     // Change the jobclass after a period of time
                     setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).performRest(`/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
-                            "PUT", [{"Content-Type": "application/json"}], {
+                        new ZosmfRestClient(REAL_SESSION).request({
+                            resource: `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`,
+                            request: "PUT",
+                            reqHeaders: [{"Content-Type": "application/json"}],
+                            writeData: {
                                 request: "release",
                                 version: "2.0"
-                            }).then((response) => {
+                            }
+                        }).then((response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!done) {

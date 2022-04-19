@@ -11,8 +11,9 @@
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import {
     IProvisionTemplateResponse,
     noAccountInfo,
@@ -29,7 +30,7 @@ const OBJECT_URI: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningCons
 // in most cases account-info is optional
 const ACCOUNT_NUMBER: string = "1111111111";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let templateName: string;
 

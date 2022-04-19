@@ -2,13 +2,32 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## `7.0.0-next.202112201801`
+
+- Deprecated: Duplicate property names on the ZosmfSession class:
+  - ZOSMF_OPTION_HOST_PROFILE -> ZOSMF_OPTION_HOST
+  - ZOSMF_OPTION_USER_PROFILE -> ZOSMF_OPTION_USER
+  - ZOSMF_OPTION_PASSWORD_PROFILE -> ZOSMF_OPTION_PASSWORD
+
+## `7.0.0-next.202106071827`
+
+- **Breaking**: Removed the following [deprecated API functions](https://github.com/zowe/zowe-cli/pull/1022):
+    - ZosmfSession.createBasicZosmfSession
+    - ZosmfSession.createBasicZosmfSessionFromArguments
+      - In CLI plugins replace both of the above with:
+        - ZosmfSession.createSessCfgFromArgs,
+        - ConnectionPropsForSessCfg.addPropsOrPrompt, and
+        - new Session
+      - In VS Code extensions, replace both of the above with:
+        - ProfileInfo.createSession
+
 ## `6.34.0`
 
 - Enhancement: Add support for PEM certificate based authentication
 
 ## `6.33.1`
 
-- Migrated from TSLint (now deprecated) to ESLint for static code analysis.
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.32.1`
 

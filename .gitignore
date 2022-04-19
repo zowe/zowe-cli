@@ -10,6 +10,7 @@ CCS141/
 .idea
 src/brightside.iml
 package-lock.json
+/packages/cli/npm-shrinkwrap.json
 # Sonar Files
 .sonar_lock
 .scannerwork/
@@ -98,4 +99,8 @@ imperative_debug.log
 
 /packages/cli/lib
 /packages/cli/__tests__/__results__
-/packages/cli/npm-shrinkwrap.json
+/packages/cli/prebuilds
+zowe.config.json
+zowe.config.user.json
+zowe.schema.json
+.github/_act_*.yml

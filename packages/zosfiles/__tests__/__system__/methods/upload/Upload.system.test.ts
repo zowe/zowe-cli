@@ -13,7 +13,7 @@ import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesRespons
     Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
@@ -21,7 +21,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
@@ -648,7 +648,7 @@ describe("Upload USS file", () => {
 
 
             try {
-                uploadResponse = await Upload.bufferToUSSFile(REAL_SESSION, ussname, data);
+                uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
@@ -665,7 +665,7 @@ describe("Upload USS file", () => {
             let getResponse;
             const data: Buffer = Buffer.from(testdata);
             try {
-                uploadResponse = await Upload.bufferToUSSFile(REAL_SESSION, ussname, data, true);
+                uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
             } catch (err) {
                 error = err;
@@ -682,7 +682,7 @@ describe("Upload USS file", () => {
             let getResponse;
 
             try {
-                uploadResponse = await Upload.fileToUSSFile(REAL_SESSION, inputfile, ussname);
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
@@ -700,7 +700,7 @@ describe("Upload USS file", () => {
 
 
             try {
-                uploadResponse = await Upload.fileToUSSFile(REAL_SESSION, inputfile, ussname, true);
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
             } catch (err) {
                 error = err;

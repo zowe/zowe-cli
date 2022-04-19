@@ -30,6 +30,7 @@ import { ZosFilesOptions } from "./zosfiles/ZosFiles.options";
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
     commandModuleGlobs: [
+        "daemon/*.definition!(.d).*s",
         "provisioning/*.definition!(.d).*s",
         "workflows/*.definition!(.d).*s",
         "zosconsole/*.definition!(.d).*s",
@@ -49,6 +50,13 @@ const config: IImperativeConfig = {
             logFile: Constants.LOG_LOCATION
         }
     },
+    apimlConnLookup: [
+        {
+            apiId: "ibm.zosmf",
+            gatewayUrl: "api/v1",
+            connProfType: "zosmf"
+        }
+    ],
     baseProfile: {
         type: "base",
         schema: {
@@ -58,7 +66,8 @@ const config: IImperativeConfig = {
             properties: {
                 host: {
                     type: "string",
-                    optionDefinition: Constants.BASE_OPTION_HOST
+                    optionDefinition: Constants.BASE_OPTION_HOST,
+                    includeInTemplate: true
                 },
                 port: {
                     type: "number",
@@ -67,16 +76,19 @@ const config: IImperativeConfig = {
                 user: {
                     type: "string",
                     secure: true,
-                    optionDefinition: Constants.BASE_OPTION_USER
+                    optionDefinition: Constants.BASE_OPTION_USER,
+                    includeInTemplate: true
                 },
                 password: {
                     type: "string",
                     secure: true,
-                    optionDefinition: Constants.BASE_OPTION_PASSWORD
+                    optionDefinition: Constants.BASE_OPTION_PASSWORD,
+                    includeInTemplate: true
                 },
                 rejectUnauthorized: {
                     type: "boolean",
-                    optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED
+                    optionDefinition: Constants.BASE_OPTION_REJECT_UNAUTHORIZED,
+                    includeInTemplate: true
                 },
                 tokenType: {
                     type: "string",
@@ -175,6 +187,22 @@ const config: IImperativeConfig = {
             description: Constants.AUTH_GROUP_DESCRIPTION
         }
     },
+    configAutoInitCommandConfig: {
+        handler: __dirname + "/config/auto-init/ApimlAutoInitHandler",
+        provider: "APIML",
+        autoInit: {
+            options: [
+                Constants.AUTO_INIT_OPTION_HOST,
+                Constants.AUTO_INIT_OPTION_PORT,
+                Constants.AUTO_INIT_OPTION_USER,
+                Constants.AUTO_INIT_OPTION_PASSWORD,
+                Constants.AUTO_INIT_OPTION_REJECT_UNAUTHORIZED,
+                Constants.AUTO_INIT_OPTION_TOKEN_TYPE,
+                Constants.AUTO_INIT_OPTION_TOKEN_VALUE
+            ]
+        },
+        profileType: "base"
+    },
     profiles: [
         {
             type: "zosmf",
@@ -185,21 +213,22 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST_PROFILE
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_HOST
                     },
                     port: {
                         type: "number",
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PORT,
+                        includeInTemplate: true
                     },
                     user: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER_PROFILE
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_USER
                     },
                     password: {
                         type: "string",
                         secure: true,
-                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD_PROFILE
+                        optionDefinition: ZosmfSession.ZOSMF_OPTION_PASSWORD
                     },
                     rejectUnauthorized: {
                         type: "boolean",
@@ -227,13 +256,13 @@ const config: IImperativeConfig = {
                         optionDefinition: ZosmfSession.ZOSMF_OPTION_PROTOCOL
                     },
                     encoding: {
-                        type: "number",
+                        type: "string",
                         optionDefinition: {
                             name: "encoding",
                             aliases: ["ec"],
                             description: "The encoding for download and upload of z/OS data set and USS files." +
-                                " The default encoding if not specified is 1047.",
-                            type: "number"
+                                " The default encoding if not specified is IBM-1047.",
+                            type: "string"
                         }
                     },
                     responseTimeout: {
@@ -286,7 +315,8 @@ const config: IImperativeConfig = {
                 properties: {
                     account: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE
+                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE,
+                        includeInTemplate: true
                     },
                     characterSet: {
                         type: "string",
@@ -294,7 +324,8 @@ const config: IImperativeConfig = {
                     },
                     codePage: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_CODE_PAGE
+                        optionDefinition: TSO_OPTION_CODE_PAGE,
+                        includeInTemplate: true
                     },
                     columns: {
                         type: "number",
@@ -302,7 +333,8 @@ const config: IImperativeConfig = {
                     },
                     logonProcedure: {
                         type: "string",
-                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE
+                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
+                        includeInTemplate: true
                     },
                     regionSize: {
                         type: "number",
@@ -347,15 +379,17 @@ const config: IImperativeConfig = {
                 properties: {
                     host: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST_PROFILE
+                        optionDefinition: SshSession.SSH_OPTION_HOST
                     },
                     port: {
                         type: "number",
-                        optionDefinition: SshSession.SSH_OPTION_PORT
+                        optionDefinition: SshSession.SSH_OPTION_PORT,
+                        includeInTemplate: true
                     },
                     user: {
                         type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_USER_PROFILE
+                        secure: true,
+                        optionDefinition: SshSession.SSH_OPTION_USER
                     },
                     password: {
                         type: "string",
@@ -400,7 +434,6 @@ const config: IImperativeConfig = {
                 }
             ]
         }
-
     ]
 };
 module.exports = config;

@@ -11,8 +11,9 @@
 
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import {
     IProvisionedInstance,
     IProvisionedInstances,
@@ -23,7 +24,7 @@ import {
 import { ProvisioningTestUtils } from "../__resources__/utils/ProvisioningTestUtils";
 
 const TYPE: string = "CICS";
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let templateName: string;
 let instanceName: string;

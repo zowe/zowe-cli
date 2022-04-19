@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DaemonClient tests should process data when received 1`] = `
+Array [
+  "feed",
+  "🐶",
+]
+`;
+
+exports[`DaemonClient tests should process data when received 2`] = `
+Object {
+  "response": Object {
+    "argv": Array [
+      "feed",
+      "🐶",
+    ],
+    "cwd": "fake",
+    "env": Object {
+      "FORCE_COLOR": "0",
+    },
+    "stdin": null,
+    "stdinLength": 0,
+    "user": "ZmFrZQ==",
+  },
+  "stream": Object {
+    "end": [MockFunction],
+    "on": [MockFunction] {
+      "calls": Array [
+        Array [
+          "end",
+          [Function],
+        ],
+        Array [
+          "close",
+          [Function],
+        ],
+        Array [
+          "data",
+          [Function],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    },
+    "write": [MockFunction],
+  },
+}
+`;
+
+exports[`DaemonClient tests should process response with binary stdin data when received 1`] = `
+Array [
+  "feed",
+  "🐱",
+]
+`;
+
+exports[`DaemonClient tests should process response with binary stdin data when received 2`] = `
+Object {
+  "response": Object {
+    "argv": Array [
+      "feed",
+      "🐱",
+    ],
+    "cwd": "fake",
+    "env": Object {},
+    "stdin": null,
+    "stdinLength": 1024,
+    "user": "ZmFrZQ==",
+  },
+  "stdinStream": Promise {},
+  "stream": Object {
+    "end": [MockFunction],
+    "on": [MockFunction] {
+      "calls": Array [
+        Array [
+          "end",
+          [Function],
+        ],
+        Array [
+          "close",
+          [Function],
+        ],
+        Array [
+          "data",
+          [Function],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    },
+    "write": [MockFunction],
+  },
+}
+`;

@@ -12,9 +12,9 @@
 
 import * as imperative from "@zowe/imperative";
 import * as profileUtils from "../../../src/utils/ProfileUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 const fs = require("fs");
 
@@ -37,9 +37,9 @@ const fakeProfileMissingInformation: imperative.IProfile = {
 };
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
-describe("CoreUtils", () => {
+describe("ProfileUtils", () => {
     describe("getDefaultProfile", () => {
         beforeAll(async () => {
             TEST_ENVIRONMENT = await TestEnvironment.setUp({
@@ -56,6 +56,16 @@ describe("CoreUtils", () => {
         });
         beforeEach(() => {
             jest.resetAllMocks();
+
+            // Pretend that we have no team config
+            Object.defineProperty(imperative.ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false
+                    };
+                })
+            });
         });
         afterAll(async () => {
             runCliScript(__dirname + "/__scripts__/delete_profile.sh", TEST_ENVIRONMENT, ["zosmf", "fakeServiceProfile"]);

@@ -64,7 +64,7 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         name: "encoding",
         aliases: ["ec"],
         description: strings.ENCODING,
-        type: "number"
+        type: "string"
     },
 
     /**

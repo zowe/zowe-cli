@@ -9,14 +9,14 @@
 *
 */
 
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../../../__tests__/__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestBaseSchema } from "../../../../../__tests__/__src__/properties/ITestBaseSchema";
 import { ITestCertPemSchema } from "../../../../../__tests__/__src__/properties/ITestCertPemSchema";
 
 describe("auth login/logout apiml with profile", () => {
-    let TEST_ENVIRONMENT: ITestEnvironment;
+    let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
@@ -48,7 +48,7 @@ describe("auth login/logout apiml with profile", () => {
 });
 
 describe("auth login/logout apiml show token", () => {
-    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
     let token: string[];
 
@@ -118,7 +118,7 @@ describe("auth login/logout apiml show token", () => {
 });
 
 describe("auth login/logout apiml create profile", () => {
-    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
 
     beforeAll(async () => {
@@ -160,7 +160,7 @@ describe("auth login/logout apiml create profile", () => {
 });
 
 describe("auth login/logout apiml do not create profile", () => {
-    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_CREATE_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
 
     beforeAll(async () => {
@@ -210,26 +210,10 @@ describe("auth login/logout apiml do not create profile", () => {
         expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
         expect(response.stdout.toString()).toContain("Login successful.");
     });
-
-    it("should successfully issue the login command and timeout while creating a profile", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create_timeout.sh",
-            TEST_ENVIRONMENT_CREATE_PROF,
-            [
-                base.host,
-                base.port,
-                base.user,
-                base.password,
-                base.rejectUnauthorized
-            ]);
-        expect(response.status).toBe(0);
-        expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
-        expect(response.stdout.toString()).toContain("The following token was retrieved and will not be stored in your profile");
-        expect(response.stdout.toString()).toContain("Login successful.");
-    });
 });
 
 describe("auth login/logout apiml with pem cert", () => {
-    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+    let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestCertPemSchema & ITestBaseSchema;
     let token: string[];
 

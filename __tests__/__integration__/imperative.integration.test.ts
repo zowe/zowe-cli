@@ -9,11 +9,11 @@
 *
 */
 
-import { runCliScript } from "../__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "../__packages__/cli-test-utils";
 import { TestEnvironment } from "../__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../__src__/environment/doc/response/ITestEnvironment";
+import { ITestPropertiesSchema } from "../__src__/properties/ITestPropertiesSchema";
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("imperative create profile", () => {
 
@@ -51,13 +51,13 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("FAKEHOST");
             expect(response.stdout.toString()).toContain("443");
-            expect(response.stdout.toString()).toContain("FAKEUSER");
-            expect(response.stdout.toString()).toContain("FAKEPASS");
+            // Two values (user and password) should be stored securely
+            expect((response.stdout.toString().match(/managed by Zowe CLI/g) || []).length).toBe(2);
         });
 
         it("should successfully create a profile without username, password, or host", async () => {
@@ -70,7 +70,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_zosmf_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("443");
@@ -98,13 +98,14 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_ssh_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("FAKEHOST");
             expect(response.stdout.toString()).toContain("22");
-            expect(response.stdout.toString()).toContain("FAKEUSER");
-            expect(response.stdout.toString()).toContain("FAKEPASS");
+            expect(response.stdout.toString()).not.toContain("FAKEUSER");
+            expect(response.stdout.toString()).toContain("user:     managed by Zowe CLI");
+            expect(response.stdout.toString()).toContain("password: managed by Zowe CLI");
         });
 
         it("should successfully create a profile without username, password, or host", async () => {
@@ -116,7 +117,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_ssh_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).toContain("22");
@@ -141,7 +142,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_tso_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
         });
@@ -154,7 +155,7 @@ describe("imperative create profile", () => {
             const response = runCliScript(__dirname + "/__scripts__/imperative_tso_create_profile.sh",
                 testEnvironment, opts
             );
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("deprecated");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Profile created successfully!");
             expect(response.stdout.toString()).not.toContain("FAKEACCT");

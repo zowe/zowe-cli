@@ -2,6 +2,24 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `7.0.0-next.202201252014`
+
+- Documentation: Deprecated the following command option definitions:
+  - SSH_OPTION_HOST_PROFILE
+    - Replace with SSH_OPTION_HOST
+  - SSH_OPTION_USER_PROFILE
+    - Replace with SSH_OPTION_USER
+
+## `7.0.0-next.202106071827`
+
+- **Breaking**: Removed the following [deprecated API functions](https://github.com/zowe/zowe-cli/pull/1022):
+    - SshSession.createBasicSshSession
+    - SshSession.createBasicSshSessionFromArguments
+      - For both of the above replace with:
+        - SshSession.createSshSessCfgFromArgs,
+        - ConnectionPropsForSessCfg.addPropsOrPrompt, and
+        - new SshSession
+
 ## `6.33.3`
 
 - Documentation: Update README with information about the new optional native modules in ssh2 dependency
@@ -12,7 +30,7 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 
 ## `6.33.1`
 
-- Migrated from TSLint (now deprecated) to ESLint for static code analysis.
+- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.32.1`
 

@@ -12,10 +12,7 @@
 import {
     ICommandArguments,
     ICommandOptionDefinition,
-    IProfile,
     Logger,
-    SessConstants,
-    Session,
     ISession
 } from "@zowe/imperative";
 
@@ -39,10 +36,11 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
-    public static ZOSMF_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
-        ...ZosmfSession.ZOSMF_OPTION_HOST,
-        required: false
-    };
+    /**
+     * Option used in profile creation and commands for hostname for z/OSMF
+     * @deprecated Use ZOSMF_OPTION_HOST instead
+     */
+    public static ZOSMF_OPTION_HOST_PROFILE = ZosmfSession.ZOSMF_OPTION_HOST;
 
     /**
      * Option used in profile creation and commands for port for z/OSMF
@@ -57,7 +55,7 @@ export class ZosmfSession {
     };
 
     /**
-     * Option used in profile creation and commands for username / ID  for z/OSMF
+     * Option used in profile creation and commands for username / ID for z/OSMF
      */
     public static ZOSMF_OPTION_USER: ICommandOptionDefinition = {
         name: "user",
@@ -68,10 +66,11 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
-    public static ZOSMF_OPTION_USER_PROFILE: ICommandOptionDefinition = {
-        ...ZosmfSession.ZOSMF_OPTION_USER,
-        required: false
-    };
+    /**
+     * Option used in profile creation and commands for username / ID for z/OSMF
+     * @deprecated Use ZOSMF_OPTION_USER instead
+     */
+    public static ZOSMF_OPTION_USER_PROFILE = ZosmfSession.ZOSMF_OPTION_USER;
 
     /**
      * Option used in profile creation and commands for password/passphrase for z/OSMF
@@ -85,10 +84,11 @@ export class ZosmfSession {
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
 
-    public static ZOSMF_OPTION_PASSWORD_PROFILE: ICommandOptionDefinition = {
-        ...ZosmfSession.ZOSMF_OPTION_PASSWORD,
-        required: false
-    };
+    /**
+     * Option used in profile creation and commands for password/passphrase for z/OSMF
+     * @deprecated Use ZOSMF_OPTION_PASSWORD instead
+     */
+    public static ZOSMF_OPTION_PASSWORD_PROFILE = ZosmfSession.ZOSMF_OPTION_PASSWORD;
 
     /**
      * Option used in profile creation and commands for rejectUnauthorized setting for connecting to z/OSMF
@@ -138,7 +138,7 @@ export class ZosmfSession {
     };
 
     /**
-     * Option used to specify the path to the certificate file for authentication
+     * Option used to specify the path to the cert's key file for authentication
      */
     public static ZOSMF_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
         name: "cert-key-file",
@@ -176,7 +176,7 @@ export class ZosmfSession {
 
     /**
      * Given command line arguments, create an session configuration object.
-     * @param {IProfile} args - The arguments specified by the user
+     * @param {ICommandArguments} args - The arguments specified by the user
      * @returns {ISession} - A session configuration to be used for a session.
      */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
@@ -186,71 +186,6 @@ export class ZosmfSession {
             protocol: args.protocol ? args.protocol.toLowerCase() : 'https'
         };
     }
-
-    /**
-     * Given a z/OSMF profile, create a REST Client Session.
-     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
-     * @static
-     * @param {IProfile} profile - The z/OSMF profile contents
-     * @returns {Session} - A session for usage in the z/OSMF REST Client
-     */
-    public static createBasicZosmfSession(profile: IProfile): Session {
-        this.log.debug("Creating a z/OSMF session from the profile named %s", profile.name);
-        return new Session({
-            type: SessConstants.AUTH_TYPE_BASIC,
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.password,
-            rejectUnauthorized: profile.rejectUnauthorized,
-            basePath: profile.basePath,
-            protocol: profile.protocol ? profile.protocol.toLowerCase() : 'https'
-        });
-    }
-
-    /**
-     * Given command line arguments, create a REST Client Session.
-     * @static
-     * @deprecated Use ZosmfSession.createSessCfgFromArgs & others
-     * @param {IProfile} args - The arguments specified by the user
-     * @returns {Session} - A session for usage in the z/OSMF REST Client
-     */
-    public static createBasicZosmfSessionFromArguments(args: ICommandArguments): Session {
-        this.log.debug("Creating a z/OSMF session from arguments");
-
-        const sessionConfig: ISession = {
-            hostname: args.host,
-            port: args.port,
-            rejectUnauthorized: args.rejectUnauthorized,
-            basePath: args.basePath
-        };
-
-        sessionConfig.type = SessConstants.AUTH_TYPE_BASIC;
-        sessionConfig.user = args.user;
-        sessionConfig.password = args.password;
-        if (sessionConfig.user && sessionConfig.password) {
-            this.log.debug("Using basic authentication");
-        } else if (args.tokenType && args.tokenValue) {
-            this.log.debug("Using token authentication");
-            sessionConfig.type = SessConstants.AUTH_TYPE_TOKEN;
-            sessionConfig.tokenType = args.tokenType;
-            sessionConfig.tokenValue = args.tokenValue;
-        } else if (args.certFile && args.certKeyFile) {
-            this.log.debug("Using PEM Certificate authentication");
-            sessionConfig.type = SessConstants.AUTH_TYPE_CERT_PEM;
-            sessionConfig.cert = args.certFile;
-            sessionConfig.certKey = args.certKeyFile;
-        }
-        // else if (args.certFile && args.certFilePassphrase) {
-        //     this.log.debug("Using PFX Certificate authentication");
-        //     sessionConfig.type = SessConstants.AUTH_TYPE_CERT_PFX;
-        //     sessionConfig.cert = args.certFile;
-        //     sessionConfig.passphrase = args.certFilePassphrase;
-        // }
-
-        return new Session(sessionConfig);
-    }
-
 
     private static get log(): Logger {
         return Logger.getAppLogger();

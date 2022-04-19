@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeError, Logger, RestClient, TextUtils, RestConstants, SessConstants, AbstractSession } from "@zowe/imperative";
+import { IImperativeError, Logger, RestClient, TextUtils, RestConstants, SessConstants } from "@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
 /**
@@ -20,15 +20,6 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  * @extends {RestClient}
  */
 export class ZosmfRestClient extends RestClient {
-
-    /**
-     * Construct zosmf rest client to use content decoding
-     * @param mSession The session object to use
-     */
-    constructor(mSession: AbstractSession){
-        super(mSession);
-        this.mDecode = true;
-    }
 
     /**
      * Use the Brightside logger instead of the imperative logger

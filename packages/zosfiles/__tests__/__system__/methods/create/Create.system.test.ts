@@ -12,7 +12,7 @@
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions, ICreateVsamOptions } from "../../../../src/methods/create";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../src/methods/delete";
@@ -21,7 +21,7 @@ import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUt
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let dsname: string;

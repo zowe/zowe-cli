@@ -11,15 +11,15 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, IJob, SubmitJobs } from "../../src";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../src/JobsMessages";
 const rimraf = require("rimraf").sync;
 
 
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let account: string;

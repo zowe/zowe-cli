@@ -17,25 +17,19 @@ import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spo
 import * as SpoolFilesHandler from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.handler";
 import {
     UNIT_TEST_PROFILES_ZOSMF,
-    getMockedResponse,
     UNIT_TEST_ZOSMF_PROF_OPTS
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "bright",
-        _: ["zos-jobs", "list", "spool-files"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "list", "spool-files"],
-    response: getMockedResponse(),
     definition: SpoolFilesByJobidDefinition,
-    fullDefinition: SpoolFilesByJobidDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("zos-jobs list spool-files-by-jobid handler", () => {
 
@@ -51,7 +45,7 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
             return GetJobsData.SAMPLE_SPOOL_FILES;
         });
         const handler = new SpoolFilesHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "j12345";
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -65,7 +59,7 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFilesHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "j12345";
         try {
             await handler.process(params);
@@ -88,7 +82,7 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFilesHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "j12345";
         try {
             await handler.process(params);

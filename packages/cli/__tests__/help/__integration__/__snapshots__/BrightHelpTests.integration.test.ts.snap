@@ -26,9 +26,11 @@ exports[`Root level help tests top level help should contain support link 1`] = 
  ------
 
    auth                          Connect to Zowe API ML authentication service
-   config                        Manage configuration and overrides           
+   config                        Manage JSON project and global configuration 
+   daemon                        Daemon operations                            
    plugins                       Install and manage plug-ins.                 
    profiles                      Create and manage configuration profiles.    
+                                 (deprecated)                                 
    provisioning | pv             Perform z/OSMF provisioning tasks            
    zos-console | console         Issue z/OS console commands and collect      
                                  responses                                    
@@ -43,30 +45,30 @@ exports[`Root level help tests top level help should contain support link 1`] = 
  OPTIONS
  -------
 
-   --version  | -V (boolean)
+   --version | -V (boolean)
 
       Display the current version of Zowe CLI
 
-   --available-commands  | --ac (boolean)
+   --available-commands | --ac (boolean)
 
       Displays a list of available commands
 
  GLOBAL OPTIONS
  --------------
 
-   --response-format-json  | --rfj (boolean)
+   --response-format-json | --rfj (boolean)
 
       Produce JSON formatted data from a command
 
-   --help  | -h (boolean)
+   --help | -h (boolean)
 
       Display help text
 
-   --help-examples  (boolean)
+   --help-examples (boolean)
 
       Not available for top tier Zowe group
 
-   --help-web  | --hw (boolean)
+   --help-web | --hw (boolean)
 
       Display HTML help in browser
 

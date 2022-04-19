@@ -48,8 +48,8 @@ describe("DsHandler", () => {
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
-            { dataSetName: commandParameters.arguments.toDataSetName },
-            { fromDataSet: { dataSetName: commandParameters.arguments.fromDataSetName } }
+            { dsn: commandParameters.arguments.toDataSetName },
+            { "from-dataset": { dsn: commandParameters.arguments.fromDataSetName } }
         );
         expect(response).toBe(defaultReturn);
     });
@@ -78,8 +78,44 @@ describe("DsHandler", () => {
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
         expect(copyDatasetSpy).toHaveBeenLastCalledWith(
             dummySession,
-            { dataSetName: toDataSetName, memberName: toMemberName },
-            { fromDataSet: { dataSetName: fromDataSetName, memberName: fromMemberName } }
+            { dsn: toDataSetName, member: toMemberName },
+            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
+        );
+        expect(response).toBe(defaultReturn);
+    });
+
+    it("should call Copy.dataSet with options", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = true;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace
+            }
+        };
+
+        const dummySession = {};
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            { dsn: commandParameters.arguments.toDataSetName },
+            {
+                "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
+                "enq": commandParameters.arguments.enq,
+                "replace": commandParameters.arguments.replace
+            }
         );
         expect(response).toBe(defaultReturn);
     });

@@ -9,21 +9,10 @@
 *
 */
 
-/* This script creates an empty "bin" script for the @zowe/cli package.
- * It works around an npm@7 bug: https://github.com/npm/cli/issues/2632
- */
-
+// For global installs, configure prebuild-install to find Keytar prebuilds bundled with CLI
 const fs = require("fs");
-const path = require("path");
-const devNodeModulesDir = path.join(__dirname, "..", "..", "..", "node_modules");
-// The bug only happens in *nix environment when installing from source
-if (process.platform !== "win32" && fs.existsSync(devNodeModulesDir)) {
-    const cliLibDir = path.join(devNodeModulesDir, "@zowe", "cli", "lib");
-    if (!fs.existsSync(cliLibDir)) {
-        fs.mkdirSync(cliLibDir, { recursive: true });
-    }
-    const mainJsFile = path.join(cliLibDir, "main.js");
-    if (!fs.existsSync(mainJsFile)) {
-        fs.writeFileSync(mainJsFile, "");
-    }
+const { join } = require("path");
+const prebuildsDir = join(__dirname, "..", "prebuilds");
+if (process.env.npm_config_global && fs.existsSync(prebuildsDir)) {
+    fs.writeFileSync(".prebuild-installrc", `local-prebuilds=${prebuildsDir}`);
 }

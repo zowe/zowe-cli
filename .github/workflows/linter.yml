@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - 'master'
       - 'zowe-v1-lts'
+      - 'next'
   pull_request:
     branches:
       - "**"
@@ -22,6 +23,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+
+    - name: Use NPM v8
+      id: npm8
+      run: npm install -g npm@^8
 
     - name: Install Node Package Dependencies
       run: npm ci

@@ -9,16 +9,15 @@
 *
 */
 
-import { ITestEnvironment } from "../../../__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment, TempTestProfiles, runCliScript } from "../../../__packages__/cli-test-utils";
 import { TestEnvironment } from "../../../__src__/environment/TestEnvironment";
-import { runCliScript } from "../../../__src__/TestUtils";
+import { ITestPropertiesSchema } from "../../../__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import * as fs from "fs";
-import { TempTestProfiles } from "../../../__src__/profiles/TempTestProfiles";
 import { Constants } from "../../../../packages/cli/src/Constants";
 
 // Test environment created in the before all
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("Zowe CLI Logging", () => {
 

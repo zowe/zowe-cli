@@ -22,22 +22,16 @@ import * as ActionHandler from "../../../../../src/provisioning/perform/action/A
 import * as ActionDefinition from "../../../../../src/provisioning/perform/action/Action.definition";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "bright",
-        _: ["provisioning", "perform", "action"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "perform", "action"],
-    response: getMockedResponse(),
     definition: ActionDefinition.ActionDefinition,
-    fullDefinition: ActionDefinition.ActionDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("perform action handler tests", () => {
     afterEach(() => {
@@ -56,7 +50,7 @@ describe("perform action handler tests", () => {
             }
         );
         const handler = new ActionHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.zOSMFVersion = ProvisioningConstants.ZOSMF_VERSION;
         params.arguments.templateName = "some_name1";
         await handler.process(params);

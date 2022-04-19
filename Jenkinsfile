@@ -33,10 +33,9 @@ node('zowe-jenkins-agent-dind') {
 
     // Protected branch property definitions
     pipeline.protectedBranches.addMap([
-        [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "latest", "@zowe/perf-timing": "latest"], aliasTags: ["zowe-v1-lts"]],
-        //[name: "zowe-v1-lts", tag: "zowe-v1-lts", level: SemverLevel.MINOR, dependencies: ["@zowe/imperative": "zowe-v1-lts", "@zowe/perf-timing": "zowe-v1-lts"]],
-        [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-incremental"]],
-        [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]]
+        [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "zowe-v2-lts", "@zowe/perf-timing": "zowe-v2-lts"], aliasTags: ["zowe-v2-lts", "next"], level: SemverLevel.MINOR],
+        [name: "zowe-v1-lts", tag: "zowe-v1-lts", dependencies: ["@zowe/imperative": "zowe-v1-lts", "@zowe/perf-timing": "zowe-v1-lts"], level: SemverLevel.PATCH],
+        //[name: "next", tag: "next", prerelease: "next", dependencies: ["@zowe/imperative": "next", "@zowe/perf-timing": "latest"]],
     ])
 
     // Git configuration information
@@ -167,6 +166,36 @@ node('zowe-jenkins-agent-dind') {
     //     file: "CHANGELOG.md",
     //     header: "## Recent Changes"
     // )
+
+    pipeline.createStage(
+        name: "Bundle Daemon Binaries",
+        shouldExecute: {
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+        },
+        timeout: [time: 30, unit: 'MINUTES'],
+        stage: {
+            def daemonVer = readProperties(file: "zowex/Cargo.toml").version
+            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                sh "bash jenkins/bundleDaemon.sh ${daemonVer} \"${USERNAME}:${TOKEN}\""
+            }
+            archiveArtifacts artifacts: "packages/cli/prebuilds/*"
+        }
+    )
+
+    pipeline.createStage(
+        name: "Bundle Keytar Binaries",
+        shouldExecute: {
+            return pipeline.protectedBranches.isProtected(BRANCH_NAME)
+        },
+        stage: {
+            def packageJson = readJSON file: "packages/cli/package.json"
+            def keytarVer = packageJson.optionalDependencies['keytar']
+            withCredentials([usernamePassword(credentialsId: 'zowe-robot-github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                sh "bash jenkins/bundleKeytar.sh ${keytarVer} \"${USERNAME}:${TOKEN}\""
+            }
+            archiveArtifacts artifacts: "keytar-prebuilds.tgz"
+        }
+    )
 
     // Perform the versioning email mechanism
     pipeline.version(

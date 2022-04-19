@@ -9,70 +9,25 @@
 *
 */
 
-import { PingTsoData } from "../../../__resources__/PingTsoData";
+import { SendTsoData } from "../../../__resources__/SendTsoData";
 
 jest.mock("../../../../../../zostso/lib/SendTso");
 import { SendTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as SendToAddressSpace from "../../../../../src/zostso/send/address_space/SendToAddressSpace.handler";
 import { SendToAddressSpaceCommandDefinition } from "../../../../../src/zostso/send/address_space/SendToAddressSpace.definition";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const ZOSMF_PROF_OPTS = {
-    host: "somewhere.com",
-    port: "43443",
-    user: "someone",
-    password: "somesecret"
-};
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        ...ZOSMF_PROF_OPTS
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "bright",
-        _: ["zos-tso", "ping", "address-space"]
-    },
-    positionals: ["zos-tso", "ping", "address-space"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+    positionals: ["zos-tso", "send", "address-space"],
     definition: SendToAddressSpaceCommandDefinition,
-    fullDefinition: SendToAddressSpaceCommandDefinition,
-    profiles: PROFILES
-};
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
 
 describe("send address-space handler tests", () => {
 
@@ -80,14 +35,12 @@ describe("send address-space handler tests", () => {
         jest.resetAllMocks();
     });
 
-    it("should be able to ping address-space", async () => {
+    it("should be able to send data to address-space", async () => {
         SendTso.sendDataToTSOCollect = jest.fn((session, servletKey, data) => {
-            return PingTsoData.SAMPLE_PING_RESPONSE;
+            return SendTsoData.SAMPLE_SEND_RESPONSE;
         });
         const handler = new SendToAddressSpace.default();
-        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.data = "data";
         await handler.process(params);
@@ -102,9 +55,7 @@ describe("send address-space handler tests", () => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new SendToAddressSpace.default();
-        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.servletKey = "data";
         try {

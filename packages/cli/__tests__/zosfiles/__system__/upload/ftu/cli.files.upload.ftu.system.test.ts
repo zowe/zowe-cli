@@ -11,16 +11,15 @@
 
 import { Imperative, IO, Session } from "@zowe/imperative";
 import * as path from "path";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
-let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
 
@@ -116,7 +115,6 @@ describe("Upload uss file", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("USS file uploaded successfully");
         });
-
     });
 
 });

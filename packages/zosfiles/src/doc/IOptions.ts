@@ -36,9 +36,9 @@ export interface IOptions extends IZosFilesOptions {
 
     /**
      * Code page encoding
-     * @type {number}
+     * @type {string}
      */
-    encoding?: number;
+    encoding?: string;
 
     /**
      * The volume on which the data set is stored

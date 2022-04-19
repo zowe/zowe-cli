@@ -11,16 +11,16 @@
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../__tests__/__src__/TestUtils";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
+import { DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 import { Upload, Create, CreateDataSetTypeEnum, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let definitionDs: string;
@@ -56,7 +56,7 @@ describe("Create workflow cli system tests", () => {
     describe("Create workflow using uss file", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
         });
         afterAll(async () => {
             let error;

@@ -20,20 +20,20 @@ export interface IIssueTsoParms {
 
     /**
      * Command text to issue to the TSO address space.
-     * @type string
-     * @memberOf IIssueTsoParms
+     * @type {string}
+     * @memberof IIssueTsoParms
      */
     command: string;
     /**
      * Accounting info for Jobs
-     * @type string
-     * @memberOf IIssueTsoParms
+     * @type {string}
+     * @memberof IIssueTsoParms
      */
     accountNumber: string;
     /**
      * Interface for TSO start command z/OSMF parameters
-     * @type string
-     * @memberOf IIssueTsoParms
+     * @type {string}
+     * @memberof IIssueTsoParms
      */
     startParams: IStartTsoParms;
 }

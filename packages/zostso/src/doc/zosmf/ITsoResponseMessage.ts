@@ -12,20 +12,20 @@
 /**
  * TSO Response interface for one of TSO/E messages
  * @export
- * @memberOf ITsoResponseMessage
+ * @interface ITsoResponseMessage
  */
 export interface ITsoResponseMessage {
     /**
      * JSON version for message format
-     * @type string
-     * @memberOf ITsoResponseMessage
+     * @type {string}
+     * @memberof ITsoResponseMessage
      */
-    "VERSION": string;
+    VERSION: string;
 
     /**
      * description of the data type
-     * @type string
-     * @memberOf ITsoResponseMessage
+     * @type {string}
+     * @memberof ITsoResponseMessage
      */
-    "DATA": string;
+    DATA: string;
 }

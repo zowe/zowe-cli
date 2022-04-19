@@ -11,8 +11,8 @@
 
 import { CreateWorkflow, DeleteWorkflow } from "../../../src";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ICreatedWorkflow } from "../../../src/doc/ICreatedWorkflow";
 import { inspect } from "util";
@@ -29,7 +29,7 @@ import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk"
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
 let wfKey: string;
@@ -72,8 +72,8 @@ describe("Create workflow", () => {
     describe("Success Scenarios", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            await Upload.fileToUSSFile(REAL_SESSION, workflow, definitionFile, true);
-            await Upload.fileToUSSFile(REAL_SESSION, vars, inputFile, true);
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
+            await Upload.fileToUssFile(REAL_SESSION, vars, inputFile, { binary: true });
         });
         afterAll(async () => {
             let error;

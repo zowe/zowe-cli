@@ -38,6 +38,7 @@ function validatePlugins() {
         // add the parameters for the zowe command to validate plugins
         process.argv.push("plugins");
         process.argv.push("validate");
+        process.argv.push("--no-fail-on-error");
 
         console.log("Since you re-installed Zowe CLI, we are re-validating any plugins.");
         require(zowePgm);

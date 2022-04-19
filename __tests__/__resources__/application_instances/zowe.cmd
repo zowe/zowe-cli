@@ -1,0 +1,1 @@
+@node "%~dp0\..\..\..\packages\cli\lib\main.js" %*

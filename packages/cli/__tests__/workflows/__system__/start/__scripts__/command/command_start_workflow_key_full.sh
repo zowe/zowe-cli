@@ -5,7 +5,7 @@ wait=$3
 set -e
 
 echo "================Z/OS WORKFLOWS START WORKFLOW-KEY ==============="
-bright zos-workflows start workflow-full --workflow-key $wk --resolve-conflict-by $resolve $wait
+zowe zos-workflows start workflow-full --workflow-key $wk --resolve-conflict-by $resolve $wait
 if [ $? -gt 0 ]
 then
     exit $?

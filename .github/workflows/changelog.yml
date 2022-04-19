@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - master
+      - zowe-v1-lts
+      - next
 
 jobs:
   changelog:

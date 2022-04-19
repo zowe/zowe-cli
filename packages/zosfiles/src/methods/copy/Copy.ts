@@ -39,10 +39,10 @@ export class Copy {
      */
     public static async dataSet(
         session: AbstractSession,
-        { dataSetName: toDataSetName, memberName: toMemberName }: IDataSet,
+        { dsn: toDataSetName, member: toMemberName }: IDataSet,
         options: ICopyDatasetOptions
     ): Promise<IZosFilesResponse> {
-        ImperativeExpect.toBeDefinedAndNonBlank(options.fromDataSet.dataSetName, "fromDataSetName");
+        ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const endpoint: string = posix.join(
@@ -55,8 +55,8 @@ export class Copy {
         const payload: any = {
             "request": "copy",
             "from-dataset": {
-                dsn: options.fromDataSet.dataSetName,
-                member: options.fromDataSet.memberName
+                dsn: options["from-dataset"].dsn,
+                member: options["from-dataset"].member
             },
             ...options
         };

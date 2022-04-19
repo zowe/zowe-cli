@@ -17,24 +17,20 @@ import { CommandDefinition } from "../../../../../src/zostso/issue/command/Comma
 import { StartTsoData } from "../../../__resources__/StartTsoData";
 import {
     UNIT_TEST_ZOSMF_PROF_OPTS,
-    getMockedResponse,
     UNIT_TEST_PROFILES_ZOSMF_TSO,
     UNIT_TEST_TSO_PROF_OPTS
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: {
-        $0: "bright",
-        _: ["zos-tso", "issue", "address-space"],
         ...UNIT_TEST_ZOSMF_PROF_OPTS,
         ...UNIT_TEST_TSO_PROF_OPTS
     },
     positionals: ["zos-tso", "issue", "address-space"],
-    response: getMockedResponse(),
     definition: CommandDefinition,
-    fullDefinition: CommandDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF_TSO
-};
+});
 
 describe("issue command handler tests", () => {
 
@@ -49,7 +45,7 @@ describe("issue command handler tests", () => {
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;
         });
         const handler = new Command.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.acc = "acc";
         params.arguments.cmd = "time";
         await handler.process(params);
@@ -64,7 +60,7 @@ describe("issue command handler tests", () => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new Command.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         params.arguments.servletKey = "data";
         try {

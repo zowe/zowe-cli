@@ -70,7 +70,8 @@ export const VsamDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         vsamRetainFor,
         VsamCreateOptions.retainTo,
-        ZosFilesCreateExtraOptions.showAttributes
+        ZosFilesCreateExtraOptions.showAttributes,
+        ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
@@ -79,7 +80,7 @@ export const VsamDefinition: ICommandDefinition = {
         },
         {
             description: vsamStrings.EXAMPLES.SHOW_FIVE_MB,
-            options: "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --show-attributes"
+            options: "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --attributes"
         },
         {
             description: vsamStrings.EXAMPLES.RETAIN_100_DAYS,

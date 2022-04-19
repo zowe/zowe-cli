@@ -12,16 +12,15 @@
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
 import { inspect } from "util";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete, Create } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
-let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let user: string;
 let ussname: string;
@@ -157,9 +156,9 @@ describe("List directory", () => {
         it("should fail with an invalid attribute attributes", () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_list_uss.sh");
             response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname, "-a", "--rfj"]);
-            expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toContain("Unknown argument");
             expect(response.status).toBe(1);
-            expect(response.stdout.toString()).toContain("Unknown argument");
+            expect(response.stdout.toString()).toBe("");
         });
 
         it("should return directory list with only 1 entry", () => {

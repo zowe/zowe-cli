@@ -207,7 +207,7 @@ export class CreateWorkflow{
      */
     public static async uploadTempFile(session: AbstractSession, localFile: string, remoteFile: string){
         try {
-            await Upload.fileToUSSFile(session, localFile, remoteFile, true);
+            await Upload.fileToUssFile(session, localFile, remoteFile, { binary: true });
         } catch (error) {
             throw new ImperativeError({
                 msg : "Failed to create temporary uss file\n" + (error.message) + "\n" + (error.additionalDetails)

@@ -13,66 +13,21 @@ jest.mock("../../../../../../zostso/lib/PingTso");
 
 import { PingTsoData } from "../../../__resources__/PingTsoData";
 import { PingTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as PingAddressSpaceHandler from "../../../../../src/zostso/ping/address_space/PingAddressSpace.handler";
 import { PingAddressSpaceCommandDefinition } from "../../../../../src/zostso/ping/address_space/PingAddressSpace.definition";
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
+} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
-const ZOSMF_PROF_OPTS = {
-    host: "somewhere.com",
-    port: "43443",
-    user: "someone",
-    password: "somesecret"
-};
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        ...ZOSMF_PROF_OPTS
-    }]
-);
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "bright",
-        _: ["zos-tso", "ping", "address-space"]
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-tso", "ping", "address-space"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect(setMsgArgs).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect(setObjArgs).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect(logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
     definition: PingAddressSpaceCommandDefinition,
-    fullDefinition: PingAddressSpaceCommandDefinition,
-    profiles: PROFILES
-};
+    profiles: UNIT_TEST_PROFILES_ZOSMF
+});
 
 describe("ping address-space handler tests", () => {
 
@@ -85,9 +40,7 @@ describe("ping address-space handler tests", () => {
             return PingTsoData.SAMPLE_PING_RESPONSE;
         });
         const handler = new PingAddressSpaceHandler.default();
-        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         await handler.process(params);
         expect(PingTso.ping).toHaveBeenCalledTimes(1);
@@ -101,9 +54,7 @@ describe("ping address-space handler tests", () => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new PingAddressSpaceHandler.default();
-        let params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
-        const args = {arguments: ZOSMF_PROF_OPTS};
-        params = {...params,...args};
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.servletKey = "ZOSMFAD-SYS2-55-aaakaaac";
         try {
             await handler.process(params);

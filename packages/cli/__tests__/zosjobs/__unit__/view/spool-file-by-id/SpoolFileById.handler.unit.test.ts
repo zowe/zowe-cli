@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, IHandlerParameters, ImperativeError, Session, ISession } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
@@ -18,51 +18,18 @@ import * as SpoolFileByIdHandler from "../../../../../src/zosjobs/view/spool-fil
 import * as fs from "fs";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 // Disable coloring for the snapshots
 process.env.FORCE_COLOR = "0";
 const TEST_RESOURCES_DIR = __dirname + "/../../../__resources__";
 
-const DEFAULT_PARAMTERS: IHandlerParameters = {
-    arguments: {
-        $0: "bright",
-        _: ["zos-jobs", "view", "spool-file-by-id"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "view", "spool-file-by-id"],
-    response: {
-        data: {
-            setMessage: jest.fn((setMsgArgs) => {
-                expect((Buffer.isBuffer(setMsgArgs) ? setMsgArgs.toString() : setMsgArgs)).toMatchSnapshot();
-            }),
-            setObj: jest.fn((setObjArgs) => {
-                expect((Buffer.isBuffer(setObjArgs) ? setObjArgs.toString() : setObjArgs)).toMatchSnapshot();
-            }),
-            setExitCode: jest.fn()
-        },
-        console: {
-            log: jest.fn((logs) => {
-                expect((Buffer.isBuffer(logs)) ? logs.toString() : logs).toMatchSnapshot();
-            }),
-            error: jest.fn((errors) => {
-                expect(errors).toMatchSnapshot();
-            }),
-            errorHeader: jest.fn(() => undefined)
-        },
-        progress: {
-            startBar: jest.fn((parms) => undefined),
-            endBar: jest.fn(() => undefined)
-        },
-        format: {
-            output: jest.fn((parms) => {
-                expect(parms).toMatchSnapshot();
-            })
-        }
-    },
     definition: SpoolFilesByJobidDefinition,
-    fullDefinition: SpoolFilesByJobidDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("zos-jobs view spool-file-by-id handler", () => {
 
@@ -78,13 +45,18 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "j12345";
         params.arguments.spoolfileid = "2";
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(UNIT_TEST_PROFILES_ZOSMF.get("zosmf"));
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
+            DEFAULT_PARAMETERS.arguments
+        );
+        const fakeSession: Session = new Session(sessCfg);
+
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
     });
@@ -96,7 +68,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "j12345";
         try {
             await handler.process(params);
@@ -119,7 +91,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFileByIdHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMTERS]);
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "j12345";
         try {
             await handler.process(params);
@@ -128,7 +100,13 @@ describe("zos-jobs view spool-file-by-id handler", () => {
         }
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledTimes(1);
-        const fakeSession: Session = ZosmfSession.createBasicZosmfSession(UNIT_TEST_PROFILES_ZOSMF.get("zosmf"));
+
+        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
+            DEFAULT_PARAMETERS.arguments
+        );
+        const fakeSession: Session = new Session(sessCfg);
+
         expect(GetJobs.getSpoolContentById).toHaveBeenCalledWith(fakeSession, GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
             GetJobsData.SAMPLE_COMPLETE_JOB.jobid, "2");
         expect(error).toBeDefined();

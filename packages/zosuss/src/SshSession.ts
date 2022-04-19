@@ -12,7 +12,6 @@
 import {
     ICommandArguments,
     ICommandOptionDefinition,
-    IProfile,
     Logger
 } from "@zowe/imperative";
 import { ISshSession } from "./doc/ISshSession";
@@ -54,10 +53,11 @@ export class SshSession {
         required: false,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
-    public static SSH_OPTION_HOST_PROFILE: ICommandOptionDefinition = {
-        ...SshSession.SSH_OPTION_HOST,
-        required: false
-    };
+
+    /**
+     * @deprecated Use SSH_OPTION_HOST
+     */
+    public static SSH_OPTION_HOST_PROFILE: ICommandOptionDefinition = SshSession.SSH_OPTION_HOST;
 
     /**
      * Option used in profile creation and commands for port for z/OS SSH
@@ -82,10 +82,11 @@ export class SshSession {
         required: false,
         group: SshSession.SSH_CONNECTION_OPTION_GROUP
     };
-    public static SSH_OPTION_USER_PROFILE: ICommandOptionDefinition = {
-        ...SshSession.SSH_OPTION_USER,
-        required: false
-    };
+
+    /**
+     * @deprecated Use SSH_OPTION_USER
+     */
+    public static SSH_OPTION_USER_PROFILE: ICommandOptionDefinition = SshSession.SSH_OPTION_USER;
 
     /**
      * Option used in profile creation and commands for password/passphrase for z/OS SSH
@@ -147,7 +148,7 @@ export class SshSession {
 
     /**
      * Given command line arguments, create an SSH session configuration object.
-     * @param {IProfile} args - The arguments specified by the user
+     * @param {ICommandArguments} args - The arguments specified by the user
      * @returns {ISshSession} - A session configuration to be used for an SSH session.
      */
     public static createSshSessCfgFromArgs(args: ICommandArguments): ISshSession {
@@ -156,46 +157,6 @@ export class SshSession {
             keyPassphrase: args.keyPassphrase,
             handshakeTimeout: args.handshakeTimeout
         };
-    }
-
-    /**
-     * Given a z/OS SSH profile, create a SSH Client Session.
-     * @static
-     * @deprecated Use SshSession.createSshSessCfgFromArgs & others
-     * @param {IProfile} profile - The SSH profile contents
-     * @returns {Session} - A session for usage in the SSH Client
-     */
-    public static createBasicSshSession(profile: IProfile): SshSession {
-        this.log.debug("Creating a z/OS SSH session from the profile named %s", profile.name);
-        return new SshSession({
-            hostname: profile.host,
-            port: profile.port,
-            user: profile.user,
-            password: profile.password,
-            privateKey: profile.privateKey,
-            keyPassphrase: profile.keyPassphrase,
-            handshakeTimeout: profile.handshakeTimeout
-        });
-    }
-
-    /**
-     * Given command line arguments, create a SSH Client Session.
-     * @static
-     * @deprecated Use SshSession.createSshSessCfgFromArgs & others
-     * @param {IProfile} args - The arguments specified by the user
-     * @returns {SshSession} - A session for usage in the SSH Client
-     */
-    public static createBasicSshSessionFromArguments(args: ICommandArguments): SshSession {
-        this.log.debug("Creating a z/OS SSH session from arguments");
-        return new SshSession({
-            hostname: args.host,
-            port: args.port,
-            user: args.user,
-            password: args.password,
-            privateKey: args.privateKey,
-            keyPassphrase: args.keyPassphrase,
-            handshakeTimeout: args.handshakeTimeout
-        });
     }
 
     /**

@@ -2,6 +2,202 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `7.0.0-next.202204142300`
+
+- BugFix: Updated the imperative version to consume ProfileInfo API updates and to remove the `moment` dependency.
+
+## `7.0.0-next.202204141408`
+
+- Enhancement: Updated the version number of the Zowe-CLI executable.
+
+## `7.0.0-next.202204111828`
+
+- Enhancement: Added help for `zowe daemon restart` command.
+- Enhancement: Changed type of `encoding` property on z/OSMF profile from number to string to support more values (e.g., "ISO8859-1").
+
+## `7.0.0-next.202204111523`
+
+- Enhancement: Launch a separate Zowe CLI daemon for each user on multi-user systems.
+- **Next Breaking**: Removed environment variables ZOWE_DAEMON and ZOWE_DAEMON_LOCK. Replaced them with ZOWE_DAEMON_DIR and ZOWE_DAEMON_PIPE.
+
+## `7.0.0-next.202204111431`
+
+- BugFix: Updated Imperative to enhance backward compatibility with v1 profiles and other enhancements and bug fixes (More details: Imperative [v5.0.0-next.202204051515](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204051515) and [v5.0.0-next.202204081605](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204081605))
+
+## `7.0.0-next.202203311904`
+
+- BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
+- BugFix: Updated Imperative to avoid loading the credential manager if the given config file is not secure. [zowe/imperative#762](https://github.com/zowe/imperative/issues/762)
+
+## `7.0.0-next.202203282106`
+
+- Enhancement: Added support for `--record` format on `zowe zos-files download (data-set|all-members)` and `zowe zos-files upload (dir-to-pds|file-to-data-set|stdin-to-data-set)` [#539](https://github.com/zowe/zowe-cli/issues/539)
+
+## `7.0.0-next.202203211751`
+
+- BugFix: Updated Imperative to allow applications to update credentials from the `ProfileInfo` APIs. [zowe/vscode-extension-for-zowe#1646](https://github.com/zowe/vscode-extension-for-zowe/issues/1646)
+
+## `7.0.0-next.202203101634`
+
+- Enhancement: Added prompt for base profile host property to `zowe config init`. [#1219](https://github.com/zowe/zowe-cli/issues/1219)
+
+## `7.0.0-next.202203042035`
+
+- BugFix: Allows the CLI to complete installation when there is invalid config JSON [#1198](https://github.com/zowe/zowe-cli/issues/1198)
+
+## `7.0.0-next.202203041732`
+
+- Enhancement: The `zowe daemon enable` and `zowe daemon disable` commands run a process in the background so that they no longer require a user to copy and paste another command to successfully perform the operation.
+
+## `7.0.0-next.202202241854`
+
+- **LTS Breaking**: Added `stdin` property to `IHandlerParameters` which defaults to `process.stdin` and is overridden with another readable stream in daemon mode.
+  - CLI plug-ins that read from `process.stdin` in their command handlers should replace it with `{IHandlerParameters}.stdin` to be compatible with Zowe v2 daemon mode.
+  - This may be a breaking change for unit tests that mock the `IHandlerParameters` interface since a required property has been added.
+  - It is recommended to replace `IHandlerParameters` mocks with the `mockHandlerParameters` method in the @zowe/cli-test-utils package which should protect you from future breaking changes to this interface.
+- BugFix: Fixed Daemon Concurrency problems in Windows by introducing a lock file
+
+## `7.0.0-next.202202171858`
+
+- **Next Breaking**: Use sockets and named pipes instead of ports for daemon communication for improved access control.
+- BugFix: Fixed Keytar not present in top level dependencies when CLI is installed non-globally. [#1314](https://github.com/zowe/zowe-cli/issues/1314)
+
+## `7.0.0-next.202202151759`
+
+- BugFix: Updated Imperative to convert previously used profile property names into V2-compliant property names.
+
+## `7.0.0-next.202202112312`
+
+- BugFix: Fixed packaging of daemon binary for macOS.
+
+## `7.0.0-next.202202092037`
+
+- BugFix: Fixed some optional dependencies missing from npm-shrinkwrap file.
+
+## `7.0.0-next.202202041954`
+
+- BugFix: Fixed daemon binaries missing from package and Keytar binaries not found at install time.
+
+## `7.0.0-next.202202041533`
+
+- BugFix: Updated Imperative to improve log messages when Keytar module fails to load.
+
+## `7.0.0-next.202201261615`
+
+- BugFix: Included an npm-shrinkwrap file to lock-down all transitive dependencies.
+
+## `7.0.0-next.202201252014`
+
+- BugFix: Fixed 'daemon disable' command to kill any running zowe daemon on Linux and Mac. [#1270](https://github.com/zowe/zowe-cli/issues/1270)
+- BugFix: Fixed stdin data being corrupted when daemon server processes CLI command containing double-byte characters.
+- Enhancement: Added a user message within 'daemon enable' and disable to open a new terminal when needed.
+- **LTS Breaking**: Make the `user` field on SSH profiles secure. [#682](https://github.com/zowe/zowe-cli/issues/682)
+
+## `7.0.0-next.202201121428`
+
+- BugFix: Set executable attribute on zowe executable file on Linux and Mac.
+- Enhancement: Ensure `zowe config auto-init` command saves the `rejectUnauthorized` value. [#1109](https://github.com/zowe/zowe-cli/issues/1109)
+
+## `7.0.0-next.202201111811`
+
+- BugFix: Update Imperative to absorb bugfixes introduced in version `5.0.0-next.202201102100`.
+- Enhancement: Add the commands `zowe daemon enable` and `zowe daemon disable`. These commands enable end-users to set up daemon mode without having to download a separate executable and place it by hand into some directory.
+- Enhancement: Refactored communication between Imperative daemon client and server. Previously the client only sent CLI arguments and the current working directory. Now it sends a JSON object that also includes environment variables and input piped from stdin. [#1179](https://github.com/zowe/zowe-cli/issues/1179)
+- **Next Breaking**: The Daemon-related class named `Processor` was renamed to `DaemonDecider`.
+- **Next Breaking**: Remove `--dcd` argument which was reserved for `--daemon-current-directory`.
+- **Next Breaking**: Add user check to daemon communication
+
+## `7.0.0-next.202112281543`
+
+- Enhancement: update a "show attributes" flag to be `-a` instead of `--pa`.  `--pa` is a "hidden" alias.
+
+## `7.0.0-next.202112201801`
+
+- BugFix: Fixed socket connection error on macOS after commands that run in daemon mode. [#1192](https://github.com/zowe/zowe-cli/issues/1192)
+- BugFix: Fixed daemon failing to run in path that contains space in directory name. [#1237](https://github.com/zowe/zowe-cli/issues/1237)
+
+## `7.0.0-next.202112142155`
+
+- Enhancement: Upgrade Imperative so that secure prompts do not show input and zowe.config.json secure properties are not logged. [#1106](https://github.com/zowe/zowe-cli/issues/1106)
+
+## `7.0.0-next.202112081943`
+
+- **Next Breaking**: Remove hardcoded `--dcd` argument sent between imperative daemon server and client.
+
+## `7.0.0-next.202112021313`
+
+- **Next Breaking**: Use JSON-based communication protocol between imperative daemon server and client.
+
+## `7.0.0-next.202111221932`
+
+- BugFix: Changed credentials to be stored securely by default for v1 profiles to be consistent with the experience for v2 profiles. [#1128](https://github.com/zowe/zowe-cli/issues/1128)
+
+## `7.0.0-next.202111111904`
+
+- Daemon mode updates:
+    - Enhancements:
+        - Renamed the platform-specific executable from zowex to zowe, so that existing zowe commands used from the command line or in scripts do not have to change when running in daemon mode.
+        - Automatically launch the background daemon when one is not running.
+        - The daemon no longer has its own visible window, making it much more daemon-like.
+        - An environment variable named ZOWE_USE_DAEMON can be set to "no" to prevent the use of the daemon. Commands are then passed to the traditional zowe-CLI command. Thus, you can temporarily use the traditional Zowe CLI command to correct some display limitations (like displaying colors).
+    - Bug fixes:
+        - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
+        - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
+
+## `7.0.0-next.202111111709`
+
+- Enhancement: Upgrade Imperative so Daemon Mode can launch and warn about invalid team configuration files. [#943](https://github.com/zowe/zowe-cli/issues/943) [#1190](https://github.com/zowe/zowe-cli/issues/1190)
+
+## `7.0.0-next.202111041425`
+
+- Enhancement: Added `autoStore` property to config JSON files which defaults to true. When this property is enabled and the CLI prompts you to enter connection info, the values you enter will be saved to disk (or credential vault if they are secure) for future use. [zowe/zowe-cli#923](https://github.com/zowe/zowe-cli/issues/923)
+
+## `7.0.0-next.202110211759`
+
+- Enhancement: Display the set of changes made by the 'zowe config auto-init' command.
+
+## `7.0.0-next.202110071909`
+
+- Enhancement: Added `config update-schemas [--depth <value>]` command. [#1059](https://github.com/zowe/zowe-cli/issues/1059)
+- **LTS Breaking**: Changed default log level from DEBUG to WARN to reduce the volume of logs written to disk. The log level can still be overridden using environment variables.
+
+## `7.0.0-next.202109281609`
+
+- Enhancement: Added `config import` command that imports team config files from a local path or web URL. [#1083](https://github.com/zowe/zowe-cli/issues/1083)
+- Enhancement: Added Help Doc examples for the `zowe config` group of commands. [#1061](https://github.com/zowe/zowe-cli/issues/1061)
+
+## `7.0.0-next.202109032014`
+
+- Enhancement: Log in to API ML to obtain token value instead of prompting for it in `config secure` command.
+
+## `7.0.0-next.202108311536`
+
+- Security: Don't expose port that daemon server listens on (default port is 4000).
+
+## `7.0.0-next.202108202027`
+
+- Update Imperative dependency for the following new features:
+  - **LTS Breaking**: Make `fail-on-error` option true by default on `zowe plugins validate` command.
+  - Enhancement: Improved command suggestions
+  - Performance: Improved the way that HTTP response chunks are saved, reducing time complexity from O(n<sup>2</sup>) to O(n). This dramatically improves performance for larger requests. [#618](https://github.com/zowe/imperative/pull/618)
+
+## `7.0.0-next.202108121907`
+
+- Enhancement: Flattened the default profiles structure created by the `config init` command.
+- **Next Breaking**: Split up authToken property in team config into tokenType and tokenValue properties to be consistent with Zowe v1 profiles.
+
+## `7.0.0-next.202107131230`
+
+- Enhancement: Adds the `config auto-init` command, allowing users to automatically generate a configuration using information stored in conformant installed plugins and the API Mediation Layer.
+
+## `7.0.0-next.202102011525`
+
+- Enhancement: Added new "config" command group to manage config JSON files. This is intended to replace the profiles API, and makes it easier for users to create, share, and switch between profile configurations.
+- Enhancement: Added daemon mode which runs a persistent background process "zowex" to improve CLI response time. The "zowex" binary can be downloaded from GitHub releases.
+- Enhancement: Added support for secure credential storage without any plug-ins required. On Linux there are some software requirements for this feature which are listed [here](https://github.com/zowe/zowe-cli-scs-plugin#software-requirements).
+- Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
+- **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
+
 ## `6.40.1`
 
 - BugFix: Updated the imperative version to remove the `moment` dependency.
@@ -13,6 +209,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `6.39.1`
 
 - BugFix: Updated Imperative to consume security updates in `4.18.2`.
+
 
 ## `6.39.0`
 

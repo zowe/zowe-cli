@@ -1,0 +1,25 @@
+[package]
+name = "zowe"
+version = "1.0.0"
+authors = ["Zowe Project"]
+edition = "2018"
+license = "EPL-2.0"
+repository = "https://github.com/zowe/zowe-cli"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+atty = "0.2.14"
+base64 = "0.13.0"
+home = "0.5.3"
+pathsearch = "0.2.0"
+rpassword = "5.0.1"
+serde = { version = "1.0.136", features = ["derive"]}
+serde_json = "1.0.79"
+simple-error = "0.2.3"
+sysinfo = "0.23.5"
+whoami = "1.2.1"
+
+[target.'cfg(windows)'.dependencies]
+fslock = "0.2.1"
+named_pipe = "0.4.1"

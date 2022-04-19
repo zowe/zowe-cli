@@ -9,13 +9,12 @@
 *
 */
 
-import { ITestEnvironment } from "./../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
-import { TestEnvironment } from "./../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { runCliScript } from "./../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JCL: string;
 
 describe("zos-jobs delete job command", () => {
@@ -60,7 +59,7 @@ describe("zos-jobs delete job command", () => {
         describe("without profiles", () => {
 
             // Create a separate test environment for no profiles
-            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment;
+            let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
             let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
 
             beforeAll(async () => {

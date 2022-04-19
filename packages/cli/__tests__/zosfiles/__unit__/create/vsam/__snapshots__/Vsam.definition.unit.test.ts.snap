@@ -4,6 +4,14 @@ exports[`zos-files create vsam command definition should not have changed 1`] = 
 Array [
   Object {
     "aliases": Array [
+      "a",
+    ],
+    "description": "Show the full allocation attributes",
+    "name": "attributes",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "dc",
     ],
     "description": "The SMS data class to use for the allocation",
@@ -77,6 +85,7 @@ Array [
       "pa",
     ],
     "description": "Show the full allocation attributes",
+    "hidden": true,
     "name": "show-attributes",
     "type": "boolean",
   },
@@ -116,7 +125,7 @@ Array [
   },
   Object {
     "description": "Create a 5 MB LINEAR VSAM data set named \\"SOME.DATA.SET.NAME\\" with 1 MB of secondary space. Show the properties of the data set when it is created",
-    "options": "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --show-attributes",
+    "options": "SOME.DATA.SET.NAME --data-set-organization LINEAR --size 5MB --secondary-space 1 --attributes",
   },
   Object {
     "description": "Create a VSAM data set named \\"SOME.DATA.SET.NAME\\", which is retained for 100 days",

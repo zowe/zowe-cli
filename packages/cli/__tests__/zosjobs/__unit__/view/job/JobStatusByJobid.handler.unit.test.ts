@@ -15,26 +15,21 @@ import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import * as JobStatusByJobidHandler from "../../../../../src/zosjobs/view/job-status-by-jobid/JobStatusByJobid.handler";
 import * as JobStatusByJobidDefinition from "../../../../../src/zosjobs/view/job-status-by-jobid/JobStatusByJobid.definition";
-import { UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF,
-    getMockedResponse
+import {
+    UNIT_TEST_ZOSMF_PROF_OPTS,
+    UNIT_TEST_PROFILES_ZOSMF
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
 
 // Mocked parameters for the unit tests
-const DEFAULT_PARAMETERS: IHandlerParameters = {
-    arguments: {
-        $0: "bright",
-        _: ["zos-jobs", "view", "job"],
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    },
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "view", "job"],
-    response: getMockedResponse(),
     definition: JobStatusByJobidDefinition.JobStatusByJobidDefinition,
-    fullDefinition: JobStatusByJobidDefinition.JobStatusByJobidDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF
-};
+});
 
 describe("view job-status-by-jobid handler tests", () => {
 

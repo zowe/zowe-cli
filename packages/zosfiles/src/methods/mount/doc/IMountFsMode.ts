@@ -12,7 +12,7 @@
 /**
  * Type for the mode option of the mount file-system API.
  * @export
- * @type IMountFsMode
+ * @type {IMountFsMode}
  */
 export type IMountFsMode =
     "rdonly" |

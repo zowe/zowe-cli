@@ -184,7 +184,7 @@ describe("Upload stdin-to-data-set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(Upload.streamToDataSet).toHaveBeenCalledWith(fakeSession, expect.objectContaining({"_hadError": false}), dataSetName, {
+            expect(Upload.streamToDataSet).toHaveBeenCalledWith(fakeSession, undefined, dataSetName, {
                 binary,
                 task: {
                     percentComplete: 0,
@@ -280,7 +280,7 @@ describe("Upload stdin-to-data-set handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(Upload.streamToDataSet).toHaveBeenCalledWith(fakeSession, expect.objectContaining({"_hadError": false}), dataSetName, {
+            expect(Upload.streamToDataSet).toHaveBeenCalledWith(fakeSession, undefined, dataSetName, {
                 record,
                 task: {
                     percentComplete: 0,

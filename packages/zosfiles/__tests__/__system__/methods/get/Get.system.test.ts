@@ -11,7 +11,7 @@
 
 import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
-import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/doc/response/ITestEnvironment";
+import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
@@ -19,7 +19,7 @@ import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IZosmfListResponse } from "../../../../src/methods/list/doc/IZosmfListResponse";
 
 let REAL_SESSION: Session;
-let testEnvironment: ITestEnvironment;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
