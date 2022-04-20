@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed ProfileInfo API targeting default base profile instead of the operating layer's base profile. [Imperative#791](https://github.com/zowe/imperative/issues/791)
+
+## `7.0.0`
+
+- Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
+
 ## `7.0.0-next.202204142300`
 
 - BugFix: Updated the imperative version to consume ProfileInfo API updates and to remove the `moment` dependency.
