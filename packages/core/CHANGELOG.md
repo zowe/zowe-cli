@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## `7.0.0`
+
+- Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
+
 ## `7.0.0-next.202203311904`
 
 - BugFix: Updated paths to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)

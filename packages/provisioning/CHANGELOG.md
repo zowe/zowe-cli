@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
+## `7.0.0`
+
+- Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
+
 ## `6.33.2`
 
 - Bugfix: Update `js-yaml` dependency to resolve a potential vulnerability
