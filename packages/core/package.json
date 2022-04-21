@@ -2,7 +2,7 @@
   "name": "@zowe/core-for-zowe-sdk",
   "version": "7.0.2",
   "description": "Core libraries shared by Zowe SDK packages",
-  "author": "Broadcom",
+  "author": "Zowe",
   "license": "EPL-2.0",
   "homepage": "https://github.com/zowe/zowe-cli/tree/master/packages/core#readme",
   "bugs": {
