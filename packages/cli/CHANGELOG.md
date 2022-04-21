@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.2`
 
 - BugFix: Updated Imperative to fix a v1 profiles bug when storing a profile with no secure properties.
 
