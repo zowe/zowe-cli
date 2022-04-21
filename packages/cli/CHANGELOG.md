@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated Imperative to fix a v1 profiles bug when storing a profile with no secure properties.
+
 ## `7.0.1`
 
 - BugFix: Fixed ProfileInfo API targeting default base profile instead of the operating layer's base profile. [Imperative#791](https://github.com/zowe/imperative/issues/791)
