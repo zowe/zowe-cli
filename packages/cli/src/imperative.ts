@@ -11,21 +11,13 @@
 
 import * as path from "path";
 
-// WIP Imperative version of Brightside
 import { IImperativeConfig } from "@zowe/imperative";
 import { Constants } from "./Constants";
-import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import {
-    TSO_OPTION_ACCOUNT_PROFILE,
-    TSO_OPTION_CHAR_SET,
-    TSO_OPTION_CODE_PAGE,
-    TSO_OPTION_COLUMNS,
-    TSO_OPTION_LOGON_PROCEDURE,
-    TSO_OPTION_REGION_SIZE,
-    TSO_OPTION_ROWS
-} from "./zostso/constants/ZosTso.constants";
-import { SshSession } from "@zowe/zos-uss-for-zowe-sdk";
 import { ZosFilesOptions } from "./zosfiles/ZosFiles.options";
+
+import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosTsoProfile } from "@zowe/zos-tso-for-zowe-sdk";
+import { ZosUssProfile } from "@zowe/zos-uss-for-zowe-sdk";
 
 const config: IImperativeConfig = {
     productDisplayName: Constants.DISPLAY_NAME,
@@ -306,134 +298,8 @@ const config: IImperativeConfig = {
                 }
             ]
         },
-        {
-            type: "tso",
-            schema: {
-                type: "object",
-                title: "TSO Profile",
-                description: "z/OS TSO/E User Profile",
-                properties: {
-                    account: {
-                        type: "string",
-                        optionDefinition: TSO_OPTION_ACCOUNT_PROFILE,
-                        includeInTemplate: true
-                    },
-                    characterSet: {
-                        type: "string",
-                        optionDefinition: TSO_OPTION_CHAR_SET
-                    },
-                    codePage: {
-                        type: "string",
-                        optionDefinition: TSO_OPTION_CODE_PAGE,
-                        includeInTemplate: true
-                    },
-                    columns: {
-                        type: "number",
-                        optionDefinition: TSO_OPTION_COLUMNS
-                    },
-                    logonProcedure: {
-                        type: "string",
-                        optionDefinition: TSO_OPTION_LOGON_PROCEDURE,
-                        includeInTemplate: true
-                    },
-                    regionSize: {
-                        type: "number",
-                        optionDefinition: TSO_OPTION_REGION_SIZE
-                    },
-                    rows: {
-                        type: "number",
-                        optionDefinition: TSO_OPTION_ROWS
-                    }
-                },
-                required: []
-            },
-            createProfileExamples: [
-                {
-                    description: "Create a tso profile called 'myprof' with default settings and JES accounting information of 'IZUACCT'",
-                    options: "myprof -a IZUACCT"
-                },
-                {
-                    description: "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and " +
-                        "JES accounting information of '1234'",
-                    options: "largeregion -a 1234 --rs 8192"
-                },
-                {
-                    description: "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user " +
-                        "account on disk",
-                    options: "myprof2 --rs 8192"
-                }
-            ],
-            updateProfileExamples: [
-                {
-                    description: "Update a tso profile called myprof with new JES accounting information",
-                    options: "myprof -a NEWACCT"
-                }
-            ]
-        },
-        {
-            type: "ssh",
-            schema: {
-                type: "object",
-                title: "z/OS SSH Profile",
-                description: "z/OS SSH Profile",
-                properties: {
-                    host: {
-                        type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_HOST
-                    },
-                    port: {
-                        type: "number",
-                        optionDefinition: SshSession.SSH_OPTION_PORT,
-                        includeInTemplate: true
-                    },
-                    user: {
-                        type: "string",
-                        secure: true,
-                        optionDefinition: SshSession.SSH_OPTION_USER
-                    },
-                    password: {
-                        type: "string",
-                        secure: true,
-                        optionDefinition: SshSession.SSH_OPTION_PASSWORD
-                    },
-                    privateKey: {
-                        type: "string",
-                        optionDefinition: SshSession.SSH_OPTION_PRIVATEKEY
-                    },
-                    keyPassphrase: {
-                        type: "string",
-                        secure: true,
-                        optionDefinition: SshSession.SSH_OPTION_KEYPASSPHRASE
-                    },
-                    handshakeTimeout: {
-                        type: "number",
-                        optionDefinition: SshSession.SSH_OPTION_HANDSHAKETIMEOUT
-                    }
-                },
-                required: []
-            },
-            createProfileExamples: [
-                {
-                    options: "ssh111 --host sshhost --user ibmuser --password myp4ss",
-                    description: "Create a ssh profile called 'ssh111' to connect to z/OS SSH server at host 'zos123' and default port 22"
-                },
-                {
-                    options: "ssh222 --host sshhost --port 13022 --user ibmuser --password myp4ss",
-                    description: "Create a ssh profile called 'ssh222' to connect to z/OS SSH server at host 'zos123' and port 13022"
-                },
-                {
-                    options: "ssh333 --host sshhost --user ibmuser --privateKey /path/to/privatekey --keyPassphrase privateKeyPassphrase",
-                    description: "Create a ssh profile called 'ssh333' to connect to z/OS SSH server at host 'zos123' " +
-                        "using a privatekey '/path/to/privatekey' and its decryption passphrase 'privateKeyPassphrase' " +
-                        "for privatekey authentication"
-                },
-                {
-                    options: "ssh444 --privateKey /path/to/privatekey",
-                    description: "Create a ssh profile called 'ssh444' to connect to z/OS SSH server on default port 22, without specifying " +
-                        "username, host, or password, preventing those values from being stored on disk"
-                }
-            ]
-        }
+        ZosTsoProfile,
+        ZosUssProfile
     ]
 };
 module.exports = config;

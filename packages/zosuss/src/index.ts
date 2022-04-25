@@ -14,5 +14,6 @@ export * from "./SshBaseHandler";
 export * from "./SshSession";
 
 export * from "./constants/ZosUss.messages";
+export * from "./constants/ZosUss.profile";
 
 export * from "./doc/ISshSession";

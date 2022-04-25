@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { TSO_PROFILE_OPTIONS } from "../../constants/ZosTso.constants";
+import { TSO_PROFILE_OPTIONS } from "@zowe/zos-tso-for-zowe-sdk";
 
 export const AddressSpaceDefinition: ICommandDefinition = {
     name: "address-space",
