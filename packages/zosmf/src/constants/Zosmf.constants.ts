@@ -74,7 +74,7 @@ export const ZosmfConstants: { [key: string]: any } = {
 /**
  * Object containing all options to be used by the Download data set API
  */
- export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
+export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
     /**
      * The files timeout header value
      * @type {ICommandOptionDefinition}

@@ -10,7 +10,15 @@
 */
 
 import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
-import { TSO_OPTION_ACCOUNT_PROFILE, TSO_OPTION_CHAR_SET, TSO_OPTION_CODE_PAGE, TSO_OPTION_COLUMNS, TSO_OPTION_LOGON_PROCEDURE, TSO_OPTION_REGION_SIZE, TSO_OPTION_ROWS } from "./ZosTso.constants";
+import {
+    TSO_OPTION_ACCOUNT_PROFILE,
+    TSO_OPTION_CHAR_SET,
+    TSO_OPTION_CODE_PAGE,
+    TSO_OPTION_COLUMNS,
+    TSO_OPTION_LOGON_PROCEDURE,
+    TSO_OPTION_REGION_SIZE,
+    TSO_OPTION_ROWS
+} from "./ZosTso.constants";
 
 /**
  * Profile configuration for TSO profiles
