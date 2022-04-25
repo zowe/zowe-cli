@@ -13,9 +13,9 @@ import { ICommandProfileTypeConfiguration } from "@zowe/imperative";
 import { TSO_OPTION_ACCOUNT_PROFILE, TSO_OPTION_CHAR_SET, TSO_OPTION_CODE_PAGE, TSO_OPTION_COLUMNS, TSO_OPTION_LOGON_PROCEDURE, TSO_OPTION_REGION_SIZE, TSO_OPTION_ROWS } from "./ZosTso.constants";
 
 /**
- * Messages to be used as command responses for different scenarios
- * @type { ICommandProfileTypeConfiguration }
- * @memberof ZosUssMessages
+ * Profile configuration for TSO profiles
+ * @type {ICommandProfileTypeConfiguration}
+ * @memberof ZosTsoProfile
  */
 export const ZosTsoProfile: ICommandProfileTypeConfiguration = {
     type: "tso",

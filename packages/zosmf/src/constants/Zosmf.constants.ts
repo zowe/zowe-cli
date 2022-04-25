@@ -9,6 +9,8 @@
 *
 */
 
+import { ICommandOptionDefinition } from "@zowe/imperative";
+
 /**
  * Constants to be used by the z/OSMF API
  */
@@ -65,5 +67,26 @@ export const ZosmfConstants: { [key: string]: any } = {
          * @type {string}
          */
         UNABLE_TO_VERIFY_LEAF_SIGNATURE: "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
+    }
+};
+
+
+/**
+ * Object containing all options to be used by the Download data set API
+ */
+ export const ZosFilesOptions: { [key: string]: ICommandOptionDefinition } = {
+    /**
+     * The files timeout header value
+     * @type {ICommandOptionDefinition}
+     */
+    responseTimeout: {
+        name: "response-timeout",
+        aliases: ["rto"],
+        description: "The maximum amount of time in seconds the z/OSMF Files TSO servlet should run before returning a response." +
+        " Any request exceeding this amount of time will be terminated and return an error. Allowed values: 5 - 600",
+        type: "number",
+        defaultValue: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        numericValueRange: [5, 600]
     }
 };
