@@ -2,7 +2,7 @@
   "name": "@zowe/zos-tso-for-zowe-sdk",
   "version": "7.0.2",
   "description": "Zowe SDK to interact with TSO on z/OS",
-  "author": "Broadcom",
+  "author": "Zowe",
   "license": "EPL-2.0",
   "homepage": "https://github.com/zowe/zowe-cli/tree/master/packages/zostso#readme",
   "bugs": {
