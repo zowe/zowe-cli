@@ -2,7 +2,7 @@
   "name": "@zowe/cli",
   "private": true,
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
-  "author": "Broadcom",
+  "author": "Zowe",
   "license": "EPL-2.0",
   "workspaces": [
     "packages/*",
