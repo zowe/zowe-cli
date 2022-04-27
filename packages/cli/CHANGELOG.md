@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated the `zowe config auto-init` command to allow using certificates for authentication. [#1359](https://github.com/zowe/zowe-cli/issues/1359)
+
 ## `7.0.2`
 
 - BugFix: Updated Imperative to fix a v1 profiles bug when storing a profile with no secure properties.
