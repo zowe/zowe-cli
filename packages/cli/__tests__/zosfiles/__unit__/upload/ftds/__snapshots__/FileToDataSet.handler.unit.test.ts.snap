@@ -18,11 +18,11 @@ exports[`Upload file-to-data-set handler process method should display error whe
 
 exports[`Upload file-to-data-set handler process method should display error when upload file to data set 3`] = `
 "
-[31m[33msuccess: [31m[31mfalse[31m[39m
-[31m[33mfrom: [31m   test-file[39m
-[31m[33mto: [31m     testing[39m
-[31m[39m
-[31m[39m
+[33msuccess: [39m[31mfalse[39m
+[33mfrom: [39m   test-file
+[33mto: [39m     testing
+
+
 [33mfile_to_upload: [39m[34m1[39m
 [33msuccess: [39m       [34m0[39m
 [33merror: [39m         [34m1[39m
