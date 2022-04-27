@@ -11,15 +11,11 @@
 
 import * as ProfileUtils from "../../../src/utils/ProfileUtils";
 import { ImperativeConfig, EnvironmentalVariableSettings } from "@zowe/imperative";
+import * as os from "os";
 import * as path from "path";
 
-jest.mock("os");
-const os = require("os");
-
 describe("ProfileUtils", () => {
-    afterAll(() => {
-        // Just to be safe
-        jest.unmock("os");
+    afterEach(() => {
         jest.restoreAllMocks();
     });
 
@@ -32,10 +28,9 @@ describe("ProfileUtils", () => {
         let defaultHome: string;
 
         beforeEach(() => {
-            jest.restoreAllMocks();
             jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ cliHome: { value: null } } as any);
             ImperativeConfig.instance.loadedConfig = undefined;
-            os.__setMockOs({ homedir: expectedLoadedConfig.defaultHome });
+            jest.spyOn(os, "homedir").mockReturnValue(expectedLoadedConfig.defaultHome);
             defaultHome = path.join(expectedLoadedConfig.defaultHome, ".zowe");
         });
 

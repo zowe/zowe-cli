@@ -12,6 +12,7 @@
 import { ICommandDefinition } from "@zowe/imperative";
 import { EnableCommand } from "./enable/Enable.definition";
 import { DisableCommand } from "./disable/Disable.definition";
+import { RestartCommand } from "./restart/Restart.definition";
 
 const definition: ICommandDefinition = {
     name: "daemon",
@@ -21,7 +22,8 @@ const definition: ICommandDefinition = {
                  "Daemon-mode runs the CLI command processor as a daemon to improve performance.",
     children: [
         EnableCommand,
-        DisableCommand
+        DisableCommand,
+        RestartCommand
     ]
 };
 

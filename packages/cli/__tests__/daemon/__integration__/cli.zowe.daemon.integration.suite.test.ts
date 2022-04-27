@@ -93,4 +93,5 @@ describe("Zowe daemon suite", () => {
     require("./cli.zowe.exe.integration");
     require("./enable/cli.daemon.enable.integration");
     require("./disable/cli.daemon.disable.integration");
+    require("./restart/cli.daemon.restart.integration");
 });

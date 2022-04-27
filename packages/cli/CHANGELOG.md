@@ -2,9 +2,44 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.0.2`
+
+- BugFix: Updated Imperative to fix a v1 profiles bug when storing a profile with no secure properties.
+
+## `7.0.1`
+
+- BugFix: Fixed ProfileInfo API targeting default base profile instead of the operating layer's base profile. [Imperative#791](https://github.com/zowe/imperative/issues/791)
+
+## `7.0.0`
+
+- Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
+
+## `7.0.0-next.202204142300`
+
+- BugFix: Updated the imperative version to consume ProfileInfo API updates and to remove the `moment` dependency.
+
+## `7.0.0-next.202204141408`
+
+- Enhancement: Updated the version number of the Zowe-CLI executable.
+
+## `7.0.0-next.202204111828`
+
+- Enhancement: Added help for `zowe daemon restart` command.
+- Enhancement: Changed type of `encoding` property on z/OSMF profile from number to string to support more values (e.g., "ISO8859-1").
+
+## `7.0.0-next.202204111523`
+
+- Enhancement: Launch a separate Zowe CLI daemon for each user on multi-user systems.
+- **Next Breaking**: Removed environment variables ZOWE_DAEMON and ZOWE_DAEMON_LOCK. Replaced them with ZOWE_DAEMON_DIR and ZOWE_DAEMON_PIPE.
+
+## `7.0.0-next.202204111431`
+
+- BugFix: Updated Imperative to enhance backward compatibility with v1 profiles and other enhancements and bug fixes (More details: Imperative [v5.0.0-next.202204051515](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204051515) and [v5.0.0-next.202204081605](https://github.com/zowe/imperative/blob/next/CHANGELOG.md#500-next202204081605))
+
+## `7.0.0-next.202203311904`
 
 - BugFix: Updated `zowe auth login apiml`, `zowe auth logout apiml` and `zowe config auto-init` comamnds to use v2 APIML APIs [#1339](https://github.com/zowe/zowe-cli/issues/1339)
+- BugFix: Updated Imperative to avoid loading the credential manager if the given config file is not secure. [zowe/imperative#762](https://github.com/zowe/imperative/issues/762)
 
 ## `7.0.0-next.202203282106`
 
@@ -175,10 +210,24 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Deprecated: The "profiles" command group for managing global profiles in "~/.zowe/profiles". Use the new "config" command group instead.
 - **LTS Breaking**: Removed "config" command group for managing app settings in "~/.zowe/imperative/settings.json". If app settings already exist they are still loaded for backwards compatibility.
 
+## `6.40.1`
+
+- BugFix: Updated the imperative version to remove the `moment` dependency.
+
+## `6.40.0`
+
+- Enhancement: Added the `exec-data` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
+
+## `6.39.1`
+
+- BugFix: Updated Imperative to consume security updates in `4.18.2`.
+
+
 ## `6.39.0`
 
 - BugFix: Provided more accurate output for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
 - BugFix: Fixed inconsistent case on `modify-version` option for `zowe zos-jobs delete job` and `zowe zos-jobs cancel job` commands [#1333](https://github.com/zowe/zowe-cli/issues/1333)
+- Enhancement: Added support for `--record` format on `zowe zos-files download (data-set|all-members)` and `zowe zos-files upload (dir-to-pds|file-to-data-set|stdin-to-data-set)` [#539](https://github.com/zowe/zowe-cli/issues/539)
 
 ## `6.38.0`
 
@@ -250,7 +299,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `6.33.1`
 
 - Bugfix: Fixed capitalization of handler paths for `zowe files rename ds` and `zowe files rename dsm` commands.
-- Development: Migrated from TSLint (now deprecated) to ESLint for static code analysis.
 
 ## `6.33.0`
 

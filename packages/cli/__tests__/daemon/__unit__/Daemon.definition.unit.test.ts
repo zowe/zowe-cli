@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 
 describe("daemon group definition", () => {
     it("should have the right command content", () => {
-        const numOfDaemonCmds = 2;
+        const numOfDaemonCmds = 3;
         const definition: ICommandDefinition = require("../../../src/daemon/Daemon.definition");
         expect(definition).toBeDefined();
         expect(definition.children.length).toBe(numOfDaemonCmds);

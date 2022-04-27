@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `7.0.0`
+
+- Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
+
 ## `7.0.0-next.202201252014`
 
 - Documentation: Deprecated the following command option definitions:

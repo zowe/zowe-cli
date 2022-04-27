@@ -24,6 +24,7 @@ import { IDownloadOptions } from "./doc/IDownloadOptions";
 import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
+import { Utilities } from "../utilities";
 
 /**
  * This class holds helper functions that are used to download data sets, members and more through the z/OS MF APIs
@@ -293,17 +294,17 @@ export class Download {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
 
-            // Get a proper destination for the file to be downloaded
-            // If the "file" is not provided, we create a folder structure similar to the uss file structure
-            if (ussFileName.substr(0, 1) === "/") {
-                ussFileName = ussFileName.substr(1);
-            }
-
             const destination = options.file || posix.normalize(posix.basename(ussFileName));
             IO.createDirsSyncFromFilePath(destination);
 
             const writeStream = IO.createWriteStream(destination);
             ussFileName = posix.normalize(ussFileName);
+
+            // If data type is not defined by user, check for USS tags
+            if (options.binary == null && options.encoding == null) {
+                await Utilities.applyTaggedEncoding(session, ussFileName, options);
+            }
+
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
             if (ussFileName.substr(0, 1) === "/") {

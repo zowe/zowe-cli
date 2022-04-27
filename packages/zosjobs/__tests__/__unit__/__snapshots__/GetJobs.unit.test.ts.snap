@@ -115,6 +115,146 @@ Array [
 ]
 `;
 
+exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data with maxJobs param 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data with multiple other params 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
+exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon with their execution data with owner and maxJobs params 1`] = `
+Array [
+  Object {
+    "class": "A",
+    "files-url": "www.nowhere.com/restjobs/jobs/files",
+    "job-correlator": "123545asdfadf",
+    "jobid": "TSUxxx",
+    "jobname": "IBMUSER$",
+    "owner": "IBMUSER",
+    "phase": 88,
+    "phase-name": "testagain",
+    "retcode": "CC 0000",
+    "status": "OUTPUT",
+    "subsystem": "JES2",
+    "type": "job",
+    "url": "www.nowhere.com/restjobs/jobs",
+  },
+  Object {
+    "class": "A",
+    "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
+    "job-correlator": "J0003781USILDAMDD3CE8146.......:",
+    "jobid": "JOB03781",
+    "jobname": "KELDA16$",
+    "owner": "KELDA16",
+    "phase": 130,
+    "phase-name": "Job is actively converting",
+    "retcode": null,
+    "status": "INPUT",
+    "subsystem": "JES2",
+    "type": "JOB",
+    "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
+  },
+]
+`;
+
 exports[`GetJobs tests getJobs APIs should get jobs by owner 1`] = `
 Array [
   Object {

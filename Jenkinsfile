@@ -33,11 +33,9 @@ node('zowe-jenkins-agent-dind') {
 
     // Protected branch property definitions
     pipeline.protectedBranches.addMap([
-        [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "latest", "@zowe/perf-timing": "latest"], aliasTags: ["zowe-v1-lts"]],
-        [name: "next", tag: "next", prerelease: "next", dependencies: ["@zowe/imperative": "next", "@zowe/perf-timing": "latest"], aliasTags: ["@zowe/cli-test-utils@latest"]],
-        //[name: "zowe-v1-lts", tag: "zowe-v1-lts", level: SemverLevel.MINOR, dependencies: ["@zowe/imperative": "zowe-v1-lts", "@zowe/perf-timing": "zowe-v1-lts"]],
-        [name: "lts-incremental", tag: "lts-incremental", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-incremental"]],
-        [name: "lts-stable", tag: "lts-stable", level: SemverLevel.PATCH, dependencies: ["@brightside/imperative": "lts-stable"]]
+        [name: "master", tag: "latest", dependencies: ["@zowe/imperative": "zowe-v2-lts", "@zowe/perf-timing": "zowe-v2-lts"], aliasTags: ["zowe-v2-lts", "next"], level: SemverLevel.MINOR],
+        [name: "zowe-v1-lts", tag: "zowe-v1-lts", dependencies: ["@zowe/imperative": "zowe-v1-lts", "@zowe/perf-timing": "zowe-v1-lts"], level: SemverLevel.PATCH],
+        //[name: "next", tag: "next", prerelease: "next", dependencies: ["@zowe/imperative": "next", "@zowe/perf-timing": "latest"]],
     ])
 
     // Git configuration information

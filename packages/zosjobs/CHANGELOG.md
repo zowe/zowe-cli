@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `7.0.0`
+
+- Major: Introduced Team Profiles, Daemon mode, and more. See the prerelease items (if any) below for more details.
+
+## `6.40.0`
+
+- Enhancement: Added the `exec-data` option for `zowe jobs list jobs` command to return execution data about the job in addition to the default information. [#1158](https://github.com/zowe/zowe-cli/issues/1158)
+
 ## `6.39.0`
 
 - Enhancement: Updated the `cancelJobs` and `deleteJobs` functions to return an IJobFeedback object

@@ -2,7 +2,7 @@
   "name": "@zowe/cli",
   "private": true,
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
-  "author": "Broadcom",
+  "author": "Zowe",
   "license": "EPL-2.0",
   "workspaces": [
     "packages/*",
@@ -19,7 +19,7 @@
     "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
     "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
-    "update:imperative": "npm i --package-lock-only --no-package-lock --save-exact @zowe/imperative@next && syncpack fix-mismatches --dev --prod --filter @zowe/imperative && npm i",
+    "update:imperative": "npm i --package-lock-only --no-package-lock --save-exact @zowe/imperative@zowe-v2-lts && syncpack fix-mismatches --dev --prod --filter @zowe/imperative && npm i",
     "test": "npm run test:unit && npm run test:integration && npm run test:system",
     "test:act": "node scripts/testCliWorkflow.js",
     "test:cleanResults": "rimraf __tests__/__results__",
@@ -39,7 +39,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@zowe/imperative": "5.0.0-next.202203231534",
+    "@zowe/imperative": "5.0.2",
     "@zowe/perf-timing": "1.0.7"
   },
   "devDependencies": {

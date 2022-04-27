@@ -9,6 +9,7 @@
 *
 */
 
+import { IOptions } from "../../doc/IOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
 import { Tag } from "./doc/Tag";
@@ -107,12 +108,34 @@ export class Utilities {
         const response = await Utilities.putUSSPayload(session, USSFileName, payload);
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
-            const stdout = JSON.parse(response.toString()).stdout[0];
+            const stdout = jsonObj.stdout[0];
             // Tests if binary tag set
-            return (stdout.indexOf("b ") >-1) ||
-            (stdout.indexOf("UTF-") >-1 ) || (stdout.indexOf("ISO8859-")>-1 ) || (stdout.indexOf("IBM-850") >-1 );
+            return (stdout.indexOf("b ") > -1) ||
+                (stdout.indexOf("UTF-") > -1) || (stdout.indexOf("ISO8859-") > -1) || (stdout.indexOf("IBM-850") > -1);
         }
         return false;
+    }
+
+    /**
+     * Check the tags on an existing USS file and update binary and encoding
+     * properties on the options object.
+     * @param session z/OSMF connection info
+     * @param USSFileName Path to USS file
+     * @param options Options for downloading a USS file
+     */
+    public static async applyTaggedEncoding(session: AbstractSession, USSFileName: string, options: IOptions): Promise<void> {
+        const payload = { request: "chtag", action: "list" };
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload);
+        const jsonObj = JSON.parse(response.toString());
+        if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
+            const columns = (jsonObj.stdout[0] as string).trim().split(/\s+/);
+            // Tests if binary tag set
+            if (columns[0] === "b" || columns[1]?.startsWith("ISO8859-") || columns[1]?.startsWith("UCS-") || columns[1]?.startsWith("UTF-")) {
+                options.binary = true;
+            } else if (columns[1]?.startsWith("IBM-")) {
+                options.encoding = columns[1];
+            }
+        }
     }
 
     /**
