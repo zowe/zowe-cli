@@ -20,18 +20,20 @@ const authsAllowed = ["none"];
 let hasAuthFailed = false;
 export const startCmdFlag = "@@START OF COMMAND@@";
 
+export const expiredPasswordFlag = "FOTS1668";
+
 export class Shell {
 
     public static executeSsh(session: SshSession,
         command: string,
         stdoutHandler: (data: string) => void): Promise<any> {
-        const promise = new Promise<any>((resolve,reject) => {
+        const promise = new Promise<any>((resolve, reject) => {
             // These are needed for authenticationHandler
             // The order is critical as this is the order of authentication that will be used.
-            if(session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
+            if (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
                 authsAllowed.push("publickey");
             }
-            if(session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
+            if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
                 authsAllowed.push("password");
             }
             const conn = new Client();
@@ -60,10 +62,18 @@ export class Shell {
                         conn.end();
                         resolve(rc);
                     });
-                    stream.on("data", (data: string) => {
+                    stream.on("data", function (data: Buffer | string) {
                         Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
+                        // We do not know if password is expired until now.
+                        // If it is, emit an error and shut down the stream.
+                        if (dataBuffer.length === 0 && data.indexOf(expiredPasswordFlag) === 0) {
+                            conn.emit("error", new Error(data.toString()));
+                            stream.removeListener("data", this);
+                            stream.close();
+                            return;
+                        }
                         dataBuffer += data;
-                        if(dataBuffer.includes("\r")) {
+                        if (dataBuffer.includes("\r")) {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
                             // rather than print it out right away
@@ -71,12 +81,12 @@ export class Shell {
                             dataBuffer = dataBuffer.slice(dataBuffer.lastIndexOf("\r"));
 
                             // check startCmdFlag: start printing out data
-                            if(dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
+                            if (dataToPrint.match(new RegExp(`\n${startCmdFlag}`)) || dataToPrint.match(new RegExp("\\$ " + startCmdFlag))) {
                                 dataToPrint = dataToPrint.slice(dataToPrint.indexOf(startCmdFlag)+startCmdFlag.length);
                                 isUserCommand = true;
                             }
 
-                            if(isUserCommand && dataToPrint.match(/\\$ exit/)) {
+                            if (isUserCommand && dataToPrint.match(/\\$ exit/)) {
                                 // if exit found, print out stuff before exit, then stop printing out.
                                 dataToPrint = dataToPrint.slice(0, dataToPrint.indexOf("$ exit"));
                                 stdoutHandler(dataToPrint);
@@ -109,14 +119,19 @@ export class Shell {
                     session.ISshSession.handshakeTimeout : 0
             });
             conn.on("error", (err: Error) => {
-                if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
+                if (err.message.startsWith(expiredPasswordFlag)) {
+                    hasAuthFailed = true;
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.expiredPassword.message
+                    }));
+                } else if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
                     hasAuthFailed = true;
                     reject(new ImperativeError({
                         msg: ZosUssMessages.allAuthMethodsFailed.message
                     }));
                 }
                 // throw error only when authentication didn't fail.
-                else if( !hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
+                else if (!hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
                     reject(new ImperativeError({
                         msg: ZosUssMessages.handshakeTimeout.message
                     }));
